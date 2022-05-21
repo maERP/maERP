@@ -1,4 +1,4 @@
-name: Docker-Package
+name: Publish as Github-Package
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -7,7 +7,7 @@ name: Docker-Package
 
 on:
   schedule:
-    - cron: '33 5 * * *'
+    - cron: '33 22 * * *'
   push:
     branches: [ main ]
     # Publish semver tags as releases.
@@ -91,3 +91,4 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: cosign sign ${{ steps.meta.outputs.tags }}@${{ steps.build-and-push.outputs.digest }}
+
