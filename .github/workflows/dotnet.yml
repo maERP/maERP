@@ -1,0 +1,26 @@
+name: maERP.Server
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+      
+    - name: Restore dependencies
+      run: dotnet restore maERP.Server
+    - name: Build Server
+      run: dotnet build maERP.Server --no-restore
+    - name: Test Server
+      run: dotnet test maERP.Server --no-build --verbosity normal
