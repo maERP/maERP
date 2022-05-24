@@ -1,9 +1,9 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-#ENV MYSQL_HOST=localhost
-#ENV MYSQL_USER=maerp
-#ENV MYSQL_PASS=maerp
-#ENV MYSQL_DB=maerp_01
+ENV MYSQL_HOST localhost
+ENV MYSQL_USER maerp
+ENV MYSQL_PASS maerp
+ENV MYSQL_DB maerp_01
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
