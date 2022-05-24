@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using maERP.Server.Data;
-using maERP.Server.Models;
+using maERP.Server.Models.Product;
 using AutoMapper;
 using maERP.Server.Contracts;
 using Microsoft.AspNetCore.OData.Query;
+using maERP.Server.Models;
 
 namespace maERP.Server.Controllers
 {
@@ -29,24 +30,24 @@ namespace maERP.Server.Controllers
         [EnableQuery] 
         public async Task<ActionResult<IEnumerable<GetProductDto>>> GetProduct()
         {
-            var products = await _repository.GetAllAsync<GetProductDto>();
-            return Ok(products);
+            var result = await _repository.GetAllAsync<GetProductDto>();
+            return Ok(result);
         }
 
         // GET: api/Products/?StartIndex=0&PageSize=25&PageNumber=1
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetPagedProduct([FromQuery] QueryParameters queryParameters)
         {
-            var pagedProductsResult = await _repository.GetAllAsync<GetProductDto>(queryParameters);
-            return Ok(pagedProductsResult);
+            var pagedResult = await _repository.GetAllAsync<GetProductDto>(queryParameters);
+            return Ok(pagedResult);
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BaseProductDto>> GetProduct(int id)
+        public async Task<ActionResult<ProductDto>> GetProduct(int id)
         {
-            var product = await _repository.GetDetails(id);
-            return Ok(product);
+            var result = await _repository.GetDetails(id);
+            return Ok(result);
         }
 
         // PUT: api/Products/5
@@ -80,7 +81,7 @@ namespace maERP.Server.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BaseProductDto>> PostProduct(CreateProductDto createProductDto)
+        public async Task<ActionResult<ProductDto>> PostProduct(CreateProductDto createProductDto)
         {
             var product = await _repository.AddAsync<CreateProductDto, GetProductDto>(createProductDto);
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);

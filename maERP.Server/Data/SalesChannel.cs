@@ -16,6 +16,9 @@ namespace maERP.Server.Data
         [StringLength(200)]
         public string Name { get; set; }
 
+        [Required]
+        public int WarehouseId { get; set; }
+
         public string URL { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
@@ -25,6 +28,11 @@ namespace maERP.Server.Data
         public bool ExportProducts { get; set; }
         public bool ExportCustomers { get; set; }
         public bool ExportOrders { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+
+        public virtual IList<Product> Products { get; set; }
     }
 
     public enum SalesChannelType

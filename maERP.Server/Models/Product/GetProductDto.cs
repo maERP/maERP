@@ -1,11 +1,9 @@
 ﻿#nullable disable
 
-using maERP.Server.Data;
-
-namespace maERP.Server.Models
+namespace maERP.Server.Models.Product
 {
 	public class GetProductDto : BaseProductDto
 	{
-		public TaxClass TaxClass { get; set; }
+		public Data.TaxClass TaxClass { get; set; }
 	}
 }

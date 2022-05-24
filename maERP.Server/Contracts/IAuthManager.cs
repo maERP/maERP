@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-using maERP.Server.Models.Users;
+using maERP.Server.Models.User;
 using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Server.Contracts

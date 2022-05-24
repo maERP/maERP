@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-namespace maERP.Server.Models
+namespace maERP.Server.Models.Product
 {
 	public class UpdateProductDto : BaseProductDto
 	{

@@ -2,6 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using maERP.Server.Data;
+using maERP.Server.Models.TaxClass;
+using AutoMapper;
+using maERP.Server.Contracts;
+using Microsoft.AspNetCore.OData.Query;
+using maERP.Server.Models;
 
 namespace maERP.Server.Controllers
 {
@@ -10,61 +15,57 @@ namespace maERP.Server.Controllers
     [Authorize]
     public class TaxClassesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly ITaxClassesRepository _repository;
 
-        public TaxClassesController(ApplicationDbContext context)
+        public TaxClassesController(IMapper mapper, ITaxClassesRepository repository)
         {
-            _context = context;
+            _mapper = mapper;
+            _repository = repository;
         }
 
         // GET: api/TaxClasses
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaxClass>>> GetTaxClass()
+        [HttpGet("GetAll")]
+        // GET: api/TaxClasses?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
+        [EnableQuery]
+        public async Task<ActionResult<IEnumerable<GetTaxClassDto>>> GetTaxClass()
         {
-          if (_context.TaxClass == null)
-          {
-              return NotFound();
-          }
-            return await _context.TaxClass.ToListAsync();
+            var result = await _repository.GetAllAsync<GetTaxClassDto>();
+            return Ok(result);
+        }
+
+        // GET: api/TaxClasses/?StartIndex=0&PageSize=25&PageNumber=1
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TaxClass>>> GetPagedTaxClass([FromQuery] QueryParameters queryParameters)
+        {
+            var pagedResult = await _repository.GetAllAsync<GetTaxClassDto>(queryParameters);
+            return Ok(pagedResult);
         }
 
         // GET: api/TaxClasses/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaxClass>> GetTaxClass(int id)
+        public async Task<ActionResult<TaxClassDto>> GetTaxClass(int id)
         {
-          if (_context.TaxClass == null)
-          {
-              return NotFound();
-          }
-            var taxClass = await _context.TaxClass.FindAsync(id);
-
-            if (taxClass == null)
-            {
-                return NotFound();
-            }
-
-            return taxClass;
+            var result = await _repository.GetDetails(id);
+            return Ok(result);
         }
 
         // PUT: api/TaxClasses/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTaxClass(int id, TaxClass taxClass)
+        public async Task<IActionResult> PutTaxClass(int id, UpdateTaxClassDto updateTaxClassDto)
         {
-            if (id != taxClass.Id)
+            if (id != updateTaxClassDto.Id)
             {
-                return BadRequest();
+                return BadRequest("Invalid Record Id");
             }
-
-            _context.Entry(taxClass).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _repository.UpdateAsync(id, updateTaxClassDto);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TaxClassExists(id))
+                if (!await TaxClassExists(id))
                 {
                     return NotFound();
                 }
@@ -80,41 +81,24 @@ namespace maERP.Server.Controllers
         // POST: api/TaxClasses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TaxClass>> PostTaxClass(TaxClass taxClass)
+        public async Task<ActionResult<TaxClassDto>> PostTaxClass(CreateTaxClassDto createTaxClassDto)
         {
-          if (_context.TaxClass == null)
-          {
-              return Problem("Entity set 'ApplicationDbContext.TaxClass'  is null.");
-          }
-            _context.TaxClass.Add(taxClass);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTaxClass", new { id = taxClass.Id }, taxClass);
+            var taxClass = await _repository.AddAsync<CreateTaxClassDto, GetTaxClassDto>(createTaxClassDto);
+            return CreatedAtAction(nameof(GetTaxClass), new { id = taxClass.Id }, taxClass);
         }
 
         // DELETE: api/TaxClasses/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaxClass(int id)
         {
-            if (_context.TaxClass == null)
-            {
-                return NotFound();
-            }
-            var taxClass = await _context.TaxClass.FindAsync(id);
-            if (taxClass == null)
-            {
-                return NotFound();
-            }
-
-            _context.TaxClass.Remove(taxClass);
-            await _context.SaveChangesAsync();
+            await _repository.DeleteAsync(id);
 
             return NoContent();
         }
 
-        private bool TaxClassExists(int id)
+        private async Task<bool> TaxClassExists(int id)
         {
-            return (_context.TaxClass?.Any(e => e.Id == id)).GetValueOrDefault();
+            return await _repository.Exists(id);
         }
     }
 }

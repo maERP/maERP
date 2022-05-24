@@ -15,6 +15,14 @@ namespace maERP.Server.Data
         public string SKU { get; set; }
 
         [Required]
+        [StringLength(13)]
+        public string EAN { get; set; }
+
+        [Required]
+        [StringLength(16)]
+        public string ASIN { get; set; }
+
+        [Required]
         [StringLength(200)]
         public string Name { get; set; }
 
@@ -30,6 +38,8 @@ namespace maERP.Server.Data
         public int TaxClassId { get; set; }
 
         public TaxClass TaxClass { get; set; }
+        public ProductStock ProductStock { get; set; }
+        public ProductSalesChannel ProductSalesChannel { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

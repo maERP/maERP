@@ -5,34 +5,34 @@ using AutoMapper.QueryableExtensions;
 using maERP.Server.Contracts;
 using maERP.Server.Data;
 using maERP.Server.Exceptions;
-using maERP.Server.Models.Product;
+using maERP.Server.Models.TaxClass;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Server.Repository
 {
-	public class ProductsRepository : GenericRepository<Product>, IProductsRepository
-	{
+	public class TaxClassesRepository : GenericRepository<TaxClass>, ITaxClassesRepository
+    {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public ProductsRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+        public TaxClassesRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {
             this._context = context;
             this._mapper = mapper;
         }
 
-        public async Task<ProductDto> GetDetails(int id)
+        public async Task<TaxClassDto> GetDetails(int id)
         {
-            var product = await _context.Product.Include(q => q.TaxClass)
-                .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
+            var taxClass = await _context.TaxClass
+                .ProjectTo<TaxClassDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(q => q.Id == id);
 
-            if(product == null)
+            if(taxClass == null)
             {
                 throw new NotFoundException(nameof(GetDetails), id);
             }
 
-            return product;
+            return taxClass;
         }
     }
 }

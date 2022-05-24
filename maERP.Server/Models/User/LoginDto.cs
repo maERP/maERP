@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace maERP.Server.Models.Users
+namespace maERP.Server.Models.User
 {
     public class LoginDto
     {
