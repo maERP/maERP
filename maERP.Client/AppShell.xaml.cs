@@ -1,9 +1,9 @@
-﻿namespace maERP.Client;
+namespace maERP.Client;
 
 public partial class AppShell : Shell
 {
-    public AppShell()
-    {
-        InitializeComponent();
-    }
+	public AppShell()
+	{
+		InitializeComponent();
+	}
 }
