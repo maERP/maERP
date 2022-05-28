@@ -1,10 +1,10 @@
-﻿using maERP.Server.Data;
-using maERP.Server.Models;
-using maERP.Server.Models.User;
-using maERP.Server.Models.Product;
-using maERP.Server.Models.TaxClass;
-using maERP.Server.Models.SalesChannel;
-using maERP.Server.Models.Warehouse;
+﻿using maERP.Data.Models;
+using maERP.Data.Dtos;
+using maERP.Data.Dtos.User;
+using maERP.Data.Dtos.Product;
+using maERP.Data.Dtos.TaxClass;
+using maERP.Data.Dtos.SalesChannel;
+using maERP.Data.Dtos.Warehouse;
 using AutoMapper;
 
 namespace maERP.Server.Configurations

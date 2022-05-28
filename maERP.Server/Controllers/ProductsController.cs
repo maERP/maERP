@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using maERP.Server.Data;
-using maERP.Server.Models.Product;
+using maERP.Data.Models;
+using maERP.Data.Dtos.Product;
 using AutoMapper;
 using maERP.Server.Contracts;
 using Microsoft.AspNetCore.OData.Query;
@@ -12,7 +12,7 @@ namespace maERP.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    /*[Authorize]*/
     public class ProductsController : ControllerBase
     {
         private readonly IMapper _mapper;

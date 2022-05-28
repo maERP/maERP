@@ -1,4 +1,4 @@
-﻿using maERP.Server.Data;
+﻿using maERP.Data.Models;
 
 namespace maERP.Server.Contracts
 {

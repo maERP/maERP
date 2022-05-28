@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using maERP.Server.Data;
 using maERP.Server.Models;
-using AutoMapper;
 using maERP.Server.Contracts;
+using maERP.Data.Models;
+using maERP.Data.Dtos;
+using AutoMapper;
 
 namespace maERP.Server.Controllers
 {

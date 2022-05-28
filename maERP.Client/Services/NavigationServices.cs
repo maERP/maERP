@@ -40,6 +40,9 @@ namespace maERP.Client.Services
         public Task NavigateToMainPage()
             => NavigateToPage<MainPage>();
 
+        public Task NavigateToLogin()
+            => NavigateToPage<Login>();
+
         public Task NavigateBack()
         {
             if (Navigation.NavigationStack.Count > 1)

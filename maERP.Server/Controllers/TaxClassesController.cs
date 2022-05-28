@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using maERP.Server.Data;
-using maERP.Server.Models.TaxClass;
+using maERP.Data.Models;
+using maERP.Data.Dtos.TaxClass;
 using AutoMapper;
 using maERP.Server.Contracts;
 using Microsoft.AspNetCore.OData.Query;

@@ -1,9 +1,22 @@
-namespace maERP.Client.Views;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
-public partial class Settings : ContentPage
+using maERP.Client.Models;
+using maERP.Client.Operations;
+
+namespace maERP.Client.Views
 {
-	public Settings()
-	{
-		InitializeComponent();
-	}
+
+    public partial class Settings : ContentPage
+    {
+	    public Settings()
+	    {
+		    InitializeComponent();
+	    }
+    }
 }

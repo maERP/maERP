@@ -15,6 +15,7 @@ namespace maERP.Client.ViewModels
 
         public virtual Task OnNavigatedTo()
             => Task.CompletedTask;
+
         public virtual void RaisePropertyChanged([CallerMemberName] string? property = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 

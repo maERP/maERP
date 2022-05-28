@@ -1,20 +1,17 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:Views="clr-namespace:maERP.Client.Views"
              x:Class="maERP.Client.AppShell"
              Title="AppShell"
-             BackgroundColor="White">
-    
+             BackgroundColor="Black">
+
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
-        <ShellContent Title="Dashboard" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate Views:MainPage}"/>
-        <ShellContent Title="Bestellungen" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate Views:SecondPage}"/>
-        <ShellContent Title="Artikel" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate Views:ThirdPage}"/>
-        <Tab Title="Einstellungen" Icon="dotnet_bot.png">
-            <ShellContent Title="Server" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate Views:ThirdPage}"/>
-            <ShellContent Title="Server" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate Views:ThirdPage}"/>
-            <ShellContent Title="Server" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate Views:ThirdPage}"/>
-            <ShellContent Title="Server" Icon="dotnet_bot.png" ContentTemplate="{DataTemplate Views:ThirdPage}"/>
+        <ShellContent Title="Dashboard" ContentTemplate="{DataTemplate Views:MainPage}"/>
+        <ShellContent Title="Bestellungen" ContentTemplate="{DataTemplate Views:SecondPage}"/>
+        <ShellContent Title="Artikel" ContentTemplate="{DataTemplate Views:ThirdPage}"/>
+        <Tab Title="Einstellungen">
+            <ShellContent Title="Server" ContentTemplate="{DataTemplate Views:ThirdPage}"/>
         </Tab>
     </FlyoutItem>
 </Shell>

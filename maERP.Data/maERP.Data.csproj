@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Microsoft.AspNetCore.Identity" />
+    <None Remove="Microsoft.EntityFrameworkCore" />
+    <None Remove="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <None Remove="Models\" />
+    <None Remove="Dtos\" />
+    <None Remove="Dtos\Product\" />
+    <None Remove="Dtos\SalesChannel\" />
+    <None Remove="Dtos\TaxClass\" />
+    <None Remove="Dtos\User\" />
+    <None Remove="Dtos\Warehouse\" />
+    <None Remove="Models\SalesChannelData\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Dtos\" />
+    <Folder Include="Dtos\Product\" />
+    <Folder Include="Dtos\SalesChannel\" />
+    <Folder Include="Dtos\TaxClass\" />
+    <Folder Include="Dtos\User\" />
+    <Folder Include="Dtos\Warehouse\" />
+    <Folder Include="Models\SalesChannelData\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.5" />
+  </ItemGroup>
+</Project>

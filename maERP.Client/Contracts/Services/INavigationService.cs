@@ -6,5 +6,6 @@
         Task NavigateToThirdPage();
         Task NavigateBack();
         Task NavigateToMainPage();
+        Task NavigateToLogin();
     }
 }

@@ -1,7 +1,7 @@
 ﻿#nullable disable
 
 using maERP.Server.Contracts;
-using maERP.Server.Models.User;
+using maERP.Data.Dtos.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

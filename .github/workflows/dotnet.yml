@@ -1,4 +1,4 @@
-name: maERP.Server
+name: Application build and test
 
 on:
   push:

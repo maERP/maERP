@@ -1,8 +1,8 @@
 ﻿#nullable disable
 
 using maERP.Server.Contracts.SalesChannelContracts;
-using maERP.Server.Data;
-using maERP.Server.Data.SalesChannelData.Shopware5;
+using maERP.Server.Models;
+using maERP.Data.Models.SalesChannelData.Shopware5;
 
 namespace maERP.Server.Repository.SalesChannelRepositories
 {

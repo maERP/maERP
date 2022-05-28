@@ -48,11 +48,8 @@
     <None Remove="Configurations\" />
     <None Remove="Repository\" />
     <None Remove="Contracts\" />
-    <None Remove="Models\Product\" />
-    <None Remove="Data\" />
     <None Remove="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <None Remove="Migrations\" />
-    <None Remove="Data\Configurations\" />
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="Exceptions\" />
     <None Remove="Middleware\" />
@@ -61,12 +58,9 @@
     <None Remove="Contracts\SalesChannel\" />
     <None Remove="Data\SalesChannel\" />
     <None Remove="Data\SalesChannel\Shopware5\" />
-    <None Remove="Models\SalesChannel\" />
-    <None Remove="Models\SalesChannel\Shopware5\" />
     <None Remove="Repository\SalesChannel\" />
     <None Remove="Tasks\SalesChannel\" />
     <None Remove="Microsoft.AspNetCore.OData" />
-    <None Remove="Models\TaxClass\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -74,22 +68,19 @@
     <Folder Include="Configurations\" />
     <Folder Include="Repository\" />
     <Folder Include="Contracts\" />
-    <Folder Include="Models\Product\" />
-    <Folder Include="Data\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Data\Configurations\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Middleware\" />
     <Folder Include="Contracts\SalesChannelContracts\" />
-    <Folder Include="Data\SalesChannelData\" />
-    <Folder Include="Data\SalesChannelData\Shopware5\" />
-    <Folder Include="Models\SalesChannel\" />
-    <Folder Include="Models\SalesChannel\Shopware5\" />
     <Folder Include="Repository\SalesChannelRepositories\" />
     <Folder Include="Tasks\SalesChannelTasks\" />
-    <Folder Include="Models\TaxClass\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Controllers\SalesChannelController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\maERP.Data\maERP.Data.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 </Project>

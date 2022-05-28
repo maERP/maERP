@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client", "maERP.Clien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Server", "maERP.Server\maERP.Server.csproj", "{979C3193-E987-4F41-ACFA-C226EF0112C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Data", "maERP.Data\maERP.Data.csproj", "{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{979C3193-E987-4F41-ACFA-C226EF0112C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{979C3193-E987-4F41-ACFA-C226EF0112C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{979C3193-E987-4F41-ACFA-C226EF0112C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

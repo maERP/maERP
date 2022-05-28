@@ -1,26 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="maERP.Client.Views.MainPage"
-              Title="Dashboard">
+             x:DataType="ContentPage"
+             Title="Dashboard">
 
-    <ScrollView>
-        <Grid RowSpacing="25" RowDefinitions="Auto,Auto,Auto,Auto,*"
-              Padding="{OnPlatform iOS='30,60,30,30', Default='30'}">
+            
 
-            <Label
-                Text="maERP"
-                Grid.Row="0"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
+<StackLayout>
+            <Label Text="Welcome to maERP" FontSize="36" />
+            <Label Text="Username:" Margin="0,5,0,0" />
+            <Entry x:Name="tbxUsername" />
+            <Label Text="Password:" Margin="0,5,0,0" />
+            <Entry x:Name="pbxPassword" />
+            <Button x:Name="btnLogin" Padding="5" Margin="0,5,0,0" Clicked="btnLogin_Clicked" />
+</StackLayout>
 
-            <Grid HorizontalOptions="Center">
-                <Grid.RowDefinitions>
-
-                </Grid.RowDefinitions>
-            </Grid>
-
-        </Grid>
-    </ScrollView>
 </ContentPage>

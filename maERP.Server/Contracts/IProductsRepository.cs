@@ -1,5 +1,5 @@
-﻿using maERP.Server.Data;
-using maERP.Server.Models.Product;
+﻿using maERP.Data.Models;
+using maERP.Data.Dtos.Product;
 
 namespace maERP.Server.Contracts
 {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using maERP.Server.Configurations;
 using maERP.Server.Repository;
 using maERP.Server.Contracts;
-using maERP.Server.Data;
+using maERP.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -11,6 +11,7 @@ using maERP.Server.Middleware;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OpenApi.Models;
+using maERP.Server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

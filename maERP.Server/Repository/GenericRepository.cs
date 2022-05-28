@@ -4,7 +4,6 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using maERP.Server.Contracts;
-using maERP.Server.Data;
 using maERP.Server.Models;
 using maERP.Server.Exceptions;
 
