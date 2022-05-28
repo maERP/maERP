@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿#nullable disable
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using maERP.Server.Configurations;
 using maERP.Server.Repository;
@@ -17,7 +18,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    var conString = builder.Configuration.GetConnectionString("DefaultConnection");
+    string conString = "";
+
+    if (Environment.GetEnvironmentVariable("MYSQL_HOST") != null)
+    {
+        conString = "Server=" + Environment.GetEnvironmentVariable("MYSQL_HOST")
+                  + ";Port=" + Environment.GetEnvironmentVariable("MYSQL_PORT")
+                  + ";Database=" + Environment.GetEnvironmentVariable("MYSQL_DB")
+                  + ";Uid=" + Environment.GetEnvironmentVariable("MYSQL_USER")
+                  + ";Pwd=" + Environment.GetEnvironmentVariable("MYSQL_PASS");
+    }
+    else
+    {
+        conString = builder.Configuration.GetConnectionString("DefaultConnection");
+    }
+
     options.UseMySql(conString, ServerVersion.AutoDetect(conString));
 });
 
