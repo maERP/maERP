@@ -33,6 +33,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         conString = builder.Configuration.GetConnectionString("DefaultConnection");
     }
 
+    Console.WriteLine("Connection-String: " + conString);
+
     options.UseMySql(conString, ServerVersion.AutoDetect(conString));
 });
 
