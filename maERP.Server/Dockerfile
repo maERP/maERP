@@ -1,18 +1,18 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-#ENV MYSQL_HOST localhost
-#ENV MYSQL_USER maerp
-#ENV MYSQL_PASS maerp
-#ENV MYSQL_DB maerp_01
-
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+
+ENV MYSQL_HOST localhost
+ENV MYSQL_USER maerp
+ENV MYSQL_PASS maerp
+ENV MYSQL_DB maerp_01
+
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["maERP.Server/maERP.Server.csproj", "maERP.Server/"]
 RUN dotnet restore "maERP.Server/maERP.Server.csproj"
 COPY . .
 WORKDIR "/src/maERP.Server"

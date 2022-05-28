@@ -7,13 +7,13 @@ name: Publish as Github-Package
 
 on:
   schedule:
-    - cron: '33 22 * * *'
+    - cron: '34 22 * * *'
   push:
-    branches: [ main ]
+    branches: [ main-disabled ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main-disabled ]
 
 env:
   # Use docker.io for Docker Hub if empty
