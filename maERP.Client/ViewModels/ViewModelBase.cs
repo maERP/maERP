@@ -1,13 +1,11 @@
-﻿#nullable disable
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
     
 namespace maERP.Client.ViewModels
 {    
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-        public virtual Task OnNavigatingTo(object? parameter)
+        public virtual Task OnNavigatingTo(object parameter)
             => Task.CompletedTask;
 
         public virtual Task OnNavigatedFrom(bool isForwardNavigation)
@@ -16,9 +14,9 @@ namespace maERP.Client.ViewModels
         public virtual Task OnNavigatedTo()
             => Task.CompletedTask;
 
-        public virtual void RaisePropertyChanged([CallerMemberName] string? property = null)
+        public virtual void RaisePropertyChanged([CallerMemberName] string property = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

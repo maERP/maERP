@@ -2,7 +2,6 @@
 
 using maERP.Client.Contracts.Services;
 using maERP.Client.ViewModels;
-using maERP.Client.Views;
 using System.Diagnostics;
 
 namespace maERP.Client.Services
@@ -15,7 +14,7 @@ namespace maERP.Client.Services
         {
             get
             {
-                INavigation? navigation = Application.Current?.MainPage?.Navigation;
+                INavigation navigation = Application.Current?.MainPage?.Navigation;
                 if (navigation is not null)
                     return navigation;
                 else
@@ -31,27 +30,7 @@ namespace maERP.Client.Services
         public NavigationService(IServiceProvider services)
             => _services = services;
 
-        public Task NavigateToSecondPage(string id)
-            => NavigateToPage<SecondPage>(id);
-
-        public Task NavigateToThirdPage()
-            => NavigateToPage<ThirdPage>();
-
-        public Task NavigateToMainPage()
-            => NavigateToPage<MainPage>();
-
-        public Task NavigateToLogin()
-            => NavigateToPage<Login>();
-
-        public Task NavigateBack()
-        {
-            if (Navigation.NavigationStack.Count > 1)
-                return Navigation.PopAsync();
-
-            throw new InvalidOperationException("No pages to navigate back to!");
-        }
-
-        private async Task NavigateToPage<T>(object? parameter = null) where T : Page
+        public async Task NavigateToPage<T>(object parameter = null) where T : Page
         {
             var toPage = ResolvePage<T>();
 
@@ -77,7 +56,15 @@ namespace maERP.Client.Services
                 throw new InvalidOperationException($"Unable to resolve type {typeof(T).FullName}");
         }
 
-        private async void Page_NavigatedFrom(object? sender, NavigatedFromEventArgs e)
+        public Task NavigateBack()
+        {
+            if (Navigation.NavigationStack.Count > 1)
+                return Navigation.PopAsync();
+
+            throw new InvalidOperationException("No pages to navigate back to!");
+        }
+
+        private async void Page_NavigatedFrom(object sender, NavigatedFromEventArgs e)
         {
             //To determine forward navigation, we look at the 2nd to last item on the NavigationStack
             //If that entry equals the sender, it means we navigated forward from the sender to another page
@@ -105,10 +92,10 @@ namespace maERP.Client.Services
             return Task.CompletedTask;
         }
 
-        private async void Page_NavigatedTo(object? sender, NavigatedToEventArgs e)
+        private async void Page_NavigatedTo(object sender, NavigatedToEventArgs e)
             => await CallNavigatedTo(sender as Page);
 
-        private Task CallNavigatedTo(Page? p)
+        private Task CallNavigatedTo(Page p)
         {
             var fromViewModel = GetPageViewModelBase(p);
 
@@ -117,10 +104,10 @@ namespace maERP.Client.Services
             return Task.CompletedTask;
         }
 
-        private ViewModelBase? GetPageViewModelBase(Page? p)
+        private ViewModelBase GetPageViewModelBase(Page p)
             => p?.BindingContext as ViewModelBase;
 
-        private T? ResolvePage<T>() where T : Page
+        private T ResolvePage<T>() where T : Page
             => _services.GetService<T>();
     }
 }

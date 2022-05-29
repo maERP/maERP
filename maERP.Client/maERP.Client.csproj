@@ -76,15 +76,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Models\" />
-	  <None Remove="Operations\" />
 	  <None Remove="Newtonsoft.Json" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Models\" />
-	  <Folder Include="Operations\" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	  <ProjectReference Include="..\maERP.Data\maERP.Data.csproj" />
 	</ItemGroup>
 </Project>

@@ -1,12 +1,14 @@
-﻿using maERP.Client.Contracts.Services;
+﻿#nullable disable
+
+using maERP.Client.Contracts.Services;
 
 namespace maERP.Client.ViewModels
 {    
-    public class ProductsViewModel : ViewModelBase
+    public class SettingsViewModel : ViewModelBase
     {
         readonly INavigationService _navigationService;
 
-        public ProductsViewModel(INavigationService navigationService)
+        public SettingsViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
         }

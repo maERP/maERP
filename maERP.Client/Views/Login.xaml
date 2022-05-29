@@ -1,9 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="maERP.Client.Views.Login"
+             x:Class="maERP.Client.Views.LoginPage"
              Title="Login">
-    <Grid>
-    </Grid>
+
+<StackLayout>
+            <Label Text="Server:" Margin="0,5,0,0" />
+            <Entry x:Name="tbxServer" />
+            <Label Text="Username:" Margin="0,5,0,0" />
+            <Entry x:Name="tbxUsername" />
+            <Label Text="Password:" Margin="0,5,0,0" />
+            <Entry x:Name="pbxPassword" />
+            <Button x:Name="btnLogin" Padding="5" Margin="0,5,0,0" Text="Login" Clicked="btnLogin_Clicked" />
+</StackLayout>
 
 </ContentPage>

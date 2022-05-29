@@ -2,10 +2,7 @@
 {
     public interface INavigationService
     {
-        Task NavigateToSecondPage(string id);
-        Task NavigateToThirdPage();
+        Task NavigateToPage<T>(object parameter = null) where T : Page;
         Task NavigateBack();
-        Task NavigateToMainPage();
-        Task NavigateToLogin();
     }
 }

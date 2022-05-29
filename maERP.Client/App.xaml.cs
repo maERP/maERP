@@ -1,4 +1,5 @@
 ﻿using maERP.Client.Contracts.Services;
+using maERP.Client.Views;
 
 namespace maERP.Client;
 
@@ -9,6 +10,7 @@ public partial class App : Application
 		InitializeComponent();
 
         MainPage = new AppShell();
-        navigationService.NavigateToLogin();
+
+        navigationService.NavigateToPage<LoginPage>();
     }
 }

@@ -2,9 +2,9 @@ using maERP.Client.ViewModels;
 
 namespace maERP.Client.Views;
 
-public partial class SecondPage : ContentPage
+public partial class OrdersPage : ContentPage
 {
-    public SecondPage(OrdersViewModel viewModel)
+    public OrdersPage(OrdersViewModel viewModel)
     {
         BindingContext = viewModel;
         InitializeComponent();

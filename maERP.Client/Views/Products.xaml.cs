@@ -2,11 +2,12 @@ using maERP.Client.ViewModels;
 
 namespace maERP.Client.Views;
 
-public partial class ThirdPage : ContentPage
+public partial class ProductsPage : ContentPage
 {
-    public ThirdPage(ProductsViewModel viewModel)
+    public ProductsPage(ProductsViewModel viewModel)
     {
         BindingContext = viewModel;
+
         InitializeComponent();
     }
 }

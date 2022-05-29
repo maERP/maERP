@@ -1,22 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
+using maERP.Client.ViewModels;
 
-using maERP.Client.Models;
-using maERP.Client.Operations;
+namespace maERP.Client.Views;
 
-namespace maERP.Client.Views
+public partial class SettingsPage : ContentPage
 {
+	public SettingsPage(SettingsViewModel viewModel)
+	{
+		BindingContext = viewModel;
 
-    public partial class Settings : ContentPage
-    {
-	    public Settings()
-	    {
-		    InitializeComponent();
-	    }
-    }
+		InitializeComponent();
+	}
 }

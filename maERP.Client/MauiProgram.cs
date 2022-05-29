@@ -20,13 +20,15 @@ public static class MauiProgram
 
         builder.Services.AddTransient<MainPage>();
         builder.Services.AddTransient<DashboardModel>();
-        builder.Services.AddTransient<SecondPage>();
+        builder.Services.AddTransient<OrdersPage>();
         builder.Services.AddTransient<OrdersViewModel>();
-        builder.Services.AddTransient<ThirdPage>();
+        builder.Services.AddTransient<ProductsPage>();
         builder.Services.AddTransient<ProductsViewModel>();
+		builder.Services.AddTransient<SettingsPage>();
+		builder.Services.AddTransient<SettingsViewModel>();
 
-        builder.Services.AddSingleton<IDataService, DataService>();
-        builder.Services.AddSingleton<INavigationService, NavigationService>();
+		// builder.Services.AddScoped(typeof(IDataService<>), typeof(IDataService<>));
+		builder.Services.AddSingleton<INavigationService, NavigationService>();
 
         return builder.Build();
 	}

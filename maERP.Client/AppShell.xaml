@@ -8,10 +8,10 @@
 
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
         <ShellContent Title="Dashboard" ContentTemplate="{DataTemplate Views:MainPage}"/>
-        <ShellContent Title="Bestellungen" ContentTemplate="{DataTemplate Views:SecondPage}"/>
-        <ShellContent Title="Artikel" ContentTemplate="{DataTemplate Views:ThirdPage}"/>
+        <ShellContent Title="Bestellungen" ContentTemplate="{DataTemplate Views:OrdersPage}"/>
+        <ShellContent Title="Artikel" ContentTemplate="{DataTemplate Views:ProductsPage}"/>
         <Tab Title="Einstellungen">
-            <ShellContent Title="Server" ContentTemplate="{DataTemplate Views:ThirdPage}"/>
+            <ShellContent Title="Login" ContentTemplate="{DataTemplate Views:LoginPage}"/>
         </Tab>
     </FlyoutItem>
 </Shell>
