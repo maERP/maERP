@@ -9,8 +9,9 @@ public partial class App : Application
 	{
 		InitializeComponent();
 
-        MainPage = new AppShell();
+        // MainPage = new AppShell();
+        MainPage = new LoginPage();
 
-        navigationService.NavigateToPage<LoginPage>();
+        // navigationService.NavigateToPage<LoginPage>();
     }
 }
