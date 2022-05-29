@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="maERP.Client.Views.OrdersPage"
              Title="Bestellungen">
-    <ScrollView>
 
-    </ScrollView>
+    <StackLayout>
+        <Label Text="Bestellungen" FontSize="36" />
+    </StackLayout>
+
 </ContentPage>

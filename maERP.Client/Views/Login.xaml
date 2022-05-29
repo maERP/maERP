@@ -12,6 +12,7 @@
         <Label Text="Password:" Margin="0,5,0,0" />
         <Entry x:Name="pbxPassword" />
         <Button x:Name="btnLogin" Padding="5" Margin="0,5,0,0" Text="Login" Clicked="btnLogin_Clicked" />
+        <Button x:Name="btnExit" Padding="5" Margin="0,5,0,0" Text="Beenden" Clicked="btnExit_Clicked" />
     </StackLayout>
 
 </ContentPage>

@@ -23,4 +23,9 @@ public partial class LoginPage : ContentPage
 
         await Navigation.PushModalAsync(new AppShell());
     }
+
+    private void btnExit_Clicked(System.Object sender, System.EventArgs e)
+    {
+        System.Environment.Exit(0);
+    }
 }

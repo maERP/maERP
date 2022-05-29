@@ -4,7 +4,8 @@
              x:Class="maERP.Client.Views.SettingsPage"
              Title="Settings">
 
-    <Grid>
-    </Grid>
+    <StackLayout>
+        <Label Text="Einstellungen" FontSize="36" />
+    </StackLayout>
 
 </ContentPage>

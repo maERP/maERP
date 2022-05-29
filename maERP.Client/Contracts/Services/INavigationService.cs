@@ -4,5 +4,6 @@
     {
         Task NavigateToPage<T>(object parameter = null) where T : Page;
         Task NavigateBack();
+        Task NavigateToPageModal<T>() where T : Page;
     }
 }

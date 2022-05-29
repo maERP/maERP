@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
     
 namespace maERP.Client.ViewModels
-{    
+{
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public virtual Task OnNavigatingTo(object parameter)

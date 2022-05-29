@@ -43,8 +43,8 @@ namespace maERP.Client.Services
                 var toViewModel = GetPageViewModelBase(toPage);
 
                 //Call navigatingTo on VM, passing in the paramter
-                if (toViewModel is not null)
-                    await toViewModel.OnNavigatingTo(parameter);
+                //if (toViewModel is not null)
+                //    await toViewModel.OnNavigatingTo(parameter);
 
                 //Navigate to requested page
                 await Navigation.PushAsync(toPage, true);
@@ -54,6 +54,24 @@ namespace maERP.Client.Services
             }
             else
                 throw new InvalidOperationException($"Unable to resolve type {typeof(T).FullName}");
+        }
+
+        public async Task NavigateToPageModal<T>() where T : Page
+        {
+            var toPage = ResolvePage<T>();
+
+            if (toPage is not null)
+            {
+                Console.WriteLine("debug 1");
+                await Navigation.PushModalAsync(toPage, true);
+                Console.WriteLine("debug 2");
+            }
+            else
+            {
+
+                Console.WriteLine("debug 3");
+                throw new InvalidOperationException($"Unable to resolve type {typeof(T).FullName}");
+            }
         }
 
         public Task NavigateBack()

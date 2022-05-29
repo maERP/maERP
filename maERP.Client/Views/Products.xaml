@@ -4,4 +4,8 @@
              x:Class="maERP.Client.Views.ProductsPage"
              Title="Produkte">
 
+        <StackLayout>
+        <Label Text="Artikel" FontSize="36" />
+    </StackLayout>
+
 </ContentPage>
