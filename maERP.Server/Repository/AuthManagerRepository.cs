@@ -42,9 +42,9 @@ namespace maERP.Server.Repository
 			return result.Errors;
 		}
 
-		public async Task<AuthResponseDto> Login(LoginDto loginDto)
+		public async Task<LoginResponseDto> Login(LoginDto loginDto)
 		{
-			var _user = await _userManager.FindByEmailAsync(loginDto.Email);
+			_user = await _userManager.FindByEmailAsync(loginDto.Email);
 			bool isValidUser = await _userManager.CheckPasswordAsync(_user, loginDto.Password);
 	
 			if(_user == null || isValidUser == false)
@@ -54,7 +54,7 @@ namespace maERP.Server.Repository
 
 			var token = await GenerateToken();
 
-			return new AuthResponseDto
+			return new LoginResponseDto
 			{
 				Token = token,
 				UserId = _user.Id
@@ -68,7 +68,6 @@ namespace maERP.Server.Repository
 			));
 
 			var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
 			var roles = await _userManager.GetRolesAsync(_user);
 			var roleClaims = roles.Select(x => new Claim(ClaimTypes.Role, x)).ToList();
 			var userClaims = await _userManager.GetClaimsAsync(_user);
@@ -109,7 +108,7 @@ namespace maERP.Server.Repository
 			return newRefreshToken;
         }
 
-        public async Task<AuthResponseDto> VerifyRefreshToken(AuthResponseDto request)
+        public async Task<LoginResponseDto> VerifyRefreshToken(LoginResponseDto request)
         {
 			var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
 			var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(request.Token);
@@ -129,7 +128,7 @@ namespace maERP.Server.Repository
 			if(isValidRefreshToken)
             {
 				var token = await GenerateToken();
-				return new AuthResponseDto
+				return new LoginResponseDto
 				{
 					Token = token,
 					UserId = _user.Id,

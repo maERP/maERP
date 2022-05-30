@@ -16,10 +16,17 @@ public partial class LoginPage : ContentPage
         string username = tbxUsername.Text;
         string password = pbxPassword.Text;
 
-        // var ops = new DataService<LoginDto>();
-        // var product = await ops.Request("GET", "/Products/1");
-        // var login = await ops.Login(server, username, password);
-        // await DisplayAlert("Product", login.Email, "OK");
+        var ds = new DataService<LoginDto>();
+
+        //var product = await ops.Request("GET", "/Products/1");
+
+        var user = await ds.Login(server, username, password);
+
+        if (user == null || user.Token.Length <= 0)
+        {
+            await DisplayAlert("Login nicht möglich", "E-Mail oder Passwort falsch", "OK");
+            return;            
+        }
 
         await Navigation.PushModalAsync(new AppShell());
     }

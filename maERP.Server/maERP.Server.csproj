@@ -49,7 +49,6 @@
     <None Remove="Repository\" />
     <None Remove="Contracts\" />
     <None Remove="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
-    <None Remove="Migrations\" />
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="Exceptions\" />
     <None Remove="Middleware\" />
@@ -68,7 +67,6 @@
     <Folder Include="Configurations\" />
     <Folder Include="Repository\" />
     <Folder Include="Contracts\" />
-    <Folder Include="Migrations\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Middleware\" />
     <Folder Include="Contracts\SalesChannelContracts\" />

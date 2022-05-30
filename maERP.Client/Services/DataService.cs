@@ -10,12 +10,14 @@ namespace maERP.Client.Services
     {
         private string _baseUrl;
 
-        public async Task<LoginDto> Login(string server, string email, string password)
+        public async Task<LoginResponseDto> Login(string server, string email, string password)
         {
             using (var client = new HttpClient())
             {
                 string requestUrl = server + "/api/Account/login";
                 client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000000));
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 var loginData = new Dictionary<string, string>
                 {
@@ -24,27 +26,23 @@ namespace maERP.Client.Services
                 };
 
                 HttpResponseMessage response = new HttpResponseMessage();
-
-                response = await client.PostAsync(requestUrl, new FormUrlEncodedContent(loginData)).ConfigureAwait(false);
+                response = await client.PostAsJsonAsync(requestUrl, loginData); // .ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
-                {
+                { 
                     _baseUrl = server;
 
                     string result = response.Content.ReadAsStringAsync().Result;
 
-                    var responseObj = JsonConvert.DeserializeObject<LoginDto>(result);
+                    var responseObj = JsonConvert.DeserializeObject<LoginResponseDto>(result);
 
                     response.Dispose();
 
                     return responseObj;
                 }
-                else
-                {
-                    throw new Exception(response.StatusCode.ToString());
-                }
 
-                throw new Exception();
+                response.Dispose();
+                return null;
             }
         }
 

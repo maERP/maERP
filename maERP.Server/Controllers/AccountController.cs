@@ -82,7 +82,7 @@ namespace maERP.Server.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> RefreshToken([FromBody] AuthResponseDto request)
+        public async Task<ActionResult> RefreshToken([FromBody] LoginResponseDto request)
         {
             var authResponse = await _authManager.VerifyRefreshToken(request);
 

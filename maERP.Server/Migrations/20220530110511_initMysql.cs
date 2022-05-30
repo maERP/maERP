@@ -388,14 +388,14 @@ namespace maERP.Server.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "a036291c-6507-4346-8b61-ad2b8c174140", "c4878878-c0c9-452a-b0b6-56515642822b", "Administrator", "ADMINISTRATOR" },
-                    { "ee6cb1e5-d528-48f1-8b90-89c97ebf1dc9", "30915fad-a972-4dde-a997-2301dc1be4fe", "User", "USER" }
+                    { "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "Admin", "ADMIN" },
+                    { "f0d2655a-d5af-4e3c-b278-6d8b78fdfa8c", "140ffa73-2c4f-4260-9498-927a22959080", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "dcdaa427-fd17-4562-a40f-13263646a114", 0, "35f81fc9-eb03-4160-bc42-1f58c9c27ea6", "admin@localhost.com", false, "Admin", "Admin", false, null, null, null, "AQAAAAEAACcQAAAAEGz2GQMRLWiqJVgFCR5YE9EZ1my3kLi8j32iyn5ynVxbMKMcFMho2HDzI8ZzR3sQ0Q==", null, false, "7c62a72e-57e6-4368-9197-81d9c4adcf8b", false, null });
+                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "b9236c72-e75b-4b32-928a-9d686356f534", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAEAACcQAAAAELqQzNHcaeDczDRsolZBFEWjPgx42Bl9rLJ4ZKmIQyuzrVPzKm8VYZ2t7aYMnW26pg==", null, false, "1d7c37bd-d371-4f2f-89b3-106a0ce92743", false, "admin@localhost.com" });
 
             migrationBuilder.InsertData(
                 table: "sales_channel",
@@ -413,19 +413,19 @@ namespace maERP.Server.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "product",
-                columns: new[] { "Id", "ASIN", "CreatedAt", "Description", "EAN", "Name", "Price", "ProductSalesChannelId", "ProductStockId", "SKU", "SalesChannelId", "TaxClassId", "UpdatedAt" },
-                values: new object[] { 1, null, new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9030), "Beschreibung 1", null, "Testprodukt 1", 100m, null, null, "1001", null, 3, new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9060) });
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "02174cf0–9412–4cfe-afbf-59f706d72cf6" });
 
             migrationBuilder.InsertData(
                 table: "product",
                 columns: new[] { "Id", "ASIN", "CreatedAt", "Description", "EAN", "Name", "Price", "ProductSalesChannelId", "ProductStockId", "SKU", "SalesChannelId", "TaxClassId", "UpdatedAt" },
-                values: new object[] { 2, null, new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9070), "Beschreibung 2", null, "Testprodukt 2", 100m, null, null, "1002", null, 2, new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9070) });
-
-            migrationBuilder.InsertData(
-                table: "product",
-                columns: new[] { "Id", "ASIN", "CreatedAt", "Description", "EAN", "Name", "Price", "ProductSalesChannelId", "ProductStockId", "SKU", "SalesChannelId", "TaxClassId", "UpdatedAt" },
-                values: new object[] { 3, null, new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9070), "Beschreibung 3", null, "Testprodukt 3", 100m, null, null, "1003", null, 1, new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9070) });
+                values: new object[,]
+                {
+                    { 1, null, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7940), "Beschreibung 1", null, "Testprodukt 1", 100m, null, null, "1001", null, 3, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7980) },
+                    { 2, null, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990), "Beschreibung 2", null, "Testprodukt 2", 100m, null, null, "1002", null, 2, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990) },
+                    { 3, null, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990), "Beschreibung 3", null, "Testprodukt 3", 100m, null, null, "1003", null, 1, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990) }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

@@ -9,10 +9,10 @@ namespace maERP.Server.Contracts
 	{
 		Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto);
 
-		Task<AuthResponseDto> Login(LoginDto userDto);
+		Task<LoginResponseDto> Login(LoginDto userDto);
 
 		Task<string> CreateRefreshToken();
 
-		Task<AuthResponseDto> VerifyRefreshToken(AuthResponseDto request);
+		Task<LoginResponseDto> VerifyRefreshToken(LoginResponseDto request);
 	}
 }

@@ -11,7 +11,7 @@ using maERP.Server.Models;
 namespace maERP.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220528201624_initMysql")]
+    [Migration("20220530110511_initMysql")]
     partial class initMysql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,18 +93,21 @@ namespace maERP.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dcdaa427-fd17-4562-a40f-13263646a114",
+                            Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "35f81fc9-eb03-4160-bc42-1f58c9c27ea6",
+                            ConcurrencyStamp = "b9236c72-e75b-4b32-928a-9d686356f534",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
                             LastName = "Admin",
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEGz2GQMRLWiqJVgFCR5YE9EZ1my3kLi8j32iyn5ynVxbMKMcFMho2HDzI8ZzR3sQ0Q==",
+                            NormalizedEmail = "ADMIN@LOCALHOST.COM",
+                            NormalizedUserName = "ADMIN@LOCALHOST.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAELqQzNHcaeDczDRsolZBFEWjPgx42Bl9rLJ4ZKmIQyuzrVPzKm8VYZ2t7aYMnW26pg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7c62a72e-57e6-4368-9197-81d9c4adcf8b",
-                            TwoFactorEnabled = false
+                            SecurityStamp = "1d7c37bd-d371-4f2f-89b3-106a0ce92743",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@localhost.com"
                         });
                 });
 
@@ -198,35 +201,35 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9030),
+                            CreatedAt = new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7940),
                             Description = "Beschreibung 1",
                             Name = "Testprodukt 1",
                             Price = 100m,
                             SKU = "1001",
                             TaxClassId = 3,
-                            UpdatedAt = new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9060)
+                            UpdatedAt = new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7980)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9070),
+                            CreatedAt = new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990),
                             Description = "Beschreibung 2",
                             Name = "Testprodukt 2",
                             Price = 100m,
                             SKU = "1002",
                             TaxClassId = 2,
-                            UpdatedAt = new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9070)
+                            UpdatedAt = new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9070),
+                            CreatedAt = new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990),
                             Description = "Beschreibung 3",
                             Name = "Testprodukt 3",
                             Price = 100m,
                             SKU = "1003",
                             TaxClassId = 1,
-                            UpdatedAt = new DateTime(2022, 5, 28, 22, 16, 23, 981, DateTimeKind.Local).AddTicks(9070)
+                            UpdatedAt = new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990)
                         });
                 });
 
@@ -460,15 +463,15 @@ namespace maERP.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a036291c-6507-4346-8b61-ad2b8c174140",
-                            ConcurrencyStamp = "c4878878-c0c9-452a-b0b6-56515642822b",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
+                            Id = "341743f0-asd2–42de-afbf-59kmkkmk72cf6",
+                            ConcurrencyStamp = "341743f0-asd2–42de-afbf-59kmkkmk72cf6",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ee6cb1e5-d528-48f1-8b90-89c97ebf1dc9",
-                            ConcurrencyStamp = "30915fad-a972-4dde-a997-2301dc1be4fe",
+                            Id = "f0d2655a-d5af-4e3c-b278-6d8b78fdfa8c",
+                            ConcurrencyStamp = "140ffa73-2c4f-4260-9498-927a22959080",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -555,6 +558,13 @@ namespace maERP.Server.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
+                            RoleId = "341743f0-asd2–42de-afbf-59kmkkmk72cf6"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

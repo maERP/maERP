@@ -16,12 +16,14 @@ namespace maERP.Server.Configurations.Seeds
 				FirstName = "Admin",
 				LastName = "Admin",
 				Email = "admin@localhost.com",
+				UserName = "admin@localhost.com",
+				NormalizedUserName = "ADMIN@LOCALHOST.COM",
+				NormalizedEmail = "ADMIN@LOCALHOST.COM"
 			};
 
 			var password = new PasswordHasher<ApiUser>();
-			var hashed = password.HashPassword(user, "admin!admin");
+			var hashed = password.HashPassword(user, "maERP!12");
 			user.PasswordHash = hashed;
-
 
 			builder.HasData(user);
 		}
