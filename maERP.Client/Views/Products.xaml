@@ -4,8 +4,14 @@
              x:Class="maERP.Client.Views.ProductsPage"
              Title="Produkte">
 
-        <StackLayout>
-        <Label Text="Artikel" FontSize="36" />
+    <StackLayout>
+        <ListView x:Name="productsListView" ItemSelected="productsListView_ItemSelected">
+            <ListView.ItemTemplate>
+                 <DataTemplate>
+                    <TextCell Text="{Binding Name}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </StackLayout>
 
 </ContentPage>

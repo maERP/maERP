@@ -1,4 +1,4 @@
-﻿using maERP.Client.Contracts.Services;
+﻿using maERP.Client.Contracts;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Newtonsoft.Json;
@@ -8,9 +8,7 @@ namespace maERP.Client.Services
 {
     public class DataService<T> : IDataService<T> where T : class
     {
-        private string _baseUrl;
-
-        public async Task<LoginResponseDto> Login(string server, string email, string password)
+        public async Task<bool> Login(string server, string email, string password)
         {
             using (var client = new HttpClient())
             {
@@ -30,19 +28,21 @@ namespace maERP.Client.Services
 
                 if (response.IsSuccessStatusCode)
                 { 
-                    _baseUrl = server;
-
                     string result = response.Content.ReadAsStringAsync().Result;
 
                     var responseObj = JsonConvert.DeserializeObject<LoginResponseDto>(result);
 
+                    Globals.ServerBaseUrl = server;
+                    Globals.AccessToken = responseObj.Token;
+                    Globals.RefreshToken = responseObj.Token;
+
                     response.Dispose();
 
-                    return responseObj;
+                    return true;
                 }
 
                 response.Dispose();
-                return null;
+                return false;
             }
         }
 
@@ -50,9 +50,10 @@ namespace maERP.Client.Services
         {
             using (var client = new HttpClient())
             {
-                string requestUrl = _baseUrl + "/api" + path;
+                string requestUrl = Globals.ServerBaseUrl + "/api" + path;
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Globals.AccessToken);
 
                 client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000000));
 
@@ -84,13 +85,15 @@ namespace maERP.Client.Services
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     Console.WriteLine(requestUrl);
-                    Console.WriteLine(path);
+                    Console.WriteLine(response.Headers);
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Console.WriteLine(requestUrl);
                     Console.WriteLine(response.Headers);
                 }
                 else
                 {
-                    Console.WriteLine("HTTP " + response.StatusCode);
-
                     throw new Exception();
                 }
             }

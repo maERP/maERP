@@ -1,9 +1,9 @@
-﻿using maERP.Data.Models;
-
-namespace maERP.Client
+﻿namespace maERP.Client
 {
-    class Globals
+    static class Globals
     {
-        public static ApiUser LoggedInUser { get; set; }
+        public static string ServerBaseUrl { get; set; }
+        public static string AccessToken { get; set; }
+        public static string RefreshToken { get; set; }
     }
 }

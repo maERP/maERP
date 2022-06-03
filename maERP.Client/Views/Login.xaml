@@ -4,15 +4,15 @@
              x:Class="maERP.Client.Views.LoginPage"
              Title="Login">
 
-    <StackLayout>
-        <Label Text="Server:" Margin="0,5,0,0" />
-        <Entry x:Name="tbxServer" Text="https://localhost:7028" />
-        <Label Text="Username:" Margin="0,5,0,0" />
-        <Entry x:Name="tbxUsername" Text="admin@localhost.com" />
-        <Label Text="Password:" Margin="0,5,0,0" />
-        <Entry x:Name="pbxPassword" Text="maERP!12" />
-        <Button x:Name="btnLogin" Padding="5" Margin="0,5,0,0" Text="Login" Clicked="btnLogin_Clicked" />
-        <Button x:Name="btnExit" Padding="5" Margin="0,5,0,0" Text="Beenden" Clicked="btnExit_Clicked" />
+    <StackLayout Margin="15">
+        <Label Text="Server:" />
+        <Entry Placeholder="Server" x:Name="tbxServer" Text="https://localhost:7028" />
+        <Label Text="Username:" />
+        <Entry Placeholder="E-Mail" Keyboard="Email" x:Name="tbxUsername" Text="admin@localhost.com" />
+        <Label Text="Password:" />
+        <Entry Placeholder="Password" x:Name="pbxPassword" Text="maERP!12" />
+        <Button x:Name="btnLogin" Padding="5" Text="Login" Clicked="btnLogin_Clicked" />
+        <Button x:Name="btnExit" Padding="5" Text="Beenden" Clicked="btnExit_Clicked" />
     </StackLayout>
 
 </ContentPage>

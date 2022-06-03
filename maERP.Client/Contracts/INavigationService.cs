@@ -1,4 +1,4 @@
-﻿namespace maERP.Client.Contracts.Services
+﻿namespace maERP.Client.Contracts
 {
     public interface INavigationService
     {

@@ -1,14 +1,19 @@
-using maERP.Client.Services;
-using maERP.Data.Dtos.User;
+using maERP.Client.ViewModels;
+
 
 namespace maERP.Client.Views;
 
 public partial class LoginPage : ContentPage
 {
-	public LoginPage()
+    public LoginViewModel _viewModel { get; }
+
+    public LoginPage(LoginViewModel viewModel)
 	{
-		InitializeComponent();
-	}
+        BindingContext = viewModel;
+        _viewModel = viewModel;
+
+        InitializeComponent();
+    }
 
     private async void btnLogin_Clicked(object sender, System.EventArgs e)
     {
@@ -16,13 +21,9 @@ public partial class LoginPage : ContentPage
         string username = tbxUsername.Text;
         string password = pbxPassword.Text;
 
-        var ds = new DataService<LoginDto>();
+        var result = await _viewModel.Login(server, username, password);
 
-        //var product = await ops.Request("GET", "/Products/1");
-
-        var user = await ds.Login(server, username, password);
-
-        if (user == null || user.Token.Length <= 0)
+        if (!result)
         {
             await DisplayAlert("Login nicht möglich", "E-Mail oder Passwort falsch", "OK");
             return;            

@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-using maERP.Client.Contracts.Services;
+using maERP.Client.Contracts;
 using maERP.Client.ViewModels;
 using System.Diagnostics;
 

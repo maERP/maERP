@@ -389,13 +389,13 @@ namespace maERP.Server.Migrations
                 values: new object[,]
                 {
                     { "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "Admin", "ADMIN" },
-                    { "f0d2655a-d5af-4e3c-b278-6d8b78fdfa8c", "140ffa73-2c4f-4260-9498-927a22959080", "User", "USER" }
+                    { "e72a7169-bd3e-4cb6-9dec-4110b4064ed7", "d2db621a-9169-4990-9778-0b0f67ba8d8f", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "b9236c72-e75b-4b32-928a-9d686356f534", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAEAACcQAAAAELqQzNHcaeDczDRsolZBFEWjPgx42Bl9rLJ4ZKmIQyuzrVPzKm8VYZ2t7aYMnW26pg==", null, false, "1d7c37bd-d371-4f2f-89b3-106a0ce92743", false, "admin@localhost.com" });
+                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "6b121bed-5db6-4190-b592-4a30e39e0b72", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAEAACcQAAAAEO+lkijZa0osKa+7rO/q4D9iUq6A+fZFhvIUZIGhVwkvw3PMo8Q5r8Q4xvFwDpa76g==", null, false, "6fcd3c85-fe33-416f-83ee-4815a62d6c56", false, "admin@localhost.com" });
 
             migrationBuilder.InsertData(
                 table: "sales_channel",
@@ -422,9 +422,9 @@ namespace maERP.Server.Migrations
                 columns: new[] { "Id", "ASIN", "CreatedAt", "Description", "EAN", "Name", "Price", "ProductSalesChannelId", "ProductStockId", "SKU", "SalesChannelId", "TaxClassId", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7940), "Beschreibung 1", null, "Testprodukt 1", 100m, null, null, "1001", null, 3, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7980) },
-                    { 2, null, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990), "Beschreibung 2", null, "Testprodukt 2", 100m, null, null, "1002", null, 2, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990) },
-                    { 3, null, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990), "Beschreibung 3", null, "Testprodukt 3", 100m, null, null, "1003", null, 1, new DateTime(2022, 5, 30, 13, 5, 11, 756, DateTimeKind.Local).AddTicks(7990) }
+                    { 1, null, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6230), "Beschreibung 1", null, "Testprodukt 1", 100m, null, null, "1001", null, 3, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6270) },
+                    { 2, null, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280), "Beschreibung 2", null, "Testprodukt 2", 100m, null, null, "1002", null, 2, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280) },
+                    { 3, null, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280), "Beschreibung 3", null, "Testprodukt 3", 100m, null, null, "1003", null, 1, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280) }
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,4 +1,4 @@
-﻿using maERP.Client.Contracts.Services;
+﻿using maERP.Client.Contracts;
 using maERP.Client.Services;
 using maERP.Client.ViewModels;
 using maERP.Client.Views;
@@ -29,7 +29,8 @@ public static class MauiProgram
 		builder.Services.AddTransient<SettingsPage>();
 		builder.Services.AddTransient<SettingsViewModel>();
 
-		// builder.Services.AddScoped(typeof(IDataService<>), typeof(IDataService<>));
+		// builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
+		builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
 		builder.Services.AddSingleton<INavigationService, NavigationService>();
 
         return builder.Build();
