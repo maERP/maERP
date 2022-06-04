@@ -29,7 +29,6 @@ public static class MauiProgram
 		builder.Services.AddTransient<SettingsPage>();
 		builder.Services.AddTransient<SettingsViewModel>();
 
-		// builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
 		builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
 		builder.Services.AddSingleton<INavigationService, NavigationService>();
 

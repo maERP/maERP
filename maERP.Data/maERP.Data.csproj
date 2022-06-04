@@ -18,6 +18,7 @@
     <None Remove="Dtos\User\" />
     <None Remove="Dtos\Warehouse\" />
     <None Remove="Models\SalesChannelData\" />
+    <None Remove="Dtos\Order\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -28,6 +29,7 @@
     <Folder Include="Dtos\User\" />
     <Folder Include="Dtos\Warehouse\" />
     <Folder Include="Models\SalesChannelData\" />
+    <Folder Include="Dtos\Order\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />

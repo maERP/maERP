@@ -1,26 +1,48 @@
-﻿using maERP.Client.Contracts;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
+using maERP.Client.Contracts;
 using maERP.Data.Dtos.Product;
 
 namespace maERP.Client.ViewModels
-{    
-    public class ProductsViewModel : ViewModelBase
+{
+    public class ProductsViewModel : BaseViewModel
     {
-        readonly INavigationService _navigationService;
-        readonly IDataService<ICollection<GetProductDto>> _dataService;
+        public ObservableCollection<GetProductDto> Products { get; } = new();
+        IDataService<ICollection<GetProductDto>> _dataService;
 
-        public ProductsViewModel(INavigationService navigationService, IDataService<ICollection<GetProductDto>> dataService)
+        public ProductsViewModel(IDataService<ICollection<GetProductDto>> dataService)
         {
-            _navigationService = navigationService;
+            Title = "Artikel";
             _dataService = dataService;
-
-            Console.WriteLine("loaded");
         }
 
-        public async Task<ICollection<GetProductDto>> GetProductList()
+        [ICommand]
+        async Task GetProductsAsync()
         {
-            var productList =  await _dataService.Request("GET", "/Products/getAll");
+            if (IsBusy)
+                return;
 
-            return productList;
+            try
+            {
+                IsBusy = true;
+                var products = await _dataService.Request("GET", "/Products/GetAll");
+
+                if (Products.Count != 0)
+                    Products.Clear();
+
+                foreach (var product in products)
+                    Products.Add(product);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unable to get monkeys: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }

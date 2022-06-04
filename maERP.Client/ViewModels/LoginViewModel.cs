@@ -3,8 +3,8 @@ using maERP.Data.Dtos.User;
 
 namespace maERP.Client.ViewModels
 {
-	public class LoginViewModel : ViewModelBase
-	{
+	public class LoginViewModel : BaseViewModel
+    {
         readonly IDataService<LoginResponseDto> _dataService;
 
         public LoginViewModel(IDataService<LoginResponseDto> dataService)

@@ -1,10 +1,21 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-    
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace maERP.Client.ViewModels
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    public partial class BaseViewModel : ObservableObject
     {
+        [ObservableProperty]
+        [AlsoNotifyChangeFor(nameof(IsNotBusy))]
+        bool isBusy;
+
+        [ObservableProperty]
+        string title;
+
+        public bool IsNotBusy => !IsBusy;
+
+
         public virtual Task OnNavigatingTo(object parameter)
             => Task.CompletedTask;
 
@@ -13,10 +24,5 @@ namespace maERP.Client.ViewModels
 
         public virtual Task OnNavigatedTo()
             => Task.CompletedTask;
-
-        public virtual void RaisePropertyChanged([CallerMemberName] string property = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

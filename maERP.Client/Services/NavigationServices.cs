@@ -122,8 +122,8 @@ namespace maERP.Client.Services
             return Task.CompletedTask;
         }
 
-        private ViewModelBase GetPageViewModelBase(Page p)
-            => p?.BindingContext as ViewModelBase;
+        private BaseViewModel GetPageViewModelBase(Page p)
+            => p?.BindingContext as BaseViewModel;
 
         private T ResolvePage<T>() where T : Page
             => _services.GetService<T>();
