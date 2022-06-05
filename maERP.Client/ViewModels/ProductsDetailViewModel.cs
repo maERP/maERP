@@ -2,27 +2,46 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using maERP.Client.Contracts;
 using maERP.Data.Dtos.Product;
 
 namespace maERP.Client.ViewModels
 {
-    public class ProductsDetailViewModel : BaseViewModel
+    [QueryProperty(nameof(Product), "Product")]
+    public partial class ProductsDetailViewModel : BaseViewModel
     {
-        readonly INavigationService _navigationService;
-        readonly IDataService<ProductDto> _dataService;
+        [ObservableProperty]
+        ProductDto product;
 
-        public ProductsDetailViewModel(INavigationService navigationService, IDataService<ProductDto> dataService)
+        private readonly IDataService<ProductDto> _dataService;
+
+        public ProductsDetailViewModel(IDataService<ProductDto> dataService)
         {
-            this._navigationService = navigationService;
             this._dataService = dataService;
         }
 
-        public async Task<ProductDto> GetProduct()
+        [ICommand]
+        async Task GetProductDetailAsync()
         {
-            var product = await _dataService.Request("GET", "/Products/1");
+            if (IsBusy)
+                return;
 
-            return product;
+            try
+            {
+                IsBusy = true;
+                Product = await _dataService.Request("GET", "/Product/" + Product.Id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unable to get Product Details: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }

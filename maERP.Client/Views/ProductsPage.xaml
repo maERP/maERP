@@ -6,42 +6,53 @@
              xmlns:viewmodel="clr-namespace:maERP.Client.ViewModels"
              x:DataType="viewmodel:ProductsViewModel"
              Title="{Binding Title}">
-    <!--
-       <Grid
-        ColumnDefinitions="*,*"
-        ColumnSpacing="5"
-        RowDefinitions="*,Auto"
-        RowSpacing="0">
-        <CollectionView
-            Grid.ColumnSpan="2"
-            ItemsSource="{Binding Orders}"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:ProductDto">
-                    <Grid Padding="10">
-                        <Frame HeightRequest="125" Style="{StaticResource CardView}">
-                            <Grid Padding="0" ColumnDefinitions="125,*">
-                                <Image Aspect="AspectFill" Source=""
-                                       WidthRequest="125"
-                                       HeightRequest="125"/>
-                                <VerticalStackLayout
-                                    Grid.Column="1"
-                                    Padding="10">
-                                    <Label Style="{StaticResource LargeLabel}" Text="{Binding Name}" />
-                                    <Label Style="{StaticResource MediumLabel}" Text="" />
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Frame>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
 
-        <Button Text="Get Monkeys" 
-                Command="{Binding GetOrdersCommand}"
+    <Grid ColumnDefinitions="*,*" ColumnSpacing="5" RowDefinitions="*,Auto" RowSpacing="0">
+
+        <RefreshView Grid.ColumnSpan="2" Command="{Binding GetProductsCommand}" IsRefreshing="{Binding IsRefreshing}">
+
+            <CollectionView ItemsSource="{Binding Products}" >
+
+<CollectionView.ItemTemplate>
+    <DataTemplate x:DataType="model:GetProductDto">
+        <Grid Padding="10">
+            <Frame HeightRequest="125" Style="{StaticResource CardView}">
+                <!-- Add the Gesture Recognizer-->
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer 
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ProductsViewModel}}, Path=GoToDetailsCommand}"
+                            CommandParameter="{Binding .}"/>
+                </Frame.GestureRecognizers>
+                <Grid Padding="0" ColumnDefinitions="125,*">
+                    <Image
+                        Aspect="AspectFill"
+                        HeightRequest="125"
+                        Source=""
+                        WidthRequest="125" />
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Padding="10">
+                        <Label Style="{StaticResource LargeLabel}" Text="{Binding Name}" />
+                        <Label Style="{StaticResource MediumLabel}" Text="{Binding SKU}" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Frame>
+        </Grid>
+    </DataTemplate>
+</CollectionView.ItemTemplate>
+
+
+
+            </CollectionView>
+
+        </RefreshView>
+
+        <Button Text="Produkte laden" 
+                Command="{Binding GetProductsCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 Grid.Row="1"
                 Grid.Column="0"
+                Grid.ColumnSpan="2"
                 Style="{StaticResource ButtonOutline}"
                 Margin="8"/>
 
@@ -53,5 +64,5 @@
                            Grid.RowSpan="2"
                            Grid.ColumnSpan="2"/>
     </Grid>
-    -->
+
 </ContentPage>

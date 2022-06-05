@@ -2,11 +2,16 @@
 using CommunityToolkit.Mvvm.Input;
 using maERP.Client.Contracts;
 using maERP.Data.Dtos.Product;
+using maERP.Client.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace maERP.Client.ViewModels
 {
-    public class ProductsViewModel : BaseViewModel
+    public partial class ProductsViewModel : BaseViewModel
     {
+        [ObservableProperty]
+        bool isRefreshing;
+
         public ObservableCollection<GetProductDto> Products { get; } = new();
         IDataService<ICollection<GetProductDto>> _dataService;
 
@@ -36,13 +41,26 @@ namespace maERP.Client.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Unable to get monkeys: {ex.Message}");
+                Console.WriteLine($"Unable to get Products: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
             }
             finally
             {
                 IsBusy = false;
+                IsRefreshing = false;
             }
+        }
+
+        [ICommand]
+        async Task GoToDetails(GetProductDto product)
+        {
+            if (product == null)
+                return;
+
+            await Shell.Current.GoToAsync(nameof(ProductsDetailPage), true, new Dictionary<string, object>
+            {
+                {"Product", product }
+            });
         }
     }
 }
