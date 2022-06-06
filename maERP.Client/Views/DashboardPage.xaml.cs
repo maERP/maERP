@@ -2,12 +2,10 @@
 
 namespace maERP.Client.Views;
 
-public partial class MainPage : ContentPage
+public partial class DashboardPage : ContentPage
 {	
-	public MainPage(DashboardModel viewModel)
+	public DashboardPage()
 	{
-        BindingContext = viewModel;
-
         InitializeComponent();
 	}
 }

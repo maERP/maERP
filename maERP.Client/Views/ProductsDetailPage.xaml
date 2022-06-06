@@ -4,45 +4,29 @@
              x:Class="maERP.Client.Views.ProductsDetailPage"
              xmlns:viewmodel="clr-namespace:maERP.Client.ViewModels"
              x:DataType="viewmodel:ProductsDetailViewModel"
-             Title="{Binding Product.Name}">
+             Title="">
 
-    <ScrollView>
+<ScrollView>
         <VerticalStackLayout>
-            <Grid ColumnDefinitions="*,Auto,*" RowDefinitions="160, Auto">
 
-                <BoxView
-    Grid.ColumnSpan="3"
-    Background="{StaticResource Primary}"
-    HeightRequest="160"
-    HorizontalOptions="FillAndExpand" />
-<Frame
-    Grid.RowSpan="2"
-    Grid.Column="1"
-    Margin="0,80,0,0"
-    HeightRequest="160"
-    WidthRequest="160"
-    HorizontalOptions="Center" 
-    Padding="0"
-    IsClippedToBounds="True"
-    CornerRadius="80">
-    <Image
-        Aspect="AspectFill"
-        HeightRequest="160"
-        HorizontalOptions="Center"
-        VerticalOptions="Center"
-        Source=""
-        WidthRequest="160"/>
-</Frame>
-       
-            </Grid>
-    
-<VerticalStackLayout Padding="10" Spacing="10">
-    <Label Style="{StaticResource MediumLabel}" Text="{Binding Product.Name}" />
-    <Label Style="{StaticResource MicroLabel}" Text="{Binding Product.SKU, StringFormat='Location: {0}'}" />
-    <Label Style="{StaticResource MicroLabel}" Text="{Binding Product.Price, StringFormat='Population: {0}'}" />
-</VerticalStackLayout>
+             <Button Text="Get Product" 
+                Command="{Binding GetProductDetailCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                Grid.Row="1"
+                Grid.Column="0"
+                Style="{StaticResource ButtonOutline}"
+                Margin="8"/>
+            
+            <Label Text="ID" />
+            <Entry Text="{Binding Product.Id}" />
 
+            <Label Text="Name" />
+            <Entry Text="{Binding Product.Name}" />
+
+            <Label Text="SKU" />
+            <Entry Text="{Binding Product.SKU}" />
         </VerticalStackLayout>
-    </ScrollView>
+
+</ScrollView>
 
 </ContentPage>

@@ -6,10 +6,11 @@ namespace maERP.Client;
 
 public partial class App : Application
 {
-	public App(INavigationService navigationService, LoginViewModel viewModel)
+	public App(LoginViewModel viewModel)
 	{
 		InitializeComponent();
 
-        MainPage = new LoginPage(viewModel);
+        // MainPage = new LoginPage(viewModel);
+        MainPage = new AppShell();
     }
 }

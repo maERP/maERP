@@ -29,7 +29,7 @@ public partial class LoginPage : ContentPage
             return;            
         }
 
-        await Navigation.PushModalAsync(new AppShell());
+        await Shell.Current.GoToAsync(nameof(maERP.Client.Views.DashboardPage), false);
     }
 
     private void btnExit_Clicked(System.Object sender, System.EventArgs e)

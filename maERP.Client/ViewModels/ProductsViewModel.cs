@@ -26,7 +26,7 @@ namespace maERP.Client.ViewModels
         {
             if (IsBusy)
                 return;
-
+            
             try
             {
                 IsBusy = true;
@@ -57,10 +57,12 @@ namespace maERP.Client.ViewModels
             if (product == null)
                 return;
 
-            await Shell.Current.GoToAsync(nameof(ProductsDetailPage), true, new Dictionary<string, object>
+            Console.WriteLine("Debug 1");
+            await Shell.Current.GoToAsync(nameof(maERP.Client.Views.ProductsDetailPage), true, new Dictionary<string, object>
             {
                 {"Product", product }
             });
+            Console.WriteLine("Debug 2");
         }
     }
 }

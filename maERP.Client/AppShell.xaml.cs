@@ -1,5 +1,4 @@
 using maERP.Client.Views;
-using maERP.Client.ViewModels;
 
 namespace maERP.Client;
 
@@ -9,6 +8,9 @@ public partial class AppShell : Shell
 	{
 		InitializeComponent();
 
+		Routing.RegisterRoute(nameof(DashboardPage), typeof(DashboardPage));
 		Routing.RegisterRoute(nameof(ProductsDetailPage), typeof(ProductsDetailPage));
+		Routing.RegisterRoute(nameof(OrdersPage), typeof(OrdersPage));
+		Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
 	}
 }

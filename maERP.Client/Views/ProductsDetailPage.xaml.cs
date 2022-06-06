@@ -7,8 +7,11 @@ public partial class ProductsDetailPage : ContentPage
 {
 	public ProductsDetailPage(ProductsDetailViewModel viewModel)
 	{
+		Console.WriteLine("DEBUG 6");
 		InitializeComponent();
 
-		BindingContext = viewModel;
+		Console.WriteLine("DEBUG 7");
+		 BindingContext = viewModel;
+		Console.WriteLine("DEBUG 8");
 	}
 }

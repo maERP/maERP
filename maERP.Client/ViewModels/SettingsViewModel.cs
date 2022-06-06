@@ -4,13 +4,11 @@ using maERP.Client.Contracts;
 
 namespace maERP.Client.ViewModels
 {    
-    public class SettingsViewModel : BaseViewModel
+    public partial class SettingsViewModel : BaseViewModel
     {
-        readonly INavigationService _navigationService;
-
-        public SettingsViewModel(INavigationService navigationService)
+        public SettingsViewModel()
         {
-            _navigationService = navigationService;
+            
         }
     }
 }
