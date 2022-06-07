@@ -5,13 +5,19 @@ namespace maERP.Client.Views;
 
 public partial class ProductsDetailPage : ContentPage
 {
+	private readonly ProductsDetailViewModel _viewModel;
+
 	public ProductsDetailPage(ProductsDetailViewModel viewModel)
 	{
-		Console.WriteLine("DEBUG 6");
 		InitializeComponent();
+		BindingContext = viewModel;
+		this._viewModel = viewModel;
+	}
 
-		Console.WriteLine("DEBUG 7");
-		 BindingContext = viewModel;
-		Console.WriteLine("DEBUG 8");
+	protected async override void OnAppearing()
+	{
+		base.OnAppearing();
+
+		await _viewModel.GetProductDetailAsync();
 	}
 }

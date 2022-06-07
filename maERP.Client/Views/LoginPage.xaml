@@ -13,8 +13,10 @@
         <Entry Placeholder="E-Mail" Margin="5" Keyboard="Email" x:Name="tbxUsername" Text="admin@localhost.com" />
         <Label Text="Password:" Margin="5" />
         <Entry Placeholder="Password" Margin="5" x:Name="pbxPassword" Text="maERP!12" />
+
         <Button x:Name="btnLogin" Margin="5" Text="Login" Clicked="btnLogin_Clicked" />
         <Button x:Name="btnExit" Margin="5" Text="Beenden" Clicked="btnExit_Clicked" />
+
     </StackLayout>
 
 </ContentPage>

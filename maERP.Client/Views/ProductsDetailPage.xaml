@@ -4,7 +4,7 @@
              x:Class="maERP.Client.Views.ProductsDetailPage"
              xmlns:viewmodel="clr-namespace:maERP.Client.ViewModels"
              x:DataType="viewmodel:ProductsDetailViewModel"
-             Title="">
+             Title="{Binding Title}">
 
 <ScrollView>
         <VerticalStackLayout>

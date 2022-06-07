@@ -9,33 +9,39 @@ using maERP.Data.Dtos.Product;
 
 namespace maERP.Client.ViewModels;
 
+[QueryProperty(nameof(QueryProduct), "QueryProduct")]
 [QueryProperty(nameof(Product), "Product")]
 public partial class ProductsDetailViewModel : BaseViewModel
 {
     [ObservableProperty]
-    GetProductDto product;
+    GetProductDto queryProduct;
+
+    [ObservableProperty]
+    ProductDto product;
 
     private readonly IDataService<ProductDto> _dataService;
 
     public ProductsDetailViewModel(IDataService<ProductDto> dataService)
     {
         this._dataService = dataService;
+        /*
+        fullproduct.Id = product.Id;
+        fullproduct.SKU = product.SKU;
+        fullproduct.Name = product.Name;
+        fullproduct.Price = product.Price;
+        */
     }
 
     [ICommand]
-    async Task GetProductDetailAsync()
+    public async Task GetProductDetailAsync()
     {
-        Console.WriteLine("DEBUG 100");
-
         if (IsBusy)
             return;
 
         try
         {
             IsBusy = true;
-            // Product = await _dataService.Request("GET", "/Product/" + Product.Id);
-
-            Product.SKU = "20002";
+            Product = await _dataService.Request("GET", "/Products/" + QueryProduct.Id);
         }
         catch (Exception ex)
         {

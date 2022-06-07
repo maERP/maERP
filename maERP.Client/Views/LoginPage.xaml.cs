@@ -21,7 +21,7 @@ public partial class LoginPage : ContentPage
         string username = tbxUsername.Text;
         string password = pbxPassword.Text;
 
-        var result = await _viewModel.Login(server, username, password);
+        bool result = await _viewModel.Login(server, username, password);
 
         if (!result)
         {

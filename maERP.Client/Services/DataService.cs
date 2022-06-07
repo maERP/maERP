@@ -69,6 +69,12 @@ namespace maERP.Client.Services
                 }
                 else
                 {
+                    Console.WriteLine("Bearer: " + Globals.AccessToken);
+                    Console.WriteLine(requestUrl);
+                    Console.WriteLine(response.Headers);
+                    Console.WriteLine(response.TrailingHeaders);
+                    Console.WriteLine(response.Content.ReadAsStream());
+
                     throw new Exception();
                 }
 
@@ -84,13 +90,19 @@ namespace maERP.Client.Services
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
+                    Console.WriteLine("Bearer: " + Globals.AccessToken);
                     Console.WriteLine(requestUrl);
                     Console.WriteLine(response.Headers);
+                    Console.WriteLine(response.TrailingHeaders);
+                    Console.WriteLine(response.Content.ReadAsStream());
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
+                    Console.WriteLine("Bearer: " + Globals.AccessToken);
                     Console.WriteLine(requestUrl);
                     Console.WriteLine(response.Headers);
+                    Console.WriteLine(response.TrailingHeaders);
+                    Console.WriteLine(response.Content.ReadAsStream());
                 }
                 else
                 {

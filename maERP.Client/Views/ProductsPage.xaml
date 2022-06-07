@@ -5,7 +5,7 @@
              xmlns:model="clr-namespace:maERP.Data.Dtos.Product;assembly=maERP.Data"
              xmlns:viewmodel="clr-namespace:maERP.Client.ViewModels"
              x:DataType="viewmodel:ProductsViewModel"
-             Title="Produkte">
+             Title="{Binding Title}">
 
     <Grid
         ColumnDefinitions="*,*"
@@ -42,6 +42,7 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+        <!--
         <Button Text="Get Products" 
                 Command="{Binding GetProductsCommand}"
                 IsEnabled="{Binding IsNotBusy}"
@@ -49,7 +50,7 @@
                 Grid.Column="0"
                 Style="{StaticResource ButtonOutline}"
                 Margin="8"/>
-
+        -->
 
         <ActivityIndicator IsVisible="{Binding IsBusy}"
                            IsRunning="{Binding IsBusy}"

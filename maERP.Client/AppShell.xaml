@@ -4,7 +4,7 @@
              xmlns:view="clr-namespace:maERP.Client.Views"
              x:Class="maERP.Client.AppShell"
              Title="AppShell"
-             BackgroundColor="Black"
+             BackgroundColor="Lightblue"
              FlyoutBehavior="Locked"
              Shell.TabBarIsVisible="False">
 

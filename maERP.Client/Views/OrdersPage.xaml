@@ -7,52 +7,17 @@
              x:DataType="viewmodel:OrdersViewModel"
              Title="{Binding Title}">
 
-    <!--
-    <Grid
-        ColumnDefinitions="*,*"
-        ColumnSpacing="5"
-        RowDefinitions="*,Auto"
-        RowSpacing="0">
-        <CollectionView
-            Grid.ColumnSpan="2"
-            ItemsSource="{Binding Orders}"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:OrderDto">
-                    <Grid Padding="10">
-                        <Frame HeightRequest="125" Style="">
-                            <Grid Padding="0" ColumnDefinitions="125,*">
-                                <Image Aspect="AspectFill" Source=""
-                                       WidthRequest="125"
-                                       HeightRequest="125"/>
-                                <VerticalStackLayout
-                                    Grid.Column="1"
-                                    Padding="10">
-                                    <Label Style="" Text="{Binding Id}" />
-                                    <Label Style="" Text="" />
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Frame>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+    <TableView>
+        <TableRoot>         
+            <TableSection Title="Bestellungen">                 
+                <TextCell Text="1   Max Mustermann, Hauptstraße 1, 01234 Demostadt"
+                          Detail="Produkt 1, Produkt 2, Produkt 3" />
+                <TextCell Text="2   Max Mustermann, Hauptstraße 1, 01234 Demostadt"
+                          Detail="Produkt 1, Produkt 2, Produkt 3" />
+                <TextCell Text="3   Max Mustermann, Hauptstraße 1, 01234 Demostadt"
+                          Detail="Produkt 1, Produkt 2, Produkt 3" />
+            </TableSection>
+        </TableRoot>
+    </TableView>
 
-        <Button Text="Get Monkeys" 
-                Command="{Binding GetOrdersCommand}"
-                IsEnabled="{Binding IsNotBusy}"
-                Grid.Row="1"
-                Grid.Column="0"
-                Style="{StaticResource ButtonOutline}"
-                Margin="8"/>
-
-
-        <ActivityIndicator IsVisible="{Binding IsBusy}"
-                           IsRunning="{Binding IsBusy}"
-                           HorizontalOptions="FillAndExpand"
-                           VerticalOptions="CenterAndExpand"
-                           Grid.RowSpan="2"
-                           Grid.ColumnSpan="2"/>
-    </Grid>
-    -->
 </ContentPage>

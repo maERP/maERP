@@ -22,7 +22,7 @@ namespace maERP.Client.ViewModels
         }
 
         [ICommand]
-        async Task GetProductsAsync()
+        public async Task GetProductsAsync()
         {
             if (IsBusy)
                 return;
@@ -57,12 +57,11 @@ namespace maERP.Client.ViewModels
             if (product == null)
                 return;
 
-            Console.WriteLine("Debug 1");
             await Shell.Current.GoToAsync(nameof(maERP.Client.Views.ProductsDetailPage), true, new Dictionary<string, object>
             {
-                {"Product", product }
+                {"QueryProduct", product },
+                {"Fullproduct", new ProductDto() }
             });
-            Console.WriteLine("Debug 2");
         }
     }
 }
