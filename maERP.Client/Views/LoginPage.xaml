@@ -14,9 +14,15 @@
         <Label Text="Password:" Margin="5" />
         <Entry Placeholder="Password" Margin="5" x:Name="pbxPassword" Text="maERP!12" />
 
+        <HorizontalStackLayout>
+            <CheckBox x:Name="cbSaveLogin" Margin="5" />
+            <Label Text="Logindaten speichern" />
+        </HorizontalStackLayout>
+
         <Button x:Name="btnLogin" Margin="5" Text="Login" Clicked="btnLogin_Clicked" />
         <Button x:Name="btnExit" Margin="5" Text="Beenden" Clicked="btnExit_Clicked" />
 
+        
     </StackLayout>
 
 </ContentPage>

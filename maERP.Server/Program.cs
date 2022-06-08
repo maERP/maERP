@@ -144,7 +144,7 @@ builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
 builder.Services.AddScoped<IWarehousesRepository, WarehouseRepository>();
 builder.Services.AddScoped<ITaxClassesRepository, TaxClassesRepository>();
 
-// builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.ProductDownloadTask>();
+builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.ProductDownloadTask>();
 
 var app = builder.Build();
 

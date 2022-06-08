@@ -41,7 +41,7 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
+        
         <!--
         <Button Text="Get Products" 
                 Command="{Binding GetProductsCommand}"

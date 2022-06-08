@@ -9,10 +9,10 @@
              Shell.TabBarIsVisible="False">
 
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
-        <ShellContent Title="Login" ContentTemplate="{DataTemplate view:LoginPage}" FlyoutItemIsVisible="False" />
-        <ShellContent Title="Dashboard" ContentTemplate="{DataTemplate view:DashboardPage}"/>
-        <ShellContent Title="Bestellungen" ContentTemplate="{DataTemplate view:OrdersPage}"/>
-        <ShellContent Title="Artikel" ContentTemplate="{DataTemplate view:ProductsPage}"/>
+        <ShellContent Icon="" Title="Login" ContentTemplate="{DataTemplate view:LoginPage}" FlyoutItemIsVisible="False" />
+        <ShellContent Icon="" Title="Dashboard" ContentTemplate="{DataTemplate view:DashboardPage}"/>
+        <ShellContent Icon="" Title="Bestellungen" ContentTemplate="{DataTemplate view:OrdersPage}"/>
+        <ShellContent Icon="" Title="Artikel" ContentTemplate="{DataTemplate view:ProductsPage}"/>
         <Tab Title="Einstellungen">
             <ShellContent Title="Einstellungen" ContentTemplate="{DataTemplate view:SettingsPage}"/>
         </Tab>

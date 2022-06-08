@@ -24,7 +24,7 @@ namespace maERP.Data.Models
         [StringLength(16)]
         public string ASIN { get; set; }
 
-        [StringLength(4000)]
+        [StringLength(64000)]
         public string Description { get; set; }
 
         // [Required]
