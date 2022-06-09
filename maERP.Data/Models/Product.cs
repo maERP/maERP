@@ -11,17 +11,17 @@ namespace maERP.Data.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(200)]
+        [StringLength(255)]
         public string SKU { get; set; }
 
         [Required]
-        [StringLength(200)]
+        [StringLength(255)]
         public string Name { get; set; }
 
-        [StringLength(13)]
+        [StringLength(32)]
         public string EAN { get; set; }
 
-        [StringLength(16)]
+        [StringLength(32)]
         public string ASIN { get; set; }
 
         [StringLength(64000)]

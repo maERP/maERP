@@ -2,7 +2,8 @@
 
 using maERP.Server.Contracts.SalesChannelContracts;
 using maERP.Server.Models;
-using maERP.Data.Models.SalesChannelData.Shopware5;
+using maERP.Data.Models.SalesChannels.Shopware5;
+using maERP.Data.Models.SalesChannels.Shopware5.ProductResponse;
 
 namespace maERP.Server.Repository.SalesChannelRepositories
 {
@@ -15,9 +16,9 @@ namespace maERP.Server.Repository.SalesChannelRepositories
             this._context = context;
         }
 
-        public async Task<Shopware5Product> getProductList()
+        public async Task<Shopware5Response<Shopware5ProductResponse>> getProductList()
         {
-            return new Shopware5Product();
+            throw new NotImplementedException();
         }
     }
 }
