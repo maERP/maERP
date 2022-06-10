@@ -21,7 +21,6 @@
 
         <Button x:Name="btnLogin" Margin="5" Text="Login" Clicked="btnLogin_Clicked" />
         <Button x:Name="btnExit" Margin="5" Text="Beenden" Clicked="btnExit_Clicked" />
-
         
     </StackLayout>
 

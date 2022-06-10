@@ -32,16 +32,17 @@ namespace maERP.Data.Models
         public decimal Price { get; set; }
 
         // [Required]
-        [ForeignKey("TaxClass")]
+        // [ForeignKey("TaxClass")]
         public int TaxClassId { get; set; }
-
         public TaxClass TaxClass { get; set; }
-        public ProductStock ProductStock { get; set; }
-        public ProductSalesChannel ProductSalesChannel { get; set; }
+
+        public int ProductSalesChannelId { get; set; }
+        public IList<ProductSalesChannel> ProductSalesChannel { get; set; }
+
+        public int ProductStockId { get; set; }
+        public IList<ProductStock> ProductStock { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
-        // public ICollection<ProductSalesChannel> ProductSalesChannel { get; set; }
     }
 }

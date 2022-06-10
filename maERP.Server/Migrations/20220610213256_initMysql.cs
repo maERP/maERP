@@ -113,21 +113,6 @@ namespace maERP.Server.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "product_sales_channel",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    SalesChannelId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_product_sales_channel", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "product_stock",
                 columns: table => new
                 {
@@ -151,6 +136,7 @@ namespace maERP.Server.Migrations
                     Type = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    WarehouseId = table.Column<int>(type: "int", nullable: false),
                     URL = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Username = table.Column<string>(type: "longtext", nullable: true)
@@ -338,46 +324,85 @@ namespace maERP.Server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    SKU = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
+                    SKU = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Name = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
+                    Name = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    EAN = table.Column<string>(type: "varchar(13)", maxLength: 13, nullable: true)
+                    EAN = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ASIN = table.Column<string>(type: "varchar(16)", maxLength: 16, nullable: true)
+                    ASIN = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "varchar(4000)", maxLength: 4000, nullable: true)
+                    Description = table.Column<string>(type: "longtext", maxLength: 64000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     TaxClassId = table.Column<int>(type: "int", nullable: false),
-                    ProductStockId = table.Column<int>(type: "int", nullable: true),
-                    ProductSalesChannelId = table.Column<int>(type: "int", nullable: true),
+                    ProductSalesChannelId = table.Column<int>(type: "int", nullable: false),
+                    ProductStockId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    SalesChannelId = table.Column<int>(type: "int", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_product", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_product_product_sales_channel_ProductSalesChannelId",
-                        column: x => x.ProductSalesChannelId,
-                        principalTable: "product_sales_channel",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_product_product_stock_ProductStockId",
-                        column: x => x.ProductStockId,
-                        principalTable: "product_stock",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_product_sales_channel_SalesChannelId",
-                        column: x => x.SalesChannelId,
-                        principalTable: "sales_channel",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_product_tax_class_TaxClassId",
                         column: x => x.TaxClassId,
                         principalTable: "tax_class",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "product_sales_channel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    SalesChannelId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    ProductImport = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ProductExport = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_product_sales_channel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_product_sales_channel_product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "product",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_product_sales_channel_sales_channel_SalesChannelId",
+                        column: x => x.SalesChannelId,
+                        principalTable: "sales_channel",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ProductProductStock",
+                columns: table => new
+                {
+                    ProductStockId = table.Column<int>(type: "int", nullable: false),
+                    ProductsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductProductStock", x => new { x.ProductStockId, x.ProductsId });
+                    table.ForeignKey(
+                        name: "FK_ProductProductStock_product_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "product",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductProductStock_product_stock_ProductStockId",
+                        column: x => x.ProductStockId,
+                        principalTable: "product_stock",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -389,18 +414,18 @@ namespace maERP.Server.Migrations
                 values: new object[,]
                 {
                     { "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "Admin", "ADMIN" },
-                    { "e72a7169-bd3e-4cb6-9dec-4110b4064ed7", "d2db621a-9169-4990-9778-0b0f67ba8d8f", "User", "USER" }
+                    { "7425f016-65c8-47dd-bbf4-d5939d07fc31", "221f36ba-69fd-43f2-b942-dd60efed202f", "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "6b121bed-5db6-4190-b592-4a30e39e0b72", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAEAACcQAAAAEO+lkijZa0osKa+7rO/q4D9iUq6A+fZFhvIUZIGhVwkvw3PMo8Q5r8Q4xvFwDpa76g==", null, false, "6fcd3c85-fe33-416f-83ee-4815a62d6c56", false, "admin@localhost.com" });
+                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "aa390a2a-d76b-4162-aa7a-452b361bdab8", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAEAACcQAAAAEPw97BoGN+ANUGleaS7YlrRi57rdF87pzMIAiVyVtPcEJrP1mQ0+/W/BHUt9tOpgGA==", null, false, "6ec699cc-196e-4e91-bd10-e0bc516f2b78", false, "admin@localhost.com" });
 
             migrationBuilder.InsertData(
                 table: "sales_channel",
-                columns: new[] { "Id", "CreatedAt", "ExportCustomers", "ExportOrders", "ExportProducts", "ImportCustomers", "ImportOrders", "ImportProducts", "Name", "Password", "Type", "URL", "UpdatedAt", "Username" },
-                values: new object[] { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, false, false, false, true, "Shopware Demo Shop", "demopass", 0, "https://www.example.com/", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "demouser" });
+                columns: new[] { "Id", "CreatedAt", "ExportCustomers", "ExportOrders", "ExportProducts", "ImportCustomers", "ImportOrders", "ImportProducts", "Name", "Password", "Type", "URL", "UpdatedAt", "Username", "WarehouseId" },
+                values: new object[] { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, false, false, false, true, "Shopware Demo Shop", "demopass", 10, "https://www.example.com/", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "demouser", 0 });
 
             migrationBuilder.InsertData(
                 table: "tax_class",
@@ -419,12 +444,12 @@ namespace maERP.Server.Migrations
 
             migrationBuilder.InsertData(
                 table: "product",
-                columns: new[] { "Id", "ASIN", "CreatedAt", "Description", "EAN", "Name", "Price", "ProductSalesChannelId", "ProductStockId", "SKU", "SalesChannelId", "TaxClassId", "UpdatedAt" },
+                columns: new[] { "Id", "ASIN", "CreatedAt", "Description", "EAN", "Name", "Price", "ProductSalesChannelId", "ProductStockId", "SKU", "TaxClassId", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6230), "Beschreibung 1", null, "Testprodukt 1", 100m, null, null, "1001", null, 3, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6270) },
-                    { 2, null, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280), "Beschreibung 2", null, "Testprodukt 2", 100m, null, null, "1002", null, 2, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280) },
-                    { 3, null, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280), "Beschreibung 3", null, "Testprodukt 3", 100m, null, null, "1003", null, 1, new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280) }
+                    { 1, null, new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6470), "Beschreibung 1", null, "Testprodukt 1", 100m, 0, 0, "1001", 3, new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6510) },
+                    { 2, null, new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6510), "Beschreibung 2", null, "Testprodukt 2", 100m, 0, 0, "1002", 2, new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6510) },
+                    { 3, null, new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6520), "Beschreibung 3", null, "Testprodukt 3", 100m, 0, 0, "1003", 1, new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6520) }
                 });
 
             migrationBuilder.CreateIndex(
@@ -465,24 +490,24 @@ namespace maERP.Server.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_product_ProductSalesChannelId",
-                table: "product",
-                column: "ProductSalesChannelId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_product_ProductStockId",
-                table: "product",
-                column: "ProductStockId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_product_SalesChannelId",
-                table: "product",
-                column: "SalesChannelId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_product_TaxClassId",
                 table: "product",
                 column: "TaxClassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_product_sales_channel_ProductId",
+                table: "product_sales_channel",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_product_sales_channel_SalesChannelId",
+                table: "product_sales_channel",
+                column: "SalesChannelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductProductStock_ProductsId",
+                table: "ProductProductStock",
+                column: "ProductsId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -509,7 +534,10 @@ namespace maERP.Server.Migrations
                 name: "customer_address");
 
             migrationBuilder.DropTable(
-                name: "product");
+                name: "product_sales_channel");
+
+            migrationBuilder.DropTable(
+                name: "ProductProductStock");
 
             migrationBuilder.DropTable(
                 name: "warehouse");
@@ -521,13 +549,13 @@ namespace maERP.Server.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "product_sales_channel");
+                name: "sales_channel");
+
+            migrationBuilder.DropTable(
+                name: "product");
 
             migrationBuilder.DropTable(
                 name: "product_stock");
-
-            migrationBuilder.DropTable(
-                name: "sales_channel");
 
             migrationBuilder.DropTable(
                 name: "tax_class");

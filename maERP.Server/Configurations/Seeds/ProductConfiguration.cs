@@ -8,9 +8,9 @@ namespace maERP.Server.Configurations.Seeds
 {
     public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
-		public void Configure(EntityTypeBuilder<Product> builder)
+        public void Configure(EntityTypeBuilder<Product> builder)
         {
-			builder.HasData(
+            builder.HasData(
                 new Product
                 {
                     Id = 1,
@@ -19,11 +19,11 @@ namespace maERP.Server.Configurations.Seeds
                     Description = "Beschreibung 1",
                     Price = 100,
                     TaxClassId = 3,
-                    CreatedAt = DateTime.Now, 
+                    CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 },
                 new Product
-                { 
+                {
                     Id = 2,
                     SKU = "1002",
                     Name = "Testprodukt 2",
@@ -46,5 +46,5 @@ namespace maERP.Server.Configurations.Seeds
                 }
             );
         }
-	}
+    }
 }

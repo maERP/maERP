@@ -17,7 +17,7 @@ namespace maERP.Data.Models
         public string Name { get; set; }
 
         // [Required]
-        // public int WarehouseId { get; set; }
+        public int WarehouseId { get; set; }
 
         public string URL { get; set; }
         public string Username { get; set; }
@@ -31,12 +31,21 @@ namespace maERP.Data.Models
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
-        public virtual IList<Product> Products { get; set; }
     }
 
     public enum SalesChannelType
     {
-        shopware5, shopware6
+        reserved00,
+        reserved01,
+        reserved02,
+        reserved03,
+        reserved04,
+        reserved05,
+        reserved06,
+        reserved07,
+        reserved08,
+        reserved09,
+        shopware5,
+        shopware6
     }
 }

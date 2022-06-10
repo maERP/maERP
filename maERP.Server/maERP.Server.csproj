@@ -60,7 +60,6 @@
     <None Remove="Repository\SalesChannel\" />
     <None Remove="Tasks\SalesChannel\" />
     <None Remove="Microsoft.AspNetCore.OData" />
-    <None Remove="Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -73,7 +72,6 @@
     <Folder Include="Contracts\SalesChannelContracts\" />
     <Folder Include="Repository\SalesChannelRepositories\" />
     <Folder Include="Tasks\SalesChannelTasks\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Controllers\SalesChannelController.cs" />

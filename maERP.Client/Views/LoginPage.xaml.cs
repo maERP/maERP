@@ -14,7 +14,7 @@ public partial class LoginPage : ContentPage
 
         InitializeComponent();
 
-        loadSavedData();
+        // loadSavedData();
     }
 
     private async void loadSavedData()

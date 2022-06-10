@@ -29,6 +29,7 @@ namespace maERP.Client.Services
                 if (response.IsSuccessStatusCode)
                 { 
                     string result = response.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine(result);
 
                     var responseObj = JsonConvert.DeserializeObject<LoginResponseDto>(result);
 

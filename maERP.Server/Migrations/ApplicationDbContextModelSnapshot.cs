@@ -93,7 +93,7 @@ namespace maERP.Server.Migrations
                         {
                             Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6b121bed-5db6-4190-b592-4a30e39e0b72",
+                            ConcurrencyStamp = "aa390a2a-d76b-4162-aa7a-452b361bdab8",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -101,9 +101,9 @@ namespace maERP.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEO+lkijZa0osKa+7rO/q4D9iUq6A+fZFhvIUZIGhVwkvw3PMo8Q5r8Q4xvFwDpa76g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPw97BoGN+ANUGleaS7YlrRi57rdF87pzMIAiVyVtPcEJrP1mQ0+/W/BHUt9tOpgGA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6fcd3c85-fe33-416f-83ee-4815a62d6c56",
+                            SecurityStamp = "6ec699cc-196e-4e91-bd10-e0bc516f2b78",
                             TwoFactorEnabled = false,
                             UserName = "admin@localhost.com"
                         });
@@ -141,41 +141,38 @@ namespace maERP.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ASIN")
-                        .HasMaxLength(16)
-                        .HasColumnType("varchar(16)");
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(4000)
-                        .HasColumnType("varchar(4000)");
+                        .HasMaxLength(64000)
+                        .HasColumnType("longtext");
 
                     b.Property<string>("EAN")
-                        .HasMaxLength(13)
-                        .HasColumnType("varchar(13)");
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<int?>("ProductSalesChannelId")
+                    b.Property<int>("ProductSalesChannelId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductStockId")
+                    b.Property<int>("ProductStockId")
                         .HasColumnType("int");
 
                     b.Property<string>("SKU")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<int?>("SalesChannelId")
-                        .HasColumnType("int");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("TaxClassId")
                         .HasColumnType("int");
@@ -185,12 +182,6 @@ namespace maERP.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductSalesChannelId");
-
-                    b.HasIndex("ProductStockId");
-
-                    b.HasIndex("SalesChannelId");
-
                     b.HasIndex("TaxClassId");
 
                     b.ToTable("product", (string)null);
@@ -199,35 +190,41 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6230),
+                            CreatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6470),
                             Description = "Beschreibung 1",
                             Name = "Testprodukt 1",
                             Price = 100m,
+                            ProductSalesChannelId = 0,
+                            ProductStockId = 0,
                             SKU = "1001",
                             TaxClassId = 3,
-                            UpdatedAt = new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6270)
+                            UpdatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6510)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280),
+                            CreatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6510),
                             Description = "Beschreibung 2",
                             Name = "Testprodukt 2",
                             Price = 100m,
+                            ProductSalesChannelId = 0,
+                            ProductStockId = 0,
                             SKU = "1002",
                             TaxClassId = 2,
-                            UpdatedAt = new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280)
+                            UpdatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6510)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280),
+                            CreatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6520),
                             Description = "Beschreibung 3",
                             Name = "Testprodukt 3",
                             Price = 100m,
+                            ProductSalesChannelId = 0,
+                            ProductStockId = 0,
                             SKU = "1003",
                             TaxClassId = 1,
-                            UpdatedAt = new DateTime(2022, 6, 3, 19, 1, 25, 959, DateTimeKind.Local).AddTicks(6280)
+                            UpdatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6520)
                         });
                 });
 
@@ -237,13 +234,26 @@ namespace maERP.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<bool>("ProductExport")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("ProductImport")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("SalesChannelId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SalesChannelId");
 
                     b.ToTable("product_sales_channel", (string)null);
                 });
@@ -312,6 +322,9 @@ namespace maERP.Server.Migrations
                     b.Property<string>("Username")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("sales_channel", (string)null);
@@ -329,10 +342,11 @@ namespace maERP.Server.Migrations
                             ImportProducts = true,
                             Name = "Shopware Demo Shop",
                             Password = "demopass",
-                            Type = 0,
+                            Type = 10,
                             URL = "https://www.example.com/",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Username = "demouser"
+                            Username = "demouser",
+                            WarehouseId = 0
                         });
                 });
 
@@ -468,8 +482,8 @@ namespace maERP.Server.Migrations
                         },
                         new
                         {
-                            Id = "e72a7169-bd3e-4cb6-9dec-4110b4064ed7",
-                            ConcurrencyStamp = "d2db621a-9169-4990-9778-0b0f67ba8d8f",
+                            Id = "7425f016-65c8-47dd-bbf4-d5939d07fc31",
+                            ConcurrencyStamp = "221f36ba-69fd-43f2-b942-dd60efed202f",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -584,31 +598,49 @@ namespace maERP.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ProductProductStock", b =>
+                {
+                    b.Property<int>("ProductStockId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductStockId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("ProductProductStock");
+                });
+
             modelBuilder.Entity("maERP.Data.Models.Product", b =>
                 {
-                    b.HasOne("maERP.Data.Models.ProductSalesChannel", "ProductSalesChannel")
-                        .WithMany("Products")
-                        .HasForeignKey("ProductSalesChannelId");
-
-                    b.HasOne("maERP.Data.Models.ProductStock", "ProductStock")
-                        .WithMany("Products")
-                        .HasForeignKey("ProductStockId");
-
-                    b.HasOne("maERP.Data.Models.SalesChannel", null)
-                        .WithMany("Products")
-                        .HasForeignKey("SalesChannelId");
-
                     b.HasOne("maERP.Data.Models.TaxClass", "TaxClass")
                         .WithMany()
                         .HasForeignKey("TaxClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ProductSalesChannel");
-
-                    b.Navigation("ProductStock");
-
                     b.Navigation("TaxClass");
+                });
+
+            modelBuilder.Entity("maERP.Data.Models.ProductSalesChannel", b =>
+                {
+                    b.HasOne("maERP.Data.Models.Product", "Product")
+                        .WithMany("ProductSalesChannel")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("maERP.Data.Models.SalesChannel", "SalesChannel")
+                        .WithMany()
+                        .HasForeignKey("SalesChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("SalesChannel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -662,19 +694,24 @@ namespace maERP.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.ProductSalesChannel", b =>
+            modelBuilder.Entity("ProductProductStock", b =>
                 {
-                    b.Navigation("Products");
+                    b.HasOne("maERP.Data.Models.ProductStock", null)
+                        .WithMany()
+                        .HasForeignKey("ProductStockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("maERP.Data.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.ProductStock", b =>
+            modelBuilder.Entity("maERP.Data.Models.Product", b =>
                 {
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("maERP.Data.Models.SalesChannel", b =>
-                {
-                    b.Navigation("Products");
+                    b.Navigation("ProductSalesChannel");
                 });
 #pragma warning restore 612, 618
         }

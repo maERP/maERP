@@ -9,12 +9,16 @@ namespace maERP.Data.Models
 		[Key]
 		public int Id { get; set; }
 
-		[Required]
-		public int ProductId { get; set; }
-
-		[Required]
+		// [Required]
 		public int SalesChannelId { get; set; }
+		public SalesChannel SalesChannel { get; set; }
 
-		public virtual IList<Product> Products { get; set; }
+		public int ProductId { get; set; }
+		public Product Product { get; set; }
+
+		public decimal Price { get; set; }
+
+		public bool ProductImport { get; set; }
+		public bool ProductExport { get; set; }
 	}
 }

@@ -20,4 +20,4 @@ export PATH="$PATH:/Users/'your user folder'/.dotnet/tools"
 
 Packages used:
 
-- AutoMapper (https://github.com/AutoMapper/AutoMapper) 
+- AutoMapper (https://github.com/AutoMapper/AutoMapper)
