@@ -6,8 +6,6 @@ name: Publish as Github-Package
 # documentation.
 
 on:
-  schedule:
-    - cron: '34 22 * * *'
   push:
     branches: [ main-disabled ]
     # Publish semver tags as releases.
