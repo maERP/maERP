@@ -93,7 +93,7 @@ namespace maERP.Server.Migrations
                         {
                             Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "aa390a2a-d76b-4162-aa7a-452b361bdab8",
+                            ConcurrencyStamp = "77e3590d-377a-48de-9ec7-f1f4e22029fc",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -101,9 +101,9 @@ namespace maERP.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPw97BoGN+ANUGleaS7YlrRi57rdF87pzMIAiVyVtPcEJrP1mQ0+/W/BHUt9tOpgGA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECJ45wt7xjOBeXpuCbK4cq685+YVzT5cT/gvT1NEcJFYvA7vlK1tW1QcZI/rLy4DRA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6ec699cc-196e-4e91-bd10-e0bc516f2b78",
+                            SecurityStamp = "efa43848-114c-4eee-9fe4-44be39128663",
                             TwoFactorEnabled = false,
                             UserName = "admin@localhost.com"
                         });
@@ -190,7 +190,7 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6470),
+                            CreatedAt = new DateTime(2022, 6, 11, 14, 28, 40, 194, DateTimeKind.Local).AddTicks(7980),
                             Description = "Beschreibung 1",
                             Name = "Testprodukt 1",
                             Price = 100m,
@@ -198,12 +198,12 @@ namespace maERP.Server.Migrations
                             ProductStockId = 0,
                             SKU = "1001",
                             TaxClassId = 3,
-                            UpdatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6510)
+                            UpdatedAt = new DateTime(2022, 6, 11, 14, 28, 40, 194, DateTimeKind.Local).AddTicks(8030)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6510),
+                            CreatedAt = new DateTime(2022, 6, 11, 14, 28, 40, 194, DateTimeKind.Local).AddTicks(8030),
                             Description = "Beschreibung 2",
                             Name = "Testprodukt 2",
                             Price = 100m,
@@ -211,12 +211,12 @@ namespace maERP.Server.Migrations
                             ProductStockId = 0,
                             SKU = "1002",
                             TaxClassId = 2,
-                            UpdatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6510)
+                            UpdatedAt = new DateTime(2022, 6, 11, 14, 28, 40, 194, DateTimeKind.Local).AddTicks(8030)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6520),
+                            CreatedAt = new DateTime(2022, 6, 11, 14, 28, 40, 194, DateTimeKind.Local).AddTicks(8040),
                             Description = "Beschreibung 3",
                             Name = "Testprodukt 3",
                             Price = 100m,
@@ -224,7 +224,7 @@ namespace maERP.Server.Migrations
                             ProductStockId = 0,
                             SKU = "1003",
                             TaxClassId = 1,
-                            UpdatedAt = new DateTime(2022, 6, 10, 23, 32, 56, 27, DateTimeKind.Local).AddTicks(6520)
+                            UpdatedAt = new DateTime(2022, 6, 11, 14, 28, 40, 194, DateTimeKind.Local).AddTicks(8040)
                         });
                 });
 
@@ -245,6 +245,9 @@ namespace maERP.Server.Migrations
 
                     b.Property<bool>("ProductImport")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("RemoteProductId")
+                        .HasColumnType("int");
 
                     b.Property<int>("SalesChannelId")
                         .HasColumnType("int");
@@ -482,8 +485,8 @@ namespace maERP.Server.Migrations
                         },
                         new
                         {
-                            Id = "7425f016-65c8-47dd-bbf4-d5939d07fc31",
-                            ConcurrencyStamp = "221f36ba-69fd-43f2-b942-dd60efed202f",
+                            Id = "c8478289-ff7b-4edc-b360-836ae8a4187e",
+                            ConcurrencyStamp = "3f6032f3-a635-4693-8ca2-efc776d53566",
                             Name = "User",
                             NormalizedName = "USER"
                         });

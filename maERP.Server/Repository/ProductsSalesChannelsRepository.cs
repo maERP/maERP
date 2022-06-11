@@ -36,9 +36,19 @@ namespace maERP.Server.Repository
             return productSalesChannel;
         }
 
-        public async Task<ProductSalesChannel> getByProductId(int productId, int salesChannelId = 0)
+        public async Task<ProductSalesChannel> getByRemoteProductIdAsync(int productId, int salesChannelId = 0)
         {
-            throw new NotImplementedException();
+            if (salesChannelId > 0)
+            {
+                return await _context.ProductSalesChannel
+                    .Where(p => p.RemoteProductId == productId)
+                    .Where(p => p.SalesChannelId == salesChannelId)
+                    .FirstOrDefaultAsync();
+            }
+
+            return await _context.ProductSalesChannel
+                    .Where(p => p.RemoteProductId == productId)
+                    .FirstOrDefaultAsync();
         }
     }
 }

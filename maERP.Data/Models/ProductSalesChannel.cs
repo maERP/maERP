@@ -16,6 +16,8 @@ namespace maERP.Data.Models
 		public int ProductId { get; set; }
 		public Product Product { get; set; }
 
+		public int RemoteProductId { get; set; }
+
 		public decimal Price { get; set; }
 
 		public bool ProductImport { get; set; }
