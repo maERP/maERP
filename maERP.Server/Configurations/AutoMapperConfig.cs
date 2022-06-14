@@ -2,6 +2,7 @@
 using maERP.Data.Dtos;
 using maERP.Data.Dtos.User;
 using maERP.Data.Dtos.Product;
+using maERP.Data.Dtos.ProductSalesChannel;
 using maERP.Data.Dtos.TaxClass;
 using maERP.Data.Dtos.SalesChannel;
 using maERP.Data.Dtos.Warehouse;
@@ -20,6 +21,12 @@ namespace maERP.Server.Configurations
 			CreateMap<Product, CreateProductDto>().ReverseMap();
 			CreateMap<Product, GetProductDto>().ReverseMap();			
 			CreateMap<Product, UpdateProductDto>().ReverseMap();
+
+			CreateMap<ProductSalesChannel, ProductSalesChannelDto>().ReverseMap();
+			CreateMap<ProductSalesChannel, GetProductSalesChannelDto>().ReverseMap();
+			CreateMap<ProductSalesChannel, CreateProductSalesChannelDto>().ReverseMap();
+			CreateMap<ProductSalesChannel, GetProductSalesChannelDto>().ReverseMap();
+			CreateMap<ProductSalesChannel, UpdateProductSalesChannelDto>().ReverseMap();
 
 			// SalesChannel does not have a basic SalesChannelDto
 			CreateMap<SalesChannel, GetSalesChannelDto>().ReverseMap();

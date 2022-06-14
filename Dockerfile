@@ -2,11 +2,12 @@
 WORKDIR /app
 EXPOSE 80
 
-ENV MYSQL_HOST localhost
-ENV MYSQL_PORT 3306
-ENV MYSQL_USER maerp
-ENV MYSQL_PASS maerp
-ENV MYSQL_DB maerp_01
+ENV DB_TYPE mysql
+ENV DB_HOST localhost
+ENV DB_PORT 3306
+ENV DB_USER maerp
+ENV DB_PASS maerp
+ENV DB_NAME maerp_01
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src

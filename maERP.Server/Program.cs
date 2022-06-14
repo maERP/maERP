@@ -20,13 +20,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     string conString = "";
 
-    if (Environment.GetEnvironmentVariable("MYSQL_HOST") != null)
+    if (Environment.GetEnvironmentVariable("DB_TYPE") == "mysql")
     {
-        conString = "Server=" + Environment.GetEnvironmentVariable("MYSQL_HOST")
-                  + ";Port=" + Environment.GetEnvironmentVariable("MYSQL_PORT")
-                  + ";Database=" + Environment.GetEnvironmentVariable("MYSQL_DB")
-                  + ";Uid=" + Environment.GetEnvironmentVariable("MYSQL_USER")
-                  + ";Pwd=" + Environment.GetEnvironmentVariable("MYSQL_PASS");
+        conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
+                  + ";Port=" + Environment.GetEnvironmentVariable("DB_PORT")
+                  + ";Database=" + Environment.GetEnvironmentVariable("DB_NAME")
+                  + ";Uid=" + Environment.GetEnvironmentVariable("DB_USER")
+                  + ";Pwd=" + Environment.GetEnvironmentVariable("DB_PASS");
     }
     else
     {

@@ -127,20 +127,61 @@ public class ProductDownloadTask : IHostedService
                             }
                             else
                             {
+                                bool newUpdate = false;
+
                                 ProductSalesChannel.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
 
                                 await productSalesChannelRepository.UpdateAsync(ProductSalesChannel);
 
                                 var localProduct = await productRepository.GetAsync(ProductSalesChannel.ProductId);
 
-                                localProduct.Name = remoteProduct.name;
-                                localProduct.EAN = Globals.maxLength(remoteProduct.mainDetail.ean, 13);
-                                localProduct.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
-                                localProduct.SKU = remoteProduct.mainDetail.number;
-                                localProduct.TaxClassId = 2;
-                                localProduct.Description = Globals.maxLength(remoteProduct.descriptionLong, 4000);
+                                if(localProduct.Name != remoteProduct.name)
+                                {
+                                    Console.WriteLine("new product name");
+                                    localProduct.Name = remoteProduct.name;
+                                    newUpdate = true;
+                                }
 
-                                await productRepository.UpdateAsync(localProduct);
+                                if(localProduct.EAN != Globals.maxLength(remoteProduct.mainDetail.ean, 13))
+                                {
+                                    Console.WriteLine("new product EAN");
+                                    localProduct.EAN = Globals.maxLength(remoteProduct.mainDetail.ean, 13);
+                                    newUpdate = true;
+                                }
+
+                                if(localProduct.Price != (decimal)remoteProduct.mainDetail.purchasePrice)
+                                {
+                                    Console.WriteLine("new product price");
+                                    localProduct.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
+                                    newUpdate = true;
+                                }
+
+                                if(localProduct.SKU != remoteProduct.mainDetail.number)
+                                {
+                                    Console.WriteLine("new product sku");
+                                    localProduct.SKU = remoteProduct.mainDetail.number;
+                                    newUpdate = true;
+                                }
+
+                                if(localProduct.TaxClassId != 1)
+                                {
+                                    Console.WriteLine("new product tax class");
+                                    localProduct.TaxClassId = 1;
+                                    newUpdate = true;
+                                }
+
+                                if(localProduct.Description != Globals.maxLength(remoteProduct.descriptionLong, 4000))
+                                {
+                                    Console.WriteLine("new product description");
+                                    localProduct.Description = Globals.maxLength(remoteProduct.descriptionLong, 4000);
+                                    newUpdate = true;
+                                }
+
+                                if(newUpdate)
+                                {
+                                    localProduct.UpdatedAt = DateTime.Now;
+                                    await productRepository.UpdateAsync(localProduct);
+                                }                                
                             }
                         }
 

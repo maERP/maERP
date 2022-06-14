@@ -1,13 +1,12 @@
 ﻿#nullable disable
 
-namespace maERP.Data.Dtos.Product
+namespace maERP.Data.Dtos.Product;
+
+public class BaseProductDto
 {
-	public class BaseProductDto
-	{
-        public int Id { get; set; }
-        public string SKU { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public int TaxClassId { get; set; }
-    }
+    public int Id { get; set; }
+    public string SKU { get; set; }
+    public string Name { get; set; }
+    public decimal Price { get; set; }
+    public int TaxClassId { get; set; }
 }
