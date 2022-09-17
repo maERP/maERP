@@ -49,10 +49,11 @@ builder.Services.AddControllers().AddOData(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 
-
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "maERP Server", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "maERP.Server", Version = "v1" });
+
+    /*
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme.
@@ -80,6 +81,7 @@ builder.Services.AddSwaggerGen(options =>
             new List<string>()
         }
     });
+    */
 });
 
 builder.Services.AddCors(option =>
@@ -155,7 +157,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
+    });
     app.UseCors("AllowAll");
 }
 else
@@ -183,6 +188,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 using (var scope = app.Services.CreateScope())
 {
