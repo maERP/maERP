@@ -3,16 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client", "maERP.Client\maERP.Client.csproj", "{163F8312-56AC-46B0-8DBC-053E3176D358}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Server", "maERP.Server\maERP.Server.csproj", "{979C3193-E987-4F41-ACFA-C226EF0112C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Data", "maERP.Data\maERP.Data.csproj", "{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Data", "maERP.Data\maERP.Data.csproj", "{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F4F52310-D6CC-4D30-B948-BBD52B480847}"
 	ProjectSection(SolutionItems) = preProject
 		Dockerfile = Dockerfile
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Client", "maERP.Client\maERP.Client.csproj", "{EA115FE8-A927-431F-A771-4402B08AD9E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,12 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{163F8312-56AC-46B0-8DBC-053E3176D358}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{163F8312-56AC-46B0-8DBC-053E3176D358}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{163F8312-56AC-46B0-8DBC-053E3176D358}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{163F8312-56AC-46B0-8DBC-053E3176D358}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{163F8312-56AC-46B0-8DBC-053E3176D358}.Release|Any CPU.Build.0 = Release|Any CPU
-		{163F8312-56AC-46B0-8DBC-053E3176D358}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{979C3193-E987-4F41-ACFA-C226EF0112C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{979C3193-E987-4F41-ACFA-C226EF0112C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{979C3193-E987-4F41-ACFA-C226EF0112C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -34,6 +28,12 @@ Global
 		{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

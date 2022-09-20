@@ -1,16 +1,12 @@
-﻿using maERP.Client.Contracts;
-using maERP.Client.Views;
-using maERP.Client.ViewModels;
-
-namespace maERP.Client;
-
-public partial class App : Application
+﻿namespace maERP.Client
 {
-	public App(LoginViewModel viewModel)
-	{
-		InitializeComponent();
+    public partial class App : Application
+    {
+        public App()
+        {
+            InitializeComponent();
 
-        // MainPage = new LoginPage(viewModel);
-        MainPage = new AppShell();
+            MainPage = new MainPage();
+        }
     }
 }
