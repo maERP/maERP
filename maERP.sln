@@ -14,6 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Client", "maERP.Client\maERP.Client.csproj", "{EA115FE8-A927-431F-A771-4402B08AD9E9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client-xaml", "maERP.Client-xaml\maERP.Client-xaml.csproj", "{27367F1D-669D-42D9-8AED-FB7C8FB55437}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP-Web", "maERP-Web\maERP-Web.csproj", "{9674D33E-A702-4B6B-AF0F-020C1BE2F91F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +38,16 @@ Global
 		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{9674D33E-A702-4B6B-AF0F-020C1BE2F91F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9674D33E-A702-4B6B-AF0F-020C1BE2F91F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9674D33E-A702-4B6B-AF0F-020C1BE2F91F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9674D33E-A702-4B6B-AF0F-020C1BE2F91F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
