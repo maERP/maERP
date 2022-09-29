@@ -1,4 +1,4 @@
-using maERP_Web.Data;
+using maERP.Web.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 

@@ -1,4 +1,4 @@
-namespace maERP_Web.Data
+namespace maERP.Web.Data
 {
     public class WeatherForecast
     {
