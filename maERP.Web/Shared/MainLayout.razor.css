@@ -1,4 +1,4 @@
-.page {
+﻿.page {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -68,3 +68,4 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+

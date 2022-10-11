@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 @using maERP.Web.Data
 @inject WeatherForecastService ForecastService
+@attribute [Authorize]
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -45,3 +46,4 @@ else
         forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
     }
 }
+
