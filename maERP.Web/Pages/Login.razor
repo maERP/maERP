@@ -1,10 +1,15 @@
 ﻿@page "/"
+@page "/Logout"
+@inherits LoginModel
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Login</PageTitle>
 
-<h1>Hello, world!</h1>
+<label for="name">E-Mail-Adresse:</label>
+<input name="name" @bind="this.Username" id="name" type="text" placeholder="Ihre E-Mail-Adresse" class="form-control">
 
-Welcome to your new app.
+<label for="password">Kennwort</label>
+<input name="password" @bind="this.Password" id="password" placeholder="Ihr Kennwort" type="password" class="form-control">
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<button @onclick="Login" class="btn btn-primary" type="submit" id="Anmelden" name="Anmelden">Anmelden</button>
 
+<span id="errorMsg" class="text-danger">@ErrorMsg</span>
