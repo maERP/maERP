@@ -18,6 +18,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.9">
       <PrivateAssets>all</PrivateAssets>
@@ -59,8 +61,6 @@
     <None Remove="Microsoft.AspNetCore.Mvc.Versioning" />
     <None Remove="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
     <None Remove="Contracts\SalesChannel\" />
-    <None Remove="Data\SalesChannel\" />
-    <None Remove="Data\SalesChannel\Shopware5\" />
     <None Remove="Repository\SalesChannel\" />
     <None Remove="Tasks\SalesChannel\" />
     <None Remove="Microsoft.AspNetCore.OData" />
@@ -71,8 +71,8 @@
     <Folder Include="Configurations\" />
     <Folder Include="Repository\" />
     <Folder Include="Contracts\" />
-    <Folder Include="Exceptions\" />
-    <Folder Include="Middleware\" />
+    <Folder Include="ApiExceptions\" />
+    <Folder Include="ApiMiddleware\" />
     <Folder Include="Contracts\SalesChannelContracts\" />
     <Folder Include="Repository\SalesChannelRepositories\" />
     <Folder Include="Tasks\SalesChannelTasks\" />

@@ -1,11 +1,11 @@
 ﻿#nullable disable
 
-namespace maERP.Server.Exceptions
+namespace maERP.Server.ApiExceptions
 {
 	public class NotFoundException : ApplicationException
 	{
         public NotFoundException(string name, object key)
-            : base($"{name} ({key} was not found")
+            : base($"{name} ({key} was not found!")
         {
 
         }

@@ -1,18 +1,24 @@
 ﻿#nullable disable
-using Microsoft.EntityFrameworkCore;
+
+using System.Text;
+
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.OData;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+
+using maERP.Server.Areas.Identity;
 using maERP.Server.Configurations;
 using maERP.Server.Repository;
 using maERP.Server.Contracts;
-using maERP.Data.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using maERP.Server.Middleware;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.OData;
-using Microsoft.OpenApi.Models;
+using maERP.Server.ApiMiddleware;
 using maERP.Server.Models;
+using maERP.Data.Models;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +47,14 @@ builder.Services.AddIdentityCore<ApiUser>()
     .AddTokenProvider<DataProtectorTokenProvider<ApiUser>>("maERP.Server")
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
+/* blazor start */
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddDefaultIdentity<ApiUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApiUser>>();
+/* blazor end */
 
 builder.Services.AddControllers().AddOData(options =>
 {
@@ -184,11 +198,19 @@ else
 }
 
 app.UseHttpsRedirection();
+// app.UseAuthentication();
+// app.UseAuthorization();
+// app.MapControllers();
+
+/* blazor start */
+app.UseStaticFiles();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
+app.MapBlazorHub();
+app.MapFallbackToPage("/_Host");
+/* blazor end */
 
 using (var scope = app.Services.CreateScope())
 {

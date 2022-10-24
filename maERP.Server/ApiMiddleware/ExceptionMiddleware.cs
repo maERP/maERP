@@ -2,9 +2,9 @@
 
 using System.Net;
 using Newtonsoft.Json;
-using maERP.Server.Exceptions;
+using maERP.Server.ApiExceptions;
 
-namespace maERP.Server.Middleware
+namespace maERP.Server.ApiMiddleware
 {
 	public class ExceptionMiddleware
 	{
