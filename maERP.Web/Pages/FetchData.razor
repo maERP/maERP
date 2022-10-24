@@ -1,9 +1,9 @@
 ﻿@page "/fetchdata"
-@using maERP.Web.Data
-@inject WeatherForecastService ForecastService
-@attribute [Authorize]
 
 <PageTitle>Weather forecast</PageTitle>
+
+@using maERP.Web.Data
+@inject WeatherForecastService ForecastService
 
 <h1>Weather forecast</h1>
 
@@ -43,7 +43,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
     }
 }
-

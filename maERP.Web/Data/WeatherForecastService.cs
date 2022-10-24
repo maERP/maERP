@@ -1,20 +1,20 @@
-﻿namespace maERP.Web.Data;
-
-public class WeatherForecastService
+namespace maERP.Web.Data
 {
-    private static readonly string[] Summaries = new[]
+    public class WeatherForecastService
     {
+        private static readonly string[] Summaries = new[]
+        {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     };
 
-    public Task<WeatherForecast[]> GetForecastAsync(DateOnly startDate)
-    {
-        return Task.FromResult(Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        public Task<WeatherForecast[]> GetForecastAsync(DateTime startDate)
         {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        }).ToArray());
+            return Task.FromResult(Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = startDate.AddDays(index),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            }).ToArray());
+        }
     }
 }
-

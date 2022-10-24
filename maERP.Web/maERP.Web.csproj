@@ -1,30 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-maERP.Web-0aa38913-f21b-4463-8205-27264d4c854c</UserSecretsId>
+    <UserSecretsId>99f9bb8a-cb17-4205-a3c1-7c707d77382c</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.0-rc.1.22427.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0-rc.1.22427.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.0-rc.1.22427.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0-rc.1.22426.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0-rc.1.22426.7" />
-    <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Authentication\" />
-    <None Remove="Blazored.LocalStorage" />
-    <None Remove="Models\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Authentication\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
 </Project>

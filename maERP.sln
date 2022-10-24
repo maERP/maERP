@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client-xaml", "maERP.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.RazorLibrary", "maERP.RazorLibrary\maERP.RazorLibrary.csproj", "{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Web", "maERP.Web\maERP.Web.csproj", "{EC17311E-B376-487D-8E6B-86903926B1BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Web", "maERP.Web\maERP.Web.csproj", "{2CBF38A5-838C-41B3-9F36-9533BC75C2F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,10 +50,10 @@ Global
 		{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EC17311E-B376-487D-8E6B-86903926B1BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EC17311E-B376-487D-8E6B-86903926B1BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EC17311E-B376-487D-8E6B-86903926B1BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EC17311E-B376-487D-8E6B-86903926B1BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CBF38A5-838C-41B3-9F36-9533BC75C2F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CBF38A5-838C-41B3-9F36-9533BC75C2F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CBF38A5-838C-41B3-9F36-9533BC75C2F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CBF38A5-838C-41B3-9F36-9533BC75C2F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
