@@ -16,7 +16,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client", "maERP.Clien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client-xaml", "maERP.Client-xaml\maERP.Client-xaml.csproj", "{27367F1D-669D-42D9-8AED-FB7C8FB55437}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.RazorLibrary", "maERP.RazorLibrary\maERP.RazorLibrary.csproj", "{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.RazorLibrary", "maERP.RazorLibrary\maERP.RazorLibrary.csproj", "{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{7DD1E8A8-9F3D-41EF-95A7-B93CCB0FF8AB}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		.github\workflows\publish-docker-hub.yml = .github\workflows\publish-docker-hub.yml
+		.github\workflows\publish-github-package.yml = .github\workflows\publish-github-package.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
