@@ -16,7 +16,7 @@ COPY maERP.RazorLibrary/*.csproj ./maERP.RazorLibrary/
 COPY maERP.Server/*.csproj ./maERP.Server/
 
 RUN dotnet restore "maERP.Data/maERP.Data.csproj"
-RUN dotnet restore "maERP.Server/maERP.RazorLibrary.csproj"
+RUN dotnet restore "maERP.RazorLibrary/maERP.RazorLibrary.csproj"
 RUN dotnet restore "maERP.Server/maERP.Server.csproj"
 COPY . .
 WORKDIR /src/maERP.Data
