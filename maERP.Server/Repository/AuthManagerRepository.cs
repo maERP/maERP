@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System;
 
 namespace maERP.Server.Repository
 {
@@ -42,7 +43,54 @@ namespace maERP.Server.Repository
 			return result.Errors;
 		}
 
-		public async Task<LoginResponseDto> Login(LoginDto loginDto)
+        public async Task<ApiUserDto> FindByIdAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<ApiUserDto>(user);
+        }
+
+        public async Task<List<ApiUser>> GetAllAsync()
+        {
+			
+			var users = _userManager.Users.ToList();
+
+            // return _mapper.Map<List<ApiUser>, List<ApiUserDto>>(users);
+			
+
+			// List<ApiUser> users = new List<ApiUser>();
+
+			return users;
+        }
+
+        public async Task<IEnumerable<IdentityError>> UpdateAsync(ApiUserDto userDto)
+        {
+			var _user = await _userManager.FindByIdAsync(userDto.Id);
+
+			_user.FirstName = userDto.FirstName;
+			_user.LastName = userDto.LastName;
+
+            var result = await _userManager.UpdateAsync(_user);
+
+            return result.Errors;
+        }
+
+        public async Task<IEnumerable<IdentityError>> DeleteAsync(ApiUserDto userDto)
+        {
+            var _user = _mapper.Map<ApiUser>(userDto);
+            _user.UserName = userDto.Email;
+
+            var result = await _userManager.DeleteAsync(_user);
+
+            return result.Errors;
+        }
+
+        public async Task<LoginResponseDto> Login(LoginDto loginDto)
 		{
 			_user = await _userManager.FindByEmailAsync(loginDto.Email);
 			bool isValidUser = await _userManager.CheckPasswordAsync(_user, loginDto.Password);

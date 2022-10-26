@@ -9,6 +9,14 @@ namespace maERP.Server.Contracts
 	{
 		Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto);
 
+        Task<ApiUserDto> FindByIdAsync(string userId);
+
+        Task<List<maERP.Data.Models.ApiUser>> GetAllAsync();
+
+        Task<IEnumerable<IdentityError>> UpdateAsync(ApiUserDto userDto);
+
+		Task<IEnumerable<IdentityError>> DeleteAsync(ApiUserDto userDto);
+
 		Task<LoginResponseDto> Login(LoginDto userDto);
 
 		Task<string> CreateRefreshToken();

@@ -40,6 +40,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
 
     options.UseMySql(conString, ServerVersion.AutoDetect(conString));
+    options.EnableSensitiveDataLogging();
 });
 
 builder.Services.AddIdentityCore<ApiUser>()

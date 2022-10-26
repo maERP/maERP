@@ -1,0 +1,82 @@
+﻿@page "/SalesChannel/add"
+@page "/SalesChannel/edit/{salesChannelId:int}"
+@attribute [Authorize]
+@using maERP.Data.Models
+@inject NavigationManager NavigationManager
+@inject maERP.Server.Contracts.ISalesChannelRepository salesChannelRepository
+
+<h1>Vertriebskanal</h1>
+
+<hr />
+
+<EditForm Model="@salesChannel">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="Cellnumber" class="form-label">Name</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="salesChannel.Name" />
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="Name" class="form-label">URL</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="salesChannel.URL" />
+        </div>
+        <ValidationMessage For="@(() => salesChannel.URL)" />
+    </div>
+    <div class="mb-3">
+        <label for="Address" class="form-label">Username</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="salesChannel.Username" />
+        </div>
+        <ValidationMessage For="@(() => salesChannel.Username)" />
+    </div>
+    <div class="mb-3">
+        <label for="Emailid" class="form-label">Passwort</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="salesChannel.Password" />
+        </div>
+        <ValidationMessage For="@(() => salesChannel.Password)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int salesChannelId { get; set; }
+
+    protected string Title = "hinzufügen";
+
+    protected maERP.Data.Models.SalesChannel salesChannel = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (salesChannelId != 0)
+        {
+            Title = "Edit";
+            salesChannel = await salesChannelRepository.GetAsync(salesChannelId);
+        }
+    }
+
+    protected async Task SaveProduct()
+    {
+        if (salesChannel.Id != 0)
+        {
+            salesChannel = await salesChannelRepository.GetAsync(salesChannelId);
+        }
+        else
+        {
+            salesChannel = await salesChannelRepository.GetAsync(salesChannelId);
+        }
+        Cancel();
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("/SalesChannel");
+    }
+}

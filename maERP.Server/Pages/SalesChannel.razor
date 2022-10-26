@@ -1,0 +1,57 @@
+﻿@page "/SalesChannel"
+@attribute [Authorize]
+@using maERP.Data.Models
+@inject maERP.Server.Contracts.ISalesChannelRepository salesChannelRepository
+
+<PageTitle>Vertriebskanäle</PageTitle>
+
+<h1>Vertriebskanäle</h1>
+
+@if (salesChannels == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped align-middle table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Erstellt am</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var salesChannel in salesChannels)
+            {
+                <tr>
+                    <td>@salesChannel.Name</td>
+                    <td>@salesChannel.URL</td>
+                    <td>@salesChannel.CreatedAt</td>
+                    <td>
+                        <a href='/SalesChannel/edit/@salesChannel.Id' class="btn btn-outline-dark" role="button">
+                            Edit
+                        </a>
+                        <a href='/SalesChannel/delete/@salesChannel.Id' class="btn btn-outline-danger" role="button">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+    <a href="/SalesChannel/add">Vertriebskanal anlegen</a>
+}
+
+@code {
+
+    private List<maERP.Data.Models.SalesChannel>? salesChannels;
+
+    protected override async Task OnInitializedAsync()
+    {
+        salesChannels = await salesChannelRepository.GetAllAsync();
+    }
+}

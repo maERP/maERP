@@ -1,4 +1,5 @@
 ﻿@page "/Product/{productId:int}"
+@attribute [Authorize]
 @using maERP.Data.Models
 @inject NavigationManager NavigationManager
 @inject maERP.Server.Contracts.IProductsRepository productRepository
