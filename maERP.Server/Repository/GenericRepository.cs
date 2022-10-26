@@ -5,7 +5,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using maERP.Server.Contracts;
 using maERP.Server.Models;
-using maERP.Server.ApiExceptions;
+using maERP.Server.Exceptions;
 
 namespace maERP.Server.Repository
 {

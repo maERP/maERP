@@ -1,18 +1,61 @@
-﻿@page "/counter"
+﻿@page "/Product"
+@attribute [Authorize]
+@using maERP.Data.Models
+@inject maERP.Server.Contracts.IProductsRepository productsRepository
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Produkte</PageTitle>
 
-<h1>Counter</h1>
+<h1>Produkte</h1>
 
-<p role="status">Current count: @currentCount</p>
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped align-middle table-bordered">
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Preis</th>
+                <th>Steuerklasse</th>
+                <th>EAN</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.SKU</td>
+                    <td>@product.Name</td>
+                    <td>@product.Price.ToString("F") EUR</td>
+                    <td>@product.TaxClass.</td>
+                    <td>@product.EAN</td>
+                    <td>
+                        <a href='/Product/edit/@product.Id' class="btn btn-outline-dark" role="button">
+                            Edit
+                        </a>
+                        <a href='/Product/delete/@product.Id' class="btn btn-outline-danger" role="button">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+    </table>
+
+    <a href="/Product/add">Produkt anlegen</a>
+}
 
 @code {
-    private int currentCount = 0;
 
-    private void IncrementCount()
+    private List<maERP.Data.Models.Product>? products;
+
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        products = await productsRepository.GetAllAsync();
     }
 }

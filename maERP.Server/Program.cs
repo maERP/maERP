@@ -15,7 +15,7 @@ using maERP.Server.Areas.Identity;
 using maERP.Server.Configurations;
 using maERP.Server.Repository;
 using maERP.Server.Contracts;
-using maERP.Server.ApiMiddleware;
+using maERP.Server.Middleware;
 using maERP.Server.Models;
 using maERP.Data.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -67,7 +67,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "maERP.Server", Version = "v1" });
 
-    /*
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme.
@@ -95,7 +94,6 @@ builder.Services.AddSwaggerGen(options =>
             new List<string>()
         }
     });
-    */
 });
 
 builder.Services.AddCors(option =>
@@ -106,6 +104,7 @@ builder.Services.AddCors(option =>
             .AllowAnyMethod());
 });
 
+/*
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -125,7 +124,9 @@ builder.Services.AddAuthentication(options =>
             builder.Configuration["JwtSettings:Key"])
         )
     };
-});
+}); */
+
+builder.Services.AddAuthentication();
 
 builder.Services.AddResponseCaching(options =>
 {

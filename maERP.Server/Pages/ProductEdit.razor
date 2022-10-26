@@ -1,0 +1,83 @@
+﻿@page "/Product/add"
+@page "/Product/edit/{productId:int}"
+@using maERP.Data.Models
+@inject NavigationManager NavigationManager
+@inject maERP.Server.Contracts.IProductsRepository productRepository
+
+<h1> Produkt</h1>
+
+<hr />
+
+<EditForm Model="@product">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="Cellnumber" class="form-label">SKU</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="product.SKU" />
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="product.Name" />
+        </div>
+        <ValidationMessage For="@(() => product.Name)" />
+    </div>
+    <div class="mb-3">
+        <label for="Address" class="form-label">Beschreibung</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="product.Description" />
+        </div>
+        <ValidationMessage For="@(() => product.Description)" />
+    </div>
+    <div class="mb-3">
+        <label for="Emailid" class="form-label">EAN</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="product.EAN" />
+        </div>
+        <ValidationMessage For="@(() => product.EAN)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int productId { get; set; }
+
+    protected string Title = "Add";
+
+    protected maERP.Data.Models.Product product = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (productId != 0)
+        {
+            Title = "Edit";
+            product = await productRepository.GetAsync(productId);
+        }
+    }
+
+    protected async Task SaveProduct()
+    {
+        if (product.Id != 0)
+        {
+            // await Http.PutAsJsonAsync("api/User", product);
+            product = await productRepository.GetAsync(productId);
+        }
+        else
+        {
+            // await Http.PostAsJsonAsync("api/User", product);
+            product = await productRepository.GetAsync(productId);
+        }
+        Cancel();
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("/Product");
+    }
+}
