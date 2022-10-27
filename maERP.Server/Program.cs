@@ -157,6 +157,7 @@ builder.Services.AddVersionedApiExplorer(
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IAuthManager, AuthManager>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<IProductsSalesChannelsRepository, ProductsSalesChannelsRepository>();
 builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
@@ -224,5 +225,8 @@ using (var scope = app.Services.CreateScope())
         context.Database.Migrate();
     }
 }
+
+app.MapGet("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Login", true, true)));
+app.MapPost("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Login", true, true)));
 
 app.Run();

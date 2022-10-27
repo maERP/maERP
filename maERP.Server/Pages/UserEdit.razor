@@ -46,9 +46,9 @@
 @code {
 
     [Parameter]
-    public string userId { get; set; }
+    public string ?userId { get; set; }
 
-    protected string Title = "Add";
+    protected string Title = "hinzufügen";
 
     protected maERP.Data.Dtos.User.ApiUserDto user = new();
 
@@ -56,7 +56,7 @@
     {
         if (userId != null)
         {
-            Title = "Edit";
+            Title = "bearbeiten";
             user = await authManagerRepository.FindByIdAsync(userId);
         }
     }

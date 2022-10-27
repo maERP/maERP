@@ -39,8 +39,8 @@
         <ValidationMessage For="@(() => product.EAN)" />
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Save</button>
-        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" @onclick="SaveProduct">Speichern</button>
+        <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
     </div>
 </EditForm>
 
@@ -57,7 +57,7 @@
     {
         if (productId != 0)
         {
-            Title = "Edit";
+            Title = "Bearbeiten";
             product = await productRepository.GetAsync(productId);
         }
     }

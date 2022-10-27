@@ -90,6 +90,14 @@ namespace maERP.Server.Repository
             return result.Errors;
         }
 
+        public async Task<IEnumerable<IdentityError>> DeleteByIdAsync(string userId)
+        {
+            var _user = await _userManager.FindByIdAsync(userId);
+            var result = await _userManager.DeleteAsync(_user);
+
+            return result.Errors;
+        }
+
         public async Task<LoginResponseDto> Login(LoginDto loginDto)
 		{
 			_user = await _userManager.FindByEmailAsync(loginDto.Email);

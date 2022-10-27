@@ -1,0 +1,62 @@
+﻿@page "/TaxClass/add"
+@page "/TaxClass/edit/{taxClassId:int}"
+@attribute [Authorize]
+@using maERP.Data.Models
+@inject NavigationManager NavigationManager
+@inject maERP.Server.Contracts.ITaxClassesRepository taxClassRepository
+
+<h1>Steuersatz</h1>
+
+<hr />
+
+<EditForm Model="@taxClass">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="Name" class="form-label">Steuersatz</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="taxClass.TaxRate" />
+        </div>
+        <ValidationMessage For="@(() => taxClass.TaxRate)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" @onclick="SaveTaxClass">Speichern</button>
+        <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int taxClassId { get; set; }
+
+    protected string Title = "hinzufügen";
+
+    protected maERP.Data.Models.TaxClass taxClass = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (taxClassId != 0)
+        {
+            Title = "Bearbeiten";
+            taxClass = await taxClassRepository.GetAsync(taxClassId);
+        }
+    }
+
+    protected async Task SaveTaxClass()
+    {
+        if (taxClass.Id != 0)
+        {
+            await taxClassRepository.UpdateAsync(taxClass);
+        }
+        else
+        {
+            await taxClassRepository.AddAsync(taxClass);
+        }
+        Cancel();
+    }
+
+    public void Cancel()
+    {
+        NavigationManager.NavigateTo("/TaxClass");
+    }
+}

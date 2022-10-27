@@ -1,0 +1,44 @@
+﻿@page "/Order"
+@attribute [Authorize]
+@using maERP.Data.Models
+@inject maERP.Server.Contracts.IProductsRepository productsRepository
+
+
+<PageTitle>Bestellungen</PageTitle>
+
+<h1>Bestellungen</h1>
+
+@if (orders == null)
+{
+    <p><em>Lade...</em></p>
+}
+else
+{
+    <table class="table table-striped align-middle table-bordered">
+        <thead>
+            <tr>
+                <th>Nr</th>
+                <th>Artikel</th>
+                <th>Summe</th>
+                <th>Datum</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+
+    </table>
+
+    <a href="/Product/add">Bestellung anlegen</a>
+}
+
+@code {
+
+    private List<maERP.Data.Models.Product>? orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await productsRepository.GetAllAsync();
+    }
+}

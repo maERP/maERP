@@ -11,36 +11,68 @@
 
 <EditForm Model="@salesChannel">
     <DataAnnotationsValidator />
+
     <div class="mb-3">
         <label for="Cellnumber" class="form-label">Name</label>
         <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="salesChannel.Name" />
+            <InputText class="form-control" @bind-Value="@salesChannel.Name" />
         </div>
     </div>
+
     <div class="mb-3">
         <label for="Name" class="form-label">URL</label>
         <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="salesChannel.URL" />
+            <InputText class="form-control" @bind-Value="@salesChannel.URL" />
         </div>
         <ValidationMessage For="@(() => salesChannel.URL)" />
     </div>
+
     <div class="mb-3">
         <label for="Address" class="form-label">Username</label>
         <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="salesChannel.Username" />
+            <InputText class="form-control" @bind-Value="@salesChannel.Username" />
         </div>
         <ValidationMessage For="@(() => salesChannel.Username)" />
     </div>
+
     <div class="mb-3">
         <label for="Emailid" class="form-label">Passwort</label>
         <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="salesChannel.Password" />
+            <InputText class="form-control" @bind-Value="@salesChannel.Password" />
         </div>
         <ValidationMessage For="@(() => salesChannel.Password)" />
     </div>
+
+    <table class="table table-stripped align-middle table-bordered">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Importieren</th>
+                <th>Exportieren</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Produkte</td>
+                <td><InputCheckbox @bind-Value="@salesChannel.ImportProducts" /></td>
+                <td><InputCheckbox @bind-Value="@salesChannel.ExportProducts" /></td>
+            </tr>
+            <tr>
+                <td>Kunden</td>
+                <td><InputCheckbox @bind-Value="@salesChannel.ImportCustomers" /></td>
+                <td><InputCheckbox @bind-Value="@salesChannel.ExportCustomers" /></td>
+            </tr>
+            <tr>
+                <td>Bestellungen</td>
+                <td><InputCheckbox @bind-Value="@salesChannel.ImportOrders" /></td>
+                <td><InputCheckbox @bind-Value="@salesChannel.ExportOrders" /></td>
+            </tr>
+        </tbody>
+     </table>
+
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Save</button>
-        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" @onclick="SaveSalesChannel">Speichern</button>
+        <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
     </div>
 </EditForm>
 
@@ -57,20 +89,20 @@
     {
         if (salesChannelId != 0)
         {
-            Title = "Edit";
+            Title = "Bearbeiten";
             salesChannel = await salesChannelRepository.GetAsync(salesChannelId);
         }
     }
 
-    protected async Task SaveProduct()
+    protected async Task SaveSalesChannel()
     {
         if (salesChannel.Id != 0)
         {
-            salesChannel = await salesChannelRepository.GetAsync(salesChannelId);
+            await salesChannelRepository.UpdateAsync(salesChannel);
         }
         else
         {
-            salesChannel = await salesChannelRepository.GetAsync(salesChannelId);
+            await salesChannelRepository.AddAsync(salesChannel);
         }
         Cancel();
     }

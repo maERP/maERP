@@ -17,6 +17,8 @@ namespace maERP.Server.Contracts
 
 		Task<IEnumerable<IdentityError>> DeleteAsync(ApiUserDto userDto);
 
+		Task<IEnumerable<IdentityError>> DeleteByIdAsync(string userId);
+
 		Task<LoginResponseDto> Login(LoginDto userDto);
 
 		Task<string> CreateRefreshToken();

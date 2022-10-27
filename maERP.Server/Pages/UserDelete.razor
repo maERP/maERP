@@ -1,19 +1,12 @@
-﻿@page "/User/{userId}"
+﻿@page "/User/delete/{userId}"
 @attribute [Authorize]
-@using maERP.Data.Models
 @inject NavigationManager NavigationManager
 @inject maERP.Server.Contracts.IAuthManager authManagerRepository
-
-<h1>@user.Email</h1>
-
-<p></p>
 
 @code {
 
     [Parameter]
-    public string ?userId { get; set; }
-
-    protected string Title = "Benutzerdetail";
+    public string? userId { get; set; }
 
     protected maERP.Data.Dtos.User.ApiUserDto user = new();
 
@@ -21,9 +14,8 @@
     {
         if (userId != null)
         {
-            Title = "bearbeiten";
-            user = await authManagerRepository.FindByIdAsync(userId);
+            await authManagerRepository.DeleteByIdAsync(userId);
+            NavigationManager.NavigateTo("/User");
         }
-        else Title = "nicht gefunden";
     }
 }

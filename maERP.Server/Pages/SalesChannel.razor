@@ -9,7 +9,7 @@
 
 @if (salesChannels == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Lade...</em></p>
 }
 else
 {
@@ -18,7 +18,6 @@ else
             <tr>
                 <th>Name</th>
                 <th>URL</th>
-                <th>Erstellt am</th>
                 <th></th>
             </tr>
         </thead>
@@ -28,13 +27,12 @@ else
                 <tr>
                     <td>@salesChannel.Name</td>
                     <td>@salesChannel.URL</td>
-                    <td>@salesChannel.CreatedAt</td>
                     <td>
                         <a href='/SalesChannel/edit/@salesChannel.Id' class="btn btn-outline-dark" role="button">
-                            Edit
+                            Bearbeiten
                         </a>
                         <a href='/SalesChannel/delete/@salesChannel.Id' class="btn btn-outline-danger" role="button">
-                            Delete
+                            Löschen
                         </a>
                     </td>
                 </tr>

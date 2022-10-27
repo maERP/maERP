@@ -1,0 +1,60 @@
+﻿@page "/Customer"
+@attribute [Authorize]
+@using maERP.Data.Models
+@inject maERP.Server.Contracts.ICustomerRepository customerRepository
+
+
+<PageTitle>Kunden</PageTitle>
+
+<h1>Kunden</h1>
+
+@if (customers == null)
+{
+    <p><em>Lade...</em></p>
+}
+else
+{
+<table class="table table-striped align-middle table-bordered">
+    <thead>
+        <tr>
+            <th>Nr.</th>
+            <th>Vorname</th>
+            <th>Nachname</th>
+            <th>Kunde seit</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in customers)
+        {
+            <tr>
+                <td>@customer.Id</td>
+                <td>@customer.FirstName</td>
+                <td>@customer.LastName</td>
+                <td>@customer.EnrollmentDate</td>
+                <td>
+                    <a href='/Customer/edit/@customer.Id' class="btn btn-outline-dark" role="button">
+                        Bearbeiten
+                    </a>
+                    <a href='/Customer/delete/@customer.Id' class="btn btn-outline-danger" role="button">
+                        Löschen
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+    <a href="/Customer/add">Kunden anlegen</a>
+}
+
+@code {
+
+    private List<maERP.Data.Models.Customer>? customers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        customers = await customerRepository.GetAllAsync();
+    }
+}

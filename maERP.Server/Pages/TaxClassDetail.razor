@@ -1,0 +1,29 @@
+﻿@page "/TaxClass/{taxClassId:int}"
+@attribute [Authorize]
+@using maERP.Data.Models
+@inject NavigationManager NavigationManager
+@inject maERP.Server.Contracts.ITaxClassesRepository taxClassRepository
+
+<h1>Steuerklasse</h1>
+
+
+
+@code {
+
+    [Parameter]
+    public int taxClassId { get; set; }
+
+    protected string Title = "Steuersätze";
+
+    protected maERP.Data.Models.TaxClass taxClass = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (taxClassId != 0)
+        {
+            Title = "Bearbeiten";
+            taxClass = await taxClassRepository.GetAsync(taxClassId);
+        }
+        else Title = "nicht gefunden";
+    }
+}
