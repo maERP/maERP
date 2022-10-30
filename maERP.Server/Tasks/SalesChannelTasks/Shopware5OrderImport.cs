@@ -1,0 +1,208 @@
+﻿#nullable disable
+/*
+using System.Net.Http.Headers;
+using maERP.Data.Models;
+using maERP.Server.Contracts;
+using Newtonsoft.Json;
+using maERP.Data.Models.SalesChannels.Shopware5;
+using maERP.Data.Models.SalesChannels.Shopware5.OrderResponse;
+
+namespace maERP.Server.Tasks.SalesChannelTasks;
+
+public class OrderDownloadTask : IHostedService
+{
+    private readonly IServiceScopeFactory _service;
+
+    public OrderDownloadTask(IServiceScopeFactory serviceScopeFactory)
+    {
+        _service = serviceScopeFactory;
+    }
+
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        Task.Run(async () =>
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await MainLoop();
+
+                await Task.Delay(new TimeSpan(0, 0, 60)); // 5 second delay
+
+                Console.WriteLine("Order Import MainLoop finished");
+            }
+        });
+
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
+
+    private async Task MainLoop()
+    {
+        Console.WriteLine("Order Import Task started");
+
+        var scope = _service.CreateScope();
+
+        var salesChannelRepository = scope.ServiceProvider.GetService<ISalesChannelRepository>();
+        var productsRepository = scope.ServiceProvider.GetService<IProductsRepository>();
+        var productSalesChannelRepository = scope.ServiceProvider.GetService<IProductsSalesChannelsRepository>();
+
+        var salesChannels = await salesChannelRepository.GetAllAsync();
+
+        foreach (var salesChannel in salesChannels)
+        {
+            if (salesChannel.Type != SalesChannelType.shopware5 || salesChannel.ImportOrders == false)
+            {
+                continue;
+            }
+
+            Console.WriteLine($"Start Order Import for {salesChannel.Name} (ID: {salesChannel.Id})");
+
+            int requestStart = 0;
+            int requestLimit = 100;
+            int requestMax = 0;
+
+            do
+            {
+                try
+                {
+                    var client = new HttpClient();
+                    string requestUrl = salesChannel.URL + $"/api/orders?start={requestStart}&limit={requestLimit}";
+                    client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000000));
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var authenticationString = $"{salesChannel.Username}:{salesChannel.Password}";
+                    var base64EncodedAuthenticationString = Convert.ToBase64String(System.Text.ASCIIEncoding.UTF8.GetBytes(authenticationString));
+                    client.DefaultRequestHeaders.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
+
+                    HttpResponseMessage response = new HttpResponseMessage();
+                    response = await client.GetAsync(requestUrl).ConfigureAwait(false);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = response.Content.ReadAsStringAsync().Result;
+
+                        Shopware5Response<Shopware5OrderResponse> remoteOrders = new Shopware5Response<Shopware5OrderResponse>();
+
+                        try
+                        {
+                            remoteOrders = JsonConvert.DeserializeObject<Shopware5Response<Shopware5OrderResponse>>(result);
+
+                            requestMax = remoteOrders.total;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Order Import Error: {ex.Message}");
+                        }
+
+                        foreach (var remoteOrder in remoteOrders.data)
+                        {
+                            var ProductSalesChannel = await productSalesChannelRepository.getByRemoteProductIdAsync(remoteProduct.id, salesChannel.Id);
+
+                            if (ProductSalesChannel == null)
+                            {
+                                var localProduct = new Product();
+
+                                localProduct.Name = remoteProduct.name;
+                                localProduct.EAN = Globals.maxLength(remoteProduct.mainDetail.ean, 13);
+                                localProduct.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
+                                localProduct.SKU = remoteProduct.mainDetail.number;
+                                localProduct.TaxClassId = 1;
+                                localProduct.Description = Globals.maxLength(remoteProduct.descriptionLong, 4000);
+
+                                localProduct.ProductSalesChannel = new List<ProductSalesChannel>();
+
+                                localProduct.ProductSalesChannel.Add(new ProductSalesChannel
+                                {
+                                    RemoteProductId = remoteProduct.id,
+                                    SalesChannelId = salesChannel.Id,
+                                    Price = (decimal)remoteProduct.mainDetail.purchasePrice
+                                });
+
+                                await productRepository.AddAsync(localProduct);
+                            }
+                            else
+                            {
+                                bool newUpdate = false;
+
+                                ProductSalesChannel.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
+
+                                await productSalesChannelRepository.UpdateAsync(ProductSalesChannel);
+
+                                var localProduct = await productRepository.GetAsync(ProductSalesChannel.ProductId);
+
+                                if(localProduct.Name != remoteProduct.name)
+                                {
+                                    Console.WriteLine("new product name");
+                                    localProduct.Name = remoteProduct.name;
+                                    newUpdate = true;
+                                }
+
+                                if(localProduct.EAN != Globals.maxLength(remoteProduct.mainDetail.ean, 13))
+                                {
+                                    Console.WriteLine("new product EAN");
+                                    localProduct.EAN = Globals.maxLength(remoteProduct.mainDetail.ean, 13);
+                                    newUpdate = true;
+                                }
+
+                                if(localProduct.Price != (decimal)remoteProduct.mainDetail.purchasePrice)
+                                {
+                                    Console.WriteLine("new product price");
+                                    localProduct.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
+                                    newUpdate = true;
+                                }
+
+                                if(localProduct.SKU != remoteProduct.mainDetail.number)
+                                {
+                                    Console.WriteLine("new product sku");
+                                    localProduct.SKU = remoteProduct.mainDetail.number;
+                                    newUpdate = true;
+                                }
+
+                                if(localProduct.TaxClassId != 1)
+                                {
+                                    Console.WriteLine("new product tax class");
+                                    localProduct.TaxClassId = 1;
+                                    newUpdate = true;
+                                }
+
+                                if(localProduct.Description != Globals.maxLength(remoteProduct.descriptionLong, 4000))
+                                {
+                                    Console.WriteLine("new product description");
+                                    localProduct.Description = Globals.maxLength(remoteProduct.descriptionLong, 4000);
+                                    newUpdate = true;
+                                }
+
+                                if(newUpdate)
+                                {
+                                    localProduct.UpdatedAt = DateTime.Now;
+                                    await productRepository.UpdateAsync(localProduct);
+                                }                                
+                            }
+                        }
+
+                        response.Dispose();
+
+                        requestStart += requestLimit;
+
+                        Console.WriteLine($"Import Orders: {requestUrl} (max {requestMax} Orders)");
+
+                        await Task.Delay(new TimeSpan(0, 0, 1)); // 5 second delay
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message.ToString());
+                }
+            }
+            while (requestMax != 0 && requestStart <= requestMax);
+
+            Console.WriteLine("Download function end");
+        }
+    }
+}
+*/

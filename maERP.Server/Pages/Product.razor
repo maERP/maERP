@@ -13,6 +13,10 @@
 }
 else
 {
+    <div class="form-group">
+        <input class="form-control" type="text" placeholder="Suche..." @bind="filter" @bind:event="oninput">
+    </div>
+    <br />
     <table class="table table-striped align-middle table-bordered">
         <thead>
             <tr>
@@ -25,20 +29,20 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var product in products)
-            {
+            @foreach (var product in products.Where(x => IsVisible(x)))
+                {
+                    // if (!IsVisible(product))
+                    //     continue;
+
                 <tr>
                     <td>@product.SKU</td>
                     <td>@product.Name</td>
                     <td>@product.Price.ToString("F") EUR</td>
-                    <td>@product.TaxClass.</td>
+                    <td>@product.TaxClass</td>
                     <td>@product.EAN</td>
                     <td>
                         <a href='/Product/edit/@product.Id' class="btn btn-outline-dark" role="button">
                             Bearbeiten
-                        </a>
-                        <a href='/Product/delete/@product.Id' class="btn btn-outline-danger" role="button">
-                            Löschen
                         </a>
                     </td>
                 </tr>
@@ -53,9 +57,23 @@ else
 @code {
 
     private List<maERP.Data.Models.Product>? products;
+    public string filter { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         products = await productsRepository.GetAllAsync();
+    }
+
+    public bool IsVisible(maERP.Data.Models.Product product)
+    {
+        if (string.IsNullOrEmpty(filter))
+            return true;
+
+        if (product.SKU.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+            product.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+            product.EAN.Contains(filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
     }
 }

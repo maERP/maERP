@@ -41,6 +41,9 @@
     <div class="form-group">
         <button type="submit" class="btn btn-primary" @onclick="SaveProduct">Speichern</button>
         <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
+        <a href='/Product/delete/@product.Id' class="btn btn-outline-danger" role="button">
+            Löschen
+        </a>
     </div>
 </EditForm>
 

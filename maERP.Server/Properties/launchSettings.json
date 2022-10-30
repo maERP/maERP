@@ -12,7 +12,7 @@
     "maERP.Server": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:6503",
+      "applicationUrl": "http://localhost:35745",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
