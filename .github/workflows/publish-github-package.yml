@@ -7,11 +7,11 @@ name: Publish as Github-Package
 
 on:
   push:
-    branches: [ main-disabled ]
+    branches: [ main ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   pull_request:
-    branches: [ main-disabled ]
+    branches: [ main ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -72,7 +72,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
-          file: ./maERP.Server/Dockerfile
+          file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
