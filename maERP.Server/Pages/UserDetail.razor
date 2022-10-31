@@ -1,6 +1,6 @@
 ﻿@page "/User/{userId}"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject NavigationManager NavigationManager
 @inject maERP.Server.Contracts.IAuthManager authManagerRepository
 
@@ -15,7 +15,7 @@
 
     protected string Title = "Benutzerdetail";
 
-    protected maERP.Data.Dtos.User.ApiUserDto user = new();
+    protected maERP.Shared.Dtos.User.ApiUserDto user = new();
 
     protected override async Task OnParametersSetAsync()
     {

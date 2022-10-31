@@ -1,5 +1,5 @@
-﻿using maERP.Data.Models;
-using maERP.Data.Dtos.TaxClass;
+﻿using maERP.Shared.Models;
+using maERP.Shared.Dtos.TaxClass;
 
 namespace maERP.Server.Contracts
 {

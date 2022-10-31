@@ -21,7 +21,7 @@ namespace maERP.Server.Migrations
                 .HasAnnotation("ProductVersion", "6.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("maERP.Data.Models.ApiUser", b =>
+            modelBuilder.Entity("maERP.Shared.Models.ApiUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -111,7 +111,7 @@ namespace maERP.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.Customer", b =>
+            modelBuilder.Entity("maERP.Shared.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -136,7 +136,7 @@ namespace maERP.Server.Migrations
                     b.ToTable("customer", (string)null);
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.Product", b =>
+            modelBuilder.Entity("maERP.Shared.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -230,7 +230,7 @@ namespace maERP.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.ProductSalesChannel", b =>
+            modelBuilder.Entity("maERP.Shared.Models.ProductSalesChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -263,7 +263,7 @@ namespace maERP.Server.Migrations
                     b.ToTable("product_sales_channel", (string)null);
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.ProductStock", b =>
+            modelBuilder.Entity("maERP.Shared.Models.ProductStock", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -280,7 +280,7 @@ namespace maERP.Server.Migrations
                     b.ToTable("product_stock", (string)null);
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.SalesChannel", b =>
+            modelBuilder.Entity("maERP.Shared.Models.SalesChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -355,7 +355,7 @@ namespace maERP.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.TaxClass", b =>
+            modelBuilder.Entity("maERP.Shared.Models.TaxClass", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -398,7 +398,7 @@ namespace maERP.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.Warehouse", b =>
+            modelBuilder.Entity("maERP.Shared.Models.Warehouse", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -618,9 +618,9 @@ namespace maERP.Server.Migrations
                     b.ToTable("ProductProductStock");
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.Product", b =>
+            modelBuilder.Entity("maERP.Shared.Models.Product", b =>
                 {
-                    b.HasOne("maERP.Data.Models.TaxClass", "TaxClass")
+                    b.HasOne("maERP.Shared.Models.TaxClass", "TaxClass")
                         .WithMany()
                         .HasForeignKey("TaxClassId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -629,15 +629,15 @@ namespace maERP.Server.Migrations
                     b.Navigation("TaxClass");
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.ProductSalesChannel", b =>
+            modelBuilder.Entity("maERP.Shared.Models.ProductSalesChannel", b =>
                 {
-                    b.HasOne("maERP.Data.Models.Product", "Product")
+                    b.HasOne("maERP.Shared.Models.Product", "Product")
                         .WithMany("ProductSalesChannel")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("maERP.Data.Models.SalesChannel", "SalesChannel")
+                    b.HasOne("maERP.Shared.Models.SalesChannel", "SalesChannel")
                         .WithMany()
                         .HasForeignKey("SalesChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -659,7 +659,7 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("maERP.Data.Models.ApiUser", null)
+                    b.HasOne("maERP.Shared.Models.ApiUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -668,7 +668,7 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("maERP.Data.Models.ApiUser", null)
+                    b.HasOne("maERP.Shared.Models.ApiUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -683,7 +683,7 @@ namespace maERP.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("maERP.Data.Models.ApiUser", null)
+                    b.HasOne("maERP.Shared.Models.ApiUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -692,7 +692,7 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("maERP.Data.Models.ApiUser", null)
+                    b.HasOne("maERP.Shared.Models.ApiUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -701,20 +701,20 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("ProductProductStock", b =>
                 {
-                    b.HasOne("maERP.Data.Models.ProductStock", null)
+                    b.HasOne("maERP.Shared.Models.ProductStock", null)
                         .WithMany()
                         .HasForeignKey("ProductStockId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("maERP.Data.Models.Product", null)
+                    b.HasOne("maERP.Shared.Models.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("maERP.Data.Models.Product", b =>
+            modelBuilder.Entity("maERP.Shared.Models.Product", b =>
                 {
                     b.Navigation("ProductSalesChannel");
                 });

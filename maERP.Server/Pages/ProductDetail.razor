@@ -1,6 +1,6 @@
 ﻿@page "/Product/{productId:int}"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject NavigationManager NavigationManager
 @inject maERP.Server.Contracts.IProductsRepository productRepository
 
@@ -15,7 +15,7 @@
 
     protected string Title = "Produktdetail";
 
-    protected maERP.Data.Models.Product product = new();
+    protected maERP.Shared.Models.Product product = new();
 
     protected override async Task OnParametersSetAsync()
     {

@@ -1,7 +1,7 @@
 ﻿@page "/TaxClass/add"
 @page "/TaxClass/edit/{taxClassId:int}"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject NavigationManager NavigationManager
 @inject maERP.Server.Contracts.ITaxClassesRepository taxClassRepository
 
@@ -31,7 +31,7 @@
 
     protected string Title = "hinzufügen";
 
-    protected maERP.Data.Models.TaxClass taxClass = new();
+    protected maERP.Shared.Models.TaxClass taxClass = new();
 
     protected override async Task OnParametersSetAsync()
     {

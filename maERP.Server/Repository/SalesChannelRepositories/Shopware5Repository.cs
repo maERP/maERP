@@ -2,8 +2,8 @@
 
 using maERP.Server.Contracts.SalesChannelContracts;
 using maERP.Server.Models;
-using maERP.Data.Models.SalesChannels.Shopware5;
-using maERP.Data.Models.SalesChannels.Shopware5.ProductResponse;
+using maERP.Shared.Models.SalesChannels.Shopware5;
+using maERP.Shared.Models.SalesChannels.Shopware5.ProductResponse;
 
 namespace maERP.Server.Repository.SalesChannelRepositories
 {

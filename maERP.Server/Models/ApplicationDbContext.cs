@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using maERP.Data.Models;
+using maERP.Shared.Models;
 using maERP.Server.Configurations.Seeds;
 using Microsoft.AspNetCore.Identity;
 

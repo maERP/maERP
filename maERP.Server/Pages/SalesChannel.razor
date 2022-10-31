@@ -1,6 +1,6 @@
 ﻿@page "/SalesChannel"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject maERP.Server.Contracts.ISalesChannelRepository salesChannelRepository
 
 <PageTitle>Vertriebskanäle</PageTitle>
@@ -46,7 +46,7 @@ else
 
 @code {
 
-    private List<maERP.Data.Models.SalesChannel>? salesChannels;
+    private List<maERP.Shared.Models.SalesChannel>? salesChannels;
 
     protected override async Task OnInitializedAsync()
     {

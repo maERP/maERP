@@ -1,7 +1,7 @@
 ﻿@page "/User"
 @attribute [Authorize]
-@using maERP.Data.Models
-@using maERP.Data.Dtos.User
+@using maERP.Shared.Models
+@using maERP.Shared.Dtos.User
 @inject maERP.Server.Contracts.IAuthManager authManagerRepository
 
 <PageTitle>Benutzer</PageTitle>
@@ -51,7 +51,7 @@ else
 
 @code {
 
-    private List<maERP.Data.Models.ApiUser> ?users;
+    private List<maERP.Shared.Models.ApiUser> ?users;
 
     protected override async Task OnInitializedAsync()
     {

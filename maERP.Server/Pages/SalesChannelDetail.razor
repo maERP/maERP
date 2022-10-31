@@ -1,6 +1,6 @@
 ﻿@page "/SalesChannel/{salesChannelId:int}"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject NavigationManager NavigationManager
 @inject maERP.Server.Contracts.ISalesChannelRepository salesChannelRepository
 
@@ -15,7 +15,7 @@
 
     protected string Title = "Vertriebskanaldetails";
 
-    protected maERP.Data.Models.SalesChannel salesChannel = new();
+    protected maERP.Shared.Models.SalesChannel salesChannel = new();
 
     protected override async Task OnParametersSetAsync()
     {

@@ -1,6 +1,6 @@
 ﻿@page "/Order"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject maERP.Server.Contracts.IProductsRepository productsRepository
 
 
@@ -35,7 +35,7 @@ else
 
 @code {
 
-    private List<maERP.Data.Models.Product>? orders;
+    private List<maERP.Shared.Models.Product>? orders;
 
     protected override async Task OnInitializedAsync()
     {

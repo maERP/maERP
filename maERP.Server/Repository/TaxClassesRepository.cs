@@ -3,10 +3,10 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using maERP.Server.Contracts;
-using maERP.Data.Models;
+using maERP.Shared.Models;
 using maERP.Server.Models;
 using maERP.Server.Exceptions;
-using maERP.Data.Dtos.TaxClass;
+using maERP.Shared.Dtos.TaxClass;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Server.Repository

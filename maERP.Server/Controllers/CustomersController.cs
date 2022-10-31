@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using maERP.Data.Models;
+using maERP.Shared.Models;
 using maERP.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 

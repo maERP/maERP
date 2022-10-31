@@ -1,6 +1,6 @@
 ﻿@page "/Product"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject maERP.Server.Contracts.IProductsRepository productsRepository
 
 <PageTitle>Produkte</PageTitle>
@@ -56,15 +56,15 @@ else
 
 @code {
 
-    private List<maERP.Data.Models.Product>? products;
-    public string filter { get; set; }
+    private List<maERP.Shared.Models.Product>? products;
+    public string? filter { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         products = await productsRepository.GetAllAsync();
     }
 
-    public bool IsVisible(maERP.Data.Models.Product product)
+    public bool IsVisible(maERP.Shared.Models.Product product)
     {
         if (string.IsNullOrEmpty(filter))
             return true;

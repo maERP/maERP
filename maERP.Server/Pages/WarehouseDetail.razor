@@ -1,6 +1,6 @@
 ﻿@page "/Warehouse/{warehouseId:int}"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject NavigationManager NavigationManager
 @inject maERP.Server.Contracts.IWarehousesRepository warehouseRepository
 
@@ -14,7 +14,7 @@
 
     protected string Title = "Lager";
 
-    protected maERP.Data.Models.Warehouse warehouse = new();
+    protected maERP.Shared.Models.Warehouse warehouse = new();
 
     protected override async Task OnParametersSetAsync()
     {

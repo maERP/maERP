@@ -17,7 +17,7 @@ using maERP.Server.Repository;
 using maERP.Server.Contracts;
 using maERP.Server.Middleware;
 using maERP.Server.Models;
-using maERP.Data.Models;
+using maERP.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);

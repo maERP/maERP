@@ -2,7 +2,7 @@
 
 using AutoMapper;
 using maERP.Server.Contracts;
-using maERP.Data.Models;
+using maERP.Shared.Models;
 using maERP.Server.Models;
 using Microsoft.EntityFrameworkCore;
 

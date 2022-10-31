@@ -1,6 +1,6 @@
 ﻿@page "/Customer"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject maERP.Server.Contracts.ICustomerRepository customerRepository
 
 
@@ -51,7 +51,7 @@ else
 
 @code {
 
-    private List<maERP.Data.Models.Customer>? customers;
+    private List<maERP.Shared.Models.Customer>? customers;
 
     protected override async Task OnInitializedAsync()
     {

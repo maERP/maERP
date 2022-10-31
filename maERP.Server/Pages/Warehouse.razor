@@ -1,6 +1,6 @@
 ﻿@page "/Warehouse"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject maERP.Server.Contracts.IWarehousesRepository warehouseRepository
 
 <PageTitle>Lager</PageTitle>
@@ -44,7 +44,7 @@ else
 
 @code {
 
-    private List<maERP.Data.Models.Warehouse>? warehouses;
+    private List<maERP.Shared.Models.Warehouse>? warehouses;
 
     protected override async Task OnInitializedAsync()
     {

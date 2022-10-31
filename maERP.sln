@@ -5,18 +5,12 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Server", "maERP.Server\maERP.Server.csproj", "{979C3193-E987-4F41-ACFA-C226EF0112C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Data", "maERP.Data\maERP.Data.csproj", "{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Shared", "maERP.Shared\maERP.Shared.csproj", "{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F4F52310-D6CC-4D30-B948-BBD52B480847}"
 	ProjectSection(SolutionItems) = preProject
 		Dockerfile = Dockerfile
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client", "maERP.Client\maERP.Client.csproj", "{EA115FE8-A927-431F-A771-4402B08AD9E9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client-xaml", "maERP.Client-xaml\maERP.Client-xaml.csproj", "{27367F1D-669D-42D9-8AED-FB7C8FB55437}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.RazorLibrary", "maERP.RazorLibrary\maERP.RazorLibrary.csproj", "{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{7DD1E8A8-9F3D-41EF-95A7-B93CCB0FF8AB}"
 	ProjectSection(SolutionItems) = preProject
@@ -25,11 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 		.github\workflows\publish-github-package.yml = .github\workflows\publish-github-package.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Web.Server", "maERP.Web\Server\maERP.Web.Server.csproj", "{B7C6B758-D3F7-4C78-A3B8-99AE972F4615}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Server2", "maERP.Server2\maERP.Server2.csproj", "{B7C6B758-D3F7-4C78-A3B8-99AE972F4615}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Web.Client", "maERP.Web\Client\maERP.Web.Client.csproj", "{C4B8FF67-2558-41C8-8454-1A73B2C373BF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Web.Shared", "maERP.Web\Shared\maERP.Web.Shared.csproj", "{C91D2048-E1BA-4FA3-B471-2CCA0714B1D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Web", "maERP.Web\maERP.Web.csproj", "{C4B8FF67-2558-41C8-8454-1A73B2C373BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,22 +37,6 @@ Global
 		{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA115FE8-A927-431F-A771-4402B08AD9E9}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27367F1D-669D-42D9-8AED-FB7C8FB55437}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{60B21C5D-5E8A-4DA6-BBDC-E2CE5B77FA72}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B7C6B758-D3F7-4C78-A3B8-99AE972F4615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B7C6B758-D3F7-4C78-A3B8-99AE972F4615}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7C6B758-D3F7-4C78-A3B8-99AE972F4615}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,10 +45,6 @@ Global
 		{C4B8FF67-2558-41C8-8454-1A73B2C373BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4B8FF67-2558-41C8-8454-1A73B2C373BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4B8FF67-2558-41C8-8454-1A73B2C373BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C91D2048-E1BA-4FA3-B471-2CCA0714B1D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C91D2048-E1BA-4FA3-B471-2CCA0714B1D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C91D2048-E1BA-4FA3-B471-2CCA0714B1D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C91D2048-E1BA-4FA3-B471-2CCA0714B1D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

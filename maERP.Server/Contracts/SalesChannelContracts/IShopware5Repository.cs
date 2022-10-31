@@ -1,4 +1,4 @@
-﻿using maERP.Data.Models.SalesChannels.Shopware5;
+﻿using maERP.Shared.Models.SalesChannels.Shopware5;
 
 namespace maERP.Server.Contracts.SalesChannelContracts
 {

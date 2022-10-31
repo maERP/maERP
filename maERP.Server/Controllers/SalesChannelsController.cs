@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using maERP.Server.Models;
 using maERP.Server.Contracts;
-using maERP.Data.Models;
-using maERP.Data.Dtos;
+using maERP.Shared.Models;
+using maERP.Shared.Dtos;
 using AutoMapper;
 
 namespace maERP.Server.Controllers

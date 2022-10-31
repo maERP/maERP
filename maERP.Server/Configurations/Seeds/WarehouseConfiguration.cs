@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using maERP.Data.Models;
+using maERP.Shared.Models;
 
 namespace maERP.Server.Configurations.Seeds
 {

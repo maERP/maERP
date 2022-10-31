@@ -1,6 +1,6 @@
 ﻿@page "/TaxClass"
 @attribute [Authorize]
-@using maERP.Data.Models
+@using maERP.Shared.Models
 @inject maERP.Server.Contracts.ITaxClassesRepository taxClassRepository
 
 <PageTitle>Steuerklassen</PageTitle>
@@ -44,7 +44,7 @@ else
 
 @code {
 
-    private List<maERP.Data.Models.TaxClass>? taxClasses;
+    private List<maERP.Shared.Models.TaxClass>? taxClasses;
 
     protected override async Task OnInitializedAsync()
     {

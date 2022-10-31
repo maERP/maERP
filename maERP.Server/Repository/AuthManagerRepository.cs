@@ -2,8 +2,8 @@
 
 using AutoMapper;
 using maERP.Server.Contracts;
-using maERP.Data.Models;
-using maERP.Data.Dtos.User;
+using maERP.Shared.Models;
+using maERP.Shared.Dtos.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

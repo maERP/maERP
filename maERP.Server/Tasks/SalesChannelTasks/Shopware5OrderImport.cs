@@ -1,11 +1,11 @@
 ﻿#nullable disable
 /*
 using System.Net.Http.Headers;
-using maERP.Data.Models;
+using maERP.Shared.Models;
 using maERP.Server.Contracts;
 using Newtonsoft.Json;
-using maERP.Data.Models.SalesChannels.Shopware5;
-using maERP.Data.Models.SalesChannels.Shopware5.OrderResponse;
+using maERP.Shared.Models.SalesChannels.Shopware5;
+using maERP.Shared.Models.SalesChannels.Shopware5.OrderResponse;
 
 namespace maERP.Server.Tasks.SalesChannelTasks;
 

@@ -1,4 +1,4 @@
-﻿using maERP.Data.Models;
+﻿using maERP.Shared.Models;
 
 namespace maERP.Server.Contracts
 {

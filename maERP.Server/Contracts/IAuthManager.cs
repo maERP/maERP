@@ -1,6 +1,6 @@
 ﻿#nullable disable
 
-using maERP.Data.Dtos.User;
+using maERP.Shared.Dtos.User;
 using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Server.Contracts
@@ -11,7 +11,7 @@ namespace maERP.Server.Contracts
 
         Task<ApiUserDto> FindByIdAsync(string userId);
 
-        Task<List<maERP.Data.Models.ApiUser>> GetAllAsync();
+        Task<List<maERP.Shared.Models.ApiUser>> GetAllAsync();
 
         Task<IEnumerable<IdentityError>> UpdateAsync(ApiUserDto userDto);
 

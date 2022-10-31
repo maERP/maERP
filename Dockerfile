@@ -11,18 +11,13 @@ ENV DB_NAME maerp_01
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY maERP.Data/*.csproj ./maERP.Data/
-COPY maERP.RazorLibrary/*.csproj ./maERP.RazorLibrary/
+COPY maERP.Shared/*.csproj ./maERP.Shared/
 COPY maERP.Server/*.csproj ./maERP.Server/
 
-RUN dotnet restore "maERP.Data/maERP.Data.csproj"
-RUN dotnet restore "maERP.RazorLibrary/maERP.RazorLibrary.csproj"
+RUN dotnet restore "maERP.Shared/maERP.Shared.csproj"
 RUN dotnet restore "maERP.Server/maERP.Server.csproj"
 COPY . .
-WORKDIR /src/maERP.Data
-RUN dotnet build -c Release -o /app
-
-WORKDIR /src/maERP.RazorLibrary
+WORKDIR /src/maERP.Shared
 RUN dotnet build -c Release -o /app
 
 WORKDIR /src/maERP.Server

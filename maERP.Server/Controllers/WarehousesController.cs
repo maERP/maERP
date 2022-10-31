@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using maERP.Data.Models;
-using maERP.Data.Dtos.Warehouse;
+using maERP.Shared.Models;
+using maERP.Shared.Dtos.Warehouse;
 using AutoMapper;
 using maERP.Server.Contracts;
 using Microsoft.AspNetCore.OData.Query;

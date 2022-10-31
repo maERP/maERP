@@ -1,11 +1,11 @@
-﻿using maERP.Data.Models;
-using maERP.Data.Dtos;
-using maERP.Data.Dtos.User;
-using maERP.Data.Dtos.Product;
-using maERP.Data.Dtos.ProductSalesChannel;
-using maERP.Data.Dtos.TaxClass;
-using maERP.Data.Dtos.SalesChannel;
-using maERP.Data.Dtos.Warehouse;
+﻿using maERP.Shared.Models;
+using maERP.Shared.Dtos;
+using maERP.Shared.Dtos.User;
+using maERP.Shared.Dtos.Product;
+using maERP.Shared.Dtos.ProductSalesChannel;
+using maERP.Shared.Dtos.TaxClass;
+using maERP.Shared.Dtos.SalesChannel;
+using maERP.Shared.Dtos.Warehouse;
 using AutoMapper;
 
 namespace maERP.Server.Configurations
