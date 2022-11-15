@@ -19,10 +19,6 @@ async function onInstall(event) {
         .filter(asset => offlineAssetsInclude.some(pattern => pattern.test(asset.url)))
         .filter(asset => !offlineAssetsExclude.some(pattern => pattern.test(asset.url)))
         .map(asset => new Request(asset.url, { integrity: asset.hash, cache: 'no-cache' }));
-
-    // Also cache authentication configuration
-    assetsRequests.push(new Request('_configuration/maERP.Web'));
-
     await caches.open(cacheName).then(cache => cache.addAll(assetsRequests));
 }
 
@@ -41,9 +37,7 @@ async function onFetch(event) {
     if (event.request.method === 'GET') {
         // For all navigation requests, try to serve index.html from cache
         // If you need some URLs to be server-rendered, edit the following check to exclude those URLs
-        const shouldServeIndexHtml = event.request.mode === 'navigate'
-            && !event.request.url.includes('/connect/')
-            && !event.request.url.includes('/Identity/');
+        const shouldServeIndexHtml = event.request.mode === 'navigate';
 
         const request = shouldServeIndexHtml ? 'index.html' : event.request;
         const cache = await caches.open(cacheName);
