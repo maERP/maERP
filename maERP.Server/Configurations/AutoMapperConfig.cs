@@ -15,7 +15,6 @@ namespace maERP.Server.Configurations
 		public AutoMapperConfig()
 		{
 			CreateMap<ApiUserDto, ApiUser>().ReverseMap();
-			// CreateMap<List<ApiUserDto>, List<ApiUser>>().ReverseMap();
 
 			CreateMap<Product, ProductDto>().ReverseMap();
 			CreateMap<Product, GetProductDto>().ReverseMap();

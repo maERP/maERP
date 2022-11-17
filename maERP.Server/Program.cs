@@ -1,24 +1,18 @@
 ﻿#nullable disable
-
-using System.Text;
-
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.OData;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-
-using maERP.Server.Areas.Identity;
+using Microsoft.AspNetCore.Identity;
 using maERP.Server.Configurations;
 using maERP.Server.Repository;
 using maERP.Server.Contracts;
-using maERP.Server.Middleware;
-using maERP.Server.Models;
 using maERP.Shared.Models;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using maERP.Server.Middleware;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.OData;
+using Microsoft.OpenApi.Models;
+using maERP.Server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +34,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
 
     options.UseMySql(conString, ServerVersion.AutoDetect(conString));
-    options.EnableSensitiveDataLogging();
 });
 
 builder.Services.AddIdentityCore<ApiUser>()
@@ -48,14 +41,6 @@ builder.Services.AddIdentityCore<ApiUser>()
     .AddTokenProvider<DataProtectorTokenProvider<ApiUser>>("maERP.Server")
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
-
-/* blazor start */
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-builder.Services.AddDefaultIdentity<ApiUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApiUser>>();
-/* blazor end */
 
 builder.Services.AddControllers().AddOData(options =>
 {
@@ -68,6 +53,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "maERP.Server", Version = "v1" });
 
+    /*
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme.
@@ -95,6 +81,7 @@ builder.Services.AddSwaggerGen(options =>
             new List<string>()
         }
     });
+    */
 });
 
 builder.Services.AddCors(option =>
@@ -105,7 +92,6 @@ builder.Services.AddCors(option =>
             .AllowAnyMethod());
 });
 
-/*
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -125,9 +111,7 @@ builder.Services.AddAuthentication(options =>
             builder.Configuration["JwtSettings:Key"])
         )
     };
-}); */
-
-builder.Services.AddAuthentication();
+});
 
 builder.Services.AddResponseCaching(options =>
 {
@@ -157,7 +141,6 @@ builder.Services.AddVersionedApiExplorer(
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IAuthManager, AuthManager>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<IProductsSalesChannelsRepository, ProductsSalesChannelsRepository>();
 builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
@@ -201,19 +184,11 @@ else
 }
 
 app.UseHttpsRedirection();
-// app.UseAuthentication();
-// app.UseAuthorization();
-// app.MapControllers();
-
-/* blazor start */
-app.UseStaticFiles();
-app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
-/* blazor end */
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -225,8 +200,5 @@ using (var scope = app.Services.CreateScope())
         context.Database.Migrate();
     }
 }
-
-app.MapGet("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Login", true, true)));
-app.MapPost("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Identity/Account/Login", true, true)));
 
 app.Run();
