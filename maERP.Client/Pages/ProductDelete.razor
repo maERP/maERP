@@ -1,0 +1,21 @@
+﻿@page "/Product/delete/{productId:int}"
+@inject NavigationManager NavigationManager
+
+@code {
+
+    [Parameter]
+    public int productId { get; set; }
+
+    protected maERP.Shared.Models.Product product = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (productId > 0)
+        {
+            // product = await productRepository.GetAsync(productId);
+
+            // await productRepository.DeleteAsync(productId);
+            NavigationManager.NavigateTo("/Product");
+        }
+    }
+}

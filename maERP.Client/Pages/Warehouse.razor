@@ -1,0 +1,51 @@
+﻿@page "/Warehouse"
+@using maERP.Shared.Models
+
+<PageTitle>Lager</PageTitle>
+
+<h1>Lager</h1>
+
+@if (warehouses == null)
+{
+    <p><em>Lade...</em></p>
+}
+else
+{
+    <table class="table table-striped align-middle table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var warehouse in warehouses)
+            {
+                <tr>
+                    <td>@warehouse.Name</td>
+                    <td>
+                        <a href='/Warehouse/edit/@warehouse.Id' class="btn btn-outline-dark" role="button">
+                            Bearbeiten
+                        </a>
+                        <a href='/Warehouse/delete/@warehouse.Id' class="btn btn-outline-danger" role="button">
+                            Löschen
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+    <a href="/Warehouse/add">Lager anlegen</a>
+}
+
+@code {
+
+    private List<maERP.Shared.Models.Warehouse> warehouses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // warehouses = await warehouseRepository.GetAllAsync();
+    }
+}

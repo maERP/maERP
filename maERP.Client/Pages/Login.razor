@@ -1,0 +1,77 @@
+﻿@page "/"
+
+@using Newtonsoft.Json
+@using maERP.Shared.Dtos.User;
+@using maERP.Client.Contracts;
+@using maERP.Client.Services;
+
+@inject NavigationManager NavManager;
+@inject IDataService<Login> _dataService;
+
+<h3>Login</h3>
+
+<EditForm Model="@loginDto" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>E-Mail</label>
+        <input type="email" @bind-value="loginDto.Email " class="form-control" placeholder="E-Mail Adresse" />
+        <ValidationMessage For="@(() => loginDto.Email)" />
+    </div>
+
+    <div class="mt-2 form-group">
+        <label>Passwort</label>
+        <input type="password" @bind-value="loginDto.Password" class="form-control" placeholder="Passwort" />
+        <ValidationMessage For="@(() => loginDto.Password)" />
+    </div>
+
+    <div class="text-center mt-2">
+        <button class="btn btn-primary" type="submit">
+            <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
+            Login
+        </button>
+    </div>
+
+    <div>@_errorMessage</div>
+</EditForm>
+
+
+@code
+{
+    LoginDto loginDto = new();
+    private string _spinnerClass = string.Empty;
+    private string _errorMessage = string.Empty;
+    private string server = "https://erp.martin-andrich.de";
+
+    private void onLoad()
+    {
+
+        // await SecureStorage.
+    }
+
+    private async void Submit()
+    {
+        _spinnerClass = "spinner-border spinner-border-sm";
+
+        Console.WriteLine("BEFORE");
+
+        bool loginSuccess = await _dataService.Login(server, loginDto.Email, loginDto.Password);
+
+        Console.WriteLine("RESPONSE: " + loginSuccess.ToString());
+
+        if (loginSuccess)
+        {
+            string savedLoginCredentials = JsonConvert.SerializeObject(loginDto);
+            await SecureStorage.SetAsync("maerp_login_credentials", savedLoginCredentials);
+
+            NavManager.NavigateTo("/dashboard");
+            return;
+        }
+
+        _errorMessage = "E-Mail oder Passwort falsch";
+        _spinnerClass = "";
+
+        // await App.Current.MainPage.DisplayAlert("Fehler", _errorMessage, "OK");
+
+        this.StateHasChanged();
+    }
+}

@@ -1,0 +1,27 @@
+﻿@page "/User/{userId}"
+@using maERP.Shared.Models
+@inject NavigationManager NavigationManager
+
+<h1>@user.Email</h1>
+
+<p></p>
+
+@code {
+
+    [Parameter]
+    public string userId { get; set; }
+
+    protected string Title = "Benutzerdetail";
+
+    protected maERP.Shared.Dtos.User.ApiUserDto user = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (userId != null)
+        {
+            Title = "bearbeiten";
+            // user = await authManagerRepository.FindByIdAsync(userId);
+        }
+        else Title = "nicht gefunden";
+    }
+}

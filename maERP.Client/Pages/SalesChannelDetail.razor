@@ -1,0 +1,27 @@
+﻿@page "/SalesChannel/{salesChannelId:int}"
+@using maERP.Shared.Models
+@inject NavigationManager NavigationManager
+
+<h1>@salesChannel.Name</h1>
+
+<p></p>
+
+@code {
+
+    [Parameter]
+    public int salesChannelId { get; set; }
+
+    protected string Title = "Vertriebskanaldetails";
+
+    protected maERP.Shared.Models.SalesChannel salesChannel = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (salesChannelId != 0)
+        {
+            Title = "bearbeiten";
+            // salesChannel = await salesChannelRepository.GetAsync(salesChannelId);
+        }
+        else Title = "nicht gefunden";
+    }
+}

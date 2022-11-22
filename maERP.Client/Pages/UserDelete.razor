@@ -1,0 +1,19 @@
+﻿@page "/User/delete/{userId}"
+@inject NavigationManager NavigationManager
+
+@code {
+
+    [Parameter]
+    public string userId { get; set; }
+
+    protected maERP.Shared.Dtos.User.ApiUserDto user = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (userId != null)
+        {
+            // await authManagerRepository.DeleteByIdAsync(userId);
+            NavigationManager.NavigateTo("/User");
+        }
+    }
+}

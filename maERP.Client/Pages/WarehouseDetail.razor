@@ -1,0 +1,26 @@
+﻿@page "/Warehouse/{warehouseId:int}"
+@using maERP.Shared.Models
+@inject NavigationManager NavigationManager
+
+<h1>Lager</h1>
+
+
+@code {
+
+    [Parameter]
+    public int warehouseId { get; set; }
+
+    protected string Title = "Lager";
+
+    protected maERP.Shared.Models.Warehouse warehouse = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (warehouseId != 0)
+        {
+            Title = "Bearbeiten";
+            // warehouse = await warehouseRepository.GetAsync(warehouseId);
+        }
+        else Title = "nicht gefunden";
+    }
+}

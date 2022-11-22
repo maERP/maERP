@@ -7,8 +7,15 @@ using maERP.Server.Contracts;
 using maERP.Server.Models;
 using maERP.Server.Exceptions;
 
+using System.Text;
+using System.Collections;
+using System.Collections.Generic;
+
 namespace maERP.Server.Repository
 {
+
+    List<T> myName = new List<T>();
+
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly ApplicationDbContext _context;
