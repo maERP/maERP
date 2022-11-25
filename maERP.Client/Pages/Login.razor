@@ -52,16 +52,12 @@
     {
         _spinnerClass = "spinner-border spinner-border-sm";
 
-        Console.WriteLine("BEFORE");
-
         bool loginSuccess = await _dataService.Login(server, loginDto.Email, loginDto.Password);
-
-        Console.WriteLine("RESPONSE: " + loginSuccess.ToString());
 
         if (loginSuccess)
         {
             string savedLoginCredentials = JsonConvert.SerializeObject(loginDto);
-            await SecureStorage.SetAsync("maerp_login_credentials", savedLoginCredentials);
+            // await SecureStorage.SetAsync("maerp_login_credentials", savedLoginCredentials);
 
             NavManager.NavigateTo("/dashboard");
             return;

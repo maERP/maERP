@@ -1,6 +1,11 @@
 ﻿@page "/Product"
-@using maERP.Shared.Models
+@using maERP.Client.Contracts;
+@using maERP.Client.Services;
+@using maERP.Shared.Models;
+@using maERP.Shared.Dtos.Product;
 
+@inject NavigationManager NavManager;
+@inject IDataService<ICollection<GetProductDto>> _dataService;
 
 <PageTitle>Produkte</PageTitle>
 
@@ -29,9 +34,9 @@ else
         </thead>
         <tbody>
             @foreach (var product in products.Where(x => IsVisible(x)))
-                {
-                    // if (!IsVisible(product))
-                    //     continue;
+            {
+                // if (!IsVisible(product))
+                //     continue;
 
                 <tr>
                     <td>@product.SKU</td>
@@ -55,16 +60,18 @@ else
 
 @code {
 
-    private List<maERP.Shared.Models.Product> products;
+    private ICollection<GetProductDto> products;
     public string filter { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        // products = await productsRepository.GetAllAsync();
+        products = await _dataService.Request("GET", "/Products/GetAll");
     }
 
-    public bool IsVisible(maERP.Shared.Models.Product product)
+    public bool IsVisible(GetProductDto product)
     {
+        return true;
+
         if (string.IsNullOrEmpty(filter))
             return true;
 

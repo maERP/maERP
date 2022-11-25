@@ -13,9 +13,6 @@ using System.Collections.Generic;
 
 namespace maERP.Server.Repository
 {
-
-    List<T> myName = new List<T>();
-
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly ApplicationDbContext _context;

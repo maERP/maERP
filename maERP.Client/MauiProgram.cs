@@ -26,7 +26,7 @@ namespace maERP.Client
             #if DEBUG
 		    builder.Services.AddBlazorWebViewDeveloperTools();
 		    builder.Logging.AddDebug();
-#endif
+            #endif
 
             /*
             builder.Services.AddTransient<DashboardPage>();

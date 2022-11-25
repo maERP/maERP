@@ -51,66 +51,84 @@ namespace maERP.Client.Services
 
         public async Task<T> Request(string method, string path, object payload = null)
         {
-            using (var client = new HttpClient())
+            try
             {
-                string requestUrl = Globals.ServerBaseUrl + "/api" + path;
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Globals.AccessToken);
-
-                client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000000));
-
-                HttpResponseMessage response = new HttpResponseMessage();
-
-                if (method == "GET")
+                using (var client = new HttpClient())
                 {
-                    response = await client.GetAsync(requestUrl).ConfigureAwait(false);
-                }
-                else if (method == "POST")
-                {
-                    response = await client.PostAsJsonAsync(requestUrl, payload).ConfigureAwait(false);
-                }
-                else
-                {
-                    Console.WriteLine("Bearer: " + Globals.AccessToken);
-                    Console.WriteLine(requestUrl);
-                    Console.WriteLine(response.Headers);
-                    Console.WriteLine(response.TrailingHeaders);
-                    Console.WriteLine(response.Content.ReadAsStream());
+                    string requestUrl = Globals.ServerBaseUrl + "/api" + path;
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Globals.AccessToken);
+                    client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
 
-                    throw new Exception();
-                }
+                    HttpResponseMessage response = new HttpResponseMessage();
 
-                if (response.IsSuccessStatusCode)
-                {
-                    string result = response.Content.ReadAsStringAsync().Result;
+                    if (method == "GET")
+                    {
+                        response = await client.GetAsync(requestUrl).ConfigureAwait(false);
 
-                    var responseObj = JsonConvert.DeserializeObject<T>(result);
+                    }
+                    else if (method == "POST")
+                    {
+                        response = await client.PostAsJsonAsync(requestUrl, payload).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Bearer: " + Globals.AccessToken);
+                        Console.WriteLine(requestUrl);
+                        Console.WriteLine(response.Headers);
+                        Console.WriteLine(response.TrailingHeaders);
+                        Console.WriteLine(response.Content.ReadAsStream());
 
-                    response.Dispose();
+                        throw new Exception();
+                    }
 
-                    return responseObj;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = response.Content.ReadAsStringAsync().Result;
+
+                        try
+                        {
+                            
+                            var responseObj = JsonConvert.DeserializeObject<T>(result);
+                            response.Dispose();
+
+                            return responseObj;
+                        }
+                        catch(Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine(result);
+                        }
+
+                        throw new Exception();
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        Console.WriteLine("Bearer: " + Globals.AccessToken);
+                        Console.WriteLine(requestUrl);
+                        Console.WriteLine(response.Headers);
+                        Console.WriteLine(response.TrailingHeaders);
+                        Console.WriteLine(response.Content.ReadAsStream());
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        Console.WriteLine("Bearer: " + Globals.AccessToken);
+                        Console.WriteLine(requestUrl);
+                        Console.WriteLine(response.Headers);
+                        Console.WriteLine(response.TrailingHeaders);
+                        Console.WriteLine(response.Content.ReadAsStream());
+                    }
+                    else
+                    {
+                        Console.WriteLine("EXCEPTION");
+                        throw new Exception();
+                    }
                 }
-                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                {
-                    Console.WriteLine("Bearer: " + Globals.AccessToken);
-                    Console.WriteLine(requestUrl);
-                    Console.WriteLine(response.Headers);
-                    Console.WriteLine(response.TrailingHeaders);
-                    Console.WriteLine(response.Content.ReadAsStream());
-                }
-                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    Console.WriteLine("Bearer: " + Globals.AccessToken);
-                    Console.WriteLine(requestUrl);
-                    Console.WriteLine(response.Headers);
-                    Console.WriteLine(response.TrailingHeaders);
-                    Console.WriteLine(response.Content.ReadAsStream());
-                }
-                else
-                {
-                    throw new Exception();
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
             throw new Exception();
