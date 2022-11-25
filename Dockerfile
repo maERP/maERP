@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 EXPOSE 80
 
@@ -9,7 +9,7 @@ ENV DB_USER maerp
 ENV DB_PASS maerp
 ENV DB_NAME maerp_01
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY maERP.Shared/*.csproj ./maERP.Shared/
 COPY maERP.Server/*.csproj ./maERP.Server/
