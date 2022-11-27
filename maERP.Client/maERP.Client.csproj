@@ -16,7 +16,7 @@
         <ApplicationTitle>maERP.Client</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>com.companyname.maerp.client</ApplicationId>
+        <ApplicationId>de.martin-andrich.maerp.client</ApplicationId>
         <ApplicationIdGuid>C158D123-56C2-4B03-B913-ACE44FB433F2</ApplicationIdGuid>
 
         <!-- Versions -->
@@ -32,6 +32,14 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+      <CreatePackage>false</CreatePackage>
+      <CodesignKey>Apple Development: martin.andrich@gmail.com (6774RGWMKF)</CodesignKey>
+      <CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+      <CreatePackage>false</CreatePackage>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
       <CreatePackage>false</CreatePackage>
     </PropertyGroup>
     <ItemGroup>
@@ -52,6 +60,8 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -68,6 +78,8 @@
       <None Remove="Services\" />
       <None Remove="Newtonsoft.Json" />
       <None Remove="Contracts\" />
+      <None Remove="Microsoft.AspNetCore.Authorization" />
+      <None Remove="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Services\" />

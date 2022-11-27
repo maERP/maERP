@@ -1,6 +1,14 @@
 ﻿@page "/Product/{productId:int}"
-@using maERP.Shared.Models
-@inject NavigationManager NavigationManager
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Client.Contracts;
+@using maERP.Client.Services;
+@using maERP.Shared.Dtos.Product;
+
+@attribute [Authorize]
+
+@inject NavigationManager NavManager;
+@inject IDataService<ProductDto> _dataService;
 
 <h1>@product.Name</h1>
 
@@ -13,14 +21,14 @@
 
     protected string Title = "Produktdetail";
 
-    protected maERP.Shared.Models.Product product = new();
+    protected ProductDto product = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (productId != 0)
         {
             Title = "Bearbeiten";
-            // product = await productRepository.GetAsync(productId);
+            product = await _dataService.Request("GET", "/Products/" + productId);
         }
         else Title = "nicht gefunden";
     }

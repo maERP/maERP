@@ -2,7 +2,7 @@
 
 namespace maERP.Shared.Dtos.Order;
 
-public class UpdateOrdertDto : BaseOrderDto
+public class UpdateOrderDto : BaseOrderDto
 {
 
 }

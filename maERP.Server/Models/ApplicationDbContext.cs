@@ -18,6 +18,7 @@ namespace maERP.Server.Models
 
         public DbSet<Customer> Customer { get; set; }
         public DbSet<CustomerAddress> CustomerAddresse { get; set; }
+        public DbSet<Order> Order { get; set; }
         public DbSet<Product> Product { get; set; }
         public DbSet<ProductStock> ProductStock { get; set; }
         public DbSet<ProductSalesChannel> ProductSalesChannel { get; set; }

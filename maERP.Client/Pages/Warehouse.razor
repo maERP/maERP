@@ -1,5 +1,13 @@
 ﻿@page "/Warehouse"
-@using maERP.Shared.Models
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Client.Contracts;
+@using maERP.Client.Services;
+@using maERP.Shared.Dtos.Warehouse;
+
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager;
+@inject IDataService<ICollection<GetWarehouseDto>> DataService;
 
 <PageTitle>Lager</PageTitle>
 
@@ -42,10 +50,10 @@ else
 
 @code {
 
-    private List<maERP.Shared.Models.Warehouse> warehouses;
+    private ICollection<GetWarehouseDto> warehouses;
 
     protected override async Task OnInitializedAsync()
     {
-        // warehouses = await warehouseRepository.GetAllAsync();
+        warehouses = await DataService.Request("GET", "/Warehouses/GetAll");
     }
 }

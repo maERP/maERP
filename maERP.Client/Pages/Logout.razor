@@ -1,0 +1,16 @@
+﻿@page "/logout"
+
+@using maERP.Client.Services;
+
+@inject NavigationManager NavigationManager
+@inject AuthStateProvider AuthStateProvider;
+
+<div class="loader loader-bouncing"><span>Redirecting...</span></div>
+@code{
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthStateProvider.Logout();
+        NavigationManager.NavigateTo("/login");
+    }
+}

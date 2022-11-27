@@ -1,5 +1,13 @@
 ﻿@page "/TaxClass"
-@using maERP.Shared.Models
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Client.Contracts;
+@using maERP.Client.Services;
+@using maERP.Shared.Dtos.TaxClass;
+
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager;
+@inject IDataService<ICollection<TaxClassDto>> DataService;
 
 <PageTitle>Steuerklassen</PageTitle>
 
@@ -42,10 +50,10 @@ else
 
 @code {
 
-    private List<maERP.Shared.Models.TaxClass> taxClasses;
+    private ICollection<TaxClassDto> taxClasses;
 
     protected override async Task OnInitializedAsync()
     {
-        // taxClasses = await taxClassRepository.GetAllAsync();
+        taxClasses = await DataService.Request("GET", "/TaxClasses/GetAll");
     }
 }

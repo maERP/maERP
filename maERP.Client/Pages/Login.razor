@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/login"
 
 @using Newtonsoft.Json
 @using maERP.Shared.Dtos.User;
@@ -6,7 +6,8 @@
 @using maERP.Client.Services;
 
 @inject NavigationManager NavManager;
-@inject IDataService<Login> _dataService;
+@inject IDataService<Login> DataService;
+@inject AuthStateProvider AuthStateProvider;
 
 <h3>Login</h3>
 
@@ -44,22 +45,27 @@
 
     private void onLoad()
     {
+        if(Preferences.Default.ContainsKey("loginEmail"))
+        {
+            loginDto.Email = Preferences.Default.Get<string>("loginEmail", "");
+        }
 
-        // await SecureStorage.
+        this.StateHasChanged();
     }
 
     private async void Submit()
     {
         _spinnerClass = "spinner-border spinner-border-sm";
 
-        bool loginSuccess = await _dataService.Login(server, loginDto.Email, loginDto.Password);
+        var loginResponse = await DataService.Login(server, loginDto.Email, loginDto.Password);
 
-        if (loginSuccess)
+        if (loginResponse.Token is not null)
         {
-            string savedLoginCredentials = JsonConvert.SerializeObject(loginDto);
-            // await SecureStorage.SetAsync("maerp_login_credentials", savedLoginCredentials);
+            await AuthStateProvider.Login(loginResponse.Token, loginResponse.RefreshToken);
 
-            NavManager.NavigateTo("/dashboard");
+            Preferences.Default.Set<string>("loginEmail", loginDto.Email);
+
+            NavManager.NavigateTo("/");
             return;
         }
 

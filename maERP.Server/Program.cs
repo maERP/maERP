@@ -141,6 +141,8 @@ builder.Services.AddVersionedApiExplorer(
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IAuthManager, AuthManager>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 builder.Services.AddScoped<IProductsSalesChannelsRepository, ProductsSalesChannelsRepository>();
 builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();

@@ -1,6 +1,8 @@
 ﻿using maERP.Shared.Models;
 using maERP.Shared.Dtos;
 using maERP.Shared.Dtos.User;
+using maERP.Shared.Dtos.Customer;
+using maERP.Shared.Dtos.Order;
 using maERP.Shared.Dtos.Product;
 using maERP.Shared.Dtos.ProductSalesChannel;
 using maERP.Shared.Dtos.TaxClass;
@@ -16,7 +18,19 @@ namespace maERP.Server.Configurations
 		{
 			CreateMap<ApiUserDto, ApiUser>().ReverseMap();
 
-			CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<Customer, CustomerDto>().ReverseMap();
+            CreateMap<Customer, GetCustomerDto>().ReverseMap();
+            CreateMap<Customer, CreateCustomerDto>().ReverseMap();
+            CreateMap<Customer, GetCustomerDto>().ReverseMap();
+            CreateMap<Customer, UpdateCustomerDto>().ReverseMap();
+
+            CreateMap<Order, OrderDto>().ReverseMap();
+            CreateMap<Order, GetOrderDto>().ReverseMap();
+            CreateMap<Order, CreateOrderDto>().ReverseMap();
+            CreateMap<Order, GetOrderDto>().ReverseMap();
+            CreateMap<Order, UpdateOrderDto>().ReverseMap();
+
+            CreateMap<Product, ProductDto>().ReverseMap();
 			CreateMap<Product, GetProductDto>().ReverseMap();
 			CreateMap<Product, CreateProductDto>().ReverseMap();
 			CreateMap<Product, GetProductDto>().ReverseMap();			

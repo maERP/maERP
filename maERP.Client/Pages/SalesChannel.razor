@@ -1,5 +1,13 @@
 ﻿@page "/SalesChannel"
-@using maERP.Shared.Models
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Client.Contracts;
+@using maERP.Client.Services;
+@using maERP.Shared.Dtos;
+
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager;
+@inject IDataService<ICollection<GetSalesChannelDto>> DataService;
 
 <PageTitle>Vertriebskanäle</PageTitle>
 
@@ -44,10 +52,10 @@ else
 
 @code {
 
-    private List<maERP.Shared.Models.SalesChannel> salesChannels;
+    private ICollection<GetSalesChannelDto> salesChannels;
 
     protected override async Task OnInitializedAsync()
     {
-        // salesChannels = await salesChannelRepository.GetAllAsync();
+        salesChannels = await DataService.Request("GET", "/SalesChannels/GetAll");
     }
 }

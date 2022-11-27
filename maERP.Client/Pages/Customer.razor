@@ -1,6 +1,13 @@
 ﻿@page "/Customer"
-@using maERP.Shared.Models
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Client.Contracts;
+@using maERP.Client.Services;
+@using maERP.Shared.Models;
 
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager;
+@inject IDataService<ICollection<maERP.Shared.Models.Customer>> DataService;
 
 <PageTitle>Kunden</PageTitle>
 
@@ -12,47 +19,47 @@
 }
 else
 {
-<table class="table table-striped align-middle table-bordered">
-    <thead>
-        <tr>
-            <th>Nr.</th>
-            <th>Vorname</th>
-            <th>Nachname</th>
-            <th>Kunde seit</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var customer in customers)
-        {
+    <table class="table table-striped align-middle table-bordered">
+        <thead>
             <tr>
-                <td>@customer.Id</td>
-                <td>@customer.FirstName</td>
-                <td>@customer.LastName</td>
-                <td>@customer.EnrollmentDate</td>
-                <td>
-                    <a href='/Customer/edit/@customer.Id' class="btn btn-outline-dark" role="button">
-                        Bearbeiten
-                    </a>
-                    <a href='/Customer/delete/@customer.Id' class="btn btn-outline-danger" role="button">
-                        Löschen
-                    </a>
-                </td>
+                <th>Nr.</th>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Kunde seit</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
+        </thead>
+        <tbody>
+            @foreach (var customer in customers)
+            {
+                <tr>
+                    <td>@customer.Id</td>
+                    <td>@customer.FirstName</td>
+                    <td>@customer.LastName</td>
+                    <td>@customer.EnrollmentDate</td>
+                    <td>
+                        <a href='/Customer/edit/@customer.Id' class="btn btn-outline-dark" role="button">
+                            Bearbeiten
+                        </a>
+                        <a href='/Customer/delete/@customer.Id' class="btn btn-outline-danger" role="button">
+                            Löschen
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
 
-</table>
+    </table>
 
     <a href="/Customer/add">Kunden anlegen</a>
 }
 
 @code {
 
-    private List<maERP.Shared.Models.Customer> customers;
+    private ICollection<maERP.Shared.Models.Customer> customers;
 
     protected override async Task OnInitializedAsync()
     {
-        // customers = await customerRepository.GetAllAsync();
+        customers = await DataService.Request("GET", "/Customers/GetAll");
     }
 }

@@ -1,5 +1,14 @@
 ﻿@page "/Order"
 
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Client.Contracts;
+@using maERP.Client.Services;
+@using maERP.Shared.Dtos.Order;
+
+@attribute [Authorize]
+
+@inject NavigationManager NavManager;
+@inject IDataService<ICollection<GetOrderDto>> DataService;
 
 <PageTitle>Bestellungen</PageTitle>
 
@@ -32,10 +41,10 @@ else
 
 @code {
 
-    private List<maERP.Shared.Models.Product> orders;
+    private ICollection<GetOrderDto> orders;
 
     protected override async Task OnInitializedAsync()
     {
-        // orders = await productsRepository.GetAllAsync();
+        orders = await DataService.Request("GET", "/Orders/GetAll");
     }
 }

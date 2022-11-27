@@ -1,11 +1,14 @@
 ﻿@page "/Product"
+
+@using Microsoft.AspNetCore.Authorization
 @using maERP.Client.Contracts;
 @using maERP.Client.Services;
-@using maERP.Shared.Models;
 @using maERP.Shared.Dtos.Product;
 
+@attribute [Authorize]
+
 @inject NavigationManager NavManager;
-@inject IDataService<ICollection<GetProductDto>> _dataService;
+@inject IDataService<ICollection<GetProductDto>> DataService;
 
 <PageTitle>Produkte</PageTitle>
 
@@ -13,7 +16,7 @@
 
 @if (products == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Lade...</em></p>
 }
 else
 {
@@ -35,8 +38,8 @@ else
         <tbody>
             @foreach (var product in products.Where(x => IsVisible(x)))
             {
-                // if (!IsVisible(product))
-                //     continue;
+                if (!IsVisible(product))
+                    continue;
 
                 <tr>
                     <td>@product.SKU</td>
@@ -65,13 +68,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        products = await _dataService.Request("GET", "/Products/GetAll");
+        products = await DataService.Request("GET", "/Products/GetAll");
     }
 
     public bool IsVisible(GetProductDto product)
     {
-        return true;
-
         if (string.IsNullOrEmpty(filter))
             return true;
 

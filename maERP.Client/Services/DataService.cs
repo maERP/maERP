@@ -10,7 +10,7 @@ namespace maERP.Client.Services
 {
     public class DataService<T> : IDataService<T> where T : class
     {
-        public async Task<bool> Login(string server, string email, string password)
+        public async Task<LoginResponseDto> Login(string server, string email, string password)
         {
             using (var client = new HttpClient())
             {
@@ -31,21 +31,26 @@ namespace maERP.Client.Services
                 if (response.IsSuccessStatusCode)
                 {
                     string result = response.Content.ReadAsStringAsync().Result;
+                    response.Dispose();
+
                     Console.WriteLine(result);
 
                     var responseObj = JsonConvert.DeserializeObject<LoginResponseDto>(result);
 
                     Globals.ServerBaseUrl = server;
-                    Globals.AccessToken = responseObj.Token;
-                    Globals.RefreshToken = responseObj.Token;
 
-                    response.Dispose();
+                    LoginResponseDto loginDto = new LoginResponseDto
+                    {
+                        UserId = email,
+                        Token = responseObj.Token,
+                        RefreshToken = responseObj.Token
+                    };
 
-                    return true;
+                    return loginDto;
                 }
 
                 response.Dispose();
-                return false;
+                return null;
             }
         }
 
@@ -56,9 +61,10 @@ namespace maERP.Client.Services
                 using (var client = new HttpClient())
                 {
                     string requestUrl = Globals.ServerBaseUrl + "/api" + path;
+                    string accessToken = Preferences.Default.Get<string>("oauth_token", "null");
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Globals.AccessToken);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                     client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
 
                     HttpResponseMessage response = new HttpResponseMessage();
@@ -74,7 +80,7 @@ namespace maERP.Client.Services
                     }
                     else
                     {
-                        Console.WriteLine("Bearer: " + Globals.AccessToken);
+                        Console.WriteLine("Bearer: " + accessToken);
                         Console.WriteLine(requestUrl);
                         Console.WriteLine(response.Headers);
                         Console.WriteLine(response.TrailingHeaders);
@@ -105,7 +111,7 @@ namespace maERP.Client.Services
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine("Bearer: " + Globals.AccessToken);
+                        Console.WriteLine("Bearer: " + accessToken);
                         Console.WriteLine(requestUrl);
                         Console.WriteLine(response.Headers);
                         Console.WriteLine(response.TrailingHeaders);
@@ -113,7 +119,7 @@ namespace maERP.Client.Services
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                     {
-                        Console.WriteLine("Bearer: " + Globals.AccessToken);
+                        Console.WriteLine("Bearer: " + accessToken);
                         Console.WriteLine(requestUrl);
                         Console.WriteLine(response.Headers);
                         Console.WriteLine(response.TrailingHeaders);
