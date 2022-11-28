@@ -22,10 +22,10 @@ namespace maERP.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrder()
         {
-          if (_context.Order == null)
-          {
-              return NotFound();
-          }
+            if (_context.Order == null)
+            {
+                return NotFound();
+            }
             return await _context.Order.ToListAsync();
         }
 
@@ -33,10 +33,10 @@ namespace maERP.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
-          if (_context.Order == null)
-          {
-              return NotFound();
-          }
+            if (_context.Order == null)
+            {
+                return NotFound();
+            }
             var order = await _context.Order.FindAsync(id);
 
             if (order == null)
@@ -48,7 +48,6 @@ namespace maERP.Server.Controllers
         }
 
         // PUT: api/Orders/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder(int id, Order order)
         {
@@ -79,14 +78,14 @@ namespace maERP.Server.Controllers
         }
 
         // POST: api/Orders
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-          if (_context.Order == null)
-          {
-              return Problem("Entity set 'ApplicationDbContext.Order'  is null.");
-          }
+            if (_context.Order == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Order'  is null.");
+            }
+
             _context.Order.Add(order);
             await _context.SaveChangesAsync();
 

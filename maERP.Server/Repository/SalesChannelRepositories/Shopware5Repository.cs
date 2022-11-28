@@ -15,10 +15,11 @@ namespace maERP.Server.Repository.SalesChannelRepositories
         {
             this._context = context;
         }
-
+        /*
         public async Task<Shopware5Response<Shopware5ProductResponse>> getProductList()
         {
             throw new NotImplementedException();
         }
+        */
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Collections.Generic;
 
 namespace maERP.Server.Repository
 {
@@ -42,7 +43,24 @@ namespace maERP.Server.Repository
 			return result.Errors;
 		}
 
-		public async Task<LoginResponseDto> Login(LoginDto loginDto)
+        public async Task<ApiUser> UpdateAsync(ApiUserDto userDto)
+        {
+            var updateUser = _mapper.Map<ApiUser>(userDto);
+            updateUser.UserName = userDto.Email;
+
+            var localUser = await _userManager.FindByEmailAsync(updateUser.Email);
+
+            if (localUser.Id is not null)
+            {
+				await _userManager.UpdateAsync(updateUser);
+
+				return updateUser;
+            }
+
+			throw new maERP.Server.Exceptions.NotFoundException("User not found", "User not found");
+        }
+
+        public async Task<LoginResponseDto> Login(LoginDto loginDto)
 		{
 			_user = await _userManager.FindByEmailAsync(loginDto.Email);
 			bool isValidUser = await _userManager.CheckPasswordAsync(_user, loginDto.Password);

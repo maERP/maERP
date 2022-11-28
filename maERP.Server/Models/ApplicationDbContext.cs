@@ -30,15 +30,14 @@ namespace maERP.Server.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.ApplyConfiguration(new RoleConfiguration());
-            //modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
             modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
 
-            // modelBuilder.Entity<IdentityUser>().ToTable("user");
+            modelBuilder.Entity<ApiUser>().ToTable("user");
             modelBuilder.Entity<Customer>().ToTable("customer");
             modelBuilder.Entity<CustomerAddress>().ToTable("customer_address");
+            modelBuilder.Entity<Order>().ToTable("order");
             modelBuilder.Entity<Product>().ToTable("product");
             modelBuilder.Entity<ProductStock>().ToTable("product_stock");
             modelBuilder.Entity<ProductSalesChannel>().ToTable("product_sales_channel");

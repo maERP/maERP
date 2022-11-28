@@ -16,6 +16,11 @@ dotnet tool install --global dotnet-ef
 export PATH="$PATH:/Users/'your user folder'/.dotnet/tools"
 ```
 
+## Update dotnet tools
+```
+dotnet tool update --global dotnet-ef
+``
+
 ## Licenses
 
 Packages used:

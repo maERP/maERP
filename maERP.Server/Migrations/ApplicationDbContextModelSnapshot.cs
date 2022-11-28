@@ -54,7 +54,7 @@ namespace maERP.Server.Migrations
                         },
                         new
                         {
-                            Id = "930c4770-88b7-4b85-aada-47879c5f230b",
+                            Id = "ab9069f4-1699-4abb-b64e-91270baf1e90",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -284,14 +284,14 @@ namespace maERP.Server.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("user", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4df884cd-ed9d-490b-bf56-67c1a02125cc",
+                            ConcurrencyStamp = "b5865e7f-0a04-401d-b766-1af4383db06d",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -299,9 +299,9 @@ namespace maERP.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA7ZbwpuN2S1c2vEsAT1LLyrN1JU8TDS7LbLNksZWEBKpx/mt0Na+gP1GXbI2A8kRg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPdCivhacJ/3ROL274KDYid8QOBeVDyozeIyDwrz+3OSbmsbRC1jPEJeF9kBVYemcA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "858181a3-be96-40da-b26f-f46521e67778",
+                            SecurityStamp = "7b59d4fa-dfcd-4f22-95cd-06f117e2686b",
                             TwoFactorEnabled = false,
                             UserName = "admin@localhost.com"
                         });
@@ -349,7 +349,7 @@ namespace maERP.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Order");
+                    b.ToTable("order", (string)null);
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.Product", b =>
@@ -408,7 +408,7 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2022, 11, 27, 17, 57, 59, 406, DateTimeKind.Local).AddTicks(8990),
+                            CreatedAt = new DateTime(2022, 11, 28, 21, 45, 55, 886, DateTimeKind.Local).AddTicks(7900),
                             Description = "Beschreibung 1",
                             Name = "Testprodukt 1",
                             Price = 100m,
@@ -416,12 +416,12 @@ namespace maERP.Server.Migrations
                             ProductStockId = 0,
                             SKU = "1001",
                             TaxClassId = 3,
-                            UpdatedAt = new DateTime(2022, 11, 27, 17, 57, 59, 406, DateTimeKind.Local).AddTicks(9020)
+                            UpdatedAt = new DateTime(2022, 11, 28, 21, 45, 55, 886, DateTimeKind.Local).AddTicks(7930)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2022, 11, 27, 17, 57, 59, 406, DateTimeKind.Local).AddTicks(9020),
+                            CreatedAt = new DateTime(2022, 11, 28, 21, 45, 55, 886, DateTimeKind.Local).AddTicks(7940),
                             Description = "Beschreibung 2",
                             Name = "Testprodukt 2",
                             Price = 100m,
@@ -429,12 +429,12 @@ namespace maERP.Server.Migrations
                             ProductStockId = 0,
                             SKU = "1002",
                             TaxClassId = 2,
-                            UpdatedAt = new DateTime(2022, 11, 27, 17, 57, 59, 406, DateTimeKind.Local).AddTicks(9020)
+                            UpdatedAt = new DateTime(2022, 11, 28, 21, 45, 55, 886, DateTimeKind.Local).AddTicks(7940)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2022, 11, 27, 17, 57, 59, 406, DateTimeKind.Local).AddTicks(9020),
+                            CreatedAt = new DateTime(2022, 11, 28, 21, 45, 55, 886, DateTimeKind.Local).AddTicks(7940),
                             Description = "Beschreibung 3",
                             Name = "Testprodukt 3",
                             Price = 100m,
@@ -442,7 +442,7 @@ namespace maERP.Server.Migrations
                             ProductStockId = 0,
                             SKU = "1003",
                             TaxClassId = 1,
-                            UpdatedAt = new DateTime(2022, 11, 27, 17, 57, 59, 406, DateTimeKind.Local).AddTicks(9020)
+                            UpdatedAt = new DateTime(2022, 11, 28, 21, 45, 55, 886, DateTimeKind.Local).AddTicks(7940)
                         });
                 });
 

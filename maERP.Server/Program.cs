@@ -1,20 +1,37 @@
 ﻿#nullable disable
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using maERP.Server.Configurations;
-using maERP.Server.Repository;
-using maERP.Server.Contracts;
-using maERP.Shared.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+
 using System.Text;
-using maERP.Server.Middleware;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.OData;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.AspNetCore;
+using Serilog.Sinks.Graylog;
+
+using maERP.Server.Configurations;
+using maERP.Server.Contracts;
+using maERP.Server.Middleware;
 using maERP.Server.Models;
+using maERP.Server.Repository;
+using maERP.Shared.Models;
+using System.Diagnostics;
+
+// Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg)); Serilog.Debugging.SelfLog.Enable(Console.Error);
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logger = new LoggerConfiguration().
+    ReadFrom.Configuration(builder.Configuration).
+    Enrich.FromLogContext().
+    CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
