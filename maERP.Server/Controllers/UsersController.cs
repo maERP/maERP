@@ -16,18 +16,18 @@ namespace maERP.Server.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ApiVersion("1.0")]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IAuthManager _authManager;
         private readonly ILogger _logger;
 
-        public UserController(IAuthManager authManager, ILogger<UserController> logger)
+        public UsersController(IAuthManager authManager, ILogger<UsersController> logger)
         {
             this._authManager = authManager;
             this._logger = logger;
         }
 
-        // POST: api/User/login
+        // POST: api/Users/login
         [HttpPost]
         [Route("login")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -45,7 +45,7 @@ namespace maERP.Server.Controllers
             return Ok(authResponse);
         }
 
-        // POST: api/User/refreshtoken
+        // POST: api/Users/refreshtoken
         [HttpPost]
         [Route("refreshtoken")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -63,7 +63,7 @@ namespace maERP.Server.Controllers
             return Ok(authResponse);
         }
 
-        // POST: api/User/register
+        // POST: api/Users/register
         [HttpPost]
         [Route("register")]
         [Authorize(Roles = "Administrator")]
@@ -99,16 +99,18 @@ namespace maERP.Server.Controllers
             }
         }
 
-        // GET: api/Warehouses
+        // GET: api/Users
         [HttpGet("GetAll")]
-        [Authorize(Roles = "Administrator")]
+        [Authorize]
+        // [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Administrator")]
         public async Task<ActionResult<IQueryable<ApiUser>>> GetUsers()
         {
             var users = await _authManager.GetAllAsync();
             return Ok(users);
         }
 
-        // GET: api/User/5
+        // GET: api/Users/5
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Administrator")]
         public async Task<ActionResult> EditUser([FromBody] ApiUserDto apiUserDto)

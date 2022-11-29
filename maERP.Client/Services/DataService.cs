@@ -14,7 +14,7 @@ namespace maERP.Client.Services
         {
             using (var client = new HttpClient())
             {
-                string requestUrl = server + "/api/User/login";
+                string requestUrl = server + "/api/Users/login";
                 client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -72,6 +72,7 @@ namespace maERP.Client.Services
                     if (method == "GET")
                     {
                         response = await client.GetAsync(requestUrl).ConfigureAwait(false);
+                        Console.WriteLine("RESPONSE: " + response.ToString());
 
                     }
                     else if (method == "POST")
@@ -95,7 +96,6 @@ namespace maERP.Client.Services
 
                         try
                         {
-                            
                             var responseObj = JsonConvert.DeserializeObject<T>(result);
                             response.Dispose();
 

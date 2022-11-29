@@ -70,7 +70,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "maERP.Server", Version = "v1" });
 
-    /*
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme.
@@ -98,7 +97,6 @@ builder.Services.AddSwaggerGen(options =>
             new List<string>()
         }
     });
-    */
 });
 
 builder.Services.AddCors(option =>
