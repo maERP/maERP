@@ -1,6 +1,13 @@
 ﻿@page "/User"
-@using maERP.Shared.Models
-@using maERP.Shared.Dtos.User
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Client.Contracts;
+@using maERP.Client.Services;
+@using maERP.Shared.Dtos.User;
+
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager;
+@inject IDataService<ICollection<ApiUserDto>> DataService;
 
 <PageTitle>Benutzer</PageTitle>
 
@@ -49,10 +56,10 @@ else
 
 @code {
 
-    private List<maERP.Shared.Models.ApiUser> users;
+    private ICollection<ApiUserDto> users;
 
     protected override async Task OnInitializedAsync()
     {
-        // users = await authManagerRepository.GetAllAsync();
+        users = await DataService.Request("GET", "/Users/GetAll");
     }
 }

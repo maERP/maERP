@@ -14,7 +14,7 @@ namespace maERP.Client.Services
         {
             using (var client = new HttpClient())
             {
-                string requestUrl = server + "/api/Account/login";
+                string requestUrl = server + "/api/User/login";
                 client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

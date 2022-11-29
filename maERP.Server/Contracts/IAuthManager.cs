@@ -17,5 +17,7 @@ namespace maERP.Server.Contracts
         Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto);
 
         Task<ApiUser> UpdateAsync(ApiUserDto userDto);
+
+        Task<IQueryable<ApiUser>> GetAllAsync();
     }
 }

@@ -1,5 +1,4 @@
-﻿using maERP.Client.Data;
-using maERP.Client.Contracts;
+﻿using maERP.Client.Contracts;
 using maERP.Client.Services;
 using Microsoft.Extensions.Logging;
 
@@ -49,8 +48,6 @@ namespace maERP.Client
 
             builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
             // builder.Services.AddSingleton<INavigationService, NavigationService>();
-
-            builder.Services.AddSingleton<WeatherForecastService>();
 
             return builder.Build();
         }

@@ -2,10 +2,13 @@
 
 using maERP.Server.Contracts;
 using maERP.Shared.Dtos.User;
+using maERP.Shared.Dtos.Warehouse;
 using maERP.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 
 namespace maERP.Server.Controllers
 {
@@ -96,8 +99,18 @@ namespace maERP.Server.Controllers
             }
         }
 
+        // GET: api/Warehouses
+        [HttpGet("GetAll")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<ActionResult<IQueryable<ApiUser>>> GetUsers()
+        {
+            var users = await _authManager.GetAllAsync();
+            return Ok(users);
+        }
+
         // GET: api/User/5
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult> EditUser([FromBody] ApiUserDto apiUserDto)
         {
             _logger.LogInformation($"Edit Attempt for {apiUserDto.Email}");

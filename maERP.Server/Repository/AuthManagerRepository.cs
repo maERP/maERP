@@ -43,6 +43,11 @@ namespace maERP.Server.Repository
 			return result.Errors;
 		}
 
+		public async Task<IQueryable<ApiUser>> GetAllAsync()
+		{
+			return _userManager.Users;
+		}
+
         public async Task<ApiUser> UpdateAsync(ApiUserDto userDto)
         {
             var updateUser = _mapper.Map<ApiUser>(userDto);
@@ -63,14 +68,15 @@ namespace maERP.Server.Repository
         public async Task<LoginResponseDto> Login(LoginDto loginDto)
 		{
 			_user = await _userManager.FindByEmailAsync(loginDto.Email);
-			bool isValidUser = await _userManager.CheckPasswordAsync(_user, loginDto.Password);
-	
-			if(_user == null || isValidUser == false)
+            bool isValidUser = await _userManager.CheckPasswordAsync(_user, loginDto.Password);
+
+            if (_user == null || isValidUser == false)
             {
-				return null;
+                Console.WriteLine("login 14");
+                return null;
             }
 
-			var token = await GenerateToken();
+            var token = await GenerateToken();
 
 			return new LoginResponseDto
 			{

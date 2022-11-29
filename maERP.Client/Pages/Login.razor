@@ -59,12 +59,10 @@
 
         var loginResponse = await DataService.Login(server, loginDto.Email, loginDto.Password);
 
-        if (loginResponse.Token is not null)
+        if (loginResponse is not null)
         {
             await AuthStateProvider.Login(loginResponse.Token, loginResponse.RefreshToken);
-
             Preferences.Default.Set<string>("loginEmail", loginDto.Email);
-
             NavManager.NavigateTo("/");
             return;
         }
