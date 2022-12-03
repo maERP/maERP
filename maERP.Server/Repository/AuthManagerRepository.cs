@@ -48,9 +48,11 @@ namespace maERP.Server.Repository
 			return _userManager.Users;
 		}
 
-        public async Task<IQueryable<ApiUser>> GetByIdAsync(string userId)
+        public async Task<ApiUserDto> GetByIdAsync(string userId)
         {
-            return _userManager.Users.Where(x => x.Id == userId);
+			var user = _userManager.Users.Where(x => x.Id == userId).First<ApiUser>();
+			var userDto = _mapper.Map<ApiUserDto>(user);
+			return userDto;
         }
 
         public async Task<ApiUser> UpdateAsync(ApiUserDto userDto)
