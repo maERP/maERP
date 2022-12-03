@@ -1,6 +1,14 @@
 ﻿@page "/User/add"
 @page "/User/edit/{userId}"
-@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Client.Contracts;
+@using maERP.Client.Services;
+@using maERP.Shared.Dtos.User;
+
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager;
+@inject IDataService<ApiUserDto> DataService;
 
 <h1>Benutzer</h1>
 
@@ -48,14 +56,14 @@
 
     protected string Title = "hinzufügen";
 
-    protected maERP.Shared.Dtos.User.ApiUserDto user = new();
+    protected ApiUserDto user = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (userId != null)
         {
             Title = "bearbeiten";
-            // user = await authManagerRepository.FindByIdAsync(userId);
+            user = await DataService.Request("GET", "/Users/" + userId);
         }
     }
 
@@ -64,7 +72,7 @@
         if (user != null)
         {
             Console.WriteLine("Update User");
-            // await authManagerRepository.UpdateAsync(user);
+            user = await DataService.Request("GET", "/Users/edit" + userId);
         }
         else
         {

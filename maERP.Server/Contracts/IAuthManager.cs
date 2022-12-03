@@ -19,5 +19,7 @@ namespace maERP.Server.Contracts
         Task<ApiUser> UpdateAsync(ApiUserDto userDto);
 
         Task<IQueryable<ApiUser>> GetAllAsync();
+
+        Task<IQueryable<ApiUser>> GetByIdAsync(string userId);
     }
 }

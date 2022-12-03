@@ -1,12 +1,19 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 
+using maERP.Client.Contracts;
+using maERP.Client.Services;
+using maERP.Shared.Models;
+
 namespace maERP.Client.Services;
 
 public class AuthStateProvider : AuthenticationStateProvider
 {
-    public AuthStateProvider()
+    IDataService<ApiUser> _dataService;
+
+    public AuthStateProvider(IDataService<ApiUser> dataService)
     {
+        _dataService = dataService;
     }
 
     public async Task Login(string token, string refreshToken)

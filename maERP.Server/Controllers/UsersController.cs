@@ -111,6 +111,17 @@ namespace maERP.Server.Controllers
         }
 
         // GET: api/Users/5
+        [HttpGet("{id}")]
+        [Authorize]
+        // [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Administrator")]
+        public async Task<ActionResult<IQueryable<ApiUser>>> GetUserById(string userId)
+        {
+            var user = await _authManager.GetByIdAsync(userId);
+            return Ok(user);
+        }
+
+        // PUT: api/Users/5
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Administrator")]
         public async Task<ActionResult> EditUser([FromBody] ApiUserDto apiUserDto)

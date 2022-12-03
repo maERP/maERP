@@ -4,8 +4,6 @@ using Newtonsoft.Json;
 using maERP.Shared.Dtos.User;
 using maERP.Client.Contracts;
 
-// using static Android.Provider.Settings;
-
 namespace maERP.Client.Services
 {
     public class DataService<T> : IDataService<T> where T : class

@@ -48,6 +48,11 @@ namespace maERP.Server.Repository
 			return _userManager.Users;
 		}
 
+        public async Task<IQueryable<ApiUser>> GetByIdAsync(string userId)
+        {
+            return _userManager.Users.Where(x => x.Id == userId);
+        }
+
         public async Task<ApiUser> UpdateAsync(ApiUserDto userDto)
         {
             var updateUser = _mapper.Map<ApiUser>(userDto);
