@@ -26,4 +26,9 @@
     <None Remove="Microsoft.AspNetCore.Authorization" />
     <None Remove="Microsoft.AspNetCore.Components.Authorization" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
