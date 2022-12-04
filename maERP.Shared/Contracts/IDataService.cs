@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using maERP.Shared.Dtos.User;
 
-namespace maERP.Client.Contracts
+namespace maERP.Shared.Contracts
 {
     public interface IDataService<T> where T : class
     {

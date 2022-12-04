@@ -2,8 +2,8 @@
 
 @using Newtonsoft.Json
 @using maERP.Shared.Dtos.User;
-@using maERP.Client.Contracts;
-@using maERP.Client.Services;
+@using maERP.Shared.Contracts;
+@using maERP.Shared.Services;
 
 @inject NavigationManager NavManager;
 @inject IDataService<Login> DataService;
@@ -45,11 +45,12 @@
 
     private void onLoad()
     {
+        /*
         if(Preferences.Default.ContainsKey("loginEmail"))
         {
             loginDto.Email = Preferences.Default.Get<string>("loginEmail", "");
         }
-
+        */
         this.StateHasChanged();
     }
 
@@ -62,7 +63,7 @@
         if (loginResponse is not null)
         {
             await AuthStateProvider.Login(loginResponse.Token, loginResponse.RefreshToken);
-            Preferences.Default.Set<string>("loginEmail", loginDto.Email);
+            // Preferences.Default.Set<string>("loginEmail", loginDto.Email);
             NavManager.NavigateTo("/");
             return;
         }

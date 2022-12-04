@@ -75,14 +75,8 @@
     </ItemGroup>
     <ItemGroup>
       <None Remove="Microsoft.AspNetCore.Components.Authorization" />
-      <None Remove="Services\" />
       <None Remove="Newtonsoft.Json" />
-      <None Remove="Contracts\" />
       <None Remove="Microsoft.AspNetCore.Authorization" />
       <None Remove="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Services\" />
-      <Folder Include="Contracts\" />
     </ItemGroup>
 </Project>

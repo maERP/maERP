@@ -1,5 +1,5 @@
-﻿using maERP.Client.Contracts;
-using maERP.Client.Services;
+﻿using maERP.Shared.Contracts;
+using maERP.Shared.Services;
 using Microsoft.Extensions.Logging;
 
 using Microsoft.AspNetCore.Components.Authorization;
@@ -25,7 +25,7 @@ namespace maERP.Client
             #if DEBUG
 		    builder.Services.AddBlazorWebViewDeveloperTools();
 		    builder.Logging.AddDebug();
-#endif
+            #endif
 
             /*
             builder.Services.AddTransient<DashboardPage>();

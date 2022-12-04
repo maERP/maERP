@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,19 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Microsoft.AspNetCore.Identity" />
-    <None Remove="Microsoft.EntityFrameworkCore" />
-    <None Remove="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
-    <None Remove="Models\" />
-    <None Remove="Dtos\" />
-    <None Remove="Dtos\Product\" />
-    <None Remove="Dtos\SalesChannel\" />
-    <None Remove="Dtos\TaxClass\" />
-    <None Remove="Dtos\User\" />
-    <None Remove="Dtos\Warehouse\" />
-    <None Remove="Models\SalesChannelData\" />
-    <None Remove="Dtos\Order\" />
-    <None Remove="Dtos\Order %28Kopie%29\" />
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Services\" />
+    <None Remove="Contracts\" />
+    <None Remove="Microsoft.AspNetCore.Components.Authorization" />
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -31,11 +35,44 @@
     <Folder Include="Dtos\Warehouse\" />
     <Folder Include="Models\SalesChannelData\" />
     <Folder Include="Dtos\Order\" />
-    <Folder Include="Dtos\Order %28Kopie%29\" />
+    <Folder Include="Pages\" />
+    <Folder Include="Services\" />
+    <Folder Include="Contracts\" />
+    <Folder Include="Shared\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
+    <RazorComponent Include="Pages\Customer.razor" />
+    <RazorComponent Include="Pages\Index.razor" />
+    <RazorComponent Include="Pages\Login.razor" />
+    <RazorComponent Include="Pages\Logout.razor" />
+    <RazorComponent Include="Pages\Order.razor" />
+    <RazorComponent Include="Pages\OrderDetail.razor" />
+    <RazorComponent Include="Pages\Product.razor" />
+    <RazorComponent Include="Pages\ProductDelete.razor" />
+    <RazorComponent Include="Pages\ProductDetail.razor" />
+    <RazorComponent Include="Pages\ProductEdit.razor" />
+    <RazorComponent Include="Pages\SalesChannel.razor" />
+    <RazorComponent Include="Pages\SalesChannelDetail.razor" />
+    <RazorComponent Include="Pages\SalesChannelEdit.razor" />
+    <RazorComponent Include="Pages\TaxClass.razor" />
+    <RazorComponent Include="Pages\TaxClassDetail.razor" />
+    <RazorComponent Include="Pages\TaxClassEdit.razor" />
+    <RazorComponent Include="Pages\User.razor" />
+    <RazorComponent Include="Pages\UserDelete.razor" />
+    <RazorComponent Include="Pages\UserDetail.razor" />
+    <RazorComponent Include="Pages\UserEdit.razor" />
+    <RazorComponent Include="Pages\Warehouse.razor" />
+    <RazorComponent Include="Pages\WarehouseDetail.razor" />
+    <RazorComponent Include="Pages\WarehouseEdit.razor" />
+    <RazorComponent Include="Shared\MainLayout.razor" />
+    <RazorComponent Include="Shared\NavMenu.razor" />
+    <RazorComponent Include="Shared\RedirectToLogin.razor" />
+    <RazorComponent Include="Shared\SurveyPrompt.razor" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Shared\MainLayout.razor" />
+    <Content Remove="Shared\NavMenu.razor" />
+    <Content Remove="Shared\RedirectToLogin.razor" />
+    <Content Remove="Shared\SurveyPrompt.razor" />
   </ItemGroup>
 </Project>

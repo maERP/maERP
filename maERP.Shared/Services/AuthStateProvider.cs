@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 
-using maERP.Client.Contracts;
-using maERP.Client.Services;
+using maERP.Shared.Contracts;
+using maERP.Shared.Services;
 using maERP.Shared.Models;
 
-namespace maERP.Client.Services;
+namespace maERP.Shared.Services;
 
 public class AuthStateProvider : AuthenticationStateProvider
 {
@@ -21,8 +21,10 @@ public class AuthStateProvider : AuthenticationStateProvider
         try
         {
             // await SecureStorage.Default.SetAsync("oauth_token", token);
-            Preferences.Default.Set("oauth_token", token);
-            Preferences.Default.Set("oauth_refresh_token", refreshToken);
+            // Preferences.Default.Set("oauth_token", token);
+            // Preferences.Default.Set("oauth_refresh_token", refreshToken);
+            maERP.Shared.Globals.AccessToken = token;
+            maERP.Shared.Globals.RefreshToken = refreshToken;
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
         catch (Exception ex)
@@ -34,7 +36,7 @@ public class AuthStateProvider : AuthenticationStateProvider
     public async Task Logout()
     {
         // SecureStorage.Default.Remove("oauth_token");
-        Preferences.Default.Remove("oauth_token");
+        // Preferences.Default.Remove("oauth_token");
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
@@ -44,7 +46,8 @@ public class AuthStateProvider : AuthenticationStateProvider
         try
         {
             // var userInfo = await SecureStorage.Default.GetAsync("oauth_token");
-            var userInfo = Preferences.Default.Get<string>("oauth_token", null);
+            // var userInfo = Preferences.Default.Get<string>("oauth_token", null);
+            var userInfo = Globals.AccessToken;
 
             if (userInfo != null)
             {

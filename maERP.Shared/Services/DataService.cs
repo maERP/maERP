@@ -2,9 +2,9 @@
 using System.Net.Http.Json;
 using Newtonsoft.Json;
 using maERP.Shared.Dtos.User;
-using maERP.Client.Contracts;
+using maERP.Shared.Contracts;
 
-namespace maERP.Client.Services
+namespace maERP.Shared.Services
 {
     public class DataService<T> : IDataService<T> where T : class
     {
@@ -35,7 +35,7 @@ namespace maERP.Client.Services
 
                     var responseObj = JsonConvert.DeserializeObject<LoginResponseDto>(result);
 
-                    Globals.ServerBaseUrl = server;
+                    maERP.Shared.Globals.ServerBaseUrl = server;
 
                     LoginResponseDto loginDto = new LoginResponseDto
                     {
@@ -58,8 +58,9 @@ namespace maERP.Client.Services
             {
                 using (var client = new HttpClient())
                 {
-                    string requestUrl = Globals.ServerBaseUrl + "/api" + path;
-                    string accessToken = Preferences.Default.Get<string>("oauth_token", "null");
+                    string requestUrl = maERP.Shared.Globals.ServerBaseUrl + "/api" + path;
+                    // string accessToken = Preferences.Default.Get<string>("oauth_token", "null");
+                    string accessToken = maERP.Shared.Globals.AccessToken;
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);

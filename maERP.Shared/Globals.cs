@@ -1,4 +1,4 @@
-﻿namespace maERP.Client
+﻿namespace maERP.Shared
 {
     static class Globals
     {

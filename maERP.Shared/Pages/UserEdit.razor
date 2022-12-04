@@ -1,8 +1,8 @@
 ﻿@page "/User/add"
 @page "/User/edit/{userId}"
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Client.Contracts;
-@using maERP.Client.Services;
+@using maERP.Shared.Contracts;
+@using maERP.Shared.Services;
 @using maERP.Shared.Dtos.User;
 
 @attribute [Authorize]
@@ -72,12 +72,12 @@
         if (user != null)
         {
             Console.WriteLine("Update User");
-            user = await DataService.Request("GET", "/Users/edit" + userId);
+            await DataService.Request("PUT", "/Users/" + userId, user);
         }
         else
         {
             Console.WriteLine("Register User");
-            // await authManagerRepository.Register(user);
+            await DataService.Request("POST", "/Users/" + userId, user);
             Cancel();
         }
     }
