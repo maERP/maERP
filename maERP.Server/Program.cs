@@ -53,6 +53,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(conString, ServerVersion.AutoDetect(conString));
 });
 
+builder.Services.AddCors(option =>
+{
+    option.AddDefaultPolicy(
+        b => b.AllowAnyHeader()
+            .AllowAnyOrigin()
+            .AllowAnyMethod());
+});
+
 builder.Services.AddIdentityCore<ApiUser>()
     .AddRoles<IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<ApiUser>>("maERP.Server")
@@ -97,14 +105,6 @@ builder.Services.AddSwaggerGen(options =>
             new List<string>()
         }
     });
-});
-
-builder.Services.AddCors(option =>
-{
-    option.AddPolicy("AllowAll",
-        b => b.AllowAnyHeader()
-            .AllowAnyOrigin()
-            .AllowAnyMethod());
 });
 
 builder.Services.AddAuthentication(options =>
@@ -178,7 +178,6 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
     });
-    app.UseCors("AllowAll");
 }
 else
 {
