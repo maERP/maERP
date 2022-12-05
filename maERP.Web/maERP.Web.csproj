@@ -25,10 +25,14 @@
   <ItemGroup>
     <None Remove="Microsoft.AspNetCore.Authorization" />
     <None Remove="Microsoft.AspNetCore.Components.Authorization" />
+    <None Remove="Dockerfile" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Dockerfile" />
   </ItemGroup>
 </Project>
