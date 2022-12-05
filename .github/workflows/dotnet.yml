@@ -24,3 +24,10 @@ jobs:
       run: dotnet build maERP.Server --no-restore
     - name: Test Server
       run: dotnet test maERP.Server --no-build --verbosity normal
+
+    - name: Restore dependencies
+      run: dotnet restore maERP.Web
+    - name: Build Server
+      run: dotnet build maERP.Web --no-restore
+    - name: Test Server
+      run: dotnet test maERP.Web --no-build --verbosity normal

@@ -12,7 +12,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{7DD1E8A8-9F3D-41EF-95A7-B93CCB0FF8AB}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
-		.github\workflows\publish-docker-hub.yml = .github\workflows\publish-docker-hub.yml
+		.github\workflows\publish-docker-hub-web.yml = .github\workflows\publish-docker-hub-web.yml
+		publish-docker-hub-server.yml = publish-docker-hub-server.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Client", "maERP.Client\maERP.Client.csproj", "{56BD2DA1-3439-4760-ADE0-177F500E23C6}"
