@@ -148,4 +148,11 @@ public class UsersController : ControllerBase
             return Problem($"Something went wrong in the {nameof(Register)}");
         }
     }
+
+    // GET: api/Users/Status
+    [HttpGet("Status")]
+    public async Task<ActionResult> GetStatus()
+    {
+        return Ok("ok");
+    }
 }
