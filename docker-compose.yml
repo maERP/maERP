@@ -2,7 +2,12 @@ version: '3.4'
 
 services:
   maerp.web:
-    image: ${DOCKER_REGISTRY-}maerp
+    image: ${DOCKER_REGISTRY-}maerp-web
     build:
       context: .
       dockerfile: maERP.Web/Dockerfile
+  maerp.server:
+    image: ${DOCKER_REGISTRY-}maerp-server
+    build:
+      context: .
+      dockerfile: maERP.Server/Dockerfile
