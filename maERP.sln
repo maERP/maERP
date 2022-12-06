@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client", "maERP.Clien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Web", "maERP.Web\maERP.Web.csproj", "{68D1525F-B465-4B71-83DC-9767A2F7A366}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{0A628C72-B6F0-4D51-9979-1F4B44A810C8}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F5FFF0EE-10F3-4FE8-B173-22A9FEFD33B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,10 +45,10 @@ Global
 		{68D1525F-B465-4B71-83DC-9767A2F7A366}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68D1525F-B465-4B71-83DC-9767A2F7A366}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68D1525F-B465-4B71-83DC-9767A2F7A366}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A628C72-B6F0-4D51-9979-1F4B44A810C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A628C72-B6F0-4D51-9979-1F4B44A810C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A628C72-B6F0-4D51-9979-1F4B44A810C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A628C72-B6F0-4D51-9979-1F4B44A810C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5FFF0EE-10F3-4FE8-B173-22A9FEFD33B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5FFF0EE-10F3-4FE8-B173-22A9FEFD33B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5FFF0EE-10F3-4FE8-B173-22A9FEFD33B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5FFF0EE-10F3-4FE8-B173-22A9FEFD33B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

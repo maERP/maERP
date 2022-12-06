@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>0a628c72-b6f0-4d51-9979-1f4b44a810c8</ProjectGuid>
+    <ProjectGuid>f5fff0ee-10f3-4fe8-b173-22a9fefd33b7</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>maerp.web</DockerServiceName>
