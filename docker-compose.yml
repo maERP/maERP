@@ -7,8 +7,8 @@ services:
       context: .
       dockerfile: maERP.Web/Dockerfile
     environment:
-      # set server url (example: https://erp-server.domain.tld) #
-      - MAERP_SERVER=https://erp-server.martin-andrich.de
+      # set server url (example: https://erp-server.domain.tld)
+      SERVER_URL "maerp.server"
     ports:
        443:443
        80:80
