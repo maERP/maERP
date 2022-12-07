@@ -31,4 +31,4 @@ jobs:
           file: ./maERP.Web/Dockerfile
           push: true
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: maerp/web:latest
