@@ -1,7 +1,14 @@
 ﻿@page "/Warehouse/add"
 @page "/Warehouse/edit/{warehouseId:int}"
-@using maERP.Shared.Models
-@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Shared.Contracts;
+@using maERP.Shared.Services;
+@using maERP.Shared.Dtos.Warehouse;
+
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager;
+@inject IDataService<GetWarehouseDto> DataService;
 
 <h1>Lager</h1>
 
@@ -17,7 +24,7 @@
         <ValidationMessage For="@(() => warehouse.Name)" />
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Speichern</button>
+        <button type="submit" class="btn btn-primary" @onclick="SaveWarehouse">Speichern</button>
         <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
     </div>
 </EditForm>
@@ -29,14 +36,14 @@
 
     protected string Title = "hinzufügen";
 
-    protected maERP.Shared.Models.Warehouse warehouse = new();
+    protected GetWarehouseDto warehouse = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (warehouseId != 0)
         {
             Title = "Bearbeiten";
-            // warehouse = await warehouseRepository.GetAsync(warehouseId);
+            warehouse = await DataService.Request("GET", "/Warehouses/" + warehouseId);
         }
     }
 
@@ -44,11 +51,11 @@
     {
         if (warehouse.Id != 0)
         {
-            // await warehouseRepository.UpdateAsync(warehouse);
+            warehouse = await DataService.Request("PUT", "/Warehouses/" + warehouseId, warehouse);
         }
         else
         {
-            // await warehouseRepository.AddAsync(warehouse);
+            warehouse = await DataService.Request("POST", "/Warehouses", warehouse);
         }
         Cancel();
     }

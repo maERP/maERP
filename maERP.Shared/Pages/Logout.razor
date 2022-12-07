@@ -1,6 +1,9 @@
 ﻿@page "/logout"
 
+@using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Services;
+
+@attribute [Authorize]
 
 @inject NavigationManager NavigationManager
 @inject AuthStateProvider AuthStateProvider;

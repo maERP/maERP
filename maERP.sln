@@ -12,7 +12,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{7DD1E8A8-9F3D-41EF-95A7-B93CCB0FF8AB}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
-		.github\workflows\publish-docker-hub.yml = .github\workflows\publish-docker-hub.yml
+		.github\workflows\publish-docker-hub-server.yml = .github\workflows\publish-docker-hub-server.yml
+		.github\workflows\publish-docker-hub-web.yml = .github\workflows\publish-docker-hub-web.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client", "maERP.Client\maERP.Client.csproj", "{56BD2DA1-3439-4760-ADE0-177F500E23C6}"
@@ -61,14 +62,5 @@ Global
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
 		$0.TextStylePolicy = $5
-		$2.inheritsSet = null
-		$2.scope = text/x-csharp
-		$0.CSharpFormattingPolicy = $3
-		$3.scope = text/x-csharp
-		$4.FileWidth = 80
-		$4.TabsToSpaces = True
-		$4.scope = text/plain
-		$5.inheritsSet = null
-		$5.scope = text/x-web
 	EndGlobalSection
 EndGlobal

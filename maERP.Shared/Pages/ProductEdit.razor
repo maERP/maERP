@@ -1,9 +1,12 @@
 ﻿@page "/Product/add"
 @page "/Product/edit/{productId:int}"
 
+@using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts;
 @using maERP.Shared.Services;
 @using maERP.Shared.Dtos.Product;
+
+@attribute [Authorize]
 
 @inject NavigationManager NavManager;
 @inject IDataService<ProductDto> _dataService;

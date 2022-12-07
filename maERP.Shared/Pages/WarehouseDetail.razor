@@ -1,6 +1,13 @@
 ﻿@page "/Warehouse/{warehouseId:int}"
-@using maERP.Shared.Models
-@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Shared.Contracts;
+@using maERP.Shared.Services;
+@using maERP.Shared.Dtos.Warehouse;
+
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager;
+@inject IDataService<GetWarehouseDto> DataService;
 
 <h1>Lager</h1>
 
@@ -12,14 +19,14 @@
 
     protected string Title = "Lager";
 
-    protected maERP.Shared.Models.Warehouse warehouse = new();
+    protected GetWarehouseDto warehouse = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (warehouseId != 0)
         {
             Title = "Bearbeiten";
-            // warehouse = await warehouseRepository.GetAsync(warehouseId);
+            warehouse = await DataService.Request("GET", "/Warehouses/" + warehouseId);
         }
         else Title = "nicht gefunden";
     }

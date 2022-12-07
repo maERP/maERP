@@ -78,9 +78,17 @@ namespace maERP.Shared.Services
                     {
                         response = await client.PostAsJsonAsync(requestUrl, payload).ConfigureAwait(false);
                     }
+                    else if (method == "PUT")
+                    {
+                        response = await client.PutAsJsonAsync(requestUrl, payload).ConfigureAwait(false);
+                    }
+                    else if (method == "DELETE")
+                    {
+                        response = await client.DeleteAsync(requestUrl).ConfigureAwait(false);
+                    }
                     else
                     {
-                        Console.WriteLine("Bearer: " + accessToken);
+                        Console.WriteLine("Bearer " + accessToken);
                         Console.WriteLine(requestUrl);
                         Console.WriteLine(response.Headers);
                         Console.WriteLine(response.TrailingHeaders);
@@ -127,6 +135,9 @@ namespace maERP.Shared.Services
                     else
                     {
                         Console.WriteLine("EXCEPTION");
+                        Console.WriteLine("URL: " + requestUrl);
+                        Console.WriteLine("STATUS CODE: " + response.StatusCode);
+                        Console.WriteLine("CONTENT: " + response.Content);
                         throw new Exception();
                     }
                 }

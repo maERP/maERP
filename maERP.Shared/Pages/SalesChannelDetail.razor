@@ -1,6 +1,13 @@
 ﻿@page "/SalesChannel/{salesChannelId:int}"
-@using maERP.Shared.Models
-@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Shared.Contracts;
+@using maERP.Shared.Services;
+@using maERP.Shared.Dtos;
+
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager;
+@inject IDataService<GetSalesChannelDto> DataService;
 
 <h1>@salesChannel.Name</h1>
 
@@ -13,14 +20,14 @@
 
     protected string Title = "Vertriebskanaldetails";
 
-    protected maERP.Shared.Models.SalesChannel salesChannel = new();
+    protected GetSalesChannelDto salesChannel = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (salesChannelId != 0)
         {
             Title = "bearbeiten";
-            // salesChannel = await salesChannelRepository.GetAsync(salesChannelId);
+            salesChannel = await DataService.Request("GET", "/SalesChannels/" + salesChannelId);
         }
         else Title = "nicht gefunden";
     }

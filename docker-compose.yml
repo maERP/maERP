@@ -6,8 +6,41 @@ services:
     build:
       context: .
       dockerfile: maERP.Web/Dockerfile
+    environment:
+      # set server url (example: https://erp-server.domain.tld) #
+      - MAERP_SERVER=https://erp-server.martin-andrich.de
+    ports:
+       443:443
+       80:80
+    links:
+      - maerp.server
+
   maerp.server:
     image: ${DOCKER_REGISTRY-}maerpserver
     build:
       context: .
       dockerfile: maERP.Server/Dockerfile
+    environment:
+      DB_TYPE "mysql"
+      DB_HOST "localhost"
+      DB_PORT "3306"
+      DB_NAME "maerp"
+      DB_USER "maerp"
+      DB_PASS "maerp"
+    ports:
+      443:8080
+    links:
+      - maerp.web
+
+  mariadb:
+    image: "mariadb:${MARIADB_VERSION}"
+    restart: 'always'
+    volumes: 
+      - "/var/lib/mysql/data:${MARIADB_DATA_DIR}"
+      - "/var/lib/mysql/logs:${MARIADB_LOG_DIR}"
+      - /var/docker/mariadb/conf:/etc/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"

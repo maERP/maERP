@@ -5,6 +5,13 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+ENV DB_TYPE mysql
+ENV DB_HOST localhost
+ENV DB_PORT 3306
+ENV DB_USER maerp
+ENV DB_PASS maerp
+ENV DB_NAME maerp_01
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["maERP.Server/maERP.Server.csproj", "maERP.Server/"]
