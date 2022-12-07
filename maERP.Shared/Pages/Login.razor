@@ -25,20 +25,21 @@
         <ValidationMessage For="@(() => loginDto.Password)" />
     </div>
 
-    <div class="mt-2 form-group">
-        <label>Server</label>
-        <input type="url" @bind-value="loginServer" class="form-control" placeholder="https://erp.domain.de" />
-    </div>
 
-    @if(_showServerInput)
+    @if (_showServerInput)
     {
-        <div class="text-center mt-2">
-            <button class="btn btn-primary" type="submit">
-                <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
-                Login
-            </button>
+        <div class="mt-2 form-group">
+            <label>Server</label>
+            <input type="url" @bind-value="loginServer" class="form-control" placeholder="https://erp.domain.de" />
         </div>
     }
+
+    <div class="text-center mt-2">
+        <button class="btn btn-primary" type="submit">
+            <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
+            Login
+        </button>
+    </div>
 
     <div>@_errorMessage</div>
 </EditForm>
@@ -48,10 +49,9 @@
 {
     LoginDto loginDto = new();
     private string loginServer = "";
-    private bool _showServerInput = false;
+    private bool _showServerInput = true;
     private string _spinnerClass = string.Empty;
     private string _errorMessage = string.Empty;
-
 
     private void onLoad()
     {
