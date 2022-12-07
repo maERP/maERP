@@ -21,4 +21,3 @@ RUN dotnet publish "maERP.Web.csproj" -c Release -o /app/publish /p:UseAppHost=f
 FROM nginx:alpine AS final
 WORKDIR /usr/share/nginx/html
 COPY --from=publish /app/publish/wwwroot .
-COPY ["maERP.Web/nginx.conf", "/etc/nginx/nginx.conf"]
