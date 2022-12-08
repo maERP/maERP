@@ -6,8 +6,12 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using maERP.Web;
 using maERP.Shared.Contracts;
 using maERP.Shared.Services;
+using maERP.Shared;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+Globals.ServerBaseUrl = builder.Configuration["ApiBaseUrl"];
+
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 

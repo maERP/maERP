@@ -25,7 +25,6 @@
         <ValidationMessage For="@(() => loginDto.Password)" />
     </div>
 
-
     @if (_showServerInput)
     {
         <div class="mt-2 form-group">
@@ -55,10 +54,10 @@
 
     private void onLoad()
     {
-        if (Environment.GetEnvironmentVariable("SERVER_URL") is not null)
+        if (Globals.ServerBaseUrl.Length > 0)
         {
             _showServerInput = false;
-            loginServer = Environment.GetEnvironmentVariable("SERVER_URL");
+            loginServer = Globals.ServerBaseUrl;
         }
 
         /*
