@@ -5,7 +5,7 @@ WORKDIR /app
 EXPOSE 80
 
 ENV MAERP_SERVER_BASE_URL "https://localhost:8080"
-ENV MAERP_REMOTE_LOG true
+ENV MAERP_REMOTE_LOG_URL true
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
@@ -20,8 +20,9 @@ FROM build AS publish
 RUN dotnet publish "maERP.Web.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM nginx:alpine AS final
-RUN apk add --no-cache jq moreutils
 WORKDIR /usr/share/nginx/html
 COPY --from=publish /app/publish/wwwroot .
-RUN jq '.ServerBaseUrl = "$MAERP_SERVER_BASE_URLI"' /app/publish/wwwroot/appsettings.json | sponge /app/publish/wwwroot/appsettings.json
-RUN jq '.RemoteLog = $MAERP_REMOTE_LOG' /app/publish/wwwroot/appsettings.json | sponge /app/publish/wwwroot/appsettings.json
+RUN apk add --no-cache jq moreutils
+RUN chmod a+x /app/publish/start.sh
+
+ENTRYPOINT ["/bin/sh", "/app&publish/start.sh"]

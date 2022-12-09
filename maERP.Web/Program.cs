@@ -10,25 +10,15 @@ using maERP.Shared;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-Globals.ServerBaseUrl = builder.Configuration["ApiBaseUrl"];
+Globals.ServerBaseUrl = builder.Configuration["ServerBaseUrl"];
 
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
-/*
-builder.Services.AddOidcAuthentication(options =>
-{
-    // Configure your authentication provider options here.
-    // For more information, see https://aka.ms/blazor-standalone-auth
-    builder.Configuration.Bind("Local", options.ProviderOptions);
-});
-*/
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
-
 builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
 
 await builder.Build().RunAsync();
