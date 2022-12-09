@@ -1,12 +1,14 @@
 ﻿#nullable disable
 
+using maERP.Shared.Dtos.TaxClass;
+
 namespace maERP.Shared.Dtos.Product;
 
-public class BaseProductDto
+public class ProductBaseDto
 {
     public int Id { get; set; }
     public string SKU { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
-    public int TaxClassId { get; set; }
+    public TaxClassDto TaxClass { get; set; }
 }

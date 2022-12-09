@@ -28,23 +28,23 @@ namespace maERP.Server.Controllers
         [HttpGet("GetAll")]
         // GET: api/Warehouses?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
         [EnableQuery] 
-        public async Task<ActionResult<IEnumerable<GetWarehouseDto>>> GetWarehouse()
+        public async Task<ActionResult<IEnumerable<WarehouseListDto>>> GetWarehouse()
         {
-            var warehouses = await _repository.GetAllAsync<GetWarehouseDto>();
+            var warehouses = await _repository.GetAllAsync<WarehouseListDto>();
             return Ok(warehouses);
         }
 
         // GET: api/Warehouses/?StartIndex=0&PageSize=25&PageNumber=1
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Warehouse>>> GetPagedWarehouse([FromQuery] QueryParameters queryParameters)
+        public async Task<ActionResult<IEnumerable<WarehouseListDto>>> GetPagedWarehouse([FromQuery] QueryParameters queryParameters)
         {
-            var pagedWarehousesResult = await _repository.GetAllAsync<GetWarehouseDto>(queryParameters);
+            var pagedWarehousesResult = await _repository.GetAllAsync<WarehouseListDto>(queryParameters);
             return Ok(pagedWarehousesResult);
         }
 
         // GET: api/Warehouses/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BaseWarehouseDto>> GetWarehouse(int id)
+        public async Task<ActionResult<WarehouseDto>> GetWarehouse(int id)
         {
             var warehouse = await _repository.GetDetails(id);
             return Ok(warehouse);
@@ -52,16 +52,16 @@ namespace maERP.Server.Controllers
 
         // PUT: api/Warehouses/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutWarehouse(int id, UpdateWarehouseDto updateWarehouseDto)
+        public async Task<IActionResult> PutWarehouse(int id, WarehouseDto warehouseDto)
         {
-            if (id != updateWarehouseDto.Id)
+            if (id != warehouseDto.Id)
             {
                 return BadRequest("Invalid Record Id");
             }
 
             try
             {
-                await _repository.UpdateAsync(id, updateWarehouseDto);
+                await _repository.UpdateAsync(id, warehouseDto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -81,9 +81,9 @@ namespace maERP.Server.Controllers
         // POST: api/Warehouses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<WarehouseDto>> PostWarehouse(CreateWarehouseDto createWarehouseDto)
+        public async Task<ActionResult<WarehouseDto>> PostWarehouse(WarehouseDto warehouseDto)
         {
-            var warehouse = await _repository.AddAsync<CreateWarehouseDto, GetWarehouseDto>(createWarehouseDto);
+            var warehouse = await _repository.AddAsync<WarehouseDto, WarehouseDto>(warehouseDto);
             return CreatedAtAction(nameof(GetWarehouse), new { id = warehouse.Id }, warehouse);
         }
 

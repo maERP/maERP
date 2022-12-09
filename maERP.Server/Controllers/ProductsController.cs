@@ -28,17 +28,17 @@ namespace maERP.Server.Controllers
         [HttpGet("GetAll")]
         // GET: api/Products?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
         [EnableQuery] 
-        public async Task<ActionResult<IEnumerable<GetProductDto>>> GetProduct()
+        public async Task<ActionResult<IEnumerable<ProductListDto>>> GetProduct()
         {
-            var result = await _repository.GetAllAsync<GetProductDto>();
+            var result = await _repository.GetAllAsync<ProductListDto>();
             return Ok(result);
         }
 
         // GET: api/Products/?StartIndex=0&PageSize=25&PageNumber=1
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetPagedProduct([FromQuery] QueryParameters queryParameters)
+        public async Task<ActionResult<IEnumerable<ProductListDto>>> GetPagedProduct([FromQuery] QueryParameters queryParameters)
         {
-            var pagedResult = await _repository.GetAllAsync<GetProductDto>(queryParameters);
+            var pagedResult = await _repository.GetAllAsync<ProductListDto>(queryParameters);
             return Ok(pagedResult);
         }
 
@@ -52,16 +52,16 @@ namespace maERP.Server.Controllers
 
         // PUT: api/Products/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, UpdateProductDto updateProductDto)
+        public async Task<IActionResult> PutProduct(int id, ProductDto productDto)
         {
-            if (id != updateProductDto.Id)
+            if (id != productDto.Id)
             {
                 return BadRequest("Invalid Record Id");
             }
 
             try
             {
-                await _repository.UpdateAsync(id, updateProductDto);
+                await _repository.UpdateAsync(id, productDto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -81,9 +81,9 @@ namespace maERP.Server.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ProductDto>> PostProduct(CreateProductDto createProductDto)
+        public async Task<ActionResult<ProductDto>> PostProduct(ProductDto productDto)
         {
-            var product = await _repository.AddAsync<CreateProductDto, GetProductDto>(createProductDto);
+            var product = await _repository.AddAsync<ProductDto, ProductDto>(productDto);
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }
 

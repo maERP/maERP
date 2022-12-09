@@ -22,7 +22,3 @@ RUN dotnet publish "maERP.Web.csproj" -c Release -o /app/publish /p:UseAppHost=f
 FROM nginx:alpine AS final
 WORKDIR /usr/share/nginx/html
 COPY --from=publish /app/publish/wwwroot .
-RUN apk add --no-cache jq moreutils
-RUN chmod a+x /usr/share/nginx/html/start.sh
-
-ENTRYPOINT ["/bin/sh", "/usr/share/nginx/html/start.sh"]

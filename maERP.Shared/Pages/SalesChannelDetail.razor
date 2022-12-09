@@ -7,7 +7,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager;
-@inject IDataService<GetSalesChannelDto> DataService;
+@inject IDataService<SalesChannelDto> DataService;
 
 <h1>@salesChannel.Name</h1>
 
@@ -20,7 +20,7 @@
 
     protected string Title = "Vertriebskanaldetails";
 
-    protected GetSalesChannelDto salesChannel = new();
+    protected SalesChannelDto salesChannel = new();
 
     protected override async Task OnParametersSetAsync()
     {

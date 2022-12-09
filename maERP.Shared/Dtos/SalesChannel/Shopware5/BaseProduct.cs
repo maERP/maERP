@@ -1,11 +1,10 @@
 ﻿#nullable disable
 
-namespace maERP.Shared.Dtos.SalesChannel.Shopware5
+namespace maERP.Shared.Dtos.SalesChannel.Shopware5;
+
+public class BaseProduct
 {
-	public class BaseProduct
+	public BaseProduct()
 	{
-		public BaseProduct()
-		{
-		}
 	}
 }

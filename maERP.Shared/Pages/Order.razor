@@ -8,7 +8,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavManager;
-@inject IDataService<ICollection<GetOrderDto>> DataService;
+@inject IDataService<ICollection<OrderListDto>> DataService;
 
 <PageTitle>Bestellungen</PageTitle>
 
@@ -41,7 +41,7 @@ else
 
 @code {
 
-    private ICollection<GetOrderDto> orders;
+    private ICollection<OrderListDto> orders;
 
     protected override async Task OnInitializedAsync()
     {

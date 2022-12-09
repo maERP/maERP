@@ -2,7 +2,7 @@
 
 namespace maERP.Shared.Dtos.Customer;
 
-public class CreateCustomerDto : BaseCustomerDto
-{ 
-
+public class CustomerBaseDto
+{
+    public int Id { get; set; }
 }

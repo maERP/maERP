@@ -41,10 +41,4 @@
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Remove="wwwroot\start.sh" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="wwwroot\start.sh" />
-  </ItemGroup>
 </Project>

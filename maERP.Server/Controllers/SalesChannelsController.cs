@@ -25,24 +25,24 @@ namespace maERP.Server.Controllers
 
         // GET: api/SalesChannels
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<SalesChannel>>> GetSalesChannel()
+        public async Task<ActionResult<IEnumerable<SalesChannelListDto>>> GetSalesChannel()
         {
             var salesChannels = await _repository.GetAllAsync();
-            var records = _mapper.Map<List<GetSalesChannelDto>>(salesChannels);
+            var records = _mapper.Map<List<SalesChannelListDto>>(salesChannels);
             return Ok(records);
         }
 
         // GET: api/SalesChannels/?StartIndex=0&PageSize=25&PageNumber=1
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SalesChannel>>> GetPagedSalesChannel([FromQuery] QueryParameters queryParameters)
+        public async Task<ActionResult<IEnumerable<SalesChannelListDto>>> GetPagedSalesChannel([FromQuery] QueryParameters queryParameters)
         {
-            var pagedSalesChannelsResult = await _repository.GetAllAsync<GetSalesChannelDto>(queryParameters);
+            var pagedSalesChannelsResult = await _repository.GetAllAsync<SalesChannelListDto>(queryParameters);
             return Ok(pagedSalesChannelsResult);
         }
 
         // GET: api/SalesChannel/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SalesChannel>> GetSalesChannel(int id)
+        public async Task<ActionResult<SalesChannelDto>> GetSalesChannel(int id)
         {
             var salesChannel = await _repository.getDetails(id);
 
@@ -51,16 +51,16 @@ namespace maERP.Server.Controllers
                 return NotFound();
             }
 
-            var salesChannelDto = _mapper.Map<GetSalesChannelDto>(salesChannel);
+            var salesChannelDto = _mapper.Map<SalesChannelDto>(salesChannel);
 
             return Ok(salesChannelDto);
         }
 
         // PUT: api/SalesChannels/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSalesChannel(int id, UpdateSalesChannelDto updateSalesChannelDto)
+        public async Task<IActionResult> PutSalesChannel(int id, SalesChannelDto salesChannelDto)
         {
-            if (id != updateSalesChannelDto.Id)
+            if (id != salesChannelDto.Id)
             {
                 return BadRequest("Invalid Record Id");
             }
@@ -72,7 +72,7 @@ namespace maERP.Server.Controllers
                 return NotFound();
             }
 
-            _mapper.Map(updateSalesChannelDto, salesChannel);
+            _mapper.Map(salesChannelDto, salesChannel);
 
             try
             {
@@ -96,9 +96,9 @@ namespace maERP.Server.Controllers
         // POST: api/SalesChannels
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<SalesChannel>> PostSalesChannel(CreateSalesChannelDto createSalesChannelDto)
+        public async Task<ActionResult<SalesChannel>> PostSalesChannel(SalesChannelDto salesChannelDto)
         {
-            var salesChannel = _mapper.Map<SalesChannel>(createSalesChannelDto);
+            var salesChannel = _mapper.Map<SalesChannel>(salesChannelDto);
 
             await _repository.AddAsync(salesChannel);
 

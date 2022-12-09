@@ -2,6 +2,6 @@
 
 namespace maERP.Shared.Dtos.TaxClass;
 
-public class TaxClassDto : TaxClassBaseDto
+public class TaxClassListDto : TaxClassBaseDto
 {
 }

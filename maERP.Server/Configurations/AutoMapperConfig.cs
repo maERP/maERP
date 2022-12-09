@@ -19,46 +19,25 @@ namespace maERP.Server.Configurations
 			CreateMap<ApiUserDto, ApiUser>().ReverseMap();
 
             CreateMap<Customer, CustomerDto>().ReverseMap();
-            CreateMap<Customer, GetCustomerDto>().ReverseMap();
-            CreateMap<Customer, CreateCustomerDto>().ReverseMap();
-            CreateMap<Customer, GetCustomerDto>().ReverseMap();
-            CreateMap<Customer, UpdateCustomerDto>().ReverseMap();
+            CreateMap<Customer, CustomerListDto>().ReverseMap();
 
             CreateMap<Order, OrderDto>().ReverseMap();
-            CreateMap<Order, GetOrderDto>().ReverseMap();
-            CreateMap<Order, CreateOrderDto>().ReverseMap();
-            CreateMap<Order, GetOrderDto>().ReverseMap();
-            CreateMap<Order, UpdateOrderDto>().ReverseMap();
+            CreateMap<Order, OrderListDto>().ReverseMap();
 
             CreateMap<Product, ProductDto>().ReverseMap();
-			CreateMap<Product, GetProductDto>().ReverseMap();
-			CreateMap<Product, CreateProductDto>().ReverseMap();
-			CreateMap<Product, GetProductDto>().ReverseMap();			
-			CreateMap<Product, UpdateProductDto>().ReverseMap();
+            CreateMap<Product, ProductListDto>().ReverseMap();
 
 			CreateMap<ProductSalesChannel, ProductSalesChannelDto>().ReverseMap();
-			CreateMap<ProductSalesChannel, GetProductSalesChannelDto>().ReverseMap();
-			CreateMap<ProductSalesChannel, CreateProductSalesChannelDto>().ReverseMap();
-			CreateMap<ProductSalesChannel, GetProductSalesChannelDto>().ReverseMap();
-			CreateMap<ProductSalesChannel, UpdateProductSalesChannelDto>().ReverseMap();
+			CreateMap<ProductSalesChannel, ProductSalesChannelListDto>().ReverseMap();
 
-			// SalesChannel does not have a basic SalesChannelDto
-			CreateMap<SalesChannel, GetSalesChannelDto>().ReverseMap();
-			CreateMap<SalesChannel, CreateSalesChannelDto>().ReverseMap();
-			CreateMap<SalesChannel, GetSalesChannelDto>().ReverseMap();
-			CreateMap<SalesChannel, UpdateSalesChannelDto>().ReverseMap();
+			CreateMap<SalesChannel, SalesChannelDto>().ReverseMap();
+			CreateMap<SalesChannel, SalesChannelListDto>().ReverseMap();
 
 			CreateMap<TaxClass, TaxClassDto>().ReverseMap();
-			CreateMap<TaxClass, GetTaxClassDto>().ReverseMap();
-			CreateMap<TaxClass, CreateTaxClassDto>().ReverseMap();
-			CreateMap<TaxClass, GetTaxClassDto>().ReverseMap();			
-			CreateMap<TaxClass, UpdateTaxClassDto>().ReverseMap();
+			CreateMap<TaxClass, TaxClassListDto>().ReverseMap();
 
 			CreateMap<Warehouse, WarehouseDto>().ReverseMap();
-			CreateMap<Warehouse, GetWarehouseDto>().ReverseMap();
-			CreateMap<Warehouse, CreateWarehouseDto>().ReverseMap();
-			CreateMap<Warehouse, GetWarehouseDto>().ReverseMap();
-			CreateMap<TaxClass, UpdateWarehouseDto>().ReverseMap();
+			CreateMap<Warehouse, WarehouseListDto>().ReverseMap();
 		}
 	}
 }

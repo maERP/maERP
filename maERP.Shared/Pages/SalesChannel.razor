@@ -7,7 +7,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager;
-@inject IDataService<ICollection<GetSalesChannelDto>> DataService;
+@inject IDataService<ICollection<SalesChannelListDto>> DataService;
 
 <PageTitle>Vertriebskanäle</PageTitle>
 
@@ -52,7 +52,7 @@ else
 
 @code {
 
-    private ICollection<GetSalesChannelDto> salesChannels;
+    private ICollection<SalesChannelListDto> salesChannels;
 
     protected override async Task OnInitializedAsync()
     {

@@ -7,7 +7,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager;
-@inject IDataService<ICollection<GetWarehouseDto>> DataService;
+@inject IDataService<ICollection<WarehouseListDto>> DataService;
 
 <PageTitle>Lager</PageTitle>
 
@@ -50,7 +50,7 @@ else
 
 @code {
 
-    private ICollection<GetWarehouseDto> warehouses;
+    private ICollection<WarehouseListDto> warehouses;
 
     protected override async Task OnInitializedAsync()
     {

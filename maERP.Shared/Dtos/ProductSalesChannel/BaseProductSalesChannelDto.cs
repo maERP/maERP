@@ -2,7 +2,7 @@
 
 namespace maERP.Shared.Dtos.ProductSalesChannel;
 
-public class BaseProductSalesChannelDto
+public class ProductSalesChannelBaseDto
 {
     public int Id { get; set; }
     public int RemoteProductId { get; set; }

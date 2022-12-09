@@ -8,7 +8,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavManager;
-@inject IDataService<ICollection<GetProductDto>> DataService;
+@inject IDataService<ICollection<ProductListDto>> DataService;
 
 <PageTitle>Produkte</PageTitle>
 
@@ -63,7 +63,7 @@ else
 
 @code {
 
-    private ICollection<GetProductDto> products;
+    private ICollection<ProductListDto> products;
     public string filter { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -71,7 +71,7 @@ else
         products = await DataService.Request("GET", "/Products/GetAll");
     }
 
-    public bool IsVisible(GetProductDto product)
+    public bool IsVisible(ProductListDto product)
     {
         if (string.IsNullOrEmpty(filter))
             return true;

@@ -2,7 +2,7 @@
 
 namespace maERP.Shared.Dtos.Customer;
 
-public class GetCustomerDto : BaseCustomerDto
+public class CustomerListDto : CustomerBaseDto
 {
 
 }

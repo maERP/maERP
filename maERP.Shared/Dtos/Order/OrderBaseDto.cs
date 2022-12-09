@@ -2,7 +2,7 @@
 
 namespace maERP.Shared.Dtos.Order;
 
-public class CreateOrderDto : BaseOrderDto
-{ 
-
+public class OrderBaseDto
+{
+    public int Id { get; set; }
 }

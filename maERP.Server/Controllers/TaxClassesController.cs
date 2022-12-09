@@ -28,17 +28,17 @@ namespace maERP.Server.Controllers
         [HttpGet("GetAll")]
         // GET: api/TaxClasses?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
         [EnableQuery]
-        public async Task<ActionResult<IEnumerable<GetTaxClassDto>>> GetTaxClass()
+        public async Task<ActionResult<IEnumerable<TaxClassListDto>>> GetTaxClass()
         {
-            var result = await _repository.GetAllAsync<GetTaxClassDto>();
+            var result = await _repository.GetAllAsync<TaxClassListDto>();
             return Ok(result);
         }
 
         // GET: api/TaxClasses/?StartIndex=0&PageSize=25&PageNumber=1
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaxClass>>> GetPagedTaxClass([FromQuery] QueryParameters queryParameters)
+        public async Task<ActionResult<IEnumerable<TaxClassListDto>>> GetPagedTaxClass([FromQuery] QueryParameters queryParameters)
         {
-            var pagedResult = await _repository.GetAllAsync<GetTaxClassDto>(queryParameters);
+            var pagedResult = await _repository.GetAllAsync<TaxClassListDto>(queryParameters);
             return Ok(pagedResult);
         }
 
@@ -52,7 +52,7 @@ namespace maERP.Server.Controllers
 
         // PUT: api/TaxClasses/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTaxClass(int id, UpdateTaxClassDto updateTaxClassDto)
+        public async Task<IActionResult> PutTaxClass(int id, TaxClassDto updateTaxClassDto)
         {
             if (id != updateTaxClassDto.Id)
             {
@@ -81,9 +81,9 @@ namespace maERP.Server.Controllers
         // POST: api/TaxClasses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TaxClassDto>> PostTaxClass(CreateTaxClassDto createTaxClassDto)
+        public async Task<ActionResult<TaxClassDto>> PostTaxClass(TaxClassDto taxClassDto)
         {
-            var taxClass = await _repository.AddAsync<CreateTaxClassDto, GetTaxClassDto>(createTaxClassDto);
+            var taxClass = await _repository.AddAsync<TaxClassDto, TaxClassDto>(taxClassDto);
             return CreatedAtAction(nameof(GetTaxClass), new { id = taxClass.Id }, taxClass);
         }
 
