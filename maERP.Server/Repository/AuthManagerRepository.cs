@@ -45,12 +45,14 @@ namespace maERP.Server.Repository
 
 		public async Task<IQueryable<ApiUser>> GetAllAsync()
 		{
-			return _userManager.Users;
+            await Task.CompletedTask;
+            return _userManager.Users;
 		}
 
         public async Task<ApiUserDto> GetByIdAsync(string userId)
         {
-			var user = _userManager.Users.Where(x => x.Id == userId).First<ApiUser>();
+            await Task.CompletedTask;
+            var user = _userManager.Users.Where(x => x.Id == userId).First<ApiUser>();
 			var userDto = _mapper.Map<ApiUserDto>(user);
 			return userDto;
         }

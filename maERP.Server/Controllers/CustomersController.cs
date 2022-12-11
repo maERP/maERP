@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using maERP.Shared.Models;
+using maERP.Shared.Dtos.Customer;
+using AutoMapper;
+using maERP.Server.Contracts;
+using Microsoft.AspNetCore.OData.Query;
 using maERP.Server.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace maERP.Server.Controllers
 {
@@ -11,61 +15,56 @@ namespace maERP.Server.Controllers
     [Authorize]
     public class CustomersController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly ICustomersRepository _repository;
 
-        public CustomersController(ApplicationDbContext context)
+        public CustomersController(IMapper mapper, ICustomersRepository repository)
         {
-            _context = context;
+            _mapper = mapper;
+            _repository = repository;
         }
 
         // GET: api/Customers
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomer()
+        [HttpGet("GetAll")]
+        [EnableQuery]
+        public async Task<ActionResult<IEnumerable<CustomerListDto>>> GetCustomers()
         {
-          if (_context.Customer == null)
-          {
-              return NotFound();
-          }
-            return await _context.Customer.ToListAsync();
+            var customers = await _repository.GetAllAsync<CustomerListDto>();
+            return Ok(customers);
+        }
+
+        // GET: api/Customers/?StartIndex=0&PageSize=25&PageNumber=1
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CustomerListDto>>> GetPagedCustomers([FromQuery] QueryParameters queryParameters)
+        {
+            var pagedCustomersResult = await _repository.GetAllAsync<CustomerListDto>(queryParameters);
+            return Ok(pagedCustomersResult);
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<CustomerDto>> GetCustomer(int id)
         {
-          if (_context.Customer == null)
-          {
-              return NotFound();
-          }
-            var customer = await _context.Customer.FindAsync(id);
-
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return customer;
+            var customer = await _repository.GetDetails(id);
+            return Ok(customer);
         }
 
         // PUT: api/Customers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer customer)
+        public async Task<IActionResult> PutCustomer(int id, CustomerDto customerDto)
         {
-            if (id != customer.Id)
+            if (id != customerDto.Id)
             {
-                return BadRequest();
+                return BadRequest("Invalid Record Id");
             }
-
-            _context.Entry(customer).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _repository.UpdateAsync(id, customerDto);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
+                if (!await CustomerExists(id))
                 {
                     return NotFound();
                 }
@@ -79,43 +78,25 @@ namespace maERP.Server.Controllers
         }
 
         // POST: api/Customers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<ActionResult<CustomerDto>> PostCustomer(CustomerDto customerDto)
         {
-          if (_context.Customer == null)
-          {
-              return Problem("Entity set 'ApplicationDbContext.Customer'  is null.");
-          }
-            _context.Customer.Add(customer);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
+            var customer = await _repository.AddAsync<CustomerDto, CustomerDto>(customerDto);
+            return CreatedAtAction(nameof(GetCustomer), new { id = customer.Id }, customer);
         }
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
-            if (_context.Customer == null)
-            {
-                return NotFound();
-            }
-            var customer = await _context.Customer.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            _context.Customer.Remove(customer);
-            await _context.SaveChangesAsync();
+            await _repository.DeleteAsync(id);
 
             return NoContent();
         }
 
-        private bool CustomerExists(int id)
+        private async Task<bool> CustomerExists(int id)
         {
-            return (_context.Customer?.Any(e => e.Id == id)).GetValueOrDefault();
+            return await _repository.Exists(id);
         }
     }
 }

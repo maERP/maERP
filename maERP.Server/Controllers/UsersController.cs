@@ -153,6 +153,7 @@ public class UsersController : ControllerBase
     [HttpGet("Status")]
     public async Task<ActionResult> GetStatus()
     {
+        await Task.CompletedTask;
         return Ok("ok");
     }
 }

@@ -11,12 +11,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Server.Repository
 {
-	public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
+	public class CustomersRepository : GenericRepository<Customer>, ICustomersRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public CustomerRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+        public CustomersRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {
             this._context = context;
             this._mapper = mapper;

@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using maERP.Shared.Models;
+using maERP.Shared.Dtos.Order;
+using AutoMapper;
+using maERP.Server.Contracts;
+using Microsoft.AspNetCore.OData.Query;
 using maERP.Server.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace maERP.Server.Controllers
 {
@@ -11,60 +15,55 @@ namespace maERP.Server.Controllers
     [Authorize]
     public class OrdersController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IOrdersRepository _repository;
 
-        public OrdersController(ApplicationDbContext context)
+        public OrdersController(IMapper mapper, IOrdersRepository repository)
         {
-            _context = context;
+            _mapper = mapper;
+            _repository = repository;
         }
 
         // GET: api/Orders
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrder()
+        [HttpGet("GetAll")]
+        public async Task<ActionResult<IEnumerable<OrderListDto>>> GetOrders()
         {
-            if (_context.Order == null)
-            {
-                return NotFound();
-            }
-            return await _context.Order.ToListAsync();
+            var orders = await _repository.GetAllAsync<OrderListDto>();
+            return Ok(orders);
+        }
+
+        // GET: api/Orders/?StartIndex=0&PageSize=25&PageNumber=1
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<OrderListDto>>> GetPagedOrders([FromQuery] QueryParameters queryParameters)
+        {
+            var pagedOrdersResult = await _repository.GetAllAsync<OrderListDto>(queryParameters);
+            return Ok(pagedOrdersResult);
         }
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<ActionResult<OrderDto>> GetOrder(int id)
         {
-            if (_context.Order == null)
-            {
-                return NotFound();
-            }
-            var order = await _context.Order.FindAsync(id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return order;
+            var order = await _repository.GetDetails(id);
+            return Ok(order);
         }
 
         // PUT: api/Orders/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
+        public async Task<IActionResult> PutOrders(int id, OrderDto orderDto)
         {
-            if (id != order.Id)
+            if (id != orderDto.Id)
             {
-                return BadRequest();
+                return BadRequest("Invalid Record Id");
             }
-
-            _context.Entry(order).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _repository.UpdateAsync(id, orderDto);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(id))
+                if (!await OrderExists(id))
                 {
                     return NotFound();
                 }
@@ -79,42 +78,24 @@ namespace maERP.Server.Controllers
 
         // POST: api/Orders
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<ActionResult<OrderDto>> PutOrder(OrderDto orderDto)
         {
-            if (_context.Order == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Order'  is null.");
-            }
-
-            _context.Order.Add(order);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            var order = await _repository.AddAsync<OrderDto, OrderDto>(orderDto);
+            return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
         }
 
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
-            if (_context.Order == null)
-            {
-                return NotFound();
-            }
-            var order = await _context.Order.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            _context.Order.Remove(order);
-            await _context.SaveChangesAsync();
+            await _repository.DeleteAsync(id);
 
             return NoContent();
         }
 
-        private bool OrderExists(int id)
+        private async Task<bool> OrderExists(int id)
         {
-            return (_context.Order?.Any(e => e.Id == id)).GetValueOrDefault();
+            return await _repository.Exists(id);
         }
     }
 }

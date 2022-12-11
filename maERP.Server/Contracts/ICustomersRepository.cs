@@ -3,7 +3,7 @@ using maERP.Shared.Dtos.Customer;
 
 namespace maERP.Server.Contracts
 {
-    public interface ICustomerRepository : IGenericRepository<Customer>
+    public interface ICustomersRepository : IGenericRepository<Customer>
     {
         Task<CustomerDto> GetDetails(int id);
     }
