@@ -38,10 +38,14 @@
             Title = "Bearbeiten";
             // taxClass = await taxClassRepository.GetAsync(taxClassId);
         }
+
+        await Task.CompletedTask;
     }
 
     protected async Task SaveTaxClass()
     {
+        await Task.CompletedTask;
+
         if (taxClass.Id != 0)
         {
             // await taxClassRepository.UpdateAsync(taxClass);

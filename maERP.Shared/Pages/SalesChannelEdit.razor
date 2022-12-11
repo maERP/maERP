@@ -77,7 +77,7 @@
 @code {
 
     [Parameter]
-    public int salesChannelId { get; set; }
+    public int? salesChannelId { get; set; }
 
     protected string Title = "hinzufügen";
 
@@ -90,10 +90,14 @@
             Title = "Bearbeiten";
             // salesChannel = await salesChannelRepository.GetAsync(salesChannelId);
         }
+
+        await Task.CompletedTask;
     }
 
     protected async Task SaveSalesChannel()
     {
+        await Task.CompletedTask;
+
         if (salesChannel.Id != 0)
         {
             // await salesChannelRepository.UpdateAsync(salesChannel);

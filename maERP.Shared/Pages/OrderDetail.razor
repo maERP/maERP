@@ -23,5 +23,7 @@
             // product = await productRepository.GetAsync(productId);
         }
         else Title = "nicht gefunden";
+
+        await Task.CompletedTask;
     }
 }

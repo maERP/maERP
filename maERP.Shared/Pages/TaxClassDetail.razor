@@ -23,5 +23,7 @@
             // taxClass = await taxClassRepository.GetAsync(taxClassId);
         }
         else Title = "nicht gefunden";
+
+        await Task.CompletedTask;
     }
 }

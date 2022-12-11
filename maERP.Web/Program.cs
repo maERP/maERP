@@ -10,7 +10,7 @@ using maERP.Shared;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-Globals.ServerBaseUrl = builder.Configuration["ServerBaseUrl"];
+// Globals.ServerBaseUrl = builder.Configuration["ServerBaseUrl"];
 
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");

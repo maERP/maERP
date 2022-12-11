@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Headers;
+﻿#nullable disable
+
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Newtonsoft.Json;
 using maERP.Shared.Dtos.User;
@@ -40,8 +42,8 @@ namespace maERP.Shared.Services
                     LoginResponseDto loginDto = new LoginResponseDto
                     {
                         UserId = email,
-                        Token = responseObj.Token,
-                        RefreshToken = responseObj.Token
+                        Token = responseObj?.Token,
+                        RefreshToken = responseObj?.Token
                     };
 
                     return loginDto;

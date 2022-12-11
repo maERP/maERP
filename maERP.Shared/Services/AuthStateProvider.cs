@@ -23,6 +23,7 @@ public class AuthStateProvider : AuthenticationStateProvider
             // await SecureStorage.Default.SetAsync("oauth_token", token);
             // Preferences.Default.Set("oauth_token", token);
             // Preferences.Default.Set("oauth_refresh_token", refreshToken);
+            await Task.CompletedTask;
             maERP.Shared.Globals.AccessToken = token;
             maERP.Shared.Globals.RefreshToken = refreshToken;
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
@@ -37,11 +38,13 @@ public class AuthStateProvider : AuthenticationStateProvider
     {
         // SecureStorage.Default.Remove("oauth_token");
         // Preferences.Default.Remove("oauth_token");
+        await Task.CompletedTask;
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
+        await Task.CompletedTask;
         Console.WriteLine("Call GetAuthenticationStateAsync");
         try
         {

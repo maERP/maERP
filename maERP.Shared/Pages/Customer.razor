@@ -2,12 +2,12 @@
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts;
 @using maERP.Shared.Services;
-@using maERP.Shared.Models;
+@using maERP.Shared.Dtos.Customer;
 
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager;
-@inject IDataService<ICollection<maERP.Shared.Models.Customer>> DataService;
+@inject IDataService<ICollection<CustomerDto>> DataService;
 
 <PageTitle>Kunden</PageTitle>
 
@@ -56,7 +56,7 @@ else
 
 @code {
 
-    private ICollection<maERP.Shared.Models.Customer> customers;
+    private ICollection<CustomerDto>? customers;
 
     protected override async Task OnInitializedAsync()
     {

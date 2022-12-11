@@ -7,6 +7,6 @@ namespace maERP.Shared.Contracts
     {
         public Task<LoginResponseDto> Login(string server, string email, string password);
 
-        public Task<T> Request(string method, string path, object payload = null);
+        public Task<T> Request(string method, string path, object? payload = null);
     }
 }
