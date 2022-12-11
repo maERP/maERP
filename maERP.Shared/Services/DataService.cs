@@ -73,7 +73,6 @@ namespace maERP.Shared.Services
                     if (method == "GET")
                     {
                         response = await client.GetAsync(requestUrl).ConfigureAwait(false);
-                        Console.WriteLine("RESPONSE: " + response.ToString());
 
                     }
                     else if (method == "POST")
@@ -90,12 +89,6 @@ namespace maERP.Shared.Services
                     }
                     else
                     {
-                        Console.WriteLine("Bearer " + accessToken);
-                        Console.WriteLine(requestUrl);
-                        Console.WriteLine(response.Headers);
-                        Console.WriteLine(response.TrailingHeaders);
-                        Console.WriteLine(response.Content.ReadAsStream());
-
                         throw new Exception();
                     }
 
@@ -120,19 +113,11 @@ namespace maERP.Shared.Services
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine("Bearer: " + accessToken);
-                        Console.WriteLine(requestUrl);
-                        Console.WriteLine(response.Headers);
-                        Console.WriteLine(response.TrailingHeaders);
-                        Console.WriteLine(response.Content.ReadAsStream());
+                        Console.WriteLine("Not Found");
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                     {
-                        Console.WriteLine("Bearer: " + accessToken);
-                        Console.WriteLine(requestUrl);
-                        Console.WriteLine(response.Headers);
-                        Console.WriteLine(response.TrailingHeaders);
-                        Console.WriteLine(response.Content.ReadAsStream());
+                        Console.WriteLine("Not Authorized");
                     }
                     else
                     {
@@ -142,6 +127,8 @@ namespace maERP.Shared.Services
                         Console.WriteLine("CONTENT: " + response.Content);
                         throw new Exception();
                     }
+
+                    Console.WriteLine("Request complete");
                 }
             }
             catch (Exception ex)

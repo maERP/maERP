@@ -115,7 +115,6 @@ namespace maERP.Server.Repository
         public async Task UpdateAsync(T entity)
         {
             _context.Update(entity);
-
             await _context.SaveChangesAsync();
         }
 
@@ -123,7 +122,7 @@ namespace maERP.Server.Repository
         {
             var entity = await GetAsync(id);
 
-            if(entity == null)
+            if (entity == null)
             {
                 throw new NotFoundException(typeof(T).Name, id);
             }

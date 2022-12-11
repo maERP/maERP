@@ -1,4 +1,4 @@
-﻿@page "/Products/delete/{productId:int}"
+﻿@page "/Warehouses/delete/{warehouseId:int}"
 
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts;
@@ -12,14 +12,14 @@
 @code {
 
     [Parameter]
-    public int productId { get; set; }
+    public int warehouseId { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        if (productId > 0)
+        if (warehouseId > 0)
         {
-            await DataService.Request("DELETE", "/Products/" + productId);
-            NavigationManager.NavigateTo("/Product");
+            await DataService.Request("DELETE", "/Warehouses/" + warehouseId);
+            NavigationManager.NavigateTo("/Warehouses");
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿@page "/Warehouse/add"
-@page "/Warehouse/edit/{warehouseId:int}"
+﻿@page "/Warehouses/add"
+@page "/Warehouses/edit/{warehouseId:int}"
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts;
 @using maERP.Shared.Services;
@@ -51,17 +51,18 @@
     {
         if (warehouse.Id != 0)
         {
-            warehouse = await DataService.Request("PUT", "/Warehouses/" + warehouseId, warehouse);
+            await DataService.Request("PUT", "/Warehouses/" + warehouseId, warehouse);
         }
         else
         {
-            warehouse = await DataService.Request("POST", "/Warehouses", warehouse);
+            await DataService.Request("POST", "/Warehouses", warehouse);
         }
+
         Cancel();
     }
 
     public void Cancel()
     {
-        NavigationManager.NavigateTo("/Warehouse");
+        NavigationManager.NavigateTo("/Warehouses");
     }
 }
