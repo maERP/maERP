@@ -8,7 +8,7 @@ services:
       dockerfile: maERP.Web/Dockerfile
     environment:
       # set server url (example: https://erp-server.domain.tld)
-      - SERVER_URL "maerp.server"
+      - SERVER_URL="maerp.server"
     ports:
       - 443:8443
       - 80:8080
@@ -21,11 +21,11 @@ services:
       context: .
       dockerfile: maERP.Server/Dockerfile
     environment:
-      - DB_TYPE "mysql"
-      - DB_HOST "localhost"
-      - DB_PORT "3306"
-      - DB_NAME "maerp"
-      - DB_USER "maerp"
-      - DB_PASS "maerp"
+      - DB_TYPE="mysql"
+      - DB_HOST="localhost"
+      - DB_PORT="3306"
+      - DB_NAME="maerp"
+      - DB_USER="maerp"
+      - DB_PASS="maerp"
     ports:
       - 443:8080

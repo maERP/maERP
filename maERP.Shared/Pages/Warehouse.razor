@@ -30,12 +30,16 @@ else
             @foreach (var warehouse in warehouses)
             {
                 <tr>
-                    <td>@warehouse.Name</td>
                     <td>
-                        <a href='/Warehouse/edit/@warehouse.Id' class="btn btn-outline-dark" role="button">
+                        <a href='/Warehouses/@warehouse.Id'>
+                            @warehouse.Name
+                        </a>
+                    </td>
+                    <td>
+                        <a href='/Warehouses/edit/@warehouse.Id' class="btn btn-outline-dark" role="button">
                             Bearbeiten
                         </a>
-                        <a href='/Warehouse/delete/@warehouse.Id' class="btn btn-outline-danger" role="button">
+                        <a href='/Warehouses/delete/@warehouse.Id' class="btn btn-outline-danger" role="button">
                             Löschen
                         </a>
                     </td>
@@ -45,7 +49,7 @@ else
 
     </table>
 
-    <a href="/Warehouse/add">Lager anlegen</a>
+    <a href="/Warehouses/add">Lager anlegen</a>
 }
 
 @code {
