@@ -1,4 +1,4 @@
-﻿@page "/TaxClass"
+﻿@page "/TaxClasses"
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts;
 @using maERP.Shared.Services;
@@ -32,10 +32,10 @@ else
                 <tr>
                     <td>@taxClass.TaxRate</td>
                     <td>
-                        <a href='/TaxClass/edit/@taxClass.Id' class="btn btn-outline-dark" role="button">
+                        <a href='/TaxClasses/edit/@taxClass.Id' class="btn btn-outline-dark" role="button">
                             Bearbeiten
                         </a>
-                        <a href='/TaxClass/delete/@taxClass.Id' class="btn btn-outline-danger" role="button">
+                        <a href='/TaxClasses/delete/@taxClass.Id' class="btn btn-outline-danger" role="button">
                             Löschen
                         </a>
                     </td>

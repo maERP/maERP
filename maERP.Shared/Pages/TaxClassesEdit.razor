@@ -1,7 +1,15 @@
-﻿@page "/TaxClass/add"
-@page "/TaxClass/edit/{taxClassId:int}"
-@using maERP.Shared.Models
-@inject NavigationManager NavigationManager
+﻿@page "/TaxClasses/add"
+@page "/TaxClasses/edit/{taxClassId:int}"
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Shared.Contracts;
+@using maERP.Shared.Services;
+@using maERP.Shared.Dtos.TaxClass;
+
+@attribute [Authorize]
+
+@inject NavigationManager _navManager;
+@inject IDataService<TaxClassDto> _dataService;
 
 <h1>Steuersatz</h1>
 
@@ -29,14 +37,14 @@
 
     protected string Title = "hinzufügen";
 
-    protected maERP.Shared.Models.TaxClass taxClass = new();
+    protected TaxClassDto taxClass = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (taxClassId != 0)
         {
             Title = "Bearbeiten";
-            // taxClass = await taxClassRepository.GetAsync(taxClassId);
+            taxClass = await _dataService.Request("GET", "/TaxClasses/" + taxClassId);
         }
 
         await Task.CompletedTask;
@@ -48,17 +56,17 @@
 
         if (taxClass.Id != 0)
         {
-            // await taxClassRepository.UpdateAsync(taxClass);
+            await _dataService.Request("PUT", "/TaxClasses/" + taxClassId, taxClass);
         }
         else
         {
-            // await taxClassRepository.AddAsync(taxClass);
+            await _dataService.Request("POST", "/TaxClasses", taxClass);
         }
         Cancel();
     }
 
     public void Cancel()
     {
-        NavigationManager.NavigateTo("/TaxClass");
+        _navManager.NavigateTo("/TaxClasses");
     }
 }
