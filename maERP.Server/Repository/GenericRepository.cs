@@ -127,7 +127,7 @@ namespace maERP.Server.Repository
                 throw new NotFoundException(typeof(T).Name, id);
             }
 
-            _mapper.Map(entity, source);
+            _mapper.Map(source, entity);
             _context.Update(entity);
             await _context.SaveChangesAsync();
         }
