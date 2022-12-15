@@ -7,10 +7,9 @@ using maERP.Web;
 using maERP.Shared.Contracts;
 using maERP.Shared.Services;
 using maERP.Shared;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
-// Globals.ServerBaseUrl = builder.Configuration["ServerBaseUrl"];
 
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");

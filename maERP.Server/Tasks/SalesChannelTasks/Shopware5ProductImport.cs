@@ -42,8 +42,6 @@ public class ProductDownloadTask : IHostedService
 
     private async Task MainLoop()
     {
-        Console.WriteLine("ProductDownloadTask started!");
-
         var scope = _service.CreateScope();
 
         var salesChannelRepository = scope.ServiceProvider.GetService<ISalesChannelRepository>();
@@ -200,8 +198,6 @@ public class ProductDownloadTask : IHostedService
                 }
             }
             while (requestMax != 0 && requestStart <= requestMax);
-
-            Console.WriteLine("Download function end");
         }
     }
 }

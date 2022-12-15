@@ -81,7 +81,6 @@ namespace maERP.Server.Repository
 
             if (_user == null || isValidUser == false)
             {
-                Console.WriteLine("login 14");
                 return null;
             }
 

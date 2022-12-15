@@ -7,8 +7,8 @@
 
 @attribute [Authorize]
 
-@inject NavigationManager NavigationManager;
-@inject IDataService<WarehouseDto> DataService;
+@inject NavigationManager _navigationManager;
+@inject IDataService<WarehouseDto> _dataService;
 
 <h1>Lager</h1>
 
@@ -43,7 +43,7 @@
         if (warehouseId != 0)
         {
             Title = "Bearbeiten";
-            warehouse = await DataService.Request("GET", "/Warehouses/" + warehouseId);
+            warehouse = await _dataService.Request("GET", "/Warehouses/" + warehouseId);
         }
     }
 
@@ -51,11 +51,11 @@
     {
         if (warehouse.Id != 0)
         {
-            await DataService.Request("PUT", "/Warehouses/" + warehouseId, warehouse);
+            await _dataService.Request("PUT", "/Warehouses/" + warehouseId, warehouse);
         }
         else
         {
-            await DataService.Request("POST", "/Warehouses", warehouse);
+            await _dataService.Request("POST", "/Warehouses", warehouse);
         }
 
         Cancel();
@@ -63,6 +63,7 @@
 
     public void Cancel()
     {
-        NavigationManager.NavigateTo("/Warehouses");
+        StateHasChanged();
+        _navigationManager.NavigateTo("/Warehouses");
     }
 }

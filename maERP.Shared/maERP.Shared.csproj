@@ -24,6 +24,7 @@
     <None Remove="Microsoft.AspNetCore.Components.Authorization" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="Shared\" />
+    <None Remove="Pages\index.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -51,8 +52,6 @@
     <RazorComponent Include="Pages\ProductDelete.razor" />
     <RazorComponent Include="Pages\ProductDetail.razor" />
     <RazorComponent Include="Pages\ProductEdit.razor" />
-    <RazorComponent Include="Pages\SalesChannel.razor" />
-    <RazorComponent Include="Pages\SalesChannelDetail.razor" />
     <RazorComponent Include="Pages\SalesChannelEdit.razor" />
     <RazorComponent Include="Pages\TaxClass.razor" />
     <RazorComponent Include="Pages\TaxClassDetail.razor" />

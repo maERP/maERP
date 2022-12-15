@@ -1,7 +1,15 @@
-﻿@page "/SalesChannel/add"
-@page "/SalesChannel/edit/{salesChannelId:int}"
-@using maERP.Shared.Models
-@inject NavigationManager NavigationManager
+﻿@page "/SalesChannels/add"
+@page "/SalesChannels/edit/{salesChannelId:int}"
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Shared.Contracts;
+@using maERP.Shared.Services;
+@using maERP.Shared.Dtos;
+
+@attribute [Authorize]
+
+@inject NavigationManager _navManager;
+@inject IDataService<SalesChannelDto> _dataService;
 
 <h1>Vertriebskanal</h1>
 
@@ -66,7 +74,7 @@
                 <td><InputCheckbox @bind-Value="@salesChannel.ExportOrders" /></td>
             </tr>
         </tbody>
-     </table>
+    </table>
 
     <div class="form-group">
         <button type="submit" class="btn btn-primary" @onclick="SaveSalesChannel">Speichern</button>
@@ -81,14 +89,14 @@
 
     protected string Title = "hinzufügen";
 
-    protected maERP.Shared.Models.SalesChannel salesChannel = new();
+    protected maERP.Shared.Dtos.SalesChannelDto salesChannel = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (salesChannelId != 0)
         {
             Title = "Bearbeiten";
-            // salesChannel = await salesChannelRepository.GetAsync(salesChannelId);
+            salesChannel = await _dataService.Request("GET", "/SalesChannels/" + salesChannelId);
         }
 
         await Task.CompletedTask;
@@ -98,19 +106,19 @@
     {
         await Task.CompletedTask;
 
-        if (salesChannel.Id != 0)
+        if (salesChannelId != 0)
         {
-            // await salesChannelRepository.UpdateAsync(salesChannel);
+            await _dataService.Request("PUT", "/SalesChannels/" + salesChannelId, salesChannel);
         }
         else
         {
-            // await salesChannelRepository.AddAsync(salesChannel);
+            await _dataService.Request("POST", "/SalesChannels", salesChannel);
         }
         Cancel();
     }
 
     public void Cancel()
     {
-        NavigationManager.NavigateTo("/SalesChannel");
+        _navManager.NavigateTo("/SalesChannels");
     }
 }

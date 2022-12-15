@@ -45,7 +45,6 @@ public class AuthStateProvider : AuthenticationStateProvider
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         await Task.CompletedTask;
-        Console.WriteLine("Call GetAuthenticationStateAsync");
         try
         {
             // var userInfo = await SecureStorage.Default.GetAsync("oauth_token");

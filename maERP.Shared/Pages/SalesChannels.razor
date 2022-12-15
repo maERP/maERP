@@ -1,4 +1,4 @@
-﻿@page "/SalesChannel"
+﻿@page "/SalesChannels"
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts;
 @using maERP.Shared.Services;
@@ -31,13 +31,15 @@ else
             @foreach (var salesChannel in salesChannels)
             {
                 <tr>
-                    <td>@salesChannel.Name</td>
+                    <td>
+                        <a href='/SalesChannels/@salesChannel.Id'>@salesChannel.Name</a>
+                    </td>
                     <td>@salesChannel.URL</td>
                     <td>
-                        <a href='/SalesChannel/edit/@salesChannel.Id' class="btn btn-outline-dark" role="button">
+                        <a href='/SalesChannels/edit/@salesChannel.Id' class="btn btn-outline-dark" role="button">
                             Bearbeiten
                         </a>
-                        <a href='/SalesChannel/delete/@salesChannel.Id' class="btn btn-outline-danger" role="button">
+                        <a href='/SalesChannels/delete/@salesChannel.Id' class="btn btn-outline-danger" role="button">
                             Löschen
                         </a>
                     </td>
@@ -47,7 +49,7 @@ else
 
     </table>
 
-    <a href="/SalesChannel/add">Vertriebskanal anlegen</a>
+    <a href="/SalesChannels/add">Vertriebskanal anlegen</a>
 }
 
 @code {

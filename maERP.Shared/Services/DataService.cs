@@ -33,8 +33,6 @@ namespace maERP.Shared.Services
                     string result = response.Content.ReadAsStringAsync().Result;
                     response.Dispose();
 
-                    Console.WriteLine(result);
-
                     var responseObj = JsonConvert.DeserializeObject<LoginResponseDto>(result);
 
                     maERP.Shared.Globals.ServerBaseUrl = server;
@@ -106,7 +104,6 @@ namespace maERP.Shared.Services
                         catch(Exception ex)
                         {
                             Console.WriteLine(ex.Message);
-                            Console.WriteLine(result);
                         }
 
                         throw new Exception();
@@ -121,14 +118,8 @@ namespace maERP.Shared.Services
                     }
                     else
                     {
-                        Console.WriteLine("EXCEPTION");
-                        Console.WriteLine("URL: " + requestUrl);
-                        Console.WriteLine("STATUS CODE: " + response.StatusCode);
-                        Console.WriteLine("CONTENT: " + response.Content);
                         throw new Exception();
                     }
-
-                    Console.WriteLine("Request complete");
                 }
             }
             catch (Exception ex)
