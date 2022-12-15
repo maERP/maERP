@@ -52,7 +52,9 @@
     <RazorComponent Include="Pages\ProductDelete.razor" />
     <RazorComponent Include="Pages\ProductDetail.razor" />
     <RazorComponent Include="Pages\ProductEdit.razor" />
-    <RazorComponent Include="Pages\TaxClassEdit.razor" />
+    <RazorComponent Include="Pages\TaxClasses.razor" />
+    <RazorComponent Include="Pages\TaxClassesDetail.razor" />
+    <RazorComponent Include="Pages\TaxClassesEdit.razor" />
     <RazorComponent Include="Pages\User.razor" />
     <RazorComponent Include="Pages\UserDelete.razor" />
     <RazorComponent Include="Pages\UserDetail.razor" />
