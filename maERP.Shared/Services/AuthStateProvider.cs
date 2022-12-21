@@ -14,16 +14,16 @@ namespace maERP.Shared.Services;
 
 public class AuthStateProvider : AuthenticationStateProvider
 {
-    private readonly ITokenService tokenService;
+    private readonly ITokenService _tokenService;
 
-    public AuthStateProvider()
+    public AuthStateProvider(ITokenService tokenService)
     {
-
+        _tokenService = tokenService;
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var tokenDTO = await tokenService.GetToken();
+        var tokenDTO = await _tokenService.GetToken();
         var identity = string.IsNullOrEmpty(tokenDTO?.AccessToken) || tokenDTO?.AccessTokenExpiration < DateTime.Now
             ? new ClaimsIdentity()
             : new ClaimsIdentity(ParseClaimsFromJwt(tokenDTO.AccessToken), "jwt");

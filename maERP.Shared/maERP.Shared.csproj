@@ -20,15 +20,6 @@
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Services\" />
-    <None Remove="Contracts\" />
-    <None Remove="Microsoft.AspNetCore.Components.Authorization" />
-    <None Remove="Newtonsoft.Json" />
-    <None Remove="Shared\" />
-    <None Remove="Pages\index.html" />
-    <None Remove="Blazored.LocalStorage" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Dtos\" />
     <Folder Include="Dtos\Product\" />
@@ -41,7 +32,6 @@
     <Folder Include="Pages\" />
     <Folder Include="Services\" />
     <Folder Include="Contracts\" />
-    <Folder Include="Shared\" />
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Pages\Customer.razor" />
@@ -64,17 +54,14 @@
     <RazorComponent Include="Pages\Warehouse.razor" />
     <RazorComponent Include="Pages\WarehouseDetail.razor" />
     <RazorComponent Include="Pages\WarehouseEdit.razor" />
-    <RazorComponent Include="Shared\MainLayout.razor" />
-    <RazorComponent Include="Shared\NavMenu.razor" />
-    <RazorComponent Include="Shared\RedirectToLogin.razor" />
-    <RazorComponent Include="Shared\SurveyPrompt.razor" />
     <RazorComponent Include="Pages\WarehouseDelete.razor" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="Shared\MainLayout.razor" />
-    <Content Remove="Shared\NavMenu.razor" />
-    <Content Remove="Shared\RedirectToLogin.razor" />
-    <Content Remove="Shared\SurveyPrompt.razor" />
-    <Content Remove="Pages\ProductDelete %28Kopie%29.razor" />
+    <None Include="Shared\MainLayout.razor" />
+    <None Include="Shared\MainLayout.css" />
+    <None Include="Shared\NavMenu.razor" />
+    <None Include="Shared\NavMenu.css" />
+    <None Include="Shared\RedirectToLogin.razor" />
+    <None Include="Shared\SurveyPrompt.razor" />
   </ItemGroup>
 </Project>
