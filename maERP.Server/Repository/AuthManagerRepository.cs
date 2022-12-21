@@ -88,8 +88,8 @@ namespace maERP.Server.Repository
 
 			return new LoginResponseDto
 			{
-				Token = token,
-				UserId = _user.Id
+				Succeeded = true,
+				Token = new TokenDto {  AccessToken = token }				
 			};
 		}
 
@@ -143,7 +143,7 @@ namespace maERP.Server.Repository
         public async Task<LoginResponseDto> VerifyRefreshToken(LoginResponseDto request)
         {
 			var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-			var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(request.Token);
+			var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(request.Token.AccessToken);
 
 			var username = tokenContent.Claims.ToList().FirstOrDefault(q => q.Type == JwtRegisteredClaimNames.Email)?.Value;
 
@@ -155,16 +155,17 @@ namespace maERP.Server.Repository
             }
 
 			var isValidRefreshToken = await _userManager.VerifyUserTokenAsync(
-				_user, "maERP.Server", "RefreshToken", request.RefreshToken);
+				_user, "maERP.Server", "RefreshToken", request.Token.RefreshToken);
 
 			if(isValidRefreshToken)
             {
 				var token = await GenerateToken();
-				return new LoginResponseDto
+				var refreshToken = await CreateRefreshToken();
+
+                return new LoginResponseDto
 				{
-					Token = token,
 					UserId = _user.Id,
-					RefreshToken = await CreateRefreshToken()
+					Token = new TokenDto { AccessToken = token, RefreshToken = refreshToken }
 				};
             }
 

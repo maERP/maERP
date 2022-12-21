@@ -24,9 +24,9 @@ public class AuthStateProvider : AuthenticationStateProvider
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var tokenDTO = await tokenService.GetToken();
-        var identity = string.IsNullOrEmpty(tokenDTO?.Token) || tokenDTO?.Expiration < DateTime.Now
+        var identity = string.IsNullOrEmpty(tokenDTO?.AccessToken) || tokenDTO?.AccessTokenExpiration < DateTime.Now
             ? new ClaimsIdentity()
-            : new ClaimsIdentity(ParseClaimsFromJwt(tokenDTO.Token), "jwt");
+            : new ClaimsIdentity(ParseClaimsFromJwt(tokenDTO.AccessToken), "jwt");
         return new AuthenticationState(new ClaimsPrincipal(identity));
     }
 
