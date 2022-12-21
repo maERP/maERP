@@ -5,9 +5,9 @@
 @using maERP.Shared.Contracts;
 @using maERP.Shared.Services;
 
-@inject NavigationManager NavManager;
-@inject IDataService<Login> DataService;
-@inject AuthStateProvider AuthStateProvider;
+@inject NavigationManager _navManager;
+@inject IDataService<Login> _dataService;
+@inject AuthHttpProvider _authHttpProvider;
 
 <h3>Login</h3>
 
@@ -29,7 +29,7 @@
     {
         <div class="mt-2 form-group">
             <label>Server</label>
-            <input type="url" @bind-value="loginServer" class="form-control" placeholder="https://erp.domain.de" />
+            <input type="url" @bind-value="loginDto.Server" class="form-control" placeholder="https://erp.domain.de" />
         </div>
     }
 
@@ -74,20 +74,15 @@
     {
         _spinnerClass = "spinner-border spinner-border-sm";
 
-        var loginResponse = await DataService.Login(loginServer, loginDto.Email, loginDto.Password);
+        var loginResponse = await _authHttpProvider.LoginUser(loginDto);
 
-        if (loginResponse is not null)
+        if (loginResponse.Succeeded)
         {
-            await AuthStateProvider.Login(loginResponse.Token, loginResponse.RefreshToken);
-            // Preferences.Default.Set<string>("loginEmail", loginDto.Email);
-            NavManager.NavigateTo("/");
-            return;
+            _navManager.NavigateTo("/");
         }
 
-        _errorMessage = "E-Mail oder Passwort falsch";
+        _errorMessage = loginResponse.Message;
         _spinnerClass = "";
-
-        // await App.Current.MainPage.DisplayAlert("Fehler", _errorMessage, "OK");
 
         this.StateHasChanged();
     }

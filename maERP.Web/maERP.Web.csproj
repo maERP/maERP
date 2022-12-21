@@ -26,6 +26,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.1" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +36,7 @@
   <ItemGroup>
     <None Remove="Microsoft.AspNetCore.Authorization" />
     <None Remove="Microsoft.AspNetCore.Components.Authorization" />
+    <None Remove="Blazored.LocalStorage" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj">

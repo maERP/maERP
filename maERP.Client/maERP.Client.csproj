@@ -62,6 +62,7 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.1" />
+        <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -78,5 +79,6 @@
       <None Remove="Newtonsoft.Json" />
       <None Remove="Microsoft.AspNetCore.Authorization" />
       <None Remove="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+      <None Remove="Blazored.LocalStorage" />
     </ItemGroup>
 </Project>

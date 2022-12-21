@@ -1,69 +1,55 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using System.Security.Claims;
+﻿#nullable disable
 
+using System.Security.Claims;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 using maERP.Shared.Contracts;
 using maERP.Shared.Services;
 using maERP.Shared.Models;
+using maERP.Shared.Dtos.User;
+using System.Text.Json;
+// using static System.Net.WebRequestMethods;
 
 namespace maERP.Shared.Services;
 
 public class AuthStateProvider : AuthenticationStateProvider
 {
-    IDataService<ApiUser> _dataService;
+    private readonly ITokenService tokenService;
 
-    public AuthStateProvider(IDataService<ApiUser> dataService)
+    public AuthStateProvider()
     {
-        _dataService = dataService;
-    }
 
-    public async Task Login(string token, string refreshToken)
-    {
-        try
-        {
-            // await SecureStorage.Default.SetAsync("oauth_token", token);
-            // Preferences.Default.Set("oauth_token", token);
-            // Preferences.Default.Set("oauth_refresh_token", refreshToken);
-            await Task.CompletedTask;
-            maERP.Shared.Globals.AccessToken = token;
-            maERP.Shared.Globals.RefreshToken = refreshToken;
-            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-    }
-
-    public async Task Logout()
-    {
-        // SecureStorage.Default.Remove("oauth_token");
-        // Preferences.Default.Remove("oauth_token");
-        await Task.CompletedTask;
-        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        await Task.CompletedTask;
-        try
-        {
-            // var userInfo = await SecureStorage.Default.GetAsync("oauth_token");
-            // var userInfo = Preferences.Default.Get<string>("oauth_token", null);
-            var userInfo = Globals.AccessToken;
+        var tokenDTO = await tokenService.GetToken();
+        var identity = string.IsNullOrEmpty(tokenDTO?.Token) || tokenDTO?.Expiration < DateTime.Now
+            ? new ClaimsIdentity()
+            : new ClaimsIdentity(ParseClaimsFromJwt(tokenDTO.Token), "jwt");
+        return new AuthenticationState(new ClaimsPrincipal(identity));
+    }
 
-            if (userInfo != null)
-            {
-                var claims = new[] { new Claim(ClaimTypes.Name, "Sample User") };
-                var identity = new ClaimsIdentity(claims, "Custom authentication");
-                return new AuthenticationState(new ClaimsPrincipal(identity));
-            }
-        }
-        catch (Exception ex)
-        {
-            // This should be more properly handled
-            Console.WriteLine("Request failed:" + ex.ToString());
-        }
+    private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+    {
+        var payload = jwt.Split('.')[1];
+        var jsonBytes = ParseBase64WithoutPadding(payload);
+        var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+        return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
+    }
 
-        return new AuthenticationState(new ClaimsPrincipal());
+    private static byte[] ParseBase64WithoutPadding(string base64)
+    {
+        switch (base64.Length % 4)
+        {
+            case 2: base64 += "=="; break;
+            case 3: base64 += "="; break;
+        }
+        return Convert.FromBase64String(base64);
+    }
+
+    public void StateChanged()
+    {
+        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 }

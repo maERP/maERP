@@ -5,15 +5,16 @@
 
 @attribute [Authorize]
 
-@inject NavigationManager NavigationManager
-@inject AuthStateProvider AuthStateProvider;
+@inject NavigationManager _navigationManager
+@inject AuthHttpProvider _authHttpProvider;
 
-<div class="loader loader-bouncing"><span>Redirecting...</span></div>
+<text>Logout...</text>
+
 @code{
 
     protected override async Task OnInitializedAsync()
     {
-        await AuthStateProvider.Logout();
-        NavigationManager.NavigateTo("/login");
+        await _authHttpProvider.LogoutUser();
+        _navigationManager.NavigateTo("/login");
     }
 }

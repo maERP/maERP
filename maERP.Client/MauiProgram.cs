@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Blazored.LocalStorage;
 
 namespace maERP.Client
 {
@@ -25,7 +26,7 @@ namespace maERP.Client
             #if DEBUG
 		    builder.Services.AddBlazorWebViewDeveloperTools();
 		    builder.Logging.AddDebug();
-            #endif
+#endif
 
             /*
             builder.Services.AddTransient<DashboardPage>();
@@ -42,12 +43,15 @@ namespace maERP.Client
             builder.Services.AddTransient<SettingsViewModel>();
             */
 
+            builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddAuthorizationCore();
+
+            builder.Services.AddScoped<AuthHttpProvider>();
             builder.Services.AddScoped<AuthStateProvider>();
             builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
 
+            builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
-            // builder.Services.AddSingleton<INavigationService, NavigationService>();
 
             return builder.Build();
         }

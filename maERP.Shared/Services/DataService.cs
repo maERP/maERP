@@ -39,9 +39,8 @@ namespace maERP.Shared.Services
 
                     LoginResponseDto loginDto = new LoginResponseDto
                     {
-                        UserId = email,
-                        Token = responseObj?.Token,
-                        RefreshToken = responseObj?.Token
+                        Succeeded = true,
+                        Token = responseObj?.Token
                     };
 
                     return loginDto;
