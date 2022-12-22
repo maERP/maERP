@@ -58,9 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shared\MainLayout.razor" />
-    <None Include="Shared\MainLayout.css" />
     <None Include="Shared\NavMenu.razor" />
-    <None Include="Shared\NavMenu.css" />
     <None Include="Shared\RedirectToLogin.razor" />
     <None Include="Shared\SurveyPrompt.razor" />
   </ItemGroup>

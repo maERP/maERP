@@ -34,7 +34,7 @@ public class AuthHttpProvider
             return new LoginResponseDto
             {
                 Succeeded = false,
-                Message = "Sorry, we were unable to log you in at this time. Please try again shortly."
+                Message = "Login fehlgeschlagen."
             };
         }
     }
