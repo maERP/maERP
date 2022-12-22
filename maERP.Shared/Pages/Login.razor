@@ -60,13 +60,6 @@
             loginServer = Globals.ServerBaseUrl;
         }
 
-        /*
-        if(Preferences.Default.ContainsKey("loginEmail"))
-        {
-            loginDto.Email = Preferences.Default.Get<string>("loginEmail", "");
-        }
-        */
-
         this.StateHasChanged();
     }
 
@@ -79,6 +72,7 @@
         if (loginResponse.Succeeded)
         {
             _navManager.NavigateTo("/");
+            return;
         }
 
         _errorMessage = loginResponse.Message;

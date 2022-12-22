@@ -22,11 +22,11 @@ namespace maERP.Shared.Services
                 var loginData = new Dictionary<string, string>
                 {
                     {"email", email},
-                    {"password", password}
+                    {"password", password},
+                    {"server", server}
                 };
 
-                HttpResponseMessage response = new HttpResponseMessage();
-                response = await client.PostAsJsonAsync(requestUrl, loginData); // .ConfigureAwait(false);
+                var response = await client.PostAsJsonAsync(requestUrl, loginData).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {

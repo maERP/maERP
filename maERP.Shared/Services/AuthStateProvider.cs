@@ -23,10 +23,12 @@ public class AuthStateProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var tokenDTO = await _tokenService.GetToken();
-        var identity = string.IsNullOrEmpty(tokenDTO?.AccessToken) || tokenDTO?.AccessTokenExpiration < DateTime.Now
+        Console.WriteLine("Call GetAuthenticationStateAsync");
+        var tokenDto = await _tokenService.GetToken();
+        Console.WriteLine("AccessToken: " + tokenDto.AccessToken);
+        var identity = string.IsNullOrEmpty(tokenDto?.AccessToken) || tokenDto?.AccessTokenExpiration > DateTime.Now
             ? new ClaimsIdentity()
-            : new ClaimsIdentity(ParseClaimsFromJwt(tokenDTO.AccessToken), "jwt");
+            : new ClaimsIdentity(ParseClaimsFromJwt(tokenDto.AccessToken), "jwt");
         return new AuthenticationState(new ClaimsPrincipal(identity));
     }
 
@@ -50,6 +52,7 @@ public class AuthStateProvider : AuthenticationStateProvider
 
     public void StateChanged()
     {
+        Console.WriteLine("Call StateChanged");
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 }
