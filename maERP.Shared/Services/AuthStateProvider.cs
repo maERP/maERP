@@ -25,8 +25,7 @@ public class AuthStateProvider : AuthenticationStateProvider
     {
         Console.WriteLine("Call GetAuthenticationStateAsync");
         var tokenDto = await _tokenService.GetToken();
-        Console.WriteLine("AccessToken: " + tokenDto.AccessToken);
-        var identity = string.IsNullOrEmpty(tokenDto?.AccessToken) || tokenDto?.AccessTokenExpiration > DateTime.Now
+        var identity = string.IsNullOrEmpty(tokenDto?.AccessToken) || tokenDto?.AccessTokenExpiration < DateTime.Now
             ? new ClaimsIdentity()
             : new ClaimsIdentity(ParseClaimsFromJwt(tokenDto.AccessToken), "jwt");
         return new AuthenticationState(new ClaimsPrincipal(identity));
