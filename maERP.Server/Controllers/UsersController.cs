@@ -1,14 +1,10 @@
 ﻿#nullable disable
 
-using maERP.Server.Contracts;
-using maERP.Shared.Dtos.User;
-using maERP.Shared.Dtos.Warehouse;
-using maERP.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
-using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol.Core.Types;
+using maERP.Server.Contracts;
+using maERP.Shared.Dtos.User;
+using maERP.Shared.Models;
 
 namespace maERP.Server.Controllers;
 
@@ -23,8 +19,8 @@ public class UsersController : ControllerBase
 
     public UsersController(IAuthManager authManager, ILogger<UsersController> logger)
     {
-        this._authManager = authManager;
-        this._logger = logger;
+        _authManager = authManager;
+        _logger = logger;
     }
 
     // POST: api/Users/login

@@ -17,7 +17,6 @@ public class AuthHttpProvider
         _dataService = dataService;
         _tokenService = tokenService;
         _authStateProvider = authStateProvider;
-
     }
 
     public async Task<LoginResponseDto> LoginUser(LoginDto loginDto)

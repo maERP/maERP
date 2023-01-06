@@ -71,7 +71,7 @@ namespace maERP.Server.Repository
 				return updateUser;
             }
 
-			throw new maERP.Server.Exceptions.NotFoundException("User not found", "User not found");
+			throw new Exceptions.NotFoundException("User not found", "User not found");
         }
 
         public async Task<LoginResponseDto> Login(LoginDto loginDto)
@@ -84,12 +84,22 @@ namespace maERP.Server.Repository
                 return null;
             }
 
-            var token = await GenerateToken();
+            var accessToken = await GenerateToken();
+            var refreshToken = await CreateRefreshToken();
 
-			return new LoginResponseDto
+			var accessTokenExpiration = DateTime.Now.AddMinutes(Convert.ToInt32(
+				_configuration["JwtSettings:DurationInMinutes"]
+			));
+
+            return new LoginResponseDto
 			{
 				Succeeded = true,
-				Token = new TokenDto {  AccessToken = token }				
+				Token = new TokenDto
+				{ 
+					AccessToken = accessToken,
+					AccessTokenExpiration = accessTokenExpiration,
+                    RefreshToken = refreshToken
+				}	
 			};
 		}
 
