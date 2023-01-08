@@ -6,7 +6,7 @@ namespace maERP.Shared.Contracts;
 
 public interface ITokenService
 {
+    Task SetToken(TokenDto tokenDTO);
     Task<TokenDto> GetToken();
     Task RemoveToken();
-    Task SetToken(TokenDto tokenDTO);
 }

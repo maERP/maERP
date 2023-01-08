@@ -47,7 +47,7 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult> RefreshToken([FromBody] LoginResponseDto request)
+    public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenDto request)
     {
         var authResponse = await _authManager.VerifyRefreshToken(request);
 

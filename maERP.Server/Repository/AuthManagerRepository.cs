@@ -84,9 +84,8 @@ namespace maERP.Server.Repository
                 return null;
             }
 
-            var accessToken = await GenerateToken();
+            var accessToken = await CreateAccessToken();
             var refreshToken = await CreateRefreshToken();
-
 			var accessTokenExpiration = DateTime.Now.AddMinutes(Convert.ToInt32(
 				_configuration["JwtSettings:DurationInMinutes"]
 			));
@@ -103,7 +102,7 @@ namespace maERP.Server.Repository
 			};
 		}
 
-		private async Task<string> GenerateToken()
+		private async Task<string> CreateAccessToken()
         {
 			var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
 				_configuration["JwtSettings:Key"]
@@ -150,10 +149,10 @@ namespace maERP.Server.Repository
 			return newRefreshToken;
         }
 
-        public async Task<LoginResponseDto> VerifyRefreshToken(LoginResponseDto request)
+        public async Task<LoginResponseDto> VerifyRefreshToken(RefreshTokenDto request)
         {
 			var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-			var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(request.Token.AccessToken);
+			var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(request.AccessToken);
 
 			var username = tokenContent.Claims.ToList().FirstOrDefault(q => q.Type == JwtRegisteredClaimNames.Email)?.Value;
 
@@ -165,17 +164,24 @@ namespace maERP.Server.Repository
             }
 
 			var isValidRefreshToken = await _userManager.VerifyUserTokenAsync(
-				_user, "maERP.Server", "RefreshToken", request.Token.RefreshToken);
+				_user, "maERP.Server", "RefreshToken", request.RefreshToken);
 
 			if(isValidRefreshToken)
             {
-				var token = await GenerateToken();
+				var accessToken = await CreateAccessToken();
 				var refreshToken = await CreateRefreshToken();
+                var accessTokenExpiration = DateTime.Now.AddMinutes(Convert.ToInt32(
+				    _configuration["JwtSettings:DurationInMinutes"]
+				));
 
                 return new LoginResponseDto
 				{
 					UserId = _user.Id,
-					Token = new TokenDto { AccessToken = token, RefreshToken = refreshToken }
+					Token = new TokenDto {
+						AccessToken = accessToken,
+						AccessTokenExpiration = accessTokenExpiration,
+						RefreshToken = refreshToken
+					}
 				};
             }
 

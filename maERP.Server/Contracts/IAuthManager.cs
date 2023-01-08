@@ -12,7 +12,7 @@ namespace maERP.Server.Contracts
 
 		Task<string> CreateRefreshToken();
 
-		Task<LoginResponseDto> VerifyRefreshToken(LoginResponseDto request);
+		Task<LoginResponseDto> VerifyRefreshToken(RefreshTokenDto request);
 
         Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto);
 

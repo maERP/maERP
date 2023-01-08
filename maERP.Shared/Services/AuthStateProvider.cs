@@ -15,19 +15,34 @@ namespace maERP.Shared.Services;
 public class AuthStateProvider : AuthenticationStateProvider
 {
     private readonly ITokenService _tokenService;
+    private readonly AuthHttpProvider _authHttpProvider;
 
-    public AuthStateProvider(ITokenService tokenService)
+    public AuthStateProvider(ITokenService tokenService, AuthHttpProvider authHttpProvider)
     {
         _tokenService = tokenService;
+        _authHttpProvider = authHttpProvider;
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         Console.WriteLine("Call GetAuthenticationStateAsync");
         var tokenDto = await _tokenService.GetToken();
+
+        ClaimsIdentity identity = new();
+
+        // chef if token is expired
+        if(!string.IsNullOrEmpty(tokenDto?.AccessToken) && tokenDto?.AccessTokenExpiration >= DateTime.Now)
+        {
+            // refresh the token
+            new ClaimsIdentity(ParseClaimsFromJwt(tokenDto.AccessToken), "jwt");
+        }
+
+        /* old code
         var identity = string.IsNullOrEmpty(tokenDto?.AccessToken) || tokenDto?.AccessTokenExpiration < DateTime.Now
             ? new ClaimsIdentity()
             : new ClaimsIdentity(ParseClaimsFromJwt(tokenDto.AccessToken), "jwt");
+        */
+
         return new AuthenticationState(new ClaimsPrincipal(identity));
     }
 

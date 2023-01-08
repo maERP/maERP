@@ -38,6 +38,15 @@ public class AuthHttpProvider
         }
     }
 
+    public async Task<LoginResponseDto> RefreshToken()
+    {
+        var token = await _tokenService.GetToken();
+        var result = await _dataService.RefreshToken(token.RefreshToken);
+        await _tokenService.SetToken(result.Token);
+        _authStateProvider.StateChanged();
+        return result;
+    }
+
     public async Task LogoutUser()
     {
         await _tokenService.RemoveToken();

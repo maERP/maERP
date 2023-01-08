@@ -5,25 +5,25 @@ using maERP.Shared.Dtos.User;
 namespace maERP.Shared.Services;
 public class TokenService : ITokenService
 {
-    private readonly ILocalStorageService localStorageService;
+    private readonly ILocalStorageService _localStorageService;
 
     public TokenService(ILocalStorageService localStorageService)
     {
-        this.localStorageService = localStorageService;
+        _localStorageService = localStorageService;
     }
 
     public async Task SetToken(TokenDto tokenDTO)
     {
-        await localStorageService.SetItemAsync("token", tokenDTO);
+        await _localStorageService.SetItemAsync("token", tokenDTO);
     }
 
     public async Task<TokenDto> GetToken()
     {
-        return await localStorageService.GetItemAsync<TokenDto>("token");
+        return await _localStorageService.GetItemAsync<TokenDto>("token");
     }
 
     public async Task RemoveToken()
     {
-        await localStorageService.RemoveItemAsync("token");
+        await _localStorageService.RemoveItemAsync("token");
     }
 }
