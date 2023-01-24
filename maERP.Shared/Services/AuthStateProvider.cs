@@ -31,10 +31,11 @@ public class AuthStateProvider : AuthenticationStateProvider
         ClaimsIdentity identity = new();
 
         // chef if token is expired
-        if(!string.IsNullOrEmpty(tokenDto?.AccessToken) && tokenDto?.AccessTokenExpiration >= DateTime.Now)
+        if (!string.IsNullOrEmpty(tokenDto?.AccessToken) && tokenDto?.AccessTokenExpiration >= DateTime.Now)
         {
-            // refresh the token
-            new ClaimsIdentity(ParseClaimsFromJwt(tokenDto.AccessToken), "jwt");
+            var loginResponseDto = await _authHttpProvider.RefreshToken();
+            new ClaimsIdentity(ParseClaimsFromJwt(loginResponseDto.Token.AccessToken), "jwt");
+            StateChanged();
         }
 
         /* old code

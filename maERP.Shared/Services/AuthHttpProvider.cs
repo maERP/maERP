@@ -10,13 +10,11 @@ public class AuthHttpProvider
 {
     IDataService<ApiUser> _dataService;
     ITokenService _tokenService;
-    AuthStateProvider _authStateProvider;
 
-    public AuthHttpProvider(IDataService<ApiUser> dataService, ITokenService tokenService, AuthStateProvider authStateProvider)
+    public AuthHttpProvider(IDataService<ApiUser> dataService, ITokenService tokenService)
 	{
         _dataService = dataService;
         _tokenService = tokenService;
-        _authStateProvider = authStateProvider;
     }
 
     public async Task<LoginResponseDto> LoginUser(LoginDto loginDto)
@@ -25,7 +23,6 @@ public class AuthHttpProvider
         {
             var result = await _dataService.Login(loginDto.Server, loginDto.Email, loginDto.Password);
             await _tokenService.SetToken(result.Token);
-            _authStateProvider.StateChanged();
             return result;
         }
         catch (Exception)
@@ -43,13 +40,11 @@ public class AuthHttpProvider
         var token = await _tokenService.GetToken();
         var result = await _dataService.RefreshToken(token.RefreshToken);
         await _tokenService.SetToken(result.Token);
-        _authStateProvider.StateChanged();
         return result;
     }
 
     public async Task LogoutUser()
     {
         await _tokenService.RemoveToken();
-        _authStateProvider.StateChanged();
     }
 }

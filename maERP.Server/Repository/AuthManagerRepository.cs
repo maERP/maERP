@@ -98,7 +98,7 @@ namespace maERP.Server.Repository
 					AccessToken = accessToken,
 					AccessTokenExpiration = accessTokenExpiration,
                     RefreshToken = refreshToken
-				}	
+                }	
 			};
 		}
 
