@@ -15,12 +15,12 @@ namespace maERP.Shared.Services;
 public class AuthStateProvider : AuthenticationStateProvider
 {
     private readonly ITokenService _tokenService;
-    private readonly AuthHttpProvider _authHttpProvider;
+    private readonly IDataService<ApiUser> _dataService;
 
-    public AuthStateProvider(ITokenService tokenService, AuthHttpProvider authHttpProvider)
+    public AuthStateProvider(ITokenService tokenService, IDataService<ApiUser> dataService)
     {
         _tokenService = tokenService;
-        _authHttpProvider = authHttpProvider;
+        _dataService = dataService;
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -33,7 +33,7 @@ public class AuthStateProvider : AuthenticationStateProvider
         // chef if token is expired
         if (!string.IsNullOrEmpty(tokenDto?.AccessToken) && tokenDto?.AccessTokenExpiration >= DateTime.Now)
         {
-            var loginResponseDto = await _authHttpProvider.RefreshToken();
+            var loginResponseDto = await RefreshToken();
             new ClaimsIdentity(ParseClaimsFromJwt(loginResponseDto.Token.AccessToken), "jwt");
             StateChanged();
         }
@@ -45,6 +45,38 @@ public class AuthStateProvider : AuthenticationStateProvider
         */
 
         return new AuthenticationState(new ClaimsPrincipal(identity));
+    }
+
+    public async Task<LoginResponseDto> LoginUser(LoginDto loginDto)
+    {
+        try
+        {
+            Console.WriteLine("Debug 1");
+            var result = await _dataService.Login(loginDto.Server, loginDto.Email, loginDto.Password);
+            await _tokenService.SetToken(result.Token);
+            return result;
+        }
+        catch (Exception)
+        {
+            return new LoginResponseDto
+            {
+                Succeeded = false,
+                Message = "Login fehlgeschlagen."
+            };
+        }
+    }
+
+    public async Task<LoginResponseDto> RefreshToken()
+    {
+        var token = await _tokenService.GetToken();
+        var result = await _dataService.RefreshToken(token.RefreshToken);
+        await _tokenService.SetToken(result.Token);
+        return result;
+    }
+
+    public async Task LogoutUser()
+    {
+        await _tokenService.RemoveToken();
     }
 
     private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)

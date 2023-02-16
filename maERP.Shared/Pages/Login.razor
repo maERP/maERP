@@ -6,8 +6,7 @@
 @using maERP.Shared.Services;
 
 @inject NavigationManager _navManager;
-@inject IDataService<Login> _dataService;
-@inject AuthHttpProvider _authHttpProvider;
+@inject AuthStateProvider _authStateProvider;
 
 <h3>Login</h3>
 
@@ -67,7 +66,7 @@
     {
         _spinnerClass = "spinner-border spinner-border-sm";
 
-        var loginResponse = await _authHttpProvider.LoginUser(loginDto);
+        var loginResponse = await _authStateProvider.LoginUser(loginDto);
 
         if (loginResponse.Succeeded)
         {

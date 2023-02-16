@@ -26,7 +26,7 @@ namespace maERP.Client
             #if DEBUG
 		    builder.Services.AddBlazorWebViewDeveloperTools();
 		    builder.Logging.AddDebug();
-#endif
+            #endif
 
             /*
             builder.Services.AddTransient<DashboardPage>();
@@ -46,7 +46,6 @@ namespace maERP.Client
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddAuthorizationCore();
 
-            builder.Services.AddScoped<AuthHttpProvider>();
             builder.Services.AddScoped<AuthStateProvider>();
             builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
 

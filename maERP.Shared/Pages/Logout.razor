@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager _navigationManager
-@inject AuthHttpProvider _authHttpProvider;
+@inject AuthStateProvider _authStateProvider;
 
 <text>Logout...</text>
 
@@ -14,7 +14,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await _authHttpProvider.LogoutUser();
+        await _authStateProvider.LogoutUser();
         _navigationManager.NavigateTo("/login");
     }
 }
