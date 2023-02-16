@@ -90,14 +90,15 @@ namespace maERP.Server.Repository
 				_configuration["JwtSettings:DurationInMinutes"]
 			));
 
-            return new LoginResponseDto
+			return new LoginResponseDto
 			{
 				Succeeded = true,
 				Token = new TokenDto
-				{ 
+				{
 					AccessToken = accessToken,
 					AccessTokenExpiration = accessTokenExpiration,
-                    RefreshToken = refreshToken
+					RefreshToken = refreshToken,
+					BaseUrl = loginDto.Server
                 }	
 			};
 		}

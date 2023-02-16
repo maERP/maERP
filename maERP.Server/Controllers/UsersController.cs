@@ -126,12 +126,12 @@ public class UsersController : ControllerBase
 
         try
         {
-            var user = await _authManager.UpdateAsync (apiUserDto);
+            var user = await _authManager.UpdateAsync(apiUserDto);
 
             if (user.Id is not null)
             {
                 return Ok();
-                
+
             }
 
             return BadRequest(ModelState);
@@ -151,5 +151,14 @@ public class UsersController : ControllerBase
     {
         await Task.CompletedTask;
         return Ok("ok");
+    }
+
+    // GET: api/Users/CheckToken
+    [Authorize]
+    [HttpGet("CheckToken")]
+    public async Task<ActionResult> CheckToken()
+    {
+        await Task.CompletedTask;
+        return Ok();
     }
 }

@@ -13,7 +13,7 @@ public class DataService<T> : IDataService<T> where T : class
 {
     private readonly ITokenService _tokenService;
 
-    string _serverBaseUrl = "";
+    // string _serverBaseUrl = "";
 
     public  DataService(ITokenService tokenService)
     {
@@ -46,15 +46,15 @@ public class DataService<T> : IDataService<T> where T : class
                 var responseObj = JsonConvert.DeserializeObject<LoginResponseDto>(result);
 
                 // maERP.Shared.Globals.ServerBaseUrl = server;
-                _serverBaseUrl = server;
+                // _serverBaseUrl = server;
 
-                LoginResponseDto loginDto = new LoginResponseDto
+                LoginResponseDto loginResponseDto = new LoginResponseDto
                 {
                     Succeeded = true,
                     Token = responseObj?.Token
                 };
 
-                return loginDto;
+                return loginResponseDto;
             }
 
             response.Dispose();
@@ -62,12 +62,30 @@ public class DataService<T> : IDataService<T> where T : class
         }
     }
 
+    public async Task<bool> CheckAccessToken(string accessToken)
+    {
+        using (var client = new HttpClient())
+        {
+            var token = await _tokenService.GetToken();
+
+            string requestUrl = token.BaseUrl + "/api/Users/CheckToken";
+            client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var response = await client.PostAsJsonAsync(requestUrl, accessToken).ConfigureAwait(false);
+
+            return response.IsSuccessStatusCode;
+        }
+    }
+
     public async Task<LoginResponseDto> RefreshToken(string refreshToken)
     {
         using (var client = new HttpClient())
         {
-            // string requestUrl = maERP.Shared.Globals.ServerBaseUrl + "/api/Users/Refresh";
-            string requestUrl = _serverBaseUrl + "/api/Users/Refresh";
+            var token = await _tokenService.GetToken();
+
+            string requestUrl = token.BaseUrl + "/api/Users/Refresh";
             client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -106,8 +124,9 @@ public class DataService<T> : IDataService<T> where T : class
         {
             using (var client = new HttpClient())
             {
+                var token = await _tokenService.GetToken();
                 // string requestUrl = maERP.Shared.Globals.ServerBaseUrl + "/api" + path;
-                string requestUrl = _serverBaseUrl + "/api" + path;
+                string requestUrl = token.BaseUrl + "/api" + path;
                 // string accessToken = maERP.Shared.Globals.AccessToken;
                 var tokenDto = await _tokenService.GetToken();
                 client.DefaultRequestHeaders.Accept.Clear();
