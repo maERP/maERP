@@ -9,7 +9,6 @@ using maERP.Shared.Models;
 using maERP.Shared.Dtos.User;
 using System.Text.Json;
 using System.Security.Principal;
-// using static System.Net.WebRequestMethods;
 
 namespace maERP.Shared.Services;
 
@@ -26,24 +25,31 @@ public class AuthStateProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        Console.WriteLine("Call GetAuthenticationStateAsync");
-        var tokenDto = await _tokenService.GetToken();
-
         try
         {
-            Console.WriteLine("TOKEN: {0}", tokenDto?.AccessToken);          
-            Console.WriteLine("EXPIRE: {0}", tokenDto?.AccessTokenExpiration);
-            Console.WriteLine("BASEURL: {0}", tokenDto?.BaseUrl);
+            var tokenDto = await _tokenService.GetToken();
 
-            if(string.IsNullOrEmpty(tokenDto.BaseUrl))
+            // empty token            
+            if(tokenDto is null ||
+               string.IsNullOrEmpty(tokenDto.AccessToken) ||
+               string.IsNullOrEmpty(tokenDto.RefreshToken) ||
+               string.IsNullOrEmpty(tokenDto.BaseUrl))
             {
+                await _tokenService.RemoveToken();
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
-            // check if token is expired
-            if (!string.IsNullOrEmpty(tokenDto?.AccessToken) && tokenDto?.AccessTokenExpiration <= DateTime.Now)
+            // token is expired
+            else if (!string.IsNullOrEmpty(tokenDto?.AccessToken) && tokenDto?.AccessTokenExpiration <= DateTime.Now)
             {
-                Console.WriteLine("refresh token");
                 var loginResponseDto = await RefreshToken();
+
+                if(loginResponseDto == null)
+                {
+                    await _tokenService.RemoveToken();
+                    StateChanged();
+                    return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                }
+
                 var identity = new ClaimsIdentity(ParseClaimsFromJwt(loginResponseDto.Token.AccessToken), "jwt");
                 StateChanged();
                 return new AuthenticationState(new ClaimsPrincipal(identity));
@@ -51,18 +57,14 @@ public class AuthStateProvider : AuthenticationStateProvider
             // check if token is valid
             else if (!string.IsNullOrEmpty(tokenDto?.AccessToken))
             {
-                Console.WriteLine("CheckToken");
                 bool result = await _dataService.CheckAccessToken(tokenDto.AccessToken);
 
                 if (result)
                 {
-                    Console.WriteLine("CheckToken true");
                     var identity = new ClaimsIdentity(ParseClaimsFromJwt(tokenDto.AccessToken), "jwt");
                     StateChanged();
                     return new AuthenticationState(new ClaimsPrincipal(identity));
                 }
-
-                Console.WriteLine("CheckToken false");
             }
 
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
@@ -84,7 +86,6 @@ public class AuthStateProvider : AuthenticationStateProvider
     {
         try
         {
-            Console.WriteLine("Debug 1");
             var result = await _dataService.Login(loginDto.Server, loginDto.Email, loginDto.Password);
             await _tokenService.SetToken(result.Token);
             return result;
@@ -111,7 +112,12 @@ public class AuthStateProvider : AuthenticationStateProvider
     {
         var token = await _tokenService.GetToken();
         var result = await _dataService.RefreshToken(token.RefreshToken);
-        await _tokenService.SetToken(result.Token);
+
+        if(result != null)
+        {
+            await _tokenService.SetToken(result.Token);
+        }
+                
         return result;
     }
 

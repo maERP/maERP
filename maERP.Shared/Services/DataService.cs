@@ -72,6 +72,7 @@ public class DataService<T> : IDataService<T> where T : class
             client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
 
             var response = await client.PostAsJsonAsync(requestUrl, accessToken).ConfigureAwait(false);
 

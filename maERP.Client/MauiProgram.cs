@@ -28,6 +28,15 @@ namespace maERP.Client
 		    builder.Logging.AddDebug();
             #endif
 
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddBlazoredLocalStorage();
+
+            builder.Services.AddScoped<AuthStateProvider>();
+            builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
+
+            builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
+
             /*
             builder.Services.AddTransient<DashboardPage>();
             builder.Services.AddTransient<DashboardModel>();
@@ -42,15 +51,6 @@ namespace maERP.Client
             builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<SettingsViewModel>();
             */
-
-            builder.Services.AddBlazoredLocalStorage();
-            builder.Services.AddAuthorizationCore();
-
-            builder.Services.AddScoped<AuthStateProvider>();
-            builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
-
-            builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
 
             return builder.Build();
         }
