@@ -41,7 +41,7 @@
     <Folder Include="Dtos\Warehouse\" />
     <Folder Include="Models\SalesChannelData\" />
     <Folder Include="Dtos\Order\" />
-    <Folder Include="Pages\" />
+
     <Folder Include="Services\" />
     <Folder Include="Contracts\" />
   </ItemGroup>
