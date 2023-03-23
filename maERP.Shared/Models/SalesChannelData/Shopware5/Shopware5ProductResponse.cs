@@ -1,6 +1,4 @@
-﻿using maERP.Shared.Models.SalesChannels.Shopware5;
-
-namespace maERP.Shared.Models.SalesChannels.Shopware5.ProductResponse;
+﻿namespace maERP.Shared.Models.SalesChannels.Shopware5.ProductResponse;
 
 public class Shopware5ProductResponse
 {

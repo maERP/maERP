@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using maERP.Shared.Dtos.User;
+﻿using maERP.Shared.Dtos.User;
 
 namespace maERP.Shared.Contracts;
 

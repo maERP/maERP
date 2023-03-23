@@ -1,9 +1,8 @@
-﻿namespace maERP.Shared
+﻿namespace maERP.Shared;
+
+static class Globals
 {
-    static class Globals
-    {
-        public static string ServerBaseUrl { get; set; } = "";
-        public static string AccessToken { get; set; } = "";
-        public static string RefreshToken { get; set; } = "";
-    }
+    public static string ServerBaseUrl { get; set; } = "";
+    public static string AccessToken { get; set; } = "";
+    public static string RefreshToken { get; set; } = "";
 }

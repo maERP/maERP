@@ -1,14 +1,11 @@
 ﻿#nullable disable
 
-using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Logging;
-using maERP.Shared.Contracts;
-using maERP.Shared.Services;
-using maERP.Shared.Models;
-using maERP.Shared.Dtos.User;
+using System.Security.Claims;
 using System.Text.Json;
-using System.Security.Principal;
+using maERP.Shared.Contracts;
+using maERP.Shared.Dtos.User;
+using maERP.Shared.Models;
 
 namespace maERP.Shared.Services;
 

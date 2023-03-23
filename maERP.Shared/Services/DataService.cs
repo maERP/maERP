@@ -3,9 +3,8 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Newtonsoft.Json;
-using maERP.Shared.Dtos.User;
 using maERP.Shared.Contracts;
-using Microsoft.AspNetCore.Hosting.Server;
+using maERP.Shared.Dtos.User;
 
 namespace maERP.Shared.Services;
 

@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace maERP.Shared.Dtos.Warehouse;
+﻿namespace maERP.Shared.Dtos.Warehouse;
 
 public class WarehouseListDto : WarehouseBaseDto
 {

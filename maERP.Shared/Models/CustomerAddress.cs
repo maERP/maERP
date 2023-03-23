@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace maERP.Server.Models
 {
@@ -16,16 +14,16 @@ namespace maERP.Server.Models
         public int CustomerId { get; set; }
 
         [Required]
-        public String Street { get; set; }
+        public String Street { get; set; } = null!;
 
         [Required]
-        public String HouseNr { get; set; }
+        public String HouseNr { get; set; } = null!;
 
         [Required]
-        public String Zip { get; set; }
+        public String Zip { get; set; } = null!;
 
         [Required]
-        public String City { get; set; }
+        public String City { get; set; } = null!;
 
         [Required]
         public int CountryId { get; set; }

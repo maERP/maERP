@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace maERP.Shared.Dtos.User;
+﻿namespace maERP.Shared.Dtos.User;
 
 public class TokenDto
 {
