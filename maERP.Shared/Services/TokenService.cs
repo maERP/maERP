@@ -3,6 +3,7 @@ using maERP.Shared.Contracts;
 using maERP.Shared.Dtos.User;
 
 namespace maERP.Shared.Services;
+
 public class TokenService : ITokenService
 {
     private readonly ILocalStorageService _localStorageService;
