@@ -1,10 +1,9 @@
-﻿using maERP.Shared.Models;
-using maERP.Shared.Dtos.TaxClass;
+﻿using maERP.Shared.Dtos.TaxClass;
+using maERP.Shared.Models;
 
-namespace maERP.Server.Contracts
+namespace maERP.Server.Contracts;
+
+public interface ITaxClassesRepository : IGenericRepository<TaxClass>
 {
-    public interface ITaxClassesRepository : IGenericRepository<TaxClass>
-    {
-        Task<TaxClassDto> GetDetails(int id);
-    }
+    Task<TaxClassDto> GetDetails(int id);
 }

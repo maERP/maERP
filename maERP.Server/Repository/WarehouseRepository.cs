@@ -1,39 +1,36 @@
-﻿#nullable disable
-
+﻿using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using maERP.Server.Contracts;
-using maERP.Shared.Models;
-using maERP.Server.Models;
 using maERP.Server.Exceptions;
+using maERP.Server.Models;
 using maERP.Shared.Dtos.Warehouse;
-using Microsoft.EntityFrameworkCore;
+using maERP.Shared.Models;
 
-namespace maERP.Server.Repository
+namespace maERP.Server.Repository;
+
+public class WarehouseRepository : GenericRepository<Warehouse>, IWarehousesRepository
 {
-	public class WarehouseRepository : GenericRepository<Warehouse>, IWarehousesRepository
+    private readonly ApplicationDbContext _context;
+    private readonly IMapper _mapper;
+
+    public WarehouseRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        this._context = context;
+        this._mapper = mapper;
+    }
 
-        public WarehouseRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+    public async Task<WarehouseDto> GetDetails(int id)
+    {
+        var warehouse = await _context.Warehouse
+            .ProjectTo<WarehouseDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(q => q.Id == id);
+
+        if(warehouse == null)
         {
-            this._context = context;
-            this._mapper = mapper;
+            throw new NotFoundException(nameof(GetDetails), id);
         }
 
-        public async Task<WarehouseDto> GetDetails(int id)
-        {
-            var warehouse = await _context.Warehouse
-                .ProjectTo<WarehouseDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(q => q.Id == id);
-
-            if(warehouse == null)
-            {
-                throw new NotFoundException(nameof(GetDetails), id);
-            }
-
-            return warehouse;
-        }
+        return warehouse;
     }
 }

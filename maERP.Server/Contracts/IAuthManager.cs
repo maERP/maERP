@@ -1,25 +1,24 @@
 ﻿#nullable disable
 
+using Microsoft.AspNetCore.Identity;
 using maERP.Shared.Dtos.User;
 using maERP.Shared.Models;
-using Microsoft.AspNetCore.Identity;
 
-namespace maERP.Server.Contracts
+namespace maERP.Server.Contracts;
+
+public interface IAuthManager
 {
-	public interface IAuthManager
-	{
-        Task<LoginResponseDto> Login(LoginDto userDto);
+    Task<LoginResponseDto> Login(LoginDto userDto);
 
-		Task<string> CreateRefreshToken();
+	Task<string> CreateRefreshToken();
 
-		Task<LoginResponseDto> VerifyRefreshToken(RefreshTokenDto request);
+	Task<LoginResponseDto> VerifyRefreshToken(RefreshTokenDto request);
 
-        Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto);
+    Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto);
 
-        Task<ApiUser> UpdateAsync(ApiUserDto userDto);
+    Task<ApiUser> UpdateAsync(ApiUserDto userDto);
 
-        Task<IQueryable<ApiUser>> GetAllAsync();
+    Task<IQueryable<ApiUser>> GetAllAsync();
 
-        Task<ApiUserDto> GetByIdAsync(string userId);
-    }
+    Task<ApiUserDto> GetByIdAsync(string userId);
 }

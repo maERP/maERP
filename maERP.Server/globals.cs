@@ -1,6 +1,5 @@
 ﻿global using Microsoft.EntityFrameworkCore.Design;
 
-
 class Globals
 {
     public static string maxLength(string str, int length)

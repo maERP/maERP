@@ -1,58 +1,54 @@
-﻿using maERP.Shared.Contracts;
-using maERP.Shared.Services;
+﻿using Blazored.LocalStorage;
 using Microsoft.Extensions.Logging;
-
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Security.Claims;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Blazored.LocalStorage;
+using maERP.Shared.Contracts;
+using maERP.Shared.Services;
 
-namespace maERP.Client
+namespace maERP.Client;
+
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                });
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+            });
 
-            builder.Services.AddMauiBlazorWebView();
+        builder.Services.AddMauiBlazorWebView();
 
-            #if DEBUG
+        #if DEBUG
 		    builder.Services.AddBlazorWebViewDeveloperTools();
 		    builder.Logging.AddDebug();
-            #endif
+        #endif
 
-            builder.Services.AddAuthorizationCore();
-            builder.Services.AddBlazoredLocalStorage();
+        builder.Services.AddAuthorizationCore();
+        builder.Services.AddBlazoredLocalStorage();
 
-            builder.Services.AddScoped<AuthStateProvider>();
-            builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
+        builder.Services.AddScoped<AuthStateProvider>();
+        builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
 
-            builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
+        builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
 
-            /*
-            builder.Services.AddTransient<DashboardPage>();
-            builder.Services.AddTransient<DashboardModel>();
-            builder.Services.AddTransient<LoginPage>();
-            builder.Services.AddTransient<LoginViewModel>();
-            builder.Services.AddTransient<OrdersPage>();
-            builder.Services.AddTransient<OrdersViewModel>();
-            builder.Services.AddTransient<ProductsPage>();
-            builder.Services.AddTransient<ProductsViewModel>();
-            builder.Services.AddTransient<ProductsDetailPage>();
-            builder.Services.AddTransient<ProductsDetailViewModel>();
-            builder.Services.AddTransient<SettingsPage>();
-            builder.Services.AddTransient<SettingsViewModel>();
-            */
+        /*
+        builder.Services.AddTransient<DashboardPage>();
+        builder.Services.AddTransient<DashboardModel>();
+        builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<OrdersPage>();
+        builder.Services.AddTransient<OrdersViewModel>();
+        builder.Services.AddTransient<ProductsPage>();
+        builder.Services.AddTransient<ProductsViewModel>();
+        builder.Services.AddTransient<ProductsDetailPage>();
+        builder.Services.AddTransient<ProductsDetailViewModel>();
+        builder.Services.AddTransient<SettingsPage>();
+        builder.Services.AddTransient<SettingsViewModel>();
+        */
 
-            return builder.Build();
-        }
+        return builder.Build();
     }
 }

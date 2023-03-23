@@ -5,24 +5,23 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using maERP.Shared.Models;
 
-namespace maERP.Server.Configurations.Seeds
+namespace maERP.Server.Configurations.Seeds;
+
+public class RoleConfiguration : IEntityTypeConfiguration<IdentityRole>
 {
-	public class RoleConfiguration : IEntityTypeConfiguration<IdentityRole>
+	public void Configure(EntityTypeBuilder<IdentityRole> builder)
 	{
-		public void Configure(EntityTypeBuilder<IdentityRole> builder)
-		{
-			builder.HasData(
-				new IdentityRole
-				{
-					Name = "Administrator",
-					NormalizedName = "ADMINISTRATOR"
-				},
-				new IdentityRole
+		builder.HasData(
+			new IdentityRole
+			{
+				Name = "Administrator",
+				NormalizedName = "ADMINISTRATOR"
+			},
+			new IdentityRole
                 {
-					Name = "User",
-					NormalizedName = "USER"
+				Name = "User",
+				NormalizedName = "USER"
                 }
-			);
-		}
+		);
 	}
 }

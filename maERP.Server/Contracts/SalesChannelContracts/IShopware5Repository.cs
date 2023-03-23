@@ -1,9 +1,6 @@
-﻿using maERP.Shared.Models.SalesChannels.Shopware5;
+﻿namespace maERP.Server.Contracts.SalesChannelContracts;
 
-namespace maERP.Server.Contracts.SalesChannelContracts
+public interface IShopware5Repository
 {
-	public interface IShopware5Repository
-	{
-		// Task<Shopware5Product> getProductList();
-	}
+	// Task<Shopware5Product> getProductList();
 }

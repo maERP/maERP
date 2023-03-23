@@ -1,9 +1,8 @@
 ﻿using maERP.Shared.Models;
 
-namespace maERP.Server.Contracts
+namespace maERP.Server.Contracts;
+
+public interface ISalesChannelRepository : IGenericRepository<SalesChannel>
 {
-	public interface ISalesChannelRepository : IGenericRepository<SalesChannel>
-	{
-		Task<SalesChannel> getDetails(int id);
-	}
+	Task<SalesChannel> getDetails(int id);
 }

@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Shared.Models

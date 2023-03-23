@@ -1,104 +1,102 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
-using maERP.Shared.Models;
-using maERP.Shared.Dtos.TaxClass;
 using AutoMapper;
 using maERP.Server.Contracts;
-using Microsoft.AspNetCore.OData.Query;
 using maERP.Server.Models;
+using maERP.Shared.Dtos.TaxClass;
 
-namespace maERP.Server.Controllers
+namespace maERP.Server.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+[Authorize]
+public class TaxClassesController : ControllerBase  
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    [Authorize]
-    public class TaxClassesController : ControllerBase
+    private readonly IMapper _mapper;
+    private readonly ITaxClassesRepository _repository;
+
+    public TaxClassesController(IMapper mapper, ITaxClassesRepository repository)
     {
-        private readonly IMapper _mapper;
-        private readonly ITaxClassesRepository _repository;
+        _mapper = mapper;
+        _repository = repository;
+    }
 
-        public TaxClassesController(IMapper mapper, ITaxClassesRepository repository)
+    // GET: api/TaxClasses
+    [HttpGet("GetAll")]
+    // GET: api/TaxClasses?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
+    [EnableQuery]
+    public async Task<ActionResult<IEnumerable<TaxClassListDto>>> GetTaxClass()
+    {
+        var result = await _repository.GetAllAsync<TaxClassListDto>();
+        return Ok(result);
+    }
+
+    // GET: api/TaxClasses/?StartIndex=0&PageSize=25&PageNumber=1
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<TaxClassListDto>>> GetPagedTaxClass([FromQuery] QueryParameters queryParameters)
+    {
+        var pagedResult = await _repository.GetAllAsync<TaxClassListDto>(queryParameters);
+        return Ok(pagedResult);
+    }
+
+    // GET: api/TaxClasses/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<TaxClassDto>> GetTaxClass(int id)
+    {
+        var result = await _repository.GetDetails(id);
+        return Ok(result);
+    }
+
+    // PUT: api/TaxClasses/5
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutTaxClass(int id, TaxClassDto updateTaxClassDto)
+    {
+        if (id != updateTaxClassDto.Id)
         {
-            _mapper = mapper;
-            _repository = repository;
+            return BadRequest("Invalid Record Id");
         }
 
-        // GET: api/TaxClasses
-        [HttpGet("GetAll")]
-        // GET: api/TaxClasses?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
-        [EnableQuery]
-        public async Task<ActionResult<IEnumerable<TaxClassListDto>>> GetTaxClass()
+        try
         {
-            var result = await _repository.GetAllAsync<TaxClassListDto>();
-            return Ok(result);
+            await _repository.UpdateAsync(id, updateTaxClassDto);
         }
-
-        // GET: api/TaxClasses/?StartIndex=0&PageSize=25&PageNumber=1
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaxClassListDto>>> GetPagedTaxClass([FromQuery] QueryParameters queryParameters)
+        catch (DbUpdateConcurrencyException)
         {
-            var pagedResult = await _repository.GetAllAsync<TaxClassListDto>(queryParameters);
-            return Ok(pagedResult);
-        }
-
-        // GET: api/TaxClasses/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TaxClassDto>> GetTaxClass(int id)
-        {
-            var result = await _repository.GetDetails(id);
-            return Ok(result);
-        }
-
-        // PUT: api/TaxClasses/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTaxClass(int id, TaxClassDto updateTaxClassDto)
-        {
-            if (id != updateTaxClassDto.Id)
+            if (!await TaxClassExists(id))
             {
-                return BadRequest("Invalid Record Id");
+                return NotFound();
             }
-
-            try
+            else
             {
-                await _repository.UpdateAsync(id, updateTaxClassDto);
+                throw;
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await TaxClassExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
-        // POST: api/TaxClasses
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<TaxClassDto>> PostTaxClass(TaxClassDto taxClassDto)
-        {
-            var taxClass = await _repository.AddAsync<TaxClassDto, TaxClassDto>(taxClassDto);
-            return CreatedAtAction(nameof(GetTaxClass), new { id = taxClass.Id }, taxClass);
-        }
+        return NoContent();
+    }
 
-        // DELETE: api/TaxClasses/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTaxClass(int id)
-        {
-            await _repository.DeleteAsync(id);
+    // POST: api/TaxClasses
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost]
+    public async Task<ActionResult<TaxClassDto>> PostTaxClass(TaxClassDto taxClassDto)
+    {
+        var taxClass = await _repository.AddAsync<TaxClassDto, TaxClassDto>(taxClassDto);
+        return CreatedAtAction(nameof(GetTaxClass), new { id = taxClass.Id }, taxClass);
+    }
 
-            return NoContent();
-        }
+    // DELETE: api/TaxClasses/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteTaxClass(int id)
+    {
+        await _repository.DeleteAsync(id);
 
-        private async Task<bool> TaxClassExists(int id)
-        {
-            return await _repository.Exists(id);
-        }
+        return NoContent();
+    }
+
+    private async Task<bool> TaxClassExists(int id)
+    {
+        return await _repository.Exists(id);
     }
 }

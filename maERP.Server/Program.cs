@@ -18,7 +18,6 @@ using maERP.Server.Middleware;
 using maERP.Server.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Models;
-using System.Diagnostics;
 
 // Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg)); Serilog.Debugging.SelfLog.Enable(Console.Error);
 

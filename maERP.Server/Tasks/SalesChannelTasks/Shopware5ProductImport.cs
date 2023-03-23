@@ -1,9 +1,9 @@
 ﻿#nullable disable
 
 using System.Net.Http.Headers;
-using maERP.Shared.Models;
-using maERP.Server.Contracts;
 using Newtonsoft.Json;
+using maERP.Server.Contracts;
+using maERP.Shared.Models;
 using maERP.Shared.Models.SalesChannels.Shopware5;
 using maERP.Shared.Models.SalesChannels.Shopware5.ProductResponse;
 

@@ -4,17 +4,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using maERP.Shared.Models;
 
-namespace maERP.Server.Configurations.Seeds
+namespace maERP.Server.Configurations.Seeds;
+
+public class TaxClassConfiguration : IEntityTypeConfiguration<TaxClass>
 {
-	public class TaxClassConfiguration : IEntityTypeConfiguration<TaxClass>
-	{
-		public void Configure(EntityTypeBuilder<TaxClass> builder)
-        {
-			builder.HasData(
-                new TaxClass { Id = 1, TaxRate = 0 },
-                new TaxClass { Id = 2, TaxRate = 7 },
-                new TaxClass { Id = 3, TaxRate = 19 }
-            );
-        }
-	}
+	public void Configure(EntityTypeBuilder<TaxClass> builder)
+    {
+	    builder.HasData(
+            new TaxClass { Id = 1, TaxRate = 0 },
+            new TaxClass { Id = 2, TaxRate = 7 },
+            new TaxClass { Id = 3, TaxRate = 19 }
+        );
+    }
 }
