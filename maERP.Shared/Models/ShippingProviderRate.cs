@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Shared.Models;
 
-public class ShippingProviderDimensions
+public class ShippingProviderRate
 {
     [Key]
     [Column("id")]

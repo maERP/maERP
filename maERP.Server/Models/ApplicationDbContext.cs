@@ -17,7 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
     }
 
     public DbSet<Customer> Customer { get; set; }
-    public DbSet<CustomerAddress> CustomerAddresse { get; set; }
+    public DbSet<Address> Address { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<Product> Product { get; set; }
     public DbSet<ProductStock> ProductStock { get; set; }
@@ -36,7 +36,7 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
 
         modelBuilder.Entity<ApiUser>().ToTable("user");
         modelBuilder.Entity<Customer>().ToTable("customer");
-        modelBuilder.Entity<CustomerAddress>().ToTable("customer_address");
+        modelBuilder.Entity<Address>().ToTable("address");
         modelBuilder.Entity<Order>().ToTable("order");
         modelBuilder.Entity<Product>().ToTable("product");
         modelBuilder.Entity<ProductStock>().ToTable("product_stock");
