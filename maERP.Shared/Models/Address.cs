@@ -1,17 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace maERP.Server.Models;
+namespace maERP.Shared.Models;
 
-public class CustomerAddress
+public class Address
 {
     [Key]
     public int Id { get; set; }
-
-    // [Required]
-    //public Enum Type { get; set; }
-
-    [Required]
-    public int CustomerId { get; set; }
 
     [Required]
     public String Street { get; set; } = null!;
@@ -25,7 +19,6 @@ public class CustomerAddress
     [Required]
     public String City { get; set; } = null!;
 
-    [Required]
-    public int CountryId { get; set; }
+    // [Required]
+    //public Enum Country { get; set; }
 }
-

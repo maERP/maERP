@@ -10,21 +10,33 @@ public class Customer
 
     [Required]
     [StringLength(50)]
-    [Display(Name = "Last Name")]
+    [Display(Name = "lastname")]
     public string LastName { get; set; } = string.Empty;
 
     [Required]
     [StringLength(50)]
-    [Column("FirstName")]
-    [Display(Name = "First Name")]
+    [Column("firstname")]
+    [Display(Name = "Vorname")]
     public string FirstName { get; set; } = string.Empty;
+
+    [Column("email")]
+    [Display(Name = "E-Mail")]
+    public string Email { get; set; } = string.Empty;
+
+    [Column("customer_status")]
+    [Display(Name = "Kundenstatus")]
+    public CustomerStatus CustomerStatus { get; set; }
+
+    virtual public List<Address>? Addresses { get; set; }
+
+    virtual public List<Order>? Orders { get; set; }
 
     [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    [Display(Name = "Enrollment Date")]
+    [Display(Name = "registriert am")]
     public DateTime EnrollmentDate { get; set; }
 
-    [Display(Name = "Full Name")]
+    [Display(Name = "Vollständiger Name")]
     public string FullName
     {
         get
