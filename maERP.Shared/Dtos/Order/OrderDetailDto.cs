@@ -2,7 +2,7 @@
 
 namespace maERP.Shared.Dtos.Order;
 
-public class OrderDto : OrderBaseDto
+public class OrderDetailDto : OrderBaseDto
 {
 
 }

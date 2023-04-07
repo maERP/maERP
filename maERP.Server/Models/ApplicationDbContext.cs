@@ -16,13 +16,15 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
 
     }
 
-    public DbSet<Customer> Customer { get; set; }
     public DbSet<Address> Address { get; set; }
+    public DbSet<Customer> Customer { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<Product> Product { get; set; }
-    public DbSet<ProductStock> ProductStock { get; set; }
     public DbSet<ProductSalesChannel> ProductSalesChannel { get; set; }
+    public DbSet<ProductStock> ProductStock { get; set; }
     public DbSet<SalesChannel> SalesChannel { get; set; }
+    public DbSet<ShippingProvider> ShippingProvider { get; set; }
+    public DbSet<ShippingProviderRate> ShippingProviderRate { get; set; }
     public DbSet<TaxClass> TaxClass { get; set; }
     public DbSet<Warehouse> Warehouse { get; set; }
 
@@ -34,17 +36,18 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
         modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
 
+        modelBuilder.Entity<Address>().ToTable("address");
         modelBuilder.Entity<ApiUser>().ToTable("user");
         modelBuilder.Entity<Customer>().ToTable("customer");
-        modelBuilder.Entity<Address>().ToTable("address");
         modelBuilder.Entity<Order>().ToTable("order");
         modelBuilder.Entity<Product>().ToTable("product");
-        modelBuilder.Entity<ProductStock>().ToTable("product_stock");
         modelBuilder.Entity<ProductSalesChannel>().ToTable("product_sales_channel");
+        modelBuilder.Entity<ProductStock>().ToTable("product_stock");
         modelBuilder.Entity<SalesChannel>().ToTable("sales_channel");
+        modelBuilder.Entity<ShippingProvider>().ToTable("shipping_provider");
+        modelBuilder.Entity<ShippingProviderRate>().ToTable("shipping_provider_rate");
         modelBuilder.Entity<TaxClass>().ToTable("tax_class");
         modelBuilder.Entity<Warehouse>().ToTable("warehouse");
-
 
         // seed user data
         string DEFAULT_ADMIN_ID = "02174cf0–9412–4cfe-afbf-59f706d72cf6";

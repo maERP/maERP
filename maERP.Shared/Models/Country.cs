@@ -2,6 +2,6 @@
 
 public enum Country
 {
-    de
+    de = 1,
 }
 

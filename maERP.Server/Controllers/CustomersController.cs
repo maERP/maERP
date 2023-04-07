@@ -43,7 +43,7 @@ public class CustomersController : ControllerBase
 
     // GET: api/Customers/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<CustomerDto>> GetCustomer(int id)
+    public async Task<ActionResult<CustomerDetailDto>> GetCustomer(int id)
     {
         var customer = await _repository.GetDetails(id);
         return Ok(customer);
@@ -51,7 +51,7 @@ public class CustomersController : ControllerBase
 
     // PUT: api/Customers/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutCustomer(int id, CustomerDto customerDto)
+    public async Task<IActionResult> PutCustomer(int id, CustomerDetailDto customerDto)
     {
         if (id != customerDto.Id)
         {
@@ -79,9 +79,9 @@ public class CustomersController : ControllerBase
 
     // POST: api/Customers
     [HttpPost]
-    public async Task<ActionResult<CustomerDto>> PostCustomer(CustomerDto customerDto)
+    public async Task<ActionResult<CustomerDetailDto>> PostCustomer(CustomerDetailDto customerDto)
     {
-        var customer = await _repository.AddAsync<CustomerDto, CustomerDto>(customerDto);
+        var customer = await _repository.AddAsync<CustomerDetailDto, CustomerDetailDto>(customerDto);
         return CreatedAtAction(nameof(GetCustomer), new { id = customer.Id }, customer);
     }
 

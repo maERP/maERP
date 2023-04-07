@@ -22,10 +22,10 @@ public class ProductsRepository : GenericRepository<Product>, IProductsRepositor
         this._mapper = mapper;
     }
 
-    public async Task<ProductDto> GetDetails(int id)
+    public async Task<ProductDetailDto> GetDetails(int id)
     {
         var product = await _context.Product.Include(q => q.TaxClass)
-            .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ProductDetailDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(q => q.Id == id);
 
         if(product == null)

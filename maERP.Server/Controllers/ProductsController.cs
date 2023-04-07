@@ -44,7 +44,7 @@ public class ProductsController : ControllerBase
 
     // GET: api/Products/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDto>> GetProduct(int id)
+    public async Task<ActionResult<ProductDetailDto>> GetProduct(int id)
     {
         var result = await _repository.GetDetails(id);
         return Ok(result);
@@ -52,7 +52,7 @@ public class ProductsController : ControllerBase
 
     // PUT: api/Products/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduct(int id, ProductDto productDto)
+    public async Task<IActionResult> PutProduct(int id, ProductDetailDto productDto)
     {
         if (id != productDto.Id)
         {
@@ -81,9 +81,9 @@ public class ProductsController : ControllerBase
     // POST: api/Products
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<ProductDto>> PostProduct(ProductDto productDto)
+    public async Task<ActionResult<ProductDetailDto>> PostProduct(ProductDetailDto productDetailDto)
     {
-        var product = await _repository.AddAsync<ProductDto, ProductDto>(productDto);
+        var product = await _repository.AddAsync<ProductDetailDto, ProductDetailDto>(productDetailDto);
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
     }
 

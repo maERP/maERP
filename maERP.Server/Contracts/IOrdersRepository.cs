@@ -5,5 +5,5 @@ namespace maERP.Server.Contracts;
 
 public interface IOrdersRepository : IGenericRepository<Order>
 {
-    Task<OrderDto> GetDetails(int id);
+    Task<OrderDetailDto> GetDetails(int id);
 }

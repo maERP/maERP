@@ -2,7 +2,7 @@
 
 namespace maERP.Shared.Dtos.Customer;
 
-public class CustomerDto : CustomerBaseDto
+public class CustomerDetailDto : CustomerBaseDto
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

@@ -40,7 +40,7 @@ public class OrdersController : ControllerBase
 
     // GET: api/Orders/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<OrderDto>> GetOrder(int id)
+    public async Task<ActionResult<OrderDetailDto>> GetOrder(int id)
     {
         var order = await _repository.GetDetails(id);
         return Ok(order);
@@ -48,7 +48,7 @@ public class OrdersController : ControllerBase
 
     // PUT: api/Orders/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutOrders(int id, OrderDto orderDto)
+    public async Task<IActionResult> PutOrders(int id, OrderDetailDto orderDto)
     {
         if (id != orderDto.Id)
         {
@@ -76,9 +76,9 @@ public class OrdersController : ControllerBase
 
     // POST: api/Orders
     [HttpPost]
-    public async Task<ActionResult<OrderDto>> PutOrder(OrderDto orderDto)
+    public async Task<ActionResult<OrderDetailDto>> PutOrder(OrderDetailDto orderDto)
     {
-        var order = await _repository.AddAsync<OrderDto, OrderDto>(orderDto);
+        var order = await _repository.AddAsync<OrderDetailDto, OrderDetailDto>(orderDto);
         return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
     }
 

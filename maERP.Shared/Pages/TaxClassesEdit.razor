@@ -9,7 +9,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager _navManager;
-@inject IDataService<TaxClassDto> _dataService;
+@inject IDataService<TaxClassDetailDto> _dataService;
 
 <h1>Steuersatz</h1>
 
@@ -37,7 +37,7 @@
 
     protected string Title = "hinzufügen";
 
-    protected TaxClassDto taxClass = new();
+    protected TaxClassDetailDto taxClass = new();
 
     protected override async Task OnParametersSetAsync()
     {

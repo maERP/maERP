@@ -43,7 +43,7 @@ public class TaxClassesController : ControllerBase
 
     // GET: api/TaxClasses/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<TaxClassDto>> GetTaxClass(int id)
+    public async Task<ActionResult<TaxClassDetailDto>> GetTaxClass(int id)
     {
         var result = await _repository.GetDetails(id);
         return Ok(result);
@@ -51,16 +51,16 @@ public class TaxClassesController : ControllerBase
 
     // PUT: api/TaxClasses/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTaxClass(int id, TaxClassDto updateTaxClassDto)
+    public async Task<IActionResult> PutTaxClass(int id, TaxClassDetailDto updateTaxClassDetailDto)
     {
-        if (id != updateTaxClassDto.Id)
+        if (id != updateTaxClassDetailDto.Id)
         {
             return BadRequest("Invalid Record Id");
         }
 
         try
         {
-            await _repository.UpdateAsync(id, updateTaxClassDto);
+            await _repository.UpdateAsync(id, updateTaxClassDetailDto);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -80,9 +80,9 @@ public class TaxClassesController : ControllerBase
     // POST: api/TaxClasses
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<TaxClassDto>> PostTaxClass(TaxClassDto taxClassDto)
+    public async Task<ActionResult<TaxClassDetailDto>> PostTaxClass(TaxClassDetailDto taxClassDto)
     {
-        var taxClass = await _repository.AddAsync<TaxClassDto, TaxClassDto>(taxClassDto);
+        var taxClass = await _repository.AddAsync<TaxClassDetailDto, TaxClassDetailDto>(taxClassDto);
         return CreatedAtAction(nameof(GetTaxClass), new { id = taxClass.Id }, taxClass);
     }
 

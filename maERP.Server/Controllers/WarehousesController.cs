@@ -44,7 +44,7 @@ public class WarehousesController : ControllerBase
 
     // GET: api/Warehouses/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<WarehouseDto>> GetWarehouse(int id)
+    public async Task<ActionResult<WarehouseDetailDto>> GetWarehouse(int id)
     {
         var warehouse = await _repository.GetDetails(id);
         return Ok(warehouse);
@@ -52,7 +52,7 @@ public class WarehousesController : ControllerBase
 
     // PUT: api/Warehouses/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutWarehouse(int id, WarehouseDto warehouseDto)
+    public async Task<IActionResult> PutWarehouse(int id, WarehouseDetailDto warehouseDto)
     {
         if (id != warehouseDto.Id)
         {
@@ -81,9 +81,9 @@ public class WarehousesController : ControllerBase
     // POST: api/Warehouses
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<WarehouseDto>> PostWarehouse(WarehouseDto warehouseDto)
+    public async Task<ActionResult<WarehouseDetailDto>> PostWarehouse(WarehouseDetailDto warehouseDto)
     {
-        var warehouse = await _repository.AddAsync<WarehouseDto, WarehouseDto>(warehouseDto);
+        var warehouse = await _repository.AddAsync<WarehouseDetailDto, WarehouseDetailDto>(warehouseDto);
         return CreatedAtAction(nameof(GetWarehouse), new { id = warehouse.Id }, warehouse);
     }
 

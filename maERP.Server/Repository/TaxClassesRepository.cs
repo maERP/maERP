@@ -22,10 +22,10 @@ public class TaxClassesRepository : GenericRepository<TaxClass>, ITaxClassesRepo
         this._mapper = mapper;
     }
 
-    public async Task<TaxClassDto> GetDetails(int id)
+    public async Task<TaxClassDetailDto> GetDetails(int id)
     {
         var taxClass = await _context.TaxClass
-            .ProjectTo<TaxClassDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<TaxClassDetailDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(q => q.Id == id);
 
         if(taxClass == null)

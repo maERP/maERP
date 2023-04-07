@@ -8,7 +8,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavManager;
-@inject IDataService<ProductDto> _dataService;
+@inject IDataService<ProductDetailDto> _dataService;
 
 <h1>@product.Name</h1>
 
@@ -21,7 +21,7 @@
 
     protected string Title = "Produktdetail";
 
-    protected ProductDto product = new();
+    protected ProductDetailDto product = new();
 
     protected override async Task OnParametersSetAsync()
     {

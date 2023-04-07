@@ -22,10 +22,10 @@ public class CustomersRepository : GenericRepository<Customer>, ICustomersReposi
         this._mapper = mapper;
     }
 
-    public async Task<CustomerDto> GetDetails(int id)
+    public async Task<CustomerDetailDto> GetDetails(int id)
     {
         var customer = await _context.Customer
-            .ProjectTo<CustomerDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<CustomerDetailDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(q => q.Id == id);
 
         if(customer == null)

@@ -1,5 +1,5 @@
 ﻿namespace maERP.Shared.Dtos.Warehouse;
 
-public class WarehouseDto : WarehouseBaseDto
+public class WarehouseListDto : WarehouseBaseDto
 {
 }

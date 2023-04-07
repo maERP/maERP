@@ -4,9 +4,9 @@ using maERP.Shared.Dtos.ProductSalesChannel;
 
 namespace maERP.Shared.Dtos.Product;
 
-public class ProductDto : ProductBaseDto
+public class ProductDetailDto : ProductBaseDto
 {
     public string Name { get; set; }
     public decimal Price { get; set; }
-    public List<ProductSalesChannelDto> ProductSalesChannel { get; set; }
+    public List<ProductSalesChannelDetailDto> ProductSalesChannel { get; set; }
 }

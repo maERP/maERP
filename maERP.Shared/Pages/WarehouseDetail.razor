@@ -7,7 +7,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager;
-@inject IDataService<WarehouseDto> DataService;
+@inject IDataService<WarehouseDetailDto> DataService;
 
 <h1>Lager</h1>
 
@@ -19,7 +19,7 @@
 
     protected string Title = "Lager";
 
-    protected WarehouseDto warehouse = new();
+    protected WarehouseDetailDto warehouse = new();
 
     protected override async Task OnParametersSetAsync()
     {

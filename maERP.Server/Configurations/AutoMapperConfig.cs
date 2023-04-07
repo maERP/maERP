@@ -17,25 +17,25 @@ public class AutoMapperConfig : Profile
 	{
 		CreateMap<ApiUserDto, ApiUser>().ReverseMap();
 
-            CreateMap<Customer, CustomerDto>().ReverseMap();
-            CreateMap<Customer, CustomerListDto>().ReverseMap();
+        CreateMap<Customer, CustomerDetailDto>().ReverseMap();
+        CreateMap<Customer, CustomerListDto>().ReverseMap();
 
-            CreateMap<Order, OrderDto>().ReverseMap();
-            CreateMap<Order, OrderListDto>().ReverseMap();
+        CreateMap<Order, OrderDetailDto>().ReverseMap();
+        CreateMap<Order, OrderListDto>().ReverseMap();
 
-            CreateMap<Product, ProductDto>().ReverseMap();
-            CreateMap<Product, ProductListDto>().ReverseMap();
+        CreateMap<Product, ProductDetailDto>().ReverseMap();
+        CreateMap<Product, ProductListDto>().ReverseMap();
 
-		CreateMap<ProductSalesChannel, ProductSalesChannelDto>().ReverseMap();
+		CreateMap<ProductSalesChannel, ProductSalesChannelDetailDto>().ReverseMap();
 		CreateMap<ProductSalesChannel, ProductSalesChannelListDto>().ReverseMap();
 
 		CreateMap<SalesChannel, SalesChannelDto>().ReverseMap();
 		CreateMap<SalesChannel, SalesChannelListDto>().ReverseMap();
 
-		CreateMap<TaxClass, TaxClassDto>().ReverseMap();
+		CreateMap<TaxClass, TaxClassDetailDto>().ReverseMap();
 		CreateMap<TaxClass, TaxClassListDto>().ReverseMap();
 
-		CreateMap<Warehouse, WarehouseDto>().ReverseMap();
+		CreateMap<Warehouse, WarehouseDetailDto>().ReverseMap();
 		CreateMap<Warehouse, WarehouseListDto>().ReverseMap();
 	}
 }

@@ -5,5 +5,5 @@ namespace maERP.Server.Contracts;
 
 public interface ITaxClassesRepository : IGenericRepository<TaxClass>
 {
-    Task<TaxClassDto> GetDetails(int id);
+    Task<TaxClassDetailDto> GetDetails(int id);
 }

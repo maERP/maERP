@@ -20,10 +20,10 @@ public class WarehouseRepository : GenericRepository<Warehouse>, IWarehousesRepo
         this._mapper = mapper;
     }
 
-    public async Task<WarehouseDto> GetDetails(int id)
+    public async Task<WarehouseDetailDto> GetDetails(int id)
     {
         var warehouse = await _context.Warehouse
-            .ProjectTo<WarehouseDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<WarehouseDetailDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(q => q.Id == id);
 
         if(warehouse == null)

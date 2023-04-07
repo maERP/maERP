@@ -9,7 +9,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavManager;
-@inject IDataService<ProductDto> _dataService;
+@inject IDataService<ProductDetailDto> _dataService;
 
 @if (product == null)
 {
@@ -61,7 +61,7 @@ else
 
     protected string Title = "Add";
 
-    protected ProductDto product = new();
+    protected ProductDetailDto product = new();
 
     protected override async Task OnParametersSetAsync()
     {
