@@ -8,17 +8,17 @@ namespace maERP.Shared.Models;
 public class ProductStock
 {
 	[Key]
-	public int Id { get; set; }
+    [Column("id")]
+    public int Id { get; set; }
 
 	[Required]
-	[ForeignKey("Product")]
-	public int ProductId { get; set; }
+    [Column("product_id")]
+    public virtual Product Product { get; set; }
 
-	// [Required]
-	// public int WarehouseId { get; set; }
+    [Required]
+    public virtual Warehouse Warehouse { get; set; }
 
-	[Required]
-	public int Quantity { get; set; }
-
-	public virtual IList<Product> Products { get; set; }
+    [Required]
+    [Column("quantity")]
+    public int Quantity { get; set; }
 }

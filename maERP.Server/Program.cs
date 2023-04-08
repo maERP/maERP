@@ -32,24 +32,37 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog();
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     string conString = "";
 
-    if (Environment.GetEnvironmentVariable("DB_TYPE") == "mysql")
+    if (Environment.GetEnvironmentVariable("DB_TYPE") == "pgsql")
+    {
+        conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
+                  + ";Port=" + Environment.GetEnvironmentVariable("DB_PORT")
+                  + ";Database=" + Environment.GetEnvironmentVariable("DB_NAME")
+                  + ";User Id=" + Environment.GetEnvironmentVariable("DB_USER")
+                  + ";Password=" + Environment.GetEnvironmentVariable("DB_PASS");
+
+        options.UseNpgsql(conString);
+    }
+    else if (Environment.GetEnvironmentVariable("DB_TYPE") == "mysql")
     {
         conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
                   + ";Port=" + Environment.GetEnvironmentVariable("DB_PORT")
                   + ";Database=" + Environment.GetEnvironmentVariable("DB_NAME")
                   + ";Uid=" + Environment.GetEnvironmentVariable("DB_USER")
                   + ";Pwd=" + Environment.GetEnvironmentVariable("DB_PASS");
+
+        options.UseMySql(conString, ServerVersion.AutoDetect(conString));
     }
     else
     {
         conString = builder.Configuration.GetConnectionString("DefaultConnection");
-    }
-
-    options.UseMySql(conString, ServerVersion.AutoDetect(conString));
+        options.UseNpgsql(conString);
+    }    
 });
 
 builder.Services.AddCors(option =>

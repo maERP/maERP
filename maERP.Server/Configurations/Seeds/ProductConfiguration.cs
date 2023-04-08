@@ -18,7 +18,7 @@ namespace maERP.Server.Configurations.Seeds
                     Name = "Testprodukt 1",
                     Description = "Beschreibung 1",
                     Price = 100,
-                    TaxClassId = 3,
+                    // TaxClass = 3,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 },
@@ -29,7 +29,7 @@ namespace maERP.Server.Configurations.Seeds
                     Name = "Testprodukt 2",
                     Description = "Beschreibung 2",
                     Price = 100,
-                    TaxClassId = 2,
+                    // TaxClassId = 2,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 },
@@ -40,7 +40,7 @@ namespace maERP.Server.Configurations.Seeds
                     Name = "Testprodukt 3",
                     Description = "Beschreibung 3",
                     Price = 100,
-                    TaxClassId = 1,
+                    // TaxClassId = 1,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 }

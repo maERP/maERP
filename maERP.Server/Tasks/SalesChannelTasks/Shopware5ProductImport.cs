@@ -109,15 +109,15 @@ public class ProductDownloadTask : IHostedService
                                 localProduct.EAN = Globals.maxLength(remoteProduct.mainDetail.ean, 13);
                                 localProduct.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
                                 localProduct.SKU = remoteProduct.mainDetail.number;
-                                localProduct.TaxClassId = 1;
+                                // localProduct.TaxClassId = 1;
                                 localProduct.Description = Globals.maxLength(remoteProduct.descriptionLong, 4000);
 
                                 localProduct.ProductSalesChannel = new List<ProductSalesChannel>();
 
                                 localProduct.ProductSalesChannel.Add(new ProductSalesChannel
                                 {
-                                    RemoteProductId = remoteProduct.id,
-                                    SalesChannelId = salesChannel.Id,
+                                    // RemoteProductId = remoteProduct.id,
+                                    // SalesChannelId = salesChannel.Id,
                                     Price = (decimal)remoteProduct.mainDetail.purchasePrice
                                 });
 
@@ -131,7 +131,8 @@ public class ProductDownloadTask : IHostedService
 
                                 await productSalesChannelRepository.UpdateAsync(ProductSalesChannel);
 
-                                var localProduct = await productRepository.GetAsync(ProductSalesChannel.ProductId);
+                                // var localProduct = await productRepository.GetAsync(ProductSalesChannel.ProductId);
+                                var localProduct = await productRepository.GetAsync(ProductSalesChannel.Product.Id);
 
                                 if(localProduct.Name != remoteProduct.name)
                                 {
@@ -161,12 +162,12 @@ public class ProductDownloadTask : IHostedService
                                     newUpdate = true;
                                 }
 
-                                if(localProduct.TaxClassId != 1)
+                                /* if(localProduct.TaxClassId != 1)
                                 {
                                     Console.WriteLine("new product tax class");
                                     localProduct.TaxClassId = 1;
                                     newUpdate = true;
-                                }
+                                }*/
 
                                 if(localProduct.Description != Globals.maxLength(remoteProduct.descriptionLong, 4000))
                                 {

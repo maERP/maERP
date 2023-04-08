@@ -2,7 +2,7 @@
 
 namespace maERP.Shared.Dtos.Product;
 
-public class ProductDetailDto : ProductBaseDto
+public class ProductUpdateDto : ProductBaseDto
 {
     public string Name { get; set; } = string.Empty;
     public decimal Price { get; set; }

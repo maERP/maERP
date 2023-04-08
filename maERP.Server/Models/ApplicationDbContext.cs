@@ -16,8 +16,9 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
 
     }
 
-    public DbSet<Address> Address { get; set; }
+    public DbSet<Country> Country { get; set; }
     public DbSet<Customer> Customer { get; set; }
+    public DbSet<CustomerAddress> CustomerAddress { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<Product> Product { get; set; }
     public DbSet<ProductSalesChannel> ProductSalesChannel { get; set; }
@@ -32,13 +33,15 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
-        modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
+        modelBuilder.ApplyConfiguration(new CountryConfiguration());
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
+        modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
 
-        modelBuilder.Entity<Address>().ToTable("address");
         modelBuilder.Entity<ApiUser>().ToTable("user");
+        modelBuilder.Entity<Country>().ToTable("country");
         modelBuilder.Entity<Customer>().ToTable("customer");
+        modelBuilder.Entity<CustomerAddress>().ToTable("customer_address");
         modelBuilder.Entity<Order>().ToTable("order");
         modelBuilder.Entity<Product>().ToTable("product");
         modelBuilder.Entity<ProductSalesChannel>().ToTable("product_sales_channel");

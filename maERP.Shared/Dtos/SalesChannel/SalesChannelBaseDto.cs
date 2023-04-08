@@ -1,12 +1,10 @@
-﻿#nullable disable
-
-namespace maERP.Shared.Dtos;
+﻿namespace maERP.Shared.Dtos;
 
 public class SalesChannelBaseDto
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public string URL { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string URL { get; set; } = string.Empty;
 
     public bool ImportProducts { get; set; }
     public bool ImportCustomers { get; set; }

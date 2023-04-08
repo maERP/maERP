@@ -41,7 +41,7 @@ public class ProductsSalesChannelsRepository : GenericRepository<ProductSalesCha
         {
             return await _context.ProductSalesChannel
                 .Where(p => p.RemoteProductId == productId)
-                .Where(p => p.SalesChannelId == salesChannelId)
+                // .Where(p => p.SalesChannelId == salesChannelId)
                 .FirstOrDefaultAsync();
         }
 

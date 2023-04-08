@@ -6,11 +6,20 @@ namespace maERP.Shared.Models;
 public class Warehouse
 {
 	[Key]
+	[Column("id")]
 	public int Id { get; set; }
 
 	[Required]
-	public string Name { get; set; } = String.Empty;
+    [Column("name")]
+    public string Name { get; set; } = String.Empty;
 
-	public DateTime CreatedAt { get; set; }
-	public DateTime UpdatedAt { get; set; }
+    [DataType(DataType.Date)]
+    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; }
+
+    [DataType(DataType.Date)]
+    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+    [Column("updated_at")]
+    public DateTime UpdatedAt { get; set; }
 }
