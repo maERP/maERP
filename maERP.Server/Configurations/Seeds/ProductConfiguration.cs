@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using maERP.Shared.Models;
+using System;
 
 namespace maERP.Server.Configurations.Seeds
 {
@@ -18,7 +19,7 @@ namespace maERP.Server.Configurations.Seeds
                     Name = "Testprodukt 1",
                     Description = "Beschreibung 1",
                     Price = 100,
-                    // TaxClass = 3,
+                    TaxClass = new TaxClass { TaxClassId = 1, TaxRate = 0, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 },
