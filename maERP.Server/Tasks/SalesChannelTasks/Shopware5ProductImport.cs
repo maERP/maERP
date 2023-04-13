@@ -45,8 +45,8 @@ public class ProductDownloadTask : IHostedService
         var scope = _service.CreateScope();
 
         var salesChannelRepository = scope.ServiceProvider.GetService<ISalesChannelRepository>();
-        var productRepository = scope.ServiceProvider.GetService<IProductsRepository>();
-        var productSalesChannelRepository = scope.ServiceProvider.GetService<IProductsSalesChannelsRepository>();
+        var productRepository = scope.ServiceProvider.GetService<IProductRepository>();
+        var productSalesChannelRepository = scope.ServiceProvider.GetService<IProductSalesChannelsRepository>();
 
         var salesChannels = await salesChannelRepository.GetAllAsync();
 

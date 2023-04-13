@@ -12,12 +12,12 @@ namespace maERP.Server.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class TaxClassesController : ControllerBase  
+public class TaxClassController : ControllerBase  
 {
     private readonly IMapper _mapper;
-    private readonly ITaxClassesRepository _repository;
+    private readonly ITaxClassRepository _repository;
 
-    public TaxClassesController(IMapper mapper, ITaxClassesRepository repository)
+    public TaxClassController(IMapper mapper, ITaxClassRepository repository)
     {
         _mapper = mapper;
         _repository = repository;

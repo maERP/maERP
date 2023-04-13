@@ -30,9 +30,11 @@ var logger = new LoggerConfiguration().
 
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
-builder.Host.UseSerilog();
 
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+builder.Host.UseSerilog(
+    (context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
+);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -168,13 +170,13 @@ builder.Services.AddVersionedApiExplorer(
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IAuthManager, AuthManager>();
-builder.Services.AddScoped<ICustomersRepository, CustomersRepository>();
-builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
-builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
-builder.Services.AddScoped<IProductsSalesChannelsRepository, ProductsSalesChannelsRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductSalesChannelsRepository, ProductSalesChannelsRepository>();
 builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
-builder.Services.AddScoped<IWarehousesRepository, WarehouseRepository>();
-builder.Services.AddScoped<ITaxClassesRepository, TaxClassesRepository>();
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
 
 builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.ProductDownloadTask>();
 
@@ -211,6 +213,8 @@ else
         await next();
     });
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

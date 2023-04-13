@@ -11,6 +11,7 @@ namespace maERP.Server.Configurations.Seeds
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
+            /*
             builder.HasData(
                 new Product
                 {
@@ -46,6 +47,7 @@ namespace maERP.Server.Configurations.Seeds
                     UpdatedAt = DateTime.Now
                 }
             );
+            */
         }
     }
 }

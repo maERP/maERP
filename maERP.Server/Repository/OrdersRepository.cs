@@ -11,12 +11,12 @@ using maERP.Shared.Models;
 
 namespace maERP.Server.Repository;
 
-public class OrdersRepository : GenericRepository<Order>, IOrdersRepository
+public class OrderRepository : GenericRepository<Order>, IOrderRepository
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public OrdersRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+    public OrderRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
     {
         this._context = context;
         this._mapper = mapper;

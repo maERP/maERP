@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Shared.Models;
@@ -14,24 +12,24 @@ public class Product
     [Required]
     [StringLength(255)]
     [Column("sku")]
-    public string SKU { get; set; }
+    public string SKU { get; set; } = string.Empty;
 
     [Required]
     [StringLength(255)]
     [Column("name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [StringLength(32)]
     [Column("ean")]
-    public string EAN { get; set; }
+    public string EAN { get; set; } = string.Empty;
 
     [StringLength(32)]
     [Column("asin")]
-    public string ASIN { get; set; }
+    public string ASIN { get; set; } = string.Empty;
 
     [StringLength(64000)]
     [Column("description")]
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     [Required]
     [Column("price")]
@@ -42,11 +40,11 @@ public class Product
 
     [Required]
     [Column("tax_class_id")]
-    public TaxClass TaxClass { get; set; }
+    public virtual TaxClass? TaxClass { get; set; }
 
-    public ICollection<ProductSalesChannel> ProductSalesChannel { get; set; }
+    public virtual ICollection<ProductSalesChannel>? ProductSalesChannel { get; set; }
 
-    public ICollection<ProductStock> ProductStock { get; set; }
+    public virtual ICollection<ProductStock>? ProductStock { get; set; }
 
     [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]

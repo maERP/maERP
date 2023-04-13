@@ -1,6 +1,6 @@
 ﻿namespace maERP.Shared.Dtos.Order;
 
-public class OrderBaseDto
+public class OrderReferenceDto
 {
     public int Id { get; set; }
 }

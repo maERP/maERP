@@ -3,7 +3,7 @@ using maERP.Shared.Models;
 
 namespace maERP.Server.Contracts;
 
-public interface IOrdersRepository : IGenericRepository<Order>
+public interface IOrderRepository : IGenericRepository<Order>
 {
     Task<OrderDetailDto> GetDetails(int id);
 }

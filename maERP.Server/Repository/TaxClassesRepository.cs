@@ -11,12 +11,12 @@ using maERP.Shared.Dtos.TaxClass;
 
 namespace maERP.Server.Repository;
 
-public class TaxClassesRepository : GenericRepository<TaxClass>, ITaxClassesRepository
+public class TaxClassRepository : GenericRepository<TaxClass>, ITaxClassRepository
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public TaxClassesRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+    public TaxClassRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
     {
         this._context = context;
         this._mapper = mapper;

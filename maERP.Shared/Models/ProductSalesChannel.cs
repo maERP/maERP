@@ -11,9 +11,9 @@ public class ProductSalesChannel
     [Column("id")]
     public int Id { get; set; }
 
-	public SalesChannel SalesChannel { get; set; }
+	public virtual SalesChannel SalesChannel { get; set; }
 
-	public Product Product { get; set; }
+	public virtual Product Product { get; set; }
 
     [Column("remote_product_id")]
     public int RemoteProductId { get; set; }

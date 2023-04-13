@@ -11,12 +11,12 @@ using maERP.Shared.Models;
 
 namespace maERP.Server.Repository;
 
-public class CustomersRepository : GenericRepository<Customer>, ICustomersRepository
+public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public CustomersRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+    public CustomerRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
     {
         this._context = context;
         this._mapper = mapper;

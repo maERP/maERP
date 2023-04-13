@@ -1,131 +1,128 @@
-﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using maERP_server.Models;
+using AutoMapper;
+using maERP.Server.Contracts;
+using maERP.Server.Models;
+using maERP.Shared.Dtos;
+using maERP.Shared.Models;
 
-namespace maERP_server.Controllers
+namespace maERP.Server.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+[Authorize]
+public class SalesChannelController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class SalesChannelController : ControllerBase
+    private readonly IMapper _mapper;
+    private readonly ISalesChannelRepository _repository;
+
+    public SalesChannelController(IMapper mapper, ISalesChannelRepository salesChannelRepository)
     {
-        private readonly ApplicationDbContext _context;
+        this._mapper = mapper;
+        this._repository = salesChannelRepository;
+    }
 
-        public SalesChannelController(ApplicationDbContext context)
+    // GET: api/SalesChannel
+    [HttpGet("GetAll")]
+    public async Task<ActionResult<IEnumerable<SalesChannelListDto>>> GetSalesChannel()
+    {
+        var salesChannel = await _repository.GetAllAsync();
+        var records = _mapper.Map<List<SalesChannelListDto>>(salesChannel);
+        return Ok(records);
+    }
+
+    // GET: api/SalesChannel/?StartIndex=0&PageSize=25&PageNumber=1
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<SalesChannelListDto>>> GetPagedSalesChannel([FromQuery] QueryParameters queryParameters)
+    {
+        var pagedSalesChannelResult = await _repository.GetAllAsync<SalesChannelListDto>(queryParameters);
+        return Ok(pagedSalesChannelResult);
+    }
+
+    // GET: api/SalesChannel/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<SalesChannelDto>> GetSalesChannel(int id)
+    {
+        var salesChannel = await _repository.getDetails(id);
+
+        if (salesChannel == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        // GET: api/SalesChannel
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<SalesChannelDTO>>> GetTodoItem()
+        var salesChannelDto = _mapper.Map<SalesChannelDto>(salesChannel);
+
+        return Ok(salesChannelDto);
+    }
+
+    // PUT: api/SalesChannel/5
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutSalesChannel(int id, SalesChannelDto salesChannelDto)
+    {
+        if (id != salesChannelDto.Id)
         {
-            return await _context.SalesChannel.Select(x => SalesChannelToDTO(x)).ToListAsync();
+            return BadRequest("Invalid Record Id");
         }
 
-        // GET: api/SalesChannel/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<SalesChannelDTO>> GetTodoItem(long id)
-        {
-            var todoItem = await _context.SalesChannel.FindAsync(id);
+        var salesChannel = await _repository.GetAsync(id);
 
-            if (todoItem == null)
+        if (salesChannel == null)
+        {
+            return NotFound();
+        }
+
+        _mapper.Map(salesChannelDto, salesChannel);
+
+        try
+        {
+            await _repository.UpdateAsync(salesChannel);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await SalesChannelExists(id))
             {
                 return NotFound();
             }
-
-            return SalesChannelToDTO(todoItem);
+            else
+            {
+                throw;
+            }
         }
 
-        // PUT: api/SalesChannel/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(long id, SalesChannelDTO salesChannelDTO)
+        return NoContent();
+    }
+
+    // POST: api/SalesChannel
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost]
+    public async Task<ActionResult<SalesChannel>> PostSalesChannel(SalesChannelDto salesChannelDto)
+    {
+        var salesChannel = _mapper.Map<SalesChannel>(salesChannelDto);
+
+        await _repository.AddAsync(salesChannel);
+
+        return CreatedAtAction("GetSalesChannel", new { id = salesChannel.Id }, salesChannel);
+    }
+
+    // DELETE: api/SalesChannel/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteSalesChannel(int id)
+    {
+        var salesChannel = await _repository.GetAsync(id);
+
+        if (salesChannel == null)
         {
-            if (id != salesChannelDTO.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(salesChannelDTO).State = EntityState.Modified;
-
-            var salesChannel = await _context.SalesChannel.FindAsync(id);
-            if (salesChannel == null)
-            {
-                return NotFound();
-            }
-
-            salesChannel.Name = salesChannelDTO.Name;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TodoItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return NotFound();
         }
 
-        // POST: api/SalesChannel
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<SalesChannelDTO>> PostTodoItem(SalesChannelDTO salesChannelDTO)
-        {
-            var salesChannel = new SalesChannel
-            {
-                Name = salesChannelDTO.Name
-            };
+        await _repository.DeleteAsync(id);
 
-            _context.SalesChannel.Add(salesChannel);
-            await _context.SaveChangesAsync();
+        return NoContent();
+    }
 
-            return CreatedAtAction(
-                nameof(GetTodoItem),
-                new { id = salesChannel.SalesChannelId },
-                SalesChannelToDTO(salesChannel));
-        }
-
-        // DELETE: api/SalesChannel/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
-        {
-            var todoItem = await _context.SalesChannel.FindAsync(id);
-            if (todoItem == null)
-            {
-                return NotFound();
-            }
-
-            _context.SalesChannel.Remove(todoItem);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool TodoItemExists(long id)
-        {
-            return _context.SalesChannel.Any(e => e.SalesChannelId == id);
-        }
-
-        private static SalesChannelDTO SalesChannelToDTO(SalesChannel salesChannel) =>
-            new SalesChannelDTO
-            {
-                Id = salesChannel.SalesChannelId,
-                Name = salesChannel.Name
-            };
+    private async Task<bool> SalesChannelExists(int id)
+    {
+        return await _repository.Exists(id);
     }
 }

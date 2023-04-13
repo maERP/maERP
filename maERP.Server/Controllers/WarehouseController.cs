@@ -13,36 +13,36 @@ namespace maERP.Server.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class WarehousesController : ControllerBase
+public class WarehouseController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly IWarehousesRepository _repository;
+    private readonly IWarehouseRepository _repository;
 
-    public WarehousesController(IMapper mapper, IWarehousesRepository repository)
+    public WarehouseController(IMapper mapper, IWarehouseRepository repository)
     {
         _mapper = mapper;
         _repository = repository;
     }
 
-    // GET: api/Warehouses
+    // GET: api/Warehouse
     [HttpGet("GetAll")]
-    // GET: api/Warehouses?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
+    // GET: api/Warehouse?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
     [EnableQuery] 
     public async Task<ActionResult<IEnumerable<WarehouseListDto>>> GetWarehouse()
     {
-        var warehouses = await _repository.GetAllAsync<WarehouseListDto>();
-        return Ok(warehouses);
+        var warehouse = await _repository.GetAllAsync<WarehouseListDto>();
+        return Ok(warehouse);
     }
 
-    // GET: api/Warehouses/?StartIndex=0&PageSize=25&PageNumber=1
+    // GET: api/Warehouse/?StartIndex=0&PageSize=25&PageNumber=1
     [HttpGet]
     public async Task<ActionResult<IEnumerable<WarehouseListDto>>> GetPagedWarehouse([FromQuery] QueryParameters queryParameters)
     {
-        var pagedWarehousesResult = await _repository.GetAllAsync<WarehouseListDto>(queryParameters);
-        return Ok(pagedWarehousesResult);
+        var pagedWarehouseResult = await _repository.GetAllAsync<WarehouseListDto>(queryParameters);
+        return Ok(pagedWarehouseResult);
     }
 
-    // GET: api/Warehouses/5
+    // GET: api/Warehouse/5
     [HttpGet("{id}")]
     public async Task<ActionResult<WarehouseDetailDto>> GetWarehouse(int id)
     {
@@ -50,7 +50,7 @@ public class WarehousesController : ControllerBase
         return Ok(warehouse);
     }
 
-    // PUT: api/Warehouses/5
+    // PUT: api/Warehouse/5
     [HttpPut("{id}")]
     public async Task<IActionResult> PutWarehouse(int id, WarehouseDetailDto warehouseDto)
     {
@@ -78,7 +78,7 @@ public class WarehousesController : ControllerBase
         return NoContent();
     }
 
-    // POST: api/Warehouses
+    // POST: api/Warehouse
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
     public async Task<ActionResult<WarehouseDetailDto>> PostWarehouse(WarehouseDetailDto warehouseDto)
@@ -87,7 +87,7 @@ public class WarehousesController : ControllerBase
         return CreatedAtAction(nameof(GetWarehouse), new { id = warehouse.Id }, warehouse);
     }
 
-    // DELETE: api/Warehouses/5
+    // DELETE: api/Warehouse/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteWarehouse(int id)
     {

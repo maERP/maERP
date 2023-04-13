@@ -95,4 +95,9 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
             UserId = DEFAULT_ADMIN_ID
         });
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseLazyLoadingProxies();
+    }
 }

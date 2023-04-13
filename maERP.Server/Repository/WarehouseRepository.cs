@@ -9,7 +9,7 @@ using maERP.Shared.Models;
 
 namespace maERP.Server.Repository;
 
-public class WarehouseRepository : GenericRepository<Warehouse>, IWarehousesRepository
+public class WarehouseRepository : GenericRepository<Warehouse>, IWarehouseRepository
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;

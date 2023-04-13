@@ -11,34 +11,34 @@ namespace maERP.Server.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class OrdersController : ControllerBase
+public class OrderController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly IOrdersRepository _repository;
+    private readonly IOrderRepository _repository;
 
-    public OrdersController(IMapper mapper, IOrdersRepository repository)
+    public OrderController(IMapper mapper, IOrderRepository repository)
     {
         _mapper = mapper;
         _repository = repository;
     }
 
-    // GET: api/Orders
+    // GET: api/Order
     [HttpGet("GetAll")]
-    public async Task<ActionResult<IEnumerable<OrderListDto>>> GetOrders()
+    public async Task<ActionResult<IEnumerable<OrderListDto>>> GetOrder()
     {
-        var orders = await _repository.GetAllAsync<OrderListDto>();
-        return Ok(orders);
+        var order = await _repository.GetAllAsync<OrderListDto>();
+        return Ok(order);
     }
 
-    // GET: api/Orders/?StartIndex=0&PageSize=25&PageNumber=1
+    // GET: api/Order/?StartIndex=0&PageSize=25&PageNumber=1
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OrderListDto>>> GetPagedOrders([FromQuery] QueryParameters queryParameters)
+    public async Task<ActionResult<IEnumerable<OrderListDto>>> GetPagedOrder([FromQuery] QueryParameters queryParameters)
     {
-        var pagedOrdersResult = await _repository.GetAllAsync<OrderListDto>(queryParameters);
-        return Ok(pagedOrdersResult);
+        var pagedOrderResult = await _repository.GetAllAsync<OrderListDto>(queryParameters);
+        return Ok(pagedOrderResult);
     }
 
-    // GET: api/Orders/5
+    // GET: api/Order/5
     [HttpGet("{id}")]
     public async Task<ActionResult<OrderDetailDto>> GetOrder(int id)
     {
@@ -46,9 +46,9 @@ public class OrdersController : ControllerBase
         return Ok(order);
     }
 
-    // PUT: api/Orders/5
+    // PUT: api/Order/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutOrders(int id, OrderDetailDto orderDto)
+    public async Task<IActionResult> PutOrder(int id, OrderDetailDto orderDto)
     {
         if (id != orderDto.Id)
         {
@@ -74,7 +74,7 @@ public class OrdersController : ControllerBase
         return NoContent();
     }
 
-    // POST: api/Orders
+    // POST: api/Order
     [HttpPost]
     public async Task<ActionResult<OrderDetailDto>> PutOrder(OrderDetailDto orderDto)
     {
@@ -82,7 +82,7 @@ public class OrdersController : ControllerBase
         return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
     }
 
-    // DELETE: api/Orders/5
+    // DELETE: api/Order/5
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteOrder(int id)
     {
