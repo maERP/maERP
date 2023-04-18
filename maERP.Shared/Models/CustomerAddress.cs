@@ -11,25 +11,25 @@ public class CustomerAddress
 
     [Required]
     [Column("street")]
-    public String Street { get; set; } = null!;
+    public String Street { get; set; } = String.Empty;
 
     [Required]
     [Column("house_nr")]
-    public String HouseNr { get; set; } = null!;
+    public String HouseNr { get; set; } = String.Empty;
 
-    [Required]
+        [Required]
     [Column("zip")]
-    public String Zip { get; set; } = null!;
+    public String Zip { get; set; } = String.Empty;
 
     [Required]
     [Column("city")]
-    public String City { get; set; } = null!;
+    public String City { get; set; } = String.Empty;
 
     [Required]
     [Column("country_id")]
-    public Country Country { get; set; } = null!;
+    public virtual Country Country { get; set; } = null!;
 
     [Required]
     [Column("customer_id")]
-    public Customer Customer{ get; set; } = null!;
+    public virtual Customer Customer { get; set; } = null!;
 }
