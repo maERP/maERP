@@ -12,7 +12,8 @@
     "maERP.Server": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:45304",
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:3332",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

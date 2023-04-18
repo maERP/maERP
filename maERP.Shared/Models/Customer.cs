@@ -32,7 +32,7 @@ public class Customer
     [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     [Display(Name = "registriert am")]
-    public DateTime EnrollmentDate { get; set; }
+    public DateTime EnrollmentDate { get; set; } = DateTime.UtcNow;
 
     [Display(Name = "Vollständiger Name")]
     public string FullName

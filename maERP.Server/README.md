@@ -5,7 +5,7 @@
 ## Database migration
 
 ```bash
-dotnet ef migrations add initMysql
+dotnet ef migrations add initDatabase
 dotnet ef database update
 ```
 

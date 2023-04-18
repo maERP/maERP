@@ -32,16 +32,16 @@ namespace maERP.Server.Migrations
                 name: "country",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    CountryId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    country_code = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    CountryCode = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_country", x => x.id);
+                    table.PrimaryKey("PK_country", x => x.CountryId);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,11 +50,11 @@ namespace maERP.Server.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    lastname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    firstname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    email = table.Column<string>(type: "text", nullable: false),
-                    customer_status = table.Column<int>(type: "integer", nullable: false),
-                    enrollment_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    LastName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    FirstName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    CustomerStatus = table.Column<int>(type: "integer", nullable: false),
+                    EnrollmentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,30 +65,30 @@ namespace maERP.Server.Migrations
                 name: "shipping_provider",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_shipping_provider", x => x.id);
+                    table.PrimaryKey("PK_shipping_provider", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "tax_class",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    TaxClassId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    tax_rate = table.Column<double>(type: "double precision", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    TaxRate = table.Column<double>(type: "double precision", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tax_class", x => x.id);
+                    table.PrimaryKey("PK_tax_class", x => x.TaxClassId);
                 });
 
             migrationBuilder.CreateTable(
@@ -122,15 +122,15 @@ namespace maERP.Server.Migrations
                 name: "warehouse",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_warehouse", x => x.id);
+                    table.PrimaryKey("PK_warehouse", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -174,7 +174,7 @@ namespace maERP.Server.Migrations
                         name: "FK_customer_address_country_CountryId",
                         column: x => x.CountryId,
                         principalTable: "country",
-                        principalColumn: "id",
+                        principalColumn: "CountryId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_customer_address_customer_CustomerId",
@@ -188,19 +188,19 @@ namespace maERP.Server.Migrations
                 name: "order",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    customer_id = table.Column<int>(type: "integer", nullable: false),
-                    order_status = table.Column<int>(type: "integer", nullable: false),
-                    order_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    last_update = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CustomerId = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastUpdate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_order", x => x.id);
+                    table.PrimaryKey("PK_order", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_order_customer_customer_id",
-                        column: x => x.customer_id,
+                        name: "FK_order_customer_CustomerId",
+                        column: x => x.CustomerId,
                         principalTable: "customer",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -210,52 +210,53 @@ namespace maERP.Server.Migrations
                 name: "shipping_provider_rate",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    max_length = table.Column<decimal>(type: "numeric", nullable: false),
-                    max_width = table.Column<decimal>(type: "numeric", nullable: false),
-                    max_height = table.Column<decimal>(type: "numeric", nullable: false),
-                    max_weight = table.Column<decimal>(type: "numeric", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    MaxLength = table.Column<decimal>(type: "numeric", nullable: false),
+                    MaxWidth = table.Column<decimal>(type: "numeric", nullable: false),
+                    MaxHeight = table.Column<decimal>(type: "numeric", nullable: false),
+                    MaxWeight = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ShippingProviderId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_shipping_provider_rate", x => x.id);
+                    table.PrimaryKey("PK_shipping_provider_rate", x => x.Id);
                     table.ForeignKey(
                         name: "FK_shipping_provider_rate_shipping_provider_ShippingProviderId",
                         column: x => x.ShippingProviderId,
                         principalTable: "shipping_provider",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "product",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    sku = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    ean = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
-                    asin = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
-                    description = table.Column<string>(type: "character varying(64000)", maxLength: 64000, nullable: true),
-                    price = table.Column<decimal>(type: "numeric", nullable: false),
-                    msrp = table.Column<decimal>(type: "numeric", nullable: false),
-                    TaxClassId = table.Column<int>(type: "integer", nullable: true),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    SKU = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    EAN = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    ASIN = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    Description = table.Column<string>(type: "character varying(64000)", maxLength: 64000, nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    Msrp = table.Column<decimal>(type: "numeric", nullable: false),
+                    TaxClassId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_product", x => x.id);
+                    table.PrimaryKey("PK_product", x => x.Id);
                     table.ForeignKey(
                         name: "FK_product_tax_class_TaxClassId",
                         column: x => x.TaxClassId,
                         principalTable: "tax_class",
-                        principalColumn: "id");
+                        principalColumn: "TaxClassId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -347,57 +348,57 @@ namespace maERP.Server.Migrations
                 name: "sales_channel",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    type = table.Column<int>(type: "integer", nullable: false),
-                    name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     WarehouseId = table.Column<int>(type: "integer", nullable: true),
-                    url = table.Column<string>(type: "text", nullable: true),
-                    username = table.Column<string>(type: "text", nullable: true),
-                    password = table.Column<string>(type: "text", nullable: true),
-                    import_products = table.Column<bool>(type: "boolean", nullable: false),
-                    import_customers = table.Column<bool>(type: "boolean", nullable: false),
-                    import_orders = table.Column<bool>(type: "boolean", nullable: false),
-                    export_products = table.Column<bool>(type: "boolean", nullable: false),
-                    export_customers = table.Column<bool>(type: "boolean", nullable: false),
-                    export_orders = table.Column<bool>(type: "boolean", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    URL = table.Column<string>(type: "text", nullable: true),
+                    Username = table.Column<string>(type: "text", nullable: true),
+                    Password = table.Column<string>(type: "text", nullable: true),
+                    ImportProducts = table.Column<bool>(type: "boolean", nullable: false),
+                    ImportCustomers = table.Column<bool>(type: "boolean", nullable: false),
+                    ImportOrders = table.Column<bool>(type: "boolean", nullable: false),
+                    ExportProducts = table.Column<bool>(type: "boolean", nullable: false),
+                    ExportCustomers = table.Column<bool>(type: "boolean", nullable: false),
+                    ExportOrders = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_sales_channel", x => x.id);
+                    table.PrimaryKey("PK_sales_channel", x => x.Id);
                     table.ForeignKey(
                         name: "FK_sales_channel_warehouse_WarehouseId",
                         column: x => x.WarehouseId,
                         principalTable: "warehouse",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "product_stock",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ProductId = table.Column<int>(type: "integer", nullable: false),
                     WarehouseId = table.Column<int>(type: "integer", nullable: false),
-                    quantity = table.Column<int>(type: "integer", nullable: false)
+                    Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_product_stock", x => x.id);
+                    table.PrimaryKey("PK_product_stock", x => x.Id);
                     table.ForeignKey(
                         name: "FK_product_stock_product_ProductId",
                         column: x => x.ProductId,
                         principalTable: "product",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_product_stock_warehouse_WarehouseId",
                         column: x => x.WarehouseId,
                         principalTable: "warehouse",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -405,28 +406,28 @@ namespace maERP.Server.Migrations
                 name: "product_sales_channel",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SalesChannelId = table.Column<int>(type: "integer", nullable: true),
                     ProductId = table.Column<int>(type: "integer", nullable: true),
-                    remote_product_id = table.Column<int>(type: "integer", nullable: false),
-                    price = table.Column<decimal>(type: "numeric", nullable: false),
-                    product_import = table.Column<bool>(type: "boolean", nullable: false),
-                    product_export = table.Column<bool>(type: "boolean", nullable: false)
+                    RemoteProductId = table.Column<int>(type: "integer", nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    ProductImport = table.Column<bool>(type: "boolean", nullable: false),
+                    ProductExport = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_product_sales_channel", x => x.id);
+                    table.PrimaryKey("PK_product_sales_channel", x => x.Id);
                     table.ForeignKey(
                         name: "FK_product_sales_channel_product_ProductId",
                         column: x => x.ProductId,
                         principalTable: "product",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_product_sales_channel_sales_channel_SalesChannelId",
                         column: x => x.SalesChannelId,
                         principalTable: "sales_channel",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -435,48 +436,38 @@ namespace maERP.Server.Migrations
                 values: new object[,]
                 {
                     { "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "Admin", "ADMIN" },
-                    { "e82b2dfe-c982-485e-8ce8-35bdc4ae5ceb", null, "User", "USER" }
+                    { "8ff4c102-163e-47e8-b651-e6875ff15216", null, "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "country",
-                columns: new[] { "id", "country_code", "created_at", "name", "updated_at" },
+                columns: new[] { "CountryId", "CountryCode", "CreatedAt", "Name", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "de", new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3010), "Deutschland", new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3010) },
-                    { 2, "at", new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3010), "Österreich", new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3010) },
-                    { 3, "ch", new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3010), "Schweiz", new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3010) }
-                });
-
-            migrationBuilder.InsertData(
-                table: "product",
-                columns: new[] { "id", "asin", "created_at", "description", "ean", "msrp", "name", "price", "sku", "TaxClassId", "updated_at" },
-                values: new object[,]
-                {
-                    { 1, null, new DateTime(2023, 4, 7, 23, 2, 23, 945, DateTimeKind.Local).AddTicks(3150), "Beschreibung 1", null, 0m, "Testprodukt 1", 100m, "1001", null, new DateTime(2023, 4, 7, 23, 2, 23, 945, DateTimeKind.Local).AddTicks(3200) },
-                    { 2, null, new DateTime(2023, 4, 7, 23, 2, 23, 945, DateTimeKind.Local).AddTicks(3210), "Beschreibung 2", null, 0m, "Testprodukt 2", 100m, "1002", null, new DateTime(2023, 4, 7, 23, 2, 23, 945, DateTimeKind.Local).AddTicks(3210) },
-                    { 3, null, new DateTime(2023, 4, 7, 23, 2, 23, 945, DateTimeKind.Local).AddTicks(3210), "Beschreibung 3", null, 0m, "Testprodukt 3", 100m, "1003", null, new DateTime(2023, 4, 7, 23, 2, 23, 945, DateTimeKind.Local).AddTicks(3210) }
+                    { 1, "de", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Deutschland", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, "at", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Österreich", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, "ch", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Schweiz", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
                 table: "sales_channel",
-                columns: new[] { "id", "created_at", "export_customers", "export_orders", "export_products", "import_customers", "import_orders", "import_products", "name", "password", "type", "url", "updated_at", "username", "WarehouseId" },
-                values: new object[] { 1, new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3310), false, false, false, false, false, true, "Shopware Demo Shop", "demopass", 10, "https://www.example.com/", new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3310), "demouser", null });
+                columns: new[] { "Id", "CreatedAt", "ExportCustomers", "ExportOrders", "ExportProducts", "ImportCustomers", "ImportOrders", "ImportProducts", "Name", "Password", "Type", "URL", "UpdatedAt", "Username", "WarehouseId" },
+                values: new object[] { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, false, false, false, true, "Shopware Demo Shop", "demopass", 11, "https://www.example.com/", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "demouser", null });
 
             migrationBuilder.InsertData(
                 table: "tax_class",
-                columns: new[] { "id", "created_at", "tax_rate", "updated_at" },
+                columns: new[] { "TaxClassId", "CreatedAt", "TaxRate", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3370), 0.0, new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3370) },
-                    { 2, new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3370), 7.0, new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3370) },
-                    { 3, new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3370), 19.0, new DateTime(2023, 4, 7, 21, 2, 23, 945, DateTimeKind.Utc).AddTicks(3370) }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0.0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 7.0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 19.0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "e4df8f35-40b3-4927-82fc-0477fa066354", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAECqCwxT72XS8JPGl4oXFuHD5pyY1k0KbFiHnDIYdEw1aPcjZQCaq0hvIJZXe5sSkxg==", null, false, "a5fa61df-9b94-422b-a90c-86491c7a48f4", false, "admin@localhost.com" });
+                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "62d49d01-4967-41d8-988c-1c6ff008e489", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAED9u6LYhWOKZpuBHXpWp3yFtQX3k3JcLeGU2FIwtvh9VmNlXGmq1Qvl+XfRp7dDR0w==", null, false, "16154325-e2d9-4209-9755-d526f2debe7a", false, "admin@localhost.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -520,9 +511,9 @@ namespace maERP.Server.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_order_customer_id",
+                name: "IX_order_CustomerId",
                 table: "order",
-                column: "customer_id");
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_product_TaxClassId",

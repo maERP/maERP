@@ -17,10 +17,10 @@ public class Order
     [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     [Display(Name = "Bestelldatum")]
-    public DateTime OrderDate { get; set; }
+    public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
     [DataType(DataType.Date)]
     [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     [Display(Name = "Letzte Änderung")]
-    public DateTime LastUpdate { get; set; }
+    public DateTime LastUpdate { get; set; } = DateTime.UtcNow;
 }
