@@ -1,34 +1,17 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Shared.Models;
 
-public class ShippingProviderRate
+public class ShippingProviderRate : BaseModel
 {
-    [Key]
-    public int Id { get; set; }
+    public virtual string Name { get; set; } = string.Empty;
 
-    [Required]
-    public string Name { get; set; } = string.Empty;
+    public virtual decimal MaxLength { get; set; }
 
-    [Required]
-    public decimal MaxLength { get; set; }
+    public virtual decimal MaxWidth { get; set; }
 
-    [Required]
-    public decimal MaxWidth { get; set; }
+    public virtual decimal MaxHeight { get; set; }
 
-    [Required]
-    public decimal MaxHeight { get; set; }
-
-    [Required]
-    public decimal MaxWeight { get; set; }
-
-    [DataType(DataType.Date)]
-    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    [DataType(DataType.Date)]
-    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public virtual decimal MaxWeight { get; set; }
 }

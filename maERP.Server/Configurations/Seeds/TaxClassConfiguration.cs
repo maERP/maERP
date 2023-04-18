@@ -11,9 +11,9 @@ public class CountryConfiguration : IEntityTypeConfiguration<Country>
 	public void Configure(EntityTypeBuilder<Country> builder)
     {
 	    builder.HasData(
-            new Country { CountryId = 1, Name = "Deutschland", CountryCode = "de" },
-            new Country { CountryId = 2, Name = "Österreich", CountryCode = "at" },
-            new Country { CountryId = 3, Name = "Schweiz", CountryCode = "ch" }
+            new Country { Id = 1, Name = "Deutschland", CountryCode = "de" },
+            new Country { Id = 2, Name = "Österreich", CountryCode = "at" },
+            new Country { Id = 3, Name = "Schweiz", CountryCode = "ch" }
         );
     }
 }

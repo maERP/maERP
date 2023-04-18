@@ -10,12 +10,12 @@ using maERP.Shared.Models;
 
 namespace maERP.Server.Repository;
 
-public class ProductSalesChannelsRepository : GenericRepository<ProductSalesChannel>, IProductSalesChannelsRepository
+public class ProductSalesChannelRepository : GenericRepository<ProductSalesChannel>, IProductSalesChannelRepository
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public ProductSalesChannelsRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+    public ProductSalesChannelRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
     {
         this._context = context;
         this._mapper = mapper;

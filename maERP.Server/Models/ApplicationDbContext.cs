@@ -96,8 +96,10 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
         });
     }
 
+    /*
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseLazyLoadingProxies();
     }
+    */
 }

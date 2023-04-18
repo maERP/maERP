@@ -173,7 +173,7 @@ builder.Services.AddScoped<IAuthManager, AuthManager>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductSalesChannelsRepository, ProductSalesChannelsRepository>();
+builder.Services.AddScoped<IProductSalesChannelRepository, ProductSalesChannelRepository>();
 builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();

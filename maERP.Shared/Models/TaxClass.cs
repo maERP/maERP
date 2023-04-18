@@ -5,19 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Shared.Models;
 
-public class TaxClass
+public class TaxClass : BaseModel
 {
-	[Key]
-	public int TaxClassId { get; set; }
-
-	[Required]
-    public Double TaxRate { get; set; }
-
-    [DataType(DataType.Date)]
-    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    [DataType(DataType.Date)]
-    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public virtual double TaxRate { get; set; }
 }

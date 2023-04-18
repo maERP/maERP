@@ -3,33 +3,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Shared.Models;
 
-public class CustomerAddress
+public class CustomerAddress : BaseModel
 {
-    [Key]
-    [Column("id")]
-    public int Id { get; set; }
-
-    [Required]
     [Column("street")]
-    public String Street { get; set; } = String.Empty;
+    public virtual string Street { get; set; } = String.Empty;
 
-    [Required]
     [Column("house_nr")]
-    public String HouseNr { get; set; } = String.Empty;
+    public virtual string HouseNr { get; set; } = String.Empty;
 
-        [Required]
     [Column("zip")]
-    public String Zip { get; set; } = String.Empty;
+    public virtual string Zip { get; set; } = String.Empty;
 
-    [Required]
     [Column("city")]
-    public String City { get; set; } = String.Empty;
+    public virtual string City { get; set; } = String.Empty;
 
-    [Required]
     [Column("country_id")]
     public virtual Country Country { get; set; } = null!;
 
-    [Required]
     [Column("customer_id")]
     public virtual Customer Customer { get; set; } = null!;
 }

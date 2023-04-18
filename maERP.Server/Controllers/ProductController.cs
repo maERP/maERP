@@ -13,23 +13,26 @@ namespace maERP.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-// [Authorize]
+[Authorize]
 public class ProductController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
-    private readonly IProductSalesChannelsRepository _productSalesChannelRepository;
+    private readonly IProductSalesChannelRepository _productSalesChannelRepository;
+    private readonly ISalesChannelRepository _salesChannelRepository;
     private readonly ITaxClassRepository _taxClassRepository;
 
     public ProductController(
         IMapper mapper,
         IProductRepository productRepository,
-        IProductSalesChannelsRepository productSalesChannelRepository,
+        IProductSalesChannelRepository productSalesChannelRepository,
+        ISalesChannelRepository salesChannelRepository,
         ITaxClassRepository taxClassRepository)
     {
         _mapper = mapper;
         _productRepository = productRepository;
         _productSalesChannelRepository = productSalesChannelRepository;
+        _salesChannelRepository = salesChannelRepository;
         _taxClassRepository = taxClassRepository;
     }
 
@@ -63,7 +66,6 @@ public class ProductController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ProductDetailDto>> PostProduct(ProductCreateDto productCreateDto)
     {
-        /*
         if(productCreateDto.ProductSalesChannel != null)
         {
             foreach(var salesChannel in productCreateDto.ProductSalesChannel)
@@ -74,21 +76,15 @@ public class ProductController : ControllerBase
                 }
             }
         }
-        */
 
-        if (productCreateDto.TaxClass != null && !await _productSalesChannelRepository.Exists(productCreateDto.TaxClass.Id))
+        if (!await _taxClassRepository.Exists(productCreateDto.TaxClass.Id))
         {
-            return BadRequest("SalesChannel does not exist");
+            return BadRequest("TaxClass does not exist");
         }
 
-        var taxClass = await _taxClassRepository.GetAsync(productCreateDto.TaxClass?.Id);
+        var taxClass = await _taxClassRepository.GetAsync(productCreateDto.TaxClass.Id);
 
-        var product = await _productRepository.AddAsync(new Product
-        {
-            Name = productCreateDto.Name,
-            SKU = productCreateDto.SKU,
-            TaxClass = taxClass,
-        });
+        var product = await _productRepository.AddAsync<ProductCreateDto, Product>(productCreateDto);
 
         if (productCreateDto.ProductSalesChannel?.Count > 0)
         {
@@ -96,10 +92,12 @@ public class ProductController : ControllerBase
 
             foreach (var productSalesChannel in product.ProductSalesChannel)
             {
+                var salesChannel = await _salesChannelRepository.GetAsync(productSalesChannel.Id);
+
                 await _productSalesChannelRepository.AddAsync(new ProductSalesChannel
                 {
                     Product = product,
-                    // SalesChannel = salesChannel, TODO
+                    SalesChannel = salesChannel,
                     Price = productSalesChannel.Price,
                     RemoteProductId = productSalesChannel.RemoteProductId,
                     ProductImport = productSalesChannel.ProductImport,
@@ -107,6 +105,8 @@ public class ProductController : ControllerBase
                 });
             }
         }
+
+        await _productRepository.UpdateAsync(product);
 
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
     }

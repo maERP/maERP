@@ -3,19 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Shared.Models;
 
-public class Warehouse
+public class Warehouse : BaseModel
 {
-	[Key]
-	public int Id { get; set; }
-
-	[Required]
-    public string Name { get; set; } = String.Empty;
-
-    [DataType(DataType.Date)]
-    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    [DataType(DataType.Date)]
-    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public virtual string Name { get; set; } = String.Empty;
 }

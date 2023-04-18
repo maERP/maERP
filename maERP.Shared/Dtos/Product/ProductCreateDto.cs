@@ -8,9 +8,6 @@ namespace maERP.Shared.Dtos.Product;
 public class ProductCreateDto
 {
     [Required]
-    public int Id { get; set; }
-
-    [Required]
     [StringLength(255)]
     public string SKU { get; set; } = string.Empty;
 
@@ -32,7 +29,8 @@ public class ProductCreateDto
 
     public decimal Msrp { get; set; }
 
-    public List<ProductSalesChannelReferenceDto>? ProductSalesChannel { get; set; }
+    [Required]
+    public virtual TaxClassReferenceDto TaxClass { get; set; }
 
-    public virtual TaxClassReferenceDto? TaxClass { get; set; }
+    public List<ProductSalesChannelReferenceDto> ProductSalesChannel { get; set; }
 }

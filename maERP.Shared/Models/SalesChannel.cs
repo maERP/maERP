@@ -1,50 +1,35 @@
-﻿#nullable disable
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Shared.Models;
 
-public class SalesChannel
+public class SalesChannel : BaseModel
 {
-    [Required]
-    public int Id { get; set; }
-
     [DisplayFormat(NullDisplayText = "No type")]
-    public SalesChannelType Type { get; set; }
+    public virtual SalesChannelType Type { get; set; }
 
-    [Required]
     [StringLength(200)]
     public string Name { get; set; }
 
-    // [Required]
     public virtual Warehouse Warehouse { get; set; }
     
-    public string URL { get; set; }
+    public virtual string URL { get; set; }
 
-    public string Username { get; set; }
+    public virtual string Username { get; set; }
 
-    public string Password { get; set; }
+    public virtual string Password { get; set; }
 
-    public bool ImportProducts { get; set; }
+    public virtual bool ImportProducts { get; set; }
 
-    public bool ImportCustomers { get; set; }
+    public virtual bool ImportCustomers { get; set; }
 
-    public bool ImportOrders { get; set; }
+    public virtual bool ImportOrders { get; set; }
 
-    public bool ExportProducts { get; set; }
+    public virtual bool ExportProducts { get; set; }
 
-    public bool ExportCustomers { get; set; }
+    public virtual bool ExportCustomers { get; set; }
 
-    public bool ExportOrders { get; set; }
-
-    [DataType(DataType.Date)]
-    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public DateTime CreatedAt { get; set; }
-
-    [DataType(DataType.Date)]
-    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public DateTime UpdatedAt { get; set; }
+    public virtual bool ExportOrders { get; set; }
 }
 
 public enum SalesChannelType
