@@ -13,7 +13,7 @@ namespace maERP.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+// [Authorize]
 public class ProductController : ControllerBase
 {
     private readonly IMapper _mapper;

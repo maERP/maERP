@@ -19,6 +19,6 @@ public class ProductSalesChannel
     public decimal Price { get; set; }
 
     public bool ProductImport { get; set; }
-]
+
     public bool ProductExport { get; set; }
 }
