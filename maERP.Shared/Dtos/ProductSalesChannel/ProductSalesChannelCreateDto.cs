@@ -5,9 +5,8 @@ namespace maERP.Shared.Dtos.ProductSalesChannel;
 
 public class ProductSalesChannelCreateDto
 {
-
-    public virtual SalesChannelCreateDto SalesChannel { get; set; }
-    public virtual ProductCreateDto ProductId { get; set; }
+    public virtual SalesChannelCreateDto? SalesChannel { get; set; }
+    public virtual ProductCreateDto? ProductId { get; set; }
 
     public int RemoteProductId { get; set; }
 

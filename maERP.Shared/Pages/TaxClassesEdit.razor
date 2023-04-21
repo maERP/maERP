@@ -54,7 +54,7 @@
     {
         await Task.CompletedTask;
 
-        if (taxClass.Id != 0)
+        if (taxClassId != 0)
         {
             await _dataService.Request("PUT", "/TaxClasses/" + taxClassId, taxClass);
         }

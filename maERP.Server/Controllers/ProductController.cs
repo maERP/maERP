@@ -82,9 +82,16 @@ public class ProductController : ControllerBase
             return BadRequest("TaxClass does not exist");
         }
 
+        var product = new Product();
+
+        _mapper.Map(productCreateDto, product);
+
         var taxClass = await _taxClassRepository.GetAsync(productCreateDto.TaxClass.Id);
 
-        var product = await _productRepository.AddAsync<ProductCreateDto, Product>(productCreateDto);
+        product.TaxClass = taxClass;
+
+        //product = await _productRepository.AddAsync<ProductCreateDto, Product>(productCreateDto);
+        product = await _productRepository.AddAsync(product);
 
         if (productCreateDto.ProductSalesChannel?.Count > 0)
         {
@@ -115,11 +122,6 @@ public class ProductController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutProduct(int id, ProductUpdateDto productUpdateDto)
     {
-        if (id != productUpdateDto.Id)
-        {
-            return BadRequest("Invalid Record Id");
-        }
-
         try
         {
             await _productRepository.UpdateAsync(id, productUpdateDto);

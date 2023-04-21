@@ -5,9 +5,9 @@ namespace maERP.Shared.Models;
 
 public class ProductSalesChannel : BaseModel
 {
-	public virtual SalesChannel SalesChannel { get; set; }
+    public virtual SalesChannel SalesChannel { get; set; } = new();
 
-	public virtual Product Product { get; set; }
+    public virtual Product Product { get; set; } = new();
 
     public virtual int RemoteProductId { get; set; }
 

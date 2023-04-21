@@ -18,9 +18,6 @@ namespace maERP.Server.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.5")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -60,7 +57,7 @@ namespace maERP.Server.Migrations
                         },
                         new
                         {
-                            Id = "8ff4c102-163e-47e8-b651-e6875ff15216",
+                            Id = "de617d45-0626-451d-842d-353649863fa0",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -248,14 +245,14 @@ namespace maERP.Server.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("user", (string)null);
+                    b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "62d49d01-4967-41d8-988c-1c6ff008e489",
+                            ConcurrencyStamp = "08e643e5-4b6a-4627-8b1a-6ba264760310",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -263,9 +260,9 @@ namespace maERP.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAED9u6LYhWOKZpuBHXpWp3yFtQX3k3JcLeGU2FIwtvh9VmNlXGmq1Qvl+XfRp7dDR0w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENtQ2MrpS1d7e86s22g46SwZFZ4PLyA5vlWV680W11403dcLHb573eWvLcesoxJr+Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "16154325-e2d9-4209-9755-d526f2debe7a",
+                            SecurityStamp = "aad410df-9944-4e69-9e05-9354df0c4919",
                             TwoFactorEnabled = false,
                             UserName = "admin@localhost.com"
                         });
@@ -273,11 +270,11 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.Country", b =>
                 {
-                    b.Property<int>("CountryId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CountryId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CountryCode")
                         .IsRequired()
@@ -293,34 +290,34 @@ namespace maERP.Server.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("CountryId");
+                    b.HasKey("Id");
 
-                    b.ToTable("country", (string)null);
+                    b.ToTable("Country");
 
                     b.HasData(
                         new
                         {
-                            CountryId = 1,
+                            Id = 1,
                             CountryCode = "de",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770),
                             Name = "Deutschland",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770)
                         },
                         new
                         {
-                            CountryId = 2,
+                            Id = 2,
                             CountryCode = "at",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770),
                             Name = "Österreich",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770)
                         },
                         new
                         {
-                            CountryId = 3,
+                            Id = 3,
                             CountryCode = "ch",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770),
                             Name = "Schweiz",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770)
                         });
                 });
 
@@ -328,10 +325,12 @@ namespace maERP.Server.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("CustomerStatus")
                         .HasColumnType("integer");
@@ -339,9 +338,6 @@ namespace maERP.Server.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("EnrollmentDate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -353,17 +349,19 @@ namespace maERP.Server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("customer", (string)null);
+                    b.ToTable("Customer");
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.CustomerAddress", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
@@ -374,6 +372,9 @@ namespace maERP.Server.Migrations
 
                     b.Property<int>("CountryId")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
@@ -388,6 +389,9 @@ namespace maERP.Server.Migrations
                         .HasColumnType("text")
                         .HasColumnName("street");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Zip")
                         .IsRequired()
                         .HasColumnType("text")
@@ -399,7 +403,7 @@ namespace maERP.Server.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("customer_address", (string)null);
+                    b.ToTable("CustomerAddress");
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.Order", b =>
@@ -410,23 +414,23 @@ namespace maERP.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("LastUpdate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<int>("Status")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("order", (string)null);
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.Product", b =>
@@ -437,7 +441,7 @@ namespace maERP.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ASIN")
+                    b.Property<string>("Asin")
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
@@ -450,7 +454,7 @@ namespace maERP.Server.Migrations
                         .HasMaxLength(64000)
                         .HasColumnType("character varying(64000)");
 
-                    b.Property<string>("EAN")
+                    b.Property<string>("Ean")
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
@@ -466,7 +470,7 @@ namespace maERP.Server.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("SKU")
+                    b.Property<string>("Sku")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
@@ -479,9 +483,12 @@ namespace maERP.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Sku")
+                        .IsUnique();
+
                     b.HasIndex("TaxClassId");
 
-                    b.ToTable("product", (string)null);
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.ProductSalesChannel", b =>
@@ -492,13 +499,16 @@ namespace maERP.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
                     b.Property<bool>("ProductExport")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("ProductImport")
@@ -507,8 +517,11 @@ namespace maERP.Server.Migrations
                     b.Property<int>("RemoteProductId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SalesChannelId")
+                    b.Property<int>("SalesChannelId")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -516,7 +529,7 @@ namespace maERP.Server.Migrations
 
                     b.HasIndex("SalesChannelId");
 
-                    b.ToTable("product_sales_channel", (string)null);
+                    b.ToTable("ProductSalesChannel");
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.ProductStock", b =>
@@ -527,11 +540,17 @@ namespace maERP.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("WarehouseId")
                         .HasColumnType("integer");
@@ -542,7 +561,7 @@ namespace maERP.Server.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("product_stock", (string)null);
+                    b.ToTable("ProductStock");
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.SalesChannel", b =>
@@ -580,47 +599,31 @@ namespace maERP.Server.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.Property<string>("URL")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Username")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("WarehouseId")
+                    b.Property<int>("WarehouseId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("sales_channel", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExportCustomers = false,
-                            ExportOrders = false,
-                            ExportProducts = false,
-                            ImportCustomers = false,
-                            ImportOrders = false,
-                            ImportProducts = true,
-                            Name = "Shopware Demo Shop",
-                            Password = "demopass",
-                            Type = 11,
-                            URL = "https://www.example.com/",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Username = "demouser"
-                        });
+                    b.ToTable("SalesChannel");
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.ShippingProvider", b =>
@@ -643,7 +646,7 @@ namespace maERP.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("shipping_provider", (string)null);
+                    b.ToTable("ShippingProvider");
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.ShippingProviderRate", b =>
@@ -683,16 +686,16 @@ namespace maERP.Server.Migrations
 
                     b.HasIndex("ShippingProviderId");
 
-                    b.ToTable("shipping_provider_rate", (string)null);
+                    b.ToTable("ShippingProviderRate");
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.TaxClass", b =>
                 {
-                    b.Property<int>("TaxClassId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TaxClassId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -703,32 +706,9 @@ namespace maERP.Server.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("TaxClassId");
+                    b.HasKey("Id");
 
-                    b.ToTable("tax_class", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            TaxClassId = 1,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TaxRate = 0.0,
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            TaxClassId = 2,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TaxRate = 7.0,
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            TaxClassId = 3,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TaxRate = 19.0,
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
+                    b.ToTable("TaxClass");
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.Warehouse", b =>
@@ -751,7 +731,7 @@ namespace maERP.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("warehouse", (string)null);
+                    b.ToTable("Warehouse");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -848,11 +828,15 @@ namespace maERP.Server.Migrations
                 {
                     b.HasOne("maERP.Shared.Models.Product", "Product")
                         .WithMany("ProductSalesChannel")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("maERP.Shared.Models.SalesChannel", "SalesChannel")
                         .WithMany()
-                        .HasForeignKey("SalesChannelId");
+                        .HasForeignKey("SalesChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
 
@@ -882,7 +866,9 @@ namespace maERP.Server.Migrations
                 {
                     b.HasOne("maERP.Shared.Models.Warehouse", "Warehouse")
                         .WithMany()
-                        .HasForeignKey("WarehouseId");
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Warehouse");
                 });

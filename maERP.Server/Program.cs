@@ -23,6 +23,7 @@ using maERP.Shared.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+/*
 var logger = new LoggerConfiguration().
     ReadFrom.Configuration(builder.Configuration).
     Enrich.FromLogContext().
@@ -30,11 +31,9 @@ var logger = new LoggerConfiguration().
 
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
-
-
 builder.Host.UseSerilog(
     (context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
-);
+);*/
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -193,6 +192,8 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
     });
+
+    app.MapControllers().AllowAnonymous();
 }
 else
 {
@@ -212,16 +213,15 @@ else
 
         await next();
     });
+
+    app.MapControllers();
 }
 
-app.UseSerilogRequestLogging();
+//app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapControllers();
-
 
 using (var scope = app.Services.CreateScope())
 {

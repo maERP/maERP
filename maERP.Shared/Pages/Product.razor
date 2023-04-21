@@ -42,11 +42,11 @@ else
                     continue;
 
                 <tr>
-                    <td>@product.SKU</td>
+                    <td>@product.Sku</td>
                     <td>@product.Name</td>
                     <td>@product.Price.ToString("F") EUR</td>
                     <td>@product.TaxClass</td>
-                    <td>@product.EAN</td>
+                    <td>@product.Ean</td>
                     <td>
                         <a href='/Product/edit/@product.Id' class="btn btn-outline-dark" role="button">
                             Bearbeiten
@@ -63,8 +63,8 @@ else
 
 @code {
 
-    private ICollection<ProductListDto> products;
-    public string filter { get; set; }
+    private ICollection<ProductListDto>? products;
+    public string? filter { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,9 +76,9 @@ else
         if (string.IsNullOrEmpty(filter))
             return true;
 
-        if (product.SKU.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+        if (product.Sku.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
             product.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
-            product.EAN.Contains(filter, StringComparison.OrdinalIgnoreCase))
+            product.Ean.Contains(filter, StringComparison.OrdinalIgnoreCase))
             return true;
 
         return false;

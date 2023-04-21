@@ -5,9 +5,12 @@ namespace maERP.Shared.Models;
 
 public class ProductStock : BaseModel
 {
-    public virtual Product Product { get; set; }
+    [Required]
+    public virtual Product Product { get; set; } = new();
 
-    public virtual Warehouse Warehouse { get; set; }
+    [Required]
+    public virtual Warehouse Warehouse { get; set; } = new();
 
-    public int Quantity { get; set; }
+    [Required]
+    public int Quantity { get; set; } = 0;
 }

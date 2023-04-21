@@ -106,9 +106,9 @@ public class ProductDownloadTask : IHostedService
                                 var localProduct = new Product();
 
                                 localProduct.Name = remoteProduct.name;
-                                localProduct.EAN = Globals.maxLength(remoteProduct.mainDetail.ean, 13);
+                                localProduct.Ean = Globals.maxLength(remoteProduct.mainDetail.ean, 13);
                                 localProduct.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
-                                localProduct.SKU = remoteProduct.mainDetail.number;
+                                localProduct.Sku = remoteProduct.mainDetail.number;
                                 // localProduct.TaxClassId = 1;
                                 localProduct.Description = Globals.maxLength(remoteProduct.descriptionLong, 4000);
 
@@ -141,10 +141,10 @@ public class ProductDownloadTask : IHostedService
                                     newUpdate = true;
                                 }
 
-                                if(localProduct.EAN != Globals.maxLength(remoteProduct.mainDetail.ean, 13))
+                                if(localProduct.Ean != Globals.maxLength(remoteProduct.mainDetail.ean, 13))
                                 {
                                     Console.WriteLine("new product EAN");
-                                    localProduct.EAN = Globals.maxLength(remoteProduct.mainDetail.ean, 13);
+                                    localProduct.Ean = Globals.maxLength(remoteProduct.mainDetail.ean, 13);
                                     newUpdate = true;
                                 }
 
@@ -155,10 +155,10 @@ public class ProductDownloadTask : IHostedService
                                     newUpdate = true;
                                 }
 
-                                if(localProduct.SKU != remoteProduct.mainDetail.number)
+                                if(localProduct.Ean != remoteProduct.mainDetail.number)
                                 {
                                     Console.WriteLine("new product sku");
-                                    localProduct.SKU = remoteProduct.mainDetail.number;
+                                    localProduct.Ean = remoteProduct.mainDetail.number;
                                     newUpdate = true;
                                 }
 

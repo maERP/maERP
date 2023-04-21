@@ -1,5 +1,5 @@
 ﻿namespace maERP.Shared.Dtos.ProductSalesChannel;
 
-public class ProductSalesChannelListDto : ProductSalesChannelBaseDto
+public class ProductSalesChannelListDto
 {
 }

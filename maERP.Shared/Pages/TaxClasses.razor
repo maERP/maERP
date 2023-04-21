@@ -7,7 +7,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager;
-@inject IDataService<ICollection<TaxClassDetailDto>> DataService;
+@inject IDataService<ICollection<TaxClassListDto>> DataService;
 
 <PageTitle>Steuerklassen</PageTitle>
 
@@ -50,7 +50,7 @@ else
 
 @code {
 
-    private ICollection<TaxClassDetailDto> taxClasses;
+    private ICollection<TaxClassListDto>? taxClasses;
 
     protected override async Task OnInitializedAsync()
     {

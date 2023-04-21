@@ -17,9 +17,11 @@ public class CustomerAddress : BaseModel
     [Column("city")]
     public virtual string City { get; set; } = String.Empty;
 
+    [Required]
     [Column("country_id")]
     public virtual Country Country { get; set; } = null!;
 
+    [Required]
     [Column("customer_id")]
     public virtual Customer Customer { get; set; } = null!;
 }

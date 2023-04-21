@@ -1,6 +1,6 @@
 ﻿namespace maERP.Shared.Dtos.Order;
 
-public class OrderDetailDto
+public class OrderCreateDto
 {
     public virtual int Id { get; set; }
 }

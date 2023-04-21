@@ -54,11 +54,6 @@ public class WarehouseController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutWarehouse(int id, WarehouseDetailDto warehouseDto)
     {
-        if (id != warehouseDto.Id)
-        {
-            return BadRequest("Invalid Record Id");
-        }
-
         try
         {
             await _repository.UpdateAsync(id, warehouseDto);

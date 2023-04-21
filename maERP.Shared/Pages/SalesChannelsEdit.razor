@@ -9,7 +9,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager _navManager;
-@inject IDataService<SalesChannelDto> _dataService;
+@inject IDataService<SalesChannelUpdateDto> _dataService;
 
 <h1>Vertriebskanal</h1>
 
@@ -28,9 +28,9 @@
     <div class="mb-3">
         <label for="Name" class="form-label">URL</label>
         <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="@salesChannel.URL" />
+            <InputText class="form-control" @bind-Value="@salesChannel.Url" />
         </div>
-        <ValidationMessage For="@(() => salesChannel.URL)" />
+        <ValidationMessage For="@(() => salesChannel.Url)" />
     </div>
 
     <div class="mb-3">
@@ -89,14 +89,14 @@
 
     protected string Title = "hinzufügen";
 
-    protected maERP.Shared.Dtos.SalesChannelDto salesChannel = new();
+    protected maERP.Shared.Dtos.SalesChannelUpdateDto salesChannel = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (salesChannelId != 0)
         {
             Title = "Bearbeiten";
-            salesChannel = await _dataService.Request("GET", "/SalesChannels/" + salesChannelId);
+            salesChannel = await _dataService.Request("GET", "/SalesChannel/" + salesChannelId);
         }
 
         await Task.CompletedTask;
@@ -108,17 +108,17 @@
 
         if (salesChannelId != 0)
         {
-            await _dataService.Request("PUT", "/SalesChannels/" + salesChannelId, salesChannel);
+            await _dataService.Request("PUT", "/SalesChannel/" + salesChannelId, salesChannel);
         }
         else
         {
-            await _dataService.Request("POST", "/SalesChannels", salesChannel);
+            await _dataService.Request("POST", "/SalesChannel", salesChannel);
         }
         Cancel();
     }
 
     public void Cancel()
     {
-        _navManager.NavigateTo("/SalesChannels");
+        _navManager.NavigateTo("/SalesChannel");
     }
 }

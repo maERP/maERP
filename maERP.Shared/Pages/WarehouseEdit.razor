@@ -8,7 +8,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager _navigationManager;
-@inject IDataService<WarehouseDetailDto> _dataService;
+@inject IDataService<WarehouseUpdateDto> _dataService;
 
 <h1>Lager</h1>
 
@@ -36,7 +36,7 @@
 
     protected string Title = "hinzufügen";
 
-    protected WarehouseDetailDto warehouse = new();
+    protected WarehouseUpdateDto warehouse = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -49,7 +49,7 @@
 
     protected async Task SaveWarehouse()
     {
-        if (warehouse.Id != 0)
+        if (warehouseId != 0)
         {
             await _dataService.Request("PUT", "/Warehouses/" + warehouseId, warehouse);
         }

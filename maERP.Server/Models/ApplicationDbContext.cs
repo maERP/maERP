@@ -34,10 +34,11 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new CountryConfiguration());
-        modelBuilder.ApplyConfiguration(new ProductConfiguration());
-        modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
-        modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
+        // modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        // modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
+        // modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
 
+        /*
         modelBuilder.Entity<ApiUser>().ToTable("user");
         modelBuilder.Entity<Country>().ToTable("country");
         modelBuilder.Entity<Customer>().ToTable("customer");
@@ -51,6 +52,7 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
         modelBuilder.Entity<ShippingProviderRate>().ToTable("shipping_provider_rate");
         modelBuilder.Entity<TaxClass>().ToTable("tax_class");
         modelBuilder.Entity<Warehouse>().ToTable("warehouse");
+        */
 
         // seed user data
         string DEFAULT_ADMIN_ID = "02174cf0–9412–4cfe-afbf-59f706d72cf6";

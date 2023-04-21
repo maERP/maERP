@@ -1,24 +1,22 @@
-﻿#nullable disable
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace maERP.Shared.Dtos.User;
 
 public class ApiUserDto
 {
-    public string Id { get; set; }
+    public virtual string? Id { get; set; }
+
+	[Required]
+	public virtual string FirstName { get; set; } = string.Empty;
+
+	[Required]
+	public virtual string LastName { get; set; } = string.Empty;
 
     [Required]
-	public string FirstName { get; set; }
-
-	[Required]
-	public string LastName { get; set; }
-
-	[Required]
 	[DataType(DataType.EmailAddress)]
-	public string Email { get; set; }
+	public virtual string Email { get; set; } = string.Empty;
 
-	[Required]
+    [Required]
 	[StringLength(15, ErrorMessage = "Your password limited from {2} to {1} characters", MinimumLength = 8)]
-	public string Password { get; set; }
+	public virtual string Password { get; set; } = string.Empty;
 }

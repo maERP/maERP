@@ -5,21 +5,22 @@ namespace maERP.Shared.Models;
 
 public class SalesChannel : BaseModel
 {
+
     [DisplayFormat(NullDisplayText = "No type")]
     public virtual SalesChannelType Type { get; set; }
 
     [StringLength(200)]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
-    public virtual Warehouse Warehouse { get; set; }
-    
-    public virtual string URL { get; set; }
+    public virtual Warehouse Warehouse { get; set; } = new();
 
-    public virtual string Username { get; set; }
+    public virtual string URL { get; set; } = string.Empty;
 
-    public virtual string Password { get; set; }
+    public virtual string Username { get; set; } = string.Empty;
 
-    public virtual bool ImportProducts { get; set; }
+    public virtual string Password { get; set; } = string.Empty;
+
+    public virtual bool ImportProducts { get; set; } 
 
     public virtual bool ImportCustomers { get; set; }
 

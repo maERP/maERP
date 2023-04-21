@@ -20,6 +20,7 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
 				Username = "demouser",
 				Password = "demopass",
 				ImportProducts = true,
+				Warehouse = new Warehouse { Id = 1, Name = "Demo Warenlager" }
 			}
 		 );
         }

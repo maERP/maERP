@@ -50,11 +50,6 @@ public class OrderController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutOrder(int id, OrderDetailDto orderDto)
     {
-        if (id != orderDto.Id)
-        {
-            return BadRequest("Invalid Record Id");
-        }
-
         try
         {
             await _repository.UpdateAsync(id, orderDto);

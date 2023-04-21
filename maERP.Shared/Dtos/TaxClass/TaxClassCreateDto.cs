@@ -1,6 +1,6 @@
 ﻿namespace maERP.Shared.Dtos.TaxClass;
 
-public class TaxClassUpdateDto
+public class TaxClassCreateDto
 {
     public virtual double TaxRate { get; set; }
 }

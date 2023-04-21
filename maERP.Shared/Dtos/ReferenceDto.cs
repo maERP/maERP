@@ -1,6 +1,6 @@
 ﻿namespace maERP.Shared.Dtos;
 
-public class SalesChannelReferenceDto
+public class ReferenceDto
 {
     public int Id { get; set; }
 }

@@ -15,9 +15,9 @@ public class Customer : BaseModel
 
     public virtual CustomerStatus CustomerStatus { get; set; }
 
-    public virtual ICollection<CustomerAddress> CustomerAddresses { get; set; }
+    public virtual ICollection<CustomerAddress>? CustomerAddresses { get; set; }
 
-    public virtual ICollection<Order> Orders { get; set; }
+    public virtual ICollection<Order>? Orders { get; set; }
 
     [Display(Name = "Vollständiger Name")]
     public string FullName

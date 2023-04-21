@@ -26,8 +26,9 @@ else
         <div class="mb-3">
             <label for="Cellnumber" class="form-label">SKU</label>
             <div class="col-md-4">
-                <InputText class="form-control" @bind-Value="product.SKU" />
+                <InputText class="form-control" @bind-Value="product.Sku" />
             </div>
+            <ValidationMessage For="@(() => product.Sku)" />
         </div>
         <div class="mb-3">
             <label for="Name" class="form-label">Name</label>
@@ -40,14 +41,14 @@ else
         <div class="mb-3">
             <label for="Emailid" class="form-label">EAN</label>
             <div class="col-md-4">
-                <InputText class="form-control" @bind-Value="product.EAN" />
+                <InputText class="form-control" @bind-Value="product.Ean" />
             </div>
-            <ValidationMessage For="@(() => product.EAN)" />
+            <ValidationMessage For="@(() => product.Ean)" />
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary" @onclick="SaveProduct">Speichern</button>
             <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
-            <a href='/Product/delete/@product.Id' class="btn btn-outline-danger" role="button">
+            <a href='/Product/delete/@productId' class="btn btn-outline-danger" role="button">
                 Löschen
             </a>
         </div>
@@ -74,7 +75,7 @@ else
 
     protected async Task SaveProduct()
     {
-        if (product.Id != 0)
+        if (productId != 0)
         {
             product = await _dataService.Request("PUT", "/Products/" + productId, product);
         }

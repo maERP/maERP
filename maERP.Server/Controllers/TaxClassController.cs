@@ -53,11 +53,6 @@ public class TaxClassController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutTaxClass(int id, TaxClassDetailDto updateTaxClassDetailDto)
     {
-        if (id != updateTaxClassDetailDto.Id)
-        {
-            return BadRequest("Invalid Record Id");
-        }
-
         try
         {
             await _repository.UpdateAsync(id, updateTaxClassDetailDto);

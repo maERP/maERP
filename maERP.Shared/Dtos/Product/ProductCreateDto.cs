@@ -29,8 +29,7 @@ public class ProductCreateDto
 
     public decimal Msrp { get; set; }
 
-    [Required]
-    public virtual TaxClassReferenceDto TaxClass { get; set; }
+    public virtual ReferenceDto TaxClass { get; set; } = new();
 
-    public List<ProductSalesChannelReferenceDto> ProductSalesChannel { get; set; }
+    public List<ReferenceDto> ProductSalesChannel { get; set; } = new();
 }

@@ -7,5 +7,5 @@ public class ShippingProvider : BaseModel
 {
     public virtual string Name { get; set; } = string.Empty;
 
-    public virtual ICollection<ShippingProviderRate> ShippingRates { get; set; }
+    public virtual ICollection<ShippingProviderRate>? ShippingRates { get; set; }
 }
