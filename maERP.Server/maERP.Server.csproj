@@ -86,6 +86,7 @@
     <Folder Include="Contracts\SalesChannelContracts\" />
     <Folder Include="Repository\SalesChannelRepositories\" />
     <Folder Include="Tasks\SalesChannelTasks\" />
+    <InternalsVisibleTo Include="Bigdata.Api.Tests" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Controllers\SalesChannelController.cs" />
