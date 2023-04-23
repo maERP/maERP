@@ -1,138 +1,130 @@
 using System.Net;
 using System.Net.Http.Json;
-using maERP.Shared.Dtos;
 using maERP.Shared.Dtos.Product;
 using maERP.Shared.Models;
-using Xunit;
-using Xunit.Abstractions;
-using Xunit.Priority;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using Assert = NUnit.Framework.Assert;
-
-#pragma warning disable CS8602
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace maERP.Server.Tests;
 
-[TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
 public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
 {
-    private readonly maERPWebApplicationFactory<Program> _factory;
-    private readonly ITestOutputHelper _testOutputHelper;
+    private readonly maERPWebApplicationFactory<Program> _webApplicationFactory;
 
-    public ProductCrudTest(maERPWebApplicationFactory<Program> factory, ITestOutputHelper testOutputHelper)
+    public ProductCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
     {
-        _factory = factory;
-        _testOutputHelper = testOutputHelper;
+        _webApplicationFactory = webApplicationFactory;
     }
 
     [Theory]
     [InlineData("/api/Product")]
-    public async Task ProductCreate(string url)
+    public async Task Create(string url)
     {
-        // Arrange
-        var client = _factory.CreateClient();
-        await _factory.InitializeDbForTests();
-        var createCompany = new ProductCreateDto
+        HttpClient httpClient = _webApplicationFactory.CreateClient();
+
+        await _webApplicationFactory.InitializeDbForTests();
+        ProductCreateDto product = new ProductCreateDto
         {
             Name = "Testprodukt 1 created"
         };
 
-        // Act
-        var result = await client.PostAsJsonAsync(url, createCompany);
-        var resultContent = await result.Content.ReadFromJsonAsync<ProductDetailDto>();
+        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, product);
+        ProductDetailDto? resultContent = await result.Content.ReadFromJsonAsync<ProductDetailDto>();
 
-        // Assert
-        Assert.IsTrue(result.IsSuccessStatusCode);
-        Assert.IsNotNull(resultContent);
-        Assert.IsNotNull(resultContent);
-        Assert.IsTrue(resultContent.Id != default);
+        Assert.NotNull(resultContent);
+        Assert.True(result.IsSuccessStatusCode);
+        Assert.True(resultContent != null && resultContent.Id != default);
     }
 
     [Theory]
     [InlineData("/api/Product/GetAll")]
-    public async Task ProductGetAll(string url)
+    public async Task GetAll(string url)
     {
-        // Arrange
-        var client = _factory.CreateClient();
-        await _factory.InitializeDbForTests(new List<Product> { new() { Id = 1, Name = "Testprodukt 1" } });
+        HttpClient httpClient = _webApplicationFactory.CreateClient();
+        await _webApplicationFactory.InitializeDbForTests(
+            new List<Product> {
+                new() {
+                    Id = 1, Name = "Testprodukt 1"
+                }
+        });
 
-        // Act
-        var result = await client.GetFromJsonAsync<List<ProductListDto>>(url);
-
-        // Assert
-        Assert.IsNotNull(result);
-        Assert.IsNotEmpty(result);
+        List<ProductListDto>? result = await httpClient.GetFromJsonAsync<List<ProductListDto>>(url);
+        
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
     }
 
     [Theory]
     [InlineData("/api/Product/1")]
-    public async Task ProductDetail(string url)
+    public async Task GetDetail(string url)
     {
-        // Arrange
-        var client = _factory.CreateClient();
-        await _factory.InitializeDbForTests(new List<Product> { new() { Id = 1, Name = "Testprodukt 1" } });
+        HttpClient httpClient = _webApplicationFactory.CreateClient();
+        await _webApplicationFactory.InitializeDbForTests(
+            new List<Product> {
+                new() {
+                    Id = 1, Name = "Testprodukt 1"
+                }
+        });
 
-        // Act
-        var result = await client.GetFromJsonAsync<ProductDetailDto>(url);
+        ProductDetailDto? result = await httpClient.GetFromJsonAsync<ProductDetailDto>(url);
 
-        // Assert
-        Assert.IsNotNull(result);
-        Assert.IsNotNull(result);
-        Assert.IsNotNull(result.Name);
+        Assert.NotNull(result);
+        Assert.NotNull(result);
+        Assert.True(result != null && result.Name.Length > 0);
     }
 
     [Theory]
     [InlineData("/api/Product/999999")]
-    public async Task ProductNotExist(string url)
+    public async Task NotExist(string url)
     {
-        // Arrange
-        var client = _factory.CreateClient();
-        await _factory.InitializeDbForTests();
+        HttpClient httpClient = _webApplicationFactory.CreateClient();
+        await _webApplicationFactory.InitializeDbForTests();
 
-        // Act
-        var result = await client.GetAsync(url);
+        HttpResponseMessage result = await httpClient.GetAsync(url);
 
-        // Assert
-        Assert.IsTrue(result.StatusCode == HttpStatusCode.NotFound);
+        Assert.True(result.StatusCode == HttpStatusCode.NotFound);
     }
 
     [Theory]
     [InlineData("/api/Product/1")]
-    public async Task ProductUpdate(string url)
+    public async Task Update(string url)
     {
-        // Arrange
-        var client = _factory.CreateClient();
+        HttpClient httpClient = _webApplicationFactory.CreateClient();
 
-        await _factory.InitializeDbForTests(new List<Product> { new() { Id = 1, Name = "Testprodukt 1" } });
+        await _webApplicationFactory.InitializeDbForTests(
+            new List<Product> {
+                new() {
+                    Id = 1,
+                    Name = "Testprodukt 1"
+                }
+        });
 
-        var updateProduct = new ProductUpdateDto
+        ProductUpdateDto product = new ProductUpdateDto
         {
             Name = "Testprodukt 1 updated",
         };
 
-        // Act
-        var result = await client.PutAsJsonAsync(url, updateProduct);
-        var resultContent = await result.Content.ReadFromJsonAsync<ProductDetailDto>();
+        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, product);
+        ProductDetailDto? resultContent = await result.Content.ReadFromJsonAsync<ProductDetailDto>();
 
-        // Assert
-        Assert.IsTrue(result.IsSuccessStatusCode);
-        Assert.IsNotNull(resultContent);
-        Assert.IsTrue(resultContent.Name == updateProduct.Name);
+        Assert.NotNull(resultContent);
+        Assert.True(result.IsSuccessStatusCode);
+        Assert.True(resultContent != null && resultContent.Name == product.Name);
     }
 
     [Theory]
     [InlineData("/api/Product/1")]
-    public async Task ProductDelete(string url)
+    public async Task Delete(string url)
     {
-        // Arrange
-        var client = _factory.CreateClient();
-        await _factory.InitializeDbForTests(new List<Product> { new() { Id = 1, Name = "Testprodukt 1" } });
+        HttpClient httpClient = _webApplicationFactory.CreateClient();
+        await _webApplicationFactory.InitializeDbForTests(
+            new List<Product> {
+                new() {
+                    Id = 1,
+                    Name = "Testprodukt 1"
+                }
+        });
 
-        // Act
-        var result = await client.DeleteAsync(url);
+        HttpResponseMessage result = await httpClient.DeleteAsync(url);
 
-        // Assert
-        Assert.IsTrue(result.IsSuccessStatusCode);
+        Assert.True(result.IsSuccessStatusCode);
     }
 }

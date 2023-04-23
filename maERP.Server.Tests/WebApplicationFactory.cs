@@ -28,6 +28,8 @@ public class maERPWebApplicationFactory<TStartup> : WebApplicationFactory<TStart
                         options.ConfigureWarnings(configurationBuilder => configurationBuilder.Ignore(InMemoryEventId.TransactionIgnoredWarning));
                     }
                 );
+
+                await Task.CompletedTask;
             }
         );
     }
