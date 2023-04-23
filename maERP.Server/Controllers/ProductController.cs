@@ -59,6 +59,12 @@ public class ProductController : ControllerBase
     public async Task<ActionResult<ProductDetailDto>> GetProduct(int id)
     {
         var result = await _productRepository.GetDetails(id);
+
+        if(result is null)
+        {
+            return NotFound();
+        }
+
         return Ok(result);
     }
 

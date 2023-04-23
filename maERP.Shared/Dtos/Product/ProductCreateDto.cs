@@ -9,17 +9,17 @@ public class ProductCreateDto
 {
     [Required]
     [StringLength(255)]
-    public string SKU { get; set; } = string.Empty;
+    public string Sku { get; set; } = string.Empty;
 
     [Required]
     [StringLength(255)]
     public string Name { get; set; } = string.Empty;
 
     [StringLength(32)]
-    public string EAN { get; set; } = string.Empty;
+    public string Ean { get; set; } = string.Empty;
 
     [StringLength(32)]
-    public string ASIN { get; set; } = string.Empty;
+    public string Asin { get; set; } = string.Empty;
 
     [StringLength(64000)]
     public string Description { get; set; } = string.Empty;

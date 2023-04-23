@@ -28,11 +28,6 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
             .ProjectTo<ProductDetailDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(q => q.Id == id);
 
-        if(product == null)
-        {
-            throw new NotFoundException(nameof(GetDetails), id);
-        }
-
         return product;
     }
 }
