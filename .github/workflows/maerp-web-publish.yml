@@ -1,8 +1,11 @@
-name: Publish Server to Docker Hub
+name: maERP.Web Publish
 
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'maERP.Web/**'
+      - 'maERP.Shared/**'
 
 jobs:
   push_to_registry:
@@ -22,13 +25,13 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: maerp/server
+          images: maerp/web
       
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          context: ./
-          file: ./maERP.Server/Dockerfile
+          context: .
+          file: ./maERP.Web/Dockerfile
           push: true
           labels: ${{ steps.meta.outputs.labels }}
-          tags: maerp/server:latest
+          tags: maerp/web:latest

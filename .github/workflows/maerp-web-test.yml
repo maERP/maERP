@@ -1,0 +1,30 @@
+name: maERP.Web Build and Test
+
+on:
+  push:
+    branches-ignore: [ main ]
+    paths:
+      - 'maERP.Web/**'
+      - 'maERP.Shared/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'maERP.Web/**'
+      - 'maERP.Shared/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 7.x
+
+      - name: Restore maERP.Web.Tests
+        run: dotnet restore maERP.Web.Tests
+      - name: Build maERP.Web.Tests
+        run: dotnet build maERP.Web.Tests --no-restore
+      - name: Test maERP.Web.Tests
+        run: dotnet test maERP.Web.Tests --no-build --verbosity normal

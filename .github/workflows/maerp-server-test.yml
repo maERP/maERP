@@ -1,0 +1,32 @@
+name: maERP.Server Build and Test
+
+on:
+  push:
+    branches-ignore: [ main ]
+    paths:
+      - 'maERP.Server/**'
+      - 'maERP.Server.Tests/**'
+      - 'maERP.Shared/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'maERP.Server/**'
+      - 'maERP.Server.Tests/**'
+      - 'maERP.Shared/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 7.x
+
+      - name: Restore maERP.Server.Tests
+        run: dotnet restore maERP.Server.Tests
+      - name: Build maERP.Server.Tests
+        run: dotnet build maERP.Server.Tests --no-restore
+      - name: Test maERP.Server.Tests
+        run: dotnet test maERP.Server.Tests --no-build --verbosity normal
