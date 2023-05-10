@@ -1,27 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Linq;
 
 namespace maERP.Shared.Models;
 
 public class CustomerAddress : BaseModel
 {
-    [Column("street")]
+    [Display(Name = "Straße"), DisplayFormat(NullDisplayText = "Straße")]
     public virtual string Street { get; set; } = String.Empty;
 
-    [Column("house_nr")]
+    [Display(Name = "Hausnummer"), DisplayFormat(NullDisplayText = "Hausnummer")]
     public virtual string HouseNr { get; set; } = String.Empty;
 
-    [Column("zip")]
+    [Display(Name = "PLZ"), DisplayFormat(NullDisplayText = "PLZ")]
     public virtual string Zip { get; set; } = String.Empty;
 
-    [Column("city")]
+    [Display(Name = "Stadt"), DisplayFormat(NullDisplayText = "Stadt")]
     public virtual string City { get; set; } = String.Empty;
 
-    [Required]
-    [Column("country_id")]
+    [Required, Display(Name = "Land")]
     public virtual Country Country { get; set; } = null!;
 
     [Required]
-    [Column("customer_id")]
     public virtual Customer Customer { get; set; } = null!;
 }

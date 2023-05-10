@@ -11,7 +11,6 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.AspNetCore;
 using Serilog.Sinks.Graylog;
-
 using maERP.Server.Configurations;
 using maERP.Server.Contracts;
 using maERP.Server.Middleware;
@@ -19,21 +18,11 @@ using maERP.Server.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Models;
 
-// Serilog.Debugging.SelfLog.Enable(msg => Debug.WriteLine(msg)); Serilog.Debugging.SelfLog.Enable(Console.Error);
-
 var builder = WebApplication.CreateBuilder(args);
 
-/*
-var logger = new LoggerConfiguration().
-    ReadFrom.Configuration(builder.Configuration).
-    Enrich.FromLogContext().
-    CreateLogger();
-
-builder.Logging.ClearProviders();
-builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog(
     (context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
-);*/
+);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -77,16 +66,13 @@ builder.Services.AddCors(option =>
 builder.Services.AddIdentityCore<ApiUser>()
     .AddRoles<IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<ApiUser>>("maERP.Server")
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+//.AddDefaultTokenProviders();
 
-builder.Services.AddControllers().AddOData(options =>
-{
-    options.Select().Filter().OrderBy();
-});
 
+builder.Services.AddControllersWithViews();
+builder.Services.AddControllers().AddOData(options => { options.Select().Filter().OrderBy(); });
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "maERP.Server", Version = "v1" });
@@ -181,8 +167,15 @@ builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.ProductDo
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
 app.UseCors();
+app.UseStaticFiles();
+app.UseRouting();
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Web}/{action=Index}/{id?}");
 
 if (app.Environment.IsDevelopment())
 {
@@ -214,12 +207,12 @@ else
         await next();
     });
 
-    app.MapControllers();
+    app.UseExceptionHandler("/Home/Error");
+    app.UseSerilogRequestLogging();
+
+    app.MapControllers();    
 }
 
-//app.UseSerilogRequestLogging();
-
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,13 +1,10 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Blazored.LocalStorage;
 using maERP.Web;
 using maERP.Shared.Contracts;
 using maERP.Shared.Services;
-using maERP.Shared;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

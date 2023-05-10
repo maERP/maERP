@@ -5,5 +5,6 @@ namespace maERP.Shared.Models;
 
 public class Warehouse : BaseModel
 {
+    [Required, Display(Name = "Bezeichnung")]
     public virtual string Name { get; set; } = String.Empty;
 }

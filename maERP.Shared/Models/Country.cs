@@ -5,11 +5,9 @@ namespace maERP.Shared.Models;
 
 public class Country : BaseModel
 {
-    [Required]
-    [Display(Name = "Name")]
+    [Required, Display(Name = "Name"), DisplayFormat(NullDisplayText = "Name")]
     public virtual string Name { get; set; } = null!;
 
-    [Required]
-    [Display(Name = "Ländercode")]
+    [Required, Display(Name = "Ländercode"), DisplayFormat(NullDisplayText = "Ländercode")]
     public virtual string CountryCode { get; set; } = null!;
 }
