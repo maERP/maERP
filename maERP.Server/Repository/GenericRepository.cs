@@ -3,11 +3,25 @@
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using maERP.Server.Contracts;
-using maERP.Server.Models;
 using maERP.Server.Exceptions;
+using maERP.Server.Models;
 
 namespace maERP.Server.Repository;
+
+public interface IGenericRepository<T> where T : class
+{
+    Task<T> GetAsync(uint? id);
+    Task<TResult> GetAsync<TResult>(uint? id); //
+    Task<List<T>> GetAllAsync();
+    Task<List<TResult>> GetAllAsync<TResult>(); //
+    Task<PagedResult<TResult>> GetAllAsync<TResult>(QueryParameters queryParameters);
+    Task<T> AddAsync(T entity);
+    Task<TResult> AddAsync<TSource, TResult>(TSource source); //
+    Task DeleteAsync(uint id);
+    Task UpdateAsync(T entity);
+    Task UpdateAsync<TSource>(uint id, TSource source); //
+    Task<bool> Exists(uint id);
+}
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
@@ -37,7 +51,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return _mapper.Map<TResult>(entity);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(uint id)
     {
         var entity = await GetAsync(id);
 
@@ -50,7 +64,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> Exists(int id)
+    public async Task<bool> Exists(uint id)
     {
         var entity = await GetAsync(id);
         return entity != null;
@@ -86,7 +100,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             .ToListAsync();
     }
 
-    public async Task<T> GetAsync(int? id)
+    public async Task<T> GetAsync(uint? id)
     {
         if(id is null)
         {
@@ -96,7 +110,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await _context.Set<T>().FindAsync(id);
     }
 
-    public async Task<TResult> GetAsync<TResult>(int? id)
+    public async Task<TResult> GetAsync<TResult>(uint? id)
     {
         var result = await _context.Set<T>().FindAsync(id);
 
@@ -114,7 +128,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync<TSource>(int id, TSource source)
+    public async Task UpdateAsync<TSource>(uint id, TSource source)
     {
         var entity = await GetAsync(id);
 

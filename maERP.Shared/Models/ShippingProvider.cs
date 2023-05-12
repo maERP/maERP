@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Shared.Models;
 
-public class ShippingProvider : BaseModel
+public class ShippingProvider : ABaseModel
 {
     [Required, Display(Name = "Name")]
     public virtual string Name { get; set; } = string.Empty;

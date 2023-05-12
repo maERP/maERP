@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace maERP.Shared.Models;
 
 [Index(nameof(Sku), IsUnique = true)]
-public class Product : BaseModel
+public class Product : ABaseModel
 {
     [Required, StringLength(255), Display(Name = "SKU")]
     public virtual string Sku { get; set; } = string.Empty;
@@ -31,9 +31,9 @@ public class Product : BaseModel
     public virtual decimal Msrp { get; set; }
 
     [Required, Display(Name = "Steuerklasse")]
-    public virtual TaxClass? TaxClass { get; set; }
+    public TaxClass? TaxClass { get; set; }
 
-    public virtual ICollection<ProductSalesChannel>? ProductSalesChannel { get; set; }
+    public ICollection<ProductSalesChannel>? ProductSalesChannel { get; set; } = new List<ProductSalesChannel>();
 
-    public virtual ICollection<ProductStock>? ProductStock { get; set; }
+    public ICollection<ProductStock> ProductStock { get; set; } = new List<ProductStock>();
 }

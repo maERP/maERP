@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using maERP.Server.Contracts;
 using maERP.Shared.Dtos.Product;
 using maERP.Server.Models;
 using maERP.Server.Repository;
@@ -56,7 +55,7 @@ public class ProductController : ControllerBase
 
     // GET: api/Product/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDetailDto>> GetProduct(int id)
+    public async Task<ActionResult<ProductDetailDto>> GetProduct(uint id)
     {
         var result = await _productRepository.GetDetails(id);
 
@@ -113,8 +112,8 @@ public class ProductController : ControllerBase
                     SalesChannel = salesChannel,
                     Price = productSalesChannel.Price,
                     RemoteProductId = productSalesChannel.RemoteProductId,
-                    ProductImport = productSalesChannel.ProductImport,
-                    ProductExport = productSalesChannel.ProductExport
+                    // ProductImport = productSalesChannel.ProductImport,
+                    // ProductExport = productSalesChannel.ProductExport
                 });
             }
         }
@@ -126,7 +125,7 @@ public class ProductController : ControllerBase
 
     // PUT: api/Product/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduct(int id, ProductUpdateDto productUpdateDto)
+    public async Task<IActionResult> PutProduct(uint id, ProductUpdateDto productUpdateDto)
     {
         try
         {
@@ -149,14 +148,14 @@ public class ProductController : ControllerBase
 
     // DELETE: api/Product/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProduct(int id)
+    public async Task<IActionResult> DeleteProduct(uint id)
     {
         await _productRepository.DeleteAsync(id);
 
         return NoContent();
     }
 
-    private async Task<bool> ProductExists(int id)
+    private async Task<bool> ProductExists(uint id)
     {
         return await _productRepository.Exists(id);
     }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Shared.Models;
 
-public class SalesChannel : BaseModel
+public class SalesChannel : ABaseModel
 {
     [DisplayFormat(NullDisplayText = "No type")]
     public virtual SalesChannelType Type { get; set; }

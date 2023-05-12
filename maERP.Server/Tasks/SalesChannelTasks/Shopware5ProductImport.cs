@@ -2,8 +2,8 @@
 
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
-using maERP.Server.Contracts;
 using maERP.Shared.Models;
+using maERP.Server.Repository;
 using maERP.Shared.Models.SalesChannels.Shopware5;
 using maERP.Shared.Models.SalesChannels.Shopware5.ProductResponse;
 
@@ -59,9 +59,9 @@ public class ProductDownloadTask : IHostedService
 
             Console.WriteLine($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
-            int requestStart = 0;
-            int requestLimit = 100;
-            int requestMax = 0;
+            uint requestStart = 0;
+            uint requestLimit = 100;
+            uint requestMax = 0;
 
             do
             {

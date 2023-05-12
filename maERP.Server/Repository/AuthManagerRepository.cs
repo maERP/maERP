@@ -6,11 +6,21 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
-using maERP.Server.Contracts;
 using maERP.Shared.Dtos.User;
 using maERP.Shared.Models;
 
 namespace maERP.Server.Repository;
+
+public interface IAuthManager
+{
+    Task<LoginResponseDto> Login(LoginDto userDto);
+    Task<string> CreateRefreshToken();
+    Task<LoginResponseDto> VerifyRefreshToken(RefreshTokenDto request);
+    Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto);
+    Task<ApiUser> UpdateAsync(ApiUserDto userDto);
+    Task<IQueryable<ApiUser>> GetAllAsync();
+    Task<ApiUserDto> GetByIdAsync(string userId);
+}
 
 public class AuthManager : IAuthManager
 {

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Shared.Models;
 
-public class Customer : BaseModel
+public class Customer : ABaseModel
 {
     [StringLength(50), Display(Name = "Vorname"), DisplayFormat(NullDisplayText = "Max")]
     public virtual string FirstName { get; set; } = string.Empty;

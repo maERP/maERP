@@ -2,10 +2,10 @@
 
 public class Shopware5ProductResponse
 {
-    public int id { get; set; }
-    public int mainDetailId { get; set; }
-    public int supplierId { get; set; }
-    public int taxId { get; set; }
+    public uint id { get; set; }
+    public uint mainDetailId { get; set; }
+    public uint supplierId { get; set; }
+    public uint taxId { get; set; }
     public object? priceGroupId { get; set; }
     public object? filterGroupId { get; set; }
     public object? configuratorSetId { get; set; }
@@ -14,17 +14,17 @@ public class Shopware5ProductResponse
     public string? descriptionLong { get; set; }
     public DateTime added { get; set; }
     public bool active { get; set; }
-    public int pseudoSales { get; set; }
+    public uint pseudoSales { get; set; }
     public bool highlight { get; set; }
     public string? keywords { get; set; }
     public string? metaTitle { get; set; }
     public DateTime changed { get; set; }
     public bool priceGroupActive { get; set; }
     public bool lastStock { get; set; }
-    public int crossBundleLook { get; set; }
+    public uint crossBundleLook { get; set; }
     public bool notification { get; set; }
     public string? template { get; set; }
-    public int mode { get; set; }
+    public uint mode { get; set; }
     public object? availableFrom { get; set; }
     public object? availableTo { get; set; }
     public MainDetail? mainDetail { get; set; }
@@ -32,16 +32,16 @@ public class Shopware5ProductResponse
 
 public class MainDetail
 {
-    public int id { get; set; }
-    public int articleId { get; set; }
-    public int unitId { get; set; }
+    public uint id { get; set; }
+    public uint articleId { get; set; }
+    public uint unitId { get; set; }
     public string? number { get; set; }
     public string? supplierNumber { get; set; }
-    public int kind { get; set; }
+    public uint kind { get; set; }
     public string? additionalText { get; set; }
     public bool active { get; set; }
-    public int inStock { get; set; }
-    public int stockMin { get; set; }
+    public uint inStock { get; set; }
+    public uint stockMin { get; set; }
     public bool lastStock { get; set; }
     public string? weight { get; set; }
     public string? width { get; set; }
@@ -49,9 +49,9 @@ public class MainDetail
     public string? height { get; set; }
     public string? ean { get; set; }
     public double purchasePrice { get; set; }
-    public int position { get; set; }
-    public int minPurchase { get; set; }
-    public int purchaseSteps { get; set; }
+    public uint position { get; set; }
+    public uint minPurchase { get; set; }
+    public uint purchaseSteps { get; set; }
     public object? maxPurchase { get; set; }
     public string? purchaseUnit { get; set; }
     public string? referenceUnit { get; set; }
@@ -64,8 +64,8 @@ public class MainDetail
 
 public class Attribute
 {
-    public int id { get; set; }
-    public int articleDetailId { get; set; }
+    public uint id { get; set; }
+    public uint articleDetailId { get; set; }
     public object? attr1 { get; set; }
     public object? attr2 { get; set; }
     public object? attr3 { get; set; }

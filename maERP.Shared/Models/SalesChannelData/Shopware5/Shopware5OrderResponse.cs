@@ -2,13 +2,13 @@
 
 public class Shopware5OrderResponse
 {
-    public int id { get; set; }
+    public uint id { get; set; }
     public string? number { get; set; }
-    public int customerId { get; set; }
-    public int paymentId { get; set; }
-    public int dispatchId { get; set; }
+    public uint customerId { get; set; }
+    public uint paymentId { get; set; }
+    public uint dispatchId { get; set; }
     public string? partnerId { get; set; }
-    public int shopId { get; set; }
+    public uint shopId { get; set; }
     public double invoiceAmount { get; set; }
     public double invoiceAmountNet { get; set; }
     public double invoiceShipping { get; set; }
@@ -18,16 +18,16 @@ public class Shopware5OrderResponse
     public string? comment { get; set; }
     public string? customerComment { get; set; }
     public string? internalComment { get; set; }
-    public int net { get; set; }
-    public int taxFree { get; set; }
+    public uint net { get; set; }
+    public uint taxFree { get; set; }
     public string? temporaryId { get; set; }
     public string? referer { get; set; }
     public object? clearedDate { get; set; }
     public string? trackingCode { get; set; }
     public string? languageIso { get; set; }
     public string? currency { get; set; }
-    public int currencyFactor { get; set; }
+    public uint currencyFactor { get; set; }
     public string? remoteAddress { get; set; }
-    public int paymentStatusId { get; set; }
-    public int orderStatusId { get; set; }
+    public uint paymentStatusId { get; set; }
+    public uint orderStatusId { get; set; }
 }

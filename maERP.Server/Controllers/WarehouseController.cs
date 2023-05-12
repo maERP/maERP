@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using maERP.Shared.Models;
-using maERP.Shared.Dtos.Warehouse;
-using AutoMapper;
-using maERP.Server.Contracts;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using maERP.Server.Models;
+using maERP.Server.Repository;
+using maERP.Shared.Dtos.Warehouse;
+using maERP.Shared.Models;
 
 namespace maERP.Server.Controllers;
 
@@ -44,7 +44,7 @@ public class WarehouseController : ControllerBase
 
     // GET: api/Warehouse/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<WarehouseDetailDto>> GetWarehouse(int id)
+    public async Task<ActionResult<WarehouseDetailDto>> GetWarehouse(uint id)
     {
         var warehouse = await _repository.GetDetails(id);
         return Ok(warehouse);
@@ -52,7 +52,7 @@ public class WarehouseController : ControllerBase
 
     // PUT: api/Warehouse/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutWarehouse(int id, WarehouseDetailDto warehouseDto)
+    public async Task<IActionResult> PutWarehouse(uint id, WarehouseDetailDto warehouseDto)
     {
         try
         {
@@ -84,14 +84,14 @@ public class WarehouseController : ControllerBase
 
     // DELETE: api/Warehouse/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteWarehouse(int id)
+    public async Task<IActionResult> DeleteWarehouse(uint id)
     {
         await _repository.DeleteAsync(id);
 
         return NoContent();
     }
 
-    private async Task<bool> WarehouseExists(int id)
+    private async Task<bool> WarehouseExists(uint id)
     {
         return await _repository.Exists(id);
     }

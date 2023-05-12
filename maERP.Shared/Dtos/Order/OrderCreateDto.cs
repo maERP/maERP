@@ -2,5 +2,5 @@
 
 public class OrderCreateDto
 {
-    public virtual int Id { get; set; }
+    public virtual uint Id { get; set; }
 }

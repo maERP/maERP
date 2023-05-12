@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using maERP.Server.Contracts;
-using maERP.Shared.Dtos.Order;
 using maERP.Server.Models;
+using maERP.Server.Repository;
+using maERP.Shared.Dtos.Order;
 
 namespace maERP.Server.Controllers;
 
@@ -40,7 +40,7 @@ public class OrderController : ControllerBase
 
     // GET: api/Order/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<OrderDetailDto>> GetOrder(int id)
+    public async Task<ActionResult<OrderDetailDto>> GetOrder(uint id)
     {
         var order = await _repository.GetDetails(id);
         return Ok(order);
@@ -48,7 +48,7 @@ public class OrderController : ControllerBase
 
     // PUT: api/Order/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutOrder(int id, OrderDetailDto orderDto)
+    public async Task<IActionResult> PutOrder(uint id, OrderDetailDto orderDto)
     {
         try
         {
@@ -79,14 +79,14 @@ public class OrderController : ControllerBase
 
     // DELETE: api/Order/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteOrder(int id)
+    public async Task<IActionResult> DeleteOrder(uint id)
     {
         await _repository.DeleteAsync(id);
 
         return NoContent();
     }
 
-    private async Task<bool> OrderExists(int id)
+    private async Task<bool> OrderExists(uint id)
     {
         return await _repository.Exists(id);
     }

@@ -38,21 +38,41 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
         // modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
         // modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
 
-        /*
-        modelBuilder.Entity<ApiUser>().ToTable("user");
-        modelBuilder.Entity<Country>().ToTable("country");
-        modelBuilder.Entity<Customer>().ToTable("customer");
-        modelBuilder.Entity<CustomerAddress>().ToTable("customer_address");
-        modelBuilder.Entity<Order>().ToTable("order");
-        modelBuilder.Entity<Product>().ToTable("product");
-        modelBuilder.Entity<ProductSalesChannel>().ToTable("product_sales_channel");
-        modelBuilder.Entity<ProductStock>().ToTable("product_stock");
-        modelBuilder.Entity<SalesChannel>().ToTable("sales_channel");
-        modelBuilder.Entity<ShippingProvider>().ToTable("shipping_provider");
-        modelBuilder.Entity<ShippingProviderRate>().ToTable("shipping_provider_rate");
-        modelBuilder.Entity<TaxClass>().ToTable("tax_class");
-        modelBuilder.Entity<Warehouse>().ToTable("warehouse");
-        */
+        modelBuilder.Entity<Country>();
+        modelBuilder.Entity<Customer>();
+        modelBuilder.Entity<CustomerAddress>();
+        modelBuilder.Entity<Order>();
+
+        modelBuilder.Entity<Product>()
+            .HasMany(e => e.ProductStock);
+
+        modelBuilder.Entity<Product>()
+            .HasMany(e => e.ProductSalesChannel);
+
+        modelBuilder.Entity<Product>()
+            .HasOne(e => e.TaxClass);
+
+        modelBuilder.Entity<ProductSalesChannel>()
+            .HasOne(e => e.Product)
+            .WithMany(e => e.ProductSalesChannel)
+            .HasForeignKey(e => e.ProductId)
+            .IsRequired();
+
+        modelBuilder.Entity<ProductStock>()
+            .HasOne(e => e.Product)
+            .WithMany(e => e.ProductStock)
+            .HasForeignKey(e => e.ProductId)
+            .IsRequired();
+
+        modelBuilder.Entity<ProductStock>()
+            .HasOne(e => e.Warehouse);
+
+        modelBuilder.Entity<SalesChannel>();
+        modelBuilder.Entity<ShippingProvider>();
+        modelBuilder.Entity<ShippingProviderRate>();
+        modelBuilder.Entity<TaxClass>();
+
+        modelBuilder.Entity<Warehouse>();
 
         // seed user data
         string DEFAULT_ADMIN_ID = "02174cf0–9412–4cfe-afbf-59f706d72cf6";

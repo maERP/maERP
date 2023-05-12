@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using maERP.Server.Contracts;
+using maERP.Server.Repository;
 using maERP.Shared.Dtos.User;
 using maERP.Shared.Models;
 

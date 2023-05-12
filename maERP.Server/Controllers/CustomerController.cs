@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using maERP.Shared.Dtos.Customer;
-using maERP.Server.Contracts;
-
 using maERP.Server.Models;
+using maERP.Server.Repository;
 
 namespace maERP.Server.Controllers;
 
@@ -43,7 +42,7 @@ public class CustomerController : ControllerBase
 
     // GET: api/Customer/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<CustomerDetailDto>> GetCustomer(int id)
+    public async Task<ActionResult<CustomerDetailDto>> GetCustomer(uint id)
     {
         var customer = await _repository.GetDetails(id);
         return Ok(customer);
@@ -51,7 +50,7 @@ public class CustomerController : ControllerBase
 
     // PUT: api/Customer/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutCustomer(int id, CustomerDetailDto customerDto)
+    public async Task<IActionResult> PutCustomer(uint id, CustomerDetailDto customerDto)
     {
         if (id != customerDto.Id)
         {
@@ -87,14 +86,14 @@ public class CustomerController : ControllerBase
 
     // DELETE: api/Customer/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCustomer(int id)
+    public async Task<IActionResult> DeleteCustomer(uint id)
     {
         await _repository.DeleteAsync(id);
 
         return NoContent();
     }
 
-    private async Task<bool> CustomerExists(int id)
+    private async Task<bool> CustomerExists(uint id)
     {
         return await _repository.Exists(id);
     }

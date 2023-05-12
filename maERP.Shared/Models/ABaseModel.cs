@@ -5,10 +5,10 @@ using System.Xml.Linq;
 
 namespace maERP.Shared.Models;
 
-public class BaseModel
+abstract public class ABaseModel
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public virtual int Id { get; set; }
+    public virtual uint Id { get; set; }
 
     [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public virtual DateTime CreatedAt { get; set; } = DateTime.UtcNow;

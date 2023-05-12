@@ -41,7 +41,7 @@
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
     <PackageReference Include="Serilog.Sinks.Graylog" Version="2.3.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.5" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
@@ -59,7 +59,6 @@
     <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <None Remove="Configurations\" />
     <None Remove="Repository\" />
-    <None Remove="Contracts\" />
     <None Remove="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="Exceptions\" />
@@ -81,10 +80,8 @@
     <Folder Include="Tasks\" />
     <Folder Include="Configurations\" />
     <Folder Include="Repository\" />
-    <Folder Include="Contracts\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Middleware\" />
-    <Folder Include="Contracts\SalesChannelContracts\" />
     <Folder Include="Repository\SalesChannelRepositories\" />
     <Folder Include="Tasks\SalesChannelTasks\" />
     <InternalsVisibleTo Include="Bigdata.Api.Tests" />

@@ -12,7 +12,6 @@ using Serilog;
 using Serilog.AspNetCore;
 using Serilog.Sinks.Graylog;
 using maERP.Server.Configurations;
-using maERP.Server.Contracts;
 using maERP.Server.Middleware;
 using maERP.Server.Models;
 using maERP.Server.Repository;

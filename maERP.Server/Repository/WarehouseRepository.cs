@@ -1,13 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using maERP.Server.Contracts;
 using maERP.Server.Exceptions;
 using maERP.Server.Models;
 using maERP.Shared.Dtos.Warehouse;
 using maERP.Shared.Models;
 
 namespace maERP.Server.Repository;
+
+public interface IWarehouseRepository : IGenericRepository<Warehouse>
+{
+    Task<WarehouseDetailDto> GetDetails(uint id);
+}
 
 public class WarehouseRepository : GenericRepository<Warehouse>, IWarehouseRepository
 {
@@ -20,7 +24,7 @@ public class WarehouseRepository : GenericRepository<Warehouse>, IWarehouseRepos
         this._mapper = mapper;
     }
 
-    public async Task<WarehouseDetailDto> GetDetails(int id)
+    public async Task<WarehouseDetailDto> GetDetails(uint id)
     {
         var warehouse = await _context.Warehouse
             .ProjectTo<WarehouseDetailDto>(_mapper.ConfigurationProvider)

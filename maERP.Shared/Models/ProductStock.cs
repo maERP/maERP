@@ -4,14 +4,18 @@ using System.Xml.Linq;
 
 namespace maERP.Shared.Models;
 
-public class ProductStock : BaseModel
+public class ProductStock : ABaseModel
 {
-    [Required]
-    public virtual Product Product { get; set; } = new();
+    public uint ProductId { get; set; }
 
     [Required]
-    public virtual Warehouse Warehouse { get; set; } = new();
+    public Product Product { get; set; } = null!;    
+
+    public uint WarehouseId { get; set; }
+
+    [Required]
+    public Warehouse Warehouse { get; set; } = null!;
 
     [Required, Display(Name = "Menge")]
-    public int Quantity { get; set; } = 0;
+    public uint Quantity { get; set; } = 0;
 }

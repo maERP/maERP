@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace maERP.Shared.Models;
 
-public class CustomerAddress : BaseModel
+public class CustomerAddress : ABaseModel
 {
     [Display(Name = "Straße"), DisplayFormat(NullDisplayText = "Straße")]
     public virtual string Street { get; set; } = String.Empty;

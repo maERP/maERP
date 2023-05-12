@@ -2,11 +2,15 @@
 
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using maERP.Server.Contracts;
 using maERP.Server.Models;
 using maERP.Shared.Models;
 
 namespace maERP.Server.Repository;
+
+public interface ISalesChannelRepository : IGenericRepository<SalesChannel>
+{
+    Task<SalesChannel> getDetails(uint id);
+}
 
 public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesChannelRepository
 {
@@ -17,7 +21,7 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
         this._context = context;
     }
 
-    public async Task<SalesChannel> getDetails(int id)
+    public async Task<SalesChannel> getDetails(uint id)
     {
         return await _context.SalesChannel.FirstOrDefaultAsync(q => q.Id == id);
     }

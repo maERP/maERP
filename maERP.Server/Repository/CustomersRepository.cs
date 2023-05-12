@@ -3,13 +3,17 @@
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using maERP.Server.Contracts;
 using maERP.Server.Exceptions;
 using maERP.Server.Models;
 using maERP.Shared.Dtos.Customer;
 using maERP.Shared.Models;
 
 namespace maERP.Server.Repository;
+
+public interface ICustomerRepository : IGenericRepository<Customer>
+{
+    Task<CustomerDetailDto> GetDetails(uint id);
+}
 
 public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
 {
@@ -22,7 +26,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         this._mapper = mapper;
     }
 
-    public async Task<CustomerDetailDto> GetDetails(int id)
+    public async Task<CustomerDetailDto> GetDetails(uint id)
     {
         var customer = await _context.Customer
             .ProjectTo<CustomerDetailDto>(_mapper.ConfigurationProvider)

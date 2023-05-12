@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using maERP.Server.Contracts;
 using maERP.Server.Models;
+using maERP.Server.Repository;
 using maERP.Shared.Dtos.TaxClass;
 
 namespace maERP.Server.Controllers;
@@ -43,7 +43,7 @@ public class TaxClassController : ControllerBase
 
     // GET: api/TaxClasses/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<TaxClassDetailDto>> GetTaxClass(int id)
+    public async Task<ActionResult<TaxClassDetailDto>> GetTaxClass(uint id)
     {
         var result = await _repository.GetDetails(id);
         return Ok(result);
@@ -51,7 +51,7 @@ public class TaxClassController : ControllerBase
 
     // PUT: api/TaxClasses/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTaxClass(int id, TaxClassDetailDto updateTaxClassDetailDto)
+    public async Task<IActionResult> PutTaxClass(uint id, TaxClassDetailDto updateTaxClassDetailDto)
     {
         try
         {
@@ -83,14 +83,14 @@ public class TaxClassController : ControllerBase
 
     // DELETE: api/TaxClasses/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTaxClass(int id)
+    public async Task<IActionResult> DeleteTaxClass(uint id)
     {
         await _repository.DeleteAsync(id);
 
         return NoContent();
     }
 
-    private async Task<bool> TaxClassExists(int id)
+    private async Task<bool> TaxClassExists(uint id)
     {
         return await _repository.Exists(id);
     }
