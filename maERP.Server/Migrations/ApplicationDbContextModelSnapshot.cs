@@ -57,7 +57,7 @@ namespace maERP.Server.Migrations
                         },
                         new
                         {
-                            Id = "de617d45-0626-451d-842d-353649863fa0",
+                            Id = "8f44b062-b9b7-4b34-b534-5e51c1f612f5",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -252,7 +252,7 @@ namespace maERP.Server.Migrations
                         {
                             Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "08e643e5-4b6a-4627-8b1a-6ba264760310",
+                            ConcurrencyStamp = "7cbe3611-a6b5-4eaa-9632-88ea3b6713ce",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -260,9 +260,9 @@ namespace maERP.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAENtQ2MrpS1d7e86s22g46SwZFZ4PLyA5vlWV680W11403dcLHb573eWvLcesoxJr+Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEz80GgnS5aWLyc9t77HF115DRxJMlsrz0cTt1NgizXTXcNPy8SnwVuIo6sEj2QP3w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "aad410df-9944-4e69-9e05-9354df0c4919",
+                            SecurityStamp = "b56d8644-34de-42b9-9a7b-70e3dd28378e",
                             TwoFactorEnabled = false,
                             UserName = "admin@localhost.com"
                         });
@@ -270,11 +270,11 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.Country", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("CountryCode")
                         .IsRequired()
@@ -297,37 +297,37 @@ namespace maERP.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = 1L,
                             CountryCode = "de",
-                            CreatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770),
+                            CreatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450),
                             Name = "Deutschland",
-                            UpdatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770)
+                            UpdatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450)
                         },
                         new
                         {
-                            Id = 2,
+                            Id = 2L,
                             CountryCode = "at",
-                            CreatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770),
+                            CreatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450),
                             Name = "Österreich",
-                            UpdatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770)
+                            UpdatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450)
                         },
                         new
                         {
-                            Id = 3,
+                            Id = 3L,
                             CountryCode = "ch",
-                            CreatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770),
+                            CreatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450),
                             Name = "Schweiz",
-                            UpdatedAt = new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770)
+                            UpdatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450)
                         });
                 });
 
             modelBuilder.Entity("maERP.Shared.Models.Customer", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -359,43 +359,39 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.CustomerAddress", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("city");
+                        .HasColumnType("text");
 
-                    b.Property<int>("CountryId")
-                        .HasColumnType("integer");
+                    b.Property<long>("CountryId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("integer");
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("HouseNr")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("house_nr");
+                        .HasColumnType("text");
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("street");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Zip")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("zip");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -408,17 +404,17 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("integer");
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -435,11 +431,11 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Asin")
                         .IsRequired()
@@ -475,8 +471,8 @@ namespace maERP.Server.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<int>("TaxClassId")
-                        .HasColumnType("integer");
+                    b.Property<long>("TaxClassId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -493,11 +489,11 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.ProductSalesChannel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -505,20 +501,14 @@ namespace maERP.Server.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<bool>("ProductExport")
-                        .HasColumnType("boolean");
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
+                    b.Property<long>("RemoteProductId")
+                        .HasColumnType("bigint");
 
-                    b.Property<bool>("ProductImport")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("RemoteProductId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SalesChannelId")
-                        .HasColumnType("integer");
+                    b.Property<long>("SalesChannelId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -534,26 +524,26 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.ProductStock", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("integer");
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("integer");
+                    b.Property<long>("WarehouseId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -566,11 +556,11 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.SalesChannel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -607,7 +597,8 @@ namespace maERP.Server.Migrations
 
                     b.Property<string>("URL")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -616,8 +607,8 @@ namespace maERP.Server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("integer");
+                    b.Property<long>("WarehouseId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -628,11 +619,11 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.ShippingProvider", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -651,11 +642,11 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.ShippingProviderRate", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -676,8 +667,8 @@ namespace maERP.Server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("ShippingProviderId")
-                        .HasColumnType("integer");
+                    b.Property<long?>("ShippingProviderId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -691,11 +682,11 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.TaxClass", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -713,11 +704,11 @@ namespace maERP.Server.Migrations
 
             modelBuilder.Entity("maERP.Shared.Models.Warehouse", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");

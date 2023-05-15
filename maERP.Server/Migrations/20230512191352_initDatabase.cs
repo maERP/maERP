@@ -59,7 +59,7 @@ namespace maERP.Server.Migrations
                 name: "Country",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     CountryCode = table.Column<string>(type: "text", nullable: false),
@@ -75,10 +75,10 @@ namespace maERP.Server.Migrations
                 name: "Customer",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    LastName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     FirstName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     CustomerStatus = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -93,7 +93,7 @@ namespace maERP.Server.Migrations
                 name: "ShippingProvider",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -108,7 +108,7 @@ namespace maERP.Server.Migrations
                 name: "TaxClass",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TaxRate = table.Column<double>(type: "double precision", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -123,7 +123,7 @@ namespace maERP.Server.Migrations
                 name: "Warehouse",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -244,14 +244,14 @@ namespace maERP.Server.Migrations
                 name: "CustomerAddress",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    street = table.Column<string>(type: "text", nullable: false),
-                    house_nr = table.Column<string>(type: "text", nullable: false),
-                    zip = table.Column<string>(type: "text", nullable: false),
-                    city = table.Column<string>(type: "text", nullable: false),
-                    CountryId = table.Column<int>(type: "integer", nullable: false),
-                    CustomerId = table.Column<int>(type: "integer", nullable: false),
+                    Street = table.Column<string>(type: "text", nullable: false),
+                    HouseNr = table.Column<string>(type: "text", nullable: false),
+                    Zip = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    CountryId = table.Column<long>(type: "bigint", nullable: false),
+                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -276,9 +276,9 @@ namespace maERP.Server.Migrations
                 name: "Order",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CustomerId = table.Column<int>(type: "integer", nullable: false),
+                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -298,14 +298,14 @@ namespace maERP.Server.Migrations
                 name: "ShippingProviderRate",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     MaxLength = table.Column<decimal>(type: "numeric", nullable: false),
                     MaxWidth = table.Column<decimal>(type: "numeric", nullable: false),
                     MaxHeight = table.Column<decimal>(type: "numeric", nullable: false),
                     MaxWeight = table.Column<decimal>(type: "numeric", nullable: false),
-                    ShippingProviderId = table.Column<int>(type: "integer", nullable: true),
+                    ShippingProviderId = table.Column<long>(type: "bigint", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -323,7 +323,7 @@ namespace maERP.Server.Migrations
                 name: "Product",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Sku = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
@@ -332,7 +332,7 @@ namespace maERP.Server.Migrations
                     Description = table.Column<string>(type: "character varying(64000)", maxLength: 64000, nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
                     Msrp = table.Column<decimal>(type: "numeric", nullable: false),
-                    TaxClassId = table.Column<int>(type: "integer", nullable: false),
+                    TaxClassId = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -351,12 +351,12 @@ namespace maERP.Server.Migrations
                 name: "SalesChannel",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    WarehouseId = table.Column<int>(type: "integer", nullable: false),
-                    URL = table.Column<string>(type: "text", nullable: false),
+                    WarehouseId = table.Column<long>(type: "bigint", nullable: false),
+                    URL = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Username = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
                     ImportProducts = table.Column<bool>(type: "boolean", nullable: false),
@@ -383,11 +383,11 @@ namespace maERP.Server.Migrations
                 name: "ProductStock",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ProductId = table.Column<int>(type: "integer", nullable: false),
-                    WarehouseId = table.Column<int>(type: "integer", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    WarehouseId = table.Column<long>(type: "bigint", nullable: false),
+                    Quantity = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -412,14 +412,12 @@ namespace maERP.Server.Migrations
                 name: "ProductSalesChannel",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SalesChannelId = table.Column<int>(type: "integer", nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false),
-                    RemoteProductId = table.Column<int>(type: "integer", nullable: false),
+                    SalesChannelId = table.Column<long>(type: "bigint", nullable: false),
+                    ProductId = table.Column<long>(type: "bigint", nullable: false),
+                    RemoteProductId = table.Column<long>(type: "bigint", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
-                    ProductImport = table.Column<bool>(type: "boolean", nullable: false),
-                    ProductExport = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -446,22 +444,22 @@ namespace maERP.Server.Migrations
                 values: new object[,]
                 {
                     { "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "Admin", "ADMIN" },
-                    { "de617d45-0626-451d-842d-353649863fa0", null, "User", "USER" }
+                    { "8f44b062-b9b7-4b34-b534-5e51c1f612f5", null, "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "08e643e5-4b6a-4627-8b1a-6ba264760310", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAENtQ2MrpS1d7e86s22g46SwZFZ4PLyA5vlWV680W11403dcLHb573eWvLcesoxJr+Q==", null, false, "aad410df-9944-4e69-9e05-9354df0c4919", false, "admin@localhost.com" });
+                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "7cbe3611-a6b5-4eaa-9632-88ea3b6713ce", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEEz80GgnS5aWLyc9t77HF115DRxJMlsrz0cTt1NgizXTXcNPy8SnwVuIo6sEj2QP3w==", null, false, "b56d8644-34de-42b9-9a7b-70e3dd28378e", false, "admin@localhost.com" });
 
             migrationBuilder.InsertData(
                 table: "Country",
                 columns: new[] { "Id", "CountryCode", "CreatedAt", "Name", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "de", new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770), "Deutschland", new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770) },
-                    { 2, "at", new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770), "Österreich", new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770) },
-                    { 3, "ch", new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770), "Schweiz", new DateTime(2023, 4, 21, 18, 56, 30, 332, DateTimeKind.Utc).AddTicks(1770) }
+                    { 1L, "de", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450), "Deutschland", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450) },
+                    { 2L, "at", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450), "Österreich", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450) },
+                    { 3L, "ch", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450), "Schweiz", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450) }
                 });
 
             migrationBuilder.InsertData(
