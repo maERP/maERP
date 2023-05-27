@@ -8,6 +8,27 @@
     <UserSecretsId>08b84e2b-7423-4996-917f-eb3ddcac664d</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+
+    <Version>0.1</Version>
+    <Authors>Martin Andrich</Authors>
+    <Company>Martin Andrich Softwareentwicklung</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>Martin Andrich</Copyright>
+    <RepositoryUrl>https://github.com/maERP/maERP</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIconUrl>https://avatars.githubusercontent.com/u/103992987?s=200</PackageIconUrl>
+    <PackageTags></PackageTags>
+    <Description>
+      OpenSource, self-hosted, client/server-based ERP system with multiplatform GUI written in CSharp
+    </Description>
+    <PackageReleaseNotes>
+      Work in Progress.
+    </PackageReleaseNotes>
+    <PackageLicenseExpression>GPL3.0</PackageLicenseExpression>
+    <PackageOutputPath>packages</PackageOutputPath>
+    <Platforms>AnyCPU;x64</Platforms>
+    <PackageId>maERP</PackageId>
+    <Configurations>Debug;Release;GPU</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' ">

@@ -8,6 +8,27 @@
     <UserSecretsId>53b9bd57-4cf0-45d7-bba7-64c04472618f</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+
+    <Version>0.1</Version>
+    <Authors>Martin Andrich</Authors>
+    <Company>Martin Andrich Softwareentwicklung</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>Martin Andrich</Copyright>
+    <RepositoryUrl>https://github.com/maERP/maERP</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIconUrl>https://avatars.githubusercontent.com/u/103992987?s=200</PackageIconUrl>
+    <PackageTags></PackageTags>
+    <Description>
+      OpenSource, self-hosted, client/server-based ERP system with multiplatform GUI written in CSharp
+    </Description>
+    <PackageReleaseNotes>
+      Work in Progress.
+    </PackageReleaseNotes>
+    <PackageLicenseExpression>GPL3.0</PackageLicenseExpression>
+    <PackageOutputPath>packages</PackageOutputPath>
+    <Platforms>AnyCPU;x64</Platforms>
+    <PackageId>maERP</PackageId>
+    <Configurations>Debug;Release;GPU</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -36,9 +57,9 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
     <PackageReference Include="Serilog.Sinks.Graylog" Version="2.3.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
