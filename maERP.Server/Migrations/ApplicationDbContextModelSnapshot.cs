@@ -57,7 +57,7 @@ namespace maERP.Server.Migrations
                         },
                         new
                         {
-                            Id = "8f44b062-b9b7-4b34-b534-5e51c1f612f5",
+                            Id = "958d2f61-2d26-4881-91a6-fe48c7ce652d",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -189,6 +189,7 @@ namespace maERP.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -252,7 +253,7 @@ namespace maERP.Server.Migrations
                         {
                             Id = "02174cf0–9412–4cfe-afbf-59f706d72cf6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7cbe3611-a6b5-4eaa-9632-88ea3b6713ce",
+                            ConcurrencyStamp = "5c815490-a5da-487c-8fe6-8934d4e6de7c",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -260,9 +261,9 @@ namespace maERP.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEz80GgnS5aWLyc9t77HF115DRxJMlsrz0cTt1NgizXTXcNPy8SnwVuIo6sEj2QP3w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPz/LbPIYoGc+hzEUNQmb7u8sSlPCdg8L9/U1uSZpCJq5CF31HFUU0BUQhTWOyBgug==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b56d8644-34de-42b9-9a7b-70e3dd28378e",
+                            SecurityStamp = "95c3b0da-f776-4292-b927-10c77804a30e",
                             TwoFactorEnabled = false,
                             UserName = "admin@localhost.com"
                         });
@@ -299,25 +300,25 @@ namespace maERP.Server.Migrations
                         {
                             Id = 1L,
                             CountryCode = "de",
-                            CreatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450),
+                            CreatedAt = new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430),
                             Name = "Deutschland",
-                            UpdatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450)
+                            UpdatedAt = new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430)
                         },
                         new
                         {
                             Id = 2L,
                             CountryCode = "at",
-                            CreatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450),
+                            CreatedAt = new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430),
                             Name = "Österreich",
-                            UpdatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450)
+                            UpdatedAt = new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430)
                         },
                         new
                         {
                             Id = 3L,
                             CountryCode = "ch",
-                            CreatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450),
+                            CreatedAt = new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430),
                             Name = "Schweiz",
-                            UpdatedAt = new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450)
+                            UpdatedAt = new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430)
                         });
                 });
 

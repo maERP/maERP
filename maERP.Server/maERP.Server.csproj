@@ -95,6 +95,9 @@
     <None Remove="Microsoft.EntityFrameworkCore.Relational" />
     <None Remove="Serilog.Sinks.Graylog" />
     <None Remove="Serilog.AspNetCore" />
+    <None Remove="Controllers\Api\" />
+    <None Remove="Controllers\Web\" />
+    <None Remove="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -109,6 +112,9 @@
     <Folder Include="wwwroot\lib\" />
     <Folder Include="wwwroot\lib\" />
     <Folder Include="wwwroot\lib\" />
+    <Folder Include="Controllers\Api\" />
+    <Folder Include="Controllers\Web\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Controllers\SalesChannelController.cs" />

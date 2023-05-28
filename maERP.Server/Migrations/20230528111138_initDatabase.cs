@@ -33,11 +33,11 @@ namespace maERP.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: true),
@@ -444,22 +444,22 @@ namespace maERP.Server.Migrations
                 values: new object[,]
                 {
                     { "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "341743f0-asd2–42de-afbf-59kmkkmk72cf6", "Admin", "ADMIN" },
-                    { "8f44b062-b9b7-4b34-b534-5e51c1f612f5", null, "User", "USER" }
+                    { "958d2f61-2d26-4881-91a6-fe48c7ce652d", null, "User", "USER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "7cbe3611-a6b5-4eaa-9632-88ea3b6713ce", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEEz80GgnS5aWLyc9t77HF115DRxJMlsrz0cTt1NgizXTXcNPy8SnwVuIo6sEj2QP3w==", null, false, "b56d8644-34de-42b9-9a7b-70e3dd28378e", false, "admin@localhost.com" });
+                values: new object[] { "02174cf0–9412–4cfe-afbf-59f706d72cf6", 0, "5c815490-a5da-487c-8fe6-8934d4e6de7c", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEPz/LbPIYoGc+hzEUNQmb7u8sSlPCdg8L9/U1uSZpCJq5CF31HFUU0BUQhTWOyBgug==", null, false, "95c3b0da-f776-4292-b927-10c77804a30e", false, "admin@localhost.com" });
 
             migrationBuilder.InsertData(
                 table: "Country",
                 columns: new[] { "Id", "CountryCode", "CreatedAt", "Name", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1L, "de", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450), "Deutschland", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450) },
-                    { 2L, "at", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450), "Österreich", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450) },
-                    { 3L, "ch", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450), "Schweiz", new DateTime(2023, 5, 12, 19, 13, 52, 409, DateTimeKind.Utc).AddTicks(1450) }
+                    { 1L, "de", new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430), "Deutschland", new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430) },
+                    { 2L, "at", new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430), "Österreich", new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430) },
+                    { 3L, "ch", new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430), "Schweiz", new DateTime(2023, 5, 28, 11, 11, 38, 897, DateTimeKind.Utc).AddTicks(9430) }
                 });
 
             migrationBuilder.InsertData(

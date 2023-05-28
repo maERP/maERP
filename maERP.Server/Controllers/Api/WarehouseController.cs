@@ -8,7 +8,7 @@ using maERP.Server.Repository;
 using maERP.Shared.Dtos.Warehouse;
 using maERP.Shared.Models;
 
-namespace maERP.Server.Controllers;
+namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]

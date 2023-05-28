@@ -3,18 +3,25 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Newtonsoft.Json;
-using maERP.Shared.Contracts;
 using maERP.Shared.Dtos.User;
 
 namespace maERP.Shared.Services;
 
+public interface IDataService<T> where T : class
+{
+    public Task<LoginResponseDto> Login(string server, string email, string password);
+    public Task<bool> CheckAccessToken(string accessToken);
+    public Task<LoginResponseDto> RefreshToken(string refreshToken);
+    public Task<T> Request(string method, string path, object payload = null);
+}
+
 public class DataService<T> : IDataService<T> where T : class
 {
-    private readonly ITokenService _tokenService;
+    private readonly IClientTokenService _tokenService;
 
     // string _serverBaseUrl = "";
 
-    public  DataService(ITokenService tokenService)
+    public  DataService(IClientTokenService tokenService)
     {
         _tokenService = tokenService;
     }
@@ -77,6 +84,8 @@ public class DataService<T> : IDataService<T> where T : class
 
             return response.IsSuccessStatusCode;
         }
+
+        return true;
     }
 
     public async Task<LoginResponseDto> RefreshToken(string refreshToken)
@@ -116,10 +125,13 @@ public class DataService<T> : IDataService<T> where T : class
             response.Dispose();
             return null;
         }
+
+        return null;
     }
 
     public async Task<T> Request(string method, string path, object payload = null)
     {
+        /*
         try
         {
             using (var client = new HttpClient())
@@ -194,6 +206,7 @@ public class DataService<T> : IDataService<T> where T : class
         {
             Console.WriteLine(ex.Message);
         }
+        */
 
         throw new Exception();
     }

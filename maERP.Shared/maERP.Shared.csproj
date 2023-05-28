@@ -30,6 +30,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -43,7 +44,6 @@
     <Folder Include="Dtos\Order\" />
 
     <Folder Include="Services\" />
-    <Folder Include="Contracts\" />
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Pages\Customer.razor" />

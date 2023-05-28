@@ -1,7 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Components.Authorization;
-using maERP.Shared.Contracts;
 using maERP.Shared.Services;
 
 namespace maERP.Client;
@@ -31,7 +30,7 @@ public static class MauiProgram
         builder.Services.AddScoped<AuthStateProvider>();
         builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
 
-        builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.Services.AddScoped<IClientTokenService, ClientTokenService>();
         builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
 
         /*

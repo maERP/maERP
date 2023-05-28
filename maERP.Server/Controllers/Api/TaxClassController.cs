@@ -7,7 +7,7 @@ using maERP.Server.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Dtos.TaxClass;
 
-namespace maERP.Server.Controllers;
+namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]

@@ -3,7 +3,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
-using maERP.Shared.Contracts;
 using maERP.Shared.Dtos.User;
 using maERP.Shared.Models;
 
@@ -11,10 +10,10 @@ namespace maERP.Shared.Services;
 
 public class AuthStateProvider : AuthenticationStateProvider
 {
-    private readonly ITokenService _tokenService;
+    private readonly IClientTokenService _tokenService;
     private readonly IDataService<ApiUser> _dataService;
 
-    public AuthStateProvider(ITokenService tokenService, IDataService<ApiUser> dataService)
+    public AuthStateProvider(IClientTokenService tokenService, IDataService<ApiUser> dataService)
     {
         _tokenService = tokenService;
         _dataService = dataService;

@@ -16,6 +16,8 @@ using maERP.Server.Middleware;
 using maERP.Server.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Models;
+using maERP.Server.Services;
+using Microsoft.CodeAnalysis.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,12 +64,25 @@ builder.Services.AddCors(option =>
             .AllowAnyMethod());
 });
 
+/*
 builder.Services.AddIdentityCore<ApiUser>()
     .AddRoles<IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<ApiUser>>("maERP.Server")
     .AddEntityFrameworkStores<ApplicationDbContext>();
-//.AddDefaultTokenProviders();
-
+    // .AddDefaultTokenProviders();
+*/
+builder.Services
+    .AddIdentityCore<ApiUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+        options.User.RequireUniqueEmail = true;
+        options.Password.RequireDigit = false;
+        options.Password.RequiredLength = 6;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddOData(options => { options.Select().Filter().OrderBy(); });
@@ -75,16 +90,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "maERP.Server", Version = "v1" });
-
-    options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = @"JWT Authorization header using the Bearer scheme.
-                        Enter 'Bearer' [space] and then your token in the text input below.
-                        Example: 'Bearer 12345abcdef",
-        Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = JwtBearerDefaults.AuthenticationScheme
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
     });
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
@@ -93,18 +106,16 @@ builder.Services.AddSwaggerGen(options =>
             {
                 Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Scheme = "Oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
             },
-            new List<string>()
+            new string[]{}
         }
     });
 });
 
+/*
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -125,6 +136,26 @@ builder.Services.AddAuthentication(options =>
         )
     };
 });
+*/
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "maERP",
+            ValidAudience = "maERP",
+            IssuerSigningKey = new SymmetricSecurityKey(
+                //Encoding.UTF8.GetBytes("!SomethingSecret!!")
+                Encoding.UTF8.GetBytes("abcdefghiklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")
+            ),
+        };
+    });
 
 builder.Services.AddResponseCaching(options =>
 {
@@ -153,7 +184,8 @@ builder.Services.AddVersionedApiExplorer(
 
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IAuthManager, AuthManager>();
+builder.Services.AddScoped<TokenService, TokenService>();
+// builder.Services.AddScoped<IAuthManager, AuthManager>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();

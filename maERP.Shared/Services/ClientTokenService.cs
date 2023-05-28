@@ -1,14 +1,20 @@
 ﻿using Blazored.LocalStorage;
-using maERP.Shared.Contracts;
 using maERP.Shared.Dtos.User;
 
 namespace maERP.Shared.Services;
 
-public class TokenService : ITokenService
+public interface IClientTokenService
+{
+    Task SetToken(TokenDto tokenDTO);
+    Task<TokenDto> GetToken();
+    Task RemoveToken();
+}
+
+public class ClientTokenService : IClientTokenService
 {
     private readonly ILocalStorageService _localStorageService;
 
-    public TokenService(ILocalStorageService localStorageService)
+    public ClientTokenService(ILocalStorageService localStorageService)
     {
         _localStorageService = localStorageService;
     }

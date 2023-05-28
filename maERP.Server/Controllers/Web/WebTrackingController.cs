@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace maERP.Server.Controllers;
+namespace maERP.Server.Controllers.Web;
 
 public class WebController : Controller
 {

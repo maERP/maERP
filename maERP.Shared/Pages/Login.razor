@@ -2,11 +2,10 @@
 
 @using Newtonsoft.Json
 @using maERP.Shared.Dtos.User;
-@using maERP.Shared.Contracts;
 @using maERP.Shared.Services;
 
 @inject NavigationManager _navManager;
-@inject AuthStateProvider _authStateProvider;
+@* @inject AuthStateProvider _authStateProvider; *@
 
 <h3>Login</h3>
 
@@ -66,6 +65,7 @@
     {
         _spinnerClass = "spinner-border spinner-border-sm";
 
+        /*
         var loginResponse = await _authStateProvider.LoginUser(loginDto);
 
         if (loginResponse.Succeeded)
@@ -76,6 +76,7 @@
 
         _errorMessage = loginResponse.Message;
         _spinnerClass = "";
+        */
 
         this.StateHasChanged();
     }
