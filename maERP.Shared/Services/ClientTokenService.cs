@@ -5,7 +5,7 @@ namespace maERP.Shared.Services;
 
 public interface IClientTokenService
 {
-    Task SetToken(TokenDto tokenDTO);
+    Task SetToken(string token);
     Task<TokenDto> GetToken();
     Task RemoveToken();
 }
@@ -19,18 +19,18 @@ public class ClientTokenService : IClientTokenService
         _localStorageService = localStorageService;
     }
 
-    public async Task SetToken(TokenDto tokenDTO)
+    public async Task SetToken(string token)
     {
-        await _localStorageService.SetItemAsync("token", tokenDTO);
+        await _localStorageService.SetItemAsync("AccessToken", token);
     }
 
     public async Task<TokenDto> GetToken()
     {
-        return await _localStorageService.GetItemAsync<TokenDto>("token");
+        return await _localStorageService.GetItemAsync<TokenDto>("AccessToken");
     }
 
     public async Task RemoveToken()
     {
-        await _localStorageService.RemoveItemAsync("token");
+        await _localStorageService.RemoveItemAsync("AccessToken");
     }
 }

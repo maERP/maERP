@@ -10,8 +10,6 @@ namespace maERP.Shared.Services;
 public interface IDataService<T> where T : class
 {
     public Task<LoginResponseDto> Login(string server, string email, string password);
-    public Task<bool> CheckAccessToken(string accessToken);
-    public Task<LoginResponseDto> RefreshToken(string refreshToken);
     public Task<T> Request(string method, string path, object payload = null);
 }
 
@@ -30,7 +28,7 @@ public class DataService<T> : IDataService<T> where T : class
     {
         using (var client = new HttpClient())
         {
-            string requestUrl = server + "/api/Users/login";
+            string requestUrl = server + "/api/User/login";
             client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -49,89 +47,16 @@ public class DataService<T> : IDataService<T> where T : class
                 string result = response.Content.ReadAsStringAsync().Result;
                 response.Dispose();
 
-                var responseObj = JsonConvert.DeserializeObject<LoginResponseDto>(result);
-
-                // maERP.Shared.Globals.ServerBaseUrl = server;
-                // _serverBaseUrl = server;
-
-                LoginResponseDto loginResponseDto = new LoginResponseDto
-                {
-                    Succeeded = true,
-                    Token = responseObj?.Token
-                };
-
-                return loginResponseDto;
+                return JsonConvert.DeserializeObject<LoginResponseDto>(result);
             }
 
             response.Dispose();
             return null;
         }
-    }
-
-    public async Task<bool> CheckAccessToken(string accessToken)
-    {
-        using (var client = new HttpClient())
-        {
-            var token = await _tokenService.GetToken();
-
-            string requestUrl = token.BaseUrl + "/api/Users/CheckToken";
-            client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-
-            var response = await client.PostAsJsonAsync(requestUrl, accessToken).ConfigureAwait(false);
-
-            return response.IsSuccessStatusCode;
-        }
-
-        return true;
-    }
-
-    public async Task<LoginResponseDto> RefreshToken(string refreshToken)
-    {
-        using (var client = new HttpClient())
-        {
-            var token = await _tokenService.GetToken();
-
-            string requestUrl = token.BaseUrl + "/api/Users/Refresh";
-            client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            var loginData = new Dictionary<string, string>
-            {
-                {"token", refreshToken}
-            };
-
-            var response = await client.PostAsJsonAsync(requestUrl, loginData).ConfigureAwait(false);
-
-            if (response.IsSuccessStatusCode)
-            {
-                string result = response.Content.ReadAsStringAsync().Result;
-                response.Dispose();
-
-                var responseObj = JsonConvert.DeserializeObject<LoginResponseDto>(result);
-
-                LoginResponseDto loginDto = new LoginResponseDto
-                {
-                    Succeeded = true,
-                    Token = responseObj?.Token
-                };
-
-                return loginDto;
-            }
-
-            response.Dispose();
-            return null;
-        }
-
-        return null;
     }
 
     public async Task<T> Request(string method, string path, object payload = null)
     {
-        /*
         try
         {
             using (var client = new HttpClient())
@@ -206,7 +131,6 @@ public class DataService<T> : IDataService<T> where T : class
         {
             Console.WriteLine(ex.Message);
         }
-        */
 
         throw new Exception();
     }

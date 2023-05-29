@@ -5,6 +5,7 @@ using maERP.Shared.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using maERP.Shared.Dtos.User;
 
 namespace maERP.Server.Controllers.Api;
 
@@ -57,28 +58,36 @@ public class UserController : ControllerBase
         }
 
         var managedUser = await _userManager.FindByEmailAsync(request.Email);
+
         if (managedUser == null)
         {
             return BadRequest("Bad credentials");
         }
+
         var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
+
         if (!isPasswordValid)
         {
             return BadRequest("Bad credentials");
         }
+
         var userInDb = _context.Users.FirstOrDefault(u => u.Email == request.Email);
 
         if (userInDb is null)
+        {
             return Unauthorized();
+        }
 
         var accessToken = _tokenService.CreateToken(userInDb);
+
         await _context.SaveChangesAsync();
 
-        return Ok(new AuthResponse
+        return Ok(new LoginResponseDto
         {
-            Username = userInDb.UserName,
-            Email = userInDb.Email,
-            Token = accessToken,
-        });
+            Succeeded = true,
+            Message = string.Empty,
+            UserId = userInDb.Id,
+            AccessToken = accessToken,
+        }) ;
     }
 }

@@ -25,57 +25,17 @@ public class AuthStateProvider : AuthenticationStateProvider
         {
             var tokenDto = await _tokenService.GetToken();
 
-            // empty token            
-            if(tokenDto is null ||
-               string.IsNullOrEmpty(tokenDto.AccessToken) ||
-               string.IsNullOrEmpty(tokenDto.RefreshToken) ||
-               string.IsNullOrEmpty(tokenDto.BaseUrl))
-            {
-                await _tokenService.RemoveToken();
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-            }
-            // token is expired
-            else if (!string.IsNullOrEmpty(tokenDto?.AccessToken) && tokenDto?.AccessTokenExpiration <= DateTime.Now)
-            {
-                var loginResponseDto = await RefreshToken();
+            var identity = string.IsNullOrEmpty(tokenDto?.AccessToken) || tokenDto?.AccessTokenExpiration < DateTime.Now
+            ? new ClaimsIdentity()
+            : new ClaimsIdentity(ParseClaimsFromJwt(tokenDto.AccessToken), "jwt");
 
-                if(loginResponseDto == null)
-                {
-                    await _tokenService.RemoveToken();
-                    StateChanged();
-                    return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-                }
-
-                var identity = new ClaimsIdentity(ParseClaimsFromJwt(loginResponseDto.Token.AccessToken), "jwt");
-                StateChanged();
-                return new AuthenticationState(new ClaimsPrincipal(identity));
-            }
-            // check if token is valid
-            else if (!string.IsNullOrEmpty(tokenDto?.AccessToken))
-            {
-                bool result = await _dataService.CheckAccessToken(tokenDto.AccessToken);
-
-                if (result)
-                {
-                    var identity = new ClaimsIdentity(ParseClaimsFromJwt(tokenDto.AccessToken), "jwt");
-                    StateChanged();
-                    return new AuthenticationState(new ClaimsPrincipal(identity));
-                }
-            }
-
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            return new AuthenticationState(new ClaimsPrincipal(identity));
         }
         catch(Exception ex)
         {
             Console.WriteLine(ex.Message);
             throw new Exception() ;
         }
-
-        /* old code
-        var identity = string.IsNullOrEmpty(tokenDto?.AccessToken) || tokenDto?.AccessTokenExpiration < DateTime.Now
-            ? new ClaimsIdentity()
-            : new ClaimsIdentity(ParseClaimsFromJwt(tokenDto.AccessToken), "jwt");
-        */
     }
 
     public async Task<LoginResponseDto> LoginUser(LoginDto loginDto)
@@ -83,7 +43,7 @@ public class AuthStateProvider : AuthenticationStateProvider
         try
         {
             var result = await _dataService.Login(loginDto.Server, loginDto.Email, loginDto.Password);
-            await _tokenService.SetToken(result.Token);
+            await _tokenService.SetToken(result.AccessToken);
             return result;
         }
         catch (Exception)
@@ -94,27 +54,6 @@ public class AuthStateProvider : AuthenticationStateProvider
                 Message = "Login fehlgeschlagen."
             };
         }
-    }
-
-    public async Task<bool> CheckAccessToken()
-    {
-        var token = await _tokenService.GetToken();
-        var result = await _dataService.CheckAccessToken(token.AccessToken);
-
-        return result;
-    }
-
-    public async Task<LoginResponseDto> RefreshToken()
-    {
-        var token = await _tokenService.GetToken();
-        var result = await _dataService.RefreshToken(token.RefreshToken);
-
-        if(result != null)
-        {
-            await _tokenService.SetToken(result.Token);
-        }
-                
-        return result;
     }
 
     public async Task LogoutUser()

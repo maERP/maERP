@@ -11,13 +11,21 @@ namespace maERP.Server.Services;
 
 public interface ITokenService
 {
-    public string CreateToken(IdentityUser user);
-    JwtSecurityToken CreateJwtToken(List<Claim> claims, SigningCredentials credentials, DateTime expiration);
+    string CreateToken(IdentityUser user);
+    JwtSecurityToken CreateJwtToken(List<Claim> claims, SigningCredentials credentials,
+        DateTime expiration) =>
+        new(
+            "maERP",
+            "maERP",
+            claims,
+            expires: expiration,
+            signingCredentials: credentials
+        );
     List<Claim> CreateClaims(IdentityUser user);
     SigningCredentials CreateSigningCredentials();
 }
 
-public class TokenService // : ITokenService
+public class TokenService : ITokenService
 {
     private const int ExpirationMinutes = 30;
 
@@ -43,7 +51,7 @@ public class TokenService // : ITokenService
             signingCredentials: credentials
         );
 
-    private List<Claim> CreateClaims(IdentityUser user)
+    public List<Claim> CreateClaims(IdentityUser user)
     {
         try
         {
@@ -65,7 +73,7 @@ public class TokenService // : ITokenService
         }
     }
 
-    private SigningCredentials CreateSigningCredentials()
+    public SigningCredentials CreateSigningCredentials()
     {
         return new SigningCredentials(
             new SymmetricSecurityKey(
