@@ -102,13 +102,7 @@ public class AuthManager : IAuthManager
         return new LoginResponseDto
         {
             Succeeded = true,
-            Token = new TokenDto
-            {
-                AccessToken = accessToken,
-                AccessTokenExpiration = accessTokenExpiration,
-                RefreshToken = refreshToken,
-                BaseUrl = loginDto.Server
-            }
+            AccessToken = accessToken
         };
     }
 
@@ -187,12 +181,7 @@ public class AuthManager : IAuthManager
             return new LoginResponseDto
             {
                 UserId = _user.Id,
-                Token = new TokenDto
-                {
-                    AccessToken = accessToken,
-                    AccessTokenExpiration = accessTokenExpiration,
-                    RefreshToken = refreshToken
-                }
+                AccessToken = accessToken
             };
         }
 
