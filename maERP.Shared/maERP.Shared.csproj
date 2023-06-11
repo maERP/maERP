@@ -33,7 +33,6 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.31.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Dtos\" />
     <Folder Include="Dtos\Product\" />
     <Folder Include="Dtos\SalesChannel\" />
@@ -42,8 +41,6 @@
     <Folder Include="Dtos\Warehouse\" />
     <Folder Include="Models\SalesChannelData\" />
     <Folder Include="Dtos\Order\" />
-
-    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Pages\Customer.razor" />

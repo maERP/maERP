@@ -22,7 +22,7 @@
     <PackageLicenseExpression>GPL3.0</PackageLicenseExpression>
     <PackageOutputPath>packages</PackageOutputPath>
     <Platforms>AnyCPU;x64</Platforms>
-    <PackageId>maERP</PackageId>
+    <PackageId>maERP.Web</PackageId>
     <Configurations>Debug;Release;GPU</Configurations>
     <Title>maERP WebClient</Title>
     <PackageProjectUrl>https://github.com/maERP/maERP</PackageProjectUrl>
@@ -63,13 +63,6 @@
     <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\maERP.Shared\Shared\MainLayout.razor" />
-    <None Include="..\maERP.Shared\Shared\NavMenu.razor" />
-    <None Include="..\maERP.Shared\Shared\RedirectToLogin.razor" />
-    <None Include="..\maERP.Shared\Shared\SurveyPrompt.razor" />
   </ItemGroup>
   
 </Project>
