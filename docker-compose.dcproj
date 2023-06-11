@@ -8,6 +8,8 @@
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>maerp.web</DockerServiceName>
     <DockerLaunchBrowser>true</DockerLaunchBrowser>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

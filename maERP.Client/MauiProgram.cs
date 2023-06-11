@@ -19,10 +19,10 @@ public static class MauiProgram
 
         builder.Services.AddMauiBlazorWebView();
 
-        #if DEBUG
+        // #if DEBUG
 		    builder.Services.AddBlazorWebViewDeveloperTools();
 		    builder.Logging.AddDebug();
-        #endif
+        // #endif
 
         builder.Services.AddAuthorizationCore();
         builder.Services.AddBlazoredLocalStorage();

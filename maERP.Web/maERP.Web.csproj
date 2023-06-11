@@ -17,37 +17,36 @@
     <RepositoryUrl>https://github.com/maERP/maERP</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageIconUrl>https://avatars.githubusercontent.com/u/103992987?s=200</PackageIconUrl>
-    <PackageTags></PackageTags>
-    <Description>
-      OpenSource, self-hosted, client/server-based ERP system with multiplatform GUI written in CSharp
-    </Description>
-    <PackageReleaseNotes>
-      Work in Progress.
-    </PackageReleaseNotes>
+    <Description>OpenSource, self-hosted, client/server-based ERP system with multiplatform GUI written in CSharp</Description>
+    <PackageReleaseNotes>Work in Progress.</PackageReleaseNotes>
     <PackageLicenseExpression>GPL3.0</PackageLicenseExpression>
     <PackageOutputPath>packages</PackageOutputPath>
     <Platforms>AnyCPU;x64</Platforms>
     <PackageId>maERP</PackageId>
     <Configurations>Debug;Release;GPU</Configurations>
+    <Title>maERP WebClient</Title>
+    <PackageProjectUrl>https://github.com/maERP/maERP</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/maERP/maERP/blob/main/LICENSE.txt</PackageLicenseUrl>
+    <NeutralLanguage>de</NeutralLanguage>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' ">
+    <DebugType>Portable</DebugType>
     <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>Portable</DebugType>
     <Optimize>true</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>Portable</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0-preview.4.23260.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0-preview.4.23260.4" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.0-preview.4.23260.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0-preview.4.23260.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.0-preview.4.23260.4" />
-    <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,9 +58,18 @@
     <None Remove="Microsoft.AspNetCore.Components.Authorization" />
     <None Remove="Blazored.LocalStorage" />
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\maERP.Shared\Shared\MainLayout.razor" />
+    <None Include="..\maERP.Shared\Shared\NavMenu.razor" />
+    <None Include="..\maERP.Shared\Shared\RedirectToLogin.razor" />
+    <None Include="..\maERP.Shared\Shared\SurveyPrompt.razor" />
+  </ItemGroup>
+  
 </Project>

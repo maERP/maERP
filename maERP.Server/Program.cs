@@ -2,7 +2,6 @@
 
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +16,6 @@ using maERP.Server.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Models;
 using maERP.Server.Services;
-using Microsoft.CodeAnalysis.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
