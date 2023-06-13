@@ -7,21 +7,17 @@ using maERP.Shared.Dtos.User;
 
 namespace maERP.Shared.Services;
 
-public interface IDataService<T> where T : class
+public interface IDataService
 {
     public Task<LoginResponseDto> Login(string server, string email, string password);
     public Task<T> Request(string method, string path, object payload = null);
 }
 
-public class DataService<T> : IDataService<T> where T : class
+public class DataService : IDataService
 {
-    private readonly IClientTokenService _tokenService;
-
-    // string _serverBaseUrl = "";
-
-    public  DataService(IClientTokenService tokenService)
+    public  DataService()
     {
-        _tokenService = tokenService;
+
     }
 
     public async Task<LoginResponseDto> Login(string server, string email, string password)

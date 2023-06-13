@@ -1,17 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using maERP.Shared.Shared;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Authorization;
-
+﻿using System;
 namespace maERP.Shared.Services;
-
-public interface IAuthService
-{
-    Task<ServiceResponse<int>> Register(UserRegister request);
-    Task<ServiceResponse<string>> Login(UserLogin request);
-    Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request);
-    Task<bool> IsUserAuthenticated();
-}
 
 public class AuthService : IAuthService
 {
@@ -46,40 +34,4 @@ public class AuthService : IAuthService
         var result = await _http.PostAsJsonAsync("api/auth/register", request);
         return await result.Content.ReadFromJsonAsync<ServiceResponse<int>>();
     }
-}
-
-public class User
-{
-    public int Id { get; set; }
-    public string Email { get; set; } = string.Empty;
-    public byte[] PasswordHash { get; set; }
-    public byte[] PasswordSalt { get; set; }
-    public DateTime DateCreated { get; set; } = DateTime.Now;
-    public string Role { get; set; } = "Customer";
-}
-
-public class UserChangePassword
-{
-    [Required, StringLength(100, MinimumLength = 6)]
-    public string Password { get; set; } = string.Empty;
-    [Compare("Password", ErrorMessage = "The passwords do not match.")]
-    public string ConfirmPassword { get; set; } = string.Empty;
-}
-
-public class UserLogin
-{
-    [Required]
-    public string Email { get; set; } = string.Empty;
-    [Required]
-    public string Password { get; set; } = string.Empty;
-}
-
-public class UserRegister
-{
-    [Required, EmailAddress]
-    public string Email { get; set; } = string.Empty;
-    [Required, StringLength(100, MinimumLength = 6)]
-    public string Password { get; set; } = string.Empty;
-    [Compare("Password", ErrorMessage = "The passwords do not match.")]
-    public string ConfirmPassword { get; set; } = string.Empty;
 }
