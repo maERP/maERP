@@ -33,14 +33,6 @@ public class TaxClassController : ControllerBase
         return Ok(result);
     }
 
-    // GET: api/TaxClasses/?StartIndex=0&PageSize=25&PageNumber=1
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<TaxClassListDto>>> GetPagedTaxClass([FromQuery] QueryParameters queryParameters)
-    {
-        var pagedResult = await _repository.GetAllAsync<TaxClassListDto>(queryParameters);
-        return Ok(pagedResult);
-    }
-
     // GET: api/TaxClasses/5
     [HttpGet("{id}")]
     public async Task<ActionResult<TaxClassDetailDto>> GetTaxClass(uint id)

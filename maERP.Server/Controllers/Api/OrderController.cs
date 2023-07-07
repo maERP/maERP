@@ -30,14 +30,6 @@ public class OrderController : ControllerBase
         return Ok(order);
     }
 
-    // GET: api/Order/?StartIndex=0&PageSize=25&PageNumber=1
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<OrderListDto>>> GetPagedOrder([FromQuery] QueryParameters queryParameters)
-    {
-        var pagedOrderResult = await _repository.GetAllAsync<OrderListDto>(queryParameters);
-        return Ok(pagedOrderResult);
-    }
-
     // GET: api/Order/5
     [HttpGet("{id}")]
     public async Task<ActionResult<OrderDetailDto>> GetOrder(uint id)

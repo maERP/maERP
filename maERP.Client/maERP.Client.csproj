@@ -57,12 +57,15 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0-preview.5.23302.2" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0-preview.5.23280.8" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.0-preview.5.23302.2" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0-preview.5.23302.2" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.0-preview.5.23302.2" />
         <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+        <PackageReference Include="System.Net.Http.Json" Version="8.0.0-preview.5.23280.8" />
     </ItemGroup>
 
     <ItemGroup>

@@ -19,9 +19,9 @@ namespace maERP.Server.Configurations.Seeds
                     Name = "Testprodukt 1",
                     Description = "Beschreibung 1",
                     Price = 100,
-                    TaxClass = new TaxClass { Id = 1, TaxRate = 0, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now
+                    TaxClass = new TaxClass { Id = 1, TaxRate = 0, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
+                    DateModified = DateTime.Now,
+                    DateCreated = DateTime.Now
                 }
             );
         }

@@ -1,21 +1,15 @@
 ﻿#nullable disable
 
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.OData;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Serilog;
-using Serilog.AspNetCore;
-using Serilog.Sinks.Graylog;
+using maERP.Server;
 using maERP.Server.Configurations;
 using maERP.Server.Middleware;
 using maERP.Server.Models;
+using maERP.Server.ServiceRegistrations;
 using maERP.Server.Repository;
-using maERP.Shared.Models;
-using maERP.Server.Services;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Serilog;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,98 +56,15 @@ builder.Services.AddCors(option =>
             .AllowAnyMethod());
 });
 
-/*
-builder.Services.AddIdentityCore<ApiUser>()
-    .AddRoles<IdentityRole>()
-    .AddTokenProvider<DataProtectorTokenProvider<ApiUser>>("maERP.Server")
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-    // .AddDefaultTokenProviders();
-*/
-builder.Services
-    .AddIdentityCore<ApiUser>(options =>
-    {
-        options.SignIn.RequireConfirmedAccount = false;
-        options.User.RequireUniqueEmail = true;
-        options.Password.RequireDigit = false;
-        options.Password.RequiredLength = 6;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireLowercase = false;
-    })
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddControllers().AddOData(options => { options.Select().Filter().OrderBy(); });
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "maERP.Server", Version = "v1" });
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter a valid token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
-            },
-            new string[]{}
-        }
-    });
 });
-
-/*
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero,
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-            builder.Configuration["JwtSettings:Key"])
-        )
-    };
-});
-*/
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ClockSkew = TimeSpan.Zero,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = "maERP",
-            ValidAudience = "maERP",
-            IssuerSigningKey = new SymmetricSecurityKey(
-                //Encoding.UTF8.GetBytes("!SomethingSecret!!")
-                Encoding.UTF8.GetBytes("abcdefghiklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")
-            ),
-        };
-    });
 
 builder.Services.AddResponseCaching(options =>
 {
@@ -182,8 +93,6 @@ builder.Services.AddVersionedApiExplorer(
 
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<TokenService, TokenService>();
-// builder.Services.AddScoped<IAuthManager, AuthManager>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -242,8 +151,8 @@ else
     app.MapControllers();    
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication(); // where are you?
+app.UseAuthorization(); // what are you allowed to do?
 
 using (var scope = app.Services.CreateScope())
 {

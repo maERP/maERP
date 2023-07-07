@@ -132,7 +132,7 @@ public class ProductDownloadTask : IHostedService
                                 await productSalesChannelRepository.UpdateAsync(ProductSalesChannel);
 
                                 // var localProduct = await productRepository.GetAsync(ProductSalesChannel.ProductId);
-                                var localProduct = await productRepository.GetAsync(ProductSalesChannel.Product.Id);
+                                var localProduct = await productRepository.GetByIdAsync(ProductSalesChannel.Product.Id);
 
                                 if(localProduct.Name != remoteProduct.name)
                                 {
@@ -178,7 +178,7 @@ public class ProductDownloadTask : IHostedService
 
                                 if(newUpdate)
                                 {
-                                    localProduct.UpdatedAt = DateTime.Now;
+                                    localProduct.DateModified = DateTime.Now;
                                     await productRepository.UpdateAsync(localProduct);
                                 }                                
                             }

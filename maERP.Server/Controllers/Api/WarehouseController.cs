@@ -34,14 +34,6 @@ public class WarehouseController : ControllerBase
         return Ok(warehouse);
     }
 
-    // GET: api/Warehouse/?StartIndex=0&PageSize=25&PageNumber=1
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<WarehouseListDto>>> GetPagedWarehouse([FromQuery] QueryParameters queryParameters)
-    {
-        var pagedWarehouseResult = await _repository.GetAllAsync<WarehouseListDto>(queryParameters);
-        return Ok(pagedWarehouseResult);
-    }
-
     // GET: api/Warehouse/5
     [HttpGet("{id}")]
     public async Task<ActionResult<WarehouseDetailDto>> GetWarehouse(uint id)

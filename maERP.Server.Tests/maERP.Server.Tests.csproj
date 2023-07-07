@@ -13,9 +13,9 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0-preview.23280.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0-preview.5.23302.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0-preview.5.23280.1" />
-    <PackageReference Include="xunit" Version="2.5.0-pre.26" />
+    <PackageReference Include="xunit" Version="2.5.0" />
     <PackageReference Include="Xunit.Priority" Version="1.1.6" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0-pre.20">
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
