@@ -16,8 +16,6 @@ public class AutoMapperConfig : Profile
 {
 	public AutoMapperConfig()
 	{
-		CreateMap<ApiUserDto, ApiUser>().ReverseMap();
-
         CreateMap<AReferenceDto, Customer>();
         CreateMap<Customer, CustomerCreateDto>().ReverseMap();
         CreateMap<Customer, CustomerListDto>().ReverseMap();

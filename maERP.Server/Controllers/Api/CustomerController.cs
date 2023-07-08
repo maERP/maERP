@@ -32,14 +32,6 @@ public class CustomerController : ControllerBase
         return Ok(customer);
     }
 
-    // GET: api/Customer/?StartIndex=0&PageSize=25&PageNumber=1
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<CustomerListDto>>> GetPagedCustomer([FromQuery] QueryParameters queryParameters)
-    {
-        var pagedCustomerResult = await _repository.GetAllAsync<CustomerListDto>(queryParameters);
-        return Ok(pagedCustomerResult);
-    }
-
     // GET: api/Customer/5
     [HttpGet("{id}")]
     public async Task<ActionResult<CustomerDetailDto>> GetCustomer(uint id)

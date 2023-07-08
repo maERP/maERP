@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
@@ -17,37 +17,39 @@
     <RepositoryUrl>https://github.com/maERP/maERP</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageIconUrl>https://avatars.githubusercontent.com/u/103992987?s=200</PackageIconUrl>
-    <PackageTags></PackageTags>
-    <Description>
-      OpenSource, self-hosted, client/server-based ERP system with multiplatform GUI written in CSharp
-    </Description>
-    <PackageReleaseNotes>
-      Work in Progress.
-    </PackageReleaseNotes>
+    <Description>OpenSource, self-hosted, client/server-based ERP system with multiplatform GUI written in CSharp</Description>
+    <PackageReleaseNotes>Work in Progress.</PackageReleaseNotes>
     <PackageLicenseExpression>GPL3.0</PackageLicenseExpression>
     <PackageOutputPath>packages</PackageOutputPath>
     <Platforms>AnyCPU;x64</Platforms>
-    <PackageId>maERP</PackageId>
+    <PackageId>maERP.Web</PackageId>
     <Configurations>Debug;Release;GPU</Configurations>
+    <Title>maERP WebClient</Title>
+    <PackageProjectUrl>https://github.com/maERP/maERP</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/maERP/maERP/blob/main/LICENSE.txt</PackageLicenseUrl>
+    <NeutralLanguage>de</NeutralLanguage>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' ">
+    <DebugType>Portable</DebugType>
     <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>Portable</DebugType>
     <Optimize>true</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>Portable</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.5" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.5" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0-preview.5.23302.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0-preview.5.23302.2" PrivateAssets="all" />
+    <PackageReference Include="System.Net.Http.Json" Version="8.0.0-preview.5.23280.8" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,9 +61,11 @@
     <None Remove="Microsoft.AspNetCore.Components.Authorization" />
     <None Remove="Blazored.LocalStorage" />
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
+  
 </Project>

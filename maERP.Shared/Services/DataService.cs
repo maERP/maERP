@@ -2,42 +2,41 @@
 
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Blazored.LocalStorage;
 using Newtonsoft.Json;
-using maERP.Shared.Dtos.User;
+using maERP.Shared.Models.Identity;
 
 namespace maERP.Shared.Services;
 
-public interface IDataService<T> where T : class
+public interface IDataService
 {
-    public Task<LoginResponseDto> Login(string server, string email, string password);
+    public Task<AuthResponse> Login(AuthRequest authRequest);
+    public Task<RegistrationResponse> RegisterAsync(RegistrationRequest registrationRequest);
     public Task<T> Request(string method, string path, object payload = null);
 }
 
-public class DataService<T> : IDataService<T> where T : class
+public class DataService : IDataService
 {
-    private readonly IClientTokenService _tokenService;
-
-    // string _serverBaseUrl = "";
-
-    public  DataService(IClientTokenService tokenService)
+    private readonly ILocalStorageService _localStorage;
+    
+    public DataService(ILocalStorageService localStorage)
     {
-        _tokenService = tokenService;
+        this._localStorage = localStorage;
     }
-
-    public async Task<LoginResponseDto> Login(string server, string email, string password)
+    
+    public async Task<AuthResponse> Login(AuthRequest authRequest)
     {
         using (var client = new HttpClient())
         {
-            string requestUrl = server + "/api/User/login";
+            string requestUrl = authRequest.Server + "/api/User/login";
             client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             var loginData = new Dictionary<string, string>
             {
-                {"email", email},
-                {"password", password},
-                {"server", server}
+                {"email", authRequest.Email},
+                {"password", authRequest.Password}
             };
 
             var response = await client.PostAsJsonAsync(requestUrl, loginData).ConfigureAwait(false);
@@ -47,7 +46,8 @@ public class DataService<T> : IDataService<T> where T : class
                 string result = response.Content.ReadAsStringAsync().Result;
                 response.Dispose();
 
-                return JsonConvert.DeserializeObject<LoginResponseDto>(result);
+                // TODO Check format of response
+                return JsonConvert.DeserializeObject<AuthResponse>(result);
             }
 
             response.Dispose();
@@ -61,16 +61,23 @@ public class DataService<T> : IDataService<T> where T : class
         {
             using (var client = new HttpClient())
             {
-                var token = await _tokenService.GetToken();
-                // string requestUrl = maERP.Shared.Globals.ServerBaseUrl + "/api" + path;
-                string requestUrl = token.BaseUrl + "/api" + path;
+                string baseUrl = await _localStorage.GetItemAsync<string>("baseUrl");
+                string requestUrl = baseUrl + "/api" + path;
                 // string accessToken = maERP.Shared.Globals.AccessToken;
-                var tokenDto = await _tokenService.GetToken();
+                
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenDto.AccessToken);
+                
                 client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
 
+                // add token
+                if (await _localStorage.ContainKeyAsync("token"))
+                {
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer",
+                            await _localStorage.GetItemAsync<string>("token"));
+                }
+                
                 HttpResponseMessage response = new HttpResponseMessage();
 
                 if (method == "GET")
@@ -133,5 +140,10 @@ public class DataService<T> : IDataService<T> where T : class
         }
 
         throw new Exception();
+    }
+
+    public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest registrationRequest)
+    {
+        throw new NotImplementedException();
     }
 }

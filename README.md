@@ -9,4 +9,4 @@
 
 * Moderne Architektur mittels `ASP.NET Core 7`, `Entity Framework Core 7` and Dotnet MAUI
 * Cross-Platform: Windows, MacOS, Linux, iOS, Android
-* Unterstützt `Docker` out of the box
+* UnterstÃ¼tzt `Docker` out of the box

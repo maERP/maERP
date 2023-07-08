@@ -45,14 +45,6 @@ public class ProductController : ControllerBase
         return Ok(result);
     }
 
-    // GET: api/Product/?StartIndex=0&PageSize=25&PageNumber=1
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductListDto>>> GetPagedProduct([FromQuery] QueryParameters queryParameters)
-    {
-        var pagedResult = await _productRepository.GetAllAsync<ProductListDto>(queryParameters);
-        return Ok(pagedResult);
-    }
-
     // GET: api/Product/5
     [HttpGet("{id}")]
     public async Task<ActionResult<ProductDetailDto>> GetProduct(uint id)

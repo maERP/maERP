@@ -8,7 +8,7 @@ using maERP.Shared.Models;
 
 namespace maERP.Server.Models;
 
-public class ApplicationDbContext : IdentityDbContext<ApiUser>
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -73,55 +73,64 @@ public class ApplicationDbContext : IdentityDbContext<ApiUser>
         modelBuilder.Entity<TaxClass>();
 
         modelBuilder.Entity<Warehouse>();
-
+        
         // seed user data
-        string DEFAULT_ADMIN_ID = "02174cf0–9412–4cfe-afbf-59f706d72cf6";
-        string DEFAULT_ROLE_ID = "341743f0-asd2–42de-afbf-59kmkkmk72cf6";
+        string DEFAULT_ADMIN_USER_ID = "05474ea3–7543-8aef-bcae-33e812c35fc3";
+        string DEFAULT_ADMIN_ROLE_ID = "02174cf0–9412–4cfe-afbf-59f706d72cf6";
+        string DEFAULT_USER_ROLE_ID = "341743f0-asd2–42de-afbf-59kmkkmk21ab1";
 
         var defaultAdminRole = new IdentityRole
         {
+            Id = DEFAULT_ADMIN_ROLE_ID,
             Name = "Admin",
-            NormalizedName = "ADMIN",
-            Id = DEFAULT_ROLE_ID,
-            ConcurrencyStamp = DEFAULT_ROLE_ID
+            NormalizedName = "ADMIN"
         };
 
         var defaultUserRole = new IdentityRole
         {
+            Id = DEFAULT_USER_ROLE_ID,
             Name = "User",
             NormalizedName = "USER"
         };
 
-        var defaultUser = new ApiUser
+        var hasher = new PasswordHasher<ApplicationUser>();
+        
+        var defaultAdmin = new ApplicationUser
         {
-            Id = DEFAULT_ADMIN_ID,
+            Id = DEFAULT_ADMIN_USER_ID,
             FirstName = "Admin",
             LastName = "Admin",
             Email = "admin@localhost.com",
-            UserName = "admin@localhost.com",
             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-            NormalizedEmail = "ADMIN@LOCALHOST.COM"
+            NormalizedEmail = "ADMIN@LOCALHOST.COM",
+            PasswordHash = hasher.HashPassword(null, "maERP!12")
         };
-
-        var password = new PasswordHasher<ApiUser>();
-        var hashed = password.HashPassword(defaultUser, "maERP!12");
-        defaultUser.PasswordHash = hashed;
-
+        
         modelBuilder.Entity<IdentityRole>().HasData(defaultAdminRole);
         modelBuilder.Entity<IdentityRole>().HasData(defaultUserRole);
-        modelBuilder.Entity<ApiUser>().HasData(defaultUser);
+        modelBuilder.Entity<ApplicationUser>().HasData(defaultAdmin);
 
         modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
         {
-            RoleId = DEFAULT_ROLE_ID,
-            UserId = DEFAULT_ADMIN_ID
+            RoleId = DEFAULT_ADMIN_ROLE_ID,
+            UserId = DEFAULT_ADMIN_USER_ID
         });
     }
 
-    /*
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        optionsBuilder.UseLazyLoadingProxies();
+        foreach (var entry in base.ChangeTracker.Entries<ABaseModel>()
+            .Where(q => q.State == EntityState.Added || q.State == EntityState.Modified))
+        {
+            entry.Entity.DateModified = DateTime.Now;
+            // entry.Entity.ModifiedBy = _userService.UserId;
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.DateCreated = DateTime.Now;
+                // entry.Entity.CreatedBy = _userService.UserId;
+            }
+        }
+
+        return base.SaveChangesAsync(cancellationToken);
     }
-    */
 }

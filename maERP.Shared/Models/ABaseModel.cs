@@ -11,8 +11,8 @@ abstract public class ABaseModel
     public virtual uint Id { get; set; }
 
     [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public virtual DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public virtual DateTime DateCreated { get; set; } = DateTime.UtcNow;
 
     [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-    public virtual DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public virtual DateTime DateModified { get; set; } = DateTime.UtcNow;
 }
