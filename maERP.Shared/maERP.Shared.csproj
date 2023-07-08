@@ -34,18 +34,21 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
   </ItemGroup>
     <ItemGroup>
-    <Folder Include="Models\" />
+    <Folder Include="Contracts\" />    
     <Folder Include="Dtos\" />
+    <Folder Include="Dtos\Order\" />
     <Folder Include="Dtos\Product\" />
     <Folder Include="Dtos\SalesChannel\" />
     <Folder Include="Dtos\TaxClass\" />
     <Folder Include="Dtos\User\" />
     <Folder Include="Dtos\Warehouse\" />
+    <Folder Include="Models\" />
+    <Folder Include="Models\Identity\" />
     <Folder Include="Models\SalesChannelData\" />
-    <Folder Include="Dtos\Order\" />
     <Folder Include="Pages\" />
+    <Folder Include="Providers\" />
     <Folder Include="Services\" />
-    <Folder Include="Contracts\" />
+    <Folder Include="Shared\" />
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Pages\Customer.razor" />
@@ -71,9 +74,9 @@
     <RazorComponent Include="Pages\WarehouseDelete.razor" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shared\MainLayout.razor" />
-    <None Include="Shared\NavMenu.razor" />
-    <None Include="Shared\RedirectToLogin.razor" />
-    <None Include="Shared\SurveyPrompt.razor" />
+    <RazorComponent Include="Shared\MainLayout.razor" />
+    <RazorComponent Include="Shared\NavMenu.razor" />
+    <RazorComponent Include="Shared\RedirectToLogin.razor" />
+    <RazorComponent Include="Shared\SurveyPrompt.razor" />
   </ItemGroup>
 </Project>
