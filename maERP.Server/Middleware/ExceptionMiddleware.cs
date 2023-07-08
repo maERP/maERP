@@ -1,7 +1,7 @@
 ﻿#nullable disable
 
 using System.Net;
-using Newtonsoft.Json;
+using System.Text.Json;
 using maERP.Server.Exceptions;
 
 namespace maERP.Server.Middleware;
@@ -52,7 +52,7 @@ public class ExceptionMiddleware
                 break;
         }
 
-        string response = JsonConvert.SerializeObject(errorDetails);
+        string response = JsonSerializer.Serialize(errorDetails);
         context.Response.StatusCode = (int)statusCode;
         return context.Response.WriteAsync(response);
     }

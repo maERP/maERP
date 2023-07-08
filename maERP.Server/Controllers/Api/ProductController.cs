@@ -83,7 +83,7 @@ public class ProductController : ControllerBase
 
         _mapper.Map(productCreateDto, product);
 
-        var taxClass = await _taxClassRepository.GetAsync(productCreateDto.TaxClass.Id);
+        var taxClass = await _taxClassRepository.GetByIdAsync(productCreateDto.TaxClass.Id);
 
         product.TaxClass = taxClass;
 
@@ -96,7 +96,7 @@ public class ProductController : ControllerBase
 
             foreach (var productSalesChannel in product.ProductSalesChannel)
             {
-                var salesChannel = await _salesChannelRepository.GetAsync(productSalesChannel.Id);
+                var salesChannel = await _salesChannelRepository.GetByIdAsync(productSalesChannel.Id);
 
                 await _productSalesChannelRepository.AddAsync(new ProductSalesChannel
                 {

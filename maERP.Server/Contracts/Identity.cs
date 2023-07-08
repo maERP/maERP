@@ -1,4 +1,4 @@
-using maERP.Server.Models.Identity;
+using maERP.Shared.Models.Identity;
 
 namespace maERP.Server.Contracts;
 

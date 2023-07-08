@@ -1,23 +1,28 @@
 ﻿#nullable disable
 
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using maERP.Server.Exceptions;
 using maERP.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using maERP.Shared.Models;
 
 namespace maERP.Server.Repository;
 
 public interface IGenericRepository<T> where T : class
 {
     Task<IReadOnlyList<T>> GetAllAsync();
+    Task<List<TResult>> GetAllAsync<TResult>();
     Task<T> GetByIdAsync(uint? id);
     Task<T> AddAsync(T entity);
+    Task<TResult> AddAsync<TSource, TResult>(TSource source);
     Task UpdateAsync(T entity);
+    Task UpdateAsync<TSource>(uint id, TSource source);
     Task DeleteAsync(uint id);
     Task<bool> Exists(uint id);
 }
 
-public class GenericRepository<T> : IGenericRepository<T> where T : class
+public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
@@ -31,6 +36,13 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task<IReadOnlyList<T>> GetAllAsync()
     {
         return await _context.Set<T>().AsNoTracking().ToListAsync();
+    }
+
+    public async Task<List<TResult>> GetAllAsync<TResult>()
+    {
+        return await _context.Set<T>()
+            .ProjectTo<TResult>(_mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 
     public async Task<T> GetByIdAsync(uint? id)
@@ -50,8 +62,32 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return entity;
     }
 
+    public async Task<TResult> AddAsync<TSource, TResult>(TSource source)
+    {
+        var entity = _mapper.Map<T>(source);
+
+        await _context.AddAsync(entity);
+        await _context.SaveChangesAsync();
+
+        return _mapper.Map<TResult>(entity);
+    }
+
     public async Task UpdateAsync(T entity)
     {
+        _context.Entry(entity).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync<TSource>(uint id, TSource source)
+    {
+        var entity = await GetByIdAsync(id);
+
+        if (entity == null)
+        {
+            throw new NotFoundException(typeof(T).Name, id);
+        }
+
+        _mapper.Map(source, entity);
         _context.Update(entity);
         await _context.SaveChangesAsync();
     }

@@ -3,19 +3,19 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Blazored.LocalStorage;
-using Newtonsoft.Json;
 using maERP.Shared.Models.Identity;
+using System.Text.Json;
 
 namespace maERP.Shared.Services;
 
-public interface IDataService
+public interface IDataService<T> where T : class
 {
     public Task<AuthResponse> Login(AuthRequest authRequest);
     public Task<RegistrationResponse> RegisterAsync(RegistrationRequest registrationRequest);
     public Task<T> Request(string method, string path, object payload = null);
 }
 
-public class DataService : IDataService
+public class DataService<T> : IDataService<T> where T : class
 {
     private readonly ILocalStorageService _localStorage;
     
@@ -28,6 +28,7 @@ public class DataService : IDataService
     {
         using (var client = new HttpClient())
         {
+
             string requestUrl = authRequest.Server + "/api/User/login";
             client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
             client.DefaultRequestHeaders.Accept.Clear();
@@ -47,7 +48,7 @@ public class DataService : IDataService
                 response.Dispose();
 
                 // TODO Check format of response
-                return JsonConvert.DeserializeObject<AuthResponse>(result);
+                return JsonSerializer.Deserialize<AuthResponse>(result);
             }
 
             response.Dispose();
@@ -108,7 +109,7 @@ public class DataService : IDataService
 
                     try
                     {
-                        var responseObj = JsonConvert.DeserializeObject<T>(result);
+                        var responseObj = JsonSerializer.Deserialize<T>(result);
                         response.Dispose();
 
                         return responseObj;
@@ -144,6 +145,7 @@ public class DataService : IDataService
 
     public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest registrationRequest)
     {
+        await Task.CompletedTask;
         throw new NotImplementedException();
     }
 }

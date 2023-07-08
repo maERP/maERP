@@ -44,15 +44,17 @@ public class WarehouseController : ControllerBase
 
     // PUT: api/Warehouse/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutWarehouse(uint id, WarehouseDetailDto warehouseDto)
+    public async Task<IActionResult> PutWarehouse([FromBody] WarehouseUpdateDto warehouseDto)
     {
+        var warehouse = _mapper.Map<WarehouseUpdateDto, Warehouse>(warehouseDto);
+
         try
-        {
-            await _repository.UpdateAsync(id, warehouseDto);
+        {    
+            await _repository.UpdateAsync(warehouse);
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await WarehouseExists(id))
+            if (!await WarehouseExists(warehouse.Id))
             {
                 return NotFound();
             }

@@ -31,8 +31,10 @@
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.31.0" />
     <PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
   </ItemGroup>
-  <ItemGroup>
+    <ItemGroup>
+    <Folder Include="Models\" />
     <Folder Include="Dtos\" />
     <Folder Include="Dtos\Product\" />
     <Folder Include="Dtos\SalesChannel\" />
@@ -41,6 +43,9 @@
     <Folder Include="Dtos\Warehouse\" />
     <Folder Include="Models\SalesChannelData\" />
     <Folder Include="Dtos\Order\" />
+    <Folder Include="Pages\" />
+    <Folder Include="Services\" />
+    <Folder Include="Contracts\" />
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Pages\Customer.razor" />
@@ -53,9 +58,6 @@
     <RazorComponent Include="Pages\ProductDelete.razor" />
     <RazorComponent Include="Pages\ProductDetail.razor" />
     <RazorComponent Include="Pages\ProductEdit.razor" />
-    <RazorComponent Include="Pages\SalesChannels.razor" />
-    <RazorComponent Include="Pages\SalesChannelsDetail.razor" />
-    <RazorComponent Include="Pages\SalesChannelsEdit.razor" />
     <RazorComponent Include="Pages\TaxClasses.razor" />
     <RazorComponent Include="Pages\TaxClassesDetail.razor" />
     <RazorComponent Include="Pages\TaxClassesEdit.razor" />

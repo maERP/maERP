@@ -1,6 +1,6 @@
 ﻿@page "/login"
 
-@using Newtonsoft.Json
+@using System.Text.Json
 @using maERP.Shared.Dtos.User;
 @using maERP.Shared.Services;
 
@@ -65,6 +65,7 @@
     {
         _spinnerClass = "spinner-border spinner-border-sm";
 
+        await Task.CompletedTask; // remove me
         /*
         var loginResponse = await _authStateProvider.LoginUser(loginDto);
 

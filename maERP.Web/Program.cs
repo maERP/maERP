@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.LocalStorage;
-using maERP.Web;
 using System.Reflection;
 using maERP.Shared.Providers;
 using maERP.Web.Contracts;

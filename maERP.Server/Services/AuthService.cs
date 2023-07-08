@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using maERP.Server.Contracts;
-using maERP.Server.Models.Identity;
+using maERP.Shared.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using maERP.Server.Models;

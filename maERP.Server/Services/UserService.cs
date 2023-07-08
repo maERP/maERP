@@ -1,3 +1,5 @@
+#nullable disable
+
 using maERP.Server.Contracts;
 using maERP.Server.Models;
 using Microsoft.AspNetCore.Identity;

@@ -40,11 +40,11 @@ public class OrderController : ControllerBase
 
     // PUT: api/Order/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutOrder(uint id, OrderDetailDto orderDto)
+    public async Task<IActionResult> UpdateOrder(uint id, OrderUpdateDto orderUpdateDto)
     {
         try
         {
-            await _repository.UpdateAsync(id, orderDto);
+            await _repository.UpdateAsync<OrderUpdateDto>(id, orderUpdateDto);
         }
         catch (DbUpdateConcurrencyException)
         {

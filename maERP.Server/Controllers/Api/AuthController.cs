@@ -1,5 +1,5 @@
 using maERP.Server.Contracts;
-using maERP.Server.Models.Identity;
+using maERP.Shared.Models.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace maERP.Server.Controllers.Api;

@@ -1,7 +1,7 @@
 ﻿#nullable disable
 
 using System.Net.Http.Headers;
-using Newtonsoft.Json;
+using System.Text.Json;
 using maERP.Shared.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Models.SalesChannels.Shopware5;
@@ -88,7 +88,7 @@ public class ProductDownloadTask : IHostedService
 
                         try
                         {
-                            remoteProducts = JsonConvert.DeserializeObject<Shopware5Response<Shopware5ProductResponse>>(result);
+                            remoteProducts = JsonSerializer.Deserialize<Shopware5Response<Shopware5ProductResponse>>(result);
 
                             requestMax = remoteProducts.total;
                         }
