@@ -52,20 +52,20 @@
     <Folder Include="Controllers\Web\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.5" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Kubernetes.Tools.Targets" Version="1.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.8">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.8">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
