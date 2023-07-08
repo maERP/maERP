@@ -1,12 +1,12 @@
 ﻿@page "/TaxClasses"
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
-@using maERP.Shared.Dtos.TaxClass;
+@using maERP.Shared.Services
+@using maERP.Shared.Dtos.TaxClass
 
 @attribute [Authorize]
 
-@inject NavigationManager NavigationManager;
-@inject IDataService<ICollection<TaxClassListDto>> DataService;
+@inject NavigationManager NavigationManager
+@inject IDataService<ICollection<TaxClassListDto>> DataService
 
 <PageTitle>Steuerklassen</PageTitle>
 

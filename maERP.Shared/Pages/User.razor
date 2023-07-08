@@ -1,12 +1,12 @@
 ﻿@page "/User"
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
-@using maERP.Shared.Dtos.User;
+@using maERP.Shared.Services
+@using maERP.Shared.Dtos.User
 
 @attribute [Authorize]
 
-@inject NavigationManager NavigationManager;
-@inject IDataService<ICollection<ApiUserDto>> DataService;
+@inject NavigationManager NavigationManager
+@inject IDataService<ICollection<ApiUserDto>> DataService
 
 <PageTitle>Benutzer</PageTitle>
 

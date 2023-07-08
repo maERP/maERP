@@ -2,13 +2,13 @@
 @page "/TaxClasses/edit/{taxClassId:int}"
 
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
-@using maERP.Shared.Dtos.TaxClass;
+@using maERP.Shared.Services
+@using maERP.Shared.Dtos.TaxClass
 
 @attribute [Authorize]
 
-@inject NavigationManager _navManager;
-@inject IDataService<TaxClassDetailDto> _dataService;
+@inject NavigationManager _navManager
+@inject IDataService<TaxClassDetailDto> _dataService
 
 <h1>Steuersatz</h1>
 

@@ -1,13 +1,13 @@
 ﻿@page "/Products"
 
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
-@using maERP.Shared.Dtos.Product;
+@using maERP.Shared.Services
+@using maERP.Shared.Dtos.Product
 
 @attribute [Authorize]
 
-@inject NavigationManager NavManager;
-@inject IDataService<ICollection<ProductListDto>> DataService;
+@inject NavigationManager NavManager
+@inject IDataService<ICollection<ProductListDto>> DataService
 
 <PageTitle>Produkte</PageTitle>
 

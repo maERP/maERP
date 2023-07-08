@@ -1,12 +1,12 @@
 ﻿@page "/Products/delete/{productId:int}"
 
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
+@using maERP.Shared.Services
 
 @attribute [Authorize]
 
-@inject NavigationManager NavigationManager;
-@inject IDataService<string> DataService;
+@inject NavigationManager NavigationManager
+@inject IDataService<string> DataService
 
 @code {
 

@@ -1,12 +1,12 @@
 ﻿@page "/Warehouses/{warehouseId:int}"
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
-@using maERP.Shared.Dtos.Warehouse;
+@using maERP.Shared.Services
+@using maERP.Shared.Dtos.Warehouse
 
 @attribute [Authorize]
 
-@inject NavigationManager NavigationManager;
-@inject IDataService<WarehouseDetailDto> DataService;
+@inject NavigationManager NavigationManager
+@inject IDataService<WarehouseDetailDto> DataService
 
 <h1>Lager</h1>
 

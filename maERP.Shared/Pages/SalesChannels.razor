@@ -1,12 +1,12 @@
 ﻿@page "/SalesChannels"
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
-@using maERP.Shared.Dtos;
+@using maERP.Shared.Services
+@using maERP.Shared.Dtos
 
 @attribute [Authorize]
 
-@inject NavigationManager NavigationManager;
-@inject IDataService<ICollection<SalesChannelListDto>> DataService;
+@inject NavigationManager NavigationManager
+@inject IDataService<ICollection<SalesChannelListDto>> DataService
 
 <PageTitle>Vertriebskanäle</PageTitle>
 

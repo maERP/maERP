@@ -1,13 +1,13 @@
 ﻿@page "/Warehouses/add"
 @page "/Warehouses/edit/{warehouseId:int}"
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
-@using maERP.Shared.Dtos.Warehouse;
+@using maERP.Shared.Services
+@using maERP.Shared.Dtos.Warehouse
 
 @attribute [Authorize]
 
-@inject NavigationManager _navigationManager;
-@inject IDataService<WarehouseUpdateDto> _dataService;
+@inject NavigationManager _navigationManager
+@inject IDataService<WarehouseUpdateDto> _dataService
 
 <h1>Lager</h1>
 

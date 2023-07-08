@@ -1,12 +1,12 @@
 ﻿@page "/Customer"
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
-@using maERP.Shared.Dtos.Customer;
+@using maERP.Shared.Services
+@using maERP.Shared.Dtos.Customer
 
 @attribute [Authorize]
 
-@inject NavigationManager NavigationManager;
-@inject IDataService<ICollection<CustomerDetailDto>> DataService;
+@inject NavigationManager NavigationManager
+@inject IDataService<ICollection<CustomerDetailDto>> DataService
 
 <PageTitle>Kunden</PageTitle>
 

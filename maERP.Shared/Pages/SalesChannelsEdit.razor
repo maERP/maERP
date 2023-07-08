@@ -2,13 +2,13 @@
 @page "/SalesChannels/edit/{salesChannelId:int}"
 
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
-@using maERP.Shared.Dtos;
+@using maERP.Shared.Services
+@using maERP.Shared.Dtos
 
 @attribute [Authorize]
 
-@inject NavigationManager _navManager;
-@inject IDataService<SalesChannelUpdateDto> _dataService;
+@inject NavigationManager _navManager
+@inject IDataService<SalesChannelUpdateDto> _dataService
 
 <h1>Vertriebskanal</h1>
 

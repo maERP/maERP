@@ -1,13 +1,13 @@
 ﻿@page "/Order"
 
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Shared.Services;
-@using maERP.Shared.Dtos.Order;
+@using maERP.Shared.Services
+@using maERP.Shared.Dtos.Order
 
 @attribute [Authorize]
 
-@inject NavigationManager NavManager;
-@inject IDataService<ICollection<OrderListDto>> DataService;
+@inject NavigationManager NavManager
+@inject IDataService<ICollection<OrderListDto>> DataService
 
 <PageTitle>Bestellungen</PageTitle>
 

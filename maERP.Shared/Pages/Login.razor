@@ -1,10 +1,10 @@
 ﻿@page "/login"
 
 @using System.Text.Json
-@using maERP.Shared.Dtos.User;
-@using maERP.Shared.Services;
+@using maERP.Shared.Dtos.User
+@using maERP.Shared.Services
 
-@inject NavigationManager _navManager;
+@inject NavigationManager _navManager
 @* @inject AuthStateProvider _authStateProvider; *@
 
 <h3>Login</h3>
@@ -45,7 +45,7 @@
 @code
 {
     LoginDto loginDto = new();
-    private string loginServer = "";
+    // private string loginServer = "";
     private bool _showServerInput = true;
     private string _spinnerClass = string.Empty;
     private string _errorMessage = string.Empty;
