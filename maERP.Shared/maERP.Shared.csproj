@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -31,10 +31,8 @@
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.31.0" />
     <PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
   </ItemGroup>
-    <ItemGroup>
-    <Folder Include="Contracts\" />    
+    <ItemGroup>  
     <Folder Include="Dtos\" />
     <Folder Include="Dtos\Order\" />
     <Folder Include="Dtos\Product\" />
@@ -47,7 +45,6 @@
     <Folder Include="Models\SalesChannelData\" />
     <Folder Include="Pages\" />
     <Folder Include="Providers\" />
-    <Folder Include="Services\" />
     <Folder Include="Shared\" />
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,7 @@ using System.Reflection;
 using maERP.Shared.Providers;
 using maERP.Web.Contracts;
 using maERP.Web.Services;
+using maERP.Web;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
