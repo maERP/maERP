@@ -16,15 +16,14 @@
     <Copyright>Martin Andrich</Copyright>
     <RepositoryUrl>https://github.com/maERP/maERP</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageIconUrl>https://avatars.githubusercontent.com/u/103992987?s=200</PackageIconUrl>
     <PackageTags></PackageTags>
     <Description>
       OpenSource, self-hosted, client/server-based ERP system with multiplatform GUI written in CSharp
     </Description>
+    <IsPackable>true</IsPackable>
     <PackageReleaseNotes>
       Work in Progress.
     </PackageReleaseNotes>
-    <PackageLicenseExpression>GPL3.0</PackageLicenseExpression>
     <PackageOutputPath>packages</PackageOutputPath>
     <Platforms>AnyCPU;x64</Platforms>
     <PackageId>maERP</PackageId>

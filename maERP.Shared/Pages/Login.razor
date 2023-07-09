@@ -1,11 +1,12 @@
 ﻿@page "/login"
 
 @using System.Text.Json
+@using Blazored.LocalStorage
 @using maERP.Shared.Dtos.User
+@using maERP.Shared.Contracts
 @using maERP.Shared.Services
 
 @inject NavigationManager _navManager
-@* @inject AuthStateProvider _authStateProvider; *@
 
 <h3>Login</h3>
 
@@ -27,7 +28,7 @@
     {
         <div class="mt-2 form-group">
             <label>Server</label>
-            <input type="url" @bind-value="loginDto.Server" class="form-control" placeholder="https://erp.domain.de" />
+            <input type="url" @bind-value="loginDto.Server" class="form-control" placeholder="http://localhost:13975s" />
         </div>
     }
 
@@ -44,21 +45,28 @@
 
 @code
 {
+    [Inject]
+    private ILocalStorageService _localStorage { get; set; }
+
+    [Inject]
+    private IAuthenticationService _authenticationService { get; set; }
+
     LoginDto loginDto = new();
-    // private string loginServer = "";
+    private string loginServer = "";
     private bool _showServerInput = true;
     private string _spinnerClass = string.Empty;
     private string _errorMessage = string.Empty;
 
-    private void onLoad()
+    private async void onLoad()
     {
-        /*
-        if (Globals.ServerBaseUrl.Length > 0)
+        bool loginServerExists = await _localStorage.ContainKeyAsync("server");
+
+        if (loginServerExists)
         {
             _showServerInput = false;
-            loginServer = Globals.ServerBaseUrl;
+            loginServer = await _localStorage.GetItemAsStringAsync("server");
         }
-        */
+        
         this.StateHasChanged();
     }
 
@@ -66,19 +74,19 @@
     {
         _spinnerClass = "spinner-border spinner-border-sm";
 
-        await Task.CompletedTask; // remove me
-        /*
-        var loginResponse = await _authStateProvider.LoginUser(loginDto);
+        await _localStorage.SetItemAsStringAsync("server", loginDto.Server);
 
-        if (loginResponse.Succeeded)
+        var loginResponse = await _authenticationService.AuthenticateAsync(loginDto.Email, loginDto.Password);
+
+        if (loginResponse == true)
         {
             _navManager.NavigateTo("/");
             return;
         }
 
-        _errorMessage = loginResponse.Message;
+        _errorMessage = "Login fehlgeschlagen";
         _spinnerClass = "";
-        */
+
 
         this.StateHasChanged();
     }

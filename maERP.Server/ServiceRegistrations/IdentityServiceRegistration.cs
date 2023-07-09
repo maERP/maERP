@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Text;
 using maERP.Server.Contracts;
 using maERP.Server.Models;

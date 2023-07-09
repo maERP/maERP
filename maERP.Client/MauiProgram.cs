@@ -23,14 +23,6 @@ public static class MauiProgram
         builder.Services.AddBlazoredLocalStorage();
 
         /*
-        builder.Services.AddScoped<AuthStateProvider>();
-        builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<AuthStateProvider>());
-
-        builder.Services.AddScoped<IClientTokenService, ClientTokenService>();
-        builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
-        */
-
-        /*
         builder.Services.AddTransient<DashboardPage>();
         builder.Services.AddTransient<DashboardModel>();
         builder.Services.AddTransient<LoginPage>();

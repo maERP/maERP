@@ -46,6 +46,7 @@
     <Folder Include="Pages\" />
     <Folder Include="Providers\" />
     <Folder Include="Shared\" />
+    <Folder Include="Contracts\" />
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Pages\Customer.razor" />
@@ -75,5 +76,8 @@
     <RazorComponent Include="Shared\NavMenu.razor" />
     <RazorComponent Include="Shared\RedirectToLogin.razor" />
     <RazorComponent Include="Shared\SurveyPrompt.razor" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Contracts\" />
   </ItemGroup>
 </Project>

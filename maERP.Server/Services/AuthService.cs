@@ -47,7 +47,7 @@ public class AuthService : IAuthService
         {
             Id = user.Id,
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-            Email = user.Email
+            Email = user.Email!
         };
 
         return response;
@@ -91,9 +91,9 @@ public class AuthService : IAuthService
 
         var claims = new[] 
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
                 new Claim("uid", user.Id), 
             }
             .Union(userClaims)

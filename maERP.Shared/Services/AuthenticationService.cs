@@ -1,11 +1,10 @@
 using Blazored.LocalStorage;
-using maERP.Web.Contracts;
+using maERP.Shared.Contracts;
 using maERP.Shared.Models.Identity;
 using maERP.Shared.Providers;
-using maERP.Shared.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace maERP.Web.Services;
+namespace maERP.Shared.Services;
 
 public class AuthenticationService : IAuthenticationService
 {
