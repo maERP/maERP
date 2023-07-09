@@ -5,15 +5,9 @@ using System.Net.Http.Json;
 using Blazored.LocalStorage;
 using maERP.Shared.Models.Identity;
 using System.Text.Json;
+using maERP.Shared.Contracts;
 
 namespace maERP.Shared.Services;
-
-public interface IDataService<T> where T : class
-{
-    public Task<AuthResponse> Login(AuthRequest authRequest);
-    public Task<RegistrationResponse> RegisterAsync(RegistrationRequest registrationRequest);
-    public Task<T> Request(string method, string path, object payload = null);
-}
 
 public class DataService<T> : IDataService<T> where T : class
 {
@@ -29,7 +23,7 @@ public class DataService<T> : IDataService<T> where T : class
         using (var client = new HttpClient())
         {
 
-            string requestUrl = authRequest.Server + "/api/User/login";
+            string requestUrl = authRequest.Server + "/api/Auth/login";
             client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -41,6 +35,8 @@ public class DataService<T> : IDataService<T> where T : class
             };
 
             var response = await client.PostAsJsonAsync(requestUrl, loginData).ConfigureAwait(false);
+
+            Console.WriteLine($"HTTP POST TO {0}", requestUrl);
 
             if (response.IsSuccessStatusCode)
             {
@@ -62,9 +58,8 @@ public class DataService<T> : IDataService<T> where T : class
         {
             using (var client = new HttpClient())
             {
-                string baseUrl = await _localStorage.GetItemAsync<string>("baseUrl");
+                string baseUrl = await _localStorage.GetItemAsync<string>("server");
                 string requestUrl = baseUrl + "/api" + path;
-                // string accessToken = maERP.Shared.Globals.AccessToken;
                 
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

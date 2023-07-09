@@ -9,5 +9,5 @@ public class AuthRequest
     [Required]
     public string Password { get; set; } = string.Empty;
     [Required]
-    public string Server { get; set; } = "https://erp.martin-andrich.de";
+    public string Server { get; set; } = "http://localhost:34446";
 }
