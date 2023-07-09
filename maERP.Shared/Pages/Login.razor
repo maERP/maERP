@@ -7,6 +7,8 @@
 @using maERP.Shared.Services
 
 @inject NavigationManager _navManager
+@inject Blazored.LocalStorage.ILocalStorageService _localStorage
+@inject maERP.Shared.Contracts.IAuthenticationService _authenticationService
 
 <h3>Login</h3>
 
@@ -28,7 +30,7 @@
     {
         <div class="mt-2 form-group">
             <label>Server</label>
-            <input type="url" @bind-value="loginDto.Server" class="form-control" placeholder="http://localhost:13975s" />
+            <input type="url" @bind-value="loginDto.Server" class="form-control" placeholder="http://localhost:13975" />
         </div>
     }
 
@@ -45,12 +47,6 @@
 
 @code
 {
-    [Inject]
-    private ILocalStorageService _localStorage { get; set; }
-
-    [Inject]
-    private IAuthenticationService _authenticationService { get; set; }
-
     LoginDto loginDto = new();
     private string loginServer = "";
     private bool _showServerInput = true;
@@ -66,7 +62,7 @@
             _showServerInput = false;
             loginServer = await _localStorage.GetItemAsStringAsync("server");
         }
-        
+
         this.StateHasChanged();
     }
 
