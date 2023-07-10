@@ -12,7 +12,7 @@ using maERP.Server.Models;
 namespace maERP.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230708183742_initDatabase")]
+    [Migration("20230710082731_initDatabase")]
     partial class initDatabase
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace maERP.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.8")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -254,7 +254,7 @@ namespace maERP.Server.Migrations
                         {
                             Id = "05474ea3–7543-8aef-bcae-33e812c35fc3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "52ee299c-6326-43a1-ae0b-45d0b13fe697",
+                            ConcurrencyStamp = "299c33b0-a829-4932-9b77-cbc921650482",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -262,10 +262,123 @@ namespace maERP.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJjw458Q/P3ugClD9JBAv12lL8s2x59Ephtxs34vjP46f7u2uruKN3fQbMBu/PM2kw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJ9mvYfvyAz0T7aodpngtLFTpUl0TOZgnkrwzqttNjRoWbwm36yqBFZY0IgyUU0xIw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "60838921-d660-4392-9530-e07a0740a2b8",
+                            SecurityStamp = "6141f10b-52f9-4599-9aa3-8d1e300bcc19",
                             TwoFactorEnabled = false
+                        });
+                });
+
+            modelBuilder.Entity("maERP.Server.Models.Setting", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("Section")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Setting");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(820),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(820),
+                            Key = "JwtSettings:Key",
+                            Section = 0L,
+                            Value = "CHANGE_TO_YOUR_VERY_SECRET_JWT_SIGNING_KEY"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            Key = "JwtSettings:Issuer",
+                            Section = 0L,
+                            Value = "maERP.Server"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            Key = "JwtSettings:Audience",
+                            Section = 0L,
+                            Value = "maERP.Client"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            Key = "JwtSettings:DurationInMinutes",
+                            Section = 0L,
+                            Value = "60"
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            Key = "RemoteLog:Enabled",
+                            Section = 0L,
+                            Value = "false"
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            Key = "RemoteLog:Host",
+                            Section = 0L,
+                            Value = "graylog.martin-andrich.de"
+                        },
+                        new
+                        {
+                            Id = 7L,
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            Key = "RemoteLog:Port",
+                            Section = 0L,
+                            Value = "12301"
+                        },
+                        new
+                        {
+                            Id = 8L,
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            Key = "RemoteLog:TransportType",
+                            Section = 0L,
+                            Value = "Tcp"
+                        },
+                        new
+                        {
+                            Id = 9L,
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830),
+                            Key = "RemoteLog:Facility",
+                            Section = 0L,
+                            Value = "maERP.Server"
                         });
                 });
 
@@ -300,24 +413,24 @@ namespace maERP.Server.Migrations
                         {
                             Id = 1L,
                             CountryCode = "de",
-                            DateCreated = new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730),
-                            DateModified = new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730),
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470),
                             Name = "Deutschland"
                         },
                         new
                         {
                             Id = 2L,
                             CountryCode = "at",
-                            DateCreated = new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730),
-                            DateModified = new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730),
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470),
                             Name = "Österreich"
                         },
                         new
                         {
                             Id = 3L,
                             CountryCode = "ch",
-                            DateCreated = new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730),
-                            DateModified = new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730),
+                            DateCreated = new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470),
+                            DateModified = new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470),
                             Name = "Schweiz"
                         });
                 });

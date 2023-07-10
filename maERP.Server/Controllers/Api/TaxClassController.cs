@@ -37,7 +37,7 @@ public class TaxClassController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<TaxClassDetailDto>> GetTaxClass(uint id)
     {
-        var result = await _repository.GetDetails(id);
+        var result = await _repository.GetByIdAsync(id);
         return Ok(result);
     }
 

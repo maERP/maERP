@@ -38,7 +38,7 @@ public class WarehouseController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<WarehouseDetailDto>> GetWarehouse(uint id)
     {
-        var warehouse = await _repository.GetDetails(id);
+        var warehouse = await _repository.GetByIdAsync(id);
         return Ok(warehouse);
     }
 

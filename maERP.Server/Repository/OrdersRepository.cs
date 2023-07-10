@@ -12,31 +12,15 @@ namespace maERP.Server.Repository;
 
 public interface IOrderRepository : IGenericRepository<Order>
 {
-    Task<OrderDetailDto> GetDetails(uint id);
+    
 }
 
 public class OrderRepository : GenericRepository<Order>, IOrderRepository
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
     public OrderRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
     {
         this._context = context;
-        this._mapper = mapper;
-    }
-
-    public async Task<OrderDetailDto> GetDetails(uint id)
-    {
-        var order = await _context.Customer
-            .ProjectTo<OrderDetailDto>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(q => q.Id == id);
-
-        if(order == null)
-        {
-            throw new NotFoundException(nameof(GetDetails), id);
-        }
-
-        return order;
     }
 }

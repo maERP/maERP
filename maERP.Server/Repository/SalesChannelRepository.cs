@@ -9,7 +9,7 @@ namespace maERP.Server.Repository;
 
 public interface ISalesChannelRepository : IGenericRepository<SalesChannel>
 {
-    Task<SalesChannel> getDetails(uint id);
+
 }
 
 public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesChannelRepository
@@ -19,10 +19,5 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
     public SalesChannelRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
     {
         this._context = context;
-    }
-
-    public async Task<SalesChannel> getDetails(uint id)
-    {
-        return await _context.SalesChannel.FirstOrDefaultAsync(q => q.Id == id);
     }
 }

@@ -34,7 +34,7 @@ public class OrderController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<OrderDetailDto>> GetOrder(uint id)
     {
-        var order = await _repository.GetDetails(id);
+        var order = await _repository.GetByIdAsync(id);
         return Ok(order);
     }
 

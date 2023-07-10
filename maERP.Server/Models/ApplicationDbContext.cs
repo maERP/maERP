@@ -34,6 +34,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new CountryConfiguration());
+        modelBuilder.ApplyConfiguration(new SettingsConfiguration());
         // modelBuilder.ApplyConfiguration(new ProductConfiguration());
         // modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
         // modelBuilder.ApplyConfiguration(new TaxClassConfiguration());

@@ -12,7 +12,7 @@ namespace maERP.Server.Repository;
 
 public interface IProductRepository : IGenericRepository<Product>
 {
-    Task<ProductDetailDto> GetDetails(uint id);
+
 }
 
 public class ProductRepository : GenericRepository<Product>, IProductRepository
@@ -24,14 +24,5 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         this._context = context;
         this._mapper = mapper;
-    }
-
-    public async Task<ProductDetailDto> GetDetails(uint id)
-    {
-        var product = await _context.Product.Include(q => q.TaxClass)
-            .ProjectTo<ProductDetailDto>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(q => q.Id == id);
-
-        return product;
     }
 }

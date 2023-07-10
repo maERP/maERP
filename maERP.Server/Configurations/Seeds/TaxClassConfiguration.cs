@@ -6,14 +6,14 @@ using maERP.Shared.Models;
 
 namespace maERP.Server.Configurations.Seeds;
 
-public class CountryConfiguration : IEntityTypeConfiguration<Country>
+public class TaxClassConfiguration : IEntityTypeConfiguration<TaxClass>
 {
-	public void Configure(EntityTypeBuilder<Country> builder)
+    public void Configure(EntityTypeBuilder<TaxClass> builder)
     {
-	    builder.HasData(
-            new Country { Id = 1, Name = "Deutschland", CountryCode = "de" },
-            new Country { Id = 2, Name = "Österreich", CountryCode = "at" },
-            new Country { Id = 3, Name = "Schweiz", CountryCode = "ch" }
+        builder.HasData(
+            new TaxClass { Id = 1, TaxRate = 0 },
+            new TaxClass { Id = 2, TaxRate = 7 },
+            new TaxClass { Id = 3, TaxRate = 19 }
         );
     }
 }

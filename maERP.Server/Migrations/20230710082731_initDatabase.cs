@@ -90,6 +90,23 @@ namespace maERP.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Setting",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Section = table.Column<long>(type: "bigint", nullable: false),
+                    Key = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DateModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Setting", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ShippingProvider",
                 columns: table => new
                 {
@@ -450,16 +467,32 @@ namespace maERP.Server.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "05474ea3–7543-8aef-bcae-33e812c35fc3", 0, "52ee299c-6326-43a1-ae0b-45d0b13fe697", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEJjw458Q/P3ugClD9JBAv12lL8s2x59Ephtxs34vjP46f7u2uruKN3fQbMBu/PM2kw==", null, false, "60838921-d660-4392-9530-e07a0740a2b8", false, null });
+                values: new object[] { "05474ea3–7543-8aef-bcae-33e812c35fc3", 0, "299c33b0-a829-4932-9b77-cbc921650482", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEJ9mvYfvyAz0T7aodpngtLFTpUl0TOZgnkrwzqttNjRoWbwm36yqBFZY0IgyUU0xIw==", null, false, "6141f10b-52f9-4599-9aa3-8d1e300bcc19", false, null });
 
             migrationBuilder.InsertData(
                 table: "Country",
                 columns: new[] { "Id", "CountryCode", "DateCreated", "DateModified", "Name" },
                 values: new object[,]
                 {
-                    { 1L, "de", new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730), new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730), "Deutschland" },
-                    { 2L, "at", new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730), new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730), "Österreich" },
-                    { 3L, "ch", new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730), new DateTime(2023, 7, 8, 18, 37, 42, 858, DateTimeKind.Utc).AddTicks(3730), "Schweiz" }
+                    { 1L, "de", new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470), new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470), "Deutschland" },
+                    { 2L, "at", new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470), new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470), "Österreich" },
+                    { 3L, "ch", new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470), new DateTime(2023, 7, 10, 8, 27, 31, 617, DateTimeKind.Utc).AddTicks(7470), "Schweiz" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Setting",
+                columns: new[] { "Id", "DateCreated", "DateModified", "Key", "Section", "Value" },
+                values: new object[,]
+                {
+                    { 1L, new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(820), new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(820), "JwtSettings:Key", 0L, "CHANGE_TO_YOUR_VERY_SECRET_JWT_SIGNING_KEY" },
+                    { 2L, new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), "JwtSettings:Issuer", 0L, "maERP.Server" },
+                    { 3L, new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), "JwtSettings:Audience", 0L, "maERP.Client" },
+                    { 4L, new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), "JwtSettings:DurationInMinutes", 0L, "60" },
+                    { 5L, new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), "RemoteLog:Enabled", 0L, "false" },
+                    { 6L, new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), "RemoteLog:Host", 0L, "graylog.martin-andrich.de" },
+                    { 7L, new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), "RemoteLog:Port", 0L, "12301" },
+                    { 8L, new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), "RemoteLog:TransportType", 0L, "Tcp" },
+                    { 9L, new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), new DateTime(2023, 7, 10, 8, 27, 31, 618, DateTimeKind.Utc).AddTicks(830), "RemoteLog:Facility", 0L, "maERP.Server" }
                 });
 
             migrationBuilder.InsertData(
@@ -590,6 +623,9 @@ namespace maERP.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductStock");
+
+            migrationBuilder.DropTable(
+                name: "Setting");
 
             migrationBuilder.DropTable(
                 name: "ShippingProviderRate");

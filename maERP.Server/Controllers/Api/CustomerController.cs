@@ -36,7 +36,7 @@ public class CustomerController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<CustomerDetailDto>> GetCustomer(uint id)
     {
-        var customer = await _repository.GetDetails(id);
+        var customer = await _repository.GetByIdAsync(id);
         return Ok(customer);
     }
 

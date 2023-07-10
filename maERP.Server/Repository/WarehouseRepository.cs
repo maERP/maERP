@@ -10,31 +10,15 @@ namespace maERP.Server.Repository;
 
 public interface IWarehouseRepository : IGenericRepository<Warehouse>
 {
-    Task<WarehouseDetailDto> GetDetails(uint id);
+    
 }
 
 public class WarehouseRepository : GenericRepository<Warehouse>, IWarehouseRepository
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
     public WarehouseRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
     {
         this._context = context;
-        this._mapper = mapper;
-    }
-
-    public async Task<WarehouseDetailDto> GetDetails(uint id)
-    {
-        var warehouse = await _context.Warehouse
-            .ProjectTo<WarehouseDetailDto>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(q => q.Id == id);
-
-        if(warehouse == null)
-        {
-            throw new NotFoundException(nameof(GetDetails), id);
-        }
-
-        return warehouse;
     }
 }
