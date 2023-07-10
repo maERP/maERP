@@ -80,9 +80,12 @@
             return;
         }
 
-        _errorMessage = "Login fehlgeschlagen";
+
+
+        _errorMessage = "Login fehlgeschlagen: " + await _localStorage.GetItemAsStringAsync("server");
         _spinnerClass = "";
 
+        await _localStorage.RemoveItemAsync("server");
 
         this.StateHasChanged();
     }

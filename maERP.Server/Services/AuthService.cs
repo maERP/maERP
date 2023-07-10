@@ -46,8 +46,8 @@ public class AuthService : IAuthService
         var response = new AuthResponse
         {
             Id = user.Id,
-            Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-            Email = user.Email!
+            Email = user.Email!,
+            Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken)            
         };
 
         return response;

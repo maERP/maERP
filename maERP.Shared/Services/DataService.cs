@@ -6,6 +6,7 @@ using Blazored.LocalStorage;
 using maERP.Shared.Models.Identity;
 using System.Text.Json;
 using maERP.Shared.Contracts;
+using maERP.Shared.Dtos.User;
 
 namespace maERP.Shared.Services;
 
@@ -22,8 +23,8 @@ public class DataService<T> : IDataService<T> where T : class
     {
         using (var client = new HttpClient())
         {
-
-            string requestUrl = authRequest.Server + "/api/Auth/login";
+            string server = await _localStorage.GetItemAsStringAsync("server");
+            string requestUrl = server + "/api/Auth/login";
             client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000));
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -36,11 +37,10 @@ public class DataService<T> : IDataService<T> where T : class
 
             var response = await client.PostAsJsonAsync(requestUrl, loginData).ConfigureAwait(false);
 
-            Console.WriteLine($"HTTP POST TO {0}", requestUrl);
-
             if (response.IsSuccessStatusCode)
             {
                 string result = response.Content.ReadAsStringAsync().Result;
+
                 response.Dispose();
 
                 // TODO Check format of response
