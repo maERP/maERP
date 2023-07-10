@@ -9,6 +9,7 @@ using maERP.Shared.Dtos.TaxClass;
 using maERP.Shared.Dtos.Warehouse;
 using maERP.Shared.Models;
 using maERP.Shared.Dtos.ShippingProvider;
+using maERP.Server.Models;
 
 namespace maERP.Server.Configurations;
 
@@ -16,6 +17,11 @@ public class AutoMapperConfig : Profile
 {
 	public AutoMapperConfig()
 	{
+        CreateMap<ApplicationUser, UserCreateDto>().ReverseMap();
+        CreateMap<ApplicationUser, UserDetailDto>().ReverseMap();
+        CreateMap<ApplicationUser, UserListDto>().ReverseMap();
+        CreateMap<ApplicationUser, UserUpdateDto>().ReverseMap();
+
         CreateMap<AReferenceDto, Customer>();
         CreateMap<Customer, CustomerCreateDto>().ReverseMap();
         CreateMap<Customer, CustomerListDto>().ReverseMap();

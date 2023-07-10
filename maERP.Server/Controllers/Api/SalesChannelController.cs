@@ -1,12 +1,11 @@
-﻿/*
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using maERP.Server.Contracts;
-using maERP.Server.Models;
-using maERP.Shared.Dtos;
+using maERP.Server.Repository;
+using maERP.Shared.Dtos.SalesChannel;
 using maERP.Shared.Models;
+using maERP.Shared.Dtos;
 
 namespace maERP.Server.Controllers;
 
@@ -33,47 +32,39 @@ public class SalesChannelController : ControllerBase
         return Ok(records);
     }
 
-    // GET: api/SalesChannel/?StartIndex=0&PageSize=25&PageNumber=1
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<SalesChannelListDto>>> GetPagedSalesChannel([FromQuery] QueryParameters queryParameters)
-    {
-        var pagedSalesChannelResult = await _repository.GetAllAsync<SalesChannelListDto>(queryParameters);
-        return Ok(pagedSalesChannelResult);
-    }
-
     // GET: api/SalesChannel/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<SalesChannelDto>> GetSalesChannel(int id)
+    public async Task<ActionResult<SalesChannelDetailDto>> GetSalesChannel(uint id)
     {
-        var salesChannel = await _repository.getDetails(id);
+        var salesChannel = await _repository.GetByIdAsync(id);
 
         if (salesChannel == null)
         {
             return NotFound();
         }
 
-        var salesChannelDto = _mapper.Map<SalesChannelDto>(salesChannel);
+        var salesChannelDto = _mapper.Map<SalesChannelDetailDto>(salesChannel);
 
         return Ok(salesChannelDto);
     }
 
     // PUT: api/SalesChannel/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutSalesChannel(int id, SalesChannelDto salesChannelDto)
+    public async Task<IActionResult> PutSalesChannel(uint id, SalesChannelUpdateDto salesChannelUpdateDto)
     {
-        if (id != salesChannelDto.Id)
+        if (id != salesChannelUpdateDto.Id)
         {
             return BadRequest("Invalid Record Id");
         }
 
-        var salesChannel = await _repository.GetAsync(id);
+        var salesChannel = await _repository.GetByIdAsync(id);
 
         if (salesChannel == null)
         {
             return NotFound();
         }
 
-        _mapper.Map(salesChannelDto, salesChannel);
+        _mapper.Map(salesChannelUpdateDto, salesChannel);
 
         try
         {
@@ -97,9 +88,9 @@ public class SalesChannelController : ControllerBase
     // POST: api/SalesChannel
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<SalesChannel>> PostSalesChannel(SalesChannelDto salesChannelDto)
+    public async Task<ActionResult<SalesChannel>> PostSalesChannel(SalesChannelCreateDto salesChannelCreateDto)
     {
-        var salesChannel = _mapper.Map<SalesChannel>(salesChannelDto);
+        var salesChannel = _mapper.Map<SalesChannel>(salesChannelCreateDto);
 
         await _repository.AddAsync(salesChannel);
 
@@ -108,9 +99,9 @@ public class SalesChannelController : ControllerBase
 
     // DELETE: api/SalesChannel/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteSalesChannel(int id)
+    public async Task<IActionResult> DeleteSalesChannel(uint id)
     {
-        var salesChannel = await _repository.GetAsync(id);
+        var salesChannel = await _repository.GetByIdAsync(id);
 
         if (salesChannel == null)
         {
@@ -122,9 +113,8 @@ public class SalesChannelController : ControllerBase
         return NoContent();
     }
 
-    private async Task<bool> SalesChannelExists(int id)
+    private async Task<bool> SalesChannelExists(uint id)
     {
         return await _repository.Exists(id);
     }
 }
-*/

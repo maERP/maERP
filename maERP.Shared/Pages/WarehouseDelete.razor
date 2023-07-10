@@ -17,8 +17,8 @@
     {
         if (warehouseId > 0)
         {
-            await DataService.Request("DELETE", "/Warehouses/" + warehouseId);
-            NavigationManager.NavigateTo("/Warehouses");
+            await DataService.Request("DELETE", "/Warehouse/" + warehouseId);
+            NavigationManager.NavigateTo("/Warehouse");
         }
     }
 }

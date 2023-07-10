@@ -47,6 +47,7 @@
     <Folder Include="Providers\" />
     <Folder Include="Shared\" />
     <Folder Include="Contracts\" />
+    <Folder Include="Dtos\Auth\" />
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Pages\Customer.razor" />
@@ -79,5 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Contracts\" />
+    <None Remove="Dtos\Auth\" />
   </ItemGroup>
 </Project>

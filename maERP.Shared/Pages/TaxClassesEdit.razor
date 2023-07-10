@@ -43,7 +43,7 @@
         if (taxClassId != 0)
         {
             Title = "Bearbeiten";
-            taxClass = await _dataService.Request("GET", "/TaxClasses/" + taxClassId);
+            taxClass = await _dataService.Request("GET", "/TaxClass/" + taxClassId);
         }
 
         await Task.CompletedTask;
@@ -55,17 +55,17 @@
 
         if (taxClassId != 0)
         {
-            await _dataService.Request("PUT", "/TaxClasses/" + taxClassId, taxClass);
+            await _dataService.Request("PUT", "/TaxClass/" + taxClassId, taxClass);
         }
         else
         {
-            await _dataService.Request("POST", "/TaxClasses", taxClass);
+            await _dataService.Request("POST", "/TaxClass", taxClass);
         }
         Cancel();
     }
 
     public void Cancel()
     {
-        _navManager.NavigateTo("/TaxClasses");
+        _navManager.NavigateTo("/TaxClass");
     }
 }

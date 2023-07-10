@@ -53,6 +53,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        taxClasses = await DataService.Request("GET", "/TaxClasses/GetAll");
+        taxClasses = await DataService.Request("GET", "/TaxClass/GetAll");
     }
 }

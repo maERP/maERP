@@ -67,7 +67,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        products = await DataService.Request("GET", "/Products/GetAll");
+        products = await DataService.Request("GET", "/Product/GetAll");
     }
 
     public bool IsVisible(ProductListDto product)

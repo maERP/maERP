@@ -42,7 +42,7 @@
         if (warehouseId != 0)
         {
             Title = "Bearbeiten";
-            warehouse = await _dataService.Request("GET", "/Warehouses/" + warehouseId);
+            warehouse = await _dataService.Request("GET", "/Warehouse/" + warehouseId);
         }
     }
 
@@ -50,11 +50,11 @@
     {
         if (warehouseId != 0)
         {
-            await _dataService.Request("PUT", "/Warehouses/" + warehouseId, warehouse);
+            await _dataService.Request("PUT", "/Warehouse/" + warehouseId, warehouse);
         }
         else
         {
-            await _dataService.Request("POST", "/Warehouses", warehouse);
+            await _dataService.Request("POST", "/Warehouse", warehouse);
         }
 
         Cancel();

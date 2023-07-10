@@ -59,6 +59,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        customers = await DataService.Request("GET", "/Customers/GetAll");
+        customers = await DataService.Request("GET", "/Customer/GetAll");
     }
 }

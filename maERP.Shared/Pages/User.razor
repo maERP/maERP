@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<ICollection<ApiUserDto>> DataService
+@inject IDataService<ICollection<UserListDto>> DataService
 
 <PageTitle>Benutzer</PageTitle>
 
@@ -55,10 +55,10 @@ else
 
 @code {
 
-    private ICollection<ApiUserDto>? users;
+    private ICollection<UserListDto>? users;
 
     protected override async Task OnInitializedAsync()
     {
-        users = await DataService.Request("GET", "/Users/GetAll");
+        users = await DataService.Request("GET", "/User/GetAll");
     }
 }

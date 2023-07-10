@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<ApiUserDto> DataService
+@inject IDataService<UserDetailDto> DataService
 
 <h1>@user.Email</h1>
 
@@ -19,14 +19,14 @@
 
     protected string Title = "Benutzerdetail";
 
-    protected ApiUserDto user = new();
+    protected UserDetailDto user = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (userId != null)
         {
             Title = "bearbeiten";
-            user = await DataService.Request("GET", "/Users/" + userId);
+            user = await DataService.Request("GET", "/User/" + userId);
         }
         else Title = "nicht gefunden";
     }

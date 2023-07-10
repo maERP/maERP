@@ -8,22 +8,22 @@ namespace maERP.Server.Controllers.Api;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authenticationService;
+    private readonly IAuthService _authService;
     
-    public AuthController(IAuthService authenticationService)
+    public AuthController(IAuthService authService)
     {
-        this._authenticationService = authenticationService;
+        this._authService = authService;
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login(AuthRequest request)
     {
-        return Ok(await _authenticationService.Login(request));
+        return Ok(await _authService.Login(request));
     }
     
     [HttpPost("register")]
     public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
     {
-        return Ok(await _authenticationService.Register(request));
+        return Ok(await _authService.Register(request));
     }
 }

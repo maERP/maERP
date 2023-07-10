@@ -25,7 +25,7 @@
         if (warehouseId != 0)
         {
             Title = "Bearbeiten";
-            warehouse = await DataService.Request("GET", "/Warehouses/" + warehouseId);
+            warehouse = await DataService.Request("GET", "/Warehouse/" + warehouseId);
         }
         else Title = "nicht gefunden";
     }

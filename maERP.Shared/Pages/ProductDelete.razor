@@ -17,7 +17,7 @@
     {
         if (productId > 0)
         {
-            await DataService.Request("DELETE", "/Products/" + productId);
+            await DataService.Request("DELETE", "/Product/" + productId);
             NavigationManager.NavigateTo("/Product");
         }
     }
