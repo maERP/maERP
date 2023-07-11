@@ -44,7 +44,7 @@ else
 
     </table>
 
-    <a href="/Product/add">Steuersatz anlegen</a>
+    <a href="/TaxClasses/add">Steuersatz anlegen</a>
 }
 
 @code {
@@ -53,6 +53,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        taxClasses = await DataService.Request("GET", "/TaxClass/GetAll");
+        taxClasses = await DataService.Request("GET", "/TaxClasses/GetAll");
     }
 }

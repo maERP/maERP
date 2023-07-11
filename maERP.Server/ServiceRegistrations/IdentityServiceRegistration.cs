@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace maERP.Server.ServiceRegistrations;
 
-public static class IdentityServicesRegistration
+public static class ApiVersioningRegistration
 {
     public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
     {

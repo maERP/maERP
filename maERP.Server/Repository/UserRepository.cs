@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using maERP.Shared.Dtos.User;
 using maERP.Server.Models;
+using maERP.Shared.Pages;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Server.Repository;
 
 public interface IUserRepository
 {
-    Task<IQueryable<ApplicationUser>> GetAllAsync();
+    Task<List<UserListDto>> GetAllAsync();
     Task<UserDetailDto> GetByIdAsync(string userId);
     Task<IEnumerable<IdentityError>> AddAsync(UserCreateDto userDto);
     Task<ApplicationUser> UpdateAsync(UserUpdateDto userDto);
@@ -26,16 +28,19 @@ public class UserRepository : IUserRepository
         this._userManager = userManager;
     }
 
-    public async Task<IQueryable<ApplicationUser>> GetAllAsync()
+    public async Task<List<UserListDto>> GetAllAsync()
     {
-        await Task.CompletedTask;
-        return _userManager.Users;
+        var users = await _userManager.Users.AsNoTracking().ToListAsync();
+        return _mapper.Map<List<UserListDto>>(users);
     }
 
     public async Task<UserDetailDto> GetByIdAsync(string userId)
     {
-        await Task.CompletedTask;
-        var user = _userManager.Users.Where(x => x.Id == userId).First<ApplicationUser>();
+        var user = await _userManager.Users
+            .Where(x => x.Id == userId)
+            .AsNoTracking()
+            .FirstAsync<ApplicationUser>();
+
         var userDto = _mapper.Map<UserDetailDto>(user);
         return userDto;
     }

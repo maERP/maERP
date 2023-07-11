@@ -6,7 +6,7 @@ using maERP.Server.Middleware;
 using maERP.Server.Models;
 using maERP.Server.ServiceRegistrations;
 using maERP.Server.Repository;
-using Microsoft.AspNetCore.Mvc.Versioning;
+
 using Serilog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -60,6 +60,7 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddApiVersioningServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
@@ -77,25 +78,6 @@ builder.Services.AddResponseCaching(options =>
     options.MaximumBodySize = 1024; // 1 MB
     options.UseCaseSensitivePaths = true;
 });
-
-builder.Services.AddApiVersioning(options =>
-{
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
-    options.ReportApiVersions = true;
-    options.ApiVersionReader = ApiVersionReader.Combine(
-        new QueryStringApiVersionReader("api-version"),
-        new HeaderApiVersionReader("X-Version"),
-        new MediaTypeApiVersionReader("ver")
-    );
-});
-
-builder.Services.AddVersionedApiExplorer(
-    options =>
-    {
-        options.GroupNameFormat = "'v'VVV";
-        options.SubstituteApiVersionInUrl = true;
-    });
 
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -132,7 +114,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
     });
 
-    app.MapControllers().AllowAnonymous();
+    // app.MapControllers().AllowAnonymous();
 }
 else
 {

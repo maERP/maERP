@@ -62,6 +62,7 @@
         {
             Title = "bearbeiten";
             user = await DataService.Request("GET", "/User/" + userId);
+            StateHasChanged();
         }
     }
 

@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using maERP.Server.Repository;
 using maERP.Shared.Dtos.User;
 using maERP.Server.Models;
@@ -12,23 +13,24 @@ namespace maERP.Server.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [ApiVersion("1.0")]
+[Authorize(Roles = "Admin")]
+// [Authorize(Roles = "Administrator")]
 public class UserController : ControllerBase
 {
     private readonly IUserRepository _repository;
     private readonly ILogger _logger;
+    private readonly IMapper _mapper;
 
-    public UserController(IUserRepository repository, ILogger<UserController> logger)
+    public UserController(IUserRepository repository, IMapper mapper, ILogger<UserController> logger)
     {
         _repository = repository;
         _logger = logger;
+        _mapper = mapper;
     }
 
     // GET: api/User
     [HttpGet("GetAll")]
-    [Authorize]
-    // [Authorize(Roles = "Admin")]
-    // [Authorize(Roles = "Administrator")]
-    public async Task<ActionResult<IQueryable<User>>> GetUsers()
+    public async Task<ActionResult<IQueryable<UserListDto>>> GetUsers()
     {
         var users = await _repository.GetAllAsync();
         return Ok(users);
@@ -36,9 +38,6 @@ public class UserController : ControllerBase
 
     // GET: api/User/5
     [HttpGet("{userId}")]
-    [Authorize]
-    // [Authorize(Roles = "Admin")]
-    // [Authorize(Roles = "Administrator")]
     public async Task<ActionResult<UserDetailDto>> GetUserById(string userId)
     {
         var user = await _repository.GetByIdAsync(userId);
@@ -47,7 +46,6 @@ public class UserController : ControllerBase
 
     // POST: api/User
     [HttpPost]
-    [Authorize(Roles = "Administrator")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -82,7 +80,6 @@ public class UserController : ControllerBase
 
     // PUT: api/User/5
     [HttpPut("{id:int}")]
-    [Authorize(Roles = "Administrator")]
     public async Task<ActionResult> Update([FromBody] UserUpdateDto userUpdateDto)
     {
         _logger.LogInformation($"Edit Attempt for {userUpdateDto.Email}");

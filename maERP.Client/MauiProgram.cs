@@ -20,11 +20,17 @@ public static class MauiProgram
 
         builder.Services.AddMauiBlazorWebView();
 
+#if DEBUG
+        builder.Services.AddBlazorWebViewDeveloperTools();
+#endif
+
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddAuthorizationCore();
         builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
+
+
 
         return builder.Build();
     }
