@@ -43,7 +43,6 @@
     <Folder Include="Models\" />
     <Folder Include="Models\Identity\" />
     <Folder Include="Models\SalesChannelData\" />
-    <Folder Include="Pages\" />
     <Folder Include="Providers\" />
     <Folder Include="Shared\" />
     <Folder Include="Contracts\" />

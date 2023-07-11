@@ -114,7 +114,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
     });
 
-    // app.MapControllers().AllowAnonymous();
+    app.MapControllers().AllowAnonymous();
 }
 else
 {

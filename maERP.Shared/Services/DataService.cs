@@ -73,7 +73,9 @@ public class DataService<T> : IDataService<T> where T : class
                         new AuthenticationHeaderValue("Bearer",
                             await _localStorage.GetItemAsync<string>("token"));
                 }
-                
+
+                string jsonPayload = JsonSerializer.Serialize(payload);
+
                 HttpResponseMessage response = new HttpResponseMessage();
 
                 if (method == "GET")
@@ -83,11 +85,11 @@ public class DataService<T> : IDataService<T> where T : class
                 }
                 else if (method == "POST")
                 {
-                    response = await client.PostAsJsonAsync(requestUrl, payload).ConfigureAwait(false);
+                    response = await client.PostAsJsonAsync(requestUrl, jsonPayload).ConfigureAwait(false);
                 }
                 else if (method == "PUT")
                 {
-                    response = await client.PutAsJsonAsync(requestUrl, payload).ConfigureAwait(false);
+                    response = await client.PutAsJsonAsync(requestUrl, jsonPayload).ConfigureAwait(false);
                 }
                 else if (method == "DELETE")
                 {

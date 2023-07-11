@@ -13,7 +13,7 @@ namespace maERP.Server.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [ApiVersion("1.0")]
-[Authorize(Roles = "Admin")]
+[Authorize]
 // [Authorize(Roles = "Administrator")]
 public class UserController : ControllerBase
 {
@@ -78,8 +78,9 @@ public class UserController : ControllerBase
         }
     }
 
-    // PUT: api/User/5
-    [HttpPut("{id:int}")]
+    // PUT: api/User
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Update([FromBody] UserUpdateDto userUpdateDto)
     {
         _logger.LogInformation($"Edit Attempt for {userUpdateDto.Email}");
@@ -91,7 +92,6 @@ public class UserController : ControllerBase
             if (user.Id is not null)
             {
                 return Ok();
-
             }
 
             return BadRequest(ModelState);
@@ -99,9 +99,9 @@ public class UserController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, $"Something went wrong in the {nameof(Update)}" +
-                $" - User registration attempt for {userUpdateDto.Email}");
+                $" - User update attempt for {userUpdateDto.Email}");
 
-            return Problem($"Something went wrong in the {nameof(Update)}");
+            return Problem($"Something went wrong in THE {nameof(Update)}");
         }
     }
 }

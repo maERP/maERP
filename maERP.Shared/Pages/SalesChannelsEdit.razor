@@ -10,7 +10,7 @@
 @inject NavigationManager _navManager
 @inject IDataService<SalesChannelUpdateDto> _dataService
 
-<h1>Vertriebskanal</h1>
+<h1>Vertriebskanal </h1>
 
 <hr />
 
@@ -97,14 +97,10 @@
             Title = "Bearbeiten";
             salesChannel = await _dataService.Request("GET", "/SalesChannel/" + salesChannelId);
         }
-
-        await Task.CompletedTask;
     }
 
     protected async Task SaveSalesChannel()
     {
-        await Task.CompletedTask;
-
         if (salesChannelId != 0)
         {
             await _dataService.Request("PUT", "/SalesChannel/" + salesChannelId, salesChannel);
@@ -113,6 +109,7 @@
         {
             await _dataService.Request("POST", "/SalesChannel", salesChannel);
         }
+        
         Cancel();
     }
 
