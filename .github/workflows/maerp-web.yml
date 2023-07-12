@@ -1,10 +1,10 @@
-name: .NET Core-Anwendung in Web-App "maerp-web" erstellen und bereitstellen
+name: .NET Core-Anwendung in Web-App "maERP-Web" erstellen und bereitstellen
 on:
   push:
     branches:
     - main
 env:
-  AZURE_WEBAPP_NAME: maerp-web
+  AZURE_WEBAPP_NAME: maERP-Web
   AZURE_WEBAPP_PACKAGE_PATH: maERP.Web\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 7.0.x
@@ -44,5 +44,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.maerp_web_8D7D }}
+        publish-profile: ${{ secrets.maERP_Web_EEF4 }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
