@@ -47,9 +47,8 @@ else
                     <td>@product.TaxClass</td>
                     <td>@product.Ean</td>
                     <td>
-                        <a href='/Product/edit/@product.Id' class="btn btn-outline-dark" role="button">
-                            Bearbeiten
-                        </a>
+                        <a href='/Products/@product.Id/edit' class="btn btn-outline-dark" role="button">Bearbeiten</a>
+                        <a href='/Products/@product.Id/delete' class="btn btn-outline-danger" role="button">Löschen</a>
                     </td>
                 </tr>
             }
@@ -57,7 +56,7 @@ else
 
     </table>
 
-    <a href="/Product/add">Produkt anlegen</a>
+    <a href="/Products/add">Produkt anlegen</a>
 }
 
 @code {
@@ -67,7 +66,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        products = await DataService.Request("GET", "/Product/GetAll");
+        products = await DataService.Request("GET", "/Products/GetAll");
     }
 
     public bool IsVisible(ProductListDto product)

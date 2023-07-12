@@ -8,7 +8,7 @@ public class ProductSalesChannelCreateDto
     public virtual SalesChannelCreateDto? SalesChannel { get; set; }
     public virtual ProductCreateDto? ProductId { get; set; }
 
-    public uint RemoteProductId { get; set; }
+    public int RemoteProductId { get; set; }
 
     public decimal Price { get; set; }
 

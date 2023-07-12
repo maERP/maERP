@@ -1,5 +1,5 @@
 ﻿@page "/TaxClasses/add"
-@page "/TaxClasses/edit/{taxClassId:int}"
+@page "/TaxClasses/{taxClassId:int}/edit"
 
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
@@ -32,7 +32,7 @@
 @code {
 
     [Parameter]
-    public uint taxClassId { get; set; }
+    public int taxClassId { get; set; }
 
     protected string Title = "hinzufügen";
 
@@ -62,6 +62,6 @@
 
     public void Cancel()
     {
-        _navManager.NavigateTo("/TaxClass");
+        _navManager.NavigateTo("/TaxClasses");
     }
 }

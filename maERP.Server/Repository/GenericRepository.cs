@@ -13,13 +13,13 @@ public interface IGenericRepository<T> where T : class
 {
     Task<IReadOnlyList<T>> GetAllAsync();
     Task<List<TResult>> GetAllAsync<TResult>();
-    Task<T> GetByIdAsync(uint? id);
+    Task<T> GetByIdAsync(int? id);
     Task<T> AddAsync(T entity);
     Task<TResult> AddAsync<TSource, TResult>(TSource source);
     Task UpdateAsync(T entity);
-    Task UpdateAsync<TSource>(uint id, TSource source);
-    Task DeleteAsync(uint id);
-    Task<bool> Exists(uint id);
+    Task UpdateAsync<TSource>(int id, TSource source);
+    Task DeleteAsync(int id);
+    Task<bool> Exists(int id);
 }
 
 public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
@@ -45,7 +45,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
             .ToListAsync();
     }
 
-    public async Task<T> GetByIdAsync(uint? id)
+    public async Task<T> GetByIdAsync(int? id)
     {
         if (id is null)
         {
@@ -78,7 +78,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync<TSource>(uint id, TSource source)
+    public async Task UpdateAsync<TSource>(int id, TSource source)
     {
         var entity = await GetByIdAsync(id);
 
@@ -92,7 +92,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(uint id)
+    public async Task DeleteAsync(int id)
     {
         var entity = await GetByIdAsync(id);
 
@@ -105,7 +105,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
         await _context.SaveChangesAsync();
     }
 
-    public async Task<bool> Exists(uint id)
+    public async Task<bool> Exists(int id)
     {
         var entity = await GetByIdAsync(id);
         return entity != null;

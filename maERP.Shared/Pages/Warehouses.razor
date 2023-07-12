@@ -35,11 +35,8 @@ else
                         </a>
                     </td>
                     <td>
-                        <a href='/Warehouses/edit/@warehouse.Id' class="btn btn-outline-dark" role="button">
+                        <a href='/Warehouses/@warehouse.Id/edit' class="btn btn-outline-dark" role="button">
                             Bearbeiten
-                        </a>
-                        <a href='/Warehouses/delete/@warehouse.Id' class="btn btn-outline-danger" role="button">
-                            Löschen
                         </a>
                     </td>
                 </tr>
@@ -57,6 +54,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        warehouses = await DataService.Request("GET", "/Warehouse/GetAll");
+        warehouses = await DataService.Request("GET", "/Warehouses/GetAll");
     }
 }

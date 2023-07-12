@@ -1,32 +1,29 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using maERP.Server.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Dtos.Warehouse;
-using maERP.Shared.Models;
 
 namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class WarehouseController : ControllerBase
+public class WarehousesController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IWarehouseRepository _repository;
 
-    public WarehouseController(IMapper mapper, IWarehouseRepository repository)
+    public WarehousesController(IMapper mapper, IWarehouseRepository repository)
     {
         _mapper = mapper;
         _repository = repository;
     }
 
-    // GET: api/Warehouse
+    // GET: api/Warehouses
     [HttpGet("GetAll")]
-    // GET: api/Warehouse?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
+    // GET: api/Warehouses?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
     [EnableQuery] 
     public async Task<ActionResult<IEnumerable<WarehouseListDto>>> GetWarehouse()
     {
@@ -34,40 +31,30 @@ public class WarehouseController : ControllerBase
         return Ok(warehouse);
     }
 
-    // GET: api/Warehouse/5
+    // GET: api/Warehouses/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<WarehouseDetailDto>> GetWarehouse(uint id)
+    public async Task<ActionResult<WarehouseDetailDto>> GetWarehouse(int id)
     {
         var warehouse = await _repository.GetByIdAsync(id);
         return Ok(warehouse);
     }
 
-    // PUT: api/Warehouse/5
+    // PUT: api/Warehouses/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutWarehouse([FromBody] WarehouseUpdateDto warehouseDto)
+    public async Task<IActionResult> PutWarehouse(int id, [FromBody] WarehouseUpdateDto warehouseDto)
     {
-        var warehouse = _mapper.Map<WarehouseUpdateDto, Warehouse>(warehouseDto);
-
-        try
-        {    
-            await _repository.UpdateAsync(warehouse);
-        }
-        catch (DbUpdateConcurrencyException)
+        if (await _repository.Exists(id) == true)
         {
-            if (!await WarehouseExists(warehouse.Id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            await _repository.UpdateAsync<WarehouseUpdateDto>(id, warehouseDto);
+        }
+        else {
+            return NotFound();
         }
 
         return NoContent();
     }
 
-    // POST: api/Warehouse
+    // POST: api/Warehouses
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
     public async Task<ActionResult<WarehouseDetailDto>> PostWarehouse(WarehouseDetailDto warehouseDto)
@@ -76,16 +63,16 @@ public class WarehouseController : ControllerBase
         return CreatedAtAction(nameof(GetWarehouse), new { id = warehouse.Id }, warehouse);
     }
 
-    // DELETE: api/Warehouse/5
+    // DELETE: api/Warehouses/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteWarehouse(uint id)
+    public async Task<IActionResult> DeleteWarehouse(int id)
     {
         await _repository.DeleteAsync(id);
 
         return NoContent();
     }
 
-    private async Task<bool> WarehouseExists(uint id)
+    private async Task<bool> WarehouseExists(int id)
     {
         return await _repository.Exists(id);
     }

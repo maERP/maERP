@@ -123,11 +123,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         foreach (var entry in base.ChangeTracker.Entries<ABaseModel>()
             .Where(q => q.State == EntityState.Added || q.State == EntityState.Modified))
         {
-            entry.Entity.DateModified = DateTime.Now;
+            entry.Entity.DateModified = DateTime.UtcNow;
             // entry.Entity.ModifiedBy = _userService.UserId;
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.DateCreated = DateTime.Now;
+                entry.Entity.DateCreated = DateTime.UtcNow;
                 // entry.Entity.CreatedBy = _userService.UserId;
             }
         }

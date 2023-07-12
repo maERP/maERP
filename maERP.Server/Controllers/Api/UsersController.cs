@@ -15,20 +15,20 @@ namespace maERP.Server.Controllers;
 [ApiVersion("1.0")]
 [Authorize]
 // [Authorize(Roles = "Administrator")]
-public class UserController : ControllerBase
+public class UsersController : ControllerBase
 {
     private readonly IUserRepository _repository;
     private readonly ILogger _logger;
     private readonly IMapper _mapper;
 
-    public UserController(IUserRepository repository, IMapper mapper, ILogger<UserController> logger)
+    public UsersController(IUserRepository repository, IMapper mapper, ILogger<UsersController> logger)
     {
         _repository = repository;
         _logger = logger;
         _mapper = mapper;
     }
 
-    // GET: api/User
+    // GET: api/Users
     [HttpGet("GetAll")]
     public async Task<ActionResult<IQueryable<UserListDto>>> GetUsers()
     {
@@ -36,7 +36,7 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
-    // GET: api/User/5
+    // GET: api/Users/5
     [HttpGet("{userId}")]
     public async Task<ActionResult<UserDetailDto>> GetUserById(string userId)
     {
@@ -44,7 +44,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    // POST: api/User
+    // POST: api/Users
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -78,7 +78,7 @@ public class UserController : ControllerBase
         }
     }
 
-    // PUT: api/User
+    // PUT: api/Users
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Update([FromBody] UserUpdateDto userUpdateDto)
@@ -87,7 +87,9 @@ public class UserController : ControllerBase
 
         try
         {
-            var user = await _repository.UpdateAsync(userUpdateDto);
+            var applicationUser = _mapper.Map<ApplicationUser>(userUpdateDto);
+
+            var user = await _repository.UpdateAsync(applicationUser);
 
             if (user.Id is not null)
             {

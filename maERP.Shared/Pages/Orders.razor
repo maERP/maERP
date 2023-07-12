@@ -1,4 +1,4 @@
-﻿@page "/Order"
+﻿@page "/Orders"
 
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
@@ -35,7 +35,7 @@ else
 
     </table>
 
-    <a href="/Product/add">Bestellung anlegen</a>
+    <a href="/Orders/add">Bestellung anlegen</a>
 }
 
 @code {
@@ -44,6 +44,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        orders = await DataService.Request("GET", "/Order/GetAll");
+        orders = await DataService.Request("GET", "/Orders/GetAll");
     }
 }

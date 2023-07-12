@@ -59,9 +59,9 @@ public class ProductDownloadTask : IHostedService
 
             Console.WriteLine($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
-            uint requestStart = 0;
-            uint requestLimit = 100;
-            uint requestMax = 0;
+            int requestStart = 0;
+            int requestLimit = 100;
+            int requestMax = 0;
 
             do
             {

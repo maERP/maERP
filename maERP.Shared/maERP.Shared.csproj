@@ -49,27 +49,30 @@
     <Folder Include="Dtos\Auth\" />
   </ItemGroup>
   <ItemGroup>
-    <RazorComponent Include="Pages\Customer.razor" />
+    <RazorComponent Include="Pages\Customers.razor" />
     <RazorComponent Include="Pages\Index.razor" />
     <RazorComponent Include="Pages\Login.razor" />
     <RazorComponent Include="Pages\Logout.razor" />
-    <RazorComponent Include="Pages\Order.razor" />
-    <RazorComponent Include="Pages\OrderDetail.razor" />
-    <RazorComponent Include="Pages\Product.razor" />
-    <RazorComponent Include="Pages\ProductDelete.razor" />
-    <RazorComponent Include="Pages\ProductDetail.razor" />
-    <RazorComponent Include="Pages\ProductEdit.razor" />
+    <RazorComponent Include="Pages\Orders.razor" />
+    <RazorComponent Include="Pages\OrdersDetail.razor" />
+    <RazorComponent Include="Pages\Products.razor" />
+    <RazorComponent Include="Pages\ProductsDelete.razor" />
+    <RazorComponent Include="Pages\ProductsDetail.razor" />
+    <RazorComponent Include="Pages\ProductsEdit.razor" />
     <RazorComponent Include="Pages\TaxClasses.razor" />
     <RazorComponent Include="Pages\TaxClassesDetail.razor" />
     <RazorComponent Include="Pages\TaxClassesEdit.razor" />
-    <RazorComponent Include="Pages\User.razor" />
-    <RazorComponent Include="Pages\UserDelete.razor" />
-    <RazorComponent Include="Pages\UserDetail.razor" />
-    <RazorComponent Include="Pages\UserEdit.razor" />
-    <RazorComponent Include="Pages\Warehouse.razor" />
-    <RazorComponent Include="Pages\WarehouseDetail.razor" />
-    <RazorComponent Include="Pages\WarehouseEdit.razor" />
-    <RazorComponent Include="Pages\WarehouseDelete.razor" />
+    <RazorComponent Include="Pages\Users.razor" />
+    <RazorComponent Include="Pages\UsersDelete.razor" />
+    <RazorComponent Include="Pages\UsersDetail.razor" />
+    <RazorComponent Include="Pages\UsersEdit.razor" />
+    <RazorComponent Include="Pages\Warehouses.razor" />
+    <RazorComponent Include="Pages\WarehousesDetail.razor" />
+    <RazorComponent Include="Pages\WarehousesEdit.razor" />
+    <RazorComponent Include="Pages\WarehousesDelete.razor" />
+    <RazorComponent Include="Pages\CustomersDelete.razor" />
+    <RazorComponent Include="Pages\CustomersDetail.razor" />
+    <RazorComponent Include="Pages\CustomersEdit.razor" />
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Shared\MainLayout.razor" />
@@ -80,5 +83,11 @@
   <ItemGroup>
     <None Remove="Contracts\" />
     <None Remove="Dtos\Auth\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Pages\Customer %28Kopie%29.razor" />
+    <Content Remove="Pages\WarehouseDelete %28Kopie%29.razor" />
+    <Content Remove="Pages\WarehouseDetail %28Kopie%29.razor" />
+    <Content Remove="Pages\WarehouseEdit %28Kopie%29.razor" />
   </ItemGroup>
 </Project>

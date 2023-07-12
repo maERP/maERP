@@ -1,4 +1,4 @@
-﻿@page "/User"
+﻿@page "/Users"
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
 @using maERP.Shared.Dtos.User
@@ -37,11 +37,8 @@ else
                     <td>@user.LastName</td>
                     <td></td>
                     <td>
-                        <a href='/User/edit/@user.Id' class="btn btn-outline-dark" role="button">
+                        <a href='/Users/@user.Id/edit' class="btn btn-outline-dark" role="button">
                             Bearbeiten
-                        </a>
-                        <a href='/User/delete/@user.Id' class="btn btn-outline-danger" role="button">
-                            Löschen
                         </a>
                     </td>
                 </tr>
@@ -50,7 +47,7 @@ else
 
     </table>
 
-    <a href="/User/add">Benutzer anlegen</a>
+    <a href="/Users/add">Benutzer anlegen</a>
 }
 
 @code {
@@ -59,6 +56,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        users = await DataService.Request("GET", "/User/GetAll");
+        users = await DataService.Request("GET", "/Users/GetAll");
     }
 }

@@ -14,7 +14,7 @@ public interface IUserRepository
     Task<List<UserListDto>> GetAllAsync();
     Task<UserDetailDto> GetByIdAsync(string userId);
     Task<IEnumerable<IdentityError>> AddAsync(UserCreateDto userDto);
-    Task<ApplicationUser> UpdateAsync(UserUpdateDto userDto);
+    Task<ApplicationUser> UpdateAsync(ApplicationUser userDto);
 }
 
 public class UserRepository : IUserRepository
@@ -60,12 +60,9 @@ public class UserRepository : IUserRepository
         return result.Errors;
     }
 
-    public async Task<ApplicationUser> UpdateAsync(UserUpdateDto userUpdateDto)
+    public async Task<ApplicationUser> UpdateAsync(ApplicationUser updateUser)
     {
-        var updateUser = _mapper.Map<ApplicationUser>(userUpdateDto);
-        updateUser.Email = userUpdateDto.Email;
-
-        var localUser = await _userManager.FindByEmailAsync(updateUser.Email);
+        var localUser = await _userManager.FindByIdAsync(updateUser.Email);
 
         if (localUser.Id is not null)
         {

@@ -1,7 +1,5 @@
 ﻿@page "/TaxClasses/{taxClassId:int}"
 
-@using maERP.Shared.Models
-
 @inject NavigationManager NavigationManager
 
 <h1>Steuerklasse</h1>
@@ -11,7 +9,7 @@
 @code {
 
     [Parameter]
-    public uint taxClassId { get; set; }
+    public int taxClassId { get; set; }
 
     protected string Title = "Steuersätze";
 

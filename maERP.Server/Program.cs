@@ -10,7 +10,6 @@ using maERP.Server.Repository;
 using Serilog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 

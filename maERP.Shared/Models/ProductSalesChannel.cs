@@ -8,12 +8,12 @@ public class ProductSalesChannel : ABaseModel
 {
     public SalesChannel SalesChannel { get; set; } = new();
 
-    public uint ProductId { get; set; } = new();
+    public int ProductId { get; set; } = new();
 
     public Product Product { get; set; } = new();
 
     [Required, Display(Name = "externe Product ID")]
-    public uint RemoteProductId { get; set; }
+    public int RemoteProductId { get; set; }
 
     [Display(Name = "Preis")]
     public decimal Price { get; set; }

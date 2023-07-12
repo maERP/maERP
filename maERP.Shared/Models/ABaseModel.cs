@@ -8,7 +8,7 @@ namespace maERP.Shared.Models;
 abstract public class ABaseModel
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public virtual uint Id { get; set; }
+    public virtual int Id { get; set; }
 
     [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public virtual DateTime DateCreated { get; set; } = DateTime.UtcNow;

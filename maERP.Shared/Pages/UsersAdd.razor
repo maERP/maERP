@@ -1,4 +1,4 @@
-﻿@page "/User/add"
+﻿@page "/Users/add"
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
 @using maERP.Shared.Dtos.User
@@ -60,12 +60,12 @@
 
     protected async Task SaveUser()
     {
-        await DataService.Request("POST", "/User/", user);
+        await DataService.Request("POST", "/Users/", user);
         ReturnToList();
     }
 
     public void ReturnToList()
     {
-        NavigationManager.NavigateTo("/User");
+        NavigationManager.NavigateTo("/Users");
     }
 }

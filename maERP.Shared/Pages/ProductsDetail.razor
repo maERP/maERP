@@ -16,7 +16,7 @@
 @code {
 
     [Parameter]
-    public uint productId { get; set; }
+    public int productId { get; set; }
 
     protected string Title = "Produktdetail";
 
@@ -27,7 +27,7 @@
         if (productId != 0)
         {
             Title = "Bearbeiten";
-            product = await _dataService.Request("GET", "/Product/" + productId);
+            product = await _dataService.Request("GET", "/Products/" + productId);
         }
         else Title = "nicht gefunden";
     }

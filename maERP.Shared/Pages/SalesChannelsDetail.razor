@@ -15,7 +15,7 @@
 @code {
 
     [Parameter]
-    public uint salesChannelId { get; set; }
+    public int salesChannelId { get; set; }
 
     protected string Title = "Vertriebskanaldetails";
 
@@ -26,7 +26,7 @@
         if (salesChannelId != 0)
         {
             Title = "bearbeiten";
-            salesChannel = await DataService.Request("GET", "/SalesChannel/" + salesChannelId);
+            salesChannel = await DataService.Request("GET", "/SalesChannels/" + salesChannelId);
         }
         else Title = "nicht gefunden";
     }

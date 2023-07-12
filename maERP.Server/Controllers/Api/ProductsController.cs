@@ -7,13 +7,14 @@ using maERP.Shared.Dtos.Product;
 using maERP.Server.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Models;
+using maERP.Shared.Dtos;
 
 namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class ProductController : ControllerBase
+public class ProductsController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
@@ -21,7 +22,7 @@ public class ProductController : ControllerBase
     private readonly ISalesChannelRepository _salesChannelRepository;
     private readonly ITaxClassRepository _taxClassRepository;
 
-    public ProductController(
+    public ProductsController(
         IMapper mapper,
         IProductRepository productRepository,
         IProductSalesChannelRepository productSalesChannelRepository,
@@ -35,9 +36,9 @@ public class ProductController : ControllerBase
         _taxClassRepository = taxClassRepository;
     }
 
-    // GET: api/Product
+    // GET: api/Products
     [HttpGet("GetAll")]
-    // GET: api/Product?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
+    // GET: api/Products?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
     [EnableQuery] 
     public async Task<ActionResult<IEnumerable<ProductListDto>>> GetProduct()
     {
@@ -45,9 +46,9 @@ public class ProductController : ControllerBase
         return Ok(result);
     }
 
-    // GET: api/Product/5
+    // GET: api/Products/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDetailDto>> GetProduct(uint id)
+    public async Task<ActionResult<ProductDetailDto>> GetProduct(int id)
     {
         var result = await _productRepository.GetByIdAsync(id);
 
@@ -59,7 +60,7 @@ public class ProductController : ControllerBase
         return Ok(result);
     }
 
-    // POST: api/Product
+    // POST: api/Products
     [HttpPost]
     public async Task<ActionResult<ProductDetailDto>> PostProduct(ProductCreateDto productCreateDto)
     {
@@ -115,39 +116,32 @@ public class ProductController : ControllerBase
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
     }
 
-    // PUT: api/Product/5
+    // PUT: api/Products/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduct(uint id, ProductUpdateDto productUpdateDto)
+    public async Task<IActionResult> PutProduct(int id, [FromBody] ProductUpdateDto productUpdateDto)
     {
-        try
+        if (await _productRepository.Exists(id) == true)
         {
-            await _productRepository.UpdateAsync(id, productUpdateDto);
+            await _productRepository.UpdateAsync<ProductUpdateDto>(id, productUpdateDto);
         }
-        catch (DbUpdateConcurrencyException)
+        else
         {
-            if (!await ProductExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            return NotFound();
         }
 
         return NoContent();
     }
 
-    // DELETE: api/Product/5
+    // DELETE: api/Products/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProduct(uint id)
+    public async Task<IActionResult> DeleteProduct(int id)
     {
         await _productRepository.DeleteAsync(id);
 
         return NoContent();
     }
 
-    private async Task<bool> ProductExists(uint id)
+    private async Task<bool> ProductExists(int id)
     {
         return await _productRepository.Exists(id);
     }

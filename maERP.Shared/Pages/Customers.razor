@@ -1,4 +1,4 @@
-﻿@page "/Customer"
+﻿@page "/Customers"
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
 @using maERP.Shared.Dtos.Customer
@@ -37,10 +37,10 @@ else
                     <td>@customer.LastName</td>
                     <td>@customer.EnrollmentDate</td>
                     <td>
-                        <a href='/Customer/edit/@customer.Id' class="btn btn-outline-dark" role="button">
+                        <a href='/Customers/@customer.Id/edit' class="btn btn-outline-dark" role="button">
                             Bearbeiten
                         </a>
-                        <a href='/Customer/delete/@customer.Id' class="btn btn-outline-danger" role="button">
+                        <a href='/Customers/@customer.Id/delete' class="btn btn-outline-danger" role="button">
                             Löschen
                         </a>
                     </td>
@@ -50,7 +50,7 @@ else
 
     </table>
 
-    <a href="/Customer/add">Kunden anlegen</a>
+    <a href="/Customers/add">Kunden anlegen</a>
 }
 
 @code {
@@ -59,6 +59,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        customers = await DataService.Request("GET", "/Customer/GetAll");
+        customers = await DataService.Request("GET", "/Customers/GetAll");
     }
 }

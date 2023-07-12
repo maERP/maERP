@@ -1,0 +1,32 @@
+﻿@page "/Customers/{customerId:int}"
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Shared.Contracts
+@using maERP.Shared.Dtos.Customer
+
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager
+@inject IDataService<CustomerDetailDto> DataService
+
+<h1>Kunde bearbeiten</h1>
+
+
+@code {
+
+    [Parameter]
+    public int customerId { get; set; }
+
+    protected string Title = "Kunden";
+
+    protected CustomerDetailDto customer = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (customerId != 0)
+        {
+            Title = "Bearbeiten";
+            customer = await DataService.Request("GET", "/Customers/" + customerId);
+        }
+        else Title = "nicht gefunden";
+    }
+}

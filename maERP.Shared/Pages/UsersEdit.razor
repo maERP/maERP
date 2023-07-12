@@ -1,4 +1,4 @@
-﻿@page "/User/edit/{userId}"
+﻿@page "/Users/{userId}/edit"
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
 @using maERP.Shared.Dtos.User
@@ -71,7 +71,7 @@
         if (userId != null)
         {
             Title = "bearbeiten";
-            user = await DataService.Request("GET", "/User/" + userId);
+            user = await DataService.Request("GET", "/Users/" + userId);
             user.UserId = userId;
             StateHasChanged();
         }
@@ -81,13 +81,12 @@
     {
         if (user != null)
         {
-            Console.WriteLine("UPDATE FOR USERID " + userId);
-            await DataService.Request("PUT", "/User", user);
+            await DataService.Request("PUT", "/Users", user);
         }
     }
 
     public void Cancel()
     {
-        NavigationManager.NavigateTo("/User");
+        NavigationManager.NavigateTo("/Users");
     }
 }

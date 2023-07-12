@@ -6,18 +6,19 @@ using AutoMapper;
 using maERP.Server.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Dtos.TaxClass;
+using maERP.Shared.Dtos.Warehouse;
 
 namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class TaxClassController : ControllerBase  
+public class TaxClassesController : ControllerBase  
 {
     private readonly IMapper _mapper;
     private readonly ITaxClassRepository _repository;
 
-    public TaxClassController(IMapper mapper, ITaxClassRepository repository)
+    public TaxClassesController(IMapper mapper, ITaxClassRepository repository)
     {
         _mapper = mapper;
         _repository = repository;
@@ -35,7 +36,7 @@ public class TaxClassController : ControllerBase
 
     // GET: api/TaxClasses/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<TaxClassDetailDto>> GetTaxClass(uint id)
+    public async Task<ActionResult<TaxClassDetailDto>> GetTaxClass(int id)
     {
         var result = await _repository.GetByIdAsync(id);
         return Ok(result);
@@ -43,22 +44,15 @@ public class TaxClassController : ControllerBase
 
     // PUT: api/TaxClasses/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTaxClass(uint id, TaxClassDetailDto updateTaxClassDetailDto)
+    public async Task<IActionResult> PutTaxClass(int id, [FromBody] TaxClassUpdateDto taxClassUpdateDto)
     {
-        try
+        if (await _repository.Exists(id) == true)
         {
-            await _repository.UpdateAsync(id, updateTaxClassDetailDto);
+            await _repository.UpdateAsync<TaxClassUpdateDto>(id, taxClassUpdateDto);
         }
-        catch (DbUpdateConcurrencyException)
+        else
         {
-            if (!await TaxClassExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            return NotFound();
         }
 
         return NoContent();
@@ -75,14 +69,14 @@ public class TaxClassController : ControllerBase
 
     // DELETE: api/TaxClasses/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTaxClass(uint id)
+    public async Task<IActionResult> DeleteTaxClass(int id)
     {
         await _repository.DeleteAsync(id);
 
         return NoContent();
     }
 
-    private async Task<bool> TaxClassExists(uint id)
+    private async Task<bool> TaxClassExists(int id)
     {
         return await _repository.Exists(id);
     }

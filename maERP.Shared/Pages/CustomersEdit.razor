@@ -1,0 +1,60 @@
+﻿@page "/Customers/{customerId:int}/edit"
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Shared.Contracts
+@using maERP.Shared.Dtos.Customer
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject IDataService<CustomerUpdateDto> _dataService
+
+<h1>Lager</h1>
+
+<hr />
+
+<EditForm Model="@customer">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="customer.FirstName" />
+        </div>
+        <ValidationMessage For="@(() => customer.FirstName)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" @onclick="SaveCustomer">Speichern</button>
+        <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public int customerId { get; set; }
+
+    protected string Title = "hinzufügen";
+
+    protected CustomerUpdateDto customer = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (customerId != 0)
+        {
+            Title = "Bearbeiten";
+            customer = await _dataService.Request("GET", "/Customer/" + customerId);
+        }
+    }
+
+    protected async Task SaveCustomer()
+    {
+        await _dataService.Request("PUT", "/Customer/" + customerId, customer);
+
+        Cancel();
+    }
+
+    public void Cancel()
+    {
+        StateHasChanged();
+        _navigationManager.NavigateTo("/Customer");
+    }
+}

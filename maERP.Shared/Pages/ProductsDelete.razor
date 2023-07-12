@@ -1,0 +1,24 @@
+﻿@page "/Product/{productId:int}/delete"
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.Shared.Contracts
+
+@attribute [Authorize]
+
+@inject NavigationManager NavigationManager
+@inject IDataService<string> DataService
+
+@code {
+
+    [Parameter]
+    public int productId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (productId > 0)
+        {
+            await DataService.Request("DELETE", "/Products/" + productId);
+            NavigationManager.NavigateTo("/Products");
+        }
+    }
+}

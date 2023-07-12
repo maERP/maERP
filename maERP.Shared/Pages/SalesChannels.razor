@@ -35,11 +35,8 @@ else
                     </td>
                     <td>@salesChannel.Url</td>
                     <td>
-                        <a href='/SalesChannels/edit/@salesChannel.Id' class="btn btn-outline-dark" role="button">
+                        <a href='/SalesChannels/@salesChannel.Id/edit' class="btn btn-outline-dark" role="button">
                             Bearbeiten
-                        </a>
-                        <a href='/SalesChannels/delete/@salesChannel.Id' class="btn btn-outline-danger" role="button">
-                            Löschen
                         </a>
                     </td>
                 </tr>
@@ -57,6 +54,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        salesChannels = await DataService.Request("GET", "/SalesChannel/GetAll");
+        salesChannels = await DataService.Request("GET", "/SalesChannels/GetAll");
     }
 }

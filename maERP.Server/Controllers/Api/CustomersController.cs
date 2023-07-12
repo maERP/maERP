@@ -6,24 +6,25 @@ using AutoMapper;
 using maERP.Shared.Dtos.Customer;
 using maERP.Server.Models;
 using maERP.Server.Repository;
+using maERP.Shared.Dtos;
 
 namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
-public class CustomerController : ControllerBase
+public class CustomersController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly ICustomerRepository _repository;
 
-    public CustomerController(IMapper mapper, ICustomerRepository repository)
+    public CustomersController(IMapper mapper, ICustomerRepository repository)
     {
         _mapper = mapper;
         _repository = repository;
     }
 
-    // GET: api/Customer
+    // GET: api/Customers
     [HttpGet("GetAll")]
     [EnableQuery]
     public async Task<ActionResult<IEnumerable<CustomerListDto>>> GetCustomer()
@@ -32,43 +33,31 @@ public class CustomerController : ControllerBase
         return Ok(customer);
     }
 
-    // GET: api/Customer/5
+    // GET: api/Customers/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<CustomerDetailDto>> GetCustomer(uint id)
+    public async Task<ActionResult<CustomerDetailDto>> GetCustomer(int id)
     {
         var customer = await _repository.GetByIdAsync(id);
         return Ok(customer);
     }
 
-    // PUT: api/Customer/5
+    // PUT: api/SalesChannels/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutCustomer(uint id, CustomerDetailDto customerDto)
+    public async Task<IActionResult> PutCustomer(int id, [FromBody] CustomerUpdateDto customerUpdateDto)
     {
-        if (id != customerDto.Id)
+        if (await _repository.Exists(id) == true)
         {
-            return BadRequest("Invalid Record Id");
+            await _repository.UpdateAsync<CustomerUpdateDto>(id, customerUpdateDto);
         }
-
-        try
+        else
         {
-            await _repository.UpdateAsync(id, customerDto);
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!await CustomerExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            return NotFound();
         }
 
         return NoContent();
     }
 
-    // POST: api/Customer
+    // POST: api/Customers
     [HttpPost]
     public async Task<ActionResult<CustomerDetailDto>> PostCustomer(CustomerDetailDto customerDto)
     {
@@ -76,16 +65,16 @@ public class CustomerController : ControllerBase
         return CreatedAtAction(nameof(GetCustomer), new { id = customer.Id }, customer);
     }
 
-    // DELETE: api/Customer/5
+    // DELETE: api/Customers/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCustomer(uint id)
+    public async Task<IActionResult> DeleteCustomer(int id)
     {
         await _repository.DeleteAsync(id);
 
         return NoContent();
     }
 
-    private async Task<bool> CustomerExists(uint id)
+    private async Task<bool> CustomerExists(int id)
     {
         return await _repository.Exists(id);
     }

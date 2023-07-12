@@ -1,5 +1,5 @@
 ﻿@page "/SalesChannels/add"
-@page "/SalesChannels/edit/{salesChannelId:int}"
+@page "/SalesChannels/{salesChannelId:int}/edit"
 
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
@@ -95,7 +95,7 @@
         if (salesChannelId != 0)
         {
             Title = "Bearbeiten";
-            salesChannel = await _dataService.Request("GET", "/SalesChannel/" + salesChannelId);
+            salesChannel = await _dataService.Request("GET", "/SalesChannels/" + salesChannelId);
         }
     }
 
@@ -103,11 +103,11 @@
     {
         if (salesChannelId != 0)
         {
-            await _dataService.Request("PUT", "/SalesChannel/" + salesChannelId, salesChannel);
+            await _dataService.Request("PUT", "/SalesChannels/" + salesChannelId, salesChannel);
         }
         else
         {
-            await _dataService.Request("POST", "/SalesChannel", salesChannel);
+            await _dataService.Request("POST", "/SalesChannels", salesChannel);
         }
         
         Cancel();
@@ -115,6 +115,6 @@
 
     public void Cancel()
     {
-        _navManager.NavigateTo("/SalesChannel");
+        _navManager.NavigateTo("/SalesChannels");
     }
 }

@@ -11,7 +11,7 @@ namespace maERP.Server.Repository;
 
 public interface IProductSalesChannelRepository : IGenericRepository<ProductSalesChannel>
 {
-    Task<ProductSalesChannel> getByRemoteProductIdAsync(uint productId, uint salesChannelId = 0);
+    Task<ProductSalesChannel> getByRemoteProductIdAsync(int productId, int salesChannelId = 0);
 }
 
 public class ProductSalesChannelRepository : GenericRepository<ProductSalesChannel>, IProductSalesChannelRepository
@@ -23,7 +23,7 @@ public class ProductSalesChannelRepository : GenericRepository<ProductSalesChann
         this._context = context;
     }
 
-    public async Task<ProductSalesChannel> getByRemoteProductIdAsync(uint productId, uint salesChannelId = 0)
+    public async Task<ProductSalesChannel> getByRemoteProductIdAsync(int productId, int salesChannelId = 0)
     {
         if (salesChannelId > 0)
         {

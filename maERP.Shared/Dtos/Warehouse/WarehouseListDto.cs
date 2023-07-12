@@ -2,6 +2,6 @@
 
 public class WarehouseListDto
 {
-    public virtual uint Id { get; set; }
+    public virtual int Id { get; set; }
     public virtual string Name { get; set; } = String.Empty;
 }

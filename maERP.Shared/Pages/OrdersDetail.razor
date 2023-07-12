@@ -1,25 +1,25 @@
-﻿@page "/Order/{orderId:int}"
+﻿@page "/Orders/{orderId:int}"
 
-@using maERP.Shared.Models
+@using maERP.Shared.Dtos.Order
 
 @inject NavigationManager NavigationManager
 
-<h1>@product.Name</h1>
+<h1>@order.Id</h1>
 
 <p></p>
 
 @code {
 
     [Parameter]
-    public uint productId { get; set; }
+    public int orderId { get; set; }
 
-    protected string Title = "Produktdetail";
+    protected string Title = "Bestelldetails";
 
-    protected maERP.Shared.Models.Product product = new();
+    protected OrderDetailDto order = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        if (productId != 0)
+        if (orderId != 0)
         {
             Title = "Bearbeiten";
             // product = await productRepository.GetAsync(productId);

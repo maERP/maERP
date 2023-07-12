@@ -74,8 +74,6 @@ public class DataService<T> : IDataService<T> where T : class
                             await _localStorage.GetItemAsync<string>("token"));
                 }
 
-                string jsonPayload = JsonSerializer.Serialize(payload);
-
                 HttpResponseMessage response = new HttpResponseMessage();
 
                 if (method == "GET")
@@ -85,11 +83,11 @@ public class DataService<T> : IDataService<T> where T : class
                 }
                 else if (method == "POST")
                 {
-                    response = await client.PostAsJsonAsync(requestUrl, jsonPayload).ConfigureAwait(false);
+                    response = await client.PostAsJsonAsync(requestUrl, payload).ConfigureAwait(false);
                 }
                 else if (method == "PUT")
                 {
-                    response = await client.PutAsJsonAsync(requestUrl, jsonPayload).ConfigureAwait(false);
+                    response = await client.PutAsJsonAsync(requestUrl, payload).ConfigureAwait(false);
                 }
                 else if (method == "DELETE")
                 {
@@ -100,7 +98,8 @@ public class DataService<T> : IDataService<T> where T : class
                     throw new Exception();
                 }
 
-                if (response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode &&
+                    response.StatusCode != System.Net.HttpStatusCode.NoContent)
                 {
                     string result = response.Content.ReadAsStringAsync().Result;
 
@@ -111,38 +110,45 @@ public class DataService<T> : IDataService<T> where T : class
 
                         return responseObj;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message);
+                        Console.WriteLine("Exception when deserializing: " + ex.Message);
                     }
 
                     throw new Exception();
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    Console.WriteLine("Not Found");
+                    Console.WriteLine("HTTP Response Not Found");
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    Console.WriteLine("Not Authorized");
+                    Console.WriteLine("HTTP Response Not Authorized");
                 }
                 else
                 {
+                    Console.WriteLine("HTTP Response has an unknown HTTP Status Code");
                     throw new Exception();
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Console.WriteLine("Exception: "+ ex.Message);
         }
 
-        throw new Exception();
+        var obj = (T)Activator.CreateInstance(typeof(T));
+        return obj;
     }
 
     public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest registrationRequest)
     {
         await Task.CompletedTask;
         throw new NotImplementedException();
+    }
+
+    private T GetOject()
+    {
+        return (T)Activator.CreateInstance(typeof(T));
     }
 }
