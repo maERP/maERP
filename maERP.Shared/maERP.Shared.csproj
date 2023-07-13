@@ -29,7 +29,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.9" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.31.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.0" />
     <PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
   </ItemGroup>
     <ItemGroup>  
@@ -47,32 +47,41 @@
     <Folder Include="Shared\" />
     <Folder Include="Contracts\" />
     <Folder Include="Dtos\Auth\" />
+    <Folder Include="Pages\Customers\" />
+    <Folder Include="Pages\Users\" />
+    <Folder Include="Pages\Orders\" />
+    <Folder Include="Pages\Products\" />
+    <Folder Include="Pages\SalesChannels\" />
+    <Folder Include="Pages\TaxClasses\" />
+    <Folder Include="Pages\Warehouses\" />
+    <Folder Include="Pages\Auth\" />
   </ItemGroup>
   <ItemGroup>
-    <RazorComponent Include="Pages\Customers.razor" />
     <RazorComponent Include="Pages\Index.razor" />
-    <RazorComponent Include="Pages\Login.razor" />
-    <RazorComponent Include="Pages\Logout.razor" />
-    <RazorComponent Include="Pages\Orders.razor" />
-    <RazorComponent Include="Pages\OrdersDetail.razor" />
-    <RazorComponent Include="Pages\Products.razor" />
-    <RazorComponent Include="Pages\ProductsDelete.razor" />
-    <RazorComponent Include="Pages\ProductsDetail.razor" />
-    <RazorComponent Include="Pages\ProductsEdit.razor" />
-    <RazorComponent Include="Pages\TaxClasses.razor" />
-    <RazorComponent Include="Pages\TaxClassesDetail.razor" />
-    <RazorComponent Include="Pages\TaxClassesEdit.razor" />
-    <RazorComponent Include="Pages\Users.razor" />
-    <RazorComponent Include="Pages\UsersDelete.razor" />
-    <RazorComponent Include="Pages\UsersDetail.razor" />
-    <RazorComponent Include="Pages\UsersEdit.razor" />
-    <RazorComponent Include="Pages\Warehouses.razor" />
-    <RazorComponent Include="Pages\WarehousesDetail.razor" />
-    <RazorComponent Include="Pages\WarehousesEdit.razor" />
-    <RazorComponent Include="Pages\WarehousesDelete.razor" />
-    <RazorComponent Include="Pages\CustomersDelete.razor" />
-    <RazorComponent Include="Pages\CustomersDetail.razor" />
-    <RazorComponent Include="Pages\CustomersEdit.razor" />
+    <RazorComponent Include="Pages\Customers\Customers.razor" />
+    <RazorComponent Include="Pages\Customers\CustomersDelete.razor" />
+    <RazorComponent Include="Pages\Customers\CustomersDetail.razor" />
+    <RazorComponent Include="Pages\Customers\CustomersEdit.razor" />
+    <RazorComponent Include="Pages\Products\Products.razor" />
+    <RazorComponent Include="Pages\Products\ProductsDelete.razor" />
+    <RazorComponent Include="Pages\Products\ProductsDetail.razor" />
+    <RazorComponent Include="Pages\Products\ProductsEdit.razor" />
+    <RazorComponent Include="Pages\Users\Users.razor" />
+    <RazorComponent Include="Pages\Users\UsersDelete.razor" />
+    <RazorComponent Include="Pages\Users\UsersDetail.razor" />
+    <RazorComponent Include="Pages\Users\UsersEdit.razor" />
+    <RazorComponent Include="Pages\Warehouses\Warehouses.razor" />
+    <RazorComponent Include="Pages\Warehouses\WarehousesDelete.razor" />
+    <RazorComponent Include="Pages\Warehouses\WarehousesDetail.razor" />
+    <RazorComponent Include="Pages\Warehouses\WarehousesEdit.razor" />
+    <RazorComponent Include="Pages\TaxClasses\TaxClasses.razor" />
+    <RazorComponent Include="Pages\TaxClasses\TaxClassesDetail.razor" />
+    <RazorComponent Include="Pages\TaxClasses\TaxClassesEdit.razor" />
+    <RazorComponent Include="Pages\Orders\Orders.razor" />
+    <RazorComponent Include="Pages\Orders\OrdersDetail.razor" />
+    <RazorComponent Include="Pages\Auth\Login.razor" />
+    <RazorComponent Include="Pages\Auth\Logout.razor" />
+    <RazorComponent Include="Pages\TaxClasses\TaxClassesDelete.razor" />
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Shared\MainLayout.razor" />
@@ -83,11 +92,43 @@
   <ItemGroup>
     <None Remove="Contracts\" />
     <None Remove="Dtos\Auth\" />
+    <None Remove="Pages\Customers\" />
+    <None Remove="Pages\Users\" />
+    <None Remove="Pages\Orders\" />
+    <None Remove="Pages\Products\" />
+    <None Remove="Pages\SalesChannels\" />
+    <None Remove="Pages\TaxClasses\" />
+    <None Remove="Pages\Warehouses\" />
+    <None Remove="Pages\Auth\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Pages\Customer %28Kopie%29.razor" />
     <Content Remove="Pages\WarehouseDelete %28Kopie%29.razor" />
     <Content Remove="Pages\WarehouseDetail %28Kopie%29.razor" />
     <Content Remove="Pages\WarehouseEdit %28Kopie%29.razor" />
+    <Content Remove="Pages\Customers\Customers.razor" />
+    <Content Remove="Pages\Customers\CustomersDelete.razor" />
+    <Content Remove="Pages\Customers\CustomersDetail.razor" />
+    <Content Remove="Pages\Customers\CustomersEdit.razor" />
+    <Content Remove="Pages\Products\Products.razor" />
+    <Content Remove="Pages\Products\ProductsDelete.razor" />
+    <Content Remove="Pages\Products\ProductsDetail.razor" />
+    <Content Remove="Pages\Products\ProductsEdit.razor" />
+    <Content Remove="Pages\Users\Users.razor" />
+    <Content Remove="Pages\Users\UsersDelete.razor" />
+    <Content Remove="Pages\Users\UsersDetail.razor" />
+    <Content Remove="Pages\Users\UsersEdit.razor" />
+    <Content Remove="Pages\Warehouses\Warehouses.razor" />
+    <Content Remove="Pages\Warehouses\WarehousesDelete.razor" />
+    <Content Remove="Pages\Warehouses\WarehousesDetail.razor" />
+    <Content Remove="Pages\Warehouses\WarehousesEdit.razor" />
+    <Content Remove="Pages\TaxClasses\TaxClasses.razor" />
+    <Content Remove="Pages\TaxClasses\TaxClassesDetail.razor" />
+    <Content Remove="Pages\TaxClasses\TaxClassesEdit.razor" />
+    <Content Remove="Pages\Orders\Orders.razor" />
+    <Content Remove="Pages\Orders\OrdersDetail.razor" />
+    <Content Remove="Pages\Auth\Login.razor" />
+    <Content Remove="Pages\Auth\Logout.razor" />
+    <Content Remove="Pages\TaxClasses\WarehousesDelete.razor" />
   </ItemGroup>
 </Project>

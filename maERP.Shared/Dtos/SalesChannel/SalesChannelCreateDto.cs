@@ -1,6 +1,6 @@
-﻿namespace maERP.Shared.Dtos;
+﻿namespace maERP.Shared.Dtos.SalesChannel;
  
 public class SalesChannelCreateDto
 {
-    public int Id { get; set; }
+    
 }

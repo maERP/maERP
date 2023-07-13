@@ -5,6 +5,7 @@ using maERP.Shared.Dtos.Customer;
 using maERP.Shared.Dtos.Order;
 using maERP.Shared.Dtos.Product;
 using maERP.Shared.Dtos.ProductSalesChannel;
+using maERP.Shared.Dtos.SalesChannel;
 using maERP.Shared.Dtos.TaxClass;
 using maERP.Shared.Dtos.Warehouse;
 using maERP.Shared.Models;

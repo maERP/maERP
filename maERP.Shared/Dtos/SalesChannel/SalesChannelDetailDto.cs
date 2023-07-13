@@ -1,4 +1,4 @@
-﻿namespace maERP.Shared.Dtos;
+﻿namespace maERP.Shared.Dtos.SalesChannel;
  
 public class SalesChannelDetailDto
 {

@@ -87,6 +87,8 @@ public class DataService<T> : IDataService<T> where T : class
                 }
                 else if (method == "PUT")
                 {
+                    string json = JsonSerializer.Serialize(payload);
+                    Console.WriteLine("JSON: " + json);
                     response = await client.PutAsJsonAsync(requestUrl, payload).ConfigureAwait(false);
                 }
                 else if (method == "DELETE")
@@ -98,24 +100,18 @@ public class DataService<T> : IDataService<T> where T : class
                     throw new Exception();
                 }
 
-                if (response.IsSuccessStatusCode &&
-                    response.StatusCode != System.Net.HttpStatusCode.NoContent)
+                if(response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    return default(T);
+                }
+                else if (response.IsSuccessStatusCode)
                 {
                     string result = response.Content.ReadAsStringAsync().Result;
 
-                    try
-                    {
-                        var responseObj = JsonSerializer.Deserialize<T>(result);
-                        response.Dispose();
+                    var responseObj = JsonSerializer.Deserialize<T>(result);
+                    response.Dispose();
 
-                        return responseObj;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Exception when deserializing: " + ex.Message);
-                    }
-
-                    throw new Exception();
+                    return responseObj;
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
@@ -128,7 +124,6 @@ public class DataService<T> : IDataService<T> where T : class
                 else
                 {
                     Console.WriteLine("HTTP Response has an unknown HTTP Status Code");
-                    throw new Exception();
                 }
             }
         }
@@ -145,10 +140,5 @@ public class DataService<T> : IDataService<T> where T : class
     {
         await Task.CompletedTask;
         throw new NotImplementedException();
-    }
-
-    private T GetOject()
-    {
-        return (T)Activator.CreateInstance(typeof(T));
     }
 }

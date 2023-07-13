@@ -14,7 +14,7 @@
 
 <hr />
 
-<EditForm Model="@taxClass">
+<EditForm Model="@taxClass" OnValidSubmit="Save">
     <DataAnnotationsValidator />
     <div class="mb-3">
         <label for="Name" class="form-label">Steuersatz</label>
@@ -24,8 +24,12 @@
         <ValidationMessage For="@(() => taxClass.TaxRate)" />
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn-primary" @onclick="SaveTaxClass">Speichern</button>
+        @if (taxClassId != 0)
+        {
+            <a href='/TaxClasses/@taxClassId/delete' class="btn btn-outline-danger" role="button">Löschen</a>
+        }
         <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
+        <button type="submit" class="btn btn-primary">Speichern</button>
     </div>
 </EditForm>
 
@@ -47,7 +51,7 @@
         }
     }
 
-    protected async Task SaveTaxClass()
+    protected async Task Save()
     {
         if (taxClassId != 0)
         {

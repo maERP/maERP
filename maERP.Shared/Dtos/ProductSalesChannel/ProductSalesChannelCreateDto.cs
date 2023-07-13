@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using maERP.Shared.Dtos.Product;
+using maERP.Shared.Dtos.SalesChannel;
 
 namespace maERP.Shared.Dtos.ProductSalesChannel;
 

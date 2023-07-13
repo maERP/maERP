@@ -13,7 +13,7 @@
 
 <hr />
 
-<EditForm Model="@warehouse">
+<EditForm Model="@warehouse" OnValidSubmit="Save">
     <DataAnnotationsValidator />
     <div class="mb-3">
         <label for="Name" class="form-label">Name</label>
@@ -23,8 +23,13 @@
         <ValidationMessage For="@(() => warehouse.Name)" />
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn-primary" @onclick="SaveWarehouse">Speichern</button>
+
+        @if (warehouseId != 0)
+        {
+            <a href='/Warehouses/@warehouseId/delete' class="btn btn-outline-danger" role="button">Löschen</a>
+        }
         <button class="btn btn-light" @onclick="NavigateToList">Abbrechen</button>
+        <button type="submit" class="btn btn-primary">Speichern</button>
     </div>
 </EditForm>
 
@@ -46,7 +51,7 @@
         }
     }
 
-    protected async Task SaveWarehouse()
+    protected async Task Save()
     {
         if (warehouseId != 0)
         {

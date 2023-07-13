@@ -3,7 +3,7 @@
 
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
-@using maERP.Shared.Dtos
+@using maERP.Shared.Dtos.SalesChannel
 
 @attribute [Authorize]
 
@@ -14,7 +14,7 @@
 
 <hr />
 
-<EditForm Model="@salesChannel">
+<EditForm Model="@salesChannel" OnValidSubmit="Save">
     <DataAnnotationsValidator />
 
     <div class="mb-3">
@@ -75,9 +75,12 @@
         </tbody>
     </table>
 
+    <ValidationSummary />
+
     <div class="form-group">
-        <button type="submit" class="btn btn-primary" @onclick="SaveSalesChannel">Speichern</button>
-        <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
+
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <button class="btn btn-light">Abbrechen</button>
     </div>
 </EditForm>
 
@@ -88,7 +91,7 @@
 
     protected string Title = "hinzufügen";
 
-    protected maERP.Shared.Dtos.SalesChannelUpdateDto salesChannel = new();
+    protected SalesChannelUpdateDto salesChannel = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -97,9 +100,11 @@
             Title = "Bearbeiten";
             salesChannel = await _dataService.Request("GET", "/SalesChannels/" + salesChannelId);
         }
+
+        StateHasChanged();
     }
 
-    protected async Task SaveSalesChannel()
+    protected async Task Save()
     {
         if (salesChannelId != 0)
         {
@@ -109,12 +114,13 @@
         {
             await _dataService.Request("POST", "/SalesChannels", salesChannel);
         }
-        
-        Cancel();
+
+        ReturnToList();
     }
 
-    public void Cancel()
+    public void ReturnToList()
     {
+        StateHasChanged();
         _navManager.NavigateTo("/SalesChannels");
     }
 }

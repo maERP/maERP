@@ -68,9 +68,9 @@ public class SalesChannelsController : ControllerBase
     // POST: api/SalesChannels
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<SalesChannel>> PostSalesChannel(SalesChannelCreateDto salesChannelCreateDto)
+    public async Task<ActionResult<SalesChannel>> PostSalesChannel(SalesChannelUpdateDto salesChannelUpdateDto)
     {
-        var salesChannel = _mapper.Map<SalesChannel>(salesChannelCreateDto);
+        var salesChannel = _mapper.Map<SalesChannel>(salesChannelUpdateDto);
 
         await _repository.AddAsync(salesChannel);
 
