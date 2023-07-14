@@ -7,6 +7,7 @@ using maERP.Shared.Dtos.SalesChannel;
 using maERP.Shared.Models;
 using maERP.Shared.Dtos;
 using maERP.Shared.Dtos.Warehouse;
+using maERP.Shared.Pages.SalesChannels;
 
 namespace maERP.Server.Controllers;
 
@@ -15,12 +16,10 @@ namespace maERP.Server.Controllers;
 [Authorize]
 public class SalesChannelsController : ControllerBase
 {
-    private readonly IMapper _mapper;
     private readonly ISalesChannelRepository _repository;
 
-    public SalesChannelsController(IMapper mapper, ISalesChannelRepository salesChannelRepository)
+    public SalesChannelsController(ISalesChannelRepository salesChannelRepository)
     {
-        this._mapper = mapper;
         this._repository = salesChannelRepository;
     }
 
@@ -28,25 +27,22 @@ public class SalesChannelsController : ControllerBase
     [HttpGet("GetAll")]
     public async Task<ActionResult<IEnumerable<SalesChannelListDto>>> GetSalesChannel()
     {
-        var salesChannel = await _repository.GetAllAsync();
-        var records = _mapper.Map<List<SalesChannelListDto>>(salesChannel);
-        return Ok(records);
+        var salesChannels = await _repository.GetAllAsync<SalesChannelListDto>();
+        return Ok(salesChannels);
     }
 
     // GET: api/SalesChannels/5
     [HttpGet("{id}")]
     public async Task<ActionResult<SalesChannelDetailDto>> GetSalesChannel(int id)
     {
-        var salesChannel = await _repository.GetByIdAsync(id);
+        var salesChannel = await _repository.GetDetails(id);
 
         if (salesChannel == null)
         {
             return NotFound();
         }
 
-        var salesChannelDto = _mapper.Map<SalesChannelDetailDto>(salesChannel);
-
-        return Ok(salesChannelDto);
+        return Ok(salesChannel);
     }
 
     // PUT: api/SalesChannels/5
@@ -55,7 +51,7 @@ public class SalesChannelsController : ControllerBase
     {
         if (await _repository.Exists(id) == true)
         {
-            await _repository.UpdateAsync<SalesChannelUpdateDto>(id, salesChannelUpdateDto);
+            await _repository.UpdateAsync(id, salesChannelUpdateDto);
         }
         else
         {
@@ -68,12 +64,9 @@ public class SalesChannelsController : ControllerBase
     // POST: api/SalesChannels
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<SalesChannel>> PostSalesChannel(SalesChannelUpdateDto salesChannelUpdateDto)
+    public async Task<ActionResult<SalesChannelDetailDto>> PostSalesChannel(SalesChannelCreateDto salesChannelCreateDto)
     {
-        var salesChannel = _mapper.Map<SalesChannel>(salesChannelUpdateDto);
-
-        await _repository.AddAsync(salesChannel);
-
+        var salesChannel = await _repository.AddWithDetailsAsync(salesChannelCreateDto);
         return CreatedAtAction("GetSalesChannel", new { id = salesChannel.Id }, salesChannel);
     }
 
@@ -91,10 +84,5 @@ public class SalesChannelsController : ControllerBase
         await _repository.DeleteAsync(id);
 
         return NoContent();
-    }
-
-    private async Task<bool> SalesChannelExists(int id)
-    {
-        return await _repository.Exists(id);
     }
 }

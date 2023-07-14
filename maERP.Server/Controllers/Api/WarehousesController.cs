@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using AutoMapper;
 using maERP.Server.Repository;
 using maERP.Shared.Dtos.Warehouse;
 
@@ -12,12 +11,10 @@ namespace maERP.Server.Controllers.Api;
 [Authorize]
 public class WarehousesController : ControllerBase
 {
-    private readonly IMapper _mapper;
     private readonly IWarehouseRepository _repository;
 
-    public WarehousesController(IMapper mapper, IWarehouseRepository repository)
+    public WarehousesController(IWarehouseRepository repository)
     {
-        _mapper = mapper;
         _repository = repository;
     }
 
@@ -41,11 +38,11 @@ public class WarehousesController : ControllerBase
 
     // PUT: api/Warehouses/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutWarehouse(int id, [FromBody] WarehouseUpdateDto warehouseDto)
+    public async Task<IActionResult> PutWarehouse(int id, [FromBody] WarehouseUpdateDto taxClassUpdateDto)
     {
         if (await _repository.Exists(id) == true)
         {
-            await _repository.UpdateAsync<WarehouseUpdateDto>(id, warehouseDto);
+            await _repository.UpdateAsync<WarehouseUpdateDto>(id, taxClassUpdateDto);
         }
         else {
             return NotFound();
@@ -57,9 +54,9 @@ public class WarehousesController : ControllerBase
     // POST: api/Warehouses
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<WarehouseDetailDto>> PostWarehouse(WarehouseDetailDto warehouseDto)
+    public async Task<ActionResult<WarehouseDetailDto>> PostWarehouse(WarehouseCreateDto warehouseDto)
     {
-        var warehouse = await _repository.AddAsync<WarehouseDetailDto, WarehouseDetailDto>(warehouseDto);
+        var warehouse = await _repository.AddAsync<WarehouseCreateDto, WarehouseDetailDto>(warehouseDto);
         return CreatedAtAction(nameof(GetWarehouse), new { id = warehouse.Id }, warehouse);
     }
 
@@ -68,12 +65,6 @@ public class WarehousesController : ControllerBase
     public async Task<IActionResult> DeleteWarehouse(int id)
     {
         await _repository.DeleteAsync(id);
-
         return NoContent();
-    }
-
-    private async Task<bool> WarehouseExists(int id)
-    {
-        return await _repository.Exists(id);
     }
 }

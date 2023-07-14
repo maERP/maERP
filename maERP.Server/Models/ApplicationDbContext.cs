@@ -39,6 +39,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
         // modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
 
+        /*
         modelBuilder.Entity<Country>();
         modelBuilder.Entity<Customer>();
         modelBuilder.Entity<CustomerAddress>();
@@ -74,6 +75,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<TaxClass>();
 
         modelBuilder.Entity<Warehouse>();
+        */
         
         // seed user data
         string DEFAULT_ADMIN_USER_ID = "05474ea3–7543-8aef-bcae-33e812c35fc3";

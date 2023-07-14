@@ -2,8 +2,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using maERP.Server.Exceptions;
 using maERP.Server.Models;
 using maERP.Shared.Models;
 

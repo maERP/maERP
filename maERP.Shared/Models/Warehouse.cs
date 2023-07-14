@@ -2,7 +2,7 @@
 
 public class Warehouse : ABaseModel
 {
-    public virtual string Name { get; set; } = String.Empty;
+    public string Name { get; set; } = String.Empty;
 
-    public SalesChannel SalesChannels { get; set; }
+    public List<SalesChannel> SalesChannels { get; set; }
 }

@@ -11,12 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{7DD1E8A8-9F3D-41EF-95A7-B93CCB0FF8AB}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\maerp-server-publish.yml = .github\workflows\maerp-server-publish.yml
+		.github\workflows\maerp-server-test.yml = .github\workflows\maerp-server-test.yml
+		.github\workflows\maerp-web-publish.yml = .github\workflows\maerp-web-publish.yml
+		.github\workflows\maerp-web-test.yml = .github\workflows\maerp-web-test.yml
 		README.md = README.md
 		SECURITY.md = SECURITY.md
-		.github\workflows\maerp-web-test.yml = .github\workflows\maerp-web-test.yml
-		.github\workflows\maerp-server-test.yml = .github\workflows\maerp-server-test.yml
-		.github\workflows\maerp-server-publish.yml = .github\workflows\maerp-server-publish.yml
-		.github\workflows\maerp-web-publish.yml = .github\workflows\maerp-web-publish.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client", "maERP.Client\maERP.Client.csproj", "{56BD2DA1-3439-4760-ADE0-177F500E23C6}"
@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Web", "maERP.Web\maER
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F5FFF0EE-10F3-4FE8-B173-22A9FEFD33B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Server.Tests", "maERP.Server.Tests\maERP.Server.Tests.csproj", "{1295F0D8-8CBB-4C37-A863-9F9A5EA6A547}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Server.Tests", "maERP.Server.Tests\maERP.Server.Tests.csproj", "{1295F0D8-8CBB-4C37-A863-9F9A5EA6A547}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,9 +49,9 @@ Global
 		{56BD2DA1-3439-4760-ADE0-177F500E23C6}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{68D1525F-B465-4B71-83DC-9767A2F7A366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{68D1525F-B465-4B71-83DC-9767A2F7A366}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68D1525F-B465-4B71-83DC-9767A2F7A366}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{68D1525F-B465-4B71-83DC-9767A2F7A366}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68D1525F-B465-4B71-83DC-9767A2F7A366}.Release|Any CPU.Build.0 = Release|Any CPU
-		{68D1525F-B465-4B71-83DC-9767A2F7A366}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{F5FFF0EE-10F3-4FE8-B173-22A9FEFD33B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F5FFF0EE-10F3-4FE8-B173-22A9FEFD33B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5FFF0EE-10F3-4FE8-B173-22A9FEFD33B7}.Release|Any CPU.ActiveCfg = Release|Any CPU

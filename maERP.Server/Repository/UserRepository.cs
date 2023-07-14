@@ -15,6 +15,8 @@ public interface IUserRepository
     Task<UserDetailDto> GetByIdAsync(string userId);
     Task<IEnumerable<IdentityError>> AddAsync(UserCreateDto userDto);
     Task<ApplicationUser> UpdateAsync(ApplicationUser userDto);
+    Task<bool> Exists(string id);
+    Task UpdateWithDetailsAsync(string id, UserUpdateDto userUpdateDto);
 }
 
 public class UserRepository : IUserRepository
@@ -72,5 +74,32 @@ public class UserRepository : IUserRepository
         }
 
         throw new Exceptions.NotFoundException("User not found", "User not found");
+    }
+
+    public async Task UpdateWithDetailsAsync(string userId, UserUpdateDto userUpdateDto)
+    {
+        var localUser = await _userManager.FindByIdAsync(userId);
+
+        if (localUser.NormalizedEmail is not null)
+        {
+            localUser.Email = userUpdateDto.Email;
+            localUser.FirstName = userUpdateDto.FirstName;
+            localUser.LastName = userUpdateDto.LastName;
+
+            if(userUpdateDto.Password.Length > 0)
+            {
+                localUser.PasswordHash = _userManager.PasswordHasher.HashPassword(localUser, userUpdateDto.Password);
+            }
+
+            await _userManager.UpdateAsync(localUser);
+        }
+
+        throw new Exceptions.NotFoundException("User not found", userId);
+    }
+
+    public async Task<bool> Exists(string id)
+    {
+        var entity = await GetByIdAsync(id);
+        return entity != null;
     }
 }

@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using maERP.Server.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Dtos.TaxClass;
 using maERP.Shared.Dtos.Warehouse;
@@ -15,12 +12,10 @@ namespace maERP.Server.Controllers.Api;
 [Authorize]
 public class TaxClassesController : ControllerBase  
 {
-    private readonly IMapper _mapper;
     private readonly ITaxClassRepository _repository;
 
-    public TaxClassesController(IMapper mapper, ITaxClassRepository repository)
+    public TaxClassesController(ITaxClassRepository repository)
     {
-        _mapper = mapper;
         _repository = repository;
     }
 
@@ -61,9 +56,9 @@ public class TaxClassesController : ControllerBase
     // POST: api/TaxClasses
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<TaxClassDetailDto>> PostTaxClass(TaxClassDetailDto taxClassDto)
+    public async Task<ActionResult<TaxClassDetailDto>> PostTaxClass(TaxClassCreateDto taxClassCreateDto)
     {
-        var taxClass = await _repository.AddAsync<TaxClassDetailDto, TaxClassDetailDto>(taxClassDto);
+        var taxClass = await _repository.AddAsync<TaxClassCreateDto, TaxClassDetailDto>(taxClassCreateDto);
         return CreatedAtAction(nameof(GetTaxClass), new { id = taxClass.Id }, taxClass);
     }
 
@@ -72,12 +67,6 @@ public class TaxClassesController : ControllerBase
     public async Task<IActionResult> DeleteTaxClass(int id)
     {
         await _repository.DeleteAsync(id);
-
         return NoContent();
-    }
-
-    private async Task<bool> TaxClassExists(int id)
-    {
-        return await _repository.Exists(id);
     }
 }

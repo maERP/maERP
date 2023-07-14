@@ -1,4 +1,5 @@
 ﻿@page "/Users/{userId}/edit"
+
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
 @using maERP.Shared.Dtos.User
@@ -12,9 +13,9 @@
 
 <hr />
 
-
-<EditForm Model="@user">
+<EditForm Model="@user" OnValidSubmit="Save">
     <DataAnnotationsValidator />
+
     <div class="mb-3">
         <label for="Email" class="form-label">E-Mail</label>
         <div class="col-md-4">
@@ -42,6 +43,8 @@
         <div class="col-md-4">
             <InputText id="password" type="password" class="form-control" @bind-Value="@user.Password" />
         </div>
+        <ValidationMessage For="@(() => user.Password)" />
+
     </div>
 
     <div class="mb-3">
@@ -49,13 +52,15 @@
         <div class="col-md-4">
             <InputText id="passwordConfirm" type="password" class="form-control" @bind-Value="@user.PasswordConfirm" />
         </div>
+        <ValidationMessage For="@(() => user.PasswordConfirm)" />
+
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <button class="btn btn-light" @onclick="ReturnToList">Abbrechen</button>
     </div>
 </EditForm>
-
-<div class="form-group">
-    <button type="submit" class="btn btn-primary" @onclick="SaveUser">Speichern</button>
-    <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
-</div>
 
 @code {
 
@@ -72,20 +77,18 @@
         {
             Title = "bearbeiten";
             user = await DataService.Request("GET", "/Users/" + userId);
-            user.UserId = userId;
-            StateHasChanged();
         }
     }
 
-    protected async Task SaveUser()
+    protected async Task Save()
     {
-        if (user != null)
+        if (userId.Length > 0)
         {
-            await DataService.Request("PUT", "/Users", user);
+            await DataService.Request("PUT", "/Users/" + userId, user);
         }
     }
 
-    public void Cancel()
+    public void ReturnToList()
     {
         NavigationManager.NavigateTo("/Users");
     }

@@ -2,5 +2,5 @@
 
 public class WarehouseCreateDto
 {
-    
+    public string Name { get; set; } = String.Empty;
 }

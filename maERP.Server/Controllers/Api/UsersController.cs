@@ -6,6 +6,7 @@ using AutoMapper;
 using maERP.Server.Repository;
 using maERP.Shared.Dtos.User;
 using maERP.Server.Models;
+using maERP.Shared.Dtos.SalesChannel;
 
 namespace maERP.Server.Controllers;
 
@@ -78,6 +79,7 @@ public class UsersController : ControllerBase
         }
     }
 
+    /*
     // PUT: api/Users
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -105,5 +107,22 @@ public class UsersController : ControllerBase
 
             return Problem($"Something went wrong in THE {nameof(Update)}");
         }
+    }
+    */
+
+    // PUT: api/SalesChannels/5
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutUser(string id, [FromBody] UserUpdateDto userUpdateDto)
+    {
+        if (await _repository.Exists(id) == true)
+        {
+            await _repository.UpdateWithDetailsAsync(id, userUpdateDto);
+        }
+        else
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 }

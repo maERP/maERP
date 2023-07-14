@@ -24,8 +24,8 @@ public interface IGenericRepository<T> where T : class
 
 public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
+    protected readonly ApplicationDbContext _context;
+    protected readonly IMapper _mapper;
 
     public GenericRepository(ApplicationDbContext context, IMapper mapper)
     {
@@ -78,7 +78,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync<TSource>(int id, TSource source)
+    public virtual async Task UpdateAsync<TSource>(int id, TSource source)
     {
         var entity = await GetByIdAsync(id);
 
@@ -110,5 +110,4 @@ public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
         var entity = await GetByIdAsync(id);
         return entity != null;
     }
-
 }

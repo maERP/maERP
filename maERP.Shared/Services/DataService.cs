@@ -80,10 +80,14 @@ public class DataService<T> : IDataService<T> where T : class
                 {
                     response = await client.GetAsync(requestUrl).ConfigureAwait(false);
 
+                    Console.WriteLine("GET RESPONSE STATUS CODE: " + response.StatusCode);
+                    Console.WriteLine("GET RESPONSE CONTENT: " + response.Content.ReadAsStringAsync().Result);
                 }
                 else if (method == "POST")
                 {
                     response = await client.PostAsJsonAsync(requestUrl, payload).ConfigureAwait(false);
+                    Console.WriteLine("RESPONSE STATUS CODE: " + response.StatusCode);
+                    Console.WriteLine("RESPONSE CONTENT: " + response.Content.ReadAsStringAsync().Result);
                 }
                 else if (method == "PUT")
                 {

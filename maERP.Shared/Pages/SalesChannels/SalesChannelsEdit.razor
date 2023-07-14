@@ -4,13 +4,15 @@
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
 @using maERP.Shared.Dtos.SalesChannel
+@using maERP.Shared.Dtos.Warehouse
 
 @attribute [Authorize]
 
 @inject NavigationManager _navManager
-@inject IDataService<SalesChannelUpdateDto> _dataService
+@inject IDataService<SalesChannelUpdateDto> _dsSalesChannel
+@inject IDataService<List<WarehouseListDto>> _dsWarehouse
 
-<h1>Vertriebskanal </h1>
+<h1>Vertriebskanal</h1>
 
 <hr />
 
@@ -46,6 +48,33 @@
             <InputText class="form-control" @bind-Value="@salesChannel.Password" />
         </div>
         <ValidationMessage For="@(() => salesChannel.Password)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="warehouse" class="form-label">Lager</label>
+        <div class="col-md-4">
+            <InputSelect for="Publisher" class="form-control" @bind-Value="@salesChannel.WarehouseId">
+                @if(salesChannelId == 0)
+                {
+                    <option value=0 disabled selected hidden>
+                        [Lager auswählen]
+                    </option>
+                }
+
+                @foreach (var warehouse in warehouses)
+                {
+                    if(salesChannel.WarehouseId == warehouse.Id)
+                    {
+                        <option value="@warehouse.Id" selected>@warehouse.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@warehouse.Id">@warehouse.Name</option>
+                    }
+                }
+            </InputSelect>
+        </div>
+        <ValidationMessage For="@(() => salesChannel.WarehouseId)" />
     </div>
 
     <table class="table table-stripped align-middle table-bordered">
@@ -92,27 +121,30 @@
     protected string Title = "hinzufügen";
 
     protected SalesChannelUpdateDto salesChannel = new();
+    protected List<WarehouseListDto> warehouses = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (salesChannelId != 0)
         {
-            Title = "Bearbeiten";
-            salesChannel = await _dataService.Request("GET", "/SalesChannels/" + salesChannelId);
-        }
+            warehouses.Add(new WarehouseListDto { Id = 1, Name = "Test" });
 
-        StateHasChanged();
+            Title = "Bearbeiten";
+            warehouses = await _dsWarehouse.Request("GET", "/Warehouses/GetAll");
+            
+            salesChannel = await _dsSalesChannel.Request("GET", "/SalesChannels/" + salesChannelId);
+        }
     }
 
     protected async Task Save()
     {
         if (salesChannelId != 0)
         {
-            await _dataService.Request("PUT", "/SalesChannels/" + salesChannelId, salesChannel);
+            await _dsSalesChannel.Request("PUT", "/SalesChannels/" + salesChannelId, salesChannel);
         }
         else
         {
-            await _dataService.Request("POST", "/SalesChannels", salesChannel);
+            await _dsSalesChannel.Request("POST", "/SalesChannels", salesChannel);
         }
 
         ReturnToList();
