@@ -14,7 +14,7 @@ public interface IUserRepository
     Task<List<UserListDto>> GetAllAsync();
     Task<UserDetailDto> GetByIdAsync(string userId);
     Task<IEnumerable<IdentityError>> AddAsync(UserCreateDto userDto);
-    Task<ApplicationUser> UpdateAsync(ApplicationUser userDto);
+    // Task<ApplicationUser> UpdateAsync(ApplicationUser userDto);
     Task<bool> Exists(string id);
     Task UpdateWithDetailsAsync(string id, UserUpdateDto userUpdateDto);
 }
@@ -50,8 +50,13 @@ public class UserRepository : IUserRepository
     public async Task<IEnumerable<IdentityError>> AddAsync(UserCreateDto userCreateDto)
     {
         var _user = _mapper.Map<ApplicationUser>(userCreateDto);
-        _user.Email = userCreateDto.Email;
 
+        _user.Email = userCreateDto.Email;
+        _user.UserName = userCreateDto.Email;
+        _user.FirstName = userCreateDto.FirstName;
+        _user.LastName = userCreateDto.LastName;
+        _user.PasswordHash = _userManager.PasswordHasher.HashPassword(_user, userCreateDto.Password);
+       
         var result = await _userManager.CreateAsync(_user, userCreateDto.Password);
 
         if (result.Succeeded)
@@ -62,27 +67,14 @@ public class UserRepository : IUserRepository
         return result.Errors;
     }
 
-    public async Task<ApplicationUser> UpdateAsync(ApplicationUser updateUser)
-    {
-        var localUser = await _userManager.FindByIdAsync(updateUser.Email);
-
-        if (localUser.Id is not null)
-        {
-            await _userManager.UpdateAsync(updateUser);
-
-            return updateUser;
-        }
-
-        throw new Exceptions.NotFoundException("User not found", "User not found");
-    }
-
     public async Task UpdateWithDetailsAsync(string userId, UserUpdateDto userUpdateDto)
     {
         var localUser = await _userManager.FindByIdAsync(userId);
 
-        if (localUser.NormalizedEmail is not null)
+        if (localUser.Id is not null)
         {
             localUser.Email = userUpdateDto.Email;
+            localUser.UserName = userUpdateDto.Email.ToLower();
             localUser.FirstName = userUpdateDto.FirstName;
             localUser.LastName = userUpdateDto.LastName;
 
@@ -93,8 +85,10 @@ public class UserRepository : IUserRepository
 
             await _userManager.UpdateAsync(localUser);
         }
-
-        throw new Exceptions.NotFoundException("User not found", userId);
+        else
+        {
+            throw new Exceptions.NotFoundException("User not found", userId);
+        }
     }
 
     public async Task<bool> Exists(string id)

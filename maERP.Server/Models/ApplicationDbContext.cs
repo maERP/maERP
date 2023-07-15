@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using maERP.Server.Configurations.Seeds;
 using maERP.Shared.Models;
+using maERP.Shared.Dtos.User;
 
 namespace maERP.Server.Models;
 
@@ -101,6 +102,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         var defaultAdmin = new ApplicationUser
         {
             Id = DEFAULT_ADMIN_USER_ID,
+            UserName = "admin@localhost.com",
             FirstName = "Admin",
             LastName = "Admin",
             Email = "admin@localhost.com",
