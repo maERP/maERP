@@ -9,6 +9,7 @@
 
 @inject NavigationManager _navManager
 @inject IDataService<TaxClassDetailDto> _dataService
+@inject ISnackbar Snackbar
 
 <h1>Steuersatz</h1>
 
@@ -61,6 +62,9 @@
         {
             await _dataService.Request("POST", "/TaxClasses", taxClass);
         }
+
+        Snackbar.Add("Steuerklasse gespeichert", Severity.Success);
+
         Cancel();
     }
 

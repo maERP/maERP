@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using MudBlazor.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using maERP.Shared.Services;
 using maERP.Shared.Contracts;
@@ -30,7 +31,7 @@ public static class MauiProgram
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
         builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
 
-
+        builder.Services.AddMudServices();
 
         return builder.Build();
     }

@@ -4,5 +4,5 @@ public class TaxClass : ABaseModel
 {
     public double TaxRate { get; set; }
 
-    public List<Product> Products { get; set; }
+    public List<Product>? Products { get; set; }
 }

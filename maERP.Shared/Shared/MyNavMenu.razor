@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<MudNavMenu>
+    <AuthorizeView>
+        <Authorized>
+            <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+            <MudNavLink Href="/Orders" Match="NavLinkMatch.Prefix">Bestellungen</MudNavLink>
+            <MudNavLink Href="/Customers" Match="NavLinkMatch.Prefix">Kunden</MudNavLink>
+            <MudNavLink Href="/Products" Match="NavLinkMatch.Prefix">Produkte</MudNavLink>
+            <MudNavLink Href="/SalesChannels" Match="NavLinkMatch.Prefix">Vertriebskanäle</MudNavLink>
+            <MudNavGroup Title="System" Expanded="true">
+                <MudNavLink Href="/Users" Match="NavLinkMatch.Prefix">Benutzer</MudNavLink>
+                <MudNavLink Href="/Warehouses" Match="NavLinkMatch.Prefix">Lager</MudNavLink>
+                <MudNavLink Href="/TaxClasses" Match="NavLinkMatch.Prefix">Steuersätze</MudNavLink>
+            </MudNavGroup>
+        </Authorized>
+        <NotAuthorized>
+            <MudNavLink Href="/Login" Match="NavLinkMatch.All">Login</MudNavLink>
+        </NotAuthorized>
+    </AuthorizeView>
+    
+</MudNavMenu>

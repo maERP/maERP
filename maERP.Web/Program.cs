@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.LocalStorage;
+using MudBlazor.Services;
 using maERP.Shared.Providers;
 using maERP.Shared.Contracts;
 using maERP.Shared.Services;
@@ -17,5 +18,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
+
+builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();
