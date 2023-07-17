@@ -11,7 +11,7 @@
 
 <PageTitle>Produkte</PageTitle>
 
-<h1>Produkte</h1>
+<MudText Typo="Typo.h4" Class="mb-8">Produkte</MudText>
 
 @if (products == null)
 {
@@ -19,44 +19,21 @@
 }
 else
 {
-    <div class="form-group">
-        <input class="form-control" type="text" placeholder="Suche..." @bind="filter" @bind:event="oninput">
-    </div>
-    <br />
-    <table class="table table-striped align-middle table-bordered">
-        <thead>
-            <tr>
-                <th>SKU</th>
-                <th>Name</th>
-                <th>Preis</th>
-                <th>Steuerklasse</th>
-                <th>EAN</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in products.Where(x => IsVisible(x)))
-            {
-                if (!IsVisible(product))
-                    continue;
+    <MudDataGrid Items="@products" SortMode="SortMode.Single" Class="mb-8">
+        <Columns>
+            <PropertyColumn Property="x => x.Sku" Title="SKU" />
+            <PropertyColumn Property="x => x.Name" Title="Name" />
+            <PropertyColumn Property="x => x.Price" Title="Preis" />
+            <PropertyColumn Property="x => x.Ean" Title="EAN" />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudButton Href="@($"/Products/{context.Item.Id}/edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
 
-                <tr>
-                    <td>@product.Sku</td>
-                    <td>@product.Name</td>
-                    <td>@product.Price.ToString("F") EUR</td>
-                    <td>@product.TaxClass</td>
-                    <td>@product.Ean</td>
-                    <td>
-                        <a href='/Products/@product.Id/edit' class="btn btn-outline-dark" role="button">Bearbeiten</a>
-                        <a href='/Products/@product.Id/delete' class="btn btn-outline-danger" role="button">Löschen</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-
-    </table>
-
-    <a href="/Products/add">Produkt anlegen</a>
+    <MudButton Href="/Products/add" Variant="Variant.Filled" Color="Color.Primary">Neu</MudButton>
 }
 
 @code {

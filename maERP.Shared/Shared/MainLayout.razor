@@ -1,10 +1,36 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+
 @inherits LayoutComponentBase
 
-<MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<MudThemeProvider @ref="@_mudThemeProvider" Theme="@CurrentTheme" IsDarkMode="@_defaultDarkMode" />
 
+<MudLayout>
+    <AuthorizeView>
+        <NotAuthorized>
+            <MudContainer MaxWidth="MaxWidth.Small" Class="d-flex align-center" Style="height: 100vh;">
+                <div class="d-flex flex-column mud-width-full">
+                    <MudPaper Elevation="25" Class="pa-8" Width="100%" MaxWidth="500px">
+                        <MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" Style="width:100px; height:100px;" />
+                        @Body
+                    </MudPaper>
+                    <MudAlert Severity="MudBlazor.Severity.Info" Class="mt-8 mud-width-full" Style="max-width:500px;">Nur für eingeloggte Nutzer<MudLink Href="/">Zum Login</MudLink></MudAlert>
+                </div>
+            </MudContainer>
+        </NotAuthorized>
+        <Authorized>
+            <maERP.Shared.Shared.NavMenu />
+            <MudMainContent>
+                <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mb-4 mt-4">
+                    @Body
+                </MudContainer>
+            </MudMainContent>
+        </Authorized>
+    </AuthorizeView>
+</MudLayout>
+
+@*
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
@@ -13,7 +39,7 @@
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-       <MyNavMenu/>
+       <NavMenu/>
     </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="my-4 pt-4">
@@ -21,6 +47,9 @@
         </MudContainer>
     </MudMainContent>
 </MudLayout>
+*@
+
+
 @code {
     bool _drawerOpen = true;
 

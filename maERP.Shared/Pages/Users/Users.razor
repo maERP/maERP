@@ -10,7 +10,7 @@
 
 <PageTitle>Benutzer</PageTitle>
 
-<h1>Benutzer</h1>
+<MudText Typo="Typo.h4" Class="mb-8">Benutzer</MudText>
 
 @if (users == null)
 {
@@ -18,34 +18,20 @@
 }
 else
 {
-    <table class="table table-striped align-middle table-bordered">
-        <thead>
-            <tr>
-                <th>E-Mail</th>
-                <th>Vorname</th>
-                <th>Nachname</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in users)
-            {
-                <tr>
-                    <td>@user.Email</td>
-                    <td>@user.FirstName</td>
-                    <td>@user.LastName</td>
-                    <td>
-                        <a href='/Users/@user.Id/edit' class="btn btn-outline-dark" role="button">
-                            Bearbeiten
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
+    <MudDataGrid Items="@users" SortMode="SortMode.Single" Class="mb-8">
+        <Columns>
+            <PropertyColumn Property="x => x.Email" Title="E-Mail" />
+            <PropertyColumn Property="x => x.FirstName" Title="Vorname" />
+            <PropertyColumn Property="x => x.LastName" Title="Nachname" />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudButton Href="@($"/Users/{context.Item.Id}/edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
 
-    </table>
-
-    <a href="/Users/add">Benutzer anlegen</a>
+    <MudButton Href="/Users/add" Variant="Variant.Filled" Color="Color.Primary">Neu</MudButton>
 }
 
 @code {

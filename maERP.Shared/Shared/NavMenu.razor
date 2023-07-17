@@ -1,82 +1,22 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">maERP</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <AuthorizeView>
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Dashboard
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Orders">
-                        <span class="oi oi-cart" aria-hidden="true"></span> Bestellungen
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Customers">
-                        <span class="oi oi-people" aria-hidden="true"></span> Kunden
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Products">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Produkte
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="SalesChannels">
-                        <span class="oi oi-loop-square" aria-hidden="true"></span> Vertriebskanäle
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Warehouses">
-                        <span class="oi oi-box" aria-hidden="true"></span> Lager
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="TaxClasses">
-                        <span class="oi oi-euro" aria-hidden="true"></span> Steuersätze
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Users">
-                        <span class="oi oi-key" aria-hidden="true"></span> Benutzer
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Logout">
-                        <span class="oi oi-key" aria-hidden="true"></span> Logout
-                    </NavLink>
-                </div>
-            </Authorized>
-            <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="login">
-                        <span class="oi oi-account-login" aria-hidden="true"></span> Login
-                    </NavLink>
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
-    </nav>
-</div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : "";
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
+<MudNavMenu>
+    <AuthorizeView>
+        <Authorized>
+            <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+            <MudNavLink Href="/Orders" Match="NavLinkMatch.Prefix">Bestellungen</MudNavLink>
+            <MudNavLink Href="/Customers" Match="NavLinkMatch.Prefix">Kunden</MudNavLink>
+            <MudNavLink Href="/Products" Match="NavLinkMatch.Prefix">Produkte</MudNavLink>
+            <MudNavLink Href="/SalesChannels" Match="NavLinkMatch.Prefix">Vertriebskanäle</MudNavLink>
+            <MudNavGroup Title="System" Expanded="true">
+                <MudNavLink Href="/Users" Match="NavLinkMatch.Prefix">Benutzer</MudNavLink>
+                <MudNavLink Href="/Warehouses" Match="NavLinkMatch.Prefix">Lager</MudNavLink>
+                <MudNavLink Href="/TaxClasses" Match="NavLinkMatch.Prefix">Steuersätze</MudNavLink>
+            </MudNavGroup>
+        </Authorized>
+        <NotAuthorized>
+            <MudNavLink Href="/Login" Match="NavLinkMatch.All">Login</MudNavLink>
+        </NotAuthorized>
+    </AuthorizeView>
+    
+</MudNavMenu>

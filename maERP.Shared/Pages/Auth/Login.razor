@@ -1,56 +1,37 @@
 ﻿@page "/login"
 
-@using System.Text.Json
-@using Blazored.LocalStorage
 @using maERP.Shared.Dtos.User
-@using maERP.Shared.Contracts
-@using maERP.Shared.Services
 
 @inject NavigationManager _navManager
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
 @inject maERP.Shared.Contracts.IAuthenticationService _authenticationService
 
-<h3>Login</h3>
+<MudText Typo="Typo.h3" Class="mb-8">Login</MudText>
 
 <EditForm Model="@loginDto" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
-    <div class="form-group">
-        <label>E-Mail</label>
-        <input type="email" @bind-value="loginDto.Email " class="form-control" placeholder="E-Mail Adresse" />
-        <ValidationMessage For="@(() => loginDto.Email)" />
-    </div>
 
-    <div class="mt-2 form-group">
-        <label>Passwort</label>
-        <input type="password" @bind-value="loginDto.Password" class="form-control" placeholder="Passwort" />
-        <ValidationMessage For="@(() => loginDto.Password)" />
-    </div>
-
-    @if (_showServerInput)
-    {
-        <div class="mt-2 form-group">
-            <label>Server</label>
-            <input type="url" @bind-value="loginDto.Server" class="form-control" placeholder="https://localhost:7146" />
-        </div>
-    }
-
-<div class="text-center mt-2">
-    <button class="btn btn-primary" type="submit">
-        <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
-        Login
-    </button>
-    
-</div>
-    <div>@_errorMessage</div>
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="E-Mail" @bind-Value="loginDto.Email" For="@(() => loginDto.Email)" />
+                    <MudTextField Label="Passwort" @bind-Value="loginDto.Password" For="@(() => loginDto.Password)" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
 </EditForm>
-
 
 @code
 {
     LoginDto loginDto = new LoginDto { Email = "admin@localhost.com", Password = "maERP!12", Server = "https://localhost:8443" };
 
     private string loginServer = "";
-    private bool _showServerInput = true;
+    // private bool _showServerInput = true;
     private string _spinnerClass = string.Empty;
     private string _errorMessage = string.Empty;
 
@@ -60,7 +41,7 @@
 
         if (loginServerExists)
         {
-            _showServerInput = false;
+            // _showServerInput = false;
             loginServer = await _localStorage.GetItemAsStringAsync("server");
         }
 

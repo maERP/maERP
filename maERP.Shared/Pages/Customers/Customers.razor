@@ -10,7 +10,7 @@
 
 <PageTitle>Kunden</PageTitle>
 
-<h1>Kunden</h1>
+<MudText Typo="Typo.h4" Class="mb-8">Kunden</MudText>
 
 @if (customers == null)
 {
@@ -18,39 +18,22 @@
 }
 else
 {
-    <table class="table table-striped align-middle table-bordered">
-        <thead>
-            <tr>
-                <th>Nr.</th>
-                <th>Vorname</th>
-                <th>Nachname</th>
-                <th>Kunde seit</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var customer in customers)
-            {
-                <tr>
-                    <td>@customer.Id</td>
-                    <td>@customer.FirstName</td>
-                    <td>@customer.LastName</td>
-                    <td>@customer.EnrollmentDate</td>
-                    <td>
-                        <a href='/Customers/@customer.Id/edit' class="btn btn-outline-dark" role="button">
-                            Bearbeiten
-                        </a>
-                        <a href='/Customers/@customer.Id/delete' class="btn btn-outline-danger" role="button">
-                            Löschen
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
 
-    </table>
+    <MudDataGrid Items="@customers" SortMode="SortMode.Single" Class="mb-8">
+        <Columns>
+            <PropertyColumn Property="x => x.Id" Title="Kundennr." />
+            <PropertyColumn Property="x => x.FirstName" Title="Vorname" />
+            <PropertyColumn Property="x => x.LastName" Title="Nachname" />
+            <PropertyColumn Property="x => x.EnrollmentDate" Title="Kunde seit" />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudButton Href="@($"/Customers/{context.Item.Id}/edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
 
-    <a href="/Customers/add">Kunden anlegen</a>
+    <MudButton Href="/Customers/add" Variant="Variant.Filled" Color="Color.Primary">Neu</MudButton>
 }
 
 @code {

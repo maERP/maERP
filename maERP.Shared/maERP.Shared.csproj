@@ -61,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Shared\MainLayout.razor" />
-    <RazorComponent Include="Shared\NavMenu.razor" />
     <RazorComponent Include="Shared\RedirectToLogin.razor" />
     <RazorComponent Include="Shared\SurveyPrompt.razor" />
   </ItemGroup>

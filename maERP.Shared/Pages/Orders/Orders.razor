@@ -11,7 +11,7 @@
 
 <PageTitle>Bestellungen</PageTitle>
 
-<h1>Bestellungen</h1>
+<MudText Typo="Typo.h4" Class="mb-8">Bestellungen</MudText>
 
 @if (orders == null)
 {
@@ -19,23 +19,21 @@
 }
 else
 {
-    <table class="table table-striped align-middle table-bordered">
-        <thead>
-            <tr>
-                <th>Nr</th>
-                <th>Artikel</th>
-                <th>Summe</th>
-                <th>Datum</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
+    <MudDataGrid Items="@orders" SortMode="SortMode.Single" Class="mb-8">
+        <Columns>
+            <PropertyColumn Property="x => x.Id" Title="Bestellnr." />
+            <PropertyColumn Property="x => x.CustomerId" Title="Kundennr." />
+            <PropertyColumn Property="x => x.Status" Title="Status" />
+            <PropertyColumn Property="x => x.DateCreated" Title="Datum" />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudButton Href="@($"/Orders/{context.Item.Id}/edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
 
-    </table>
-
-    <a href="/Orders/add">Bestellung anlegen</a>
+    <MudButton Href="/Orders/add" Variant="Variant.Filled" Color="Color.Primary">Neu</MudButton>
 }
 
 @code {

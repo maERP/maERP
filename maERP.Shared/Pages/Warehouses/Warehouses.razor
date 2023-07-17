@@ -10,7 +10,7 @@
 
 <PageTitle>Lager</PageTitle>
 
-<h1>Lager</h1>
+<MudText Typo="Typo.h4" Class="mb-8">Lager</MudText>
 
 @if (warehouses == null)
 {
@@ -18,34 +18,18 @@
 }
 else
 {
-    <table class="table table-striped align-middle table-bordered">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var warehouse in warehouses)
-            {
-                <tr>
-                    <td>
-                        <a href='/Warehouses/@warehouse.Id'>
-                            @warehouse.Name
-                        </a>
-                    </td>
-                    <td>
-                        <a href='/Warehouses/@warehouse.Id/edit' class="btn btn-outline-dark" role="button">
-                            Bearbeiten
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
+    <MudDataGrid Items="@warehouses" SortMode="SortMode.Single" Class="mb-8">
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="Name" />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudButton Href="@($"/Users/{context.Item.Id}/edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
 
-    </table>
-
-    <a href="/Warehouses/add">Lager anlegen</a>
+    <MudButton Href="/Users/add" Variant="Variant.Filled" Color="Color.Primary">Neu</MudButton>
 }
 
 @code {

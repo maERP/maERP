@@ -7,7 +7,8 @@
                 Authorizing...
             </Authorizing>
             <NotAuthorized>
-                <maERP.Shared.Shared.RedirectToLogin />
+                <maERP.Shared.Pages.Auth.Login />
+                @*<maERP.Shared.Shared.RedirectToLogin />*@
             </NotAuthorized>
         </AuthorizeRouteView>
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
