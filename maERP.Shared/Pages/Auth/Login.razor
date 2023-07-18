@@ -1,64 +1,107 @@
 ﻿@page "/login"
 
 @using maERP.Shared.Dtos.User
+@using maERP.Shared.Models;
 
 @inject NavigationManager _navManager
 @inject Blazored.LocalStorage.ILocalStorageService _localStorage
 @inject maERP.Shared.Contracts.IAuthenticationService _authenticationService
 
-<MudText Typo="Typo.h3" Class="mb-8">Login</MudText>
+<MudText Typo="Typo.h4" Class="mb-8">maERP</MudText>
 
-<EditForm Model="@loginDto" OnValidSubmit="Submit">
-    <DataAnnotationsValidator />
+<MudForm Model="@_model" @ref="@_form" @bind-IsValid="@_success" ValidationDelay="0">
 
-    <MudGrid>
-        <MudItem xs="12" sm="7">
-            <MudCard>
-                <MudCardContent>
-                    <MudTextField Label="E-Mail" @bind-Value="loginDto.Email" For="@(() => loginDto.Email)" />
-                    <MudTextField Label="Passwort" @bind-Value="loginDto.Password" For="@(() => loginDto.Password)" />
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-    </MudGrid>
-</EditForm>
+    <MudText Typo="Typo.h4" GutterBottom="true">Login</MudText>
+    <MudText>
+        Kein Account? <MudLink Href="/pages/authentication/register">Jetzt registrieren</MudLink>
+    </MudText>
+    <MudTextField T="string"
+                  @bind-Value="_model.UserName" For="@(() => _model.UserName)"
+                  Label="E-Mail"
+                  Variant="Variant.Outlined"
+                  Required="true"
+                  OnlyValidateIfDirty="true"
+                  Immediate="true"
+                  Class="my-6">
+    </MudTextField>
+
+    <MudTextField @bind-Value="_model.Password" For="@(() => _model.Password)"
+                      Label="Passwort"
+                      Variant="Variant.Outlined"
+                      Required="true"
+                      InputType="InputType.Password">
+    </MudTextField>
+
+    <div Class="d-flex justify-space-between align-center">
+        <MudCheckBox For="@(() => _model.RememberMe)" @bind-Checked="_model.RememberMe" Label="Login speichern" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
+        <MudLink Href="/pages/authentication/forgot-password">Passwort vergessen</MudLink>
+    </div>
+
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               Size="Size.Large"
+               Disabled="@(_loading)"
+               ButtonType="ButtonType.Button"
+               OnClick="@(OnSubmit)"
+               FullWidth="true">
+        @if (_loading)
+        {
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+            <MudText Class="ms-2">Lädt</MudText>
+        }
+        else
+        {
+            <MudText>Login</MudText>
+        }
+
+    </MudButton>
+</MudForm>
+
 
 @code
 {
-    LoginDto loginDto = new LoginDto { Email = "admin@localhost.com", Password = "maERP!12", Server = "https://localhost:8443" };
+    private string _title = "Login";
+    // private UserManager<ApplicationUser> UserManager { get; set; } = default!;
+    // private AccessTokenProvider AccessTokenProvider { get; set; } = default!;
+
+    MudForm? _form;
+    bool _success;
+    bool _loading;
+
+    private LoginFormModel _model = new()
+    {
+        UserName = "admin@localhost.com",
+        Password = "maERP!12",
+        Server = "https://localhost:8443",
+        RememberMe = true
+    };
+
+    // LoginDto loginDto = new LoginDto { Email = "admin@localhost.com", Password = "maERP!12", Server = "https://localhost:8443" };
 
     private string loginServer = "";
     // private bool _showServerInput = true;
     private string _spinnerClass = string.Empty;
     private string _errorMessage = string.Empty;
 
-    private async void onLoad()
+    protected override async Task OnInitializedAsync()
     {
-        bool loginServerExists = await _localStorage.ContainKeyAsync("server");
-
-        if (loginServerExists)
-        {
-            // _showServerInput = false;
-            loginServer = await _localStorage.GetItemAsStringAsync("server");
-        }
-
-        this.StateHasChanged();
+        await base.OnInitializedAsync();
+        _title = "Login";
+        // UserManager = UserManager<ApplicationUser>>();
+        // AccessTokenProvider = ScopedServices.GetRequiredService<AccessTokenProvider>();
     }
 
-    private async void Submit()
+    private async void OnSubmit()
     {
         _spinnerClass = "spinner-border spinner-border-sm";
 
-        await _localStorage.SetItemAsStringAsync("server", loginDto.Server);
+        await _localStorage.SetItemAsStringAsync("server", _model.Server);
 
-        var loginResponse = await _authenticationService.AuthenticateAsync(loginDto.Email, loginDto.Password);
+        var loginResponse = await _authenticationService.AuthenticateAsync(_model.UserName, _model.Password);
 
         if (loginResponse == true)
         {
-            _navManager.NavigateTo("/");
+            _navManager.NavigateTo("/"); 
             return;
         }
 
