@@ -35,11 +35,15 @@ public class DataService<T> : IDataService<T> where T : class
                 {"password", authRequest.Password}
             };
 
+            Console.WriteLine("SEND LOGIN TO: " + requestUrl);
+
             var response = await client.PostAsJsonAsync(requestUrl, loginData).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
             {
                 string result = response.Content.ReadAsStringAsync().Result;
+
+                Console.WriteLine("RESULT: " + response);
 
                 response.Dispose();
 
