@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<ICollection<UserListDto>> DataService
+@inject IApiDataProvider<ICollection<UserListDto>> _apiDataProvider
 
 <PageTitle>Benutzer</PageTitle>
 
@@ -40,6 +40,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        users = await DataService.Request("GET", "/Users/GetAll");
+        users = await _apiDataProvider.Request("GET", "/Users/GetAll");
     }
 }

@@ -2,7 +2,7 @@
 
 using System.Net.Http.Headers;
 using System.Text.Json;
-using maERP.Shared.Models;
+using maERP.Server.Models;
 using maERP.Server.Repository;
 using maERP.Shared.Models.SalesChannels.Shopware5;
 using maERP.Shared.Models.SalesChannels.Shopware5.ProductResponse;

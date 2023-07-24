@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace maERP.Shared.Models;
+namespace maERP.Server.Models;
 
 public class SalesChannel : ABaseModel
 {

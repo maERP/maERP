@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<UserCreateDto> DataService
+@inject IApiDataProvider<UserCreateDto> _apiDataProvider
 
 <h1>Benutzer anlegen</h1>
 
@@ -69,7 +69,7 @@
 
     protected async Task Save()
     {
-        await DataService.Request("POST", "/Users/", user);
+        await _apiDataProvider.Request("POST", "/Users/", user);
         ReturnToList();
     }
 

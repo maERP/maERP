@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<ICollection<SalesChannelListDto>> DataService
+@inject IApiDataProvider<ICollection<SalesChannelListDto>> _apiDataProvider
 
 <PageTitle>Vertriebskanäle</PageTitle>
 
@@ -39,6 +39,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        salesChannels = await DataService.Request("GET", "/SalesChannels/GetAll");
+        salesChannels = await _apiDataProvider.Request("GET", "/SalesChannels/GetAll");
     }
 }

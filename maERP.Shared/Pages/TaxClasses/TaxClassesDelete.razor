@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<string> DataService
+@inject IApiDataProvider<string> _apiDataProvider
 
 @code {
 
@@ -17,7 +17,7 @@
     {
         if (taxClassId > 0)
         {
-            await DataService.Request("DELETE", "/TaxClasses/" + taxClassId);
+            await _apiDataProvider.Request("DELETE", "/TaxClasses/" + taxClassId);
             NavigationManager.NavigateTo("/TaxClasses");
         }
     }

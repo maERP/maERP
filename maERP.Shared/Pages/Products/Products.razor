@@ -7,7 +7,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavManager
-@inject IDataService<ICollection<ProductListDto>> DataService
+@inject IApiDataProvider<ICollection<ProductListDto>> _apiDataProvider
 
 <PageTitle>Produkte</PageTitle>
 
@@ -43,7 +43,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        products = await DataService.Request("GET", "/Products/GetAll");
+        products = await _apiDataProvider.Request("GET", "/Products/GetAll");
     }
 
     public bool IsVisible(ProductListDto product)

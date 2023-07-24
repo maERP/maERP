@@ -1,4 +1,4 @@
-﻿using maERP.Shared.Models;
+﻿using maERP.Server.Models;
 
 namespace maERP.Server.Models;
 

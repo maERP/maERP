@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<UserDetailDto> DataService
+@inject IApiDataProvider<UserDetailDto> _apiDataProvider
 
 <h1>@user.Email</h1>
 
@@ -26,7 +26,7 @@
         if (userId != null)
         {
             Title = "bearbeiten";
-            user = await DataService.Request("GET", "/User/" + userId);
+            user = await _apiDataProvider.Request("GET", "/User/" + userId);
         }
         else Title = "nicht gefunden";
     }

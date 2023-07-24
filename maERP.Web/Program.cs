@@ -17,7 +17,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
+builder.Services.AddScoped(typeof(IApiDataProvider<>), typeof(ApiDataProvider<>));
 
 builder.Services.AddMudServices();
 

@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<ICollection<TaxClassListDto>> DataService
+@inject IApiDataProvider<ICollection<TaxClassListDto>> _apiDataProvider
 
 <PageTitle>Steuersätze</PageTitle>
 
@@ -40,6 +40,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        taxClasses = await DataService.Request("GET", "/TaxClasses/GetAll");
+        taxClasses = await _apiDataProvider.Request("GET", "/TaxClasses/GetAll");
     }
 }

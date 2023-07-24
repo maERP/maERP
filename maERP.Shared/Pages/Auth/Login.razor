@@ -1,6 +1,5 @@
 ﻿@page "/login"
 
-@using maERP.Shared.Dtos.User
 @using maERP.Shared.Models;
 
 @inject NavigationManager _navManager
@@ -12,9 +11,9 @@
 <MudForm Model="@_model" @ref="@_form" @bind-IsValid="@_success" ValidationDelay="0">
 
     <MudText Typo="Typo.h4" GutterBottom="true">Login</MudText>
-    <MudText>
-        Kein Account? <MudLink Href="/pages/authentication/register">Jetzt registrieren</MudLink>
-    </MudText>
+    @*<MudText>
+            Kein Account? <MudLink Href="/pages/authentication/register">Jetzt registrieren</MudLink>
+        </MudText>*@
     <MudTextField T="string"
                   @bind-Value="_model.UserName" For="@(() => _model.UserName)"
                   Label="E-Mail"
@@ -26,11 +25,18 @@
     </MudTextField>
 
     <MudTextField @bind-Value="_model.Password" For="@(() => _model.Password)"
-                      Label="Passwort"
-                      Variant="Variant.Outlined"
-                      Required="true"
-                      InputType="InputType.Password">
+                  Label="Passwort"
+                  Variant="Variant.Outlined"
+                  Required="true"
+                  InputType="InputType.Password">
     </MudTextField>
+
+    <MudSelect @bind-Value="_model.Server" Label="Server">
+        @foreach (var server in _serverList)
+        {
+            <MudSelectItem Value="@server.Url">@server.Url</MudSelectItem>
+        }
+    </MudSelect>
 
     <div Class="d-flex justify-space-between align-center">
         <MudCheckBox For="@(() => _model.RememberMe)" @bind-Checked="_model.RememberMe" Label="Login speichern" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
@@ -61,22 +67,23 @@
 @code
 {
     private string _title = "Login";
-    // private UserManager<ApplicationUser> UserManager { get; set; } = default!;
-    // private AccessTokenProvider AccessTokenProvider { get; set; } = default!;
 
     MudForm? _form;
     bool _success;
     bool _loading;
 
+    private List<LoginServer> _serverList = new()
+    {
+        new LoginServer { Id = 1, Url = "https://localhost:8443" }
+    };
+
     private LoginFormModel _model = new()
     {
         UserName = "admin@localhost.com",
         Password = "maERP!12",
-        Server = "https://localhost:8443",
-        RememberMe = true
+        RememberMe = true,
+        Server = ""
     };
-
-    // LoginDto loginDto = new LoginDto { Email = "admin@localhost.com", Password = "maERP!12", Server = "https://localhost:8443" };
 
     private string loginServer = "";
     // private bool _showServerInput = true;
@@ -87,8 +94,6 @@
     {
         await base.OnInitializedAsync();
         _title = "Login";
-        // UserManager = UserManager<ApplicationUser>>();
-        // AccessTokenProvider = ScopedServices.GetRequiredService<AccessTokenProvider>();
     }
 
     private async void OnSubmit()
@@ -101,7 +106,7 @@
 
         if (loginResponse == true)
         {
-            _navManager.NavigateTo("/"); 
+            _navManager.NavigateTo("/");
             return;
         }
 

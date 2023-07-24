@@ -7,7 +7,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager _navigationManager
-@inject IDataService<WarehouseUpdateDto> _dataService
+@inject IApiDataProvider<WarehouseUpdateDto> _apiDataProvider
 
 <h1>Lager</h1>
 
@@ -47,7 +47,7 @@
         if (warehouseId != 0)
         {
             Title = "Bearbeiten";
-            warehouse = await _dataService.Request("GET", "/Warehouses/" + warehouseId);
+            warehouse = await _apiDataProvider.Request("GET", "/Warehouses/" + warehouseId);
         }
     }
 
@@ -56,12 +56,12 @@
         if (warehouseId != 0)
         {
             Console.WriteLine("BEFORE REQUEST");
-            await _dataService.Request("PUT", "/Warehouses/" + warehouseId, warehouse);
+            await _apiDataProvider.Request("PUT", "/Warehouses/" + warehouseId, warehouse);
             Console.WriteLine("AFTER REQUEST");
         }
         else
         {
-            await _dataService.Request("POST", "/Warehouses", warehouse);
+            await _apiDataProvider.Request("POST", "/Warehouses", warehouse);
         }
 
         NavigateToList();

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
 
-namespace maERP.Shared.Models;
+namespace maERP.Server.Models;
 
 public abstract class ABaseModel
 {

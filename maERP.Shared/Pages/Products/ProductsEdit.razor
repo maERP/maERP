@@ -8,7 +8,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavManager
-@inject IDataService<ProductDetailDto> _dataService
+@inject IApiDataProvider<ProductDetailDto> _apiDataProvider
 
 @if (product == null)
 {
@@ -68,7 +68,7 @@ else
         if (productId != 0)
         {
             Title = "Bearbeiten";
-            product = await _dataService.Request("GET", "/Products/" + productId);
+            product = await _apiDataProvider.Request("GET", "/Products/" + productId);
         }
     }
 
@@ -76,11 +76,11 @@ else
     {
         if (productId != 0)
         {
-            product = await _dataService.Request("PUT", "/Products/" + productId, product);
+            product = await _apiDataProvider.Request("PUT", "/Products/" + productId, product);
         }
         else
         {
-            product = await _dataService.Request("POST", "/Products/add", product);
+            product = await _apiDataProvider.Request("POST", "/Products/add", product);
         }
 
         Cancel();

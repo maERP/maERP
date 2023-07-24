@@ -10,9 +10,9 @@ public class AuthenticationService : IAuthenticationService
 {
     private readonly AuthenticationStateProvider _authenticationStateProvider;
     private readonly ILocalStorageService _localStorage;
-    private readonly IDataService<object> _dataService;
+    private readonly IApiDataProvider<object> _dataService;
     
-    public AuthenticationService(AuthenticationStateProvider authenticationStateProvider, ILocalStorageService localStorage, IDataService<object> dataService) 
+    public AuthenticationService(AuthenticationStateProvider authenticationStateProvider, ILocalStorageService localStorage, IApiDataProvider<object> dataService) 
     {
         this._authenticationStateProvider = authenticationStateProvider;
         this._localStorage = localStorage;

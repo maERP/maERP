@@ -6,15 +6,14 @@ using Blazored.LocalStorage;
 using maERP.Shared.Models.Identity;
 using System.Text.Json;
 using maERP.Shared.Contracts;
-using maERP.Shared.Dtos.User;
 
 namespace maERP.Shared.Services;
 
-public class DataService<T> : IDataService<T> where T : class
+public class ApiDataProvider<T> : IApiDataProvider<T> where T : class
 {
     private readonly ILocalStorageService _localStorage;
     
-    public DataService(ILocalStorageService localStorage)
+    public ApiDataProvider(ILocalStorageService localStorage)
     {
         this._localStorage = localStorage;
     }

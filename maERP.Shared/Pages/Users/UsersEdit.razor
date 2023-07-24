@@ -7,7 +7,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<UserUpdateDto> DataService
+@inject IApiDataProvider<UserUpdateDto> _apiDataProvider
 
 <h1>Benutzer</h1>
 
@@ -73,13 +73,13 @@
         if (userId != null)
         {
             Title = "bearbeiten";
-            user = await DataService.Request("GET", "/Users/" + userId);
+            user = await _apiDataProvider.Request("GET", "/Users/" + userId);
         }
     }
 
     protected async Task Save()
     {
-        await DataService.Request("PUT", "/Users/" + userId, user);
+        await _apiDataProvider.Request("PUT", "/Users/" + userId, user);
         ReturnToList();
     }
 

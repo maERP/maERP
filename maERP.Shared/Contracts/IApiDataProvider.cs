@@ -4,7 +4,7 @@ using maERP.Shared.Models.Identity;
 
 namespace maERP.Shared.Contracts;
 
-public interface IDataService<T> where T : class
+public interface IApiDataProvider<T> where T : class
 {
     public Task<AuthResponse> Login(AuthRequest authRequest);
     public Task<RegistrationResponse> RegisterAsync(RegistrationRequest registrationRequest);

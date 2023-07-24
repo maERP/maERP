@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using maERP.Shared.Models;
+using maERP.Server.Models;
 
 namespace maERP.Server.Configurations.Seeds;
 
@@ -23,5 +23,5 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
 				Warehouse = new Warehouse { Id = 1, Name = "Demo Warenlager" }
 			}
 		 );
-        }
+    }
 }

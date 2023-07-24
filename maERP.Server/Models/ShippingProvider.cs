@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace maERP.Shared.Models;
+namespace maERP.Server.Models;
 
 public class ShippingProvider : ABaseModel
 {

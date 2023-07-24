@@ -1,4 +1,4 @@
-﻿namespace maERP.Shared.Models;
+﻿namespace maERP.Server.Models;
 
 public class Warehouse : ABaseModel
 {

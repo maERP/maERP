@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager _navigationManager
-@inject IDataService<CustomerUpdateDto> _dataService
+@inject IApiDataProvider<CustomerUpdateDto> _apiDataProvider
 
 <h1>Lager</h1>
 
@@ -41,13 +41,13 @@
         if (customerId != 0)
         {
             Title = "Bearbeiten";
-            customer = await _dataService.Request("GET", "/Customer/" + customerId);
+            customer = await _apiDataProvider.Request("GET", "/Customer/" + customerId);
         }
     }
 
     protected async Task SaveCustomer()
     {
-        await _dataService.Request("PUT", "/Customer/" + customerId, customer);
+        await _apiDataProvider.Request("PUT", "/Customer/" + customerId, customer);
 
         Cancel();
     }

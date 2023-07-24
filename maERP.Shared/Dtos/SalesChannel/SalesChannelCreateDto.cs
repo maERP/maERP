@@ -1,11 +1,10 @@
-﻿using maERP.Shared.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace maERP.Shared.Dtos.SalesChannel;
  
 public class SalesChannelCreateDto
 {
-    public virtual SalesChannelType Type { get; set; }
+    // public virtual SalesChannelType Type { get; set; } TODO: SalesChannelTypeDto
 
     [Required]
     public string Name { get; set; } = string.Empty;

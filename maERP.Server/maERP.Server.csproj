@@ -49,6 +49,7 @@
     <Folder Include="Tasks\SalesChannelTasks\" />
     <Folder Include="wwwroot\lib\" />
     <Folder Include="Controllers\Web\" />
+    <Folder Include="Models\SalesChannelData\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
@@ -82,5 +83,8 @@
     <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Models\SalesChannelData\" />
   </ItemGroup>
 </Project>

@@ -9,8 +9,8 @@
 @attribute [Authorize]
 
 @inject NavigationManager _navManager
-@inject IDataService<SalesChannelUpdateDto> _dsSalesChannel
-@inject IDataService<List<WarehouseListDto>> _dsWarehouse
+@inject IApiDataProvider<SalesChannelUpdateDto> _adpSalesChannel
+@inject IApiDataProvider<List<WarehouseListDto>> _adpWarehouse
 
 <h1>Vertriebskanal</h1>
 
@@ -130,9 +130,9 @@
             warehouses.Add(new WarehouseListDto { Id = 1, Name = "Test" });
 
             Title = "Bearbeiten";
-            warehouses = await _dsWarehouse.Request("GET", "/Warehouses/GetAll");
+            warehouses = await _adpWarehouse.Request("GET", "/Warehouses/GetAll");
             
-            salesChannel = await _dsSalesChannel.Request("GET", "/SalesChannels/" + salesChannelId);
+            salesChannel = await _adpSalesChannel.Request("GET", "/SalesChannels/" + salesChannelId);
         }
     }
 
@@ -140,11 +140,11 @@
     {
         if (salesChannelId != 0)
         {
-            await _dsSalesChannel.Request("PUT", "/SalesChannels/" + salesChannelId, salesChannel);
+            await _adpSalesChannel.Request("PUT", "/SalesChannels/" + salesChannelId, salesChannel);
         }
         else
         {
-            await _dsSalesChannel.Request("POST", "/SalesChannels", salesChannel);
+            await _adpSalesChannel.Request("POST", "/SalesChannels", salesChannel);
         }
 
         ReturnToList();

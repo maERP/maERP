@@ -8,7 +8,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager _navManager
-@inject IDataService<TaxClassDetailDto> _dataService
+@inject IApiDataProvider<TaxClassDetailDto> _apiDataProvider
 @inject ISnackbar Snackbar
 
 <h1>Steuersatz</h1>
@@ -43,7 +43,7 @@
         if (taxClassId != 0)
         {
             Title = "Bearbeiten";
-            taxClass = await _dataService.Request("GET", "/TaxClasses/" + taxClassId);
+            taxClass = await _apiDataProvider.Request("GET", "/TaxClasses/" + taxClassId);
         }
     }
 
@@ -51,11 +51,11 @@
     {
         if (taxClassId != 0)
         {
-            await _dataService.Request("PUT", "/TaxClasses/" + taxClassId, taxClass);
+            await _apiDataProvider.Request("PUT", "/TaxClasses/" + taxClassId, taxClass);
         }
         else
         {
-            await _dataService.Request("POST", "/TaxClasses", taxClass);
+            await _apiDataProvider.Request("POST", "/TaxClasses", taxClass);
         }
 
         Snackbar.Add("Steuerklasse gespeichert", Severity.Success);

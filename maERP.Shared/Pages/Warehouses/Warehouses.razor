@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<ICollection<WarehouseListDto>> DataService
+@inject IApiDataProvider<ICollection<WarehouseListDto>> _apiDataProvider
 
 <PageTitle>Lager</PageTitle>
 
@@ -38,6 +38,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        warehouses = await DataService.Request("GET", "/Warehouses/GetAll");
+        warehouses = await _apiDataProvider.Request("GET", "/Warehouses/GetAll");
     }
 }

@@ -44,8 +44,6 @@
     <Folder Include="Dtos\User\" />
     <Folder Include="Dtos\Warehouse\" />
     <Folder Include="Models\" />
-    <Folder Include="Models\Identity\" />
-    <Folder Include="Models\SalesChannelData\" />
     <Folder Include="Providers\" />
     <Folder Include="Shared\" />
     <Folder Include="Contracts\" />
@@ -60,10 +58,14 @@
     <Folder Include="Pages\TaxClasses\" />
     <Folder Include="Pages\Warehouses\" />
     <Folder Include="Pages\Auth\" />
+    <Folder Include="Models\Identity\" />
   </ItemGroup>
   <ItemGroup>
     <RazorComponent Include="Shared\MainLayout.razor" />
     <RazorComponent Include="Shared\RedirectToLogin.razor" />
     <RazorComponent Include="Shared\SurveyPrompt.razor" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Models\Identity\" />
   </ItemGroup>
 </Project>

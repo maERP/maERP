@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavigationManager
-@inject IDataService<SalesChannelDetailDto> DataService
+@inject IApiDataProvider<SalesChannelDetailDto> _apiDataProvider
 
 <h1>@salesChannel.Name</h1>
 
@@ -26,7 +26,7 @@
         if (salesChannelId != 0)
         {
             Title = "bearbeiten";
-            salesChannel = await DataService.Request("GET", "/SalesChannels/" + salesChannelId);
+            salesChannel = await _apiDataProvider.Request("GET", "/SalesChannels/" + salesChannelId);
         }
         else Title = "nicht gefunden";
     }
