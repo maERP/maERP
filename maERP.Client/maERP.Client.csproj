@@ -23,53 +23,49 @@
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
 
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">31.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.22621.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.22621.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+    <Product>$(AssemblyName)</Product>
+    <AssemblyName>maERP</AssemblyName>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
-    <CreatePackage>false</CreatePackage>
-    <CodesignKey>Apple Development: Created via API (47ASY6PQB5)</CodesignKey>
-    <CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>VS: WildCard Development</CodesignProvision>
-  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
     <CreatePackage>false</CreatePackage>
+    <MtouchProfiling>True</MtouchProfiling>
     <ApplicationTitle>maERP</ApplicationTitle>
-    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
     <CreatePackage>false</CreatePackage>
     <ApplicationTitle>maERP</ApplicationTitle>
-    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
     <CodesignKey>Apple Development: Created via API (47ASY6PQB5)</CodesignKey>
-    <CodesignProvision>VS: WildCard Development</CodesignProvision>
+    <CodesignProvision>VS: de.martin-andrich.maerp.client Development</CodesignProvision>
+    <ProvisioningType>automatic</ProvisioningType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+    <MtouchProfiling>False</MtouchProfiling>
+    <MtouchUseLlvm>False</MtouchUseLlvm>
+    <ApplicationTitle>maERP</ApplicationTitle>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android33.0|AnyCPU'">
     <ApplicationTitle>maERP</ApplicationTitle>
-    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-windows10.0.22621.0|AnyCPU'">
     <ApplicationTitle>maERP</ApplicationTitle>
-    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
     <ApplicationTitle>maERP</ApplicationTitle>
-    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android33.0|AnyCPU'">
     <ApplicationTitle>maERP</ApplicationTitle>
-    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-windows10.0.22621.0|AnyCPU'">
     <ApplicationTitle>maERP</ApplicationTitle>
-    <ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
   </PropertyGroup>
   <ItemGroup>
     <!-- App Icon -->
@@ -79,7 +75,7 @@
     <MauiSplashScreen Include="MauiResources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
     <!-- Images -->
-    <MauiFont Include="MauiResources\Fonts\*" />
+    <MauiFont Include="Resources\Fonts\*" />
 
     <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
     <MauiAsset Include="MauiResources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
