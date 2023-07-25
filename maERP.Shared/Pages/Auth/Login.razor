@@ -1,21 +1,15 @@
 ﻿@page "/login"
 
-@using maERP.Shared.Dtos.User
-@using maERP.Shared.Models;
-
-@inject NavigationManager _navManager
-@inject Blazored.LocalStorage.ILocalStorageService _localStorage
-@inject maERP.Shared.Contracts.IAuthenticationService _authenticationService
-
-<MudText Typo="Typo.h4" Class="mb-8">maERP</MudText>
+@*<MudIcon Icon="@Icons.Custom.Brands.MudBlazor" Size="Size.Large" Style="width:100px; height:100px;" />*@
+<MudText Typo="Typo.h4" Class="mb-8" Align="Align.Center">maERP</MudText>
 
 <MudForm Model="@_model" @ref="@_form" @bind-IsValid="@_success" ValidationDelay="0">
 
     <MudText Typo="Typo.h4" GutterBottom="true">Login</MudText>
     @*
-    <MudText>
-        Kein Account? <MudLink Href="/pages/authentication/register">Jetzt registrieren</MudLink>
-    </MudText>
+        <MudText>
+            Kein Account? <MudLink Href="/pages/authentication/register">Jetzt registrieren</MudLink>
+        </MudText>
     *@
     <MudTextField T="string"
                   @bind-Value="_model.UserName" For="@(() => _model.UserName)"
@@ -24,25 +18,29 @@
                   Required="true"
                   OnlyValidateIfDirty="true"
                   Immediate="true"
-                  Class="my-6">
+                  Class="mt-6">
     </MudTextField>
 
     <MudTextField @bind-Value="_model.Password" For="@(() => _model.Password)"
-                      Label="Passwort"
-                      Variant="Variant.Outlined"
-                      Required="true"
-                      InputType="InputType.Password">
-    </MudTextField>
-
-    <MudTextField @bind-Value="_model.ServerList" For="@(() => _model.ServerList)"
-                  Label="Server"
+                  Label="Passwort"
                   Variant="Variant.Outlined"
                   Required="true"
-                  InputType="InputType.Password">
+                  InputType="InputType.Password"
+                  Class="mt-6">
     </MudTextField>
 
+    <MudStack Row="true" Class="mt-6">
+        <MudSelect Label="Server" @bind-Value="_model.Server" Variant="Variant.Outlined" Required="true">
+            @foreach (var server in _serverList)
+            {
+                <MudSelectItem Value="@server.Url">@server.Url</MudSelectItem>
+            }
+        </MudSelect>
+        <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="OpenServerOverlay" />
+    </MudStack>
+
     <div Class="d-flex justify-space-between align-center">
-        <MudCheckBox For="@(() => _model.RememberMe)" @bind-Checked="_model.RememberMe" Label="Login speichern" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
+        <MudCheckBox For="@(() => _model.RememberMe)" @bind-Checked="_model.RememberMe" Label="Eingeloggt bleiben" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
         <MudLink Href="/pages/authentication/forgot-password">Passwort vergessen</MudLink>
     </div>
 
@@ -66,60 +64,30 @@
     </MudButton>
 </MudForm>
 
+<MudOverlay @bind-Visible="_showServerOverlay" DarkBackground="true" AutoClose="false">
+    <MudPaper Width="600px" Height="400px">
 
-@code
-{
-    private string _title = "Login";
+        <MudContainer>
+            <MudDataGrid Items="@_serverList" Filterable="false" SortMode="@SortMode.None" Groupable="false">
+                <Columns>
+                    <PropertyColumn Property="x => x.Url" />
+                    <PropertyColumn Property="x => x.LastUsed" />
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <MudStack Row>
+                                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(() => RemoveFromServerList(@context.Item.Url))" />
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
 
-    MudForm? _form;
-    bool _success;
-    bool _loading;
+            <MudStack Row="true" Class="mt-6">
+                <MudTextField Label="Server hinzufügen" Variant="Variant.Outlined" @bind-Value="@newServer" />
+                <MudIconButton Icon="@Icons.Material.Outlined.Add" OnClick="AddToServerList">Add</MudIconButton>
+            </MudStack>
 
-    List<string> _server = new()
-    {
-        "https://localhost:8443"
-    };
-    
-    LoginFormModel _model = new()
-    {
-        UserName = "admin@localhost.com",
-        Password = "maERP!12",
-        // Server = _server,
-        RememberMe = true
-    };
-
-    _model.ServerList = _server;
-
-    // LoginDto loginDto = new LoginDto { Email = "admin@localhost.com", Password = "maERP!12", Server = "https://localhost:8443" };
-
-    private string _spinnerClass = string.Empty;
-    private string _errorMessage = string.Empty;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        _title = "Login";
-    }
-
-    private async void OnSubmit()
-    {
-        _spinnerClass = "spinner-border spinner-border-sm";
-
-        await _localStorage.SetItemAsStringAsync("server", _model.Server);
-
-        var loginResponse = await _authenticationService.AuthenticateAsync(_model.UserName, _model.Password);
-
-        if (loginResponse == true)
-        {
-            _navManager.NavigateTo("/"); 
-            return;
-        }
-
-        _errorMessage = "Login fehlgeschlagen";
-        _spinnerClass = "";
-
-        await _localStorage.RemoveItemAsync("server");
-
-        this.StateHasChanged();
-    }
-}
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenServerOverlay" Class="mt-6">Schließen</MudButton>
+        </MudContainer>
+    </MudPaper>
+</MudOverlay>

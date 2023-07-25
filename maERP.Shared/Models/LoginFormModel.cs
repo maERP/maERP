@@ -6,10 +6,17 @@ namespace maERP.Shared.Models;
 
 public class LoginFormModel
 {
-    public string? UserName { get; set; } = string.Empty;
-    public string? Password { get; set; } = string.Empty;
-    public List<string>? ServerList { get; set; }
+    public string UserName { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string Server { get; set; } = string.Empty;
     public bool RememberMe { get; set; } = false;
+}
+
+public class LoginServer
+{
+    public string Url { get; set; } = string.Empty;
+    public string Version { get; set; } = string.Empty;
+    public DateTime LastUsed { get; set; }
 }
 
 public class LoginFormModelFluentValidator : AbstractValidator<LoginFormModel>
