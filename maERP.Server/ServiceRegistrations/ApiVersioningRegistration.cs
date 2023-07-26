@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace maERP.Server.ServiceRegistrations;
 
-public static class IdentityServicesRegistration
+public static class ApiVersioningRegistration
 {
     public static IServiceCollection AddApiVersioningServices(this IServiceCollection services, IConfiguration configuration)
     {

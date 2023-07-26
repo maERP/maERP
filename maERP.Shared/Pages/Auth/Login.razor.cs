@@ -51,9 +51,9 @@ public partial class Login
 
         SelectFirstServerFromList();
 
-        if(await _localStorage.ContainKeyAsync("username"))
+        if(await _localStorage.ContainKeyAsync("email"))
         {
-            _model.UserName = await _localStorage.GetItemAsStringAsync("username");
+            _model.Email = await _localStorage.GetItemAsStringAsync("email");
         }
     }
 
@@ -104,13 +104,13 @@ public partial class Login
 
         await _localStorage.SetItemAsStringAsync("server", _model.Server);
 
-        var loginResponse = await _authenticationService.AuthenticateAsync(_model.UserName, _model.Password);
+        var loginResponse = await _authenticationService.AuthenticateAsync(_model.Email, _model.Password);
 
         if (loginResponse == true)
         {
             if(_model.RememberMe == true)
             {
-                await _localStorage.SetItemAsStringAsync("username", _model.UserName);
+                await _localStorage.SetItemAsStringAsync("email", _model.Email);
             }
 
             string serverJson = JsonSerializer.Serialize(_serverList);

@@ -12,7 +12,7 @@
         </MudText>
     *@
     <MudTextField T="string"
-                  @bind-Value="_model.UserName" For="@(() => _model.UserName)"
+                  @bind-Value="_model.Email" For="@(() => _model.Email)"
                   Label="E-Mail"
                   Variant="Variant.Outlined"
                   Required="true"
@@ -36,7 +36,7 @@
                 <MudSelectItem Value="@server.Url">@server.Url</MudSelectItem>
             }
         </MudSelect>
-        <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="OpenServerOverlay" />
+        <MudIconButton Icon="@Icons.Material.Outlined.Edit" OnClick="OpenServerOverlay" Class="my-3" />
     </MudStack>
 
     <div Class="d-flex justify-space-between align-center">
@@ -65,13 +65,13 @@
 </MudForm>
 
 <MudOverlay @bind-Visible="_showServerOverlay" DarkBackground="true" AutoClose="false">
-    <MudPaper Width="600px" Height="400px">
+    <MudPaper Width="auto">
 
-        <MudContainer>
-            <MudDataGrid Items="@_serverList" Filterable="false" SortMode="@SortMode.None" Groupable="false">
+        <MudContainer Class="py-8">
+            <MudDataGrid Items="@_serverList" Filterable="false" SortMode="@SortMode.None" Groupable="false" FixedHeader="true ">
                 <Columns>
-                    <PropertyColumn Property="x => x.Url" />
-                    <PropertyColumn Property="x => x.LastUsed" />
+                    <PropertyColumn Property="x => x.Url" Title="URL" />
+                    <PropertyColumn Property="x => x.LastUsed" Title="Zuletzt benutzt" />
                     <TemplateColumn>
                         <CellTemplate>
                             <MudStack Row>

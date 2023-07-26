@@ -9,7 +9,6 @@ using maERP.Server.Repository;
 
 using Serilog;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,18 +58,13 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddSwaggerServices();
 builder.Services.AddApiVersioningServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>
     opts.JsonSerializerOptions.PropertyNamingPolicy = null); // JsonNamingPolicy.CamelCase);
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "maERP.Server", Version = "v1" });
-});
 
 builder.Services.AddResponseCaching(options =>
 {

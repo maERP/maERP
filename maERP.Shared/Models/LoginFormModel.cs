@@ -1,19 +1,26 @@
 ﻿using Microsoft.Extensions.Localization;
 using FluentValidation;
 using FluentValidation.Results;
+using System.ComponentModel.DataAnnotations;
 
 namespace maERP.Shared.Models;
 
 public class LoginFormModel
 {
-    public string UserName { get; set; } = string.Empty;
+    [Required, EmailAddress]
+    public string Email { get; set; } = string.Empty;
+
+    [Required]
     public string Password { get; set; } = string.Empty;
+
+    [Required, Url]
     public string Server { get; set; } = string.Empty;
     public bool RememberMe { get; set; } = false;
 }
 
 public class LoginServer
 {
+    [Required, Url]
     public string Url { get; set; } = string.Empty;
     public string Version { get; set; } = string.Empty;
     public DateTime LastUsed { get; set; }
@@ -26,18 +33,17 @@ public class LoginFormModelFluentValidator : AbstractValidator<LoginFormModel>
     public LoginFormModelFluentValidator(IStringLocalizer<LoginFormModelFluentValidator> localizer)
     {
         _localizer = localizer;
-        RuleFor(x => x.UserName)
-            .NotEmpty().WithMessage(_localizer["Your username cannot be empty."])
-            .Length(2, 100).WithMessage(_localizer["Username must be between 2 and 100 characters."]);
+        RuleFor(x => x.Email)
+            .NotEmpty().WithMessage(_localizer["Die E-Mail Adresse darf nicht leer sein."])
+            .Length(2, 100).WithMessage(_localizer["Die E-Mail Adresse muss zwischen 2 und 100 Zeichen lang sein."]);
         RuleFor(p => p.Password)
-            .NotEmpty().WithMessage(_localizer["Your password cannot be empty"])
-            .MinimumLength(6).WithMessage(_localizer["Your password length must be at least 6 characters."])
-            .MaximumLength(16).WithMessage(_localizer["Your password length must not exceed 16 characters."]);
+            .NotEmpty().WithMessage(_localizer["Das Passwort darf nicht leer sein"])
+            .MinimumLength(8).WithMessage(_localizer["Das Passwort muss mindestens 8 Zeichen haben."]);
     }
 
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
     {
-        ValidationResult? result =
+        FluentValidation.Results.ValidationResult? result =
             await ValidateAsync(ValidationContext<LoginFormModel>.CreateWithOptions((LoginFormModel)model,
                 x => x.IncludeProperties(propertyName)));
         return result.IsValid ? Array.Empty<string>() : result.Errors.Select(e => e.ErrorMessage);
