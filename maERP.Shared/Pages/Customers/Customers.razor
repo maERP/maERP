@@ -10,7 +10,11 @@
 
 <PageTitle>Kunden</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-8">Kunden</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Kunden</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Filled.Add" Color="Color.Primary" Href="/Customers/Add" />
+</MudStack>
 
 @if (customers == null)
 {
@@ -32,8 +36,6 @@ else
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
-
-    <MudButton Href="/Customers/add" Variant="Variant.Filled" Color="Color.Primary">Neu</MudButton>
 }
 
 @code {

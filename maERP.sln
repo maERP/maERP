@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Server", "maERP.Serve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Shared", "maERP.Shared\maERP.Shared.csproj", "{4F5D3AD5-CB4C-45DC-B1AD-2B7750BCB0CA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F4F52310-D6CC-4D30-B948-BBD52B480847}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{7DD1E8A8-9F3D-41EF-95A7-B93CCB0FF8AB}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\maerp-server-publish.yml = .github\workflows\maerp-server-publish.yml

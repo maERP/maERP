@@ -10,7 +10,11 @@
 
 <PageTitle>Lager</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-8">Lager</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Lager</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Filled.Add" Color="Color.Primary" Href="/Warehouses/Add" />
+</MudStack>
 
 @if (warehouses == null)
 {
@@ -23,13 +27,11 @@ else
             <PropertyColumn Property="x => x.Name" Title="Name" />
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
-                    <MudButton Href="@($"/Users/{context.Item.Id}/edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                    <MudButton Href="@($"/Warehouses/{context.Item.Id}/Edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
-
-    <MudButton Href="/Users/add" Variant="Variant.Filled" Color="Color.Primary">Neu</MudButton>
 }
 
 @code {

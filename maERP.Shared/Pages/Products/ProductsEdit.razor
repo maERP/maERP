@@ -1,5 +1,5 @@
-﻿@page "/Product/add"
-@page "/Product/{productId:int}/edit"
+﻿@page "/Products/Add"
+@page "/Products/{productId:int}/Edit"
 
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
@@ -16,9 +16,7 @@
 }
 else
 {
-    <h1>Produkt</h1>
-
-    <hr />
+    <MudText Typo="Typo.h4" Class="mb-8">Produkt bearbeiten</MudText>
 
     <EditForm Model="@product">
         <DataAnnotationsValidator />
@@ -45,9 +43,9 @@ else
             <ValidationMessage For="@(() => product.Ean)" />
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary" @onclick="SaveProduct">Speichern</button>
+            <button type="submit" class="btn btn-primary" @onclick="Save">Speichern</button>
             <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
-            <a href='/Products/@productId'/delete class="btn btn-outline-danger" role="button">
+            <a href='/Products/@productId'/Delete class="btn btn-outline-danger" role="button">
                 Löschen
             </a>
         </div>
@@ -72,7 +70,7 @@ else
         }
     }
 
-    protected async Task SaveProduct()
+    protected async Task Save()
     {
         if (productId != 0)
         {

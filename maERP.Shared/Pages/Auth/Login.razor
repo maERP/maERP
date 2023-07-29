@@ -83,7 +83,7 @@
             </MudDataGrid>
 
             <MudStack Row="true" Class="mt-6">
-                <MudTextField Label="Server hinzufügen" Variant="Variant.Outlined" @bind-Value="@newServer" />
+                <MudTextField InputType="InputType.Url" Label="Server hinzufügen" Variant="Variant.Outlined" @bind-Value="@newServer" />
                 <MudIconButton Icon="@Icons.Material.Outlined.Add" OnClick="AddToServerList">Add</MudIconButton>
             </MudStack>
 

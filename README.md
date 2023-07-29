@@ -12,22 +12,26 @@
 * Offene API zur Erweiterung und Anbindung von Anwendungen Dritter
 * Unterstützt `Docker` out of the box
 
-## maERP installieren
+## Projektübersicht
 
 maERP besteht aus drei Teilprojekten:
 
-|maERP.Server |Das eigentliche CMS. Headless und ohne eigenes Frontend.                   |         
-|maERP.Web    |Das Web-Frontend zur Anbindung an maERP.Server                             |
-|maERP.Client |Die Client-App (iOS, Android, Windows, MacOS) zur Anbindung an maERP.Server|
+| Projekt  | Funktion |
+| ------------ | ------------ |
+| maERP.Server | Das CMS. Headless und ohne eigenes Frontend.                            |
+| maERP.Web    | Web-Frontend zur Anbindung an maERP.Server                              |
+| maERP.Client | Client-App (iOS, Android, Windows, MacOS) zur Anbindung an maERP.Server |
+
+## maERP installieren
 
 maERP.Server per Docker mit externem MySQL oder MariaDB-Server starten:
 
-´´´
+```
 docker run -d --name maerp-server -p 8080 maerp/server -e DB_TYPE=mysql -e DB_HOST=localhost -e DB_PORT=3306 -e DB_NAME=maerp_01 -e DB_USER=maerp -e DB_PASS=YourHiddenPassword
-´´´
+```
 
 maERP.Server per Docker mit externem PostgreSQL-Server starten:
 
-´´´
+```
 docker run -d --name maerp-server -p 8080 maerp/server -e DB_TYPE=pgsql -e DB_HOST=localhost -e DB_PORT=5432 -e DB_NAME=maerp_01 -e DB_USER=maerp -e DB_PASS=YourHiddenPassword
-´´´
+```

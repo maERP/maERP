@@ -18,6 +18,9 @@ public partial class Login
     [Inject]
     private IAuthenticationService? _authenticationService { get; set; }
 
+    [Inject]
+    public ISnackbar? Snackbar { get; set; }
+
     private string _title = "Login";
     private bool _showServerOverlay;
     private string newServer = string.Empty;
@@ -122,6 +125,8 @@ public partial class Login
 
         _errorMessage = "Login fehlgeschlagen";
         _spinnerClass = "";
+
+        Snackbar.Add(_errorMessage, Severity.Error);
 
         await _localStorage.RemoveItemAsync("server");
 

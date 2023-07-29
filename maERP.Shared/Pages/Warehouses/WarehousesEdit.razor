@@ -1,5 +1,5 @@
-﻿@page "/Warehouses/add"
-@page "/Warehouses/{warehouseId:int}/edit"
+﻿@page "/Warehouses/Add"
+@page "/Warehouses/{warehouseId:int}/Edit"
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
 @using maERP.Shared.Dtos.Warehouse
@@ -9,34 +9,37 @@
 @inject NavigationManager _navigationManager
 @inject IApiDataProvider<WarehouseUpdateDto> _apiDataProvider
 
-<h1>Lager</h1>
+<MudText Typo="Typo.h4" Class="mb-8">Lager bearbeiten</MudText>
 
-<hr />
+<MudForm Model="@warehouse" @ref="@_form">
+    <MudGrid>
+        <MudItem xs="6">
 
-<EditForm Model="@warehouse" OnValidSubmit="Save">
-    <DataAnnotationsValidator />
-    <div class="mb-3">
-        <label for="Name" class="form-label">Name</label>
-        <div class="col-md-4">
-            <input class="form-control" @bind="warehouse.Name" />
-        </div>
-        <ValidationMessage For="@(() => warehouse.Name)" />
-    </div>
-    <div class="form-group">
+            <MudTextField @bind-Value="warehouse.Name"
+                          For="@(() => warehouse.Name)"
+                          Label="Lagername"
+                          Required="true"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Class="mt-6" />
 
-        @if (warehouseId != 0)
-        {
-            <a href='/Warehouses/@warehouseId/delete' class="btn btn-outline-danger" role="button">Löschen</a>
-        }
-        <button class="btn btn-light" @onclick="NavigateToList">Abbrechen</button>
-        <button type="submit" class="btn btn-primary">Speichern</button>
-    </div>
-</EditForm>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       ButtonType="ButtonType.Button"
+                       OnClick="@(Save)"
+                       Class="mt-6">Speichern</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
 
 @code {
 
     [Parameter]
     public int warehouseId { get; set; }
+
+    MudForm? _form;
 
     protected string Title = "hinzufügen";
 

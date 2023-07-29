@@ -1,5 +1,5 @@
-﻿@page "/TaxClasses/add"
-@page "/TaxClasses/{taxClassId:int}/edit"
+﻿@page "/Taxclasses/Add"
+@page "/Taxclasses/{taxClassId:int}/Edit"
 
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
@@ -11,28 +11,36 @@
 @inject IApiDataProvider<TaxClassDetailDto> _apiDataProvider
 @inject ISnackbar Snackbar
 
-<h1>Steuersatz</h1>
+<MudText Typo="Typo.h4" Class="mb-8">Steuersatz bearbeiten</MudText>
 
-<hr />
+<MudForm Model="@taxClass" @ref="@_form">
+    <MudGrid>
+        <MudItem xs="6">
+            <MudTextField @bind-Value="taxClass.TaxRate"
+                          For="@(() => taxClass.TaxRate)"
+                          Label="Steuersatz"
+                          Variant="Variant.Text"
+                          InputType="InputType.Number"
+                          Required="true"
+                          HelperText="In Prozent"
+                          Class="mt-6" />
 
-<EditForm Model="@taxClass" OnValidSubmit="Save">
-    <DataAnnotationsValidator />
-
-    <MudCard>
-        <MudCardContent>
-            <MudTextField Label="Steuersatz" HelperText="In Prozent"
-                          @bind-Value="taxClass.TaxRate" For="@(() => taxClass.TaxRate)" />
-        </MudCardContent>
-        <MudCardActions>
-            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Speichern</MudButton>
-        </MudCardActions>
-    </MudCard>
-</EditForm>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       ButtonType="ButtonType.Button"
+                       OnClick="@(Save)"
+                       Class="mt-6">Speichern</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>
 
 @code {
 
     [Parameter]
     public int taxClassId { get; set; }
+
+    private MudForm _form = new();
 
     protected string Title = "hinzufügen";
 

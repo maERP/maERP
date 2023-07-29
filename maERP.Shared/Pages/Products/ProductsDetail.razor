@@ -9,9 +9,8 @@
 @inject NavigationManager NavManager
 @inject IApiDataProvider<ProductDetailDto> _apiDataProvider
 
-<h1>@product.Name</h1>
+<MudText Typo="Typo.h4" Class="mb-8">Produktdetails</MudText>
 
-<p></p>
 
 @code {
 
@@ -26,9 +25,7 @@
     {
         if (productId != 0)
         {
-            Title = "Bearbeiten";
             product = await _apiDataProvider.Request("GET", "/Products/" + productId);
         }
-        else Title = "nicht gefunden";
     }
 }

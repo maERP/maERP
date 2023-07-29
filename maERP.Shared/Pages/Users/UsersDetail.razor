@@ -1,4 +1,4 @@
-﻿@page "/User/{userId}"
+﻿@page "/user/{userId}"
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
 @using maERP.Shared.Dtos.User
@@ -25,9 +25,7 @@
     {
         if (userId != null)
         {
-            Title = "bearbeiten";
             user = await _apiDataProvider.Request("GET", "/User/" + userId);
         }
-        else Title = "nicht gefunden";
     }
 }

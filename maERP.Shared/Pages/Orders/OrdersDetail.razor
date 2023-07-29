@@ -4,16 +4,12 @@
 
 @inject NavigationManager NavigationManager
 
-<h1>@order.Id</h1>
-
-<p></p>
+<h1>Bestellung @order.Id</h1>
 
 @code {
 
     [Parameter]
     public int orderId { get; set; }
-
-    protected string Title = "Bestelldetails";
 
     protected OrderDetailDto order = new();
 
@@ -21,10 +17,8 @@
     {
         if (orderId != 0)
         {
-            Title = "Bearbeiten";
             // product = await productRepository.GetAsync(productId);
         }
-        else Title = "nicht gefunden";
 
         await Task.CompletedTask;
     }

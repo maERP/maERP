@@ -20,10 +20,12 @@ public class AuthController : ControllerBase
     {
         return Ok(await _authService.Login(request));
     }
-    
+
+    /*
     [HttpPost("register")]
     public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
     {
         return Ok(await _authService.Register(request));
     }
+    */
 }

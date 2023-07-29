@@ -1,4 +1,4 @@
-﻿@page "/Users/{userId}/delete"
+﻿@page "/users/{userId}/delete"
 @inject NavigationManager NavigationManager
 
 @code {
@@ -11,7 +11,7 @@
         if (userId != null)
         {
             // await authManagerRepository.DeleteByIdAsync(userId);
-            NavigationManager.NavigateTo("/Users");
+            NavigationManager.NavigateTo("/users");
         }
 
         await Task.CompletedTask;

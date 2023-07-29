@@ -8,9 +8,7 @@
 @inject NavigationManager NavigationManager
 @inject IApiDataProvider<SalesChannelDetailDto> _apiDataProvider
 
-<h1>@salesChannel.Name</h1>
-
-<p></p>
+<MudText Typo="Typo.h4" Class="mb-8">@salesChannel.Name</MudText>
 
 @code {
 
@@ -25,9 +23,7 @@
     {
         if (salesChannelId != 0)
         {
-            Title = "bearbeiten";
             salesChannel = await _apiDataProvider.Request("GET", "/SalesChannels/" + salesChannelId);
         }
-        else Title = "nicht gefunden";
     }
 }

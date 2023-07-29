@@ -1,5 +1,5 @@
-﻿@page "/SalesChannels/add"
-@page "/SalesChannels/{salesChannelId:int}/edit"
+﻿@page "/SalesChannels/Add"
+@page "/SalesChannels/{salesChannelId:int}/Edit"
 
 @using Microsoft.AspNetCore.Authorization
 @using maERP.Shared.Contracts
@@ -11,112 +11,92 @@
 @inject NavigationManager _navManager
 @inject IApiDataProvider<SalesChannelUpdateDto> _adpSalesChannel
 @inject IApiDataProvider<List<WarehouseListDto>> _adpWarehouse
+@inject ISnackbar Snackbar
 
-<h1>Vertriebskanal</h1>
+<MudText Typo="Typo.h4" Class="mb-8">Vertriebskanal bearbeiten</MudText>
 
-<hr />
+<MudForm Model="@salesChannel" @ref="@_form">
+    <MudGrid>
+        <MudItem xs="6">
 
-<EditForm Model="@salesChannel" OnValidSubmit="Save">
-    <DataAnnotationsValidator />
+            <MudTextField @bind-Value="salesChannel.Name"
+                          For="@(() => salesChannel.Name)"
+                          Label="Name"
+                          Required="true"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Class="mt-6" />
 
-    <div class="mb-3">
-        <label for="Cellnumber" class="form-label">Name</label>
-        <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="@salesChannel.Name" />
-        </div>
-    </div>
+            <MudTextField @bind-Value="salesChannel.Url"
+                          For="@(() => salesChannel.Url)"
+                          Label="API URL"
+                          Variant="Variant.Text"
+                          InputType="InputType.Url"
+                          Class="mt-6" />
 
-    <div class="mb-3">
-        <label for="Name" class="form-label">URL</label>
-        <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="@salesChannel.Url" />
-        </div>
-        <ValidationMessage For="@(() => salesChannel.Url)" />
-    </div>
+            <MudTextField @bind-Value="salesChannel.Username"
+                          For="@(() => salesChannel.Username)"
+                          Label="API Benutzername"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Class="mt-6" />
 
-    <div class="mb-3">
-        <label for="Address" class="form-label">Username</label>
-        <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="@salesChannel.Username" />
-        </div>
-        <ValidationMessage For="@(() => salesChannel.Username)" />
-    </div>
+            <MudTextField @bind-Value="salesChannel.Password"
+                          For="@(() => salesChannel.Password)"
+                          Label="API Passwort"
+                          Variant="Variant.Text"
+                          InputType="InputType.Password"
+                          Class="mt-6" />
 
-    <div class="mb-3">
-        <label for="Emailid" class="form-label">Passwort</label>
-        <div class="col-md-4">
-            <InputText class="form-control" @bind-Value="@salesChannel.Password" />
-        </div>
-        <ValidationMessage For="@(() => salesChannel.Password)" />
-    </div>
-
-    <div class="mb-3">
-        <label for="warehouse" class="form-label">Lager</label>
-        <div class="col-md-4">
-            <InputSelect for="Publisher" class="form-control" @bind-Value="@salesChannel.WarehouseId">
-                @if(salesChannelId == 0)
-                {
-                    <option value=0 disabled selected hidden>
-                        [Lager auswählen]
-                    </option>
-                }
-
+            <MudSelect T="int" Label="Lager" HelperText="Lager auswählen" Placeholder="Lager auswählen" Class="mt-6">
                 @foreach (var warehouse in warehouses)
                 {
-                    if(salesChannel.WarehouseId == warehouse.Id)
+                    if (salesChannel.WarehouseId == warehouse.Id)
                     {
-                        <option value="@warehouse.Id" selected>@warehouse.Name</option>
+                        <MudSelectItem Value="@warehouse.Id">@warehouse.Name</MudSelectItem>
                     }
                     else
                     {
-                        <option value="@warehouse.Id">@warehouse.Name</option>
+                        <MudSelectItem Value="@warehouse.Id">@warehouse.Name</MudSelectItem>
                     }
                 }
-            </InputSelect>
-        </div>
-        <ValidationMessage For="@(() => salesChannel.WarehouseId)" />
-    </div>
+            </MudSelect>
 
-    <table class="table table-stripped align-middle table-bordered">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Importieren</th>
-                <th>Exportieren</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Produkte</td>
-                <td><InputCheckbox @bind-Value="@salesChannel.ImportProducts" /></td>
-                <td><InputCheckbox @bind-Value="@salesChannel.ExportProducts" /></td>
-            </tr>
-            <tr>
-                <td>Kunden</td>
-                <td><InputCheckbox @bind-Value="@salesChannel.ImportCustomers" /></td>
-                <td><InputCheckbox @bind-Value="@salesChannel.ExportCustomers" /></td>
-            </tr>
-            <tr>
-                <td>Bestellungen</td>
-                <td><InputCheckbox @bind-Value="@salesChannel.ImportOrders" /></td>
-                <td><InputCheckbox @bind-Value="@salesChannel.ExportOrders" /></td>
-            </tr>
-        </tbody>
-    </table>
+            <MudText Typo="Typo.h6" Class="mt-6">Produkte</MudText>
+            <MudStack Row="true">
+                <MudCheckBox @bind-Checked="@salesChannel.ImportProducts" Label="Importieren" />
+                <MudCheckBox @bind-Checked="@salesChannel.ExportProducts" Label="Exportieren" />
+            </MudStack>
 
-    <ValidationSummary />
+            <MudText Typo="Typo.h6" Class="mt-6">Kunden</MudText>
+            <MudStack Row="true">
+                <MudCheckBox @bind-Checked="@salesChannel.ImportCustomers" Label="Importieren" />
+                <MudCheckBox @bind-Checked="@salesChannel.ExportCustomers" Label="Exportieren" />
+            </MudStack>
 
-    <div class="form-group">
+            <MudText Typo="Typo.h6" Class="mt-6">Kunden</MudText>
+            <MudStack Row="true">
+                <MudCheckBox @bind-Checked="@salesChannel.ImportOrders" Label="Importieren" />
+                <MudCheckBox @bind-Checked="@salesChannel.ExportOrders" Label="Exportieren" />
+            </MudStack>
 
-        <button type="submit" class="btn btn-primary">Speichern</button>
-        <button class="btn btn-light">Abbrechen</button>
-    </div>
-</EditForm>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       ButtonType="ButtonType.Button"
+                       OnClick="@(Save)"
+                       Class="mt-6">Speichern</MudButton>
+
+        </MudItem>
+    </MudGrid>
+</MudForm>
 
 @code {
 
     [Parameter]
     public int? salesChannelId { get; set; }
+
+    private MudForm _form = new();
 
     protected string Title = "hinzufügen";
 
@@ -127,11 +107,8 @@
     {
         if (salesChannelId != 0)
         {
-            warehouses.Add(new WarehouseListDto { Id = 1, Name = "Test" });
-
-            Title = "Bearbeiten";
             warehouses = await _adpWarehouse.Request("GET", "/Warehouses/GetAll");
-            
+
             salesChannel = await _adpSalesChannel.Request("GET", "/SalesChannels/" + salesChannelId);
         }
     }
@@ -146,6 +123,8 @@
         {
             await _adpSalesChannel.Request("POST", "/SalesChannels", salesChannel);
         }
+
+        Snackbar.Add("Vertriebskanal gespeichert", Severity.Success);
 
         ReturnToList();
     }

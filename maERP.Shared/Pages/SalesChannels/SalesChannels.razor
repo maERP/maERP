@@ -10,7 +10,12 @@
 
 <PageTitle>Vertriebskanäle</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-8">Vertriebskanäle</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Vertriebskanäle</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Filled.Add" Color="Color.Primary" Href="/SalesChannels/Add" />
+</MudStack>
+
 
 @if (salesChannels == null)
 {
@@ -24,13 +29,11 @@ else
             <PropertyColumn Property="x => x.Url" Title="URL" />
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
-                    <MudButton Href="@($"/SalesChannels/{context.Item.Id}/edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                    <MudButton Href="@($"/SalesChannels/{context.Item.Id}/Edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
-
-    <MudButton Href="/SalesChannels/add" Variant="Variant.Filled" Color="Color.Primary">Neu</MudButton>
 }
 
 @code {
