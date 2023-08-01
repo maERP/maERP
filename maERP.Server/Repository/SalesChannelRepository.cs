@@ -43,8 +43,10 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
     {
         var salesChannel = _mapper.Map<SalesChannel>(salesChannelCreateDto);
 
-        salesChannel.Warehouse = await _context.Warehouse.FirstOrDefaultAsync(w => w.Id == salesChannelCreateDto.WarehouseId);
-         
+        var warehouse = await _context.Warehouse.FirstOrDefaultAsync(w => w.Id == salesChannelCreateDto.WarehouseId);
+        salesChannel.Warehouse = warehouse;
+        salesChannel.WarehouseId = warehouse.Id;
+
         _context.Add(salesChannel);
         await _context.SaveChangesAsync();
 
