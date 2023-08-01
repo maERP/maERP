@@ -10,18 +10,17 @@ namespace maERP.Shared.Pages.Auth;
 public partial class Login
 {
     [Inject]
-    private NavigationManager? _navManager { get; set; }
+    private NavigationManager? NavManager { get; set; }
 
     [Inject]
-    private ILocalStorageService? _localStorage { get; set; }
+    private ILocalStorageService? LocalStorage { get; set; }
 
     [Inject]
-    private IAuthenticationService? _authenticationService { get; set; }
+    private IAuthenticationService? AuthenticationService { get; set; }
 
     [Inject]
     public ISnackbar? Snackbar { get; set; }
 
-    private string _title = "Login";
     private bool _showServerOverlay;
     private string newServer = string.Empty;
 
@@ -29,8 +28,8 @@ public partial class Login
     bool _success;
     bool _loading;
 
-    List<LoginServer> _serverList = new();
-    LoginFormModel _model = new();
+    private List<LoginServer> _serverList = new();
+    private readonly LoginFormModel _model = new();
 
     private string _spinnerClass = string.Empty;
     private string _errorMessage = string.Empty;
@@ -39,24 +38,24 @@ public partial class Login
     {
         await base.OnInitializedAsync();
 
-        if(await _localStorage.ContainKeyAsync("serverList"))
+        if(await LocalStorage!.ContainKeyAsync("serverList"))
         {
             try
             {
-                string serverJson = await _localStorage.GetItemAsStringAsync("serverList");
-                _serverList = JsonSerializer.Deserialize<List<LoginServer>>(serverJson);
+                string serverJson = await LocalStorage.GetItemAsStringAsync("serverList");
+                _serverList = JsonSerializer.Deserialize<List<LoginServer>>(serverJson)!;
             }
-            catch
+            catch(JsonException)
             {
-                await _localStorage.RemoveItemAsync("serverList");
+                await LocalStorage.RemoveItemAsync("serverList");
             }            
         }
 
         SelectFirstServerFromList();
 
-        if(await _localStorage.ContainKeyAsync("email"))
+        if(await LocalStorage.ContainKeyAsync("email"))
         {
-            _model.Email = await _localStorage.GetItemAsStringAsync("email");
+            _model.Email = await LocalStorage.GetItemAsStringAsync("email");
         }
     }
 
@@ -97,7 +96,7 @@ public partial class Login
     {
         if (_serverList.Count > 0)
         {
-            _model.Server = _serverList.FirstOrDefault().Url;
+            _model.Server = _serverList.FirstOrDefault()!.Url;
         }
     }
 
@@ -105,30 +104,30 @@ public partial class Login
     {
         _spinnerClass = "spinner-border spinner-border-sm";
 
-        await _localStorage.SetItemAsStringAsync("server", _model.Server);
+        await LocalStorage!.SetItemAsStringAsync("server", _model.Server);
 
-        var loginResponse = await _authenticationService.AuthenticateAsync(_model.Email, _model.Password);
+        var loginResponse = await AuthenticationService!.AuthenticateAsync(_model.Email, _model.Password);
 
         if (loginResponse == true)
         {
             if(_model.RememberMe == true)
             {
-                await _localStorage.SetItemAsStringAsync("email", _model.Email);
+                await LocalStorage.SetItemAsStringAsync("email", _model.Email);
             }
 
             string serverJson = JsonSerializer.Serialize(_serverList);
-            await _localStorage.SetItemAsStringAsync("serverList", serverJson);
+            await LocalStorage.SetItemAsStringAsync("serverList", serverJson);
 
-            _navManager.NavigateTo("/");
+            NavManager!.NavigateTo("/");
             return;
         }
 
         _errorMessage = "Login fehlgeschlagen";
         _spinnerClass = "";
 
-        Snackbar.Add(_errorMessage, Severity.Error);
+        Snackbar!.Add(_errorMessage, Severity.Error);
 
-        await _localStorage.RemoveItemAsync("server");
+        await LocalStorage.RemoveItemAsync("server");
 
         this.StateHasChanged();
     }

@@ -105,10 +105,10 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (salesChannelId != 0)
-        {
-            warehouses = await _adpWarehouse.Request("GET", "/Warehouses/GetAll");
+        warehouses = await _adpWarehouse.Request("GET", "/Warehouses/GetAll");
 
+        if (salesChannelId != null && salesChannelId > 0)
+        {
             salesChannel = await _adpSalesChannel.Request("GET", "/SalesChannels/" + salesChannelId);
         }
     }

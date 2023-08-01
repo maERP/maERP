@@ -68,8 +68,4 @@
   <ItemGroup>
     <None Remove="Models\Identity\" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Remove="Pages\Auth\Login %28Kopie%29.razor" />
-    <Content Remove="Pages\Auth\Login.razor.cs" />
-  </ItemGroup>
 </Project>

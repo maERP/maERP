@@ -31,6 +31,7 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
     <Product>$(AssemblyName)</Product>
     <AssemblyName>maERP</AssemblyName>
+    <NoWarn>NETSDK1023</NoWarn>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
@@ -84,7 +85,7 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1"  />
     <PackageReference Include="MudBlazor" Version="6.7.0" />
   </ItemGroup>
 

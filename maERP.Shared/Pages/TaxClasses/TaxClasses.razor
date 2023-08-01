@@ -13,7 +13,7 @@
 <MudStack Row="true" Class="mb-8">
     <MudText Typo="Typo.h4">Lager</MudText>
     <MudSpacer />
-    <MudIconButton Icon="@Icons.Filled.Add" Color="Color.Primary" Href="/TaxClasses/Add" />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/TaxClasses/Add" />
 </MudStack>
 
 @if (taxClasses == null)
@@ -25,7 +25,6 @@ else
 
     <MudDataGrid Items="@taxClasses" SortMode="SortMode.Single" Class="mb-8">
         <Columns>
-            <PropertyColumn Property="x => x.Id" Title="ID" />
             <PropertyColumn Property="x => x.TaxRate" Title="Steuersatz in %" />
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
