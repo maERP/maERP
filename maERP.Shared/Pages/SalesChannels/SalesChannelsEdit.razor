@@ -16,8 +16,15 @@
 <MudText Typo="Typo.h4" Class="mb-8">Vertriebskanal bearbeiten</MudText>
 
 <MudForm Model="@salesChannel" @ref="@_form">
-    <MudGrid>
+    <MudGrid>in 1timewar
         <MudItem xs="6">
+
+            <MudSelect T="int" Label="Typ" HelperText="Vertriebskanal-Typ" Placeholder="Typ auswählen" @bind-Value="@salesChannel.SalesChannelType" Class="mt-6">
+                <MudSelectItem Value="1">Shopware 5</MudSelectItem>
+                <MudSelectItem Value="2">Shopware 6</MudSelectItem>
+                <MudSelectItem Value="3">WooCommerce</MudSelectItem>
+                }
+            </MudSelect>
 
             <MudTextField @bind-Value="salesChannel.Name"
                           For="@(() => salesChannel.Name)"
@@ -48,7 +55,7 @@
                           InputType="InputType.Password"
                           Class="mt-6" />
 
-            <MudSelect T="int" Label="Lager" HelperText="Lager auswählen" Placeholder="Lager auswählen" Class="mt-6">
+            <MudSelect T="int" Label="Lager" HelperText="Lager auswählen" Placeholder="Lager auswählen" @bind-Value="@salesChannel.WarehouseId" Class="mt-6">
                 @foreach (var warehouse in warehouses)
                 {
                     if (salesChannel.WarehouseId == warehouse.Id)
@@ -61,7 +68,7 @@
                     }
                 }
             </MudSelect>
-             
+
             <MudText Typo="Typo.h6" Class="mt-6">Produkte</MudText>
             <MudStack Row="true">
                 <MudCheckBox @bind-Checked="@salesChannel.ImportProducts" Label="Importieren" />
@@ -110,6 +117,7 @@
         if (salesChannelId != null && salesChannelId > 0)
         {
             salesChannel = await _adpSalesChannel.Request("GET", "/SalesChannels/" + salesChannelId);
+            StateHasChanged();
         }
     }
 

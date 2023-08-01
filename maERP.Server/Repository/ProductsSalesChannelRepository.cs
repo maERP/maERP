@@ -3,7 +3,6 @@
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using maERP.Server.Models;
-using maERP.Shared.Models;
 
 namespace maERP.Server.Repository;
 
@@ -14,11 +13,8 @@ public interface IProductSalesChannelRepository : IGenericRepository<ProductSale
 
 public class ProductSalesChannelRepository : GenericRepository<ProductSalesChannel>, IProductSalesChannelRepository
 {
-    private readonly ApplicationDbContext _context;
-
     public ProductSalesChannelRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
     {
-        this._context = context;
     }
 
     public async Task<ProductSalesChannel> getByRemoteProductIdAsync(int productId, int salesChannelId = 0)

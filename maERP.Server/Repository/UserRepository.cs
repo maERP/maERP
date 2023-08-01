@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using maERP.Shared.Dtos.User;
 using maERP.Server.Models;
-using maERP.Shared.Pages;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Server.Repository;
