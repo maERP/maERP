@@ -2,7 +2,8 @@
  
 public class SalesChannelListDto
 {
-    public virtual int Id { get; set; }
-    public virtual string Name { get; set; } = string.Empty;
-    public virtual string Url { get; set; } = string.Empty;
+    public int Id { get; set; }
+    public int Type { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
 }

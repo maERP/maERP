@@ -4,7 +4,8 @@ namespace maERP.Shared.Dtos.SalesChannel;
  
 public class SalesChannelCreateDto
 {
-    // public virtual SalesChannelType Type { get; set; } TODO: SalesChannelTypeDto
+    [Required]
+    public int Type { get; set; }
 
     [Required]
     public string Name { get; set; } = string.Empty;

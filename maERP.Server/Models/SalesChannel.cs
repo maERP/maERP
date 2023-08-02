@@ -4,7 +4,7 @@ namespace maERP.Server.Models;
 
 public class SalesChannel : ABaseModel
 {
-    public SalesChannelType Type { get; set; }
+    public int Type { get; set; }
     public string Name { get; set; } = string.Empty;
     public string URL { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
