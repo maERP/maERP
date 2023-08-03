@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using maERP.Server.Models;
+using maERP.Shared.Models;
 
 namespace maERP.Server.Configurations.Seeds;
 
@@ -14,7 +15,7 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
 			new SalesChannel
 			{
 				Id = 1,
-				Type = SalesChannelType.shopware5,
+				Type = 1,
 				Name = "Shopware Demo Shop",
 				URL = "https://www.example.com/",
 				Username = "demouser",

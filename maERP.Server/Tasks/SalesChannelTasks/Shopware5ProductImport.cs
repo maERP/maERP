@@ -52,7 +52,7 @@ public class ProductDownloadTask : IHostedService
 
         foreach (var salesChannel in salesChannels)
         {
-            if (salesChannel.Type != SalesChannelType.shopware5 || salesChannel.ImportProducts == false)
+            if (salesChannel.Type != 1 || salesChannel.ImportProducts == false)
             {
                 continue;
             }
