@@ -5,6 +5,7 @@
 @using maERP.Shared.Contracts
 @using maERP.Shared.Dtos.SalesChannel
 @using maERP.Shared.Dtos.Warehouse
+@using maERP.Shared.Models
 
 @attribute [Authorize]
 
@@ -19,10 +20,10 @@
     <MudGrid>
         <MudItem xs="6">
 
-            <MudSelect T="int" Label="Typ" HelperText="Vertriebskanal-Typ" Placeholder="Typ auswählen" @bind-Value="@salesChannel.Type" Class="mt-6">
-                <MudSelectItem Value="1">Shopware 5</MudSelectItem>
-                <MudSelectItem Value="2">Shopware 6</MudSelectItem>
-                <MudSelectItem Value="3">WooCommerce</MudSelectItem>
+            <MudSelect T="SalesChannelType" Label="Typ" HelperText="Vertriebskanal-Typ" Placeholder="Typ auswählen" @bind-Value="@salesChannel.Type" Class="mt-6">
+                <MudSelectItem Value="SalesChannelType.shopware5">Shopware 5</MudSelectItem>
+                <MudSelectItem Value="SalesChannelType.shopware6">Shopware 6</MudSelectItem>
+                <MudSelectItem Value="SalesChannelType.woocommerce">WooCommerce</MudSelectItem>
             </MudSelect>
 
             <MudTextField @bind-Value="salesChannel.Name"

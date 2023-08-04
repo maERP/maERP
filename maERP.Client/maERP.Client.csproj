@@ -85,8 +85,8 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1"  />
-    <PackageReference Include="MudBlazor" Version="6.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="MudBlazor" Version="6.8.0" />
   </ItemGroup>
 
   <ItemGroup>
