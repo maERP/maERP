@@ -15,7 +15,7 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
 			new SalesChannel
 			{
 				Id = 1,
-				Type = 1,
+				Type = SalesChannelType.shopware5,
 				Name = "Shopware Demo Shop",
 				URL = "https://www.example.com/",
 				Username = "demouser",

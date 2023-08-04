@@ -19,14 +19,15 @@ public class AuthenticationService : IAuthenticationService
         this._dataService = dataService;
     }
 
-    public async Task<bool> AuthenticateAsync(string email, string password)
+    public async Task<bool> AuthenticateAsync(string email, string password, bool rememberMe)
     {
         try
         {
             AuthRequest authenticationRequest = new AuthRequest()
             {
                 Email = email,
-                Password = password
+                Password = password,
+                RememberMe = rememberMe
             };
 
             var authenticationResponse = await _dataService.Login(authenticationRequest);

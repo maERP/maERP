@@ -8,48 +8,76 @@
 @attribute [Authorize]
 
 @inject NavigationManager NavManager
-@inject IApiDataProvider<ProductDetailDto> _apiDataProvider
+@inject IApiDataProvider<ProductUpdateDto> _apiDataProvider
 
 @if (product == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Lade...</em></p>
 }
 else
 {
     <MudText Typo="Typo.h4" Class="mb-8">Produkt bearbeiten</MudText>
 
-    <EditForm Model="@product">
-        <DataAnnotationsValidator />
-        <div class="mb-3">
-            <label for="Cellnumber" class="form-label">SKU</label>
-            <div class="col-md-4">
-                <InputText class="form-control" @bind-Value="product.Sku" />
-            </div>
-            <ValidationMessage For="@(() => product.Sku)" />
-        </div>
-        <div class="mb-3">
-            <label for="Name" class="form-label">Name</label>
-            <div class="col-md-4">
-                <InputText class="form-control" @bind-Value="product.Name" />
-            </div>
-            <ValidationMessage For="@(() => product.Name)" />
-        </div>
+    <MudForm Model="@product" @ref="@_form">
+        <MudGrid>
+            <MudItem xs="6">
+                <MudTextField @bind-Value="product.Name"
+                              For="@(() => product.Name)"
+                              Label="Name"
+                              Variant="Variant.Text"
+                              InputType="InputType.Text"
+                              Required="true"
+                              Class="mt-6" />
 
-        <div class="mb-3">
-            <label for="Emailid" class="form-label">EAN</label>
-            <div class="col-md-4">
-                <InputText class="form-control" @bind-Value="product.Ean" />
-            </div>
-            <ValidationMessage For="@(() => product.Ean)" />
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary" @onclick="Save">Speichern</button>
-            <button class="btn btn-light" @onclick="Cancel">Abbrechen</button>
-            <a href='/Products/@productId'/Delete class="btn btn-outline-danger" role="button">
-                Löschen
-            </a>
-        </div>
-    </EditForm>
+                <MudTextField @bind-Value="product.Sku"
+                              For="@(() => product.Sku)"
+                              Label="SKU"
+                              Variant="Variant.Text"
+                              InputType="InputType.Text"
+                              Required="true"
+                              Class="mt-6" />
+
+                <MudTextField @bind-Value="product.Ean"
+                              For="@(() => product.Ean)"
+                              Label="EAN"
+                              Variant="Variant.Text"
+                              InputType="InputType.Text"
+                              Required="false"
+                              Class="mt-6" />
+
+                <MudTextField @bind-Value="product.Price"
+                              For="@(() => product.Price)"
+                              Label="Preis in EUR"
+                              Variant="Variant.Text"
+                              InputType="InputType.Text"
+                              Required="false"
+                              Class="mt-6" />
+
+                <MudTextField @bind-Value="product.Msrp"
+                              For="@(() => product.Msrp)"
+                              Label="UVP in EUR"
+                              Variant="Variant.Text"
+                              InputType="InputType.Text"
+                              Required="false"
+                              Class="mt-6" />
+
+                <MudTextField @bind-Value="product.Description"
+                              For="@(() => product.Description)"
+                              Label="Beschreibung"
+                              Variant="Variant.Text"
+                              InputType="InputType.Text"
+                              Required="false"
+                              Class="mt-6" />
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           ButtonType="ButtonType.Button"
+                           OnClick="@(Save)"
+                           Class="mt-6">Speichern</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudForm>
 }
 
 @code {
@@ -57,15 +85,14 @@ else
     [Parameter]
     public int productId { get; set; }
 
-    protected string Title = "Add";
+    protected MudForm? _form;
 
-    protected ProductDetailDto product = new();
+    protected ProductUpdateDto product = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (productId != 0)
         {
-            Title = "Bearbeiten";
             product = await _apiDataProvider.Request("GET", "/Products/" + productId);
         }
     }

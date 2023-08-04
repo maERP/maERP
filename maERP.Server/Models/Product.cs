@@ -9,14 +9,14 @@ namespace maERP.Server.Models;
 [Index(nameof(Sku), IsUnique = true)]
 public class Product : ABaseModel
 {
-    public virtual string Sku { get; set; } = string.Empty;
-    public virtual string Name { get; set; } = string.Empty;
-    public virtual string Ean { get; set; } = string.Empty;
+    public string Sku { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Ean { get; set; } = string.Empty;
 
-    public virtual string Asin { get; set; } = string.Empty;
-    public virtual string Description { get; set; } = string.Empty;
-    public virtual decimal Price { get; set; }
-    public virtual decimal Msrp { get; set; }
+    public string Asin { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public decimal Price { get; set; }
+    public decimal Msrp { get; set; }
 
     public int TaxClassId { get; set; }
     public TaxClass? TaxClass { get; set; }

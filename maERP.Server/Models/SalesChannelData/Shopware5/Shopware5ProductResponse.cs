@@ -12,13 +12,13 @@ public class Shopware5ProductResponse
     public string? name { get; set; }
     public string? description { get; set; }
     public string? descriptionLong { get; set; }
-    public DateTime added { get; set; }
+    // public DateTime added { get; set; }
     public bool active { get; set; }
     public int pseudoSales { get; set; }
     public bool highlight { get; set; }
     public string? keywords { get; set; }
     public string? metaTitle { get; set; }
-    public DateTime changed { get; set; }
+    // public DateTime changed { get; set; }
     public bool priceGroupActive { get; set; }
     public bool lastStock { get; set; }
     public int crossBundleLook { get; set; }
@@ -34,7 +34,7 @@ public class MainDetail
 {
     public int id { get; set; }
     public int articleId { get; set; }
-    public int unitId { get; set; }
+    // public int unitId { get; set; }
     public string? number { get; set; }
     public string? supplierNumber { get; set; }
     public int kind { get; set; }

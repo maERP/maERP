@@ -34,8 +34,7 @@ public class AuthService : IAuthService
             throw new Exception($"User with Email {request.Email} not found.");
         }
 
-        // var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-        var result = await _signInManager.PasswordSignInAsync(user, request.Password, true, false);
+        var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, false);
         
         if(result.Succeeded == false)
         {

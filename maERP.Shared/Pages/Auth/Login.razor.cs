@@ -106,13 +106,14 @@ public partial class Login
 
         await LocalStorage!.SetItemAsStringAsync("server", _model.Server);
 
-        var loginResponse = await AuthenticationService!.AuthenticateAsync(_model.Email, _model.Password);
+        var loginResponse = await AuthenticationService!.AuthenticateAsync(_model.Email, _model.Password, _model.RememberMe);
 
         if (loginResponse == true)
         {
             if(_model.RememberMe == true)
             {
                 await LocalStorage.SetItemAsStringAsync("email", _model.Email);
+                await LocalStorage.SetItemAsStringAsync("password", _model.Password);
             }
 
             string serverJson = JsonSerializer.Serialize(_serverList);

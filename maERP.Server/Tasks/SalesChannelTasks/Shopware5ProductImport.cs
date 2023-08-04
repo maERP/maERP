@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using maERP.Server.Models;
 using maERP.Server.Repository;
+using maERP.Shared.Models;
 using maERP.Shared.Models.SalesChannels.Shopware5;
 using maERP.Shared.Models.SalesChannels.Shopware5.ProductResponse;
 
@@ -52,7 +53,7 @@ public class ProductDownloadTask : IHostedService
 
         foreach (var salesChannel in salesChannels)
         {
-            if (salesChannel.Type != 1 || salesChannel.ImportProducts == false)
+            if (salesChannel.Type != SalesChannelType.shopware5 || salesChannel.ImportProducts == false)
             {
                 continue;
             }
@@ -95,6 +96,8 @@ public class ProductDownloadTask : IHostedService
                         catch (Exception ex)
                         {
                             Console.WriteLine($"Import Product error: {ex.Message}");
+
+                            Console.WriteLine(result);
                         }
 
                         foreach (var remoteProduct in remoteProducts.data)
@@ -109,9 +112,10 @@ public class ProductDownloadTask : IHostedService
                                 localProduct.Ean = Globals.maxLength(remoteProduct.mainDetail.ean, 13);
                                 localProduct.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
                                 localProduct.Sku = remoteProduct.mainDetail.number;
-                                // localProduct.TaxClassId = 1;
+                                localProduct.TaxClassId = 1;
                                 localProduct.Description = Globals.maxLength(remoteProduct.descriptionLong, 4000);
 
+                                /*
                                 localProduct.ProductSalesChannel = new List<ProductSalesChannel>();
 
                                 localProduct.ProductSalesChannel.Add(new ProductSalesChannel
@@ -120,7 +124,7 @@ public class ProductDownloadTask : IHostedService
                                     // SalesChannelId = salesChannel.Id,
                                     Price = (decimal)remoteProduct.mainDetail.purchasePrice
                                 });
-
+                                */
                                 await productRepository.AddAsync(localProduct);
                             }
                             else
