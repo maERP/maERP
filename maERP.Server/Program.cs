@@ -84,7 +84,9 @@ builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+Console.WriteLine("Start background tasks...");
 builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.ProductDownloadTask>();
+builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.OrderDownloadTask>();
 
 var app = builder.Build();
 

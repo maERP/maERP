@@ -77,7 +77,7 @@ public class ApiDataProvider<T> : IApiDataProvider<T> where T : class
                             await _localStorage.GetItemAsync<string>("token"));
                 }
 
-                HttpResponseMessage response = new HttpResponseMessage();
+                HttpResponseMessage response = new();
 
                 if (method == "GET")
                 {
@@ -109,7 +109,9 @@ public class ApiDataProvider<T> : IApiDataProvider<T> where T : class
 
                 if(response.StatusCode == System.Net.HttpStatusCode.NoContent)
                 {
-                    return default(T);
+                    // TODO test if "default" is ok
+                    // return default(T);
+                    return default;
                 }
                 else if (response.IsSuccessStatusCode)
                 {

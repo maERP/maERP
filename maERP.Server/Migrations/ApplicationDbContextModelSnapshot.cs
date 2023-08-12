@@ -17,7 +17,7 @@ namespace maERP.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -251,7 +251,7 @@ namespace maERP.Server.Migrations
                         {
                             Id = "05474ea3–7543-8aef-bcae-33e812c35fc3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a213c062-6c2c-4bb1-9aa7-cab8bd3396ae",
+                            ConcurrencyStamp = "3edb3943-97db-4087-9d63-e971a16ae523",
                             Email = "admin@localhost.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -259,9 +259,9 @@ namespace maERP.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN1fPCshaR+sQS2MqTJHHMQ0zm2jL3Y9ur+uXutpPRDb4fVrRZ72/3qy3Ua6IHKVMA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKUhukBrvWhW3G1x1OctntttGIyRifidj/BvOiufsN288qdsQE58ALwZRsUbuHy5Gw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3572b235-584a-404f-a864-e499161297c5",
+                            SecurityStamp = "8992ec17-a985-4d05-a68c-4cde18a4de5d",
                             TwoFactorEnabled = false,
                             UserName = "admin@localhost.com"
                         });
@@ -298,24 +298,24 @@ namespace maERP.Server.Migrations
                         {
                             Id = 1,
                             CountryCode = "de",
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9300),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9300),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3711),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3715),
                             Name = "Deutschland"
                         },
                         new
                         {
                             Id = 2,
                             CountryCode = "at",
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9310),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9310),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3717),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3718),
                             Name = "Österreich"
                         },
                         new
                         {
                             Id = 3,
                             CountryCode = "ch",
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9310),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9310),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3718),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3719),
                             Name = "Schweiz"
                         });
                 });
@@ -417,6 +417,13 @@ namespace maERP.Server.Migrations
 
                     b.Property<DateTime>("DateModified")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RemoteOrderId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SalesChannelId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -642,8 +649,8 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8096),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8097),
                             Key = "JwtSettings:Key",
                             Section = 0,
                             Value = "CHANGE_TO_YOUR_VERY_SECRET_JWT_SIGNING_KEY"
@@ -651,8 +658,8 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 2,
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8099),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8099),
                             Key = "JwtSettings:Issuer",
                             Section = 0,
                             Value = "maERP.Server"
@@ -660,8 +667,8 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 3,
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8100),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8100),
                             Key = "JwtSettings:Audience",
                             Section = 0,
                             Value = "maERP.Client"
@@ -669,8 +676,8 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 4,
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8101),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8101),
                             Key = "JwtSettings:DurationInMinutes",
                             Section = 0,
                             Value = "60"
@@ -678,8 +685,8 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 5,
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8102),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8102),
                             Key = "RemoteLog:Enabled",
                             Section = 0,
                             Value = "false"
@@ -687,8 +694,8 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 6,
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8103),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8103),
                             Key = "RemoteLog:Host",
                             Section = 0,
                             Value = "graylog.martin-andrich.de"
@@ -696,8 +703,8 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 7,
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8104),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8104),
                             Key = "RemoteLog:Port",
                             Section = 0,
                             Value = "12301"
@@ -705,8 +712,8 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 8,
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8131),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8132),
                             Key = "RemoteLog:TransportType",
                             Section = 0,
                             Value = "Tcp"
@@ -714,8 +721,8 @@ namespace maERP.Server.Migrations
                         new
                         {
                             Id = 9,
-                            DateCreated = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2060),
-                            DateModified = new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2060),
+                            DateCreated = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8133),
+                            DateModified = new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8133),
                             Key = "RemoteLog:Facility",
                             Section = 0,
                             Value = "maERP.Server"

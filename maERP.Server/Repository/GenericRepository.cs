@@ -80,12 +80,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
 
     public virtual async Task UpdateAsync<TSource>(int id, TSource source)
     {
-        var entity = await GetByIdAsync(id);
-
-        if (entity == null)
-        {
-            throw new NotFoundException(typeof(T).Name, id);
-        }
+        var entity = await GetByIdAsync(id) ?? throw new NotFoundException(typeof(T).Name, id);
 
         _mapper.Map(source, entity);
         _context.Update(entity);
@@ -94,13 +89,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : ABaseModel
 
     public async Task DeleteAsync(int id)
     {
-        var entity = await GetByIdAsync(id);
-
-        if(entity is null)
-        {
-            throw new NotFoundException(typeof(T).Name, id);
-        }
-
+        var entity = await GetByIdAsync(id) ?? throw new NotFoundException(typeof(T).Name, id);
         _context.Set<T>().Remove(entity);
         await _context.SaveChangesAsync();
     }

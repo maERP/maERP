@@ -29,7 +29,7 @@ public class ProductDownloadTask : IHostedService
 
                 await Task.Delay(new TimeSpan(0, 0, 60)); // 5 second delay
 
-                Console.WriteLine("MainLoop finished");
+                Console.WriteLine("ProductDownload MainLoop finished");
             }
         });
 

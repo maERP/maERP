@@ -295,6 +295,8 @@ namespace maERP.Server.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SalesChannelId = table.Column<int>(type: "integer", nullable: false),
+                    RemoteOrderId = table.Column<string>(type: "text", nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -467,16 +469,16 @@ namespace maERP.Server.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "05474ea3–7543-8aef-bcae-33e812c35fc3", 0, "a213c062-6c2c-4bb1-9aa7-cab8bd3396ae", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEN1fPCshaR+sQS2MqTJHHMQ0zm2jL3Y9ur+uXutpPRDb4fVrRZ72/3qy3Ua6IHKVMA==", null, false, "3572b235-584a-404f-a864-e499161297c5", false, "admin@localhost.com" });
+                values: new object[] { "05474ea3–7543-8aef-bcae-33e812c35fc3", 0, "3edb3943-97db-4087-9d63-e971a16ae523", "admin@localhost.com", false, "Admin", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEKUhukBrvWhW3G1x1OctntttGIyRifidj/BvOiufsN288qdsQE58ALwZRsUbuHy5Gw==", null, false, "8992ec17-a985-4d05-a68c-4cde18a4de5d", false, "admin@localhost.com" });
 
             migrationBuilder.InsertData(
                 table: "Country",
                 columns: new[] { "Id", "CountryCode", "DateCreated", "DateModified", "Name" },
                 values: new object[,]
                 {
-                    { 1, "de", new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9300), new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9300), "Deutschland" },
-                    { 2, "at", new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9310), new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9310), "Österreich" },
-                    { 3, "ch", new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9310), new DateTime(2023, 8, 4, 18, 37, 47, 928, DateTimeKind.Utc).AddTicks(9310), "Schweiz" }
+                    { 1, "de", new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3711), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3715), "Deutschland" },
+                    { 2, "at", new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3717), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3718), "Österreich" },
+                    { 3, "ch", new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3718), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(3719), "Schweiz" }
                 });
 
             migrationBuilder.InsertData(
@@ -484,15 +486,15 @@ namespace maERP.Server.Migrations
                 columns: new[] { "Id", "DateCreated", "DateModified", "Key", "Section", "Value" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030), new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030), "JwtSettings:Key", 0, "CHANGE_TO_YOUR_VERY_SECRET_JWT_SIGNING_KEY" },
-                    { 2, new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030), new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030), "JwtSettings:Issuer", 0, "maERP.Server" },
-                    { 3, new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030), new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2030), "JwtSettings:Audience", 0, "maERP.Client" },
-                    { 4, new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050), new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050), "JwtSettings:DurationInMinutes", 0, "60" },
-                    { 5, new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050), new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050), "RemoteLog:Enabled", 0, "false" },
-                    { 6, new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050), new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050), "RemoteLog:Host", 0, "graylog.martin-andrich.de" },
-                    { 7, new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050), new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050), "RemoteLog:Port", 0, "12301" },
-                    { 8, new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050), new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2050), "RemoteLog:TransportType", 0, "Tcp" },
-                    { 9, new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2060), new DateTime(2023, 8, 4, 18, 37, 47, 929, DateTimeKind.Utc).AddTicks(2060), "RemoteLog:Facility", 0, "maERP.Server" }
+                    { 1, new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8096), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8097), "JwtSettings:Key", 0, "CHANGE_TO_YOUR_VERY_SECRET_JWT_SIGNING_KEY" },
+                    { 2, new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8099), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8099), "JwtSettings:Issuer", 0, "maERP.Server" },
+                    { 3, new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8100), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8100), "JwtSettings:Audience", 0, "maERP.Client" },
+                    { 4, new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8101), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8101), "JwtSettings:DurationInMinutes", 0, "60" },
+                    { 5, new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8102), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8102), "RemoteLog:Enabled", 0, "false" },
+                    { 6, new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8103), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8103), "RemoteLog:Host", 0, "graylog.martin-andrich.de" },
+                    { 7, new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8104), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8104), "RemoteLog:Port", 0, "12301" },
+                    { 8, new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8131), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8132), "RemoteLog:TransportType", 0, "Tcp" },
+                    { 9, new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8133), new DateTime(2023, 8, 12, 10, 51, 11, 254, DateTimeKind.Utc).AddTicks(8133), "RemoteLog:Facility", 0, "maERP.Server" }
                 });
 
             migrationBuilder.InsertData(

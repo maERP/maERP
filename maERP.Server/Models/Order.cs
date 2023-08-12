@@ -5,9 +5,12 @@ namespace maERP.Server.Models;
 
 public class Order : ABaseModel
 {
+    public int SalesChannelId { get; set; }
+    public string RemoteOrderId { get; set; } = string.Empty;
+
     [Required, Display(Name = "Kundennummer"), DisplayFormat(NullDisplayText = "0")]
-    public virtual int CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
     [Required, Display(Name = "Bestellstatus")]
-    public virtual OrderStatus Status { get; set; }
+    public OrderStatus Status { get; set; }
 }
