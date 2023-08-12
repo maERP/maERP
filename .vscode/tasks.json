@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "maERP.Server-build",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -14,7 +14,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "maERP.Server-publish",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -26,7 +26,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "watch",
+            "label": "maERP.Server watch",
             "command": "dotnet",
             "type": "process",
             "args": [
