@@ -32,6 +32,7 @@
     <Product>$(AssemblyName)</Product>
     <AssemblyName>maERP</AssemblyName>
     <NoWarn>NETSDK1023</NoWarn>
+    <DefaultLanguage>de</DefaultLanguage>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
