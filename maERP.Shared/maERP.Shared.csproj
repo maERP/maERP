@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -29,7 +29,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.12" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
     <PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
     <PackageReference Include="MudBlazor" Version="6.11.0" />
     <PackageReference Include="FluentValidation" Version="11.7.1" />
