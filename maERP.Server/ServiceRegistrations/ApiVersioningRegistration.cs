@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.AspNetCore.Mvc.Versioning;
+﻿using Asp.Versioning;
 
 namespace maERP.Server.ServiceRegistrations;
 
@@ -9,22 +8,19 @@ public static class ApiVersioningRegistration
     {
         services.AddApiVersioning(options =>
         {
-            options.AssumeDefaultVersionWhenUnspecified = true;
-            options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
             options.ReportApiVersions = true;
-            options.ApiVersionReader = ApiVersionReader.Combine(
-                new QueryStringApiVersionReader("api-version"),
-                new HeaderApiVersionReader("X-Version"),
-                new MediaTypeApiVersionReader("ver")
-            );
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+        })
+        .AddMvc()
+        .AddApiExplorer(x =>
+        {
+            x.GroupNameFormat = "'v'VVV";
+            x.SubstituteApiVersionInUrl = true;
+            x.ApiVersionParameterSource = new UrlSegmentApiVersionReader();
         });
 
-        services.AddVersionedApiExplorer(
-        options =>
-        {
-            options.GroupNameFormat = "'v'VVV";
-            options.SubstituteApiVersionInUrl = true;
-        });
 
         return services;
     }

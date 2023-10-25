@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using maERP.Server.Repository;
 using maERP.Shared.Dtos.User;
-using maERP.Server.Models;
-using maERP.Shared.Dtos.SalesChannel;
+using Asp.Versioning;
 
 namespace maERP.Server.Controllers;
 
