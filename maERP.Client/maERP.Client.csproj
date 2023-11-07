@@ -45,7 +45,7 @@
     <ApplicationTitle>maERP</ApplicationTitle>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
-    <CodesignKey>Apple Development: Created via API (47ASY6PQB5)</CodesignKey>
+    <CodesignKey>Apple Development: Created via API (L5KKCWMJ3W)</CodesignKey>
     <CodesignProvision>VS: de.martin-andrich.maerp.client Development</CodesignProvision>
     <ProvisioningType>automatic</ProvisioningType>
   </PropertyGroup>
