@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace maERP.Server.Models;
 
 [Index(nameof(Sku), IsUnique = true)]
-public class Product : ABaseModel
+public class Product : BaseModel
 {
     public string Sku { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;

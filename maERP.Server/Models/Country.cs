@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Server.Models;
 
-public class Country : ABaseModel
+public class Country : BaseModel
 {
     [Required, Display(Name = "Name"), DisplayFormat(NullDisplayText = "Name")]
     public string Name { get; set; } = null!;

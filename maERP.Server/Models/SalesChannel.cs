@@ -2,7 +2,7 @@
 
 namespace maERP.Server.Models;
 
-public class SalesChannel : ABaseModel
+public class SalesChannel : BaseModel
 {
     public SalesChannelType Type { get; set; }
     public string Name { get; set; } = string.Empty;

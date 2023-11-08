@@ -1,6 +1,6 @@
 ﻿namespace maERP.Server.Models;
 
-public class TaxClass : ABaseModel
+public class TaxClass : BaseModel
 {
     public double TaxRate { get; set; }
 

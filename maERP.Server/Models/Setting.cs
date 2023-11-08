@@ -2,7 +2,7 @@
 
 namespace maERP.Server.Models;
 
-public class Setting : ABaseModel
+public class Setting : BaseModel
 {
 	public int Section { get; set; }
     public string Key { get; set; } = string.Empty;

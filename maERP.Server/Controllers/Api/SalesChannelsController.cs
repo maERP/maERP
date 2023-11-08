@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using maERP.Server.Repository;
 using maERP.Shared.Dtos.SalesChannel;
 using maERP.Shared.Models;
 using maERP.Shared.Dtos;
 using maERP.Shared.Dtos.Warehouse;
 using maERP.Shared.Pages.SalesChannels;
+using maERP.Server.Contracts;
 
 namespace maERP.Server.Controllers;
 

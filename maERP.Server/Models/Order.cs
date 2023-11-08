@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Server.Models;
 
-public class Order : ABaseModel
+public class Order : BaseModel
 {
     public int SalesChannelId { get; set; }
     public string RemoteOrderId { get; set; } = string.Empty;

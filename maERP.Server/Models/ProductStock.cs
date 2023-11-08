@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace maERP.Server.Models;
 
-public class ProductStock : ABaseModel
+public class ProductStock : BaseModel
 {
     public int ProductId { get; set; }
     public Product Product { get; set; } = null!;    

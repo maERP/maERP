@@ -9,6 +9,7 @@ using maERP.Server.Repository;
 
 using Serilog;
 using Microsoft.EntityFrameworkCore;
+using maERP.Server.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 

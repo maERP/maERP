@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace maERP.Server.Models;
 
-public abstract class ABaseModel
+public abstract class BaseModel
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }

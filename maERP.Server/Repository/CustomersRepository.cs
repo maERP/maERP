@@ -3,10 +3,6 @@ using maERP.Server.Models;
 
 namespace maERP.Server.Repository;
 
-public interface ICustomerRepository : IGenericRepository<Customer>
-{
-}
-
 public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
 {
     public CustomerRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)

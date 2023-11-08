@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Server.Models;
 
-public class Customer : ABaseModel
+public class Customer : BaseModel
 {
     [StringLength(50), Display(Name = "Vorname"), DisplayFormat(NullDisplayText = "Max")]
     public string FirstName { get; set; } = string.Empty;

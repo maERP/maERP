@@ -3,9 +3,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using maERP.Server.Repository;
 using maERP.Shared.Dtos.User;
 using Asp.Versioning;
+using maERP.Server.Contracts;
 
 namespace maERP.Server.Controllers;
 

@@ -1,17 +1,8 @@
-﻿#nullable enable
-
-using AutoMapper;
+﻿using AutoMapper;
 using maERP.Server.Models;
-using maERP.Shared.Pages.Products;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OData.UriParser;
 
 namespace maERP.Server.Repository;
-
-public interface IOrderRepository : IGenericRepository<Order>
-{
-    Task<Order> GetByRemoteOrderIdAsync(string remoteOrderId, int salesChannelId);
-}
 
 public class OrderRepository : GenericRepository<Order>, IOrderRepository
 {

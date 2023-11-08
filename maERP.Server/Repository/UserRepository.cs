@@ -1,22 +1,10 @@
-﻿#nullable disable
-
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using AutoMapper;
 using maERP.Shared.Dtos.User;
 using maERP.Server.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Server.Repository;
-
-public interface IUserRepository
-{
-    Task<List<UserListDto>> GetAllAsync();
-    Task<UserDetailDto> GetByIdAsync(string userId);
-    Task<IEnumerable<IdentityError>> AddAsync(UserCreateDto userDto);
-    // Task<ApplicationUser> UpdateAsync(ApplicationUser userDto);
-    Task<bool> Exists(string id);
-    Task UpdateWithDetailsAsync(string id, UserUpdateDto userUpdateDto);
-}
 
 public class UserRepository : IUserRepository
 {

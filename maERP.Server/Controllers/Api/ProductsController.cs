@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using maERP.Shared.Dtos.Product;
 using maERP.Server.Models;
-using maERP.Server.Repository;
 using maERP.Shared.Models;
 using maERP.Shared.Dtos;
+using maERP.Server.Contracts;
 
 namespace maERP.Server.Controllers.Api;
 

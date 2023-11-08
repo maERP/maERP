@@ -1,15 +1,8 @@
-﻿#nullable disable
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using maERP.Server.Models;
 
 namespace maERP.Server.Repository;
-
-public interface IProductSalesChannelRepository : IGenericRepository<ProductSalesChannel>
-{
-    Task<ProductSalesChannel> getByRemoteProductIdAsync(int productId, int salesChannelId = 0);
-}
 
 public class ProductSalesChannelRepository : GenericRepository<ProductSalesChannel>, IProductSalesChannelRepository
 {

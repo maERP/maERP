@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace maERP.Server.Models;
 
-public class ProductSalesChannel : ABaseModel
+public class ProductSalesChannel : BaseModel
 {
     public SalesChannel SalesChannel { get; set; } = new();
 

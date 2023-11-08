@@ -124,7 +124,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        foreach (var entry in base.ChangeTracker.Entries<ABaseModel>()
+        foreach (var entry in base.ChangeTracker.Entries<BaseModel>()
             .Where(q => q.State == EntityState.Added || q.State == EntityState.Modified))
         {
             entry.Entity.DateModified = DateTime.UtcNow;

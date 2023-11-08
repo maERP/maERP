@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using maERP.Server.Repository;
 using maERP.Shared.Dtos.Warehouse;
+using maERP.Server.Contracts;
 
 namespace maERP.Server.Controllers.Api;
 
