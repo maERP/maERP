@@ -23,48 +23,48 @@ public class AutoMapperConfig : Profile
         CreateMap<ApplicationUser, UserListDto>().ReverseMap();
         CreateMap<ApplicationUser, UserUpdateDto>().ReverseMap();
 
-        CreateMap<AReferenceDto, Customer>();
+        CreateMap<BaseDto, Customer>();
         CreateMap<Customer, CustomerCreateDto>().ReverseMap();
         CreateMap<Customer, CustomerListDto>().ReverseMap();
         CreateMap<Customer, CustomerUpdateDto>().ReverseMap();
 
-        CreateMap<AReferenceDto, Order>();
+        CreateMap<BaseDto, Order>();
         CreateMap<Order, OrderCreateDto>().ReverseMap();
         CreateMap<Order, OrderDetailDto>().ReverseMap();
         CreateMap<Order, OrderListDto>().ReverseMap();
         CreateMap<Order, OrderUpdateDto>().ReverseMap();
 
-        CreateMap<AReferenceDto, Product>();
+        CreateMap<BaseDto, Product>();
         CreateMap<Product, ProductCreateDto>().ReverseMap();
         CreateMap<Product, ProductDetailDto>().ReverseMap();
         CreateMap<Product, ProductListDto>().ReverseMap();
         CreateMap<Product, ProductUpdateDto>().ReverseMap();
 
-		CreateMap<AReferenceDto, ProductSalesChannel>();
+		CreateMap<BaseDto, ProductSalesChannel>();
 		CreateMap<ProductSalesChannel, ProductSalesChannelCreateDto>().ReverseMap();
 		CreateMap<ProductSalesChannel, ProductSalesChannelDetailDto>().ReverseMap();
 		CreateMap<ProductSalesChannel, ProductSalesChannelListDto>().ReverseMap();
 		CreateMap<ProductSalesChannel, ProductSalesChannelUpdateDto>().ReverseMap();
 
-        CreateMap<AReferenceDto, SalesChannel>();
+        CreateMap<BaseDto, SalesChannel>();
         CreateMap<SalesChannel, SalesChannelCreateDto>().ReverseMap();
 		CreateMap<SalesChannel, SalesChannelDetailDto>().ReverseMap();
 		CreateMap<SalesChannel, SalesChannelListDto>().ReverseMap();
 		CreateMap<SalesChannel, SalesChannelUpdateDto>().ReverseMap();
 
-        CreateMap<AReferenceDto, ShippingProvider>();
+        CreateMap<BaseDto, ShippingProvider>();
         CreateMap<ShippingProvider, ShippingProviderCreateDto>().ReverseMap();
         CreateMap<ShippingProvider, ShippingProviderDetailDto>().ReverseMap();
         CreateMap<ShippingProvider, ShippingProviderListDto>().ReverseMap();
         CreateMap<ShippingProvider, ShippingProviderUpdateDto>().ReverseMap();
 
-        CreateMap<AReferenceDto, TaxClass>();
+        CreateMap<BaseDto, TaxClass>();
         CreateMap<TaxClass, TaxClassCreateDto>().ReverseMap();
         CreateMap<TaxClass, TaxClassDetailDto>().ReverseMap();
 		CreateMap<TaxClass, TaxClassListDto>().ReverseMap();
 		CreateMap<TaxClass, TaxClassUpdateDto>().ReverseMap();
 
-        CreateMap<AReferenceDto, Warehouse>();
+        CreateMap<BaseDto, Warehouse>();
         CreateMap<Warehouse, WarehouseCreateDto>().ReverseMap();
         CreateMap<Warehouse, WarehouseDetailDto>().ReverseMap();
 		CreateMap<Warehouse, WarehouseListDto>().ReverseMap();

@@ -1,6 +1,6 @@
 ﻿using maERP.Server.Models;
 
-namespace maERP.Server.Repository;
+namespace maERP.Server.Contracts;
 
 public interface ITaxClassRepository : IGenericRepository<TaxClass>
 {

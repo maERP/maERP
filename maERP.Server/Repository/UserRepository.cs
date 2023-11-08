@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using AutoMapper;
+using maERP.Server.Contracts;
 using maERP.Shared.Dtos.User;
 using maERP.Server.Models;
 using Microsoft.EntityFrameworkCore;

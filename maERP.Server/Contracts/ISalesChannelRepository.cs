@@ -1,7 +1,7 @@
 ﻿using maERP.Server.Models;
 using maERP.Shared.Dtos.SalesChannel;
 
-namespace maERP.Server.Repository;
+namespace maERP.Server.Contracts;
 
 public interface ISalesChannelRepository : IGenericRepository<SalesChannel>
 {

@@ -1,4 +1,4 @@
-﻿namespace maERP.Server.Repository;
+﻿namespace maERP.Server.Contracts;
 
 public interface IGenericRepository<T> where T : class
 {

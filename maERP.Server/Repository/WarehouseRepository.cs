@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using maERP.Server.Contracts;
 using maERP.Server.Models;
 
 namespace maERP.Server.Repository;

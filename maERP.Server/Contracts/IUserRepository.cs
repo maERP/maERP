@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using maERP.Shared.Dtos.User;
 
-namespace maERP.Server.Repository;
+namespace maERP.Server.Contracts;
 
 public interface IUserRepository
 {
