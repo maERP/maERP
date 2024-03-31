@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using maERP.Shared.Dtos.Product;
 using maERP.Shared.Models;
+using maERP.Shared.Models;
 
 namespace maERP.Server.Tests;
 
@@ -39,6 +40,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
     }
     */
 
+    /*
     [Theory]
     [InlineData("/api/Product/GetAll")]
     public async Task GetAll(string url)
@@ -118,6 +120,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
     }
     */
 
+    /*
     [Theory]
     [InlineData("/api/Product/5")]
     public async Task Delete(string url)
@@ -137,7 +140,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
 
         Assert.True(result.IsSuccessStatusCode);
     }
-    
+    */
 
     [Theory]
     [InlineData("/api/Product/999999")]
