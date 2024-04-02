@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using maERP.Shared.Dtos.Product;
-using maERP.Server.Models;
+using maERP.Shared.Models.Database;
 using maERP.Shared.Models;
 using maERP.Shared.Dtos;
 using maERP.Server.Contracts;

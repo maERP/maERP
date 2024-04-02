@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using maERP.Shared.Models;
+using maERP.Shared.Models.Database;
 
 namespace maERP.Shared.Dtos.SalesChannel;
- 
+
 public class SalesChannelUpdateDto
 {
     [Required]

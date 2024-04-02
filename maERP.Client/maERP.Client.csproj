@@ -100,4 +100,7 @@
   <ItemGroup>
     <BundleResource Include="MauiResources\Images\dotnet_bot.svg" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.14" />
+  </ItemGroup>
 </Project>

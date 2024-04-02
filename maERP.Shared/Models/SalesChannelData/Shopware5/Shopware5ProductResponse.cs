@@ -1,4 +1,4 @@
-﻿namespace maERP.Shared.Models.SalesChannels.Shopware5.ProductResponse;
+﻿namespace maERP.Shared.Models.SalesChannelData.Shopware5;
 
 public class Shopware5ProductResponse
 {

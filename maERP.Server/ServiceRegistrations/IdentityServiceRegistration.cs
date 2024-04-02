@@ -2,7 +2,8 @@
 
 using System.Text;
 using maERP.Server.Contracts;
-using maERP.Server.Models;
+using maERP.Server.Services;
+using maERP.Shared.Models.Database;
 using maERP.Shared.Models.Identity;
 using maERP.Server.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

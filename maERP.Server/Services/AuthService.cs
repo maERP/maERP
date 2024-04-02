@@ -5,7 +5,8 @@ using maERP.Server.Contracts;
 using maERP.Shared.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using maERP.Server.Models;
+using maERP.Server.Services;
+using maERP.Shared.Models.Database;
 using Microsoft.IdentityModel.Tokens;
 
 namespace maERP.Server.Services;

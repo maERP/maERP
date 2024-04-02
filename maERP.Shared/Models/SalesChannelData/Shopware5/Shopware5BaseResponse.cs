@@ -1,6 +1,8 @@
 ﻿#nullable disable
 
-namespace maERP.Shared.Models.SalesChannels.Shopware5;
+using maERP;
+
+namespace maERP.Shared.Models.SalesChannelData.Shopware5;
 
 public class Shopware5Response<T> where T : class
 {

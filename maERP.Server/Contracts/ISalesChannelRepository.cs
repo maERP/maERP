@@ -1,4 +1,4 @@
-﻿using maERP.Server.Models;
+﻿using maERP.Shared.Models.Database;
 using maERP.Shared.Dtos.SalesChannel;
 
 namespace maERP.Server.Contracts;

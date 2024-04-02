@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace maERP.Shared.Models;
+namespace maERP.Shared.Models.Database;
 
 public enum SalesChannelType
 {

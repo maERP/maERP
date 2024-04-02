@@ -114,7 +114,7 @@ public class Theme
                     LineHeight = 1.6,
                     LetterSpacing = ".0075em"
                 },
-                Button = new Button
+                Button = new MudBlazor.Button
                 {
                     FontSize = ".8125rem",
                     FontWeight = 500,

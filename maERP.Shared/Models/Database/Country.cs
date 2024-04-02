@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace maERP.Server.Models;
+namespace maERP.Shared.Models.Database;
 
 public class Country : BaseModel
 {

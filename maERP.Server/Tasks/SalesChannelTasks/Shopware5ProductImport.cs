@@ -3,10 +3,8 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using maERP.Server.Contracts;
-using maERP.Server.Models;
-using maERP.Shared.Models;
-using maERP.Shared.Models.SalesChannels.Shopware5;
-using maERP.Shared.Models.SalesChannels.Shopware5.ProductResponse;
+using maERP.Shared.Models.Database;
+using maERP.Shared.Models.SalesChannelData.Shopware5;
 
 namespace maERP.Server.Tasks.SalesChannelTasks;
 

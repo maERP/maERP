@@ -3,7 +3,8 @@
 using maERP.Server;
 using maERP.Server.Configurations;
 using maERP.Server.Middleware;
-using maERP.Server.Models;
+using maERP.Shared.Models.Database;
+using maERP.Server.Services;
 using maERP.Server.ServiceRegistrations;
 using maERP.Server.Repository;
 

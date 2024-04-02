@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Server.Contracts;
-using maERP.Server.Models;
+using maERP.Server.Services;
+using maERP.Shared.Models.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Server.Repository;

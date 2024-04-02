@@ -4,10 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using maERP.Server.Configurations.Seeds;
-using maERP.Shared.Models;
-using maERP.Shared.Dtos.User;
+using maERP.Shared.Models.Database;
 
-namespace maERP.Server.Models;
+namespace maERP.Server.Services;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {

@@ -4,7 +4,7 @@ using System.Net.Mail;
 using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace maERP.Server.Models;
+namespace maERP.Shared.Models.Database;
 
 [Index(nameof(Sku), IsUnique = true)]
 public class Product : BaseModel

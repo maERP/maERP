@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace maERP.Server.Models;
+namespace maERP.Shared.Models.Database;
 
 public class ApplicationUser : IdentityUser
 {

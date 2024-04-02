@@ -46,7 +46,6 @@
     <Folder Include="Repository\SalesChannelRepositories\" />
     <Folder Include="wwwroot\lib\" />
     <Folder Include="Controllers\Web\" />
-    <Folder Include="Models\SalesChannelData\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
@@ -82,8 +81,5 @@
     <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Models\SalesChannelData\" />
   </ItemGroup>
 </Project>

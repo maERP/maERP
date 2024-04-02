@@ -1,6 +1,6 @@
-﻿using maERP.Server.Models;
+﻿using maERP.Shared.Models.Database;
 
-namespace maERP.Server.Models;
+namespace maERP.Shared.Models.Database;
 
 public class Setting : BaseModel
 {

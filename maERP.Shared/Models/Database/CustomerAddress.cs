@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
 
-namespace maERP.Server.Models;
+namespace maERP.Shared.Models.Database;
 
 public class CustomerAddress : BaseModel
 {

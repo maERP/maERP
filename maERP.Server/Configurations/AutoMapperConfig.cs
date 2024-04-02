@@ -10,7 +10,7 @@ using maERP.Shared.Dtos.TaxClass;
 using maERP.Shared.Dtos.Warehouse;
 using maERP.Shared.Models;
 using maERP.Shared.Dtos.ShippingProvider;
-using maERP.Server.Models;
+using maERP.Shared.Models.Database;
 
 namespace maERP.Server.Configurations;
 

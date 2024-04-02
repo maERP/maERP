@@ -29,6 +29,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.3" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.14" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.0" />
     <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
     <PackageReference Include="MudBlazor" Version="6.19.1" />
@@ -43,7 +44,6 @@
     <Folder Include="Dtos\TaxClass\" />
     <Folder Include="Dtos\User\" />
     <Folder Include="Dtos\Warehouse\" />
-    <Folder Include="Models\" />
     <Folder Include="Providers\" />
     <Folder Include="Shared\" />
     <Folder Include="Contracts\" />

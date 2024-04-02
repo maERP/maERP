@@ -1,6 +1,4 @@
-﻿using maERP.Shared.Models;
-
-namespace maERP.Server.Models;
+﻿namespace maERP.Shared.Models.Database;
 
 public class SalesChannel : BaseModel
 {

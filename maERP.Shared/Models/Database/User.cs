@@ -1,4 +1,4 @@
-namespace maERP.Server.Models;
+namespace maERP.Shared.Models.Database;
 
 public class User
 {
