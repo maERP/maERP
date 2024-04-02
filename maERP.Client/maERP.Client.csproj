@@ -86,12 +86,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
-    <PackageReference Include="MudBlazor" Version="6.19.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +95,11 @@
     <BundleResource Include="MauiResources\Images\dotnet_bot.svg" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.14" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
+    <PackageReference Include="MudBlazor" Version="6.19.1" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.14" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.14" />    
   </ItemGroup>
 </Project>

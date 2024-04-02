@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
-using maERP.Server.Models;
+using maERP.Server.Services;
 
 namespace maERP.Server.Tests;
 

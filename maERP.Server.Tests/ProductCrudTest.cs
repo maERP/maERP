@@ -1,8 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using maERP.Shared.Dtos.Product;
-using maERP.Shared.Models;
-using maERP.Shared.Models;
+using maERP.Shared.Models.Database;
 
 namespace maERP.Server.Tests;
 
@@ -15,20 +14,19 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         _webApplicationFactory = webApplicationFactory;
     }
 
-    /*
     [Theory]
-    [InlineData("/api/Product")]
+    [InlineData("/api/Products")]
     public async Task Create(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        ProductCreateDto product = new ProductCreateDto
+        var product = new ProductCreateDto
         {
             Name = "Testprodukt 1 created",
             Sku = "1001",
             Price = 100,
-            TaxClass = new Shared.Dtos.ReferenceDto { Id = 1 }
+            TaxClass = new Shared.Dtos.BaseDto { Id = 1 }
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, product);
@@ -38,11 +36,9 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         Assert.True(result.IsSuccessStatusCode);
         Assert.True(resultContent != null && resultContent.Id != default);
     }
-    */
 
-    /*
     [Theory]
-    [InlineData("/api/Product/GetAll")]
+    [InlineData("/api/Products/GetAll")]
     public async Task GetAll(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
@@ -59,17 +55,12 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
 
         ICollection<ProductListDto>? result = await httpClient.GetFromJsonAsync<ICollection<ProductListDto>>(url);
 
-        foreach(ProductListDto test in result)
-        {
-            Console.WriteLine("DEBUG: " + test.Name);
-        }
-
         Assert.NotNull(result);
-        Assert.True(result.Count == 1);
+        Assert.Equal(result?.Count, 1);
     }
 
     [Theory]
-    [InlineData("/api/Product/3")]
+    [InlineData("/api/Products/3")]
     public async Task GetDetail(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
@@ -89,9 +80,8 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         Assert.True(result.Name.Length > 0);
     }
 
-    /*
     [Theory]
-    [InlineData("/api/Product/4")]
+    [InlineData("/api/Products/4")]
     public async Task Update(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
@@ -106,7 +96,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
                 }
         });
 
-        ProductUpdateDto product = new ProductUpdateDto
+        var product = new ProductUpdateDto
         {
             Name = "Testprodukt 3 updated",
         };
@@ -118,11 +108,9 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         Assert.True(result.IsSuccessStatusCode);
         Assert.True(resultContent != null && resultContent.Name == product.Name);
     }
-    */
 
-    /*
     [Theory]
-    [InlineData("/api/Product/5")]
+    [InlineData("/api/Products/5")]
     public async Task Delete(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
@@ -138,12 +126,11 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
 
         HttpResponseMessage result = await httpClient.DeleteAsync(url);
 
-        Assert.True(result.IsSuccessStatusCode);
+        Assert.Equal(result?.StatusCode, HttpStatusCode.NoContent);
     }
-    */
 
     [Theory]
-    [InlineData("/api/Product/999999")]
+    [InlineData("/api/Products/999999")]
     public async Task NotExist(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
@@ -151,6 +138,6 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
 
         HttpResponseMessage result = await httpClient.GetAsync(url);
 
-        Assert.True(result.StatusCode == HttpStatusCode.NotFound);
+        Assert.Equal(result?.StatusCode, HttpStatusCode.NotFound);
     }    
 }
