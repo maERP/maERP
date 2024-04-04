@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
-using maERP.Shared.Dtos.User;
+﻿using maERP.Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Application.Contracts.Persistence;
 
 public interface IUserRepository
 {
-    Task<List<UserListDto>> GetAllAsync();
-    Task<UserDetailDto> GetByIdAsync(string userId);
-    Task<IEnumerable<IdentityError>> AddAsync(UserCreateDto userDto);
+    Task<List<ApplicationUser>> GetAllAsync();
+    Task<ApplicationUser> GetByIdAsync(string userId);
+    Task<IEnumerable<IdentityError>> AddAsync(ApplicationUser userDto);
     // Task<ApplicationUser> UpdateAsync(ApplicationUser userDto);
     Task<bool> Exists(string id);
-    Task UpdateWithDetailsAsync(string id, UserUpdateDto userUpdateDto);
+    Task UpdateWithDetailsAsync(string id, ApplicationUser userUpdateDto);
 }

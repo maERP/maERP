@@ -1,4 +1,4 @@
-using maERP.Shared.Models.Identity;
+using maERP.Application.Models.Identity;
 
 namespace maERP.Application.Contracts.Persistence;
 

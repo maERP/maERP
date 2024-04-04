@@ -1,16 +1,15 @@
 ﻿#nullable disable
 
 using maERP.Server;
-using maERP.Server.Configurations;
 using maERP.Server.Middleware;
-using maERP.Shared.Models.Database;
 using maERP.Server.Services;
 using maERP.Server.ServiceRegistrations;
-using maERP.Server.Repository;
 
 using Serilog;
 using Microsoft.EntityFrameworkCore;
-using maERP.Server.Contracts;
+using maERP.Application;
+using maERP.Infrastructure;
+using maERP.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +73,10 @@ builder.Services.AddResponseCaching(options =>
     options.UseCaseSensitivePaths = true;
 });
 
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddPersistenceServices(builder.Configuration);
+
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
@@ -92,11 +95,12 @@ builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.OrderDown
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

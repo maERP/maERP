@@ -36,20 +36,8 @@
     <PackageReference Include="FluentValidation" Version="11.9.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
   </ItemGroup>
-    <ItemGroup>  
-    <Folder Include="Dtos\" />
-    <Folder Include="Dtos\Order\" />
-    <Folder Include="Dtos\Product\" />
-    <Folder Include="Dtos\SalesChannel\" />
-    <Folder Include="Dtos\TaxClass\" />
-    <Folder Include="Dtos\User\" />
-    <Folder Include="Dtos\Warehouse\" />
-    <Folder Include="Providers\" />
+    <ItemGroup>
     <Folder Include="Shared\" />
-    <Folder Include="Contracts\" />
-    <Folder Include="Dtos\Auth\" />
-    <Folder Include="Contracts\" />
-    <Folder Include="Dtos\Auth\" />
     <Folder Include="Pages\Customers\" />
     <Folder Include="Pages\Users\" />
     <Folder Include="Pages\Orders\" />
@@ -58,7 +46,6 @@
     <Folder Include="Pages\TaxClasses\" />
     <Folder Include="Pages\Warehouses\" />
     <Folder Include="Pages\Auth\" />
-    <Folder Include="Models\Identity\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Models\Identity\" />

@@ -22,6 +22,8 @@ public class CreateWarehouseCommandValidator : AbstractValidator<CreateWarehouse
 
     private async Task<bool> WarehouseUnique(CreateWarehouseCommand command, CancellationToken cancellationToken)
     {
-        return _warehouseRepository.Exists()
+        // TODO: Implement unique warehouse name validation
+        await Task.CompletedTask;
+        return true;
     }
 }

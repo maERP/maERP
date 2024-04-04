@@ -1,70 +1,67 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
+using maERP.Application.Features.Warehouse.Queries.GetAllWarehouses;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
-using maERP.Shared.Dtos.Warehouse;
-using maERP.Server.Contracts;
 
 namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class WarehousesController : ControllerBase
 {
-    private readonly IWarehouseRepository _repository;
+    private readonly IMediator _mediator;
 
-    public WarehousesController(IWarehouseRepository repository)
+    public WarehousesController(IMediator mediator)
     {
-        _repository = repository;
+        _mediator = mediator;
     }
 
-    // GET: api/Warehouses
-    [HttpGet("GetAll")]
-    // GET: api/Warehouses?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
-    [EnableQuery] 
-    public async Task<ActionResult<IEnumerable<WarehouseListDto>>> GetWarehouse()
+    // GET: api/<WarehousesController>
+    [HttpGet]
+    public async Task<List<WarehouseListDto>> Get()
     {
-        var warehouse = await _repository.GetAllAsync<WarehouseListDto>();
-        return Ok(warehouse);
+        var warehouses = await _mediator.Send(new GetAllWarehousesQuery());
+        return warehouses;
     }
 
-    // GET: api/Warehouses/5
+    // GET api/<WarehousesController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<WarehouseDetailDto>> GetWarehouse(int id)
+    public string Get(int id)
     {
-        var warehouse = await _repository.GetByIdAsync(id);
-        return Ok(warehouse);
+        return "value";
     }
 
-    // PUT: api/Warehouses/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutWarehouse(int id, [FromBody] WarehouseUpdateDto taxClassUpdateDto)
+    // POST api/<WarehousesController>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> Post(CreateWarehouseCommand warehouseCommand)
     {
-        if (await _repository.Exists(id) == true)
-        {
-            await _repository.UpdateAsync<WarehouseUpdateDto>(id, taxClassUpdateDto);
-        }
-        else {
-            return NotFound();
-        }
+        var response = await _mediator.Send(warehouseCommand);
+        return CreatedAtAction(nameof(Get), new { id = response });
+    }
 
+    // PUT api/<WarehousesController>/5
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Put(int id, [FromBody] string value)
+    {
+        // await _mediator.Send(new UpdateWarehouseCommand { Id = id, Name = value });
         return NoContent();
     }
 
-    // POST: api/Warehouses
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPost]
-    public async Task<ActionResult<WarehouseDetailDto>> PostWarehouse(WarehouseCreateDto warehouseDto)
-    {
-        var warehouse = await _repository.AddAsync<WarehouseCreateDto, WarehouseDetailDto>(warehouseDto);
-        return CreatedAtAction(nameof(GetWarehouse), new { id = warehouse.Id }, warehouse);
-    }
-
-    // DELETE: api/Warehouses/5
+    // DELETE api/<WarehousesController>/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteWarehouse(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Delete(int id)
     {
-        await _repository.DeleteAsync(id);
+        //var command = new DeleteWarehouseCommand { Id = id };
+        // await _mediator.Send(command);
         return NoContent();
     }
 }

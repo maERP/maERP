@@ -20,11 +20,6 @@
     <Description>
       OpenSource, self-hosted, client/server-based ERP system with multiplatform GUI written in CSharp
     </Description>
-    <IsPackable>true</IsPackable>
-    <PackageReleaseNotes>
-      Work in Progress.
-    </PackageReleaseNotes>
-    <PackageOutputPath>packages</PackageOutputPath>
     <Platforms>AnyCPU;x64</Platforms>
     <PackageId>maERP</PackageId>
     <Configurations>Debug;Release</Configurations>
@@ -40,10 +35,6 @@
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Exceptions\" />
-    <Folder Include="Middleware\" />
-    <Folder Include="Repository\SalesChannelRepositories\" />
     <Folder Include="wwwroot\lib\" />
     <Folder Include="Controllers\Web\" />
   </ItemGroup>
@@ -78,8 +69,8 @@
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
+    <ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
+    <ProjectReference Include="..\maERP.Infrastructure\maERP.Infrastructure.csproj" />
+    <ProjectReference Include="..\maERP.Persistence\maERP.Persistence.csproj" />
   </ItemGroup>
 </Project>

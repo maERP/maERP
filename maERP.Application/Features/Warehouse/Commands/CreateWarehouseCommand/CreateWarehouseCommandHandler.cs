@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using MediatR;
 
@@ -6,13 +7,18 @@ namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
 
 public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseCommand, int>
 {
-    private readonly IWarehouseRepository _warehouseRepository;
     private readonly IMapper _mapper;
+    private readonly IAppLogger<CreateWarehouseCommandHandler> _logger;
+    private readonly IWarehouseRepository _warehouseRepository;
 
-    public CreateWarehouseCommandHandler(IWarehouseRepository warehouseRepository, IMapper mapper)
+
+    public CreateWarehouseCommandHandler(IMapper mapper,
+        IAppLogger<CreateWarehouseCommandHandler> logger,
+        IWarehouseRepository warehouseRepository)
     {
-        _warehouseRepository = warehouseRepository;
         _mapper = mapper;
+        _logger = logger;
+        _warehouseRepository = warehouseRepository;
     }
 
     public async Task<int> Handle(CreateWarehouseCommand request, CancellationToken cancellationToken)
@@ -23,6 +29,7 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
 
         if(!validationResult.Errors.Any())
         {
+            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateWarehouseCommand), request.Name);
             throw new Exceptions.ValidationException("Invalid Warehouse", validationResult);
         }
 
@@ -30,7 +37,7 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
         var warehouseToCreate = _mapper.Map<Domain.Warehouse>(request);
 
         // add to database
-        await _warehouseRepository.AddAsync(warehouseToCreate);
+        await _warehouseRepository.CreateAsync(warehouseToCreate);
 
         // return record id
         return warehouseToCreate.Id;
