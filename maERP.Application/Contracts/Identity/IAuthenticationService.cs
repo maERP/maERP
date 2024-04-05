@@ -1,4 +1,4 @@
-namespace maERP.Shared.Contracts;
+namespace maERP.Application.Contracts.Identity;
 
 public interface IAuthenticationService
 {

@@ -1,7 +1,11 @@
-﻿using maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
-using maERP.Application.Features.Warehouse.Queries.GetAllWarehouses;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using maERP.Application.Dtos.Warehouse;
+using maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
+using maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
+using maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
+using maERP.Application.Features.Warehouse.Queries.GetAllWarehousesQuery;
+using maERP.Application.Features.Warehouse.Queries.GetWarehouseQuery;
 
 namespace maERP.Server.Controllers.Api;
 
@@ -18,7 +22,7 @@ public class WarehousesController : ControllerBase
 
     // GET: api/<WarehousesController>
     [HttpGet]
-    public async Task<List<WarehouseListDto>> Get()
+    public async Task<List<WarehouseListDto>> GetAll()
     {
         var warehouses = await _mediator.Send(new GetAllWarehousesQuery());
         return warehouses;
@@ -26,16 +30,16 @@ public class WarehousesController : ControllerBase
 
     // GET api/<WarehousesController>/5
     [HttpGet("{id}")]
-    public string Get(int id)
+    public async Task<WarehouseDetailDto> GetDetails(int id)
     {
-        return "value";
+        return await _mediator.Send(new GetWarehouseQuery { Id = id });
     }
 
     // POST api/<WarehousesController>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Post(CreateWarehouseCommand warehouseCommand)
+    public async Task<ActionResult> Post(CreateTaxClassCommand warehouseCommand)
     {
         var response = await _mediator.Send(warehouseCommand);
         return CreatedAtAction(nameof(Get), new { id = response });
@@ -49,7 +53,7 @@ public class WarehousesController : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Put(int id, [FromBody] string value)
     {
-        // await _mediator.Send(new UpdateWarehouseCommand { Id = id, Name = value });
+        await _mediator.Send(new UpdateTaxClassCommand { Id = id, Name = value });
         return NoContent();
     }
 
@@ -60,8 +64,8 @@ public class WarehousesController : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(int id)
     {
-        //var command = new DeleteWarehouseCommand { Id = id };
-        // await _mediator.Send(command);
+        var command = new DeleteTaxClassCommand { Id = id };
+        await _mediator.Send(command);
         return NoContent();
     }
 }

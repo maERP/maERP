@@ -1,4 +1,4 @@
-﻿namespace maERP.Shared.Dtos;
+﻿namespace maERP.Application.Dtos;
 
 public class BaseDto
 {

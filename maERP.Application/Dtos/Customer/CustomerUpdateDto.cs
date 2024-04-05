@@ -1,4 +1,4 @@
-﻿namespace maERP.Shared.Dtos.Customer;
+﻿namespace maERP.Application.Dtos.Customer;
 
 public class CustomerUpdateDto
 {

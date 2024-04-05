@@ -1,6 +1,6 @@
-﻿using maERP.Shared.Dtos.ProductSalesChannel;
+﻿using maERP.Application.Dtos.ProductSalesChannel;
 
-namespace maERP.Shared.Dtos.Product;
+namespace maERP.Application.Dtos.Product;
 
 public class ProductDetailDto
 {

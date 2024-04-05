@@ -1,4 +1,4 @@
-﻿namespace maERP.Shared.Dtos.ShippingProvider;
+﻿namespace maERP.Application.Dtos.ShippingProvider;
 
 public class ShippingProviderUpdateDto
 {

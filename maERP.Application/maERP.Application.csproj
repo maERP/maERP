@@ -17,4 +17,13 @@
     <ProjectReference Include="..\maERP.Domain\maERP.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Auth\Commands\" />
+    <Folder Include="Features\Customer\" />
+    <Folder Include="Features\User\" />
+    <Folder Include="Features\SalesChannel\" />
+    <Folder Include="Features\Product\" />
+    <Folder Include="Features\Order\" />
+  </ItemGroup>
+
 </Project>

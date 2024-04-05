@@ -1,6 +1,6 @@
-﻿using maERP.Shared.Dtos.TaxClass;
+﻿using maERP.Application.Dtos.TaxClass;
 
-namespace maERP.Shared.Dtos.Product;
+namespace maERP.Application.Dtos.Product;
 
 public class ProductListDto
 {

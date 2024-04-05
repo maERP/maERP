@@ -2,10 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using maERP.Shared.Models.Database;
-using maERP.Shared.Dtos.Order;
-using maERP.Shared.Dtos;
-using maERP.Server.Contracts;
+using maERP.Application.Dtos.Order;
 
 namespace maERP.Server.Controllers.Api;
 
@@ -14,6 +11,7 @@ namespace maERP.Server.Controllers.Api;
 [Authorize]
 public class OrdersController : ControllerBase
 {
+    /*
     private readonly IMapper _mapper;
     private readonly IOrderRepository _repository;
 
@@ -76,4 +74,5 @@ public class OrdersController : ControllerBase
     {
         return await _repository.Exists(id);
     }
+    */
 }

@@ -1,72 +1,71 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
-using maERP.Shared.Dtos.TaxClass;
-using maERP.Shared.Dtos.Warehouse;
-using maERP.Server.Contracts;
+using maERP.Application.Dtos.TaxClass;
+using maERP.Application.Features.TaxClass.Commands.CreateTaxClassCommand;
+using maERP.Application.Features.TaxClass.Commands.DeleteTaxClassCommand;
+using maERP.Application.Features.TaxClass.Commands.UpdateTaxClassCommand;
+using maERP.Application.Features.TaxClass.Queries.GetAllTaxClassesQuery;
+using maERP.Application.Features.TaxClass.Queries.GetTaxClassQuery;
 
 namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
-public class TaxClassesController : ControllerBase  
+public class TaxClassController : ControllerBase
 {
-    private readonly ITaxClassRepository _repository;
+    private readonly IMediator _mediator;
 
-    public TaxClassesController(ITaxClassRepository repository)
+    public TaxClassController(IMediator mediator)
     {
-        _repository = repository;
+        _mediator = mediator;
     }
 
-    // GET: api/TaxClasses
-    [HttpGet("GetAll")]
-    // GET: api/TaxClasses?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
-    [EnableQuery]
-    public async Task<ActionResult<IEnumerable<TaxClassListDto>>> GetTaxClass()
+    // GET: api/<TaxClassesController>
+    [HttpGet]
+    public async Task<List<TaxClassListDto>> GetAll()
     {
-        var result = await _repository.GetAllAsync<TaxClassListDto>();
-        return Ok(result);
+        var taxClasses = await _mediator.Send(new GetAllTaxClassesQuery());
+        return taxClasses;
     }
 
-    // GET: api/TaxClasses/5
+    // GET api/TaxClassesController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<TaxClassDetailDto>> GetTaxClass(int id)
+    public async Task<TaxClassDetailDto> GetDetails(int id)
     {
-        var result = await _repository.GetByIdAsync(id);
-        return Ok(result);
+        return await _mediator.Send(new GetTaxClassQuery { Id = id });
     }
 
-    // PUT: api/TaxClasses/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutTaxClass(int id, [FromBody] TaxClassUpdateDto taxClassUpdateDto)
+    // POST api/<TaxClassesController>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> Post(CreateTaxClassesCommand taxClassCommand)
     {
-        if (await _repository.Exists(id) == true)
-        {
-            await _repository.UpdateAsync<TaxClassUpdateDto>(id, taxClassUpdateDto);
-        }
-        else
-        {
-            return NotFound();
-        }
+        var response = await _mediator.Send(taxClassCommand);
+        return CreatedAtAction(nameof(GetDetails), new { id = response });
+    }
 
+    // PUT api/<TaxClassesController>/5
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Put(int id, [FromBody] string value)
+    {
+        await _mediator.Send(new UpdateTaxClassesCommand { Id = id, Name = value });
         return NoContent();
     }
 
-    // POST: api/TaxClasses
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPost]
-    public async Task<ActionResult<TaxClassDetailDto>> PostTaxClass(TaxClassCreateDto taxClassCreateDto)
-    {
-        var taxClass = await _repository.AddAsync<TaxClassCreateDto, TaxClassDetailDto>(taxClassCreateDto);
-        return CreatedAtAction(nameof(GetTaxClass), new { id = taxClass.Id }, taxClass);
-    }
-
-    // DELETE: api/TaxClasses/5
+    // DELETE api/<TaxClassesController>/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteTaxClass(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Delete(int id)
     {
-        await _repository.DeleteAsync(id);
+        var command = new DeleteTaxClassesCommand { Id = id };
+        await _mediator.Send(command);
         return NoContent();
     }
 }

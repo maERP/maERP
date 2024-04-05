@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
-namespace maERP.Shared.Dtos.Order;
+namespace maERP.Application.Dtos.Order;
 
 public class OrderListDto
 {

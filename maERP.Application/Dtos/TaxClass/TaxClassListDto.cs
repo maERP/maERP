@@ -1,4 +1,4 @@
-﻿namespace maERP.Shared.Dtos.TaxClass;
+﻿namespace maERP.Application.Dtos.TaxClass;
 
 public class TaxClassListDto
 {

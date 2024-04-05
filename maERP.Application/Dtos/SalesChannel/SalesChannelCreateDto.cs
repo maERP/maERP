@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace maERP.Shared.Dtos.SalesChannel;
- 
+namespace maERP.Application.Dtos.SalesChannel;
+
 public class SalesChannelCreateDto
 {
     [Required]

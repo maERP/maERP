@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using maERP.Domain;
 
-namespace maERP.Shared.Dtos.SalesChannel;
+namespace maERP.Application.Dtos.SalesChannel;
 
 public class SalesChannelUpdateDto
 {

@@ -1,6 +1,6 @@
 ﻿using maERP.Application.Models.Identity;
 
-namespace maERP.Shared.Contracts;
+namespace maERP.Application.Contracts.Identity;
 
 public interface IApiDataProvider<T> where T : class
 {

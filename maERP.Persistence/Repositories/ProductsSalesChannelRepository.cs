@@ -1,14 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using maERP.Server.Contracts;
-using maERP.Shared.Models.Database;
-using maERP.Server.Services;
+﻿using maERP.Application.Contracts.Persistence;
+using maERP.Domain;
+using maERP.Persistence.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.Repositories;
 
 public class ProductSalesChannelRepository : GenericRepository<ProductSalesChannel>, IProductSalesChannelRepository
 {
-    public ProductSalesChannelRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+    public ProductSalesChannelRepository(ApplicationDbContext context) : base(context)
     {
     }
 

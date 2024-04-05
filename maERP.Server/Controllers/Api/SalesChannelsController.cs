@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using maERP.Shared.Dtos.SalesChannel;
-using maERP.Shared.Models;
-using maERP.Shared.Dtos;
-using maERP.Shared.Dtos.Warehouse;
-using maERP.Shared.Pages.SalesChannels;
-using maERP.Server.Contracts;
+using maERP.Application.Dtos.SalesChannel;
 
 namespace maERP.Server.Controllers;
 
@@ -16,6 +10,7 @@ namespace maERP.Server.Controllers;
 [Authorize]
 public class SalesChannelsController : ControllerBase
 {
+    /*
     private readonly ISalesChannelRepository _repository;
 
     public SalesChannelsController(ISalesChannelRepository salesChannelRepository)
@@ -85,4 +80,5 @@ public class SalesChannelsController : ControllerBase
 
         return NoContent();
     }
+    */
 }

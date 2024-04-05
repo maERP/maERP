@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Dtos;
+using maERP.Application.Dtos.Warehouse;
 using MediatR;
 
-namespace maERP.Application.Features.Warehouse.Queries.GetAllWarehouses;
+namespace maERP.Application.Features.Warehouse.Queries.GetAllWarehousesQuery;
 
 public class GetAllWarehousesQueryHandler : IRequestHandler<GetAllWarehousesQuery, List<WarehouseListDto>>
 {

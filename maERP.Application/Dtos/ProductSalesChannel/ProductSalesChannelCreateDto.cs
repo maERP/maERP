@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using maERP.Shared.Dtos.Product;
-using maERP.Shared.Dtos.SalesChannel;
+using maERP.Application.Dtos.Product;
+using maERP.Application.Dtos.SalesChannel;
 
-namespace maERP.Shared.Dtos.ProductSalesChannel;
+namespace maERP.Application.Dtos.ProductSalesChannel;
 
 public class ProductSalesChannelCreateDto
 {

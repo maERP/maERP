@@ -1,4 +1,4 @@
-﻿using maERP.Shared.Models.Database;
+﻿using maERP.Domain;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 

@@ -2,10 +2,8 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using maERP.Shared.Dtos.User;
 using Asp.Versioning;
-using maERP.Server.Contracts;
+using maERP.Application.Dtos.User;
 
 namespace maERP.Server.Controllers;
 
@@ -17,6 +15,7 @@ namespace maERP.Server.Controllers;
 // [Authorize(Roles = "Administrator")]
 public class UsersController : ControllerBase
 {
+    /*
     private readonly IUserRepository _repository;
     private readonly ILogger _logger;
     private readonly IMapper _mapper;
@@ -108,7 +107,7 @@ public class UsersController : ControllerBase
         }
     }
     */
-
+    /*
     // PUT: api/SalesChannels/5
     [HttpPut("{id}")]
     public async Task<IActionResult> PutUser(string id, [FromBody] UserUpdateDto userUpdateDto)
@@ -124,4 +123,5 @@ public class UsersController : ControllerBase
 
         return NoContent();
     }
+    */
 }

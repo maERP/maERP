@@ -3,11 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using maERP.Shared.Dtos.Product;
-using maERP.Shared.Models.Database;
-using maERP.Shared.Models;
-using maERP.Shared.Dtos;
-using maERP.Server.Contracts;
+using maERP.Application.Dtos.Product;
 
 namespace maERP.Server.Controllers.Api;
 
@@ -16,6 +12,7 @@ namespace maERP.Server.Controllers.Api;
 [Authorize]
 public class ProductsController : ControllerBase
 {
+    /*
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
     private readonly IProductSalesChannelRepository _productSalesChannelRepository;
@@ -145,4 +142,5 @@ public class ProductsController : ControllerBase
     {
         return await _productRepository.Exists(id);
     }
+    */
 }

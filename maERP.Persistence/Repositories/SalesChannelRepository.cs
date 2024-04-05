@@ -1,21 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using maERP.Server.Contracts;
-using maERP.Server.Services;
-using maERP.Shared.Models.Database;
-using maERP.Shared.Dtos.SalesChannel;
-using maERP.Server.Exceptions;
+﻿using maERP.Domain;
+using maERP.Application.Contracts.Persistence;
+using maERP.Persistence.DatabaseContext;
+using maERP.Application.Dtos.SalesChannel;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.Repositories;
 
 public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesChannelRepository
 {
-    public SalesChannelRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+    public SalesChannelRepository(ApplicationDbContext context) : base(context)
     {
 
     }
 
-    public async Task<SalesChannelDetailDto> GetDetails(int id)
+    public async Task<SalesChannel> GetDetails(int id)
     {
         var salesChannel = await _context.SalesChannel
             .Include(s => s.Warehouse)
@@ -23,11 +21,10 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
 
         salesChannel.WarehouseId = salesChannel.Warehouse.Id;
 
-        var salesChannelDto = _mapper.Map<SalesChannelDetailDto>(salesChannel);
-
-        return salesChannelDto;
+        return salesChannel;
     }
 
+    /*
     public async Task<SalesChannelDetailDto> AddWithDetailsAsync(SalesChannelCreateDto salesChannelCreateDto)
     {
         var salesChannel = _mapper.Map<SalesChannel>(salesChannelCreateDto);
@@ -53,4 +50,5 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
         _context.Update(salesChannel);
         await _context.SaveChangesAsync();
     }
+    */
 }

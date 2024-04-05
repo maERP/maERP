@@ -1,7 +1,6 @@
 ﻿#nullable disable
 
-using maERP.Shared.Models.Database;
-using maERP.Server.Services;
+using maERP.Persistence.DatabaseContext;
 
 namespace maERP.Persistence.Repositories.SalesChannelRepositories;
 

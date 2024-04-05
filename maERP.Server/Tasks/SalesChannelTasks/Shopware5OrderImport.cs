@@ -2,9 +2,8 @@
 
 using System.Net.Http.Headers;
 using System.Text.Json;
-using maERP.Server.Contracts;
-using maERP.Server.Services;
-using maERP.Shared.Models.Database;
+using maERP.Application.Contracts.Persistence;
+using maERP.Domain;
 using maERP.Shared.Models.SalesChannelData.Shopware5;
 
 namespace maERP.Server.Tasks.SalesChannelTasks;
@@ -113,7 +112,7 @@ public class OrderDownloadTask : IHostedService
                                     RemoteOrderId = remoteOrder.id.ToString()
                                 };
 
-                                await orderRepository.AddAsync(localOrder);
+                                await orderRepository.CreateAsync(localOrder);
                             }
                             else
                             {

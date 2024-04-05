@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Features.Warehouse.Queries.GetAllWarehouses;
+using maERP.Application.Features.Warehouse.Queries.GetWarehouseQuery;
 using maERP.Application.MappingProfiles;
 using maERP.Application.UnitTests.Mocks;
 using Moq;

@@ -1,6 +1,7 @@
-﻿namespace maERP.Shared.Dtos.Warehouse;
+﻿namespace maERP.Application.Dtos.Warehouse;
 
 public class WarehouseUpdateDto
 {
-    public virtual string Name { get; set; } = string.Empty;
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
 }

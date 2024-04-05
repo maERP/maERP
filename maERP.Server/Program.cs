@@ -1,8 +1,6 @@
 ﻿#nullable disable
 
-using maERP.Server;
 using maERP.Server.Middleware;
-using maERP.Server.Services;
 using maERP.Server.ServiceRegistrations;
 
 using Serilog;
@@ -10,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using maERP.Application;
 using maERP.Infrastructure;
 using maERP.Persistence;
+using maERP.Persistence.DatabaseContext;
+using maERP.Application.Contracts.Persistence;
+using maERP.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,7 +62,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSwaggerServices();
 builder.Services.AddApiVersioningServices(builder.Configuration);
-builder.Services.AddIdentityServices(builder.Configuration);
+// builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>
@@ -77,7 +78,6 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddPersistenceServices(builder.Configuration);
 
-builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -87,7 +87,7 @@ builder.Services.AddScoped<IProductSalesChannelRepository, ProductSalesChannelRe
 builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+//builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 Console.WriteLine("Start background tasks...");
 builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.ProductDownloadTask>();

@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using maERP.Server.Contracts;
-using maERP.Shared.Models.Database;
-using maERP.Server.Services;
+using maERP.Application.Contracts.Persistence;
+using maERP.Domain;
+using maERP.Persistence.DatabaseContext;
 
 namespace maERP.Persistence.Repositories;
 
 public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
 {
-    public CustomerRepository(ApplicationDbContext context, IMapper mapper) : base(context, mapper)
+    public CustomerRepository(ApplicationDbContext context) : base(context)
     {
     }
 }

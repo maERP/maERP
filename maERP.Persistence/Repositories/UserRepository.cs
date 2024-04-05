@@ -1,42 +1,35 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using AutoMapper;
-using maERP.Server.Contracts;
-using maERP.Shared.Dtos.User;
-using maERP.Server.Services;
-using maERP.Shared.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using maERP.Application.Dtos.User;
+using maERP.Application.Contracts.Persistence;
+using maERP.Domain;
 
 namespace maERP.Persistence.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private readonly IMapper _mapper;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public UserRepository(IMapper mapper, UserManager<ApplicationUser> userManager)
+    public UserRepository(UserManager<ApplicationUser> userManager)
     {
-        _mapper = mapper;
         _userManager = userManager;
     }
 
-    public async Task<List<UserListDto>> GetAllAsync()
+    public async Task<List<ApplicationUser>> GetAllAsync()
     {
-        var users = await _userManager.Users.AsNoTracking().ToListAsync();
-        return _mapper.Map<List<UserListDto>>(users);
+        return await _userManager.Users.AsNoTracking().ToListAsync();
     }
 
-    public async Task<UserDetailDto> GetByIdAsync(string userId)
+    public async Task<ApplicationUser> GetByIdAsync(string userId)
     {
-        var user = await _userManager.Users
+        return await _userManager.Users
             .Where(x => x.Id == userId)
             .AsNoTracking()
             .FirstAsync<ApplicationUser>();
-
-        var userDto = _mapper.Map<UserDetailDto>(user);
-        return userDto;
     }
 
-    public async Task<IEnumerable<IdentityError>> AddAsync(UserCreateDto userCreateDto)
+    /*
+    public async Task<IEnumerable<IdentityError>> AddAsync(ApplicationUser userCreateDto)
     {
         var _user = _mapper.Map<ApplicationUser>(userCreateDto);
 
@@ -55,7 +48,7 @@ public class UserRepository : IUserRepository
 
         return result.Errors;
     }
-
+    */
     public async Task UpdateWithDetailsAsync(string userId, UserUpdateDto userUpdateDto)
     {
         var localUser = await _userManager.FindByIdAsync(userId);
@@ -76,7 +69,7 @@ public class UserRepository : IUserRepository
         }
         else
         {
-            throw new Exceptions.NotFoundException("User not found", userId);
+            throw new Application.Exceptions.NotFoundException("User not found", userId);
         }
     }
 

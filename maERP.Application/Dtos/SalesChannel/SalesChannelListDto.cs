@@ -1,5 +1,5 @@
-﻿namespace maERP.Shared.Dtos.SalesChannel;
- 
+﻿namespace maERP.Application.Dtos.SalesChannel;
+
 public class SalesChannelListDto
 {
     public int Id { get; set; }

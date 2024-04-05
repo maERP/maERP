@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using AutoMapper;
-using maERP.Server.Contracts;
-using maERP.Shared.Dtos.Customer;
+using maERP.Application.Dtos.Customer;
+using maERP.Application.Contracts.Persistence;
 
 namespace maERP.Server.Controllers.Api;
 
@@ -12,12 +11,11 @@ namespace maERP.Server.Controllers.Api;
 [Authorize]
 public class CustomersController : ControllerBase
 {
-    private readonly IMapper _mapper;
+    /*
     private readonly ICustomerRepository _repository;
 
-    public CustomersController(IMapper mapper, ICustomerRepository repository)
+    public CustomersController(ICustomerRepository repository)
     {
-        _mapper = mapper;
         _repository = repository;
     }
 
@@ -75,4 +73,5 @@ public class CustomersController : ControllerBase
     {
         return await _repository.Exists(id);
     }
+    */
 }

@@ -1,9 +1,7 @@
-﻿using maERP.Shared.Dtos.Warehouse;
-using System.ComponentModel.DataAnnotations;
+﻿using maERP.Application.Dtos.Warehouse;
 
+namespace maERP.Application.Dtos.SalesChannel;
 
-namespace maERP.Shared.Dtos.SalesChannel;
- 
 public class SalesChannelDetailDto
 {
     public int Id { get; set; }

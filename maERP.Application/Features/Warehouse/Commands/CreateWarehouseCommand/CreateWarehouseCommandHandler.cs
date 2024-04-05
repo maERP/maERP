@@ -5,15 +5,14 @@ using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
 
-public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseCommand, int>
+public class CreateTaxClassCommandHandler : IRequestHandler<CreateTaxClassCommand, int>
 {
     private readonly IMapper _mapper;
-    private readonly IAppLogger<CreateWarehouseCommandHandler> _logger;
+    private readonly IAppLogger<CreateTaxClassCommandHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
 
-
-    public CreateWarehouseCommandHandler(IMapper mapper,
-        IAppLogger<CreateWarehouseCommandHandler> logger,
+    public CreateTaxClassCommandHandler(IMapper mapper,
+        IAppLogger<CreateTaxClassCommandHandler> logger,
         IWarehouseRepository warehouseRepository)
     {
         _mapper = mapper;
@@ -21,15 +20,15 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
         _warehouseRepository = warehouseRepository;
     }
 
-    public async Task<int> Handle(CreateWarehouseCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateTaxClassCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
-        var validator = new CreateWarehouseCommandValidator();
+        var validator = new CreateWarehouseCommandValidator(_warehouseRepository);
         var validationResult = await validator.ValidateAsync(request);
 
-        if(!validationResult.Errors.Any())
+        if(validationResult.Errors.Any())
         {
-            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateWarehouseCommand), request.Name);
+            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateTaxClassCommand), request.Name);
             throw new Exceptions.ValidationException("Invalid Warehouse", validationResult);
         }
 
@@ -41,8 +40,5 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
 
         // return record id
         return warehouseToCreate.Id;
-
-        // Example Exception:
-        // throw new NotFoundException(nameof(Warehouse), request.Id);
     }
 }

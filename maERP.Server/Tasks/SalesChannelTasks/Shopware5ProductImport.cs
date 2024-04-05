@@ -2,8 +2,8 @@
 
 using System.Net.Http.Headers;
 using System.Text.Json;
-using maERP.Server.Contracts;
-using maERP.Shared.Models.Database;
+using maERP.Application.Contracts.Persistence;
+using maERP.Domain;
 using maERP.Shared.Models.SalesChannelData.Shopware5;
 
 namespace maERP.Server.Tasks.SalesChannelTasks;
@@ -123,7 +123,7 @@ public class ProductDownloadTask : IHostedService
                                     Price = (decimal)remoteProduct.mainDetail.purchasePrice
                                 });
                                 */
-                                await productRepository.AddAsync(localProduct);
+                                await productRepository.CreateAsync(localProduct);
                             }
                             else
                             {

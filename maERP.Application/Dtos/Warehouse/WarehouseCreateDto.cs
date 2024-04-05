@@ -1,6 +1,6 @@
-﻿namespace maERP.Shared.Dtos.Warehouse;
+﻿namespace maERP.Application.Dtos.Warehouse;
 
 public class WarehouseCreateDto
 {
-    public string Name { get; set; } = String.Empty;
+    public string Name { get; set; } = string.Empty;
 }
