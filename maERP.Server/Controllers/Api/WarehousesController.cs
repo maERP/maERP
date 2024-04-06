@@ -39,9 +39,9 @@ public class WarehousesController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Post(CreateWarehouseCommand warehouseCommand)
+    public async Task<ActionResult> Post(CreateWarehouseCommand createWarehouseCommand)
     {
-        var response = await _mediator.Send(warehouseCommand);
+        var response = await _mediator.Send(createWarehouseCommand);
         return CreatedAtAction(nameof(Get), new { id = response });
     }
 
@@ -51,9 +51,9 @@ public class WarehousesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Put(int id, [FromBody] string value)
+    public async Task<ActionResult> Put(UpdateWarehouseCommand updateWarehouseCommand)
     {
-        await _mediator.Send(new UpdateWarehouseCommand { Id = id, Name = value });
+        await _mediator.Send(updateWarehouseCommand);
         return NoContent();
     }
 

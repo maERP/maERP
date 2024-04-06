@@ -11,11 +11,11 @@ namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TaxClassController : ControllerBase
+public class TaxClassesController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public TaxClassController(IMediator mediator)
+    public TaxClassesController(IMediator mediator)
     {
         _mediator = mediator;
     }
@@ -39,9 +39,9 @@ public class TaxClassController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Post(CreateTaxClassCommand taxClassCommand)
+    public async Task<ActionResult> Post(CreateTaxClassCommand createTaxClassCommand)
     {
-        var response = await _mediator.Send(taxClassCommand);
+        var response = await _mediator.Send(createTaxClassCommand);
         return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
@@ -51,9 +51,9 @@ public class TaxClassController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Put(int id, [FromBody] string value)
+    public async Task<ActionResult> Put(UpdateTaxClassCommand updateTaxClassCommand)
     {
-        await _mediator.Send(new UpdateTaxClassCommand { Id = id, Name = value });
+        await _mediator.Send(updateTaxClassCommand);
         return NoContent();
     }
 

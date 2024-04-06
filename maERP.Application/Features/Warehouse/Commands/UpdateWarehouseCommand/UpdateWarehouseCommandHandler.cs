@@ -27,7 +27,7 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
         var validator = new UpdateWarehouseCommandValidator(_warehouseRepository);
         var validationResult = await validator.ValidateAsync(request);
 
-        if(!validationResult.Errors.Any())
+        if(validationResult.Errors.Any())
         {
             _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(CreateWarehouseCommand), request.Name);
             throw new Exceptions.ValidationException("Invalid Warehouse", validationResult);

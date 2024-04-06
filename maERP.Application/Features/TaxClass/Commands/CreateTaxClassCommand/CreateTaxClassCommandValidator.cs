@@ -11,13 +11,10 @@ public class CreateTaxClassCommandValidator : AbstractValidator<CreateTaxClassCo
     {
         _taxClassRepository = taxClassRepository;
 
-        RuleFor(p => p.Name)
+        RuleFor(p => p.TaxRate)
+            .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull()
-            .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
-
-        RuleFor(q => q)
-            .MustAsync(TaxClassUnique).WithMessage("TaxClass with the same name already exists.");
+            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
     }
 
     private async Task<bool> TaxClassUnique(CreateTaxClassCommand command, CancellationToken cancellationToken)

@@ -27,20 +27,20 @@ public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseComm
         var validator = new DeleteWarehouseCommandValidator(_warehouseRepository);
         var validationResult = await validator.ValidateAsync(request);
 
-        if(!validationResult.Errors.Any())
+        if(validationResult.Errors.Any())
         {
             _logger.LogWarning("Validation errors in delete request for {0} - {1}", nameof(CreateWarehouseCommand), request.Id);
             throw new Exceptions.ValidationException("Invalid Warehouse", validationResult);
         }
 
         // convert to domain entity object
-        var warehouseToCreate = _mapper.Map<Domain.Warehouse>(request);
+        var warehouseToDelete = _mapper.Map<Domain.Warehouse>(request);
 
         // add to database
-        await _warehouseRepository.CreateAsync(warehouseToCreate);
+        await _warehouseRepository.DeleteAsync(warehouseToDelete);
 
         // return record id
-        return warehouseToCreate.Id;
+        return warehouseToDelete.Id;
 
         // Example Exception:
         // throw new NotFoundException(nameof(Warehouse), request.Id);

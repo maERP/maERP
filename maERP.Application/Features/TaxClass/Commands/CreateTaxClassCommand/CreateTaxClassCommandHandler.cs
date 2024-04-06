@@ -28,7 +28,7 @@ public class CreateTaxClassCommandHandler : IRequestHandler<CreateTaxClassComman
 
         if(validationResult.Errors.Any())
         {
-            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateTaxClassCommand), request.Name);
+            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateTaxClassCommand), request.TaxRate);
             throw new Exceptions.ValidationException("Invalid TaxClass", validationResult);
         }
 

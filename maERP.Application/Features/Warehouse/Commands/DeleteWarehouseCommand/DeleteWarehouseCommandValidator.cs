@@ -9,17 +9,10 @@ public class DeleteWarehouseCommandValidator : AbstractValidator<DeleteWarehouse
 
     public DeleteWarehouseCommandValidator(IWarehouseRepository warehouseRepository)
     {
-        _warehouseRepository = warehouseRepository;
-
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-    }
-
-    private async Task<bool> WarehouseUnique(DeleteWarehouseCommand command, CancellationToken cancellationToken)
-    {
-        // TODO: Implement unique warehouse name validation
-        await Task.CompletedTask;
-        return true;
+        
+        // TODO: Implement check if warehouse is not used in a sales channel
     }
 }

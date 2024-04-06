@@ -27,7 +27,7 @@ public class DeleteTaxClassCommandHandler : IRequestHandler<DeleteTaxClassComman
         var validator = new DeleteTaxClassCommandValidator(_taxClassRepository);
         var validationResult = await validator.ValidateAsync(request);
 
-        if(!validationResult.Errors.Any())
+        if(validationResult.Errors.Any())
         {
             _logger.LogWarning("Validation errors in delete request for {0} - {1}", nameof(CreateTaxClassCommand), request.Id);
             throw new Exceptions.ValidationException("Invalid TaxClass", validationResult);
