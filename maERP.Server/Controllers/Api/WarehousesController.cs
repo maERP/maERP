@@ -22,7 +22,7 @@ public class WarehousesController : ControllerBase
 
     // GET: api/<WarehousesController>
     [HttpGet]
-    public async Task<List<WarehouseListDto>> GetAll()
+    public async Task<List<WarehouseListDto>> Get()
     {
         var warehouses = await _mediator.Send(new GetAllWarehousesQuery());
         return warehouses;
@@ -39,7 +39,7 @@ public class WarehousesController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Post(CreateTaxClassCommand warehouseCommand)
+    public async Task<ActionResult> Post(CreateWarehouseCommand warehouseCommand)
     {
         var response = await _mediator.Send(warehouseCommand);
         return CreatedAtAction(nameof(Get), new { id = response });
@@ -53,7 +53,7 @@ public class WarehousesController : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Put(int id, [FromBody] string value)
     {
-        await _mediator.Send(new UpdateTaxClassCommand { Id = id, Name = value });
+        await _mediator.Send(new UpdateWarehouseCommand { Id = id, Name = value });
         return NoContent();
     }
 
@@ -64,7 +64,7 @@ public class WarehousesController : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(int id)
     {
-        var command = new DeleteTaxClassCommand { Id = id };
+        var command = new DeleteWarehouseCommand { Id = id };
         await _mediator.Send(command);
         return NoContent();
     }

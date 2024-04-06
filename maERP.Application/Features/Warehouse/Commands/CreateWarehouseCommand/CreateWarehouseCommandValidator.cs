@@ -3,11 +3,11 @@ using maERP.Application.Contracts.Persistence;
 
 namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
 
-public class CreateTaxClassCommandValidator : AbstractValidator<CreateTaxClassCommand>
+public class CreateWarehouseCommandValidator : AbstractValidator<CreateWarehouseCommand>
 {
     private readonly IWarehouseRepository _warehouseRepository;
 
-    public CreateTaxClassCommandValidator(IWarehouseRepository warehouseRepository)
+    public CreateWarehouseCommandValidator(IWarehouseRepository warehouseRepository)
     {
         _warehouseRepository = warehouseRepository;
 
@@ -20,7 +20,7 @@ public class CreateTaxClassCommandValidator : AbstractValidator<CreateTaxClassCo
             .MustAsync(WarehouseUnique).WithMessage("Warehouse with the same name already exists.");
     }
 
-    private async Task<bool> WarehouseUnique(CreateTaxClassCommand command, CancellationToken cancellationToken)
+    private async Task<bool> WarehouseUnique(CreateWarehouseCommand command, CancellationToken cancellationToken)
     {
         // TODO: Implement unique warehouse name validation
         await Task.CompletedTask;

@@ -14,6 +14,6 @@ public class WarehouseProfile : Profile
         CreateMap<Warehouse, WarehouseListDto>().ReverseMap();
         CreateMap<Warehouse, WarehouseUpdateDto>().ReverseMap();
 
-        CreateMap<CreateTaxClassCommand, Warehouse>();
+        CreateMap<CreateWarehouseCommand, Warehouse>();
     }
 }

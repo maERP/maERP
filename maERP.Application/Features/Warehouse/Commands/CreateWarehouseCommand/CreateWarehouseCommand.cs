@@ -2,7 +2,7 @@
 
 namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
 
-public class CreateTaxClassCommand : IRequest<int>
+public class CreateWarehouseCommand : IRequest<int>
 {
     public string Name { get; set; } = string.Empty;     
 }

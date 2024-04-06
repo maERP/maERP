@@ -5,15 +5,15 @@ using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
 
-public class DeleteTaxClassCommandHandler : IRequestHandler<DeleteTaxClassCommand, int>
+public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseCommand, int>
 {
     private readonly IMapper _mapper;
-    private readonly IAppLogger<DeleteTaxClassCommandHandler> _logger;
+    private readonly IAppLogger<DeleteWarehouseCommandHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
 
 
-    public DeleteTaxClassCommandHandler(IMapper mapper,
-        IAppLogger<DeleteTaxClassCommandHandler> logger,
+    public DeleteWarehouseCommandHandler(IMapper mapper,
+        IAppLogger<DeleteWarehouseCommandHandler> logger,
         IWarehouseRepository warehouseRepository)
     {
         _mapper = mapper;
@@ -21,7 +21,7 @@ public class DeleteTaxClassCommandHandler : IRequestHandler<DeleteTaxClassComman
         _warehouseRepository = warehouseRepository;
     }
 
-    public async Task<int> Handle(DeleteTaxClassCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(DeleteWarehouseCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
         var validator = new DeleteWarehouseCommandValidator(_warehouseRepository);

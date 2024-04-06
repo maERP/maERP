@@ -39,7 +39,7 @@ public class TaxClassController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Post(CreateTaxClassesCommand taxClassCommand)
+    public async Task<ActionResult> Post(CreateTaxClassCommand taxClassCommand)
     {
         var response = await _mediator.Send(taxClassCommand);
         return CreatedAtAction(nameof(GetDetails), new { id = response });
@@ -53,7 +53,7 @@ public class TaxClassController : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Put(int id, [FromBody] string value)
     {
-        await _mediator.Send(new UpdateTaxClassesCommand { Id = id, Name = value });
+        await _mediator.Send(new UpdateTaxClassCommand { Id = id, Name = value });
         return NoContent();
     }
 
@@ -64,7 +64,7 @@ public class TaxClassController : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(int id)
     {
-        var command = new DeleteTaxClassesCommand { Id = id };
+        var command = new DeleteTaxClassCommand { Id = id };
         await _mediator.Send(command);
         return NoContent();
     }

@@ -5,14 +5,14 @@ using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
 
-public class CreateTaxClassCommandHandler : IRequestHandler<CreateTaxClassCommand, int>
+public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseCommand, int>
 {
     private readonly IMapper _mapper;
-    private readonly IAppLogger<CreateTaxClassCommandHandler> _logger;
+    private readonly IAppLogger<CreateWarehouseCommandHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
 
-    public CreateTaxClassCommandHandler(IMapper mapper,
-        IAppLogger<CreateTaxClassCommandHandler> logger,
+    public CreateWarehouseCommandHandler(IMapper mapper,
+        IAppLogger<CreateWarehouseCommandHandler> logger,
         IWarehouseRepository warehouseRepository)
     {
         _mapper = mapper;
@@ -20,7 +20,7 @@ public class CreateTaxClassCommandHandler : IRequestHandler<CreateTaxClassComman
         _warehouseRepository = warehouseRepository;
     }
 
-    public async Task<int> Handle(CreateTaxClassCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(CreateWarehouseCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
         var validator = new CreateWarehouseCommandValidator(_warehouseRepository);
@@ -28,7 +28,7 @@ public class CreateTaxClassCommandHandler : IRequestHandler<CreateTaxClassComman
 
         if(validationResult.Errors.Any())
         {
-            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateTaxClassCommand), request.Name);
+            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateWarehouseCommand), request.Name);
             throw new Exceptions.ValidationException("Invalid Warehouse", validationResult);
         }
 
