@@ -11,6 +11,7 @@ using maERP.Persistence;
 using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Persistence;
 using maERP.Persistence.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,7 +63,12 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSwaggerServices();
 builder.Services.AddApiVersioningServices(builder.Configuration);
+
+// TODO fix IdentityServices and remove workaround
 // builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddIdentity<maERP.Domain.ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>
@@ -94,6 +100,7 @@ builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.ProductDo
 builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.OrderDownloadTask>();
 
 var app = builder.Build();
+
 
 app.UseMiddleware<ExceptionMiddleware>();
 
