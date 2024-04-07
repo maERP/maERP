@@ -4,8 +4,8 @@ using maERP.Application.Dtos.TaxClass;
 using maERP.Application.Features.TaxClass.Commands.CreateTaxClassCommand;
 using maERP.Application.Features.TaxClass.Commands.DeleteTaxClassCommand;
 using maERP.Application.Features.TaxClass.Commands.UpdateTaxClassCommand;
-using maERP.Application.Features.TaxClass.Queries.GetAllTaxClassesQuery;
-using maERP.Application.Features.TaxClass.Queries.GetTaxClassQuery;
+using maERP.Application.Features.TaxClass.Queries.GetTaxClassDetailQuery;
+using maERP.Application.Features.TaxClass.Queries.GetTaxClassesQuery;
 
 namespace maERP.Server.Controllers.Api;
 
@@ -24,7 +24,7 @@ public class TaxClassesController : ControllerBase
     [HttpGet]
     public async Task<List<TaxClassListDto>> GetAll()
     {
-        var taxClasses = await _mediator.Send(new GetAllTaxClassesQuery());
+        var taxClasses = await _mediator.Send(new GetTaxClassesQuery());
         return taxClasses;
     }
 
@@ -32,7 +32,7 @@ public class TaxClassesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<TaxClassDetailDto> GetDetails(int id)
     {
-        return await _mediator.Send(new GetTaxClassQuery { Id = id });
+        return await _mediator.Send(new GetTaxClassDetailQuery { Id = id });
     }
 
     // POST api/<TaxClassesController>

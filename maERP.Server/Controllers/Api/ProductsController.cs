@@ -1,146 +1,64 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using maERP.Application.Dtos.Product;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using maERP.Application.Dtos.Product;
+using maERP.Application.Features.Product.Commands.CreateProductCommand;
+using maERP.Application.Features.Product.Commands.DeleteProductCommand;
+using maERP.Application.Features.Product.Commands.UpdateProductCommand;
+using maERP.Application.Features.Product.Queries.GetProductDetailQuery;
+using maERP.Application.Features.Product.Queries.GetProductsQuery;
 
 namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
-public class ProductsController : ControllerBase
+public class ProductsController(IMediator mediator) : ControllerBase
 {
-    /*
-    private readonly IMapper _mapper;
-    private readonly IProductRepository _productRepository;
-    private readonly IProductSalesChannelRepository _productSalesChannelRepository;
-    private readonly ISalesChannelRepository _salesChannelRepository;
-    private readonly ITaxClassRepository _taxClassRepository;
-
-    public ProductsController(
-        IMapper mapper,
-        IProductRepository productRepository,
-        IProductSalesChannelRepository productSalesChannelRepository,
-        ISalesChannelRepository salesChannelRepository,
-        ITaxClassRepository taxClassRepository)
+    // GET: api/<ProductsController>
+    [HttpGet]
+    public async Task<List<ProductListDto>> Get()
     {
-        _mapper = mapper;
-        _productRepository = productRepository;
-        _productSalesChannelRepository = productSalesChannelRepository;
-        _salesChannelRepository = salesChannelRepository;
-        _taxClassRepository = taxClassRepository;
+        var products = await mediator.Send(new GetProductsQuery());
+        return products;
     }
 
-    // GET: api/Products
-    [HttpGet("GetAll")]
-    // GET: api/Products?$select=id,name&$filter=name eq 'Testprodukt'&$orderby=name
-    [EnableQuery] 
-    public async Task<ActionResult<IEnumerable<ProductListDto>>> GetProduct()
-    {
-        var result = await _productRepository.GetAllAsync<ProductListDto>();
-        return Ok(result);
-    }
-
-    // GET: api/Products/5
+    // GET api/<ProductsController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDetailDto>> GetProduct(int id)
+    public async Task<ProductDetailDto> GetDetails(int id)
     {
-        var result = await _productRepository.GetByIdAsync(id);
-
-        if(result is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(result);
+        return await mediator.Send(new GetProductDetailQuery() { Id = id });
     }
 
-    // POST: api/Products
+    // POST api/<ProductsController>
     [HttpPost]
-    public async Task<ActionResult<ProductDetailDto>> PostProduct(ProductCreateDto productCreateDto)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> Post(CreateProductCommand createProductCommand)
     {
-        if(productCreateDto.ProductSalesChannel != null)
-        {
-            foreach(var salesChannel in productCreateDto.ProductSalesChannel)
-            {
-                if(!await _productSalesChannelRepository.Exists(salesChannel.Id))
-                {
-                    return BadRequest("SalesChannel does not exist");
-                }
-            }
-        }
-
-        if (!await _taxClassRepository.Exists(productCreateDto.TaxClass.Id))
-        {
-            return BadRequest("TaxClass does not exist");
-        }
-
-        var product = new Product();
-
-        _mapper.Map(productCreateDto, product);
-
-        var taxClass = await _taxClassRepository.GetByIdAsync(productCreateDto.TaxClass.Id);
-
-        product.TaxClass = taxClass;
-
-        //product = await _productRepository.AddAsync<ProductCreateDto, Product>(productCreateDto);
-        product = await _productRepository.AddAsync(product);
-
-        if (productCreateDto.ProductSalesChannel?.Count > 0)
-        {
-            product.ProductSalesChannel = new List<ProductSalesChannel>();
-
-            foreach (var productSalesChannel in product.ProductSalesChannel)
-            {
-                var salesChannel = await _salesChannelRepository.GetByIdAsync(productSalesChannel.Id);
-
-                await _productSalesChannelRepository.AddAsync(new ProductSalesChannel
-                {
-                    Product = product,
-                    SalesChannel = salesChannel,
-                    Price = productSalesChannel.Price,
-                    RemoteProductId = productSalesChannel.RemoteProductId,
-                    // ProductImport = productSalesChannel.ProductImport,
-                    // ProductExport = productSalesChannel.ProductExport
-                });
-            }
-        }
-
-        await _productRepository.UpdateAsync(product);
-
-        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+        var response = await mediator.Send(createProductCommand);
+        return CreatedAtAction(nameof(Get), new { id = response });
     }
 
-    // PUT: api/Products/5
+    // PUT: api/<ProductsController>/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutProduct(int id, [FromBody] ProductUpdateDto productUpdateDto)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Put(UpdateProductCommand updateProductCommand)
     {
-        if (await _productRepository.Exists(id) == true)
-        {
-            await _productRepository.UpdateAsync<ProductUpdateDto>(id, productUpdateDto);
-        }
-        else
-        {
-            return NotFound();
-        }
-
+        await mediator.Send(updateProductCommand);
         return NoContent();
     }
 
-    // DELETE: api/Products/5
+    // DELETE api/<ProductController>/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProduct(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Delete(int id)
     {
-        await _productRepository.DeleteAsync(id);
-
+        var command = new DeleteProductCommand { Id = id };
+        await mediator.Send(command);
         return NoContent();
     }
-
-    private async Task<bool> ProductExists(int id)
-    {
-        return await _productRepository.Exists(id);
-    }
-    */
 }

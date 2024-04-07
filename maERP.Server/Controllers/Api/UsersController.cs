@@ -1,127 +1,64 @@
-﻿#nullable disable
-
-using Microsoft.AspNetCore.Authorization;
+﻿using maERP.Application.Dtos.User;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Asp.Versioning;
-using maERP.Application.Dtos.User;
+using maERP.Application.Features.User.Commands.CreateUserCommand;
+using maERP.Application.Features.User.Commands.DeleteUserCommand;
+using maERP.Application.Features.User.Commands.UpdateUserCommand;
+using maERP.Application.Features.User.Queries.GetUserDetailQuery;
+using maERP.Application.Features.User.Queries.GetUsersQuery;
 
-namespace maERP.Server.Controllers;
+namespace maERP.Server.Controllers.Api;
 
-// [Route("api/v{version:apiVersion}/[controller]")]
 [Route("api/[controller]")]
 [ApiController]
-[ApiVersion("1.0")]
-[Authorize]
-// [Authorize(Roles = "Administrator")]
-public class UsersController : ControllerBase
+public class UsersController(IMediator mediator) : ControllerBase
 {
-    /*
-    private readonly IUserRepository _repository;
-    private readonly ILogger _logger;
-    private readonly IMapper _mapper;
-
-    public UsersController(IUserRepository repository, IMapper mapper, ILogger<UsersController> logger)
+    // GET: api/<UsersController>
+    [HttpGet]
+    public async Task<List<UserListDto>> Get()
     {
-        _repository = repository;
-        _logger = logger;
-        _mapper = mapper;
+        var users = await mediator.Send(new GetUsersQuery());
+        return users;
     }
 
-    // GET: api/Users
-    [HttpGet("GetAll")]
-    public async Task<ActionResult<IQueryable<UserListDto>>> GetUsers()
+    // GET api/<UsersController>/5
+    [HttpGet("{id}")]
+    public async Task<UserDetailDto> GetDetails(string id)
     {
-        var users = await _repository.GetAllAsync();
-        return Ok(users);
+        return await mediator.Send(new GetUserDetailQuery() { Id = id });
     }
 
-    // GET: api/Users/5
-    [HttpGet("{userId}")]
-    public async Task<ActionResult<UserDetailDto>> GetUserById(string userId)
-    {
-        var user = await _repository.GetByIdAsync(userId);
-        return Ok(user);
-    }
-
-    // POST: api/Users
+    // POST api/<UsersController>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult> Add([FromBody] UserCreateDto userCreateDto)
+    public async Task<ActionResult> Post(CreateUserCommand createUserCommand)
     {
-        _logger.LogInformation($"Registration Attempt for {userCreateDto.Email}");
-
-        try
-        {
-            var errors = await _repository.AddAsync(userCreateDto);
-
-            if (errors.Any())
-            {
-                foreach (var error in errors)
-                {
-                    ModelState.AddModelError(error.Code, error.Description);
-                }
-
-                return BadRequest(ModelState);
-            }
-
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Something went wrong in the {nameof(Add)}" +
-                $" - User registration attempt for {userCreateDto.Email}");
-
-            return Problem($"Something went wrong in the {nameof(Add)}");
-        }
+        var response = await mediator.Send(createUserCommand);
+        return CreatedAtAction(nameof(Get), new { id = response });
     }
 
-    /*
-    // PUT: api/Users
-    [HttpPut]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult> Update([FromBody] UserUpdateDto userUpdateDto)
-    {
-        _logger.LogInformation($"Edit Attempt for {userUpdateDto.Email}");
-
-        try
-        {
-            var applicationUser = _mapper.Map<ApplicationUser>(userUpdateDto);
-
-            var user = await _repository.UpdateAsync(applicationUser);
-
-            if (user.Id is not null)
-            {
-                return Ok();
-            }
-
-            return BadRequest(ModelState);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Something went wrong in the {nameof(Update)}" +
-                $" - User update attempt for {userUpdateDto.Email}");
-
-            return Problem($"Something went wrong in THE {nameof(Update)}");
-        }
-    }
-    */
-    /*
-    // PUT: api/SalesChannels/5
+    // PUT: api/<UsersController>/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(string id, [FromBody] UserUpdateDto userUpdateDto)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Put(UpdateUserCommand updateUserCommand)
     {
-        if (await _repository.Exists(id) == true)
-        {
-            await _repository.UpdateWithDetailsAsync(id, userUpdateDto);
-        }
-        else
-        {
-            return NotFound();
-        }
-
+        await mediator.Send(updateUserCommand);
         return NoContent();
     }
-    */
+
+    // DELETE api/<UserController>/5
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var command = new DeleteUserCommand { Id = id };
+        await mediator.Send(command);
+        return NoContent();
+    }
 }

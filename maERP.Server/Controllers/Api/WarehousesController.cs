@@ -4,27 +4,20 @@ using maERP.Application.Dtos.Warehouse;
 using maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
 using maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
 using maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
-using maERP.Application.Features.Warehouse.Queries.GetAllWarehousesQuery;
-using maERP.Application.Features.Warehouse.Queries.GetWarehouseQuery;
+using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetailQuery;
+using maERP.Application.Features.Warehouse.Queries.GetWarehousesQuery;
 
 namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-public class WarehousesController : ControllerBase
+public class WarehousesController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public WarehousesController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     // GET: api/<WarehousesController>
     [HttpGet]
     public async Task<List<WarehouseListDto>> Get()
     {
-        var warehouses = await _mediator.Send(new GetAllWarehousesQuery());
+        var warehouses = await mediator.Send(new GetWarehousesQuery());
         return warehouses;
     }
 
@@ -32,7 +25,7 @@ public class WarehousesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<WarehouseDetailDto> GetDetails(int id)
     {
-        return await _mediator.Send(new GetWarehouseQuery { Id = id });
+        return await mediator.Send(new GetWarehouseDetailQuery { Id = id });
     }
 
     // POST api/<WarehousesController>
@@ -41,7 +34,7 @@ public class WarehousesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Post(CreateWarehouseCommand createWarehouseCommand)
     {
-        var response = await _mediator.Send(createWarehouseCommand);
+        var response = await mediator.Send(createWarehouseCommand);
         return CreatedAtAction(nameof(Get), new { id = response });
     }
 
@@ -53,7 +46,7 @@ public class WarehousesController : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Put(UpdateWarehouseCommand updateWarehouseCommand)
     {
-        await _mediator.Send(updateWarehouseCommand);
+        await mediator.Send(updateWarehouseCommand);
         return NoContent();
     }
 
@@ -65,7 +58,7 @@ public class WarehousesController : ControllerBase
     public async Task<ActionResult> Delete(int id)
     {
         var command = new DeleteWarehouseCommand { Id = id };
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 }

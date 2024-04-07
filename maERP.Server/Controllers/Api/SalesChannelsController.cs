@@ -1,84 +1,64 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using maERP.Application.Dtos.SalesChannel;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using maERP.Application.Dtos.SalesChannel;
+using maERP.Application.Features.SalesChannel.Commands.CreateSalesChannelCommand;
+using maERP.Application.Features.SalesChannel.Commands.DeleteSalesChannelCommand;
+using maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannelCommand;
+using maERP.Application.Features.SalesChannel.Queries.GetAllSalesChannelsQuery;
+using maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetailQuery;
 
-namespace maERP.Server.Controllers;
+namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
-public class SalesChannelsController : ControllerBase
+public class SalesChannelsController(IMediator mediator) : ControllerBase
 {
-    /*
-    private readonly ISalesChannelRepository _repository;
-
-    public SalesChannelsController(ISalesChannelRepository salesChannelRepository)
+    // GET: api/<SalesChannelsController>
+    [HttpGet]
+    public async Task<List<SalesChannelListDto>> Get()
     {
-        this._repository = salesChannelRepository;
+        var salesChannels = await mediator.Send(new GetSalesChannelsQuery());
+        return salesChannels;
     }
 
-    // GET: api/SalesChannels
-    [HttpGet("GetAll")]
-    public async Task<ActionResult<IEnumerable<SalesChannelListDto>>> GetSalesChannel()
-    {
-        var salesChannels = await _repository.GetAllAsync<SalesChannelListDto>();
-        return Ok(salesChannels);
-    }
-
-    // GET: api/SalesChannels/5
+    // GET api/<SalesChannelsController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<SalesChannelDetailDto>> GetSalesChannel(int id)
+    public async Task<SalesChannelDetailDto> GetDetails(int id)
     {
-        var salesChannel = await _repository.GetDetails(id);
-
-        if (salesChannel == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(salesChannel);
+        return await mediator.Send(new GetSalesChannelDetailQuery() { Id = id });
     }
 
-    // PUT: api/SalesChannels/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutSalesChannel(int id, [FromBody] SalesChannelUpdateDto salesChannelUpdateDto)
-    {
-        if (await _repository.Exists(id) == true)
-        {
-            await _repository.UpdateAsync(id, salesChannelUpdateDto);
-        }
-        else
-        {
-            return NotFound();
-        }
-
-        return NoContent();
-    }
-
-    // POST: api/SalesChannels
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    // POST api/<SalesChannelsController>
     [HttpPost]
-    public async Task<ActionResult<SalesChannelDetailDto>> PostSalesChannel(SalesChannelCreateDto salesChannelCreateDto)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> Post(CreateSalesChannelCommand createSalesChannelCommand)
     {
-        var salesChannel = await _repository.AddWithDetailsAsync(salesChannelCreateDto);
-        return CreatedAtAction("GetSalesChannel", new { id = salesChannel.Id }, salesChannel);
+        var response = await mediator.Send(createSalesChannelCommand);
+        return CreatedAtAction(nameof(Get), new { id = response });
     }
 
-    // DELETE: api/SalesChannels/5
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteSalesChannel(int id)
+    // PUT: api/<SalesChannelsController>/5
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Put(UpdateSalesChannelCommand updateSalesChannelCommand)
     {
-        var salesChannel = await _repository.GetByIdAsync(id);
-
-        if (salesChannel == null)
-        {
-            return NotFound();
-        }
-
-        await _repository.DeleteAsync(id);
-
+        await mediator.Send(updateSalesChannelCommand);
         return NoContent();
     }
-    */
+
+    // DELETE api/<SalesChannelController>/5
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var command = new DeleteSalesChannelCommand { Id = id };
+        await mediator.Send(command);
+        return NoContent();
+    }
 }

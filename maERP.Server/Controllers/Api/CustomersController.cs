@@ -1,77 +1,64 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using maERP.Application.Dtos.Customer;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
-using maERP.Application.Dtos.Customer;
-using maERP.Application.Contracts.Persistence;
+using maERP.Application.Features.Customer.Commands.CreateCustomerCommand;
+using maERP.Application.Features.Customer.Commands.DeleteCustomerCommand;
+using maERP.Application.Features.Customer.Commands.UpdateCustomerCommand;
+using maERP.Application.Features.Customer.Queries.GetCustomerDetailQuery;
+using maERP.Application.Features.Customer.Queries.GetCustomersQuery;
 
 namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
-public class CustomersController : ControllerBase
+public class CustomersController(IMediator mediator) : ControllerBase
 {
-    /*
-    private readonly ICustomerRepository _repository;
-
-    public CustomersController(ICustomerRepository repository)
+    // GET: api/<CustomersController>
+    [HttpGet]
+    public async Task<List<CustomerListDto>> Get()
     {
-        _repository = repository;
+        var customers = await mediator.Send(new GetCustomersQuery());
+        return customers;
     }
 
-    // GET: api/Customers
-    [HttpGet("GetAll")]
-    [EnableQuery]
-    public async Task<ActionResult<IEnumerable<CustomerListDto>>> GetCustomer()
-    {
-        var customer = await _repository.GetAllAsync<CustomerListDto>();
-        return Ok(customer);
-    }
-
-    // GET: api/Customers/5
+    // GET api/<CustomersController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<CustomerDetailDto>> GetCustomer(int id)
+    public async Task<CustomerDetailDto> GetDetails(int id)
     {
-        var customer = await _repository.GetByIdAsync(id);
-        return Ok(customer);
+        return await mediator.Send(new GetCustomerDetailQuery() { Id = id });
     }
 
-    // PUT: api/SalesChannels/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutCustomer(int id, [FromBody] CustomerUpdateDto customerUpdateDto)
-    {
-        if (await _repository.Exists(id) == true)
-        {
-            await _repository.UpdateAsync<CustomerUpdateDto>(id, customerUpdateDto);
-        }
-        else
-        {
-            return NotFound();
-        }
-
-        return NoContent();
-    }
-
-    // POST: api/Customers
+    // POST api/<CustomersController>
     [HttpPost]
-    public async Task<ActionResult<CustomerDetailDto>> PostCustomer(CustomerDetailDto customerDto)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> Post(CreateCustomerCommand createCustomerCommand)
     {
-        var customer = await _repository.AddAsync<CustomerDetailDto, CustomerDetailDto>(customerDto);
-        return CreatedAtAction(nameof(GetCustomer), new { id = customer.Id }, customer);
+        var response = await mediator.Send(createCustomerCommand);
+        return CreatedAtAction(nameof(Get), new { id = response });
     }
 
-    // DELETE: api/Customers/5
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCustomer(int id)
+    // PUT: api/<CustomersController>/5
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Put(UpdateCustomerCommand updateCustomerCommand)
     {
-        await _repository.DeleteAsync(id);
-
+        await mediator.Send(updateCustomerCommand);
         return NoContent();
     }
 
-    private async Task<bool> CustomerExists(int id)
+    // DELETE api/<CustomerController>/5
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Delete(int id)
     {
-        return await _repository.Exists(id);
+        var command = new DeleteCustomerCommand { Id = id };
+        await mediator.Send(command);
+        return NoContent();
     }
-    */
 }

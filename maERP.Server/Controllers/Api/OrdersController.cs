@@ -1,78 +1,64 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using maERP.Application.Dtos.Order;
+﻿using maERP.Application.Dtos.Order;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using maERP.Application.Features.Order.Commands.CreateOrderCommand;
+using maERP.Application.Features.Order.Commands.DeleteOrderCommand;
+using maERP.Application.Features.Order.Commands.UpdateOrderCommand;
+using maERP.Application.Features.Order.Queries.GetOrderDetailQuery;
+using maERP.Application.Features.Order.Queries.GetOrdersQuery;
 
 namespace maERP.Server.Controllers.Api;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
-public class OrdersController : ControllerBase
+public class OrdersController(IMediator mediator) : ControllerBase
 {
-    /*
-    private readonly IMapper _mapper;
-    private readonly IOrderRepository _repository;
-
-    public OrdersController(IMapper mapper, IOrderRepository repository)
+    // GET: api/<OrdersController>
+    [HttpGet]
+    public async Task<List<OrderListDto>> Get()
     {
-        _mapper = mapper;
-        _repository = repository;
+        var orders = await mediator.Send(new GetOrdersQuery());
+        return orders;
     }
 
-    // GET: api/Orders
-    [HttpGet("GetAll")]
-    public async Task<ActionResult<IEnumerable<OrderListDto>>> GetOrder()
-    {
-        var order = await _repository.GetAllAsync<OrderListDto>();
-        return Ok(order);
-    }
-
-    // GET: api/Orders/5
+    // GET api/<OrdersController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<OrderDetailDto>> GetOrder(int id)
+    public async Task<OrderDetailDto> GetDetails(int id)
     {
-        var order = await _repository.GetByIdAsync(id);
-        return Ok(order);
+        return await mediator.Send(new GetOrderDetailQuery() { Id = id });
     }
 
-    // PUT: api/Orders/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutOrder(int id, [FromBody] OrderUpdateDto orderUpdateDto)
-    {
-        if (await _repository.Exists(id) == true)
-        {
-            await _repository.UpdateAsync<OrderUpdateDto>(id, orderUpdateDto);
-        }
-        else
-        {
-            return NotFound();
-        }
-
-        return NoContent();
-    }
-
-    // POST: api/Orders
+    // POST api/<OrdersController>
     [HttpPost]
-    public async Task<ActionResult<OrderDetailDto>> PutOrder(OrderDetailDto orderDto)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> Post(CreateOrderCommand createOrderCommand)
     {
-        var order = await _repository.AddAsync<OrderDetailDto, OrderDetailDto>(orderDto);
-        return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+        var response = await mediator.Send(createOrderCommand);
+        return CreatedAtAction(nameof(Get), new { id = response });
     }
 
-    // DELETE: api/Orders/5
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteOrder(int id)
+    // PUT: api/<OrdersController>/5
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Put(UpdateOrderCommand updateOrderCommand)
     {
-        await _repository.DeleteAsync(id);
-
+        await mediator.Send(updateOrderCommand);
         return NoContent();
     }
 
-    private async Task<bool> OrderExists(int id)
+    // DELETE api/<OrderController>/5
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Delete(int id)
     {
-        return await _repository.Exists(id);
+        var command = new DeleteOrderCommand { Id = id };
+        await mediator.Send(command);
+        return NoContent();
     }
-    */
 }
