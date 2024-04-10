@@ -2,7 +2,8 @@
 
 namespace maERP.Application.Features.User.Commands.CreateUserCommand;
 
-public class CreateUserCommand : IRequest<int>
+public class CreateUserCommand : IRequest<string>
 {
-    public double TaxRate { get; set; }  
+    public string Email { get; set; } =  string.Empty;  
+    public string Password { get; set; } =  string.Empty;
 }

@@ -1,12 +1,15 @@
-﻿using maERP.Domain;
+﻿using System.Collections.Immutable;
+using HR.LeaveManagement.Identity.Configurations;
+using maERP.Domain;
 using maERP.Domain.Common;
 using maERP.Persistence.Configurations;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.DatabaseContext;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -30,6 +33,10 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new RoleConfiguration());
+        modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+        
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
         // modelBuilder.ApplyConfiguration(new CountryConfiguration());

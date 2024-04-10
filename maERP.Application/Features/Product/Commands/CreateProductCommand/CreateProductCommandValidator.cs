@@ -11,10 +11,11 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
     {
         _productRepository = productRepository;
 
-        RuleFor(p => p.TaxRate)
+        RuleFor(p => p.Name)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            .MinimumLength(3).WithMessage("{PropertyName} must be more than {MinLength} characters.")
+            .MaximumLength(255).WithMessage("{PropertyName} must be less than {MaxLength} characters.");
     }
 
     private async Task<bool> ProductUnique(CreateProductCommand command, CancellationToken cancellationToken)

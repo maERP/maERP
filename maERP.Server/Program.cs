@@ -21,11 +21,9 @@ builder.Host.UseSerilog(
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    string conString = "";
-
     if (Environment.GetEnvironmentVariable("DB_TYPE") == "pgsql")
     {
-        conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
+        string conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
                   + ";Port=" + Environment.GetEnvironmentVariable("DB_PORT")
                   + ";Database=" + Environment.GetEnvironmentVariable("DB_NAME")
                   + ";User Id=" + Environment.GetEnvironmentVariable("DB_USER")
@@ -35,7 +33,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
     else if (Environment.GetEnvironmentVariable("DB_TYPE") == "mysql")
     {
-        conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
+        string conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
                   + ";Port=" + Environment.GetEnvironmentVariable("DB_PORT")
                   + ";Database=" + Environment.GetEnvironmentVariable("DB_NAME")
                   + ";Uid=" + Environment.GetEnvironmentVariable("DB_USER")
@@ -45,7 +43,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }
     else
     {
-        conString = builder.Configuration.GetConnectionString("DefaultConnection");
+        string conString = builder.Configuration.GetConnectionString("DefaultConnection");
         options.UseNpgsql(conString);
     }    
 });
@@ -165,6 +163,4 @@ using (var scope = app.Services.CreateScope())
 
 app.Run();
 
-public partial class Program
-{
-}
+public partial class Program { }

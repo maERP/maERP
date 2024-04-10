@@ -28,7 +28,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
         if(validationResult.Errors.Any())
         {
-            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateProductCommand), request.TaxRate);
+            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateProductCommand), request.Name);
             throw new Exceptions.ValidationException("Invalid Product", validationResult);
         }
 

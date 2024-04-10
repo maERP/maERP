@@ -1,26 +1,25 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Features.Product.Commands.CreateProductCommand;
+using maERP.Application.Features.User.Commands.CreateUserCommand;
 
 namespace maERP.Application.Features.User.Commands.CreateUserCommand;
 
-public class CreateUserCommandValidator : AbstractValidator<CreateProductCommand>
+public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
-    private readonly IProductRepository _productRepository;
+    private readonly IUserRepository _userRepository;
 
-    public CreateUserCommandValidator(IProductRepository productRepository)
+    public CreateUserCommandValidator(IUserRepository userRepository)
     {
-        _productRepository = productRepository;
+        _userRepository = userRepository;
 
-        RuleFor(p => p.TaxRate)
+        RuleFor(p => p.Email)
             .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            .NotEmpty().WithMessage("{PropertyName} is required.");
     }
 
-    private async Task<bool> ProductUnique(CreateProductCommand command, CancellationToken cancellationToken)
+    private async Task<bool> UserUnique(CreateUserCommand command, CancellationToken cancellationToken)
     {
-        // TODO: Implement unique Product name validation
+        // TODO: Implement unique User name validation
         await Task.CompletedTask;
         return true;
     }

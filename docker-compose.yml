@@ -29,3 +29,38 @@ services:
       - DB_PASS="maerp"
     ports:
       - 443:8080
+        
+  agent:
+    profiles: [ agent ]
+    image: grafana/agent:latest
+    volumes:
+      - ./agent/config:/etc/agent-config
+    entrypoint:
+      - /bin/grafana-agent
+      - -server.http.address=0.0.0.0:12345
+      - -config.file=/etc/agent-config/agent.yaml
+      - -metrics.wal-directory=/tmp/agent/wal
+      - -enable-features=integrations-next
+      - -config.expand-env
+      - -config.enable-read-api
+    environment:
+      HOSTNAME: agent
+      REMOTE_WRITE_HOST: mimir:9009
+      LOKI_HOST: loki:3100
+      TEMPO_HOST: tempo:4317
+      AVALANCHE_HOST: avalanche:9001
+      MYSQL_HOST: mysql:3306
+      POSTGRES_HOST: postgres:5432
+      REDIS_HOST: redis:6379
+      DNSMASQ_HOST: dnsmasq:53
+      MEMCACHED_HOST: memcached:11211
+      CONSUL_HOST: consul:8500
+      ELASTICSEARCH_HOST: elasticsearch:9200
+      KAFKA_HOST: kafka:9093
+      MONGODB_HOST: mongodb:27017
+    ports:
+      - "12345:12345"
+    depends_on:
+      - mimir
+      - loki
+      - tempo

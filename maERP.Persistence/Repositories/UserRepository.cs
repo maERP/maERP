@@ -27,31 +27,24 @@ public class UserRepository : IUserRepository
             .AsNoTracking()
             .FirstAsync<ApplicationUser>();
     }
-
-    /*
-    public async Task<IEnumerable<IdentityError>> AddAsync(ApplicationUser userCreateDto)
+    
+    public async Task<IEnumerable<IdentityError>> CreateAsync(ApplicationUser userToCreate, string password)
     {
-        var _user = _mapper.Map<ApplicationUser>(userCreateDto);
+        userToCreate.PasswordHash = _userManager.PasswordHasher.HashPassword(userToCreate, password);
 
-        _user.Email = userCreateDto.Email;
-        _user.UserName = userCreateDto.Email;
-        _user.FirstName = userCreateDto.FirstName;
-        _user.LastName = userCreateDto.LastName;
-        _user.PasswordHash = _userManager.PasswordHasher.HashPassword(_user, userCreateDto.Password);
-
-        var result = await _userManager.CreateAsync(_user, userCreateDto.Password);
+        var result = await _userManager.CreateAsync(userToCreate, password);
 
         if (result.Succeeded)
         {
-            await _userManager.AddToRoleAsync(_user, "User");
+            await _userManager.AddToRoleAsync(userToCreate, "User");
         }
 
         return result.Errors;
     }
-    */
-    public async Task UpdateWithDetailsAsync(string userId, UserUpdateDto userUpdateDto)
+    
+    public async Task<ApplicationUser> UpdateWithDetailsAsync(ApplicationUser userUpdateDto)
     {
-        var localUser = await _userManager.FindByIdAsync(userId);
+        var localUser = await _userManager.FindByIdAsync(userUpdateDto.Id);
 
         if (localUser.Id is not null)
         {
@@ -60,17 +53,20 @@ public class UserRepository : IUserRepository
             localUser.FirstName = userUpdateDto.FirstName;
             localUser.LastName = userUpdateDto.LastName;
 
+            /*
             if (userUpdateDto.Password.Length > 0)
             {
                 localUser.PasswordHash = _userManager.PasswordHasher.HashPassword(localUser, userUpdateDto.Password);
-            }
+            }*/
 
             await _userManager.UpdateAsync(localUser);
         }
         else
         {
-            throw new Application.Exceptions.NotFoundException("User not found", userId);
+            throw new Application.Exceptions.NotFoundException("User not found", userUpdateDto.Id);
         }
+
+        return userUpdateDto;
     }
 
     public async Task<bool> Exists(string id)
