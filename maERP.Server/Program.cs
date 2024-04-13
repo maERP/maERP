@@ -10,6 +10,7 @@ using maERP.Infrastructure;
 using maERP.Persistence;
 using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Persistence;
+using maERP.Identity;
 using maERP.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
 
@@ -62,12 +63,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddSwaggerServices();
 builder.Services.AddApiVersioningServices(builder.Configuration);
 
-// TODO fix IdentityServices and remove workaround
-// builder.Services.AddIdentityServices(builder.Configuration);
-builder.Services.AddIdentity<maERP.Domain.ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>
     opts.JsonSerializerOptions.PropertyNamingPolicy = null); // JsonNamingPolicy.CamelCase);
@@ -81,6 +76,7 @@ builder.Services.AddResponseCaching(options =>
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
@@ -91,14 +87,13 @@ builder.Services.AddScoped<IProductSalesChannelRepository, ProductSalesChannelRe
 builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+// builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 Console.WriteLine("Start background tasks...");
 builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.ProductDownloadTask>();
 builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.OrderDownloadTask>();
 
 var app = builder.Build();
-
 
 app.UseMiddleware<ExceptionMiddleware>();
 

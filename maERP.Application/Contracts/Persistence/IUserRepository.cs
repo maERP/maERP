@@ -2,6 +2,7 @@
 
 namespace maERP.Application.Contracts.Persistence;
 
+/*
 public interface IUserRepository
 {
     Task<List<ApplicationUser>> GetAllAsync();
@@ -10,3 +11,4 @@ public interface IUserRepository
     Task<ApplicationUser> UpdateWithDetailsAsync(ApplicationUser userUpdateDto);
     Task<bool> Exists(string id);
 }
+*/

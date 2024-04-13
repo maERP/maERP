@@ -6,7 +6,7 @@ using maERP.Application.Features.User.Queries.GetUsersQuery;
 using MediatR;
 
 namespace maERP.Application.Features.User.Queries.GetUsersQuery;
-
+/*
 public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, List<UserListDto>>
 {
     private readonly IMapper _mapper;
@@ -34,3 +34,4 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, List<UserList
         return data;
     }
 }
+*/
