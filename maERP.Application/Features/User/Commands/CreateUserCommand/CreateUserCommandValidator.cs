@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Features.User.Commands.CreateUserCommand;
 
 namespace maERP.Application.Features.User.Commands.CreateUserCommand;
-/*
+
 public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
     private readonly IUserRepository _userRepository;
@@ -24,4 +23,3 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
         return true;
     }
 }
-*/

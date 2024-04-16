@@ -1,8 +1,8 @@
-﻿using maERP.Domain;
-using maERP.Application.Contracts.Persistence;
+﻿using maERP.Application.Contracts.Persistence;
 using maERP.Persistence.DatabaseContext;
 using maERP.Application.Dtos.SalesChannel;
 using Microsoft.EntityFrameworkCore;
+using maERP.Domain.Models;
 
 namespace maERP.Persistence.Repositories;
 

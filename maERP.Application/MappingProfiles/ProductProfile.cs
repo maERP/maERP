@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using maERP.Domain;
-using maERP.Application.Dtos.Product;
 using maERP.Application.Features.Product.Commands.CreateProductCommand;
 using maERP.Application.Features.Product.Commands.DeleteProductCommand;
 using maERP.Application.Features.Product.Commands.UpdateProductCommand;
+using maERP.Domain.Models;
+using maERP.Application.Dtos.Product;
 
 namespace maERP.Application.MappingProfiles;
 

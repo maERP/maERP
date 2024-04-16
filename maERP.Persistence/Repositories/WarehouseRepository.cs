@@ -1,5 +1,5 @@
 ﻿using maERP.Application.Contracts.Persistence;
-using maERP.Domain;
+using maERP.Domain.Models;
 using maERP.Persistence.DatabaseContext;
 
 namespace maERP.Persistence.Repositories;

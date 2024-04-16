@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using maERP.Domain;
-using maERP.Application.Dtos.SalesChannel;
 using maERP.Application.Features.SalesChannel.Commands.CreateSalesChannelCommand;
 using maERP.Application.Features.SalesChannel.Commands.DeleteSalesChannelCommand;
 using maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannelCommand;
+using maERP.Domain.Models;
+using maERP.Application.Dtos.SalesChannel;
 
 namespace maERP.Application.MappingProfiles;
 

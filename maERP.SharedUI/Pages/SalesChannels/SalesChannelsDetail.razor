@@ -1,0 +1,30 @@
+﻿@page "/SalesChannels/{salesChannelId:int}"
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+@using maERP.SharedUI.Models.SalesChannel
+@using maERP.SharedUI.Services
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject ISalesChannelService _salesChannelService
+
+<MudText Typo="Typo.h4" Class="mb-8">@salesChannel.Name</MudText>
+
+@code {
+
+    [Parameter]
+    public int salesChannelId { get; set; }
+
+    protected string Title = "Vertriebskanaldetails";
+
+    protected SalesChannelVM salesChannel = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (salesChannelId != 0)
+        {
+            salesChannel = await _salesChannelService.GetSalesChannelDetails(salesChannelId);
+        }
+    }
+}

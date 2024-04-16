@@ -34,7 +34,7 @@ public class UpdateTaxClassCommandHandler : IRequestHandler<UpdateTaxClassComman
         }
 
         // convert to domain entity object
-        var taxClassToUpdate = _mapper.Map<Domain.TaxClass>(request);
+        var taxClassToUpdate = _mapper.Map<Domain.Models.TaxClass>(request);
 
         // add to database
         await _taxClassRepository.UpdateAsync(taxClassToUpdate);

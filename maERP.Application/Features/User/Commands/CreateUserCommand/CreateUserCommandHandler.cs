@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Models;
 using MediatR;
 
 namespace maERP.Application.Features.User.Commands.CreateUserCommand;
-/*
+
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, string>
 {
     private readonly IMapper _mapper;
@@ -42,4 +43,3 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, strin
         return userToCreate.Id;
     }
 }
-*/

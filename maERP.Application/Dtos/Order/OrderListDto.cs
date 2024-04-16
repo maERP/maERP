@@ -1,6 +1,4 @@
-﻿using maERP.Shared.Models;
-using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace maERP.Application.Dtos.Order;
 

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Dtos.SalesChannel;
 using maERP.Application.Features.SalesChannel.Queries.GetAllSalesChannelsQuery;
 using MediatR;
+using maERP.Application.Dtos.SalesChannel;
 
 namespace maERP.Application.Features.SalesChannel.Queries.GetAllSalesChannelsQuery;
 

@@ -35,7 +35,7 @@ public class UpdateSalesChannelCommandHandler : IRequestHandler<UpdateSalesChann
         }
 
         // convert to domain entity object
-        var salesChannelToUpdate = _mapper.Map<Domain.SalesChannel>(request);
+        var salesChannelToUpdate = _mapper.Map<Domain.Models.SalesChannel>(request);
 
         // add to database
         await _salesChannelRepository.UpdateAsync(salesChannelToUpdate);

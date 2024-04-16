@@ -34,7 +34,7 @@ public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseComm
         }
 
         // convert to domain entity object
-        var warehouseToDelete = _mapper.Map<Domain.Warehouse>(request);
+        var warehouseToDelete = _mapper.Map<Domain.Models.Warehouse>(request);
 
         // add to database
         await _warehouseRepository.DeleteAsync(warehouseToDelete);

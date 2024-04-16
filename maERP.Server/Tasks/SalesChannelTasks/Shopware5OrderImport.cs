@@ -3,8 +3,8 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
-using maERP.Domain;
-using maERP.Shared.Models.SalesChannelData.Shopware5;
+using maERP.Domain.Models;
+using maERP.Domain.Models.SalesChannelData.Shopware5;
 
 namespace maERP.Server.Tasks.SalesChannelTasks;
 

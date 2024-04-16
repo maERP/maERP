@@ -1,14 +1,14 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 
-<Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] {typeof(maERP.Shared.Shared.MainLayout).Assembly}">
+<Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] {typeof(MainLayout).Assembly}">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
             <Authorizing>
                 Authorizing...
             </Authorizing>
             <NotAuthorized>
-                <maERP.Shared.Pages.Auth.Login />
-                @*<maERP.Shared.Shared.RedirectToLogin />*@
+                @*<maERP.SharedUI.Pages.Auth.Login />*@
+                <maERP.SharedUI.Shared.RedirectToLogin />
             </NotAuthorized>
         </AuthorizeRouteView>
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />

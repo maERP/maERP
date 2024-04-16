@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\maERP.Server\maERP.Server.csproj" />
-    <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj" />
   </ItemGroup>
 
 </Project>

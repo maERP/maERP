@@ -1,6 +1,6 @@
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Models.Identity;
-using maERP.Identity.Models;
+using maERP.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Identity.Services;

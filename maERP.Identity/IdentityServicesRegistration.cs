@@ -1,7 +1,7 @@
 using System.Text;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Models.Identity;
-using maERP.Identity.Models;
+using maERP.Domain.Models;
 using maERP.Identity.DbContext;
 using maERP.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

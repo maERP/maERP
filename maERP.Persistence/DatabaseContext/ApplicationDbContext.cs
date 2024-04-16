@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
-using maERP.Domain;
-using maERP.Domain.Common;
+using maERP.Domain.Models;
+using maERP.Domain.Models.Common;
 using maERP.Persistence.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

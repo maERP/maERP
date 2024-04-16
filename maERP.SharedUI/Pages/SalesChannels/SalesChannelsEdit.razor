@@ -1,0 +1,143 @@
+﻿@page "/SalesChannels/Add"
+@page "/SalesChannels/{salesChannelId:int}/Edit"
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+@using maERP.SharedUI.Models.SalesChannel
+@using maERP.SharedUI.Models.Warehouse
+@using maERP.SharedUI.Services
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject ISalesChannelService _salesChannelService
+@inject IWarehouseService _warehouseService
+@inject ISnackbar _snackbar
+
+<MudText Typo="Typo.h4" Class="mb-8">Vertriebskanal bearbeiten</MudText>
+
+<MudForm Model="@salesChannel" @ref="@_form">
+    <MudGrid>
+        <MudItem xs="6">
+
+            <MudSelect T="SalesChannelType" Label="Typ" HelperText="Vertriebskanal-Typ" Placeholder="Typ auswählen" @bind-Value="@salesChannel.Type" Class="mt-6">
+                <MudSelectItem Value="SalesChannelType.shopware5">Shopware 5</MudSelectItem>
+                <MudSelectItem Value="SalesChannelType.shopware6">Shopware 6</MudSelectItem>
+                <MudSelectItem Value="SalesChannelType.woocommerce">WooCommerce</MudSelectItem>
+            </MudSelect>
+
+            <MudTextField @bind-Value="salesChannel.Name"
+                          For="@(() => salesChannel.Name)"
+                          Label="Name"
+                          Required="true"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Class="mt-6" />
+
+            <MudTextField @bind-Value="salesChannel.Url"
+                          For="@(() => salesChannel.Url)"
+                          Label="API URL"
+                          Variant="Variant.Text"
+                          InputType="InputType.Url"
+                          Class="mt-6" />
+
+            <MudTextField @bind-Value="salesChannel.Username"
+                          For="@(() => salesChannel.Username)"
+                          Label="API Benutzername"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Class="mt-6" />
+
+            <MudTextField @bind-Value="salesChannel.Password"
+                          For="@(() => salesChannel.Password)"
+                          Label="API Passwort"
+                          Variant="Variant.Text"
+                          InputType="InputType.Password"
+                          Class="mt-6" />
+
+            <MudSelect T="int" Label="Lager" HelperText="Lager auswählen" Placeholder="Lager auswählen" @bind-Value="@salesChannel.WarehouseId" Class="mt-6">
+                @foreach (var warehouse in warehouses)
+                {
+                    if (salesChannel.WarehouseId == warehouse.Id)
+                    {
+                        <MudSelectItem Value="@warehouse.Id">@warehouse.Name</MudSelectItem>
+                    }
+                    else
+                    {
+                        <MudSelectItem Value="@warehouse.Id">@warehouse.Name</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+
+            <MudText Typo="Typo.h6" Class="mt-6">Produkte</MudText>
+            <MudStack Row="true">
+                <MudCheckBox @bind-Value="@salesChannel.ImportProducts" Label="Importieren" />
+                <MudCheckBox @bind-Value="@salesChannel.ExportProducts" Label="Exportieren" />
+            </MudStack>
+
+            <MudText Typo="Typo.h6" Class="mt-6">Kunden</MudText>
+            <MudStack Row="true">
+                <MudCheckBox @bind-Value="@salesChannel.ImportCustomers" Label="Importieren" />
+                <MudCheckBox @bind-Value="@salesChannel.ExportCustomers" Label="Exportieren" />
+            </MudStack>
+
+            <MudText Typo="Typo.h6" Class="mt-6">Kunden</MudText>
+            <MudStack Row="true">
+                <MudCheckBox @bind-Value="@salesChannel.ImportOrders" Label="Importieren" />
+                <MudCheckBox @bind-Value="@salesChannel.ExportOrders" Label="Exportieren" />
+            </MudStack>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       ButtonType="ButtonType.Button"
+                       OnClick="@(Save)"
+                       Class="mt-6">Speichern</MudButton>
+
+        </MudItem>
+    </MudGrid>
+</MudForm>
+
+@code {
+
+    [Parameter]
+    public int salesChannelId { get; set; }
+
+    private MudForm _form = new();
+
+    protected string Title = "hinzufügen";
+
+    protected SalesChannelVM salesChannel = new();
+    protected List<WarehouseVM> warehouses = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        warehouses = await _warehouseService.GetWarehouses();
+
+        if (salesChannelId != null && salesChannelId > 0)
+        {
+            salesChannel = await _salesChannelService.GetSalesChannelDetails(salesChannelId);
+        }
+    }
+
+    protected async Task Save()
+    {
+        if (salesChannelId != 0)
+        {
+            await _salesChannelService.UpdateSalesChannel(salesChannelId, salesChannel);
+        }
+        else
+        {
+            await _salesChannelService.CreateSalesChannel(salesChannel);
+        }
+
+        _snackbar.Add("Vertriebskanal gespeichert", Severity.Success);
+
+        ReturnToList();
+    }
+
+    public void ReturnToList()
+    {
+        _navigationManager.NavigateTo("/SalesChannels");
+    }
+}

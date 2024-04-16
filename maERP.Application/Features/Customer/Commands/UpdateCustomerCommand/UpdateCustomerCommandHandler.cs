@@ -34,7 +34,7 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
         }
 
         // convert to domain entity object
-        var customerToUpdate = _mapper.Map<Domain.Customer>(request);
+        var customerToUpdate = _mapper.Map<Domain.Models.Customer>(request);
 
         // add to database
         await _customerRepository.UpdateAsync(customerToUpdate);

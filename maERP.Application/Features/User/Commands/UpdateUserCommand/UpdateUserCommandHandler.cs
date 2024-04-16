@@ -35,7 +35,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateProductCommand, in
         }
 
         // convert to domain entity object
-        var productToUpdate = _mapper.Map<Domain.Product>(request);
+        var productToUpdate = _mapper.Map<Domain.Models.Product>(request);
 
         // add to database
         await _productRepository.UpdateAsync(productToUpdate);

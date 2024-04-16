@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using maERP.Domain;
+using maERP.Domain.Models;
 
 namespace maERP.Application.Dtos.SalesChannel;
 

@@ -34,7 +34,7 @@ public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand, int
         }
 
         // convert to domain entity object
-        var orderToDelete = _mapper.Map<Domain.Order>(request);
+        var orderToDelete = _mapper.Map<Domain.Models.Order>(request);
 
         // add to database
         await _orderRepository.CreateAsync(orderToDelete);

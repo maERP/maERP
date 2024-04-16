@@ -33,7 +33,7 @@ public class CreateTaxClassCommandHandler : IRequestHandler<CreateTaxClassComman
         }
 
         // convert to domain entity object
-        var taxClassToCreate = _mapper.Map<Domain.TaxClass>(request);
+        var taxClassToCreate = _mapper.Map<Domain.Models.TaxClass>(request);
 
         // add to database
         await _taxClassRepository.CreateAsync(taxClassToCreate);

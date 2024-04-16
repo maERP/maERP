@@ -1,0 +1,24 @@
+﻿@page "/Warehouses/{warehouseId:int}/Delete"
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject IWarehouseService _warehouseService
+
+@code {
+
+    [Parameter]
+    public int warehouseId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (warehouseId > 0)
+        {
+            await _warehouseService.DeleteWarehouse(warehouseId);
+            _navigationManager.NavigateTo("/Warehouses");
+        }
+    }
+}

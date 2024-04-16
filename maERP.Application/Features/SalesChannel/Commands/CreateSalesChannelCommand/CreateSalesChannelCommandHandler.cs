@@ -34,7 +34,7 @@ public class CreateSalesChannelCommandHandler : IRequestHandler<CreateSalesChann
         }
 
         // convert to domain entity object
-        var salesChannelToCreate = _mapper.Map<Domain.SalesChannel>(request);
+        var salesChannelToCreate = _mapper.Map<Domain.Models.SalesChannel>(request);
 
         // add to database
         await _salesChannelRepository.CreateAsync(salesChannelToCreate);

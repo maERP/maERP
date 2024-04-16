@@ -1,0 +1,21 @@
+﻿@page "/logout"
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+@using maERP.SharedUI.Services
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject IAuthenticationService _authService
+
+<text>Logout...</text>
+
+@code{
+
+    protected override async Task OnInitializedAsync()
+    {
+        await _authService.LogoutAsync();
+        _navigationManager.NavigateTo("/login");
+    }
+}

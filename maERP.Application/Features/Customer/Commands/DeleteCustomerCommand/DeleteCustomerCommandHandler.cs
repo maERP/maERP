@@ -34,7 +34,7 @@ public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerComman
         }
 
         // convert to domain entity object
-        var customerToDelete = _mapper.Map<Domain.Customer>(request);
+        var customerToDelete = _mapper.Map<Domain.Models.Customer>(request);
 
         // add to database
         await _customerRepository.CreateAsync(customerToDelete);

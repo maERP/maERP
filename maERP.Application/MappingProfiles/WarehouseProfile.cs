@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using maERP.Domain;
-using maERP.Application.Dtos.Warehouse;
 using maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
 using maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
 using maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
+using maERP.Domain.Models;
+using maERP.Application.Dtos.Warehouse;
 
 namespace maERP.Application.MappingProfiles;
 

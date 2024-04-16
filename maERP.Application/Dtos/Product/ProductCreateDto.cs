@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using maERP.Application.Dtos;
+using System.ComponentModel.DataAnnotations;
 
 namespace maERP.Application.Dtos.Product;
 

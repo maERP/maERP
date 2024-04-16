@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using maERP.Application.Dtos.User;
 using maERP.Application.Contracts.Persistence;
-using maERP.Domain;
+using maERP.Domain.Models;
 
 namespace maERP.Persistence.Repositories;
-/*
+
 public class UserRepository : IUserRepository
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -57,7 +56,7 @@ public class UserRepository : IUserRepository
             if (userUpdateDto.Password.Length > 0)
             {
                 localUser.PasswordHash = _userManager.PasswordHasher.HashPassword(localUser, userUpdateDto.Password);
-            }*//*
+            }*/
 
             await _userManager.UpdateAsync(localUser);
         }
@@ -75,4 +74,3 @@ public class UserRepository : IUserRepository
         return entity != null;
     }
 }
-*/

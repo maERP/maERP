@@ -34,7 +34,7 @@ public class DeleteTaxClassCommandHandler : IRequestHandler<DeleteTaxClassComman
         }
 
         // convert to domain entity object
-        var taxClassToDelete = _mapper.Map<Domain.TaxClass>(request);
+        var taxClassToDelete = _mapper.Map<Domain.Models.TaxClass>(request);
 
         // add to database
         await _taxClassRepository.CreateAsync(taxClassToDelete);

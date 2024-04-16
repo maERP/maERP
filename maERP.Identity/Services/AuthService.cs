@@ -4,7 +4,7 @@ using System.Text;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Exceptions;
 using maERP.Application.Models.Identity;
-using maERP.Identity.Models;
+using maERP.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

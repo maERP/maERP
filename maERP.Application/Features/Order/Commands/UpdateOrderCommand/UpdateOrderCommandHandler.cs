@@ -34,7 +34,7 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, int
         }
 
         // convert to domain entity object
-        var orderToUpdate = _mapper.Map<Domain.Order>(request);
+        var orderToUpdate = _mapper.Map<Domain.Models.Order>(request);
 
         // add to database
         await _orderRepository.UpdateAsync(orderToUpdate);

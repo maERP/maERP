@@ -1,0 +1,24 @@
+﻿@page "/Customers/{customerId:int}/Delete"
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject ICustomerService _customerService
+
+@code {
+
+    [Parameter]
+    public int customerId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (customerId > 0)
+        {
+            await _customerService.DeleteCustomer(customerId);
+            _navigationManager.NavigateTo("/Customers");
+        }
+    }
+}

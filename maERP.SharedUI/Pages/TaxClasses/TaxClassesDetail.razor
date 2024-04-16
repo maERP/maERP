@@ -1,0 +1,32 @@
+﻿@page "/TaxClasses/{taxClassId:int}"
+
+@using maERP.SharedUI.Contracts
+@using maERP.SharedUI.Models.TaxClass
+@using maERP.SharedUI.Services
+
+@inject NavigationManager _navigationManager
+@inject ITaxClassService _taxClassService
+
+<h1>Steuerklasse</h1>
+
+@code {
+
+    [Parameter]
+    public int taxClassId { get; set; }
+
+    protected string Title = "Steuersätze";
+
+    protected TaxClassVM taxClass = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (taxClassId != 0)
+        {
+            Title = "Bearbeiten";
+            taxClass = await _taxClassService.GetTaxClassDetails(taxClassId);
+        }
+        else Title = "nicht gefunden";
+
+        await Task.CompletedTask;
+    }
+}

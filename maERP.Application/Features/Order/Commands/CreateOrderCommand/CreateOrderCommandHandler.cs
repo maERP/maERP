@@ -33,7 +33,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, int
         }
 
         // convert to domain entity object
-        var orderToCreate = _mapper.Map<Domain.Order>(request);
+        var orderToCreate = _mapper.Map<Domain.Models.Order>(request);
 
         // add to database
         await _orderRepository.CreateAsync(orderToCreate);

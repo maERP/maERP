@@ -11,6 +11,7 @@
     <SingleProject>true</SingleProject>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableDefaultCssItems>false</EnableDefaultCssItems>
+	<SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
 
     <!-- Display name -->
     <ApplicationTitle>maERP.Client</ApplicationTitle>
@@ -86,20 +87,21 @@
   </ItemGroup>
 
   <ItemGroup>
+	<PackageReference Include="AutoMapper" Version="13.0.1" />
+	<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 	<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.7" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="MudBlazor" Version="6.19.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
     <MauiImage Remove="MauiResources\Images\dotnet_bot.svg" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="MauiResources\Images\dotnet_bot.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\maERP.SharedUI\maERP.SharedUI.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.20" />

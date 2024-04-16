@@ -33,7 +33,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         }
 
         // convert to domain entity object
-        var productToCreate = _mapper.Map<Domain.Product>(request);
+        var productToCreate = _mapper.Map<Domain.Models.Product>(request);
 
         // add to database
         await _productRepository.CreateAsync(productToCreate);

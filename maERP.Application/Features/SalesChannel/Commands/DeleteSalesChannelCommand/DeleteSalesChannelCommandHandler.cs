@@ -35,7 +35,7 @@ public class DeleteSalesChannelCommandHandler : IRequestHandler<DeleteSalesChann
         }
 
         // convert to domain entity object
-        var salesChannelToDelete = _mapper.Map<Domain.SalesChannel>(request);
+        var salesChannelToDelete = _mapper.Map<Domain.Models.SalesChannel>(request);
 
         // add to database
         await _salesChannelRepository.CreateAsync(salesChannelToDelete);
