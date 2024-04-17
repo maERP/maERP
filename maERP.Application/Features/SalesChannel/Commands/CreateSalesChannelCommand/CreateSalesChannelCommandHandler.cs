@@ -29,7 +29,7 @@ public class CreateSalesChannelCommandHandler : IRequestHandler<CreateSalesChann
 
         if(validationResult.Errors.Any())
         {
-            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateSalesChannelCommand), request.TaxRate);
+            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateSalesChannelCommand), request.Name);
             throw new Exceptions.ValidationException("Invalid SalesChannel", validationResult);
         }
 

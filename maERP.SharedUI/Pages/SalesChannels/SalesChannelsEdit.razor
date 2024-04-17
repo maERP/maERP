@@ -122,18 +122,32 @@
 
     protected async Task Save()
     {
+        Services.Base.Response<Guid> response = new();
+
         if (salesChannelId != 0)
         {
-            await _salesChannelService.UpdateSalesChannel(salesChannelId, salesChannel);
+            response = await _salesChannelService.UpdateSalesChannel(salesChannelId, salesChannel);
+            Console.WriteLine(response.Success);
         }
         else
         {
             await _salesChannelService.CreateSalesChannel(salesChannel);
         }
 
-        _snackbar.Add("Vertriebskanal gespeichert", Severity.Success);
-
-        ReturnToList();
+        if(response.Success)
+        {
+            _snackbar.Add("Vertriebskanal gespeichert", Severity.Success);
+            ReturnToList();
+        }
+        else
+        {
+            _snackbar.Add("Fehler beim Speichern des Vertriebskanals", Severity.Error);
+            
+            foreach(var error in response.ValidationErrors)
+            {
+                _snackbar.Add(error.ToString(), Severity.Error);
+            }
+        }        
     }
 
     public void ReturnToList()

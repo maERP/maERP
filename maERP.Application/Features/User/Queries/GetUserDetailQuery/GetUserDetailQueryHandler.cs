@@ -5,7 +5,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Application.Dtos.User;
 
 namespace maERP.Application.Features.User.Queries.GetUserDetailQuery;
-/*
+
 public class GetUserDetailQueryHandler : IRequestHandler<GetUserDetailQuery, UserDetailDto>
 {
     private readonly IMapper _mapper;
@@ -34,4 +34,3 @@ public class GetUserDetailQueryHandler : IRequestHandler<GetUserDetailQuery, Use
         return data;
     }
 }
-*/

@@ -16,8 +16,9 @@ public class UpdateTaxClassCommandValidator : AbstractValidator<UpdateTaxClassCo
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
         
         RuleFor(p => p.TaxRate)
-            .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            //.NotNull().WithMessage("{PropertyName} is required.")
+            //.NotEmpty().WithMessage("{PropertyName} is required.")
+            .GreaterThanOrEqualTo(0).WithMessage("{PropertyName} must greater or equal 0.")
+            .LessThanOrEqualTo(100).WithMessage("{PropertyName} must less or equal 100.");
     }
 }

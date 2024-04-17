@@ -8,6 +8,7 @@ namespace maERP.Domain.Models;
 public class ProductSalesChannel : BaseEntity
 {
     public SalesChannel SalesChannel { get; set; } = new();
+    public int SalesChannelId { get; set; }
 
     public int ProductId { get; set; } = new();
 

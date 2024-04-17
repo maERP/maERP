@@ -34,13 +34,13 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
         }
 
         // convert to domain entity object
-        var warehouseToCreate = _mapper.Map<Domain.Models.Warehouse>(request);
+        var warehouseToUpdate = _mapper.Map<Domain.Models.Warehouse>(request);
 
         // add to database
-        await _warehouseRepository.CreateAsync(warehouseToCreate);
+        await _warehouseRepository.UpdateAsync(warehouseToUpdate);
 
         // return record id
-        return warehouseToCreate.Id;
+        return warehouseToUpdate.Id;
 
         // Example Exception:
         // throw new NotFoundException(nameof(Warehouse), request.Id);

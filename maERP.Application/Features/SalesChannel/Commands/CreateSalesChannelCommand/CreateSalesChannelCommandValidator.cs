@@ -12,10 +12,9 @@ public class CreateSalesChannelCommandValidator : AbstractValidator<CreateSalesC
     {
         _salesChannelRepository = salesChannelRepository;
 
-        RuleFor(p => p.TaxRate)
+        RuleFor(p => p.Url)
             .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            .NotEmpty().WithMessage("{PropertyName} is required.");
     }
 
     private async Task<bool> SalesChannelUnique(CreateSalesChannelCommand command, CancellationToken cancellationToken)

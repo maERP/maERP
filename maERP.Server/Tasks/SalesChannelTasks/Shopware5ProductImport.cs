@@ -113,16 +113,16 @@ public class ProductDownloadTask : IHostedService
                                 localProduct.TaxClassId = 1;
                                 localProduct.Description = Globals.maxLength(remoteProduct.descriptionLong, 4000);
 
-                                /*
+                                /* */
                                 localProduct.ProductSalesChannel = new List<ProductSalesChannel>();
 
                                 localProduct.ProductSalesChannel.Add(new ProductSalesChannel
                                 {
-                                    // RemoteProductId = remoteProduct.id,
-                                    // SalesChannelId = salesChannel.Id,
+                                    RemoteProductId = remoteProduct.id,
+                                    SalesChannelId = salesChannel.Id,
                                     Price = (decimal)remoteProduct.mainDetail.purchasePrice
                                 });
-                                */
+                                /* */
                                 await productRepository.CreateAsync(localProduct);
                             }
                             else
@@ -134,7 +134,7 @@ public class ProductDownloadTask : IHostedService
                                 await productSalesChannelRepository.UpdateAsync(ProductSalesChannel);
 
                                 // var localProduct = await productRepository.GetAsync(ProductSalesChannel.ProductId);
-                                var localProduct = await productRepository.GetByIdAsync(ProductSalesChannel.Product.Id);
+                                var localProduct = await productRepository.GetByIdAsync(ProductSalesChannel.ProductId);
 
                                 if(localProduct.Name != remoteProduct.name)
                                 {
@@ -157,10 +157,10 @@ public class ProductDownloadTask : IHostedService
                                     newUpdate = true;
                                 }
 
-                                if(localProduct.Ean != remoteProduct.mainDetail.number)
+                                if(localProduct.Sku != remoteProduct.mainDetail.number)
                                 {
                                     Console.WriteLine("new product sku");
-                                    localProduct.Ean = remoteProduct.mainDetail.number;
+                                    localProduct.Sku = remoteProduct.mainDetail.number;
                                     newUpdate = true;
                                 }
 
