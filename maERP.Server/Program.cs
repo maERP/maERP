@@ -2,7 +2,6 @@
 
 using maERP.Server.Middleware;
 using maERP.Server.ServiceRegistrations;
-
 using Serilog;
 using Microsoft.EntityFrameworkCore;
 using maERP.Application;
@@ -12,42 +11,17 @@ using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
 using maERP.Persistence.Repositories;
-using Microsoft.AspNetCore.Identity;
+using maERP.Server.Configurations.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
+
+builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection("ConnectionStrings"));
+
 builder.Host.UseSerilog(
-    (context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
+(context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
 );
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    if (Environment.GetEnvironmentVariable("DB_TYPE") == "pgsql")
-    {
-        string conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
-                  + ";Port=" + Environment.GetEnvironmentVariable("DB_PORT")
-                  + ";Database=" + Environment.GetEnvironmentVariable("DB_NAME")
-                  + ";User Id=" + Environment.GetEnvironmentVariable("DB_USER")
-                  + ";Password=" + Environment.GetEnvironmentVariable("DB_PASS");
-
-        options.UseNpgsql(conString);
-    }
-    else if (Environment.GetEnvironmentVariable("DB_TYPE") == "mysql")
-    {
-        string conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
-                  + ";Port=" + Environment.GetEnvironmentVariable("DB_PORT")
-                  + ";Database=" + Environment.GetEnvironmentVariable("DB_NAME")
-                  + ";Uid=" + Environment.GetEnvironmentVariable("DB_USER")
-                  + ";Pwd=" + Environment.GetEnvironmentVariable("DB_PASS");
-
-        options.UseMySql(conString, ServerVersion.AutoDetect(conString));
-    }
-    else
-    {
-        string conString = builder.Configuration.GetConnectionString("DefaultConnection");
-        options.UseNpgsql(conString);
-    }    
-});
 
 builder.Services.AddCors(options =>
 {

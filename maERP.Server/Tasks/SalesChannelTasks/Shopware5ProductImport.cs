@@ -113,16 +113,16 @@ public class ProductDownloadTask : IHostedService
                                 localProduct.TaxClassId = 1;
                                 localProduct.Description = Globals.maxLength(remoteProduct.descriptionLong, 4000);
 
-                                /* */
-                                localProduct.ProductSalesChannel = new List<ProductSalesChannel>();
-
-                                localProduct.ProductSalesChannel.Add(new ProductSalesChannel
-                                {
-                                    RemoteProductId = remoteProduct.id,
-                                    SalesChannelId = salesChannel.Id,
-                                    Price = (decimal)remoteProduct.mainDetail.purchasePrice
-                                });
-                                /* */
+                                localProduct.ProductSalesChannel =
+                                [
+                                    new ProductSalesChannel
+                                    {
+                                        RemoteProductId = remoteProduct.id,
+                                        SalesChannelId = salesChannel.Id,
+                                        Price = (decimal)remoteProduct.mainDetail.purchasePrice
+                                    },
+                                ];
+                                
                                 await productRepository.CreateAsync(localProduct);
                             }
                             else

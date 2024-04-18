@@ -1,6 +1,24 @@
 version: '3.4'
 
 services:
+  maerp.server:
+    image: ${DOCKER_REGISTRY-}maerpserver
+    build:
+      context: .
+      dockerfile: maERP.Server/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection="Server=localhost;Port=5432;Database=maerp_01;User Id=maerp;Pwd=maerp;"
+    ports:
+      - 8443:8443
+    depends_on:
+      - postgres
+      - grafana-agent
+    links:
+      - postgres:database
+      - grafana-agent
+    networks:
+      - backend
+
   maerp.web:
     image: ${DOCKER_REGISTRY-}maerpweb
     build:
@@ -10,28 +28,23 @@ services:
       # set server url (example: https://erp-server.domain.tld)
       - SERVER_URL="maerp.server"
     ports:
-      - 443:8443
-      - 80:8080
+      - 8444:8444
+      - 8080:8080
     links:
       - maerp.server
 
-  maerp.server:
-    image: ${DOCKER_REGISTRY-}maerpserver
-    build:
-      context: .
-      dockerfile: maERP.Server/Dockerfile
+  postgres:
+    image: postgres
     environment:
-      - DB_TYPE="mysql"
-      - DB_HOST="localhost"
-      - DB_PORT="3306"
-      - DB_NAME="maerp"
-      - DB_USER="maerp"
-      - DB_PASS="maerp"
+      POSTGRES_USER: maerp
+      POSTGRES_PASSWORD: maerp
+      POSTGRES_DB: maerp
     ports:
-      - 443:8080
-        
-  agent:
-    profiles: [ agent ]
+      - 5432:5432
+    networks:
+      - backend
+
+  grafana-agent:
     image: grafana/agent:latest
     volumes:
       - ./agent/config:/etc/agent-config
@@ -46,21 +59,12 @@ services:
     environment:
       HOSTNAME: agent
       REMOTE_WRITE_HOST: mimir:9009
-      LOKI_HOST: loki:3100
-      TEMPO_HOST: tempo:4317
-      AVALANCHE_HOST: avalanche:9001
-      MYSQL_HOST: mysql:3306
-      POSTGRES_HOST: postgres:5432
-      REDIS_HOST: redis:6379
-      DNSMASQ_HOST: dnsmasq:53
-      MEMCACHED_HOST: memcached:11211
-      CONSUL_HOST: consul:8500
-      ELASTICSEARCH_HOST: elasticsearch:9200
-      KAFKA_HOST: kafka:9093
-      MONGODB_HOST: mongodb:27017
+      POSTGRES_HOST: postgres:5433
     ports:
       - "12345:12345"
-    depends_on:
-      - mimir
-      - loki
-      - tempo
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
