@@ -7,14 +7,14 @@ services:
       context: .
       dockerfile: maERP.Server/Dockerfile
     environment:
-      - ConnectionStrings__DefaultConnection="Server=localhost;Port=5432;Database=maerp_01;User Id=maerp;Pwd=maerp;"
+      - ConnectionStrings__DefaultConnection=Server=postgres;Port=5432;Database=maerp_01;User Id=maerp;Password=maerp
     ports:
-      - 8443:8443
+      - 8443:443
     depends_on:
       - postgres
       - grafana-agent
     links:
-      - postgres:database
+      - postgres
       - grafana-agent
     networks:
       - backend
@@ -28,8 +28,8 @@ services:
       # set server url (example: https://erp-server.domain.tld)
       - SERVER_URL="maerp.server"
     ports:
-      - 8444:8444
-      - 8080:8080
+      - 8444:443
+      - 8080:80
     links:
       - maerp.server
 
@@ -38,7 +38,7 @@ services:
     environment:
       POSTGRES_USER: maerp
       POSTGRES_PASSWORD: maerp
-      POSTGRES_DB: maerp
+      POSTGRES_DB: maerp_01
     ports:
       - 5432:5432
     networks:

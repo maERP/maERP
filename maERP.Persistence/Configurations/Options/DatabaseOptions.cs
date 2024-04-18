@@ -1,4 +1,4 @@
-﻿namespace maERP.Server.Configurations.Options;
+﻿namespace maERP.Persistence.Configurations.Options;
 
 public class DatabaseOptions
 {

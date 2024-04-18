@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using System.Configuration;
 using maERP.Server.Middleware;
 using maERP.Server.ServiceRegistrations;
 using Serilog;
@@ -10,8 +11,10 @@ using maERP.Persistence;
 using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
+using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.Repositories;
-using maERP.Server.Configurations.Options;
+using Microsoft.Extensions.Options;
+using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,9 +50,12 @@ builder.Services.AddResponseCaching(options =>
     options.UseCaseSensitivePaths = true;
 });
 
+builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
+
+IOptions<DatabaseOptions> dbOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<DatabaseOptions>>();
+builder.Services.AddPersistenceServices(dbOptions);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
