@@ -15,6 +15,7 @@ using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.Repositories;
 using Microsoft.Extensions.Options;
 using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
+using maERP.SalesChannels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +58,7 @@ builder.Services.AddPersistenceServices(dbOptions);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddSalesChannelServices();
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
@@ -68,10 +70,6 @@ builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-Console.WriteLine("Start background tasks...");
-builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.ProductDownloadTask>();
-builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.OrderDownloadTask>();
 
 var app = builder.Build();
 

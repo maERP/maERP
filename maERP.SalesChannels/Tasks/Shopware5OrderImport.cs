@@ -5,8 +5,10 @@ using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Models;
 using maERP.Domain.Models.SalesChannelData.Shopware5;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace maERP.Server.Tasks.SalesChannelTasks;
+namespace maERP.SalesChannels.Tasks;
 
 public class OrderDownloadTask : IHostedService
 {
@@ -27,7 +29,7 @@ public class OrderDownloadTask : IHostedService
 
                 await MainLoop();
 
-                await Task.Delay(new TimeSpan(0, 0, 60)); // 5 second delay
+                await Task.Delay(new TimeSpan(0, 0, 60)); // 60 second delay
 
                 Console.WriteLine("OrderDownload MainLoop finished");
             }
@@ -52,7 +54,7 @@ public class OrderDownloadTask : IHostedService
 
         foreach (var salesChannel in salesChannels)
         {
-            if (salesChannel.Type != SalesChannelType.shopware5 || salesChannel.ImportOrders == false)
+            if (salesChannel.Type != SalesChannelType.shopware5 || salesChannel.ImportOrders != true)
             {
                 continue;
             }
@@ -90,6 +92,11 @@ public class OrderDownloadTask : IHostedService
                         {
                             remoteOrders = JsonSerializer.Deserialize<Shopware5Response<Shopware5OrderResponse>>(result);
 
+                            if(remoteOrders.data == null || remoteOrders.success == false)
+                            {
+                                throw new Exception("No data in response");
+                            }
+
                             requestMax = remoteOrders.total;
                         }
                         catch (Exception ex)
@@ -105,6 +112,7 @@ public class OrderDownloadTask : IHostedService
 
                             var order = await orderRepository.GetByRemoteOrderIdAsync(remoteOrder.id.ToString(), salesChannel.Id);
 
+                            // new order
                             if (order == null)
                             {
                                 var localOrder = new Order
@@ -114,6 +122,7 @@ public class OrderDownloadTask : IHostedService
 
                                 await orderRepository.CreateAsync(localOrder);
                             }
+                            // existing order
                             else
                             {
 

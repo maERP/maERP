@@ -30,7 +30,7 @@ services:
     ports:
       - 8444:443
       - 8080:80
-    links:
+    depends_on:
       - maerp.server
 
   postgres:
@@ -39,15 +39,15 @@ services:
       POSTGRES_USER: maerp
       POSTGRES_PASSWORD: maerp
       POSTGRES_DB: maerp_01
-    ports:
-      - 5432:5432
+#    ports:
+#      - 5432:5432
     networks:
       - backend
+    volumes:
+      - maerp-postgres:/var/lib/postgresql/data
 
   grafana-agent:
     image: grafana/agent:latest
-    volumes:
-      - ./agent/config:/etc/agent-config
     entrypoint:
       - /bin/grafana-agent
       - -server.http.address=0.0.0.0:12345
@@ -57,13 +57,17 @@ services:
       - -config.expand-env
       - -config.enable-read-api
     environment:
-      HOSTNAME: agent
+      HOSTNAME: grafana-agent
       REMOTE_WRITE_HOST: mimir:9009
-      POSTGRES_HOST: postgres:5433
+      POSTGRES_HOST: postgres:5432
     ports:
       - "12345:12345"
     networks:
       - backend
+
+volumes:
+  maerp-server:
+  maerp-postgres:
 
 networks:
   backend:
