@@ -8,9 +8,6 @@ services:
     ports:
       - "80"
       - "443"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
   maerp.server:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -18,6 +15,3 @@ services:
     ports:
       - "80"
       - "443"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

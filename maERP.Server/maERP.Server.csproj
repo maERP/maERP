@@ -20,11 +20,6 @@
     <Description>
       OpenSource, self-hosted, client/server-based ERP system with multiplatform GUI written in CSharp
     </Description>
-    <IsPackable>true</IsPackable>
-    <PackageReleaseNotes>
-      Work in Progress.
-    </PackageReleaseNotes>
-    <PackageOutputPath>packages</PackageOutputPath>
     <Platforms>AnyCPU;x64</Platforms>
     <PackageId>maERP</PackageId>
     <Configurations>Debug;Release</Configurations>
@@ -40,30 +35,23 @@
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Exceptions\" />
-    <Folder Include="Middleware\" />
-    <Folder Include="Repository\SalesChannelRepositories\" />
-    <Folder Include="wwwroot\lib\" />
     <Folder Include="Controllers\Web\" />
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.2.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Kubernetes.Tools.Targets" Version="1.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -72,14 +60,17 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+    <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
     <PackageReference Include="Serilog.Sinks.Graylog" Version="3.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
+    <ProjectReference Include="..\maERP.Analytics\maERP.Analytics.csproj" />
+    <ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
+    <ProjectReference Include="..\maERP.Infrastructure\maERP.Infrastructure.csproj" />
+    <ProjectReference Include="..\maERP.Persistence\maERP.Persistence.csproj" />
+    <ProjectReference Include="..\maERP.SalesChannels\maERP.SalesChannels.csproj" />
   </ItemGroup>
 </Project>

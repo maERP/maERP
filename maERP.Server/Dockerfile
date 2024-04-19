@@ -5,12 +5,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-ENV DB_TYPE postgres
-ENV DB_HOST localhost
-ENV DB_PORT 5432
-ENV DB_USER maerp
-ENV DB_PASS maerp
-ENV DB_NAME maerp_01
+ENV ConnectionStrings__DefaultConnection Server=localhost;Port=5432;Database=maerp_01;User Id=maerp;Pwd=maerp;
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src

@@ -1,0 +1,28 @@
+﻿@page "/Customers/{customerId:int}"
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+@using maERP.SharedUI.Services
+@using maERP.SharedUI.Models.Customer
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject ICustomerService _customerService
+
+<MudText Typo="Typo.h4" Class="mb-8">Kundendetails</MudText>
+
+@code {
+
+    [Parameter]
+    public int customerId { get; set; }
+
+    protected CustomerVM customer = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (customerId != 0)
+        {
+            customer = await _customerService.GetCustomerDetails(customerId);
+        }
+    }
+}

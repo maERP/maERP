@@ -1,0 +1,30 @@
+﻿@page "/Warehouses"
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<PageTitle>Lager</PageTitle>
+
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Lager</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Warehouses/Add" />
+</MudStack>
+
+@if (warehouses == null)
+{
+    <p><em>Lade...</em></p>
+}
+else
+{
+    <MudDataGrid Items="@warehouses" SortMode="SortMode.Single" Class="mb-8">
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="Name" />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudButton Href="@($"/Warehouses/{context.Item.Id}/Edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+}

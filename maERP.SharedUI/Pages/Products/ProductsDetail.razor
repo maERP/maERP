@@ -1,0 +1,32 @@
+﻿@page "/Products/{productId:int}"
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+@using maERP.SharedUI.Models.Product
+@using maERP.SharedUI.Services
+
+@attribute [Authorize]
+
+@inject NavigationManager NavManager
+@inject IProductService _productService
+
+<MudText Typo="Typo.h4" Class="mb-8">Produktdetails</MudText>
+
+
+@code {
+
+    [Parameter]
+    public int productId { get; set; }
+
+    protected string Title = "Produktdetail";
+
+    protected ProductVM product = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (productId != 0)
+        {
+            product = await _productService.GetProductDetails(productId);
+        }
+    }
+}

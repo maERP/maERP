@@ -1,9 +1,5 @@
-﻿using Blazored.LocalStorage;
-using MudBlazor.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-using maERP.Shared.Services;
-using maERP.Shared.Contracts;
-using maERP.Shared.Providers;
+﻿using maERP.SharedUI;
+using maERP.SharedUI.Services;
 
 namespace maERP.Client;
 
@@ -25,13 +21,7 @@ public static class MauiProgram
         builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
-        builder.Services.AddBlazoredLocalStorage();
-        builder.Services.AddAuthorizationCore();
-        builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
-        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-        builder.Services.AddScoped(typeof(IApiDataProvider<>), typeof(ApiDataProvider<>));
-
-        builder.Services.AddMudServices();
+        builder.Services.AddUIServices(builder.Configuration);
 
         return builder.Build();
     }

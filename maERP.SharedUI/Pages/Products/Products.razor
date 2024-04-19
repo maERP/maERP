@@ -1,0 +1,64 @@
+﻿@page "/Products"
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+@using maERP.SharedUI.Models.Product
+@using maERP.SharedUI.Services
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject IProductService _productService
+
+<PageTitle>Produkte</PageTitle>
+
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Produkte</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Products/Add" />
+</MudStack>
+
+@if (products == null)
+{
+    <p><em>Lade...</em></p>
+}
+else
+{
+    <MudDataGrid Items="@products" SortMode="SortMode.Single" Class="mb-8">
+        <Columns>
+            <PropertyColumn Property="x => x.Sku" Title="SKU" />
+            <PropertyColumn Property="x => x.Name" Title="Name" />
+            <PropertyColumn Property="x => x.Price" Title="Preis" />
+            <PropertyColumn Property="x => x.Ean" Title="EAN" />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudButton Href="@($"/Products/{context.Item.Id}/edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+}
+
+@code {
+
+    private ICollection<ProductVM>? products;
+    public string? filter { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await _productService.GetProducts();
+    }
+
+    public bool IsVisible(ProductVM product)
+    {
+        if (string.IsNullOrEmpty(filter))
+            return true;
+
+        if (product.Sku.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+            product.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+            product.Ean.Contains(filter, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+}

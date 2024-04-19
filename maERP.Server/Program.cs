@@ -1,53 +1,31 @@
 ﻿#nullable disable
 
-using maERP.Server;
-using maERP.Server.Configurations;
+using System.Configuration;
 using maERP.Server.Middleware;
-using maERP.Shared.Models.Database;
-using maERP.Server.Services;
 using maERP.Server.ServiceRegistrations;
-using maERP.Server.Repository;
-
 using Serilog;
 using Microsoft.EntityFrameworkCore;
-using maERP.Server.Contracts;
+using maERP.Application;
+using maERP.Infrastructure;
+using maERP.Persistence;
+using maERP.Persistence.DatabaseContext;
+using maERP.Application.Contracts.Persistence;
+using maERP.Identity;
+using maERP.Persistence.Configurations.Options;
+using maERP.Persistence.Repositories;
+using Microsoft.Extensions.Options;
+using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
+using maERP.SalesChannels;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
+
+builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection("ConnectionStrings"));
+
 builder.Host.UseSerilog(
-    (context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
+(context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
 );
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    string conString = "";
-
-    if (Environment.GetEnvironmentVariable("DB_TYPE") == "pgsql")
-    {
-        conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
-                  + ";Port=" + Environment.GetEnvironmentVariable("DB_PORT")
-                  + ";Database=" + Environment.GetEnvironmentVariable("DB_NAME")
-                  + ";User Id=" + Environment.GetEnvironmentVariable("DB_USER")
-                  + ";Password=" + Environment.GetEnvironmentVariable("DB_PASS");
-
-        options.UseNpgsql(conString);
-    }
-    else if (Environment.GetEnvironmentVariable("DB_TYPE") == "mysql")
-    {
-        conString = "Server=" + Environment.GetEnvironmentVariable("DB_HOST")
-                  + ";Port=" + Environment.GetEnvironmentVariable("DB_PORT")
-                  + ";Database=" + Environment.GetEnvironmentVariable("DB_NAME")
-                  + ";Uid=" + Environment.GetEnvironmentVariable("DB_USER")
-                  + ";Pwd=" + Environment.GetEnvironmentVariable("DB_PASS");
-
-        options.UseMySql(conString, ServerVersion.AutoDetect(conString));
-    }
-    else
-    {
-        conString = builder.Configuration.GetConnectionString("DefaultConnection");
-        options.UseNpgsql(conString);
-    }    
-});
 
 builder.Services.AddCors(options =>
 {
@@ -62,7 +40,6 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSwaggerServices();
 builder.Services.AddApiVersioningServices(builder.Configuration);
-builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>
@@ -74,7 +51,15 @@ builder.Services.AddResponseCaching(options =>
     options.UseCaseSensitivePaths = true;
 });
 
-builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
+builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
+
+IOptions<DatabaseOptions> dbOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<DatabaseOptions>>();
+builder.Services.AddPersistenceServices(dbOptions);
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddSalesChannelServices();
+
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -86,17 +71,14 @@ builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-Console.WriteLine("Start background tasks...");
-builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.ProductDownloadTask>();
-builder.Services.AddHostedService<maERP.Server.Tasks.SalesChannelTasks.OrderDownloadTask>();
-
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllerRoute(
     name: "default",
@@ -154,6 +136,4 @@ using (var scope = app.Services.CreateScope())
 
 app.Run();
 
-public partial class Program
-{
-}
+public partial class Program { }

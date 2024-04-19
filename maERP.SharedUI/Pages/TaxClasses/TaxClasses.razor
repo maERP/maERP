@@ -1,0 +1,47 @@
+﻿@page "/TaxClasses"
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+@using maERP.SharedUI.Models.TaxClass
+@using maERP.SharedUI.Services
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject ITaxClassService _taxClassService
+
+<PageTitle>Steuersätze</PageTitle>
+
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Lager</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/TaxClasses/Add" />
+</MudStack>
+
+@if (taxClasses == null)
+{
+    <p><em>Lade...</em></p>
+}
+else
+{
+
+    <MudDataGrid Items="@taxClasses" SortMode="SortMode.Single" Class="mb-8">
+        <Columns>
+            <PropertyColumn Property="x => x.TaxRate" Title="Steuersatz in %" />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudButton Href="@($"/TaxClasses/{context.Item.Id}/Edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+}
+
+@code {
+
+    private ICollection<TaxClassVM>? taxClasses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        taxClasses = await _taxClassService.GetTaxClasses();
+    }
+}

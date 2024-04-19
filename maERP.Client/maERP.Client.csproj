@@ -11,6 +11,7 @@
     <SingleProject>true</SingleProject>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableDefaultCssItems>false</EnableDefaultCssItems>
+	<SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
 
     <!-- Display name -->
     <ApplicationTitle>maERP.Client</ApplicationTitle>
@@ -84,10 +85,6 @@
     <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
     <MauiAsset Include="MauiResources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj" />
-  </ItemGroup>
   <ItemGroup>
     <MauiImage Remove="MauiResources\Images\dotnet_bot.svg" />
   </ItemGroup>
@@ -101,5 +98,9 @@
     <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.14" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.14" />    
+    <ProjectReference Include="..\maERP.SharedUI\maERP.SharedUI.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.20" />
   </ItemGroup>
 </Project>

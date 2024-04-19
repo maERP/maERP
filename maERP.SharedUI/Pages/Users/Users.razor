@@ -1,0 +1,48 @@
+﻿@page "/Users"
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+@using maERP.SharedUI.Models.User
+@using maERP.SharedUI.Services
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject IUserService _userService
+
+<PageTitle>Benutzer</PageTitle>
+
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Benutzer</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Users/Add" />
+</MudStack>
+
+@if (users == null)
+{
+    <p><em>Lade...</em></p>
+}
+else
+{
+    <MudDataGrid Items="@users" SortMode="SortMode.Single" Class="mb-8">
+        <Columns>
+            <PropertyColumn Property="x => x.Email" Title="E-Mail" />
+            <PropertyColumn Property="x => x.FirstName" Title="Vorname" />
+            <PropertyColumn Property="x => x.LastName" Title="Nachname" />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudButton Href="@($"/Users/{context.Item.Id}/Edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+}
+
+@code {
+
+    private ICollection<UserVM>? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await _userService.GetUsers();
+    }
+}

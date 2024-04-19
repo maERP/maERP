@@ -1,6 +1,24 @@
 version: '3.4'
 
 services:
+  maerp.server:
+    image: ${DOCKER_REGISTRY-}maerpserver
+    build:
+      context: .
+      dockerfile: maERP.Server/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=postgres;Port=5432;Database=maerp_01;User Id=maerp;Password=maerp
+    ports:
+      - 8443:443
+    depends_on:
+      - postgres
+      - grafana-agent
+    links:
+      - postgres
+      - grafana-agent
+    networks:
+      - backend
+
   maerp.web:
     image: ${DOCKER_REGISTRY-}maerpweb
     build:
@@ -10,22 +28,47 @@ services:
       # set server url (example: https://erp-server.domain.tld)
       - SERVER_URL="maerp.server"
     ports:
-      - 443:8443
-      - 80:8080
-    links:
+      - 8444:443
+      - 8080:80
+    depends_on:
       - maerp.server
 
-  maerp.server:
-    image: ${DOCKER_REGISTRY-}maerpserver
-    build:
-      context: .
-      dockerfile: maERP.Server/Dockerfile
+  postgres:
+    image: postgres
     environment:
-      - DB_TYPE="mysql"
-      - DB_HOST="localhost"
-      - DB_PORT="3306"
-      - DB_NAME="maerp"
-      - DB_USER="maerp"
-      - DB_PASS="maerp"
+      POSTGRES_USER: maerp
+      POSTGRES_PASSWORD: maerp
+      POSTGRES_DB: maerp_01
+#    ports:
+#      - 5432:5432
+    networks:
+      - backend
+    volumes:
+      - maerp-postgres:/var/lib/postgresql/data
+
+  grafana-agent:
+    image: grafana/agent:latest
+    entrypoint:
+      - /bin/grafana-agent
+      - -server.http.address=0.0.0.0:12345
+      - -config.file=/etc/agent-config/agent.yaml
+      - -metrics.wal-directory=/tmp/agent/wal
+      - -enable-features=integrations-next
+      - -config.expand-env
+      - -config.enable-read-api
+    environment:
+      HOSTNAME: grafana-agent
+      REMOTE_WRITE_HOST: mimir:9009
+      POSTGRES_HOST: postgres:5432
     ports:
-      - 443:8080
+      - "12345:12345"
+    networks:
+      - backend
+
+volumes:
+  maerp-server:
+  maerp-postgres:
+
+networks:
+  backend:
+    driver: bridge

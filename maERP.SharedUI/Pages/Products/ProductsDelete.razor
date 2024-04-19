@@ -1,0 +1,24 @@
+﻿@page "/Products/{productId:int}/Delete"
+
+@using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Contracts
+
+@attribute [Authorize]
+
+@inject NavigationManager _navigationManager
+@inject IProductService _productService
+
+@code {
+
+    [Parameter]
+    public int productId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (productId > 0)
+        {
+            await _productService.DeleteProduct(productId);
+            _navigationManager.NavigateTo("/Products");
+        }
+    }
+}

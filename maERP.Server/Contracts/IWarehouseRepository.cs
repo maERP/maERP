@@ -1,7 +1,0 @@
-﻿using maERP.Shared.Models.Database;
-
-namespace maERP.Server.Contracts;
-
-public interface IWarehouseRepository : IGenericRepository<Warehouse>
-{
-}
