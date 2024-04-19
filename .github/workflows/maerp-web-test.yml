@@ -5,12 +5,12 @@ on:
     branches-ignore: [ main ]
     paths:
       - 'maERP.Web/**'
-      - 'maERP.Shared/**'
+      - 'maERP.SharedUI/**'
   pull_request:
     branches: [ main ]
     paths:
       - 'maERP.Web/**'
-      - 'maERP.Shared/**'
+      - 'maERP.SharedUI/**'
 
 jobs:
   test:

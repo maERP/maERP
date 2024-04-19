@@ -5,7 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'maERP.Web/**'
-      - 'maERP.Shared/**'
+      - 'maERP.SharedUI/**'
 
 jobs:
   push_to_registry:

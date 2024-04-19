@@ -5,14 +5,30 @@ on:
     branches-ignore: [ main ]
     paths:
       - 'maERP.Server/**'
-      - 'maERP.Server.Tests/**'
-      - 'maERP.Shared/**'
+      - 'maERP.Core/**'
+      - 'maERP.Domain/**'
+      - 'maERP.Application/**'
+      - 'maERP.Analytics/**'
+      - 'maERP.Identity/**'
+      - 'maERP.Infrastructure/**'
+      - 'maERP.Persistence/**'
+      - 'maERP.SalesChannels/**'
+      - 'maERP.Persistence/**'
+      - 'maERP.Persistence/**'
   pull_request:
     branches: [ main ]
     paths:
       - 'maERP.Server/**'
-      - 'maERP.Server.Tests/**'
-      - 'maERP.Shared/**'
+      - 'maERP.Core/**'
+      - 'maERP.Domain/**'
+      - 'maERP.Application/**'
+      - 'maERP.Analytics/**'
+      - 'maERP.Identity/**'
+      - 'maERP.Infrastructure/**'
+      - 'maERP.Persistence/**'
+      - 'maERP.SalesChannels/**'
+      - 'maERP.Persistence/**'
+      - 'maERP.Persistence/**'
 
 jobs:
   test:
