@@ -2,7 +2,7 @@
 
 public class SalesChannelImportProduct
 {
-    public int? Id { get; set; }
+    // public int? Id { get; set; }
     public int RemoteProductId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Sku { get; set; } = string.Empty;

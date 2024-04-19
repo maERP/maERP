@@ -18,8 +18,6 @@ public class ProductImportRepository : IProductImportRepository
         _taxClassRepository = taxClassRepository;
     }
 
-    public IProductRepository ProductRepository { get; }
-
     public async Task ImportOrUpdateFromSalesChannel(int salesChannelId, SalesChannelImportProduct importProduct)
     {
         var productSalesChannel = await _productSalesChannelRepository.getByRemoteProductIdAsync(importProduct.RemoteProductId, salesChannelId);
@@ -33,7 +31,7 @@ public class ProductImportRepository : IProductImportRepository
                 Ean = importProduct.Ean,
                 Price = importProduct.Price,
                 Sku = importProduct.Sku,
-                TaxClass = await _taxClassRepository.GetByIdAsync(1),
+                TaxClassId = 1, // await _taxClassRepository.GetByIdAsync(1),
                 ProductStock = [new ProductStock { WarehouseId = 1, Quantity = 1 }],
                 Description = importProduct.Description,
                 DateCreated = DateTime.Now,
@@ -87,10 +85,10 @@ public class ProductImportRepository : IProductImportRepository
                 newUpdate = true;
             }*/
 
-            if (localProduct.Description != importProduct.Description.Substring(0, 4000))
+            if (localProduct.Description != importProduct.Description)
             {
                 Console.WriteLine("new product description");
-                localProduct.Description = importProduct.Description.Substring(0, 4000);
+                localProduct.Description = importProduct.Description;
                 somethingChanged = true;
             }
 

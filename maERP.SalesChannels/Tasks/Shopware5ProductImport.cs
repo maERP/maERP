@@ -1,8 +1,11 @@
 ﻿#nullable disable
 
+using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.SalesChannel;
 using maERP.SalesChannels.Repositories;
 using maERP.Domain.Models;
 using maERP.Domain.Models.SalesChannelData;
@@ -50,7 +53,7 @@ public class ProductDownloadTask : IHostedService
         var salesChannelRepository = scope.ServiceProvider.GetService<ISalesChannelRepository>();
         var productRepository = scope.ServiceProvider.GetService<IProductRepository>();
         var productSalesChannelRepository = scope.ServiceProvider.GetService<IProductSalesChannelRepository>();
-        var productImportRepository = scope.ServiceProvider.GetService<ProductImportRepository>();
+        var productImportRepository = scope.ServiceProvider.GetService<IProductImportRepository>();
 
         var salesChannels = await salesChannelRepository.GetAllAsync();
 
@@ -107,12 +110,23 @@ public class ProductDownloadTask : IHostedService
                         {
                             var importProduct = new SalesChannelImportProduct();
 
+                            if (remoteProduct.mainDetail.ean.Length > 13)
+                            {
+                                remoteProduct.mainDetail.ean = remoteProduct.mainDetail.ean.Substring(0, 13);
+                            }
+                            
+                            if (remoteProduct.descriptionLong.Length > 4000)
+                            {
+                                remoteProduct.descriptionLong = remoteProduct.descriptionLong.Substring(0, 4000);
+                            }
+
                             importProduct.Name = remoteProduct.name;
-                            importProduct.Ean = remoteProduct.mainDetail.ean.Substring(0, 13);
+                            importProduct.Ean = remoteProduct.mainDetail.ean;
                             importProduct.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
                             importProduct.Sku = remoteProduct.mainDetail.number;
                             importProduct.TaxRate = 19;
-                            importProduct.Description = remoteProduct.descriptionLong.Substring(0, 4000);
+                            importProduct.Description = remoteProduct.descriptionLong;
+
 
                             await productImportRepository.ImportOrUpdateFromSalesChannel(salesChannel.Id, importProduct);
                         }
@@ -128,7 +142,7 @@ public class ProductDownloadTask : IHostedService
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message.ToString());
+                    Console.WriteLine(ex.StackTrace);
                 }
             }
             while (requestMax != 0 && requestStart <= requestMax);
