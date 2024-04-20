@@ -11,18 +11,6 @@ namespace maERP.Persistence;
 
 public static class PersistenceServiceRegistration
 {
-    /* public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddDbContext<ApplicationDbContext>(options =>
-        {
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-        });
-
-        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
-        return services;
-    } */
-    
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IOptions<DatabaseOptions> dbOptions)
     {
         var test = dbOptions.Value.DefaultConnection;

@@ -45,9 +45,6 @@ public class ProductImportRepository : IProductImportRepository
         {
             bool somethingChanged = false;
 
-            // await productSalesChannelRepository.UpdateAsync(ProductSalesChannel);
-
-            // var localProduct = await productRepository.GetAsync(ProductSalesChannel.ProductId);
             var localProduct = await _productRepository.GetByIdAsync(productSalesChannel.ProductId);
 
             if (localProduct.Name != importProduct.Name)
