@@ -1,4 +1,4 @@
-﻿using maERP.Domain;
+﻿using maERP.Domain.Models;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,11 +27,11 @@ public class ApplicationDbContextTests
         };        
 
         // Act
-        await _applicationDbContext.Warehouses.AddAsync(warehouse);
+        await _applicationDbContext.Warehouse.AddAsync(warehouse);
         await _applicationDbContext.SaveChangesAsync();
 
         // Assert
-        Assert.NotNull(warehouse.DateCreated);
+        Assert.True(warehouse.DateCreated > DateTime.MinValue);
     }
 
     [Fact]
@@ -45,10 +45,10 @@ public class ApplicationDbContextTests
         };
 
         // Act
-        await _applicationDbContext.Warehouses.AddAsync(warehouse);
+        await _applicationDbContext.Warehouse.AddAsync(warehouse);
         await _applicationDbContext.SaveChangesAsync();
 
         // Assert
-        Assert.NotNull(warehouse.DateModified);
+        Assert.True(warehouse.DateModified > DateTime.MinValue);
     }
 }

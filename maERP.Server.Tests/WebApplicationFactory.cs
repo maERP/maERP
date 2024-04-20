@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
+// using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using maERP.Server.Services;
+using maERP.Server;
 
 namespace maERP.Server.Tests;
 
+/*
 public class maERPWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -57,3 +58,4 @@ public class maERPWebApplicationFactory<TStartup> : WebApplicationFactory<TStart
         await db.Database.EnsureCreatedAsync();
     }
 }
+*/
