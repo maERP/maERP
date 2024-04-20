@@ -11,8 +11,7 @@ public static class SalesChannelServiceRegistration
     {
         services.AddScoped<IProductImportRepository, ProductImportRepository>();
         services.AddScoped<IShopware5Repository, Shopware5Repository>();
-
-        Console.WriteLine("Start background tasks...");
+        
         services.AddHostedService<ProductDownloadTask>();
         services.AddHostedService<OrderDownloadTask>();
 
