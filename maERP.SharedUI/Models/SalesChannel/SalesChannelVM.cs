@@ -1,5 +1,4 @@
 ﻿using maERP.SharedUI.Services.Base;
-using System.ComponentModel.DataAnnotations;
 
 namespace maERP.SharedUI.Models.SalesChannel;
 

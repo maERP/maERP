@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using maERP.SharedUI.Services.Base;
-using maERP.SharedUI.Models.Warehouse;
 using maERP.SharedUI.Models.Customer;
 using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Models.Product;
 using maERP.SharedUI.Models.SalesChannel;
 using maERP.SharedUI.Models.TaxClass;
 using maERP.SharedUI.Models.User;
+using maERP.SharedUI.Models.Warehouse;
+using maERP.SharedUI.Services.Base;
 
 namespace maERP.SharedUI.MappingProfiles;
 

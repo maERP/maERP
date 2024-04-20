@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using maERP.Application.Dtos.Order;
 using maERP.Application.Features.Order.Commands.CreateOrderCommand;
 using maERP.Application.Features.Order.Commands.DeleteOrderCommand;
 using maERP.Application.Features.Order.Commands.UpdateOrderCommand;
 using maERP.Domain.Models;
-using maERP.Application.Dtos.Order;
 
 namespace maERP.Application.MappingProfiles;
 

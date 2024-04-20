@@ -6,7 +6,7 @@ public class Theme
 {
     public static MudTheme ApplicationTheme()
     {
-        var theme = new MudTheme()
+        var theme = new MudTheme
         {
             Palette = new PaletteLight
             {
@@ -70,7 +70,7 @@ public class Theme
                     FontWeight = 400,
                     LineHeight = 1.43,
                     LetterSpacing = "normal",
-                    FontFamily = new string[] { "Public Sans", "Roboto", "Arial", "sans-serif" }
+                    FontFamily = new[] { "Public Sans", "Roboto", "Arial", "sans-serif" }
                 },
                 H1 = new H1
                 {
@@ -169,7 +169,7 @@ public class Theme
             },
             Shadows = new()
             {
-                Elevation = new string[]
+                Elevation = new[]
              {
             "none",
             "0 2px 4px -1px rgba(6, 24, 44, 0.2)",

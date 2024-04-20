@@ -3,7 +3,6 @@ using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Providers;
 using maERP.SharedUI.Services.Base;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.IdentityModel.Tokens;
 
 namespace maERP.SharedUI.Services;
 
@@ -23,7 +22,7 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
     {
         try
         { 
-            AuthRequest authenticationRequest = new AuthRequest()
+            AuthRequest authenticationRequest = new AuthRequest
             {
                 Email = email,
                 Password = password
@@ -55,7 +54,7 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
 
     public async Task<bool> RegisterAsync(string firstName, string lastName, string username, string email, string password)
     {
-        RegistrationRequest registrationRequest = new RegistrationRequest()
+        RegistrationRequest registrationRequest = new RegistrationRequest
         {
             FirstName = firstName,
             LastName = lastName,

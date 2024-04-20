@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using maERP.Application.Dtos.Product;
+﻿using maERP.Application.Dtos.Product;
 using maERP.Application.Dtos.SalesChannel;
 
 namespace maERP.Application.Dtos.ProductSalesChannel;

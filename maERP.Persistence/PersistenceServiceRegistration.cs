@@ -1,9 +1,6 @@
-﻿using maERP.Application.Contracts.Persistence;
-using maERP.Persistence.Configurations.Options;
+﻿using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
-using maERP.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

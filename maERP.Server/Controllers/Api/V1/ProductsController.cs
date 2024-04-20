@@ -1,13 +1,13 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using maERP.Application.Dtos.Product;
 using maERP.Application.Features.Product.Commands.CreateProductCommand;
 using maERP.Application.Features.Product.Commands.DeleteProductCommand;
 using maERP.Application.Features.Product.Commands.UpdateProductCommand;
 using maERP.Application.Features.Product.Queries.GetProductDetailQuery;
 using maERP.Application.Features.Product.Queries.GetProductsQuery;
-using Asp.Versioning;
-using maERP.Application.Dtos.Product;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace maERP.Server.Controllers.Api.V1;
 
@@ -29,7 +29,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     public async Task<ProductDetailDto> GetDetails(int id)
     {
-        return await mediator.Send(new GetProductDetailQuery() { Id = id });
+        return await mediator.Send(new GetProductDetailQuery { Id = id });
     }
 
     // POST api/<ProductsController>

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannelCommand;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannelCommand;
@@ -30,8 +30,8 @@ public class UpdateSalesChannelCommandHandler : IRequestHandler<UpdateSalesChann
 
         if(validationResult.Errors.Any())
         {
-            _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(SalesChannel.Commands.CreateSalesChannelCommand), request.Id);
-            throw new Exceptions.ValidationException("Invalid SalesChannel", validationResult);
+            _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(CreateSalesChannelCommand), request.Id);
+            throw new ValidationException("Invalid SalesChannel", validationResult);
         }
 
         // convert to domain entity object

@@ -1,11 +1,10 @@
 ﻿@page "/SalesChannels/Add"
 @page "/SalesChannels/{salesChannelId:int}/Edit"
-
-@using Microsoft.AspNetCore.Authorization
 @using maERP.SharedUI.Contracts
 @using maERP.SharedUI.Models.SalesChannel
 @using maERP.SharedUI.Models.Warehouse
-@using maERP.SharedUI.Services
+@using maERP.SharedUI.Services.Base
+@using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
@@ -122,7 +121,7 @@
 
     protected async Task Save()
     {
-        Services.Base.Response<Guid> response = new();
+        Response<Guid> response = new();
 
         if (salesChannelId != 0)
         {

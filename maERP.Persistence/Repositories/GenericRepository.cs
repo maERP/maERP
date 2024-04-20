@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using maERP.Application.Contracts.Persistence;
-using Microsoft.EntityFrameworkCore;
-using maERP.Application.Exceptions;
-using maERP.Persistence.DatabaseContext;
+﻿using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Models.Common;
+using maERP.Persistence.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.Repositories;
 

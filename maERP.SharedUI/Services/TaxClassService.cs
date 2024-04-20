@@ -36,7 +36,7 @@ public class TaxClassService : BaseHttpService, ITaxClassService
             await AddBearerToken();
             var createTaxClassCommand = _mapper.Map<CreateTaxClassCommand>(taxClass);
             await _client.V1TaxClassesPOSTAsync(createTaxClassCommand);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };
@@ -54,7 +54,7 @@ public class TaxClassService : BaseHttpService, ITaxClassService
             await AddBearerToken();
             var updateTaxClassCommand = _mapper.Map<UpdateTaxClassCommand>(taxClass);
             await _client.V1TaxClassesPUTAsync(id.ToString(), updateTaxClassCommand);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };
@@ -70,7 +70,7 @@ public class TaxClassService : BaseHttpService, ITaxClassService
         {
             await AddBearerToken();
             await _client.V1TaxClassesDELETEAsync(id);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };

@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using maERP.SharedUI;
-using maERP.SharedUI.Contracts;
+﻿using System.Text.Json;
 using Blazored.LocalStorage;
-using System.Text.Json;
+using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace maERP.SharedUI.Pages.Auth;
 
@@ -77,7 +76,7 @@ public partial class Login
 
     void RemoveFromServerList(string s)
     {
-        _serverList = _serverList.Where(u => u.Url != s.ToString()).ToList();
+        _serverList = _serverList.Where(u => u.Url != s).ToList();
     }
 
     void AddToServerList()
@@ -109,9 +108,9 @@ public partial class Login
 
         var loginResponse = await _authenticationService!.LoginAsync(_model.Email, _model.Password); // TODO add _model.RememberMe
 
-        if (loginResponse == true)
+        if (loginResponse)
         {
-            if (_model.RememberMe == true)
+            if (_model.RememberMe)
             {
                 await _localStorage.SetItemAsStringAsync("email", _model.Email);
                 await _localStorage.SetItemAsStringAsync("password", _model.Password);
@@ -131,6 +130,6 @@ public partial class Login
 
         await _localStorage.RemoveItemAsync("server");
 
-        this.StateHasChanged();
+        StateHasChanged();
     }
 }

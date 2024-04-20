@@ -36,7 +36,7 @@ public class OrderService : BaseHttpService, IOrderService
             await AddBearerToken();
             var createOrderCommand = _mapper.Map<CreateOrderCommand>(order);
             await _client.OrdersPOSTAsync(createOrderCommand);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };
@@ -54,7 +54,7 @@ public class OrderService : BaseHttpService, IOrderService
             await AddBearerToken();
             var updateOrderCommand = _mapper.Map<UpdateOrderCommand>(order);
             await _client.OrdersPUTAsync(id.ToString(), updateOrderCommand);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };
@@ -70,7 +70,7 @@ public class OrderService : BaseHttpService, IOrderService
         {
             await AddBearerToken();
             await _client.OrdersDELETEAsync(id);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };

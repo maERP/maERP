@@ -1,7 +1,5 @@
 ﻿#nullable disable
 
-using maERP;
-
 namespace maERP.Domain.Models.SalesChannelData.Shopware5;
 
 public class Shopware5Response<T> where T : class

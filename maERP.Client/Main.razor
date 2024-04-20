@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
-
-<Router AppAssembly="@typeof(Main).Assembly" AdditionalAssemblies="new[] {typeof(maERP.SharedUI.Shared.MainLayout).Assembly}">
+<Router AppAssembly="@typeof(Main).Assembly" AdditionalAssemblies="new[] {typeof(MainLayout).Assembly}">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
             <Authorizing>

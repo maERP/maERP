@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using maERP.Domain.Models;
+﻿using maERP.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Application.Contracts.Persistence;
 

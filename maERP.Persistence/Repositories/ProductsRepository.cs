@@ -1,7 +1,6 @@
 ﻿using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Models;
 using maERP.Persistence.DatabaseContext;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace maERP.Persistence.Repositories;
 

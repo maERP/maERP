@@ -1,8 +1,8 @@
-﻿using MediatR;
-using AutoMapper;
+﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Dtos.User;
+using MediatR;
 
 namespace maERP.Application.Features.User.Queries.GetUserDetailQuery;
 

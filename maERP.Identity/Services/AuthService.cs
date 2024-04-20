@@ -72,18 +72,16 @@ public class AuthService : IAuthService
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, "Employee");
-            return new RegistrationResponse() { UserId = user.Id };
+            return new RegistrationResponse { UserId = user.Id };
         }
-        else
-        {
-            var stringBuilder = new StringBuilder();
-            foreach(var err in result.Errors)
-            {
-                stringBuilder.AppendFormat("{0}\n", err.Description);
-            }
 
-            throw new BadRequestException($"User registration failed. {stringBuilder}");
+        var stringBuilder = new StringBuilder();
+        foreach(var err in result.Errors)
+        {
+            stringBuilder.AppendFormat("{0}\n", err.Description);
         }
+
+        throw new BadRequestException($"User registration failed. {stringBuilder}");
     }
     
     private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user)

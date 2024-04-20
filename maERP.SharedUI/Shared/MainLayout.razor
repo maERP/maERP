@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
-
 @inherits LayoutComponentBase
 
 <MudDialogProvider />
@@ -10,7 +9,7 @@
     <AuthorizeView>
         <Authorized>
             <MudAppBar Elevation="1">
-                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(e => DrawerToggle())" />
                 <MudSpacer />
                 <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
             </MudAppBar>

@@ -1,12 +1,12 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using maERP.Application.Dtos.User;
 using maERP.Application.Features.User.Commands.CreateUserCommand;
 using maERP.Application.Features.User.Commands.UpdateUserCommand;
 using maERP.Application.Features.User.Queries.GetUserDetailQuery;
 using maERP.Application.Features.User.Queries.GetUsersQuery;
-using Asp.Versioning;
-using maERP.Application.Dtos.User;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace maERP.Server.Controllers.Api.V1;
 
@@ -28,7 +28,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     public async Task<UserDetailDto> GetDetails(string id)
     {
-        return await mediator.Send(new GetUserDetailQuery() { Id = id });
+        return await mediator.Send(new GetUserDetailQuery { Id = id });
     }
 
     // POST api/<UsersController>

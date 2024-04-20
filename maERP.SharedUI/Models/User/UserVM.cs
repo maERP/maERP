@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace maERP.SharedUI.Models.User;
+﻿namespace maERP.SharedUI.Models.User;
 
 public class UserVM
 {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.TaxClass.Commands.DeleteTaxClassCommand;
@@ -30,7 +31,7 @@ public class DeleteTaxClassCommandHandler : IRequestHandler<DeleteTaxClassComman
         if(validationResult.Errors.Any())
         {
             _logger.LogWarning("Validation errors in delete request for {0} - {1}", nameof(CreateTaxClassCommand), request.Id);
-            throw new Exceptions.ValidationException("Invalid TaxClass", validationResult);
+            throw new ValidationException("Invalid TaxClass", validationResult);
         }
 
         // convert to domain entity object

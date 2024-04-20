@@ -1,7 +1,5 @@
 ﻿#nullable disable
 
-using maERP;
-
 namespace maERP.Application.Dtos.Auth;
 
 public class LoginResponseDto

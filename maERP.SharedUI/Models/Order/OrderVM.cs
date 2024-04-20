@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace maERP.SharedUI.Models.Order;
+﻿namespace maERP.SharedUI.Models.Order;
 
 public class OrderVM
 {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.Customer.Commands.CreateCustomerCommand;
@@ -29,7 +30,7 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
         if(validationResult.Errors.Any())
         {
             _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateCustomerCommand), request.TaxRate);
-            throw new Exceptions.ValidationException("Invalid Customer", validationResult);
+            throw new ValidationException("Invalid Customer", validationResult);
         }
 
         // convert to domain entity object

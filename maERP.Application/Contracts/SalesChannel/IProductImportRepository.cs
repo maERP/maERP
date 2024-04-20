@@ -1,5 +1,4 @@
-﻿using maERP.Domain.Models;
-using maERP.Domain.Models.SalesChannelData;
+﻿using maERP.Domain.Models.SalesChannelData;
 
 namespace maERP.Application.Contracts.SalesChannel;
 

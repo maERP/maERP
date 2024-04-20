@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using maERP.Application.Contracts.Persistence;
+﻿using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using maERP.Domain.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.Repositories;
 
@@ -24,7 +25,7 @@ public class UserRepository : IUserRepository
         return await _userManager.Users
             .Where(x => x.Id == userId)
             .AsNoTracking()
-            .FirstAsync<ApplicationUser>();
+            .FirstAsync();
     }
     
     public async Task<IEnumerable<IdentityError>> CreateAsync(ApplicationUser userToCreate, string password)
@@ -62,7 +63,7 @@ public class UserRepository : IUserRepository
         }
         else
         {
-            throw new Application.Exceptions.NotFoundException("User not found", userUpdateDto.Id);
+            throw new NotFoundException("User not found", userUpdateDto.Id);
         }
 
         return userUpdateDto;

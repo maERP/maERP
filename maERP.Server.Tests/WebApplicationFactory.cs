@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-// using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using maERP.Server;
+﻿// using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace maERP.Server.Tests;
 

@@ -1,13 +1,13 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using maERP.Application.Dtos.SalesChannel;
 using maERP.Application.Features.SalesChannel.Commands.CreateSalesChannelCommand;
 using maERP.Application.Features.SalesChannel.Commands.DeleteSalesChannelCommand;
 using maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannelCommand;
 using maERP.Application.Features.SalesChannel.Queries.GetAllSalesChannelsQuery;
 using maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetailQuery;
-using Asp.Versioning;
-using maERP.Application.Dtos.SalesChannel;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace maERP.Server.Controllers.Api.V1;
 
@@ -29,7 +29,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     public async Task<SalesChannelDetailDto> GetDetails(int id)
     {
-        return await mediator.Send(new GetSalesChannelDetailQuery() { Id = id });
+        return await mediator.Send(new GetSalesChannelDetailQuery { Id = id });
     }
 
     // POST api/<SalesChannelsController>

@@ -1,13 +1,13 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using maERP.Application.Dtos.Order;
 using maERP.Application.Features.Order.Commands.CreateOrderCommand;
 using maERP.Application.Features.Order.Commands.DeleteOrderCommand;
 using maERP.Application.Features.Order.Commands.UpdateOrderCommand;
 using maERP.Application.Features.Order.Queries.GetOrderDetailQuery;
 using maERP.Application.Features.Order.Queries.GetOrdersQuery;
-using Asp.Versioning;
-using maERP.Application.Dtos.Order;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace maERP.Server.Controllers.Api.V1;
 
@@ -29,7 +29,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     public async Task<OrderDetailDto> GetDetails(int id)
     {
-        return await mediator.Send(new GetOrderDetailQuery() { Id = id });
+        return await mediator.Send(new GetOrderDetailQuery { Id = id });
     }
 
     // POST api/<OrdersController>

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.Order.Commands.UpdateOrderCommand;
@@ -30,7 +31,7 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, int
         if(validationResult.Errors.Any())
         {
             _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(CreateOrderCommand), request.Id);
-            throw new Exceptions.ValidationException("Invalid Order", validationResult);
+            throw new ValidationException("Invalid Order", validationResult);
         }
 
         // convert to domain entity object

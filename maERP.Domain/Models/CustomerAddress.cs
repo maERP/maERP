@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml.Linq;
 using maERP.Domain.Models.Common;
 
 namespace maERP.Domain.Models;

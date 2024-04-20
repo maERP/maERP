@@ -1,9 +1,5 @@
-﻿using System.Collections.Immutable;
-using maERP.Domain.Models;
+﻿using maERP.Domain.Models;
 using maERP.Domain.Models.Common;
-using maERP.Persistence.Configurations;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.DatabaseContext;

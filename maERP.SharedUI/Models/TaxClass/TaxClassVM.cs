@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace maERP.SharedUI.Models.TaxClass;
+﻿namespace maERP.SharedUI.Models.TaxClass;
 
 public class TaxClassVM
 {

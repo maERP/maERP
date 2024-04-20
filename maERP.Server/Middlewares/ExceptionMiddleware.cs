@@ -1,6 +1,6 @@
-﻿using maERP.Server.Models;
+﻿using System.Net;
 using maERP.Application.Exceptions;
-using System.Net;
+using maERP.Server.Models;
 
 namespace maERP.Server.Middleware;
 

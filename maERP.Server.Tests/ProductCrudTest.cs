@@ -1,8 +1,3 @@
-using System.Net;
-using System.Net.Http.Json;
-using maERP.Application.Dtos.Product;
-using maERP.Domain.Models;
-
 namespace maERP.Server.Tests;
 
 /*

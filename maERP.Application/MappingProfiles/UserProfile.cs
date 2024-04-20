@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using maERP.Application.Dtos.User;
 using maERP.Application.Features.User.Commands.CreateUserCommand;
 using maERP.Application.Features.User.Commands.UpdateUserCommand;
 using maERP.Domain.Models;
-using maERP.Application.Dtos.User;
 
 namespace maERP.Application.MappingProfiles;
 

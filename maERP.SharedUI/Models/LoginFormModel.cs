@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using System.ComponentModel.DataAnnotations;
 using FluentValidation;
-using FluentValidation.Results;
-using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Localization;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace maERP.SharedUI.Models;
 
@@ -43,7 +43,7 @@ public class LoginFormModelFluentValidator : AbstractValidator<LoginFormModel>
 
     public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
     {
-        FluentValidation.Results.ValidationResult? result =
+        ValidationResult? result =
             await ValidateAsync(ValidationContext<LoginFormModel>.CreateWithOptions((LoginFormModel)model,
                 x => x.IncludeProperties(propertyName)));
         return result.IsValid ? Array.Empty<string>() : result.Errors.Select(e => e.ErrorMessage);

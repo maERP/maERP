@@ -1,6 +1,4 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
-
-<Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] {typeof(MainLayout).Assembly}">
+﻿<Router AppAssembly="@typeof(App).Assembly" AdditionalAssemblies="new[] {typeof(MainLayout).Assembly}">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
             <Authorizing>

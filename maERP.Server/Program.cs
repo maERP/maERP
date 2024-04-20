@@ -1,21 +1,20 @@
 ﻿#nullable disable
 
-using System.Configuration;
-using maERP.Server.Middleware;
-using maERP.Server.ServiceRegistrations;
-using Serilog;
-using Microsoft.EntityFrameworkCore;
 using maERP.Application;
-using maERP.Infrastructure;
-using maERP.Persistence;
-using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
+using maERP.Infrastructure;
+using maERP.Persistence;
 using maERP.Persistence.Configurations.Options;
+using maERP.Persistence.DatabaseContext;
 using maERP.Persistence.Repositories;
-using Microsoft.Extensions.Options;
-using ConfigurationManager = Microsoft.Extensions.Configuration.ConfigurationManager;
 using maERP.SalesChannels;
+using maERP.Server.Middleware;
+using maERP.Server.ServiceRegistrations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -102,14 +101,14 @@ else
     app.Use(async (context, next) =>
     {
         context.Response.GetTypedHeaders().CacheControl =
-            new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+            new CacheControlHeaderValue
             {
                 Public = true,
                 MaxAge = TimeSpan.FromSeconds(10)
             };
 
-        context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
-            new string[] { "Accept-Encoding" };
+        context.Response.Headers[HeaderNames.Vary] =
+            new[] { "Accept-Encoding" };
 
         await next();
     });

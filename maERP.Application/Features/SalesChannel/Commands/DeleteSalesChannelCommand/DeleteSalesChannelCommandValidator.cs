@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Features.SalesChannel.Commands.DeleteSalesChannelCommand;
 
 namespace maERP.Application.Features.SalesChannel.Commands.DeleteSalesChannelCommand;
 

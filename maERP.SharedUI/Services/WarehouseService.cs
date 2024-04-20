@@ -36,7 +36,7 @@ public class WarehouseService : BaseHttpService, IWarehouseService
             await AddBearerToken();
             var createWarehouseCommand = _mapper.Map<CreateWarehouseCommand>(warehouse);
             await _client.WarehousesPOSTAsync(createWarehouseCommand);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };
@@ -54,7 +54,7 @@ public class WarehouseService : BaseHttpService, IWarehouseService
             await AddBearerToken();
             var updateWarehouseCommand = _mapper.Map<UpdateWarehouseCommand>(warehouse);
             await _client.WarehousesPUTAsync(id.ToString(), updateWarehouseCommand);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };
@@ -70,7 +70,7 @@ public class WarehouseService : BaseHttpService, IWarehouseService
         {
             await AddBearerToken();
             await _client.WarehousesDELETEAsync(id);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };

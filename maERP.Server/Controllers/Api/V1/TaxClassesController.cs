@@ -1,13 +1,13 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using maERP.Application.Dtos.TaxClass;
 using maERP.Application.Features.TaxClass.Commands.CreateTaxClassCommand;
 using maERP.Application.Features.TaxClass.Commands.DeleteTaxClassCommand;
 using maERP.Application.Features.TaxClass.Commands.UpdateTaxClassCommand;
 using maERP.Application.Features.TaxClass.Queries.GetTaxClassDetailQuery;
 using maERP.Application.Features.TaxClass.Queries.GetTaxClassesQuery;
-using Asp.Versioning;
-using maERP.Application.Dtos.TaxClass;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace maERP.Server.Controllers.Api.V1;
 

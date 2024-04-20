@@ -1,8 +1,9 @@
 ﻿using maERP.Application.Contracts.SalesChannel;
 using maERP.Persistence.Repositories.SalesChannelRepositories;
 using maERP.SalesChannels.Repositories;
-using Microsoft.Extensions.DependencyInjection;
 using maERP.SalesChannels.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace maERP.SalesChannels;
 
 public static class SalesChannelServiceRegistration

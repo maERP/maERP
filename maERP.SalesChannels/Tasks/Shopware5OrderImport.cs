@@ -1,6 +1,7 @@
 ﻿#nullable disable
 
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Models;
@@ -76,7 +77,7 @@ public class OrderDownloadTask : IHostedService
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     var authenticationString = $"{salesChannel.Username}:{salesChannel.Password}";
-                    var base64EncodedAuthenticationString = Convert.ToBase64String(System.Text.ASCIIEncoding.UTF8.GetBytes(authenticationString));
+                    var base64EncodedAuthenticationString = Convert.ToBase64String(ASCIIEncoding.UTF8.GetBytes(authenticationString));
                     client.DefaultRequestHeaders.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
 
                     HttpResponseMessage response = new();
@@ -123,10 +124,6 @@ public class OrderDownloadTask : IHostedService
                                 await orderRepository.CreateAsync(localOrder);
                             }
                             // existing order
-                            else
-                            {
-
-                            }
                         }
 
                         response.Dispose();
@@ -140,7 +137,7 @@ public class OrderDownloadTask : IHostedService
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message.ToString());
+                    Console.WriteLine(ex.Message);
                 }
             }
             while (requestMax != 0 && requestStart <= requestMax);

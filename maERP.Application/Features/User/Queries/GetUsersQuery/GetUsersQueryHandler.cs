@@ -2,7 +2,6 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Dtos.User;
-using maERP.Application.Features.User.Queries.GetUsersQuery;
 using MediatR;
 
 namespace maERP.Application.Features.User.Queries.GetUsersQuery;

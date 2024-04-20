@@ -36,7 +36,7 @@ public class SalesChannelService : BaseHttpService, ISalesChannelService
             await AddBearerToken();
             var createSalesChannelCommand = _mapper.Map<CreateSalesChannelCommand>(salesChannel);
             await _client.SalesChannelsPOSTAsync(createSalesChannelCommand);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };
@@ -54,7 +54,7 @@ public class SalesChannelService : BaseHttpService, ISalesChannelService
             await AddBearerToken();
             var updateSalesChannelCommand = _mapper.Map<UpdateSalesChannelCommand>(salesChannel);
             await _client.SalesChannelsPUTAsync(id.ToString(), updateSalesChannelCommand);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };
@@ -70,7 +70,7 @@ public class SalesChannelService : BaseHttpService, ISalesChannelService
         {
             await AddBearerToken();
             await _client.SalesChannelsDELETEAsync(id);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };

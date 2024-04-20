@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using maERP.Domain.Models;
 using MediatR;
 
@@ -30,7 +31,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, strin
         if(validationResult.Errors.Any())
         {
             _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateUserCommand), request.Email);
-            throw new Exceptions.ValidationException("Invalid User", validationResult);
+            throw new ValidationException("Invalid User", validationResult);
         }
 
         // convert to domain entity object

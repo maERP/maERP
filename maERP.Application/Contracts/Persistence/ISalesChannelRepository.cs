@@ -1,6 +1,4 @@
-﻿using maERP.Domain.Models;
-
-namespace maERP.Application.Contracts.Persistence;
+﻿namespace maERP.Application.Contracts.Persistence;
 
 public interface ISalesChannelRepository : IGenericRepository<Domain.Models.SalesChannel>
 {

@@ -36,7 +36,7 @@ public class UserService : BaseHttpService, IUserService
             await AddBearerToken();
             var createUserCommand = _mapper.Map<CreateUserCommand>(user);
             await _client.UsersPOSTAsync(createUserCommand);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };
@@ -53,8 +53,8 @@ public class UserService : BaseHttpService, IUserService
         {
             await AddBearerToken();
             var updateUserCommand = _mapper.Map<UpdateUserCommand>(user);
-            await _client.UsersPUTAsync(id.ToString(), updateUserCommand);
-            return new Response<Guid>()
+            await _client.UsersPUTAsync(id, updateUserCommand);
+            return new Response<Guid>
             {
                 Success = true
             };
@@ -70,7 +70,7 @@ public class UserService : BaseHttpService, IUserService
         {
             await AddBearerToken();
             // await _client.UsersDELETEAsync(id);
-            return new Response<Guid>()
+            return new Response<Guid>
             {
                 Success = true
             };

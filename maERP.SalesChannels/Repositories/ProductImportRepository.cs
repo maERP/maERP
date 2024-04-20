@@ -65,7 +65,7 @@ public class ProductImportRepository : IProductImportRepository
 
             if (localProduct.Price != importProduct.Price)
             {
-                localProduct.Price = (decimal)importProduct.Price;
+                localProduct.Price = importProduct.Price;
                 somethingChanged = true;
             }
 

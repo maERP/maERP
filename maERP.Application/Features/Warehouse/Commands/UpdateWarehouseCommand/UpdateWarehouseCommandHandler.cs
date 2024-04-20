@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
@@ -30,7 +31,7 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
         if(validationResult.Errors.Any())
         {
             _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(CreateWarehouseCommand), request.Name);
-            throw new Exceptions.ValidationException("Invalid Warehouse", validationResult);
+            throw new ValidationException("Invalid Warehouse", validationResult);
         }
 
         // convert to domain entity object

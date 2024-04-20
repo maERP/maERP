@@ -1,5 +1,5 @@
-﻿using Blazored.LocalStorage;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
+using Blazored.LocalStorage;
 
 namespace maERP.SharedUI.Services.Base;
 
@@ -25,7 +25,8 @@ public class BaseHttpService
                 Success = false
             };
         }
-        else if (ex.StatusCode == 404)
+
+        if (ex.StatusCode == 404)
         {
             return new Response<Guid>
             {
@@ -33,14 +34,12 @@ public class BaseHttpService
                 Success = false
             };
         }
-        else
+
+        return new Response<Guid>
         {
-            return new Response<Guid>
-            {
-                Message = "An error occurred",
-                Success = false
-            };
-        }
+            Message = "An error occurred",
+            Success = false
+        };
     }
 
     protected async Task AddBearerToken()

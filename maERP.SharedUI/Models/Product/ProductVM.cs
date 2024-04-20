@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace maERP.SharedUI.Models.Product;
+﻿namespace maERP.SharedUI.Models.Product;
 
 public class ProductVM
 {

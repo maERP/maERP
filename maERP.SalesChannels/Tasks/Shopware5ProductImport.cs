@@ -1,17 +1,15 @@
 ﻿#nullable disable
 
-using System.Diagnostics;
 using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.SalesChannel;
-using maERP.SalesChannels.Repositories;
 using maERP.Domain.Models;
 using maERP.Domain.Models.SalesChannelData;
 using maERP.Domain.Models.SalesChannelData.Shopware5;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace maERP.SalesChannels.Tasks;
 
@@ -81,7 +79,7 @@ public class ProductDownloadTask : IHostedService
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     var authenticationString = $"{salesChannel.Username}:{salesChannel.Password}";
-                    var base64EncodedAuthenticationString = Convert.ToBase64String(System.Text.ASCIIEncoding.UTF8.GetBytes(authenticationString));
+                    var base64EncodedAuthenticationString = Convert.ToBase64String(ASCIIEncoding.UTF8.GetBytes(authenticationString));
                     client.DefaultRequestHeaders.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
 
                     HttpResponseMessage response = new HttpResponseMessage();

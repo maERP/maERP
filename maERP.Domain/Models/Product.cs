@@ -1,8 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Net.Mail;
-using System.Xml.Linq;
-using maERP.Domain.Models.Common;
+﻿using maERP.Domain.Models.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Domain.Models;

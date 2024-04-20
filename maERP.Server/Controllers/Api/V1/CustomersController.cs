@@ -1,13 +1,13 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using maERP.Application.Dtos.Customer;
 using maERP.Application.Features.Customer.Commands.CreateCustomerCommand;
 using maERP.Application.Features.Customer.Commands.DeleteCustomerCommand;
 using maERP.Application.Features.Customer.Commands.UpdateCustomerCommand;
 using maERP.Application.Features.Customer.Queries.GetCustomerDetailQuery;
 using maERP.Application.Features.Customer.Queries.GetCustomersQuery;
-using Asp.Versioning;
-using maERP.Application.Dtos.Customer;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace maERP.Server.Controllers.Api.V1;
 
@@ -29,7 +29,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     public async Task<CustomerDetailDto> GetDetails(int id)
     {
-        return await mediator.Send(new GetCustomerDetailQuery() { Id = id });
+        return await mediator.Send(new GetCustomerDetailQuery { Id = id });
     }
 
     // POST api/<CustomersController>

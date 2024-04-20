@@ -10,7 +10,7 @@ public static class SwaggerRegistrationService
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "maERP.Server", Version = "v1" });
-            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Name = "Authorization",
                 Type = SecuritySchemeType.ApiKey,

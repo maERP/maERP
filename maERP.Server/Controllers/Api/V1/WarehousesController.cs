@@ -1,13 +1,13 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using maERP.Application.Dtos.Warehouse;
 using maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
 using maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
 using maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
 using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetailQuery;
 using maERP.Application.Features.Warehouse.Queries.GetWarehousesQuery;
-using Asp.Versioning;
-using maERP.Application.Dtos.Warehouse;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace maERP.Server.Controllers.Api.V1;
 

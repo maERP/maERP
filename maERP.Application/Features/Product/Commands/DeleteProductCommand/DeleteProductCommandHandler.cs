@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.Product.Commands.DeleteProductCommand;
@@ -30,7 +31,7 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
         if(validationResult.Errors.Any())
         {
             _logger.LogWarning("Validation errors in delete request for {0} - {1}", nameof(CreateProductCommand), request.Id);
-            throw new Exceptions.ValidationException("Invalid Product", validationResult);
+            throw new ValidationException("Invalid Product", validationResult);
         }
 
         // convert to domain entity object
