@@ -2,17 +2,20 @@
 using maERP.Application.Contracts.SalesChannel;
 using maERP.Domain.Models;
 using maERP.Domain.Models.SalesChannelData;
+using Microsoft.Extensions.Logging;
 
 namespace maERP.SalesChannels.Repositories;
 
 public class ProductImportRepository : IProductImportRepository
 {
+    private readonly ILogger<ProductImportRepository> _logger;
     private readonly IProductRepository _productRepository;
     private readonly IProductSalesChannelRepository _productSalesChannelRepository;
     private readonly ITaxClassRepository _taxClassRepository;
 
-    public ProductImportRepository(IProductRepository productRepository, IProductSalesChannelRepository productSalesChannelRepository, ITaxClassRepository taxClassRepository)
+    public ProductImportRepository(ILogger<ProductImportRepository> logger, IProductRepository productRepository, IProductSalesChannelRepository productSalesChannelRepository, ITaxClassRepository taxClassRepository)
     {
+        _logger = logger;
         _productRepository = productRepository;
         _productSalesChannelRepository = productSalesChannelRepository;
         _taxClassRepository = taxClassRepository;
@@ -21,10 +24,10 @@ public class ProductImportRepository : IProductImportRepository
     public async Task ImportOrUpdateFromSalesChannel(int salesChannelId, SalesChannelImportProduct importProduct)
     {
         var productSalesChannel = await _productSalesChannelRepository.getByRemoteProductIdAsync(importProduct.RemoteProductId, salesChannelId);
-
-        // create new product
+        
         if (productSalesChannel == null)
         {
+            _logger.Log("Product does not exist, creating...");
             var newProduct = new Product
             {
                 Name = importProduct.Name,
@@ -43,48 +46,37 @@ public class ProductImportRepository : IProductImportRepository
         // update existing product
         else
         {
+            _logger.Log("Product already exists, updating...");
             bool somethingChanged = false;
 
             var localProduct = await _productRepository.GetByIdAsync(productSalesChannel.ProductId);
 
             if (localProduct.Name != importProduct.Name)
             {
-                Console.WriteLine("new product name");
                 localProduct.Name = importProduct.Name;
                 somethingChanged = true;
             }
 
             if (localProduct.Ean != importProduct.Ean)
             {
-                Console.WriteLine("new product EAN");
                 localProduct.Ean = importProduct.Ean;
                 somethingChanged = true;
             }
 
             if (localProduct.Price != importProduct.Price)
             {
-                Console.WriteLine("new product price");
                 localProduct.Price = (decimal)importProduct.Price;
                 somethingChanged = true;
             }
 
             if (localProduct.Sku != importProduct.Sku)
             {
-                Console.WriteLine("new product sku");
                 localProduct.Sku = importProduct.Sku;
                 somethingChanged = true;
             }
 
-            /* if(localProduct.TaxClassId != 1)
-            {
-                Console.WriteLine("new product tax class");
-                localProduct.TaxClassId = 1;
-                newUpdate = true;
-            }*/
-
             if (localProduct.Description != importProduct.Description)
             {
-                Console.WriteLine("new product description");
                 localProduct.Description = importProduct.Description;
                 somethingChanged = true;
             }

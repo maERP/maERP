@@ -10,13 +10,13 @@ ENV ConnectionStrings__DefaultConnection Server=localhost;Port=5432;Database=mae
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["maERP.Server/maERP.Server.csproj", "maERP.Server/"]
-COPY ["maERP.Application /maERP.Application.csproj", "maERP.Application/"]
-COPY ["maERP.Domain /maERP.Domain.csproj", "maERP.Domain/"]
-COPY ["maERP.Analytics /maERP.Analytics.csproj", "maERP.Analytics/"]
-COPY ["maERP.Identity /maERP.Identity.csproj", "maERP.Identity/"]
-COPY ["maERP.Infrastructure /maERP.Infrastructure.csproj", "maERP.Infrastructure/"]
-COPY ["maERP.Persistence /maERP.Persistence.csproj", "maERP.Persistence/"]
-COPY ["maERP.SalesChannels /maERP.SalesChannels.csproj", "maERP.SalesChannels/"]
+COPY ["maERP.Application/maERP.Application.csproj", "maERP.Application/"]
+COPY ["maERP.Domain/maERP.Domain.csproj", "maERP.Domain/"]
+COPY ["maERP.Analytics/maERP.Analytics.csproj", "maERP.Analytics/"]
+COPY ["maERP.Identity/maERP.Identity.csproj", "maERP.Identity/"]
+COPY ["maERP.Infrastructure/maERP.Infrastructure.csproj", "maERP.Infrastructure/"]
+COPY ["maERP.Persistence/maERP.Persistence.csproj", "maERP.Persistence/"]
+COPY ["maERP.SalesChannels/maERP.SalesChannels.csproj", "maERP.SalesChannels/"]
 RUN dotnet restore "maERP.Server/maERP.Server.csproj"
 COPY . .
 WORKDIR "/src/maERP.Server"
