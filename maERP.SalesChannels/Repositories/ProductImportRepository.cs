@@ -27,7 +27,7 @@ public class ProductImportRepository : IProductImportRepository
         
         if (productSalesChannel == null)
         {
-            _logger.Log("Product does not exist, creating...");
+            // _logger.Log("Product does not exist, creating...");
             var newProduct = new Product
             {
                 Name = importProduct.Name,
@@ -46,7 +46,7 @@ public class ProductImportRepository : IProductImportRepository
         // update existing product
         else
         {
-            _logger.Log("Product already exists, updating...");
+            // _logger.Log("Product already exists, updating...");
             bool somethingChanged = false;
 
             var localProduct = await _productRepository.GetByIdAsync(productSalesChannel.ProductId);
