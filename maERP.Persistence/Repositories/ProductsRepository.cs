@@ -1,19 +1,19 @@
 ﻿using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Models;
 using maERP.Persistence.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.Repositories;
 
 public class ProductRepository : GenericRepository<Product>, IProductRepository
 {
-    private readonly IProductSalesChannelRepository _productSalesChannelRepository;
-    private readonly ITaxClassRepository _taxClassRepository;
-
-    public ProductRepository(ApplicationDbContext context, IProductSalesChannelRepository productSalesChannelRepository, ITaxClassRepository taxClassRepository) : base(context)
+    public ProductRepository(ApplicationDbContext context) : base(context)
     {
-        _productSalesChannelRepository = productSalesChannelRepository;
-        _taxClassRepository = taxClassRepository;
-    }
 
-   
+    }
+    
+    public async Task<Product> GetBySkuAsync(string sku)
+    {
+        return await _context.Product.FirstOrDefaultAsync(p => p.Sku == sku);
+    }
 }

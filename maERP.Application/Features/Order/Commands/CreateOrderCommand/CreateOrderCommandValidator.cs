@@ -15,6 +15,9 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+        
+        RuleFor(q => q)
+            .MustAsync(OrderUnique).WithMessage("Order with the same name already exists.");
     }
 
     private async Task<bool> OrderUnique(CreateOrderCommand command, CancellationToken cancellationToken)

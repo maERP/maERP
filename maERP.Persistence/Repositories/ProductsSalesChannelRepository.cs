@@ -11,7 +11,7 @@ public class ProductSalesChannelRepository : GenericRepository<ProductSalesChann
     {
     }
 
-    public async Task<ProductSalesChannel> getByRemoteProductIdAsync(int productId, int salesChannelId = 0)
+    public async Task<ProductSalesChannel?> GetByRemoteProductIdAsync(int productId, int salesChannelId = 0)
     {
         if (salesChannelId > 0)
         {

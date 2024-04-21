@@ -11,16 +11,19 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
     {
         _customerRepository = customerRepository;
 
-        RuleFor(p => p.TaxRate)
+        RuleFor(p => p.CustomerId)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            
+        RuleFor(q => q)    
+            .MustAsync(CustomerUnique).WithMessage("Warehouse with the same name already exists.");
+
     }
 
     private async Task<bool> CustomerUnique(CreateCustomerCommand command, CancellationToken cancellationToken)
     {
-        // TODO: Implement unique Customer name validation
-        await Task.CompletedTask;
-        return true;
+        var customer = await _customerRepository.GetByIdAsync(command.CustomerId);     
+        return customer == null ? false : true;
     }
 }

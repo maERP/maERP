@@ -9,7 +9,7 @@ using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
 using maERP.Persistence.Repositories;
 using maERP.SalesChannels;
-using maERP.Server.Middleware;
+using maERP.Server.Middlewares;
 using maERP.Server.ServiceRegistrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

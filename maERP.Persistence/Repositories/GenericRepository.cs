@@ -19,10 +19,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
 
-    public async Task CreateAsync(T entity)
+    public async Task<int> CreateAsync(T entity)
     {
         await _context.AddAsync(entity);
         await _context.SaveChangesAsync();
+        return entity.Id;
     }
 
     public async Task DeleteAsync(T entity)

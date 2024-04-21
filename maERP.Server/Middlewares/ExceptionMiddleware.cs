@@ -2,7 +2,7 @@
 using maERP.Application.Exceptions;
 using maERP.Server.Models;
 
-namespace maERP.Server.Middleware;
+namespace maERP.Server.Middlewares;
 
 public class ExceptionMiddleware
 {
@@ -27,7 +27,7 @@ public class ExceptionMiddleware
     private async Task HandleExceptionAsync(HttpContext httpContext, Exception ex)
     {
         HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
-        CustomProblemDetails problem = new();
+        CustomProblemDetails problem;
 
         switch (ex)
         {
@@ -39,7 +39,7 @@ public class ExceptionMiddleware
                     Status = (int)statusCode,
                     Detail = badRequestException.InnerException?.Message,
                     Type = nameof(BadRequestException),
-                    Errors = badRequestException.ValidationErrors
+                    Errors = badRequestException.ValidationErrors ?? new Dictionary<string, string[]>()
                 };
                 break;
             case NotFoundException NotFound:

@@ -29,7 +29,6 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-
         // modelBuilder.ApplyConfiguration(new CountryConfiguration());
     }
 

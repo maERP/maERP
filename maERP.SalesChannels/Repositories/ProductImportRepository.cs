@@ -11,79 +11,114 @@ public class ProductImportRepository : IProductImportRepository
     private readonly ILogger<ProductImportRepository> _logger;
     private readonly IProductRepository _productRepository;
     private readonly IProductSalesChannelRepository _productSalesChannelRepository;
+    private readonly ISalesChannelRepository _salesChannelRepository;
     private readonly ITaxClassRepository _taxClassRepository;
 
-    public ProductImportRepository(ILogger<ProductImportRepository> logger, IProductRepository productRepository, IProductSalesChannelRepository productSalesChannelRepository, ITaxClassRepository taxClassRepository)
+    public ProductImportRepository(ILogger<ProductImportRepository> logger, IProductRepository productRepository, IProductSalesChannelRepository productSalesChannelRepository, ISalesChannelRepository salesChannelRepository, ITaxClassRepository taxClassRepository)
     {
         _logger = logger;
         _productRepository = productRepository;
         _productSalesChannelRepository = productSalesChannelRepository;
+        _salesChannelRepository = salesChannelRepository;
         _taxClassRepository = taxClassRepository;
     }
 
     public async Task ImportOrUpdateFromSalesChannel(int salesChannelId, SalesChannelImportProduct importProduct)
     {
-        var productSalesChannel = await _productSalesChannelRepository.getByRemoteProductIdAsync(importProduct.RemoteProductId, salesChannelId);
-        
-        if (productSalesChannel == null)
+        var taxClass = await _taxClassRepository.GetByTaxRateAsync(importProduct.TaxRate);
+
+        if (taxClass == null)
         {
-            // _logger.Log("Product does not exist, creating...");
+            _logger.LogInformation("no matching tax class found for tax rate {0}", importProduct.TaxRate);
+            return;
+        }
+
+        var existingProduct = await _productRepository.GetBySkuAsync(importProduct.Sku);
+
+        if (existingProduct == null)
+        {
+            _logger.LogInformation("Product {0} does not exist, creating Product and SalesChannel", importProduct.Sku);
+            
             var newProduct = new Product
             {
                 Name = importProduct.Name,
                 Ean = importProduct.Ean,
                 Price = importProduct.Price,
                 Sku = importProduct.Sku,
-                TaxClassId = 1, // await _taxClassRepository.GetByIdAsync(1),
+                TaxClass = taxClass,
                 ProductStock = [new ProductStock { WarehouseId = 1, Quantity = 1 }],
+                ProductSalesChannel = [new ProductSalesChannel
+                {
+                    SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId),
+                    RemoteProductId = importProduct.RemoteProductId, 
+                    Price = importProduct.Price
+                }],
                 Description = importProduct.Description,
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now
             };
-
+            
             await _productRepository.CreateAsync(newProduct);
+            _logger.LogInformation("Product {0} created", importProduct.Sku);
         }
-        // update existing product
         else
         {
-            // _logger.Log("Product already exists, updating...");
+            _logger.LogInformation("Product already exists, check for SalesChannel...");
             bool somethingChanged = false;
-
-            var localProduct = await _productRepository.GetByIdAsync(productSalesChannel.ProductId);
-
-            if (localProduct.Name != importProduct.Name)
+            
+            var salesChannelExist = existingProduct.ProductSalesChannel.Where(s => s.SalesChannelId == salesChannelId).Any();
+            // TODO update price when salesChannelExist is true
+            if(!salesChannelExist)
             {
-                localProduct.Name = importProduct.Name;
+                _logger.LogInformation("Creating SalesChannel entry for Product {0}", importProduct.Sku);
+
+                existingProduct.ProductSalesChannel =
+                [
+                    new ProductSalesChannel
+                    {
+                        SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId),
+                        RemoteProductId = importProduct.RemoteProductId,
+                        Price = importProduct.Price
+                    }
+                ];
+                
                 somethingChanged = true;
             }
 
-            if (localProduct.Ean != importProduct.Ean)
+            if (existingProduct.Name != importProduct.Name)
             {
-                localProduct.Ean = importProduct.Ean;
+                existingProduct.Name = importProduct.Name;
                 somethingChanged = true;
             }
 
-            if (localProduct.Price != importProduct.Price)
+            if (existingProduct.Ean != importProduct.Ean)
             {
-                localProduct.Price = importProduct.Price;
+                existingProduct.Ean = importProduct.Ean;
                 somethingChanged = true;
             }
 
-            if (localProduct.Sku != importProduct.Sku)
+            if (existingProduct.Price != importProduct.Price)
             {
-                localProduct.Sku = importProduct.Sku;
+                existingProduct.Price = importProduct.Price;
                 somethingChanged = true;
             }
 
-            if (localProduct.Description != importProduct.Description)
+            if (existingProduct.Sku != importProduct.Sku)
             {
-                localProduct.Description = importProduct.Description;
+                existingProduct.Sku = importProduct.Sku;
+                somethingChanged = true;
+            }
+
+            if (existingProduct.Description != importProduct.Description)
+            {
+                existingProduct.Description = importProduct.Description;
                 somethingChanged = true;
             }
 
             if (somethingChanged)
             {
-                await _productRepository.UpdateAsync(localProduct);
+                await _productRepository.UpdateAsync(existingProduct);
+                _logger.LogInformation("Product {0} updated", importProduct.Sku);
             }
         }
     }

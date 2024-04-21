@@ -1,4 +1,5 @@
 ﻿using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using maERP.Domain.Models;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,11 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
             .Include(s => s.Warehouse)
             .FirstOrDefaultAsync(s => s.Id == id);
 
+        if (salesChannel == null)
+        {
+            throw new NotFoundException("SalesChannel not found", id);
+        }
+        
         salesChannel.WarehouseId = salesChannel.Warehouse.Id;
 
         return salesChannel;
