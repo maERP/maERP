@@ -10,7 +10,7 @@ ENV MAERP_REMOTE_LOG_URL true
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["maERP.Web/maERP.Web.csproj", "maERP.Web/"]
-COPY ["maERP.Shared/maERP.Shared.csproj", "maERP.Shared/"]
+COPY ["maERP.SharedUI/maERP.SharedUI.csproj", "maERP.SharedUI/"]
 RUN dotnet restore "maERP.Web/maERP.Web.csproj"
 COPY . .
 WORKDIR "/src/maERP.Web"
