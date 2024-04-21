@@ -20,7 +20,7 @@ public class UserRepository : IUserRepository
         return await _userManager.Users.AsNoTracking().ToListAsync();
     }
 
-    public async Task<ApplicationUser> GetByIdAsync(string userId)
+    public async Task<ApplicationUser?> GetByIdAsync(string userId)
     {
         return await _userManager.Users
             .Where(x => x.Id == userId)
@@ -46,10 +46,12 @@ public class UserRepository : IUserRepository
     {
         var localUser = await _userManager.FindByIdAsync(userUpdateDto.Id);
 
-        if (localUser.Id is not null)
+        if (localUser != null)
         {
+            userUpdateDto.Email = userUpdateDto.Email?.ToLower();
+            
             localUser.Email = userUpdateDto.Email;
-            localUser.UserName = userUpdateDto.Email.ToLower();
+            localUser.UserName = userUpdateDto.Email;
             localUser.FirstName = userUpdateDto.FirstName;
             localUser.LastName = userUpdateDto.LastName;
 

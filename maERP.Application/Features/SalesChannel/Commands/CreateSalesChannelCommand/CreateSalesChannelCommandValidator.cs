@@ -14,12 +14,14 @@ public class CreateSalesChannelCommandValidator : AbstractValidator<CreateSalesC
         RuleFor(p => p.Url)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.");
+        
+        RuleFor(s => s)
+            .MustAsync(SalesChannelExists).WithMessage("SalesChannel with the same Id already exists.");
     }
-
-    private async Task<bool> SalesChannelUnique(CreateSalesChannelCommand command, CancellationToken cancellationToken)
+    
+    private async Task<bool> SalesChannelExists(CreateSalesChannelCommand command, CancellationToken cancellationToken)
     {
-        // TODO: Implement unique SalesChannel name validation
-        await Task.CompletedTask;
-        return true;
+        // TODO fix fixed integer
+        return await _salesChannelRepository.GetByIdAsync(1) == null;
     }
 }

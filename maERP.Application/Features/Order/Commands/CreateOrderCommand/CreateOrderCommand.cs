@@ -4,5 +4,5 @@ namespace maERP.Application.Features.Order.Commands.CreateOrderCommand;
 
 public class CreateOrderCommand : IRequest<int>
 {
-    public double TaxRate { get; set; }  
+    public int Id { get; set; }  
 }

@@ -29,7 +29,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, int
 
         if(validationResult.Errors.Any())
         {
-            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateOrderCommand), request.TaxRate);
+            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateOrderCommand), request.Id);
             throw new ValidationException("Invalid Order", validationResult);
         }
 

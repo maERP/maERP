@@ -1,5 +1,4 @@
 ﻿using maERP.Application.Contracts.SalesChannel;
-using maERP.Persistence.Repositories.SalesChannelRepositories;
 using maERP.SalesChannels.Repositories;
 using maERP.SalesChannels.Tasks;
 using Microsoft.Extensions.DependencyInjection;

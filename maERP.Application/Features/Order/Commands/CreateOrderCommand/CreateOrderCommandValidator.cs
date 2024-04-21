@@ -11,10 +11,9 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
     {
         _orderRepository = orderRepository;
 
-        RuleFor(p => p.TaxRate)
+        RuleFor(p => p.Id)
             .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            .NotEmpty().WithMessage("{PropertyName} is required.");
         
         RuleFor(q => q)
             .MustAsync(OrderUnique).WithMessage("Order with the same name already exists.");
@@ -22,8 +21,6 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
 
     private async Task<bool> OrderUnique(CreateOrderCommand command, CancellationToken cancellationToken)
     {
-        // TODO: Implement unique Order name validation
-        await Task.CompletedTask;
-        return true;
+        return await _orderRepository.GetByIdAsync(command.Id) != null;
     }
 }

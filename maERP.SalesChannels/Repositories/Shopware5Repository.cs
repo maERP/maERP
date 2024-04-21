@@ -2,7 +2,7 @@
 
 using maERP.Persistence.DatabaseContext;
 
-namespace maERP.Persistence.Repositories.SalesChannelRepositories;
+namespace maERP.SalesChannels.Repositories;
 
 public interface IShopware5Repository
 {

@@ -5,5 +5,5 @@ namespace maERP.Application.Features.User.Queries.GetUserDetailQuery;
 
 public class GetUserDetailQuery : IRequest<UserDetailDto>
 {
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 }

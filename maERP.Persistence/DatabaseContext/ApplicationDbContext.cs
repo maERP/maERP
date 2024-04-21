@@ -24,13 +24,13 @@ public class ApplicationDbContext : DbContext
     public DbSet<TaxClass> TaxClass { get; set; }
     public DbSet<Warehouse> Warehouse { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    /* protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         // modelBuilder.ApplyConfiguration(new CountryConfiguration());
-    }
+    } */
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

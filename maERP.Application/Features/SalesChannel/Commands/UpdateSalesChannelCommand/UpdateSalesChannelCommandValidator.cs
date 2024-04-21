@@ -14,10 +14,17 @@ public class UpdateSalesChannelCommandValidator : AbstractValidator<UpdateSalesC
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-        
+
         RuleFor(p => p.TaxRate)
             .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            .NotEmpty().WithMessage("{PropertyName} is required.");
+
+        RuleFor(s => s)
+            .MustAsync(SalesChannelExists).WithMessage("Sales channel not found.");
+    }
+    
+    private async Task<bool> SalesChannelExists(UpdateSalesChannelCommand command, CancellationToken cancellationToken)
+    {
+        return await _salesChannelRepository.GetByIdAsync(command.Id) != null;
     }
 }

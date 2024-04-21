@@ -25,7 +25,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, strin
     public async Task<string> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
-        var validator = new CreateUserCommandValidator(_userRepository);
+        var validator = new CreateUserCommandValidator();
         var validationResult = await validator.ValidateAsync(request);
 
         if(validationResult.Errors.Any())

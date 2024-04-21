@@ -19,5 +19,13 @@ public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCo
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+
+        RuleFor(c => c)
+            .MustAsync(CustomerExists).WithMessage("Customer not found");
+    }
+    
+    private async Task<bool> CustomerExists(UpdateCustomerCommand command, CancellationToken cancellationToken)
+    {
+        return await _customerRepository.GetByIdAsync(command.Id) != null;
     }
 }

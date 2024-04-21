@@ -20,5 +20,19 @@ public class UpdateTaxClassCommandValidator : AbstractValidator<UpdateTaxClassCo
             //.NotEmpty().WithMessage("{PropertyName} is required.")
             .GreaterThanOrEqualTo(0).WithMessage("{PropertyName} must greater or equal 0.")
             .LessThanOrEqualTo(100).WithMessage("{PropertyName} must less or equal 100.");
+
+        RuleFor(t => t)
+            .MustAsync(TaxClassExists).WithMessage("TaxClass not found")
+            .MustAsync(TaxClassUnique).WithMessage("TaxClass with the same tax rate already exists.");
+    }
+    
+    private async Task<bool> TaxClassExists(UpdateTaxClassCommand command, CancellationToken cancellationToken)
+    {
+        return await _taxClassRepository.GetByIdAsync(command.Id) != null;
+    }
+    
+    private async Task<bool> TaxClassUnique(UpdateTaxClassCommand command, CancellationToken cancellationToken)
+    {
+        return await _taxClassRepository.GetByTaxRateAsync(command.TaxRate) == null;
     }
 }

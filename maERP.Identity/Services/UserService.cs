@@ -1,3 +1,5 @@
+#nullable disable
+
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Models.Identity;
 using maERP.Domain.Models;
@@ -17,6 +19,7 @@ public class UserService : IUserService
     public async Task<Employee> GetEmployee(string userId)
     {
         var employee = await _userManager.FindByIdAsync(userId);
+        
         return new Employee
         {
             Email = employee.Email,

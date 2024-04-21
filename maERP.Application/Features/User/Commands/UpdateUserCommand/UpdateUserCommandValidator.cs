@@ -1,24 +1,17 @@
 ﻿using FluentValidation;
-using maERP.Application.Contracts.Persistence;
-using maERP.Application.Features.Product.Commands.UpdateProductCommand;
 
 namespace maERP.Application.Features.User.Commands.UpdateUserCommand;
 
-public class UpdateUserCommandValidator : AbstractValidator<UpdateProductCommand>
+public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
 {
-    private readonly IProductRepository _productRepository;
-
-    public UpdateUserCommandValidator(IProductRepository productRepository)
+    public UpdateUserCommandValidator()
     {
-        _productRepository = productRepository;
-
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-        
-        RuleFor(p => p.TaxRate)
+
+        RuleFor(p => p.Email)
             .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            .NotEmpty().WithMessage("{PropertyName} is required.");
     }
 }

@@ -4,5 +4,5 @@ namespace maERP.Application.Contracts.Persistence;
 
 public interface IProductRepository : IGenericRepository<Product>
 {
-    Task<Product> GetBySkuAsync(string sku);
+    Task<Product?> GetBySkuAsync(string sku);
 }

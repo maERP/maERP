@@ -10,15 +10,13 @@ public class ProductImportRepository : IProductImportRepository
 {
     private readonly ILogger<ProductImportRepository> _logger;
     private readonly IProductRepository _productRepository;
-    private readonly IProductSalesChannelRepository _productSalesChannelRepository;
     private readonly ISalesChannelRepository _salesChannelRepository;
     private readonly ITaxClassRepository _taxClassRepository;
 
-    public ProductImportRepository(ILogger<ProductImportRepository> logger, IProductRepository productRepository, IProductSalesChannelRepository productSalesChannelRepository, ISalesChannelRepository salesChannelRepository, ITaxClassRepository taxClassRepository)
+    public ProductImportRepository(ILogger<ProductImportRepository> logger, IProductRepository productRepository, ISalesChannelRepository salesChannelRepository, ITaxClassRepository taxClassRepository)
     {
         _logger = logger;
         _productRepository = productRepository;
-        _productSalesChannelRepository = productSalesChannelRepository;
         _salesChannelRepository = salesChannelRepository;
         _taxClassRepository = taxClassRepository;
     }

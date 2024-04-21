@@ -49,8 +49,8 @@ public class AuthService : IAuthService
         {
             Id = user.Id,
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-            Email = user.Email,
-            UserName = user.UserName
+            Email = user.Email!,
+            UserName = user.Email!
         };
 
         return response;
@@ -63,7 +63,7 @@ public class AuthService : IAuthService
             Email = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
-            UserName = request.Username,
+            UserName = request.Email,
             EmailConfirmed = true
         };
 
@@ -91,6 +91,7 @@ public class AuthService : IAuthService
         
         var roleClaims = roles.Select(q =>new Claim(ClaimTypes.Role, q)).ToList();
         
+#nullable disable
         var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
@@ -100,6 +101,7 @@ public class AuthService : IAuthService
             }
             .Union(userClaims)
             .Union(roleClaims);
+#nullable restore
 
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
         

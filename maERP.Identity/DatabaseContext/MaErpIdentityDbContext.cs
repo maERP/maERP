@@ -2,7 +2,7 @@ using maERP.Domain.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace maERP.Identity.DbContext;
+namespace maERP.Identity.DatabaseContext;
 
 public class MaErpIdentityDbContext : IdentityDbContext<ApplicationUser>
 {

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using maERP.Identity.DbContext;
+using maERP.Identity.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 

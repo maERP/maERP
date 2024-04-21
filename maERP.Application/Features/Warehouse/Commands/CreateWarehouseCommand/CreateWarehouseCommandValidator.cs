@@ -6,11 +6,11 @@ namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
 public class CreateWarehouseCommandValidator : AbstractValidator<CreateWarehouseCommand>
 {
     private readonly IWarehouseRepository _warehouseRepository;
-
+    
     public CreateWarehouseCommandValidator(IWarehouseRepository warehouseRepository)
     {
         _warehouseRepository = warehouseRepository;
-
+        
         RuleFor(p => p.Name)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull()
@@ -22,8 +22,7 @@ public class CreateWarehouseCommandValidator : AbstractValidator<CreateWarehouse
 
     private async Task<bool> WarehouseUnique(CreateWarehouseCommand command, CancellationToken cancellationToken)
     {
-        // TODO: Implement unique warehouse name validation
-        await Task.CompletedTask;
-        return true;
+        // TODO create method for FindByNameAsync
+        return await _warehouseRepository.GetByIdAsync(1) == null;
     }
 }

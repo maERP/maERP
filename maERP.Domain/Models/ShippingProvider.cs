@@ -6,7 +6,7 @@ namespace maERP.Domain.Models;
 public class ShippingProvider : BaseEntity
 {
     [Required, Display(Name = "Name")]
-    public virtual string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
     public virtual ICollection<ShippingProviderRate>? ShippingRates { get; set; }
 }

@@ -6,11 +6,11 @@ namespace maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
 public class UpdateWarehouseCommandValidator : AbstractValidator<UpdateWarehouseCommand>
 {
     private readonly IWarehouseRepository _warehouseRepository;
-
+    
     public UpdateWarehouseCommandValidator(IWarehouseRepository warehouseRepository)
     {
         _warehouseRepository = warehouseRepository;
-
+        
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
@@ -19,12 +19,13 @@ public class UpdateWarehouseCommandValidator : AbstractValidator<UpdateWarehouse
             .NotNull()
             .MinimumLength(3).WithMessage("{PropertyName} must be longer than 3.")
             .MaximumLength(255).WithMessage("{PropertyName} too long");
+        
+        RuleFor(w => w)
+            .MustAsync(WarehouseExists).WithMessage("Warehouse not found");
     }
-
-    private async Task<bool> WarehouseUnique(UpdateWarehouseCommand command, CancellationToken cancellationToken)
+    
+    private async Task<bool> WarehouseExists(UpdateWarehouseCommand command, CancellationToken cancellationToken)
     {
-        // TODO: Implement unique warehouse name validation
-        await Task.CompletedTask;
-        return true;
+        return await _warehouseRepository.GetByIdAsync(command.Id) != null;
     }
 }

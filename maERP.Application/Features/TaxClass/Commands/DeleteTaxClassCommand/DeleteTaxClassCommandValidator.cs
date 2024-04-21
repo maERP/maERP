@@ -14,5 +14,13 @@ public class DeleteTaxClassCommandValidator : AbstractValidator<DeleteTaxClassCo
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
+        
+        RuleFor(q => q)
+            .MustAsync(TaxClassExists).WithMessage("TaxClass not found");
+    }
+    
+    private async Task<bool> TaxClassExists(DeleteTaxClassCommand command, CancellationToken cancellationToken)
+    {
+        return await _taxClassRepository.GetByIdAsync(command.Id) != null;
     }
 }

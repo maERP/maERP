@@ -14,5 +14,13 @@ public class DeleteProductCommandValidator : AbstractValidator<DeleteProductComm
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
+        
+        RuleFor(p => p)
+            .MustAsync(ProductExists).WithMessage("Product does not exist.");
+    }
+    
+    private async Task<bool> ProductExists(DeleteProductCommand command, CancellationToken token)
+    {
+        return await _productRepository.GetByIdAsync(command.Id) != null;
     }
 }

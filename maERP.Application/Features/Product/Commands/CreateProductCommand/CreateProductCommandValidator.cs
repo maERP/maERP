@@ -16,12 +16,13 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .MinimumLength(3).WithMessage("{PropertyName} must be more than {MinLength} characters.")
             .MaximumLength(255).WithMessage("{PropertyName} must be less than {MaxLength} characters.");
+
+        RuleFor(p => p)
+            .MustAsync(ProductUnique).WithMessage("Product with the same SKU already exists.");
     }
 
     private async Task<bool> ProductUnique(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        // TODO: Implement unique Product name validation
-        await Task.CompletedTask;
-        return true;
+        return await _productRepository.GetBySkuAsync(command.Sku) != null;
     }
 }

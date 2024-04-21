@@ -14,10 +14,17 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-        
-        RuleFor(p => p.TaxRate)
+
+        RuleFor(p => p.Id)
             .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            .NotEmpty().WithMessage("{PropertyName} is required.");
+            
+        RuleFor(p => p)
+            .MustAsync(ProductExists).WithMessage("Product does not exist.");
+    }
+    
+    private async Task<bool> ProductExists(UpdateProductCommand command, CancellationToken cancellationToken)
+    {
+        return await _productRepository.GetByIdAsync(command.Id) != null;
     }
 }
