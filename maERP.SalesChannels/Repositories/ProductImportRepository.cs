@@ -1,5 +1,6 @@
 ﻿using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.SalesChannel;
+using maERP.Application.Exceptions;
 using maERP.Domain.Models;
 using maERP.Domain.Models.SalesChannelData;
 using Microsoft.Extensions.Logging;
@@ -36,7 +37,7 @@ public class ProductImportRepository : IProductImportRepository
         if (existingProduct == null)
         {
             _logger.LogInformation("Product {0} does not exist, creating Product and SalesChannel", importProduct.Sku);
-            
+
             var newProduct = new Product
             {
                 Name = importProduct.Name,
@@ -47,7 +48,7 @@ public class ProductImportRepository : IProductImportRepository
                 ProductStock = [new ProductStock { WarehouseId = 1, Quantity = 1 }],
                 ProductSalesChannel = [new ProductSalesChannel
                 {
-                    SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId),
+                    SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId) ?? throw new NotFoundException("SalesChannel {0} not found", salesChannelId),
                     RemoteProductId = importProduct.RemoteProductId, 
                     Price = importProduct.Price
                 }],
@@ -63,8 +64,13 @@ public class ProductImportRepository : IProductImportRepository
         {
             _logger.LogInformation("Product already exists, check for SalesChannel...");
             bool somethingChanged = false;
+            bool salesChannelExist = false;
             
-            var salesChannelExist = existingProduct.ProductSalesChannel.Where(s => s.SalesChannelId == salesChannelId).Any();
+            if(existingProduct.ProductSalesChannel != null)
+            {
+                salesChannelExist = existingProduct.ProductSalesChannel.Any(s => s.SalesChannelId == salesChannelId);
+            }
+
             // TODO update price when salesChannelExist is true
             if(!salesChannelExist)
             {
@@ -74,7 +80,7 @@ public class ProductImportRepository : IProductImportRepository
                 [
                     new ProductSalesChannel
                     {
-                        SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId),
+                        SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId) ?? throw new NotFoundException("SalesChannel {0} not found", salesChannelId),
                         RemoteProductId = importProduct.RemoteProductId,
                         Price = importProduct.Price
                     }

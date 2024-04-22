@@ -51,9 +51,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Identity", "maERP.Ide
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.SharedUI", "maERP.SharedUI\maERP.SharedUI.csproj", "{6802E69A-EB28-4E2C-A39C-C25C0FE021A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Analytics", "maERP.Analytics\maERP.Analytics.csproj", "{E6DC4327-8073-4198-B65B-EB22225D8D58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Analytics", "maERP.Analytics\maERP.Analytics.csproj", "{E6DC4327-8073-4198-B65B-EB22225D8D58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.SalesChannels", "maERP.SalesChannels\maERP.SalesChannels.csproj", "{1A275490-09CC-475A-8CD8-898162AAA129}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.SalesChannels", "maERP.SalesChannels\maERP.SalesChannels.csproj", "{1A275490-09CC-475A-8CD8-898162AAA129}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E55A5B8-3007-49F6-A102-DE32D0774D11}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

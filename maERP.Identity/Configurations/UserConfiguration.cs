@@ -20,7 +20,7 @@ namespace maERP.Identity.Configurations;
                     LastName = "Admin",
                     UserName = "admin@localhost.com",
                     NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                    PasswordHash = hasher.HashPassword(null, "P@ssword1"),
+                    PasswordHash = hasher.HashPassword(new ApplicationUser(), "P@ssword1"),
                     EmailConfirmed = true
                 },
                 new ApplicationUser
@@ -32,7 +32,7 @@ namespace maERP.Identity.Configurations;
                     LastName = "User",
                     UserName = "user@localhost.com",
                     NormalizedUserName = "USER@LOCALHOST.COM",
-                    PasswordHash = hasher.HashPassword(null, "P@ssword1"),
+                    PasswordHash = hasher.HashPassword(new ApplicationUser(), "P@ssword1"),
                     EmailConfirmed = true
                 }
             );

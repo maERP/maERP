@@ -23,6 +23,8 @@
     <Platforms>AnyCPU;x64</Platforms>
     <PackageId>maERP</PackageId>
     <Configurations>Debug;Release</Configurations>
+	
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
