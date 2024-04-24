@@ -24,7 +24,7 @@ public class ApplicationDbContextTests
         {
             Id = 1,
             Name = "Test Warehouse 1"
-        };        
+        };
 
         // Act
         await _applicationDbContext.Warehouse.AddAsync(warehouse);

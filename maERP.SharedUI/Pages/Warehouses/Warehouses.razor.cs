@@ -7,10 +7,10 @@ namespace maERP.SharedUI.Pages.Warehouses;
 public partial class Warehouses
 {
     [Inject]
-    public NavigationManager navigationManager { get; set; }
+    public required NavigationManager? navigationManager { get; set; }
 
     [Inject]
-    public IWarehouseService warehouseService { get; set; }
+    public required IWarehouseService warehouseService { get; set; }
 
     public List<WarehouseVM>? warehouses { get; private set; }
 

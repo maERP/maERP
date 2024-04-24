@@ -113,7 +113,7 @@
     {
         warehouses = await _warehouseService.GetWarehouses();
 
-        if (salesChannelId != null && salesChannelId > 0)
+        if (salesChannelId > 0)
         {
             salesChannel = await _salesChannelService.GetSalesChannelDetails(salesChannelId);
         }

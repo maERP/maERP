@@ -32,9 +32,10 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
     <Product>$(AssemblyName)</Product>
     <AssemblyName>maERP</AssemblyName>
-    <NoWarn>NETSDK1023</NoWarn>
     <DefaultLanguage>de</DefaultLanguage>
     <NeutralLanguage>de-DE</NeutralLanguage>
+	
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">

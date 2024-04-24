@@ -28,6 +28,8 @@
     <PackageProjectUrl>https://github.com/maERP/maERP</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/maERP/maERP/blob/main/LICENSE.txt</PackageLicenseUrl>
     <NeutralLanguage>de</NeutralLanguage>
+
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' ">

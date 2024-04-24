@@ -25,13 +25,12 @@ public partial class Login
     private string newServer = string.Empty;
 
     MudForm? _form;
-    bool _success;
-    bool _loading;
+    bool _success = false;
+    bool _loading = false;
 
     private List<LoginServer> _serverList = new();
     private readonly LoginFormModel _model = new();
 
-    private string _spinnerClass = string.Empty;
     private string _errorMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
@@ -42,7 +41,7 @@ public partial class Login
         {
             try
             {
-                string serverJson = await _localStorage.GetItemAsStringAsync("serverList");
+                string serverJson = await _localStorage.GetItemAsStringAsync("serverList") ?? throw new Exception();
                 _serverList = JsonSerializer.Deserialize<List<LoginServer>>(serverJson)!;
             }
             catch (JsonException)
@@ -55,7 +54,7 @@ public partial class Login
 
         if (await _localStorage.ContainKeyAsync("email"))
         {
-            _model.Email = await _localStorage.GetItemAsStringAsync("email");
+            _model.Email = await _localStorage.GetItemAsStringAsync("email") ?? throw new Exception();
         }
     }
 
@@ -102,8 +101,6 @@ public partial class Login
 
     private async void OnSubmit()
     {
-        _spinnerClass = "spinner-border spinner-border-sm";
-
         await _localStorage!.SetItemAsStringAsync("server", _model.Server);
 
         var loginResponse = await _authenticationService!.LoginAsync(_model.Email, _model.Password); // TODO add _model.RememberMe
@@ -124,7 +121,6 @@ public partial class Login
         }
 
         _errorMessage = "Login fehlgeschlagen";
-        _spinnerClass = "";
 
         _snackbar!.Add(_errorMessage, Severity.Error);
 

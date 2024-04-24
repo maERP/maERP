@@ -12,7 +12,6 @@ using maERP.SalesChannels;
 using maERP.Server.Middlewares;
 using maERP.Server.ServiceRegistrations;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Serilog;
 

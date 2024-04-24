@@ -41,7 +41,7 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
 
             return false;
         }
-        catch(ApiException ex)
+        catch(ApiException)
         {
             return false;
         }
