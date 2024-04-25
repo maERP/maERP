@@ -1,36 +1,33 @@
 using maERP.Application.Dtos;
-using maERP.Application.Dtos.Product;
+using maERP.Application.Dtos.Warehouse;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
 
 namespace maERP.Server.Tests;
-public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
+public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
 {
     private readonly maERPWebApplicationFactory<Program> _webApplicationFactory;
 
-    public ProductCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
+    public WarehouseCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
 
     [Theory]
-    [InlineData("/api/v1/Products")]
+    [InlineData("/api/v1/Warehouses")]
     public async Task Create(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var product = new ProductCreateDto
+        var warehouse = new WarehouseCreateDto
         {
-            Name = "Testprodukt 1 created",
-            Sku = "1001",
-            Price = 100,
-            TaxClass = new BaseDto { Id = 1 }
+            Name = "Warehouse 1"
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, product);
-        ProductDetailDto? resultContent = await result.Content.ReadFromJsonAsync<ProductDetailDto>();
+        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, warehouse);
+        WarehouseDetailDto? resultContent = await result.Content.ReadFromJsonAsync<WarehouseDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -38,89 +35,80 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
     }
 
     [Theory]
-    [InlineData("/api/Products/")]
+    [InlineData("/api/v1/Warehouses/")]
     public async Task GetAll(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Product> {
+            new List<Warehouse> {
                 new() {
                     Id = 2,
-                    Name = "Testprodukt 2",
-                    Sku = "1002",
-                    Price = 100,
-                    TaxClass = new TaxClass { Id = 1, TaxRate = 19 }
+                    Name = "Warehouse 2"
                 }
         });
 
-        ICollection<ProductListDto>? result = await httpClient.GetFromJsonAsync<ICollection<ProductListDto>>(url);
+        ICollection<WarehouseListDto>? result = await httpClient.GetFromJsonAsync<ICollection<WarehouseListDto>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 1);
     }
 
     [Theory]
-    [InlineData("/api/Products/3")]
+    [InlineData("/api/v1/Warehouses/3")]
     public async Task GetDetail(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Product> {
+            new List<Warehouse> {
                 new() {
                     Id = 3,
-                    Name = "Testprodukt 3",
-                    Sku = "1003",
-                    Price = 100
+                    Name = "Warehouse 3"
                 }
         });
 
-        ProductDetailDto? result = await httpClient.GetFromJsonAsync<ProductDetailDto>(url);
+        WarehouseDetailDto? result = await httpClient.GetFromJsonAsync<WarehouseDetailDto>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);
     }
 
     [Theory]
-    [InlineData("/api/Products/4")]
+    [InlineData("/api/v1/Warehouses/4")]
     public async Task Update(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Product> {
+            new List<Warehouse> {
                 new() {
                     Id = 4,
-                    Name = "Testprodukt 4",
-                    Sku = "1004",
-                    Price = 100
+                    Name = "Warehouse 4"
                 }
         });
 
-        var product = new ProductUpdateDto
+        var warehouse = new WarehouseUpdateDto
         {
-            Name = "Testprodukt 3 updated",
+            Name = "Warehouse 3 updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, product);
-        ProductDetailDto? resultContent = await result.Content.ReadFromJsonAsync<ProductDetailDto>();
+        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, warehouse);
+        WarehouseDetailDto? resultContent = await result.Content.ReadFromJsonAsync<WarehouseDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
-        Assert.True(resultContent != null && resultContent.Name == product.Name);
+        Assert.True(resultContent != null && resultContent.Name == warehouse.Name);
     }
 
     [Theory]
-    [InlineData("/api/Products/5")]
+    [InlineData("/api/v1/Warehouses/5")]
     public async Task Delete(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Product> {
+            new List<Warehouse> {
                 new() {
                     Id = 5,
-                    Name = "Testprodukt 5",
-                    Sku = "1005",
-                    Price = 100
+                    Name = "Warehouse 5"
                 }
         });
 
@@ -130,7 +118,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
     }
 
     [Theory]
-    [InlineData("/api/Products/999999")]
+    [InlineData("/api/v1/Warehouses/999999")]
     public async Task NotExist(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
@@ -139,5 +127,5 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         HttpResponseMessage result = await httpClient.GetAsync(url);
 
         Assert.Equal(result?.StatusCode, HttpStatusCode.NotFound);
-    }    
+    }
 }
