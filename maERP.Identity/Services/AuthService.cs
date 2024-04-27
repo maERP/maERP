@@ -81,7 +81,7 @@ public class AuthService : IAuthService
             stringBuilder.AppendFormat("{0}\n", err.Description);
         }
 
-        throw new BadRequestException($"User registration failed. {stringBuilder}");
+        throw new Exception($"User registration failed. {stringBuilder}");
     }
     
     private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user)

@@ -4,6 +4,11 @@ namespace maERP.Application.Exceptions;
 
 public class ValidationException : Exception 
 {
+    public ValidationException(string message) : base(message)
+    {
+
+    }
+
     public ValidationException(string message, ValidationResult validationResult) : base(message)
     {
         ValidationErrors = new();
@@ -13,5 +18,5 @@ public class ValidationException : Exception
         }
     }
 
-    public List<string> ValidationErrors { get; set; }
+    public List<string> ValidationErrors { get; set; } = new();
 }

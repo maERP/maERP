@@ -1,15 +1,19 @@
 ﻿using System.Net;
 using maERP.Application.Exceptions;
 using maERP.Server.Models;
+using Newtonsoft.Json;
 
 namespace maERP.Server.Middlewares;
 
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
-    public ExceptionMiddleware(RequestDelegate next)
+    private readonly ILogger<ExceptionMiddleware> _logger;
+
+    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext httpContext)
@@ -17,6 +21,7 @@ public class ExceptionMiddleware
         try
         {
             await _next(httpContext);
+            Console.WriteLine("debug");
         }
         catch (Exception ex)
         {
@@ -27,21 +32,22 @@ public class ExceptionMiddleware
     private async Task HandleExceptionAsync(HttpContext httpContext, Exception ex)
     {
         HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
-        CustomProblemDetails problem;
+        CustomProblemDetails problem = new();
 
         switch (ex)
         {
-            case BadRequestException badRequestException:
+            case ValidationException validationException:
                 statusCode = HttpStatusCode.BadRequest;
                 problem = new CustomProblemDetails
                 {
-                    Title = badRequestException.Message,
+                    Title = validationException.Message,
                     Status = (int)statusCode,
-                    Detail = badRequestException.InnerException?.Message,
-                    Type = nameof(BadRequestException),
-                    Errors = badRequestException.ValidationErrors ?? new Dictionary<string, string[]>()
+                    Detail = validationException.InnerException?.Message,
+                    Type = nameof(ValidationException),
+                    Errors = validationException.ValidationErrors
                 };
                 break;
+
             case NotFoundException NotFound:
                 statusCode = HttpStatusCode.NotFound;
                 problem = new CustomProblemDetails
@@ -52,6 +58,7 @@ public class ExceptionMiddleware
                     Detail = NotFound.InnerException?.Message,
                 };
                 break;
+
             default:
                 problem = new CustomProblemDetails
                 {
@@ -64,7 +71,8 @@ public class ExceptionMiddleware
         }
 
         httpContext.Response.StatusCode = (int)statusCode;
+        var logMessage = JsonConvert.SerializeObject(problem);
+        _logger.LogError(logMessage);
         await httpContext.Response.WriteAsJsonAsync(problem);
-
     }
 }
