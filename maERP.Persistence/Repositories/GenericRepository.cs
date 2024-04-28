@@ -1,4 +1,5 @@
-﻿using maERP.Application.Contracts.Persistence;
+﻿using System.Linq.Expressions;
+using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Models.Common;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -46,5 +47,28 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         _context.Entry(entity).State = EntityState.Modified;
         await _context.SaveChangesAsync();
+    }
+    
+    public bool IsUnique(T entity)
+    {
+        var type = typeof(T);
+        var properties = type.GetProperties();
+
+        foreach (var property in properties)
+        {
+            var parameter = Expression.Parameter(type, "e");
+            var propertyExpression = Expression.Property(parameter, property);
+            var value = property.GetValue(entity);
+            var constant = Expression.Constant(value);
+            var equalityExpression = Expression.Equal(propertyExpression, constant);
+
+            var lambda = Expression.Lambda<Func<T, bool>>(equalityExpression, parameter);
+            if (_context.Set<T>().Any(lambda))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -17,13 +17,17 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
             .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
             
         RuleFor(q => q)    
-            .MustAsync(CustomerUnique).WithMessage("Warehouse with the same name already exists.");
+            .Must(CustomerUnique).WithMessage("Warehouse with the same name already exists.");
 
     }
 
-    private async Task<bool> CustomerUnique(CreateCustomerCommand command, CancellationToken cancellationToken)
+    private bool CustomerUnique(CreateCustomerCommand command)
     {
-        var customer = await _customerRepository.GetByIdAsync(command.CustomerId);     
-        return customer == null ? false : true;
+        var customer = new Domain.Models.Customer()
+        {
+            FirstName = command.Forename,
+        };
+        
+        return _customerRepository.IsUnique(customer);     
     }
 }
