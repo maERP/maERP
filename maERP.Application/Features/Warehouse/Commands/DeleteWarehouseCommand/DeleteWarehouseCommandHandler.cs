@@ -11,8 +11,7 @@ public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseComm
     private readonly IMapper _mapper;
     private readonly IAppLogger<DeleteWarehouseCommandHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
-
-
+    
     public DeleteWarehouseCommandHandler(IMapper mapper,
         IAppLogger<DeleteWarehouseCommandHandler> logger,
         IWarehouseRepository warehouseRepository)
@@ -35,9 +34,13 @@ public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseComm
         }
 
         // convert to domain entity object
-        var warehouseToDelete = _mapper.Map<Domain.Models.Warehouse>(request);
+        // var warehouseToDelete = _mapper.Map<Domain.Models.Warehouse>(request);
+        var warehouseToDelete = new Domain.Models.Warehouse()
+        {
+            Id = request.Id
+        };
 
-        // add to database
+        // remove from database
         await _warehouseRepository.DeleteAsync(warehouseToDelete);
 
         // return record id
