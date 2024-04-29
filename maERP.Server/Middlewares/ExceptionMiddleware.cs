@@ -21,7 +21,6 @@ public class ExceptionMiddleware
         try
         {
             await _next(httpContext);
-            Console.WriteLine("debug");
         }
         catch (Exception ex)
         {

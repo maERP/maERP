@@ -75,7 +75,7 @@
                     <TemplateColumn>
                         <CellTemplate>
                             <MudStack Row>
-                                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(() => RemoveFromServerList(context.Item.Url))" />
+                                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(() => RemoveFromServerList(context.Item!.Url))" />
                             </MudStack>
                         </CellTemplate>
                     </TemplateColumn>

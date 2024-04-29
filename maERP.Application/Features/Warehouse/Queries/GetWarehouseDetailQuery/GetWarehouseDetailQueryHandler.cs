@@ -2,6 +2,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Dtos.Warehouse;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Queries.GetWarehouseDetailQuery;
@@ -24,6 +25,11 @@ public class GetWarehouseDetailQueryHandler : IRequestHandler<GetWarehouseDetail
     {
         // Query the database
         var warehouse = await _warehouseRepository.GetByIdAsync(request.Id);
+
+        if (warehouse == null)
+        {
+            throw new NotFoundException("NotFoundException", "warehouse not found.");
+        }
 
         // Convert data objects to DTO objects
         var data = _mapper.Map<WarehouseDetailDto>(warehouse);

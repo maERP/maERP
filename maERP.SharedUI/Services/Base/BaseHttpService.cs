@@ -14,11 +14,11 @@ public class BaseHttpService
         _localstorage = localStorage;
     }
 
-    protected Response<Guid> ConvertApiExceptions<Guid>(ApiException ex)
+    protected Response<T> ConvertApiExceptions<T>(ApiException ex)
     {
         if (ex.StatusCode == 400)
         {
-            return new Response<Guid>
+            return new Response<T>
             {
                 Message = "Invalid data was submitted",
                 ValidationErrors = ex.Response,
@@ -28,14 +28,14 @@ public class BaseHttpService
 
         if (ex.StatusCode == 404)
         {
-            return new Response<Guid>
+            return new Response<T>
             {
                 Message = "Resource not found",
                 Success = false
             };
         }
 
-        return new Response<Guid>
+        return new Response<T>
         {
             Message = "An error occurred",
             Success = false
