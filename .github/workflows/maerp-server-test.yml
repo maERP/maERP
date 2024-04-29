@@ -14,7 +14,9 @@ on:
       - 'maERP.Persistence/**'
       - 'maERP.SalesChannels/**'
       - 'maERP.Persistence/**'
-      - 'maERP.Persistence/**'
+      - 'maERP.Application.Persistence.IntegrationTests/**'
+      - 'maERP.Application.UnitTests/**'
+      - 'maERP.Server.Tests/**'
   pull_request:
     branches: [ main ]
     paths:
@@ -28,7 +30,9 @@ on:
       - 'maERP.Persistence/**'
       - 'maERP.SalesChannels/**'
       - 'maERP.Persistence/**'
-      - 'maERP.Persistence/**'
+      - 'maERP.Application.Persistence.IntegrationTests/**'
+      - 'maERP.Application.UnitTests/**'
+      - 'maERP.Server.Tests/**'
 
 jobs:
   test:

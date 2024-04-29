@@ -14,6 +14,9 @@ on:
       - 'maERP.Persistence/**'
       - 'maERP.SalesChannels/**'
       - 'maERP.Persistence/**'
+      - 'maERP.Application.Persistence.IntegrationTests/**'
+      - 'maERP.Application.UnitTests/**'
+      - 'maERP.Server.Tests/**'
 
 jobs:
   push_to_registry:
