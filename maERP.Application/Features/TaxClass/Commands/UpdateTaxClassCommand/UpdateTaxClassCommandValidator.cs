@@ -23,16 +23,21 @@ public class UpdateTaxClassCommandValidator : AbstractValidator<UpdateTaxClassCo
 
         RuleFor(t => t)
             .MustAsync(TaxClassExists).WithMessage("TaxClass not found")
-            .MustAsync(TaxClassUnique).WithMessage("TaxClass with the same tax rate already exists.");
+            .Must(IsUnique).WithMessage("TaxClass with the same tax rate already exists.");
     }
     
     private async Task<bool> TaxClassExists(UpdateTaxClassCommand command, CancellationToken cancellationToken)
     {
         return await _taxClassRepository.GetByIdAsync(command.Id) != null;
     }
-    
-    private async Task<bool> TaxClassUnique(UpdateTaxClassCommand command, CancellationToken cancellationToken)
+
+    private bool IsUnique(UpdateTaxClassCommand command)
     {
-        return await _taxClassRepository.GetByTaxRateAsync(command.TaxRate) == null;
+        var taxClass = new maERP.Domain.Models.TaxClass
+        {
+            TaxRate = command.TaxRate
+        };
+
+        return _taxClassRepository.IsUnique(taxClass, command.Id);
     }
 }

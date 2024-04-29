@@ -19,13 +19,24 @@ public class UpdateWarehouseCommandValidator : AbstractValidator<UpdateWarehouse
             .NotNull()
             .MinimumLength(3).WithMessage("{PropertyName} must be longer than 3.")
             .MaximumLength(255).WithMessage("{PropertyName} too long");
-        
+
         RuleFor(w => w)
-            .MustAsync(WarehouseExists).WithMessage("Warehouse not found");
+            .MustAsync(WarehouseExists).WithMessage("Warehouse not found")
+            .Must(IsUnique).WithMessage("Warehouse with the same name already exists.");
     }
     
     private async Task<bool> WarehouseExists(UpdateWarehouseCommand command, CancellationToken cancellationToken)
     {
         return await _warehouseRepository.GetByIdAsync(command.Id) != null;
+    }
+    
+    private bool IsUnique(UpdateWarehouseCommand command)
+    {
+        var warehouse = new Domain.Models.Warehouse()
+        {
+            Name = command.Name,
+        };
+
+        return _warehouseRepository.IsUnique(warehouse, command.Id);
     }
 }

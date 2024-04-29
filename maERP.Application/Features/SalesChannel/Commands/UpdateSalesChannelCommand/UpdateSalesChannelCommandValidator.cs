@@ -15,16 +15,21 @@ public class UpdateSalesChannelCommandValidator : AbstractValidator<UpdateSalesC
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
 
-        RuleFor(p => p.TaxRate)
+        RuleFor(p => p.Name)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.");
 
         RuleFor(s => s)
-            .MustAsync(SalesChannelExists).WithMessage("Sales channel not found.");
+            .Must(IsUnique).WithMessage("Sales channel not found.");
     }
     
-    private async Task<bool> SalesChannelExists(UpdateSalesChannelCommand command, CancellationToken cancellationToken)
+    private bool IsUnique(UpdateSalesChannelCommand command)
     {
-        return await _salesChannelRepository.GetByIdAsync(command.Id) != null;
+        var salesChannel = new maERP.Domain.Models.SalesChannel
+        {
+            Name = command.Name
+        };
+
+        return _salesChannelRepository.IsUnique(salesChannel, command.Id);
     }
 }
