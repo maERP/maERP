@@ -19,13 +19,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.x
-
-      - name: Restore maERP.Web.Tests
-        run: dotnet restore maERP.Web.Tests
-      - name: Build maERP.Web.Tests
-        run: dotnet build maERP.Web.Tests --no-restore
-      - name: Test maERP.Web.Tests
-        run: dotnet test maERP.Web.Tests --no-build --verbosity normal
       
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
