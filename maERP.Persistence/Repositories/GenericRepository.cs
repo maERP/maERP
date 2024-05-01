@@ -14,12 +14,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         _context = context;
     }
-
-    public async Task<IReadOnlyList<T>> GetAllAsync()
-    {
-        return await _context.Set<T>().AsNoTracking().ToListAsync();
-    }
-
+    
     public async Task<int> CreateAsync(T entity)
     {
         await _context.AddAsync(entity);
@@ -27,10 +22,9 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return entity.Id;
     }
 
-    public async Task DeleteAsync(T entity)
+    public async Task<IReadOnlyList<T>> GetAllAsync()
     {
-        _context.Remove(entity);
-        await _context.SaveChangesAsync();
+        return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
 
     public async Task<IReadOnlyList<T>> GetAsync()
@@ -40,13 +34,24 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task<T?> GetByIdAsync(int id)
     {
-        return await _context.Set<T>().FindAsync(id);
+        return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task UpdateAsync(T entity)
     {
         _context.Entry(entity).State = EntityState.Modified;
         await _context.SaveChangesAsync();
+    }
+    
+    public async Task DeleteAsync(T entity)
+    {
+        _context.Remove(entity);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task<bool> ExistsAsync(int id)
+    {
+        return await _context.Set<T>().AsNoTracking().AnyAsync(e => e.Id == id);
     }
     
     public bool IsUnique(T entity, int? id = null)

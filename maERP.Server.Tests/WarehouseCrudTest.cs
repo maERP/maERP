@@ -71,8 +71,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);
     }
-
-    /*
+    
     [Theory]
     [InlineData("/api/v1/Warehouses/4")]
     public async Task Update(string url)
@@ -93,15 +92,10 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
         };
 
         HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, warehouse);
-        WarehouseDetailDto? resultContent = await result.Content.ReadFromJsonAsync<WarehouseDetailDto>();
-
-        Assert.NotNull(resultContent);
-        Assert.True(result.IsSuccessStatusCode);
-        Assert.True(resultContent != null && resultContent.Name == warehouse.Name);
+        
+        Assert.True(result.StatusCode == HttpStatusCode.NoContent);
     }
-    */
     
-    /*
     [Theory]
     [InlineData("/api/v1/Warehouses/5")]
     public async Task Delete(string url)
@@ -119,7 +113,6 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
 
         Assert.Equal(result?.StatusCode, HttpStatusCode.NoContent);
     }
-    */
 
     [Theory]
     [InlineData("/api/v1/Warehouses/999999")]
