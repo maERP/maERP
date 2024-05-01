@@ -23,6 +23,6 @@ public class DeleteWarehouseCommandValidator : AbstractValidator<DeleteWarehouse
     
     private async Task<bool> WarehouseExists(DeleteWarehouseCommand command, CancellationToken cancellationToken)
     {
-        return await _warehouseRepository.GetByIdAsync(command.Id) != null;
+        return await _warehouseRepository.ExistsAsync(command.Id);
     }
 }

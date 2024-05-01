@@ -12,7 +12,7 @@ public class UpdateWarehouseCommandValidator : AbstractValidator<UpdateWarehouse
         _warehouseRepository = warehouseRepository;
         
         RuleFor(p => p.Id)
-            .NotNull()
+            .NotNull().WithMessage("{PropertyName} must not be null.")
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
         
         RuleFor(p => p.Name)

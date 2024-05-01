@@ -29,7 +29,7 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
 
         if(validationResult.Errors.Any())
         {
-            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(CreateCustomerCommand), request.CustomerId);
+            _logger.LogWarning("Validation errors in create request for {0}", nameof(CreateCustomerCommand));
             throw new ValidationException("Invalid Customer", validationResult);
         }
 

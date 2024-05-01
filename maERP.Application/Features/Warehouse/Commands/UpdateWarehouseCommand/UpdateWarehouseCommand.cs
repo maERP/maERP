@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using maERP.Application.Dtos.Warehouse;
+using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
 

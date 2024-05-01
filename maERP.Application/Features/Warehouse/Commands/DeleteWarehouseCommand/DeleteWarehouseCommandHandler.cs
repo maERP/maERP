@@ -39,14 +39,9 @@ public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseComm
         {
             Id = request.Id
         };
-
-        // remove from database
+        
         await _warehouseRepository.DeleteAsync(warehouseToDelete);
-
-        // return record id
+        
         return warehouseToDelete.Id;
-
-        // Example Exception:
-        // throw new NotFoundException(nameof(Warehouse), request.Id);
     }
 }

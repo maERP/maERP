@@ -11,21 +11,27 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
     {
         _customerRepository = customerRepository;
 
-        RuleFor(p => p.CustomerId)
+        RuleFor(p => p.Firstname)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            .MinimumLength(1).WithMessage("{PropertyName} must be at least 1 character.")
+            .MaximumLength(100).WithMessage("{PropertyName} must not exceed 100 characters.");
+        
+        RuleFor(p => p.Lastname)
+            .NotNull().WithMessage("{PropertyName} is required.")
+            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .MinimumLength(1).WithMessage("{PropertyName} must be at least 1 character.")
+            .MaximumLength(100).WithMessage("{PropertyName} must not exceed 100 characters.");
             
         RuleFor(q => q)    
             .Must(CustomerUnique).WithMessage("Warehouse with the same name already exists.");
-
     }
 
     private bool CustomerUnique(CreateCustomerCommand command)
     {
         var customer = new Domain.Models.Customer()
         {
-            FirstName = command.Forename,
+            Firstname = command.Firstname,
         };
         
         return _customerRepository.IsUnique(customer);     

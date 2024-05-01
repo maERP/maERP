@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Dtos.Warehouse;
 using maERP.Application.Exceptions;
 using MediatR;
 
@@ -33,17 +34,11 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
             _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(CreateWarehouseCommand), request.Name);
             throw new ValidationException("Invalid Warehouse", validationResult);
         }
-
-        // convert to domain entity object
+        
         var warehouseToUpdate = _mapper.Map<Domain.Models.Warehouse>(request);
-
-        // add to database
+        
         await _warehouseRepository.UpdateAsync(warehouseToUpdate);
 
-        // return record id
         return warehouseToUpdate.Id;
-
-        // Example Exception:
-        // throw new NotFoundException(nameof(Warehouse), request.Id);
     }
 }
