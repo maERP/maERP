@@ -3808,11 +3808,11 @@ namespace maERP.SharedUI.Services.Base
         [JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("FirstName")]
-        public string FirstName { get; set; }
+        [JsonPropertyName("Firstname")]
+        public string Firstname { get; set; }
 
-        [JsonPropertyName("LastName")]
-        public string LastName { get; set; }
+        [JsonPropertyName("Lastname")]
+        public string Lastname { get; set; }
 
         [JsonPropertyName("EnrollmentDate")]
         public DateTimeOffset EnrollmentDate { get; set; }
@@ -3826,11 +3826,11 @@ namespace maERP.SharedUI.Services.Base
         [JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("FirstName")]
-        public string FirstName { get; set; }
+        [JsonPropertyName("Firstname")]
+        public string Firstname { get; set; }
 
-        [JsonPropertyName("LastName")]
-        public string LastName { get; set; }
+        [JsonPropertyName("Lastname")]
+        public string Lastname { get; set; }
 
         [JsonPropertyName("EnrollmentDate")]
         public DateTimeOffset EnrollmentDate { get; set; }
@@ -3953,13 +3953,13 @@ namespace maERP.SharedUI.Services.Base
     public partial class RegistrationRequest
     {
 
-        [JsonPropertyName("FirstName")]
+        [JsonPropertyName("Firstname")]
         [Required]
-        public string FirstName { get; set; }
+        public string Firstname { get; set; }
 
-        [JsonPropertyName("LastName")]
+        [JsonPropertyName("Lastname")]
         [Required]
-        public string LastName { get; set; }
+        public string Lastname { get; set; }
 
         [JsonPropertyName("Email")]
         [Required]
@@ -4167,13 +4167,13 @@ namespace maERP.SharedUI.Services.Base
         [JsonPropertyName("Id")]
         public string Id { get; set; }
 
-        [JsonPropertyName("FirstName")]
+        [JsonPropertyName("Firstname")]
         [Required]
-        public string FirstName { get; set; }
+        public string Firstname { get; set; }
 
-        [JsonPropertyName("LastName")]
+        [JsonPropertyName("Lastname")]
         [Required]
-        public string LastName { get; set; }
+        public string Lastname { get; set; }
 
         [JsonPropertyName("Email")]
         [Required]
@@ -4188,13 +4188,13 @@ namespace maERP.SharedUI.Services.Base
         [JsonPropertyName("Id")]
         public string Id { get; set; }
 
-        [JsonPropertyName("FirstName")]
+        [JsonPropertyName("Firstname")]
         [Required]
-        public string FirstName { get; set; }
+        public string Firstname { get; set; }
 
-        [JsonPropertyName("LastName")]
+        [JsonPropertyName("Lastname")]
         [Required]
-        public string LastName { get; set; }
+        public string Lastname { get; set; }
 
         [JsonPropertyName("Email")]
         [Required]

@@ -1,12 +1,13 @@
-﻿#nullable disable
-
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace maERP.Persistence.Migrations
+#nullable disable
+
+namespace maERP.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class changeFirstname : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

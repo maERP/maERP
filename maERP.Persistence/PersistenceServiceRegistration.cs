@@ -8,7 +8,6 @@ namespace maERP.Persistence;
 
 public static class PersistenceServiceRegistration
 {
-    // public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IOptions<DatabaseOptions> dbOptions)
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IServiceScopeFactory serviceScopeFactory)
     {
         var scope = serviceScopeFactory.CreateScope();
@@ -16,7 +15,8 @@ public static class PersistenceServiceRegistration
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseNpgsql(dbOptions.Value.DefaultConnection);
+            options.UseNpgsql(dbOptions.Value.DefaultConnection,
+                b => b.MigrationsAssembly("maERP.Persistence"));
         });
 
         return services;

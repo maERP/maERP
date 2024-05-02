@@ -25,8 +25,8 @@ else
     <MudDataGrid Items="@users" SortMode="SortMode.Single" Class="mb-8">
         <Columns>
             <PropertyColumn Property="x => x.Email" Title="E-Mail" />
-            <PropertyColumn Property="x => x.FirstName" Title="Vorname" />
-            <PropertyColumn Property="x => x.LastName" Title="Nachname" />
+            <PropertyColumn Property="x => x.Firstname" Title="Vorname" />
+            <PropertyColumn Property="x => x.Lastname" Title="Nachname" />
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
                     <MudButton Href="@($"/Users/{context.Item.Id}/Edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>

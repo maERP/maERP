@@ -52,8 +52,8 @@ public class UserRepository : IUserRepository
             
             localUser.Email = userUpdateDto.Email;
             localUser.UserName = userUpdateDto.Email;
-            localUser.FirstName = userUpdateDto.FirstName;
-            localUser.LastName = userUpdateDto.LastName;
+            localUser.Firstname = userUpdateDto.Firstname;
+            localUser.Lastname = userUpdateDto.Lastname;
 
             /*
             if (userUpdateDto.Password.Length > 0)

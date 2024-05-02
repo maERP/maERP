@@ -48,8 +48,9 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<int>> Update(UpdateWarehouseCommand updateWarehouseCommand)
+    public async Task<ActionResult<WarehouseDetailDto>> Update(int id, UpdateWarehouseCommand updateWarehouseCommand)
     {
+        updateWarehouseCommand.Id = id;
         await mediator.Send(updateWarehouseCommand);
         return NoContent();
     }
@@ -57,6 +58,7 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     // DELETE api/<WarehousesController>/5
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(int id)

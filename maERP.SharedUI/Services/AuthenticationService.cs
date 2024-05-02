@@ -56,8 +56,8 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
     {
         RegistrationRequest registrationRequest = new RegistrationRequest
         {
-            FirstName = firstName,
-            LastName = lastName,
+            Firstname = firstName,
+            Lastname = lastName,
             Username = username,
             Email = email,
             Password = password

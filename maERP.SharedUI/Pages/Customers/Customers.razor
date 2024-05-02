@@ -26,8 +26,8 @@ else
     <MudDataGrid Items="@customers" SortMode="SortMode.Single" Class="mb-8">
         <Columns>
             <PropertyColumn Property="x => x.Id" Title="Kundennr." />
-            <PropertyColumn Property="x => x.FirstName" Title="Vorname" />
-            <PropertyColumn Property="x => x.LastName" Title="Nachname" />
+            <PropertyColumn Property="x => x.Firstname" Title="Vorname" />
+            <PropertyColumn Property="x => x.Lastname" Title="Nachname" />
             <PropertyColumn Property="x => x.EnrollmentDate" Title="Kunde seit" />
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>

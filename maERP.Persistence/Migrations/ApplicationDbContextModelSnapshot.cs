@@ -68,12 +68,12 @@ namespace maERP.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("Firstname")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("Lastname")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");

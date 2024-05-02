@@ -200,11 +200,11 @@ namespace maERP.Identity.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("Firstname")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("LastName")
+                    b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -260,8 +260,8 @@ namespace maERP.Identity.Migrations
                             ConcurrencyStamp = "79b73ec3-0326-4046-af5c-ec48795db6bf",
                             Email = "admin@localhost.com",
                             EmailConfirmed = true,
-                            FirstName = "System",
-                            LastName = "Admin",
+                            Firstname = "System",
+                            Lastname = "Admin",
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
@@ -278,8 +278,8 @@ namespace maERP.Identity.Migrations
                             ConcurrencyStamp = "53806e8d-5e4f-4b20-a2c4-9a919de75fc4",
                             Email = "user@localhost.com",
                             EmailConfirmed = true,
-                            FirstName = "System",
-                            LastName = "User",
+                            Firstname = "System",
+                            Lastname = "User",
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@LOCALHOST.COM",
                             NormalizedUserName = "USER@LOCALHOST.COM",
