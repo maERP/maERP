@@ -23,7 +23,6 @@ public class CreateSalesChannelCommandHandler : IRequestHandler<CreateSalesChann
 
     public async Task<int> Handle(CreateSalesChannelCommand request, CancellationToken cancellationToken)
     {
-        // Validate incoming data
         var validator = new CreateSalesChannelCommandValidator(_salesChannelRepository);
         var validationResult = await validator.ValidateAsync(request);
 
@@ -33,13 +32,10 @@ public class CreateSalesChannelCommandHandler : IRequestHandler<CreateSalesChann
             throw new ValidationException("Invalid SalesChannel", validationResult);
         }
 
-        // convert to domain entity object
         var salesChannelToCreate = _mapper.Map<Domain.Models.SalesChannel>(request);
 
-        // add to database
         await _salesChannelRepository.CreateAsync(salesChannelToCreate);
 
-        // return record id
         return salesChannelToCreate.Id;
     }
 }

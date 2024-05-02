@@ -21,6 +21,6 @@ public class DeleteProductCommandValidator : AbstractValidator<DeleteProductComm
     
     private async Task<bool> ProductExists(DeleteProductCommand command, CancellationToken token)
     {
-        return await _productRepository.GetByIdAsync(command.Id) != null;
+        return await _productRepository.ExistsAsync(command.Id);
     }
 }

@@ -24,7 +24,6 @@ public class DeleteTaxClassCommandHandler : IRequestHandler<DeleteTaxClassComman
 
     public async Task<int> Handle(DeleteTaxClassCommand request, CancellationToken cancellationToken)
     {
-        // Validate incoming data
         var validator = new DeleteTaxClassCommandValidator(_taxClassRepository);
         var validationResult = await validator.ValidateAsync(request);
 
@@ -34,13 +33,13 @@ public class DeleteTaxClassCommandHandler : IRequestHandler<DeleteTaxClassComman
             throw new ValidationException("Invalid TaxClass", validationResult);
         }
 
-        // convert to domain entity object
-        var taxClassToDelete = _mapper.Map<Domain.Models.TaxClass>(request);
+        var taxClassToDelete = new Domain.Models.TaxClass
+        {
+            Id = request.Id
+        };
 
-        // add to database
-        await _taxClassRepository.CreateAsync(taxClassToDelete);
+        await _taxClassRepository.DeleteAsync(taxClassToDelete);
 
-        // return record id
         return taxClassToDelete.Id;
     }
 }

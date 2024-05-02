@@ -2,6 +2,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Dtos.SalesChannel;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetailQuery;
@@ -22,13 +23,15 @@ public class GetSalesChannelDetailQueryHandler : IRequestHandler<GetSalesChannel
     }
     public async Task<SalesChannelDetailDto> Handle(GetSalesChannelDetailQuery request, CancellationToken cancellationToken)
     {
-        // Query the database
         var salesChannel = await _salesChannelRepository.GetByIdAsync(request.Id);
 
-        // Convert data objects to DTO objects
+        if(salesChannel == null)
+        {
+            throw new NotFoundException("NotFoundException", "SalesChannel not found.");
+        }
+
         var data = _mapper.Map<SalesChannelDetailDto>(salesChannel);
 
-        // Return list of DTO objects
         _logger.LogInformation("All SalesChanneles are retrieved successfully.");
         return data;
     }

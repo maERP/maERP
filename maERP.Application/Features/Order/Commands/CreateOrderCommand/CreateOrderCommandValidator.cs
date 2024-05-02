@@ -10,17 +10,20 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
     public CreateOrderCommandValidator(IOrderRepository orderRepository)
     {
         _orderRepository = orderRepository;
-
-        RuleFor(p => p.Id)
-            .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.");
         
+        /*
         RuleFor(q => q)
-            .MustAsync(OrderUnique).WithMessage("Order with the same name already exists.");
+            .MustAsync(OrderUniqueAsync).WithMessage("Order with the same values already exists.");
+        */
     }
 
-    private async Task<bool> OrderUnique(CreateOrderCommand command, CancellationToken cancellationToken)
+    private async Task<bool> OrderUniqueAsync(CreateOrderCommand command, CancellationToken cancellationToken)
     {
-        return await _orderRepository.GetByIdAsync(command.Id) != null;
+        var orderToCreate = new Domain.Models.Order
+        {
+             
+        };
+
+        return await _orderRepository.IsUniqueAsync(orderToCreate);
     }
 }

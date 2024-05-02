@@ -24,7 +24,6 @@ public class DeleteSalesChannelCommandHandler : IRequestHandler<DeleteSalesChann
 
     public async Task<int> Handle(DeleteSalesChannelCommand request, CancellationToken cancellationToken)
     {
-        // Validate incoming data
         var validator = new DeleteSalesChannelCommandValidator(_salesChannelRepository);
         var validationResult = await validator.ValidateAsync(request);
 
@@ -34,13 +33,13 @@ public class DeleteSalesChannelCommandHandler : IRequestHandler<DeleteSalesChann
             throw new ValidationException("Invalid SalesChannel", validationResult);
         }
 
-        // convert to domain entity object
-        var salesChannelToDelete = _mapper.Map<Domain.Models.SalesChannel>(request);
+        var salesChannelToDelete = new Domain.Models.SalesChannel
+        {
+            Id = request.Id
+        };
 
-        // add to database
-        await _salesChannelRepository.CreateAsync(salesChannelToDelete);
+        await _salesChannelRepository.DeleteAsync(salesChannelToDelete);
 
-        // return record id
         return salesChannelToDelete.Id;
     }
 }

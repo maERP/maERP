@@ -1,10 +1,11 @@
-using maERP.Application.Dtos;
 using maERP.Application.Dtos.Warehouse;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
 
 namespace maERP.Server.Tests;
+
+[Collection("Sequential")]
 public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
 {
     private readonly maERPWebApplicationFactory<Program> _webApplicationFactory;
@@ -71,7 +72,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);
     }
-    
+
     [Theory]
     [InlineData("/api/v1/Warehouses/4")]
     public async Task Update(string url)
@@ -92,10 +93,10 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
         };
 
         HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, warehouse);
-        
-        Assert.True(result.StatusCode == HttpStatusCode.NoContent);
+
+        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }
-    
+
     [Theory]
     [InlineData("/api/v1/Warehouses/5")]
     public async Task Delete(string url)
@@ -111,7 +112,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
 
         HttpResponseMessage result = await httpClient.DeleteAsync(url);
 
-        Assert.Equal(result?.StatusCode, HttpStatusCode.NoContent);
+        Assert.Equal(HttpStatusCode.NoContent, result?.StatusCode);
     }
 
     [Theory]

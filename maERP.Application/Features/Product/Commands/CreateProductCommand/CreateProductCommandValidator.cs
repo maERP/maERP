@@ -11,7 +11,7 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
     {
         _productRepository = productRepository;
 
-        RuleFor(p => p.Name)
+        RuleFor(p => p.Sku)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .MinimumLength(3).WithMessage("{PropertyName} must be more than {MinLength} characters.")
@@ -23,6 +23,6 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
 
     private async Task<bool> ProductUnique(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        return await _productRepository.GetBySkuAsync(command.Sku) != null;
+        return await _productRepository.GetBySkuAsync(command.Sku) == null;
     }
 }

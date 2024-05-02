@@ -21,6 +21,6 @@ public class DeleteOrderCommandValidator : AbstractValidator<DeleteOrderCommand>
     
     private async Task<bool> OrderExists(DeleteOrderCommand command, CancellationToken cancellationToken)
     {
-        return await _orderRepository.GetByIdAsync(command.Id) != null;
+        return await _orderRepository.ExistsAsync(command.Id);
     }
 }

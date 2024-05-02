@@ -2,6 +2,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Dtos.Customer;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.Customer.Queries.GetCustomerDetailQuery;
@@ -22,13 +23,15 @@ public class GetCustomerDetailQueryHandler : IRequestHandler<GetCustomerDetailQu
     }
     public async Task<CustomerDetailDto> Handle(GetCustomerDetailQuery request, CancellationToken cancellationToken)
     {
-        // Query the database
         var customer = await _customerRepository.GetByIdAsync(request.Id);
 
-        // Convert data objects to DTO objects
+        if(customer == null)
+        {
+            throw new NotFoundException("NotFoundException", "Customer not found.");
+        }
+
         var data = _mapper.Map<CustomerDetailDto>(customer);
 
-        // Return list of DTO objects
         _logger.LogInformation("All Customeres are retrieved successfully.");
         return data;
     }

@@ -24,7 +24,6 @@ public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand, int
 
     public async Task<int> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
     {
-        // Validate incoming data
         var validator = new DeleteOrderCommandValidator(_orderRepository);
         var validationResult = await validator.ValidateAsync(request);
 
@@ -34,13 +33,13 @@ public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand, int
             throw new ValidationException("Invalid Order", validationResult);
         }
 
-        // convert to domain entity object
-        var orderToDelete = _mapper.Map<Domain.Models.Order>(request);
+        var orderToDelete = new Domain.Models.Order
+        {
+            Id = request.Id
+        };
 
-        // add to database
-        await _orderRepository.CreateAsync(orderToDelete);
+        await _orderRepository.DeleteAsync(orderToDelete);
 
-        // return record id
         return orderToDelete.Id;
     }
 }

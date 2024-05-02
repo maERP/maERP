@@ -23,7 +23,6 @@ public class CreateTaxClassCommandHandler : IRequestHandler<CreateTaxClassComman
 
     public async Task<int> Handle(CreateTaxClassCommand request, CancellationToken cancellationToken)
     {
-        // Validate incoming data
         var validator = new CreateTaxClassCommandValidator(_taxClassRepository);
         var validationResult = await validator.ValidateAsync(request);
 
@@ -33,13 +32,10 @@ public class CreateTaxClassCommandHandler : IRequestHandler<CreateTaxClassComman
             throw new ValidationException("Invalid TaxClass", validationResult);
         }
 
-        // convert to domain entity object
         var taxClassToCreate = _mapper.Map<Domain.Models.TaxClass>(request);
 
-        // add to database
         await _taxClassRepository.CreateAsync(taxClassToCreate);
 
-        // return record id
         return taxClassToCreate.Id;
     }
 }

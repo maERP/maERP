@@ -25,6 +25,6 @@ public class UpdateOrderCommandValidator : AbstractValidator<UpdateOrderCommand>
     
     private async Task<bool> OrderExists(UpdateOrderCommand command, CancellationToken cancellationToken)
     {
-        return await _orderRepository.GetByIdAsync(command.Id) != null;
+        return await _orderRepository.ExistsAsync(command.Id);
     }
 }

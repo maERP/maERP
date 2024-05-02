@@ -17,11 +17,16 @@ public class CreateTaxClassCommandValidator : AbstractValidator<CreateTaxClassCo
             .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
 
         RuleFor(q => q)
-            .MustAsync(TaxClassUnique).WithMessage("Tax class with the same tax rate already exists.");
+            .MustAsync(IsUniqueAsync).WithMessage("TaxClass with the same tax rate already exists.");
     }
 
-    private async Task<bool> TaxClassUnique(CreateTaxClassCommand command, CancellationToken cancellationToken)
+    private async Task<bool> IsUniqueAsync(CreateTaxClassCommand command, CancellationToken cancellationToken)
     {
-        return await _taxClassRepository.GetByTaxRateAsync(command.TaxRate) == null;
+        var taxClassToCreate = new Domain.Models.TaxClass
+        {
+            TaxRate = command.TaxRate
+        };
+
+        return await _taxClassRepository.IsUniqueAsync(taxClassToCreate);
     }
 }

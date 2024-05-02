@@ -23,7 +23,6 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
     public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        // Validate incoming data
         var validator = new CreateProductCommandValidator(_productRepository);
         var validationResult = await validator.ValidateAsync(request);
 
@@ -33,13 +32,10 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             throw new ValidationException("Invalid Product", validationResult);
         }
 
-        // convert to domain entity object
         var productToCreate = _mapper.Map<Domain.Models.Product>(request);
 
-        // add to database
         await _productRepository.CreateAsync(productToCreate);
 
-        // return record id
         return productToCreate.Id;
     }
 }

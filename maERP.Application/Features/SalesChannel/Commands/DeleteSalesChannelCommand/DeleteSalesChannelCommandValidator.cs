@@ -16,11 +16,11 @@ public class DeleteSalesChannelCommandValidator : AbstractValidator<DeleteSalesC
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
 
         RuleFor(s => s)
-            .MustAsync(SalesChannelExists).WithMessage("Sales channel not found.");
+            .MustAsync(SalesChannelExists).WithMessage("SalesChannel not found.");
     }
     
     private async Task<bool> SalesChannelExists(DeleteSalesChannelCommand command, CancellationToken cancellationToken)
     {
-        return await _salesChannelRepository.GetByIdAsync(command.Id) != null;
+        return await _salesChannelRepository.ExistsAsync(command.Id);
     }
 }

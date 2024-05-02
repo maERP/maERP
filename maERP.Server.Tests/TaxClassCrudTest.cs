@@ -1,4 +1,4 @@
-using maERP.Application.Dtos.Customer;
+using maERP.Application.Dtos.TaxClass;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
@@ -6,30 +6,29 @@ using System.Net.Http.Json;
 namespace maERP.Server.Tests;
 
 [Collection("Sequential")]
-public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
+public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
 {
     private readonly maERPWebApplicationFactory<Program> _webApplicationFactory;
 
-    public CustomerCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
+    public TaxClassCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers")]
+    [InlineData("/api/v1/TaxClasses")]
     public async Task Create(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var customer = new CustomerCreateDto
+        var taxclass = new TaxClassCreateDto
         {
-            Firstname = "Customer Firstname",
-            Lastname = "Customer Lastname",
+            TaxRate = 19
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, customer);
-        CustomerDetailDto? resultContent = await result.Content.ReadFromJsonAsync<CustomerDetailDto>();
+        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, taxclass);
+        TaxClassDetailDto? resultContent = await result.Content.ReadFromJsonAsync<TaxClassDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -37,92 +36,87 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/")]
+    [InlineData("/api/v1/TaxClasses/")]
     public async Task GetAll(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<TaxClass> {
                 new() {
-                    Id = 1,
-                    Firstname = "Customer 2 Firstname",
-                    Lastname = "Customer 2 Lastname"
+                    Id = 2,
+                    TaxRate = 19
                 }
         });
 
-        ICollection<CustomerListDto>? result = await httpClient.GetFromJsonAsync<ICollection<CustomerListDto>>(url);
+        ICollection<TaxClassListDto>? result = await httpClient.GetFromJsonAsync<ICollection<TaxClassListDto>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 1);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/3")]
+    [InlineData("/api/v1/TaxClasses/3")]
     public async Task GetDetail(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<TaxClass> {
                 new() {
                     Id = 3,
-                    Firstname = "Customer 3 Firstname",
-                    Lastname = "Customer 3 Lastname"
+                    TaxRate = 19
                 }
         });
 
-        CustomerDetailDto? result = await httpClient.GetFromJsonAsync<CustomerDetailDto>(url);
+        TaxClassDetailDto? result = await httpClient.GetFromJsonAsync<TaxClassDetailDto>(url);
 
         Assert.NotNull(result);
-        Assert.True(result.Firstname.Length > 0);
+        Assert.Equal(19, result.TaxRate);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/4")]
+    [InlineData("/api/v1/TaxClasses/4")]
     public async Task Update(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<TaxClass> {
                 new() {
                     Id = 4,
-                    Firstname = "Customer 4 Firstname",
-                    Lastname = "Customer 4 Lastname"
+                    TaxRate = 19
                 }
         });
 
-        var customer = new CustomerUpdateDto
+        var taxclass = new TaxClassUpdateDto
         {
-            Firstname = "Customer 4 Firstname updated",
-            Lastname = "Customer 4 Lastname updated",
+            TaxRate = 20
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, customer);
+        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, taxclass);
 
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/5")]
+    [InlineData("/api/v1/TaxClasses/5")]
     public async Task Delete(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<TaxClass> {
                 new() {
                     Id = 5,
-                    Firstname = "Customer 5 Firstname",
-                    Lastname = "Customer 5 Lastname"
+                    TaxRate = 19
                 }
         });
 
         HttpResponseMessage result = await httpClient.DeleteAsync(url);
 
-        Assert.Equal(result?.StatusCode, HttpStatusCode.NoContent);
+        Assert.Equal(HttpStatusCode.NoContent, result?.StatusCode);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/999999")]
+    [InlineData("/api/v1/TaxClasses/999999")]
     public async Task NotExist(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();

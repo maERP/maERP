@@ -6,14 +6,14 @@ using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Queries.GetAllSalesChannelsQuery;
 
-public class GetSalesChannelSQueryHandler : IRequestHandler<GetSalesChannelsQuery, List<SalesChannelListDto>>
+public class GetSalesChannelsQueryHandler : IRequestHandler<GetSalesChannelsQuery, List<SalesChannelListDto>>
 {
     private readonly IMapper _mapper;
-    private readonly IAppLogger<GetSalesChannelSQueryHandler> _logger;
+    private readonly IAppLogger<GetSalesChannelsQueryHandler> _logger;
     private readonly ISalesChannelRepository _salesChannelRepository;
 
-    public GetSalesChannelSQueryHandler(IMapper mapper,
-        IAppLogger<GetSalesChannelSQueryHandler> logger, 
+    public GetSalesChannelsQueryHandler(IMapper mapper,
+        IAppLogger<GetSalesChannelsQueryHandler> logger, 
         ISalesChannelRepository salesChannelRepository)
     {
         _mapper = mapper;

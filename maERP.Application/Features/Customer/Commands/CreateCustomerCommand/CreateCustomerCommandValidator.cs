@@ -24,16 +24,16 @@ public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCo
             .MaximumLength(100).WithMessage("{PropertyName} must not exceed 100 characters.");
             
         RuleFor(q => q)    
-            .Must(CustomerUnique).WithMessage("Warehouse with the same name already exists.");
+            .MustAsync(IsUniqueAsync).WithMessage("Customer with the same values already exists.");
     }
 
-    private bool CustomerUnique(CreateCustomerCommand command)
+    private async Task<bool> IsUniqueAsync(CreateCustomerCommand command, CancellationToken cancellationToken)
     {
         var customer = new Domain.Models.Customer()
         {
             Firstname = command.Firstname,
         };
         
-        return _customerRepository.IsUnique(customer);     
+        return await _customerRepository.IsUniqueAsync(customer);     
     }
 }

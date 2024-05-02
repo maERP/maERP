@@ -14,7 +14,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [ApiController]
 [Authorize]
 [ApiVersion(1.0)]
-[Route("/api/v{version:apiVersion}[controller]")]
+[Route("/api/v{version:apiVersion}/[controller]")]
 public class TaxClassesController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -55,8 +55,9 @@ public class TaxClassesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(UpdateTaxClassCommand updateTaxClassCommand)
+    public async Task<ActionResult> Update(int id, UpdateTaxClassCommand updateTaxClassCommand)
     {
+        updateTaxClassCommand.Id = id;
         await _mediator.Send(updateTaxClassCommand);
         return NoContent();
     }

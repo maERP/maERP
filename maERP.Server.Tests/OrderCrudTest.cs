@@ -1,4 +1,4 @@
-using maERP.Application.Dtos.Customer;
+using maERP.Application.Dtos.Order;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
@@ -6,30 +6,31 @@ using System.Net.Http.Json;
 namespace maERP.Server.Tests;
 
 [Collection("Sequential")]
-public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
+public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
 {
     private readonly maERPWebApplicationFactory<Program> _webApplicationFactory;
 
-    public CustomerCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
+    public OrderCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers")]
+    [InlineData("/api/v1/Orders")]
     public async Task Create(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var customer = new CustomerCreateDto
+        var order = new OrderCreateDto
         {
-            Firstname = "Customer Firstname",
-            Lastname = "Customer Lastname",
+            SalesChannelId = 1,
+            CustomerId = 1,
+            Status = 1
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, customer);
-        CustomerDetailDto? resultContent = await result.Content.ReadFromJsonAsync<CustomerDetailDto>();
+        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, order);
+        OrderDetailDto? resultContent = await result.Content.ReadFromJsonAsync<OrderDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -37,92 +38,87 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/")]
+    [InlineData("/api/v1/Orders/")]
     public async Task GetAll(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<Order> {
                 new() {
-                    Id = 1,
-                    Firstname = "Customer 2 Firstname",
-                    Lastname = "Customer 2 Lastname"
+                    Id = 2,
+                    RemoteOrderId = "222"
                 }
         });
 
-        ICollection<CustomerListDto>? result = await httpClient.GetFromJsonAsync<ICollection<CustomerListDto>>(url);
+        ICollection<OrderListDto>? result = await httpClient.GetFromJsonAsync<ICollection<OrderListDto>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 1);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/3")]
+    [InlineData("/api/v1/Orders/3")]
     public async Task GetDetail(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<Order> {
                 new() {
                     Id = 3,
-                    Firstname = "Customer 3 Firstname",
-                    Lastname = "Customer 3 Lastname"
+                    RemoteOrderId = "333"
                 }
         });
 
-        CustomerDetailDto? result = await httpClient.GetFromJsonAsync<CustomerDetailDto>(url);
+        OrderDetailDto? result = await httpClient.GetFromJsonAsync<OrderDetailDto>(url);
 
         Assert.NotNull(result);
-        Assert.True(result.Firstname.Length > 0);
+        Assert.True(result.RemoteOrderId.Length > 0);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/4")]
+    [InlineData("/api/v1/Orders/4")]
     public async Task Update(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<Order> {
                 new() {
                     Id = 4,
-                    Firstname = "Customer 4 Firstname",
-                    Lastname = "Customer 4 Lastname"
+                    RemoteOrderId = "444"
                 }
         });
 
-        var customer = new CustomerUpdateDto
+        var order = new OrderUpdateDto
         {
-            Firstname = "Customer 4 Firstname updated",
-            Lastname = "Customer 4 Lastname updated",
+            RemoteOrderId = "444-updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, customer);
+        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, order);
 
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/5")]
+    [InlineData("/api/v1/Orders/5")]
     public async Task Delete(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<Order> {
                 new() {
                     Id = 5,
-                    Firstname = "Customer 5 Firstname",
-                    Lastname = "Customer 5 Lastname"
+                    RemoteOrderId = "555"
                 }
         });
 
         HttpResponseMessage result = await httpClient.DeleteAsync(url);
 
-        Assert.Equal(result?.StatusCode, HttpStatusCode.NoContent);
+        Assert.Equal(HttpStatusCode.NoContent, result?.StatusCode);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/999999")]
+    [InlineData("/api/v1/Orders/999999")]
     public async Task NotExist(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();

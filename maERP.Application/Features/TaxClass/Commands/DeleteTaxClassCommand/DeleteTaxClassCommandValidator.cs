@@ -21,6 +21,6 @@ public class DeleteTaxClassCommandValidator : AbstractValidator<DeleteTaxClassCo
     
     private async Task<bool> TaxClassExists(DeleteTaxClassCommand command, CancellationToken cancellationToken)
     {
-        return await _taxClassRepository.GetByIdAsync(command.Id) != null;
+        return await _taxClassRepository.ExistsAsync(command.Id);
     }
 }

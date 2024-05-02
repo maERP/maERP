@@ -17,16 +17,16 @@ public class CreateWarehouseCommandValidator : AbstractValidator<CreateWarehouse
             .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
 
         RuleFor(q => q)
-            .Must(WarehouseUnique).WithMessage("Warehouse with the same name already exists.");
+            .MustAsync(IsUniqueAsync).WithMessage("Warehouse with the same name already exists.");
     }
 
-    private bool WarehouseUnique(CreateWarehouseCommand command)
+    private async Task<bool> IsUniqueAsync(CreateWarehouseCommand command, CancellationToken cancellationToken)
     {
         var warehouse = new Domain.Models.Warehouse()
         {
             Name = command.Name,
         };
         
-        return _warehouseRepository.IsUnique(warehouse);
+        return await _warehouseRepository.IsUniqueAsync(warehouse);
     }
 }

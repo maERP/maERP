@@ -22,7 +22,7 @@ public class UpdateWarehouseCommandValidator : AbstractValidator<UpdateWarehouse
 
         RuleFor(w => w)
             .MustAsync(WarehouseExists).WithMessage("Warehouse not found")
-            .Must(IsUnique).WithMessage("Warehouse with the same name already exists.");
+            .MustAsync(IsUniqueAsync).WithMessage("Warehouse with the same name already exists.");
     }
     
     private async Task<bool> WarehouseExists(UpdateWarehouseCommand command, CancellationToken cancellationToken)
@@ -30,13 +30,13 @@ public class UpdateWarehouseCommandValidator : AbstractValidator<UpdateWarehouse
         return await _warehouseRepository.GetByIdAsync(command.Id) != null;
     }
     
-    private bool IsUnique(UpdateWarehouseCommand command)
+    private async Task<bool> IsUniqueAsync(UpdateWarehouseCommand command, CancellationToken cancellationToken)
     {
         var warehouse = new Domain.Models.Warehouse()
         {
             Name = command.Name,
         };
 
-        return _warehouseRepository.IsUnique(warehouse, command.Id);
+        return await _warehouseRepository.IsUniqueAsync(warehouse, command.Id);
     }
 }

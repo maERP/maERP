@@ -16,16 +16,16 @@ public class CreateSalesChannelCommandValidator : AbstractValidator<CreateSalesC
             .NotEmpty().WithMessage("{PropertyName} is required.");
         
         RuleFor(s => s)
-            .Must(IsUnique).WithMessage("SalesChannel with the same Id already exists.");
+            .MustAsync(IsUniqueAsync).WithMessage("SalesChannel with the same Id already exists.");
     }
     
-    private bool IsUnique(CreateSalesChannelCommand command)
+    private async Task<bool> IsUniqueAsync(CreateSalesChannelCommand command, CancellationToken cancellationToken)
     {
-        var salesChannel = new maERP.Domain.Models.SalesChannel
+        var salesChannel = new Domain.Models.SalesChannel
         {
             Name = command.Name
         };
 
-        return _salesChannelRepository.IsUnique(salesChannel);
+        return await _salesChannelRepository.IsUniqueAsync(salesChannel);
     }
 }

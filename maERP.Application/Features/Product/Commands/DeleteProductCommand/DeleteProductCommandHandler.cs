@@ -24,7 +24,6 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
 
     public async Task<int> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
-        // Validate incoming data
         var validator = new DeleteProductCommandValidator(_productRepository);
         var validationResult = await validator.ValidateAsync(request);
 
@@ -34,13 +33,13 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
             throw new ValidationException("Invalid Product", validationResult);
         }
 
-        // convert to domain entity object
-        var productToDelete = _mapper.Map<Domain.Models.Product>(request);
+        var productToDelete = new Domain.Models.Product
+        {
+            Id = request.Id
+        };
 
-        // add to database
-        await _productRepository.CreateAsync(productToDelete);
+        await _productRepository.DeleteAsync(productToDelete);
 
-        // return record id
         return productToDelete.Id;
     }
 }

@@ -24,7 +24,6 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
 
     public async Task<int> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
     {
-        // Validate incoming data
         var validator = new UpdateCustomerCommandValidator(_customerRepository);
         var validationResult = await validator.ValidateAsync(request);
 
@@ -34,13 +33,10 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
             throw new ValidationException("Invalid Customer", validationResult);
         }
 
-        // convert to domain entity object
         var customerToUpdate = _mapper.Map<Domain.Models.Customer>(request);
 
-        // add to database
         await _customerRepository.UpdateAsync(customerToUpdate);
 
-        // return record id
         return customerToUpdate.Id;
     }
 }

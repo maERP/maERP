@@ -23,7 +23,6 @@ public class GetWarehouseDetailQueryHandler : IRequestHandler<GetWarehouseDetail
     }
     public async Task<WarehouseDetailDto> Handle(GetWarehouseDetailQuery request, CancellationToken cancellationToken)
     {
-        // Query the database
         var warehouse = await _warehouseRepository.GetByIdAsync(request.Id);
 
         if (warehouse == null)
@@ -31,10 +30,8 @@ public class GetWarehouseDetailQueryHandler : IRequestHandler<GetWarehouseDetail
             throw new NotFoundException("NotFoundException", "warehouse not found.");
         }
 
-        // Convert data objects to DTO objects
         var data = _mapper.Map<WarehouseDetailDto>(warehouse);
 
-        // Return list of DTO objects
         _logger.LogInformation("All Warehouses are retrieved successfully.");
         return data;
     }

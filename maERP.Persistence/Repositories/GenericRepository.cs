@@ -54,7 +54,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await _context.Set<T>().AsNoTracking().AnyAsync(e => e.Id == id);
     }
     
-    public bool IsUnique(T entity, int? id = null)
+    public async Task<bool> IsUniqueAsync(T entity, int? id = null)
     {
         var type = typeof(T);
         var properties = type.GetProperties();
@@ -81,7 +81,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
                 lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, lambda.Parameters);
             }
 
-            if (_context.Set<T>().Any(lambda))
+            if (await _context.Set<T>().AnyAsync(lambda))
             {
                 return false;
             }

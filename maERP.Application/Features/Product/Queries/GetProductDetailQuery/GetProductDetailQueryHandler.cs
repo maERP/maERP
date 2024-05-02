@@ -2,6 +2,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Dtos.Product;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.Product.Queries.GetProductDetailQuery;
@@ -22,13 +23,15 @@ public class GetProductDetailQueryHandler : IRequestHandler<GetProductDetailQuer
     }
     public async Task<ProductDetailDto> Handle(GetProductDetailQuery request, CancellationToken cancellationToken)
     {
-        // Query the database
         var product = await _productRepository.GetByIdAsync(request.Id);
 
-        // Convert data objects to DTO objects
+        if(product == null)
+        {
+            throw new NotFoundException("NotFoundException", "Product not found.");
+        }
+
         var data = _mapper.Map<ProductDetailDto>(product);
 
-        // Return list of DTO objects
         _logger.LogInformation("All Productes are retrieved successfully.");
         return data;
     }

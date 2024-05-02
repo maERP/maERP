@@ -48,8 +48,9 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(UpdateSalesChannelCommand updateSalesChannelCommand)
+    public async Task<ActionResult> Update(int id, UpdateSalesChannelCommand updateSalesChannelCommand)
     {
+        updateSalesChannelCommand.Id = id;
         await mediator.Send(updateSalesChannelCommand);
         return NoContent();
     }

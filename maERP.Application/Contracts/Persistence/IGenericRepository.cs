@@ -8,5 +8,5 @@ public interface IGenericRepository<T> where T : class
     Task UpdateAsync(T entity);
     Task DeleteAsync(T entity);
     Task<bool> ExistsAsync(int id);
-    bool IsUnique(T entity, int? id = null);
+    Task<bool> IsUniqueAsync(T entity, int? id = null);
 }

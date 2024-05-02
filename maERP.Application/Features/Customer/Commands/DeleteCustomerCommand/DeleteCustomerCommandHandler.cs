@@ -24,7 +24,6 @@ public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerComman
 
     public async Task<int> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
     {
-        // Validate incoming data
         var validator = new DeleteCustomerCommandValidator(_customerRepository);
         var validationResult = await validator.ValidateAsync(request);
 
@@ -34,13 +33,13 @@ public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerComman
             throw new ValidationException("Invalid Customer", validationResult);
         }
 
-        // convert to domain entity object
-        var customerToDelete = _mapper.Map<Domain.Models.Customer>(request);
+        var customerToDelete = new Domain.Models.Customer()
+        {
+            Id = request.Id
+        };
 
-        // add to database
-        await _customerRepository.CreateAsync(customerToDelete);
+        await _customerRepository.DeleteAsync(customerToDelete);
 
-        // return record id
         return customerToDelete.Id;
     }
 }

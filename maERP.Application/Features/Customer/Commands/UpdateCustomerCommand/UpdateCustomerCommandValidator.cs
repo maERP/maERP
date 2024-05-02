@@ -14,11 +14,6 @@ public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCo
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-        
-        RuleFor(p => p.TaxRate)
-            .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
 
         RuleFor(c => c)
             .MustAsync(CustomerExists).WithMessage("Customer not found");
@@ -26,6 +21,6 @@ public class UpdateCustomerCommandValidator : AbstractValidator<UpdateCustomerCo
     
     private async Task<bool> CustomerExists(UpdateCustomerCommand command, CancellationToken cancellationToken)
     {
-        return await _customerRepository.GetByIdAsync(command.Id) != null;
+        return await _customerRepository.ExistsAsync(command.Id);
     }
 }

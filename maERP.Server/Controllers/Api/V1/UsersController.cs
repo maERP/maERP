@@ -47,8 +47,9 @@ public class UsersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(UpdateUserCommand updateUserCommand)
+    public async Task<ActionResult> Update(int id, UpdateUserCommand updateUserCommand)
     {
+        updateUserCommand.Id = id;
         await mediator.Send(updateUserCommand);
         return NoContent();
     }

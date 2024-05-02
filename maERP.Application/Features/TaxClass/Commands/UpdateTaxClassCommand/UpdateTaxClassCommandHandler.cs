@@ -34,13 +34,10 @@ public class UpdateTaxClassCommandHandler : IRequestHandler<UpdateTaxClassComman
             throw new ValidationException("Invalid TaxClass", validationResult);
         }
 
-        // convert to domain entity object
         var taxClassToUpdate = _mapper.Map<Domain.Models.TaxClass>(request);
 
-        // add to database
         await _taxClassRepository.UpdateAsync(taxClassToUpdate);
 
-        // return record id
         return taxClassToUpdate.Id;
     }
 }

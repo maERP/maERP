@@ -126,7 +126,6 @@
         if (salesChannelId != 0)
         {
             response = await _salesChannelService.UpdateSalesChannel(salesChannelId, salesChannel);
-            Console.WriteLine(response.Success);
         }
         else
         {

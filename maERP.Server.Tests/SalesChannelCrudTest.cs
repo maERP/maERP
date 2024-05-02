@@ -1,4 +1,5 @@
-using maERP.Application.Dtos.Customer;
+using maERP.Application.Dtos;
+using maERP.Application.Dtos.SalesChannel;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
@@ -6,30 +7,31 @@ using System.Net.Http.Json;
 namespace maERP.Server.Tests;
 
 [Collection("Sequential")]
-public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
+public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
 {
     private readonly maERPWebApplicationFactory<Program> _webApplicationFactory;
 
-    public CustomerCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
+    public SalesChannelCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers")]
+    [InlineData("/api/v1/SalesChannels")]
     public async Task Create(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var customer = new CustomerCreateDto
+        var saleschannel = new SalesChannelCreateDto
         {
-            Firstname = "Customer Firstname",
-            Lastname = "Customer Lastname",
+            Type = 1,
+            Name = "SalesChannel 1",
+            Url = "http://localhost"
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, customer);
-        CustomerDetailDto? resultContent = await result.Content.ReadFromJsonAsync<CustomerDetailDto>();
+        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, saleschannel);
+        SalesChannelDetailDto? resultContent = await result.Content.ReadFromJsonAsync<SalesChannelDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -37,92 +39,87 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/")]
+    [InlineData("/api/v1/SalesChannels/")]
     public async Task GetAll(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<SalesChannel> {
                 new() {
-                    Id = 1,
-                    Firstname = "Customer 2 Firstname",
-                    Lastname = "Customer 2 Lastname"
+                    Id = 2,
+                    Name = "SalesChannel 2"
                 }
         });
 
-        ICollection<CustomerListDto>? result = await httpClient.GetFromJsonAsync<ICollection<CustomerListDto>>(url);
+        ICollection<SalesChannelListDto>? result = await httpClient.GetFromJsonAsync<ICollection<SalesChannelListDto>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 1);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/3")]
+    [InlineData("/api/v1/SalesChannels/3")]
     public async Task GetDetail(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<SalesChannel> {
                 new() {
                     Id = 3,
-                    Firstname = "Customer 3 Firstname",
-                    Lastname = "Customer 3 Lastname"
+                    Name = "SalesChannel 3"
                 }
         });
 
-        CustomerDetailDto? result = await httpClient.GetFromJsonAsync<CustomerDetailDto>(url);
+        SalesChannelDetailDto? result = await httpClient.GetFromJsonAsync<SalesChannelDetailDto>(url);
 
         Assert.NotNull(result);
-        Assert.True(result.Firstname.Length > 0);
+        Assert.True(result.Name.Length > 0);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/4")]
+    [InlineData("/api/v1/SalesChannels/4")]
     public async Task Update(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<SalesChannel> {
                 new() {
                     Id = 4,
-                    Firstname = "Customer 4 Firstname",
-                    Lastname = "Customer 4 Lastname"
+                    Name = "SalesChannel 4"
                 }
         });
 
-        var customer = new CustomerUpdateDto
+        var saleschannel = new SalesChannelUpdateDto
         {
-            Firstname = "Customer 4 Firstname updated",
-            Lastname = "Customer 4 Lastname updated",
+            Name = "SalesChannel 3 updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, customer);
+        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, saleschannel);
 
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/5")]
+    [InlineData("/api/v1/SalesChannels/5")]
     public async Task Delete(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<SalesChannel> {
                 new() {
                     Id = 5,
-                    Firstname = "Customer 5 Firstname",
-                    Lastname = "Customer 5 Lastname"
+                    Name = "SalesChannel 5"
                 }
         });
 
         HttpResponseMessage result = await httpClient.DeleteAsync(url);
 
-        Assert.Equal(result?.StatusCode, HttpStatusCode.NoContent);
+        Assert.Equal(HttpStatusCode.NoContent, result?.StatusCode);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/999999")]
+    [InlineData("/api/v1/SalesChannels/999999")]
     public async Task NotExist(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();

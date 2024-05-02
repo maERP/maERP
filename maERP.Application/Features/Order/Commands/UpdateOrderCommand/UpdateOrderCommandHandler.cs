@@ -24,7 +24,6 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, int
 
     public async Task<int> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
     {
-        // Validate incoming data
         var validator = new UpdateOrderCommandValidator(_orderRepository);
         var validationResult = await validator.ValidateAsync(request);
 
@@ -34,13 +33,10 @@ public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, int
             throw new ValidationException("Invalid Order", validationResult);
         }
 
-        // convert to domain entity object
         var orderToUpdate = _mapper.Map<Domain.Models.Order>(request);
 
-        // add to database
         await _orderRepository.UpdateAsync(orderToUpdate);
 
-        // return record id
         return orderToUpdate.Id;
     }
 }

@@ -2,5 +2,9 @@
 
 public class OrderCreateDto
 {
-    public virtual int Id { get; set; }
+    public int Id { get; set; }
+    public int OrderId { get; set; }
+    public int SalesChannelId { get; set; }
+    public int CustomerId { get; set; }    
+    public int Status { get; set; }
 }

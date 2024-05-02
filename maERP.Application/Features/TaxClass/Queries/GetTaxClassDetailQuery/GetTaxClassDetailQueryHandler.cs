@@ -2,6 +2,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Dtos.TaxClass;
+using maERP.Application.Exceptions;
 using MediatR;
 
 namespace maERP.Application.Features.TaxClass.Queries.GetTaxClassDetailQuery;
@@ -22,13 +23,15 @@ public class GetTaxClassDetailQueryHandler : IRequestHandler<GetTaxClassDetailQu
     }
     public async Task<TaxClassDetailDto> Handle(GetTaxClassDetailQuery request, CancellationToken cancellationToken)
     {
-        // Query the database
         var taxClass = await _taxClassRepository.GetByIdAsync(request.Id);
 
-        // Convert data objects to DTO objects
+        if(taxClass == null)
+        {
+            throw new NotFoundException("NotFoundException", "TaxClass not found.");
+        }
+
         var data = _mapper.Map<TaxClassDetailDto>(taxClass);
 
-        // Return list of DTO objects
         _logger.LogInformation("All TaxClasses are retrieved successfully.");
         return data;
     }
