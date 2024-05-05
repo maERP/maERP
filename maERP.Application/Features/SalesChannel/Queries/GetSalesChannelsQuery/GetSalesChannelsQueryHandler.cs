@@ -4,7 +4,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Application.Dtos.SalesChannel;
 using MediatR;
 
-namespace maERP.Application.Features.SalesChannel.Queries.GetAllSalesChannelsQuery;
+namespace maERP.Application.Features.SalesChannel.Queries.GetSalesChannelsQuery;
 
 public class GetSalesChannelsQueryHandler : IRequestHandler<GetSalesChannelsQuery, List<SalesChannelListDto>>
 {
