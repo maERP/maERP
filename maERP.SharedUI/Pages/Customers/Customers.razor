@@ -38,12 +38,3 @@ else
     </MudDataGrid>
 }
 
-@code {
-
-    private ICollection<CustomerVM>? customers;
-
-    protected override async Task OnInitializedAsync()
-    {
-        customers = await _customerService.GetCustomers();
-    }
-}

@@ -10,18 +10,3 @@
 
 <h1>Bestellung @order.Id</h1>
 
-@code {
-
-    [Parameter]
-    public int orderId { get; set; }
-
-    protected OrderVM order = new();
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (orderId != 0)
-        {
-            order = await _orderService.GetOrderDetails(orderId);
-        }
-    }
-}

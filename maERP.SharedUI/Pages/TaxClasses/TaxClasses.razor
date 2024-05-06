@@ -35,12 +35,3 @@ else
     </MudDataGrid>
 }
 
-@code {
-
-    private ICollection<TaxClassVM>? taxClasses;
-
-    protected override async Task OnInitializedAsync()
-    {
-        taxClasses = await _taxClassService.GetTaxClasses();
-    }
-}

@@ -12,20 +12,3 @@
 
 <p></p>
 
-@code {
-
-    [Parameter]
-    public string userId { get; set; } = "";
-
-    protected string Title = "Benutzerdetail";
-
-    protected UserVM user = new();
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (userId != null)
-        {
-            user = await _userService.GetUserDetails(userId);
-        }
-    }
-}

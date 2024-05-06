@@ -7,17 +7,3 @@
 @inject NavigationManager _navigationManager
 @inject ITaxClassService _taxClassService
 
-@code {
-
-    [Parameter]
-    public int taxClassId { get; set; }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (taxClassId > 0)
-        {
-            await _taxClassService.DeleteTaxClass(taxClassId);
-            _navigationManager.NavigateTo("/TaxClasses");
-        }
-    }
-}

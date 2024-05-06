@@ -11,20 +11,3 @@
 <MudText Typo="Typo.h4" Class="mb-8">Produktdetails</MudText>
 
 
-@code {
-
-    [Parameter]
-    public int productId { get; set; }
-
-    protected string Title = "Produktdetail";
-
-    protected ProductVM product = new();
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (productId != 0)
-        {
-            product = await _productService.GetProductDetails(productId);
-        }
-    }
-}

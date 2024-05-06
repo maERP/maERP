@@ -9,11 +9,3 @@
 
 <text>Logout...</text>
 
-@code{
-
-    protected override async Task OnInitializedAsync()
-    {
-        await _authService.LogoutAsync();
-        _navigationManager.NavigateTo("/login");
-    }
-}

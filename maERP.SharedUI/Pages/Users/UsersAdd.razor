@@ -58,23 +58,4 @@
     </div>
 </EditForm>
 
-@code {
 
-    [Parameter]
-    public string userId { get; set; } = "";
-
-    protected string Title = "hinzufügen";
-
-    protected UserVM user = new();
-
-    protected async Task Save()
-    {
-        await _userService.CreateUser(user);
-        ReturnToList();
-    }
-
-    public void ReturnToList()
-    {
-        _navigationManager.NavigateTo("/users");
-    }
-}

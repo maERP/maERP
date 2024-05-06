@@ -37,12 +37,3 @@ else
     </MudDataGrid>
 }
 
-@code {
-
-    private ICollection<OrderVM>? orders;
-
-    protected override async Task OnInitializedAsync()
-    {
-        orders = await _orderService.GetOrders();
-    }
-}

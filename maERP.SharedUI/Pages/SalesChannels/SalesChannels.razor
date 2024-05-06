@@ -36,12 +36,3 @@ else
     </MudDataGrid>
 }
 
-@code {
-
-    private ICollection<SalesChannelVM>? salesChannels;
-
-    protected override async Task OnInitializedAsync()
-    {
-        salesChannels = await _salesChannelService.GetSalesChannels();
-    }
-}
