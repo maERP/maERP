@@ -1,13 +1,6 @@
 ﻿@page "/Warehouses/{warehouseId:int}"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.Warehouse
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-@inject NavigationManager _navigationManager
-@inject IWarehouseService _warehouseService
-
 <h1>Lager</h1>
-
-

@@ -8,11 +8,6 @@
 
 @attribute [Authorize]
 
-@inject NavigationManager _navigationManager
-@inject ISalesChannelService _salesChannelService
-@inject IWarehouseService _warehouseService
-@inject ISnackbar _snackbar
-
 <MudText Typo="Typo.h4" Class="mb-8">Vertriebskanal bearbeiten</MudText>
 
 <MudForm Model="@salesChannel" @ref="@_form">
@@ -96,5 +91,3 @@
         </MudItem>
     </MudGrid>
 </MudForm>
-
-

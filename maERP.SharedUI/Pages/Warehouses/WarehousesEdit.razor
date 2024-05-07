@@ -1,13 +1,8 @@
 ﻿@page "/Warehouses/Add"
 @page "/Warehouses/{warehouseId:int}/Edit"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.Warehouse
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-
-@inject NavigationManager _navigationManager
-@inject IWarehouseService _warehouseService
 
 <MudText Typo="Typo.h4" Class="mb-8">Lager bearbeiten</MudText>
 
@@ -32,6 +27,3 @@
         </MudItem>
     </MudGrid>
 </MudForm>
-
-
-

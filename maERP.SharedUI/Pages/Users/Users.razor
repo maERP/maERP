@@ -1,12 +1,7 @@
 ﻿@page "/Users"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.User
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-
-@inject NavigationManager _navigationManager
-@inject IUserService _userService
 
 <PageTitle>Benutzer</PageTitle>
 
@@ -35,4 +30,3 @@ else
         </Columns>
     </MudDataGrid>
 }
-

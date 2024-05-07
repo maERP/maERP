@@ -1,3 +1,4 @@
 ﻿@page "/users/{userId}/delete"
-@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Authorization
 
+@attribute [Authorize]

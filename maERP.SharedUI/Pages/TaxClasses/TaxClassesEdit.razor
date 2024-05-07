@@ -1,14 +1,8 @@
 ﻿@page "/Taxclasses/Add"
 @page "/Taxclasses/{taxClassId:int}/Edit"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.TaxClass
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-
-@inject NavigationManager _navigationManager
-@inject ITaxClassService _taxClassService
-@inject ISnackbar _snackbar
 
 <MudText Typo="Typo.h4" Class="mb-8">Steuersatz bearbeiten</MudText>
 
@@ -33,4 +27,3 @@
         </MudItem>
     </MudGrid>
 </MudForm>
-

@@ -1,12 +1,7 @@
 ﻿@page "/users/{userId}/edit"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.User
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-
-@inject NavigationManager _navigationManager
-@inject IUserService _userService
 
 <MudText Typo="Typo.h4" Class="mb-8">Benutzer bearbeiten</MudText>
 
@@ -63,4 +58,3 @@
         </MudItem>
     </MudGrid>
 </MudForm>
-

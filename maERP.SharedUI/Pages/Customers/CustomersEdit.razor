@@ -1,12 +1,7 @@
 ﻿@page "/Customers/{customerId:int}/Edit"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.Customer
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-
-@inject NavigationManager _navigationManager
-@inject ICustomerService _customerService
 
 <MudText Typo="Typo.h4" Class="mb-8">Kunde bearbeiten</MudText>
 

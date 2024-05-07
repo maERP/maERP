@@ -1,12 +1,6 @@
 ﻿@page "/Orders/{orderId:int}"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.Order
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-@inject NavigationManager _navigationManager
-@inject IOrderService _orderService
-
 <h1>Bestellung @order.Id</h1>
-

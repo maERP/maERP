@@ -1,12 +1,7 @@
 ﻿@page "/users/add"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.User
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-
-@inject NavigationManager _navigationManager
-@inject IUserService _userService
 
 <h1>Benutzer anlegen</h1>
 
@@ -57,5 +52,3 @@
         <button class="btn btn-light" @onclick="ReturnToList">Abbrechen</button>
     </div>
 </EditForm>
-
-

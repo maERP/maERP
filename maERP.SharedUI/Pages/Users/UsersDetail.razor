@@ -1,14 +1,6 @@
 ﻿@page "/user/{userId}"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.User
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-@inject NavigationManager _navigationManager
-@inject IUserService _userService
-
 <h1>@user.Email</h1>
-
-<p></p>
-

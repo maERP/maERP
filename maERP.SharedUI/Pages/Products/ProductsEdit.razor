@@ -1,13 +1,8 @@
 ﻿@page "/Products/Add"
 @page "/Products/{productId:int}/Edit"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.Product
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-
-@inject NavigationManager _navigationManager
-@inject IProductService _productService
 
 @if (product == null)
 {

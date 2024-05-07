@@ -1,10 +1,16 @@
+using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.Product;
-using MudBlazor;
+using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Products;
 
 public partial class Products
 {
+    [Inject]
+    public required NavigationManager _navigationManager { get; set; }
+
+    [Inject]
+    public required IProductService _productService { get; set; }
 
     private ICollection<ProductVM>? products;
     public string? filter { get; set; }

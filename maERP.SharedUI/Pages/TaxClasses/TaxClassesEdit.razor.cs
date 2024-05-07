@@ -1,3 +1,4 @@
+using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.TaxClass;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -6,6 +7,14 @@ namespace maERP.SharedUI.Pages.TaxClasses;
 
 public partial class TaxClassesEdit
 {
+    [Inject]
+    public required NavigationManager _navigationManager { get; set; }
+
+    [Inject]
+    public required ITaxClassService _taxClassService { get; set; }
+
+    [Inject]
+    public required ISnackbar _snackbar { get; set; }
 
     [Parameter]
     public int taxClassId { get; set; }

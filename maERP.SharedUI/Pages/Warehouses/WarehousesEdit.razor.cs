@@ -1,3 +1,4 @@
+using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.Warehouse;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -6,6 +7,11 @@ namespace maERP.SharedUI.Pages.Warehouses;
 
 public partial class WarehousesEdit
 {
+    [Inject]
+    public required NavigationManager _navigationManager { get; set; }
+
+    [Inject]
+    public required IWarehouseService _warehouseService { get; set; }
 
     [Parameter]
     public int warehouseId { get; set; }

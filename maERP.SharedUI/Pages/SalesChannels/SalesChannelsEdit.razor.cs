@@ -1,3 +1,4 @@
+using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.SalesChannel;
 using maERP.SharedUI.Models.Warehouse;
 using maERP.SharedUI.Services.Base;
@@ -8,6 +9,17 @@ namespace maERP.SharedUI.Pages.SalesChannels
 {
     public partial class SalesChannelsEdit
     {
+        [Inject]
+        public required NavigationManager _navigationManager { get; set; }
+
+        [Inject]
+        public required ISalesChannelService _salesChannelService { get; set; }
+
+        [Inject]
+        public required IWarehouseService _warehouseService { get; set; }
+
+        [Inject]
+        public required ISnackbar _snackbar { get; set; }
 
         [Parameter]
         public int salesChannelId { get; set; }

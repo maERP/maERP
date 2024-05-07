@@ -1,12 +1,7 @@
 ﻿@page "/TaxClasses"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.TaxClass
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
-
-@inject NavigationManager _navigationManager
-@inject ITaxClassService _taxClassService
 
 <PageTitle>Steuersätze</PageTitle>
 
@@ -34,4 +29,3 @@ else
         </Columns>
     </MudDataGrid>
 }
-

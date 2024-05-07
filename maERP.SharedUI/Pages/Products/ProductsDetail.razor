@@ -1,13 +1,6 @@
 ﻿@page "/Products/{productId:int}"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.Product
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-@inject NavigationManager NavManager
-@inject IProductService _productService
-
 <MudText Typo="Typo.h4" Class="mb-8">Produktdetails</MudText>
-
-

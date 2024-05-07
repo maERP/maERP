@@ -4,6 +4,8 @@ namespace maERP.SharedUI.Pages.Users;
 
 public partial class UsersDelete
 {
+    [Inject]
+    public required NavigationManager _navigationManager { get; set; }
 
     [Parameter]
     public string? userId { get; set; }
@@ -13,7 +15,7 @@ public partial class UsersDelete
         if (userId != null)
         {
             // await authManagerRepository.DeleteByIdAsync(userId);
-            NavigationManager.NavigateTo("/users");
+            _navigationManager.NavigateTo("/users");
         }
 
         await Task.CompletedTask;

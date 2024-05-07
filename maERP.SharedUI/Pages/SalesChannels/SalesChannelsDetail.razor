@@ -1,12 +1,6 @@
 ﻿@page "/SalesChannels/{salesChannelId:int}"
-@using maERP.SharedUI.Contracts
-@using maERP.SharedUI.Models.SalesChannel
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-@inject NavigationManager _navigationManager
-@inject ISalesChannelService _salesChannelService
-
 <MudText Typo="Typo.h4" Class="mb-8">@salesChannel.Name</MudText>
-
