@@ -1,3 +1,4 @@
+using maERP.SharedUI.Contracts;
 using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Warehouses;
