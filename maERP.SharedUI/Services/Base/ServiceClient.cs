@@ -4,16 +4,6 @@
 // </auto-generated>
 //----------------------
 
-using System.CodeDom.Compiler;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 #pragma warning disable 108 // Disable "CS0108 '{derivedDto}.ToJson()' hides inherited member '{dtoBase}.ToJson()'. Use the new keyword if hiding was intended."
 #pragma warning disable 114 // Disable "CS0114 '{derivedDto}.RaisePropertyChanged(String)' hides inherited member 'dtoBase.RaisePropertyChanged(String)'. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword."
 #pragma warning disable 472 // Disable "CS0472 The result of the expression is always 'false' since a value of type 'Int32' is never equal to 'null' of type 'Int32?'
@@ -29,391 +19,391 @@ using System.Text.Json.Serialization;
 
 namespace maERP.SharedUI.Services.Base
 {
-    using System = System;
+    using System = global::System;
 
-    [GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial interface IClient
     {
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<AuthResponse> LoginAsync(AuthRequest body);
+        System.Threading.Tasks.Task<AuthResponse> LoginAsync(AuthRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<AuthResponse> LoginAsync(AuthRequest body, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AuthResponse> LoginAsync(AuthRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<RegistrationResponse> RegisterAsync(RegistrationRequest body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<RegistrationResponse> RegisterAsync(RegistrationRequest body, CancellationToken cancellationToken);
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<CustomerListDto>> CustomersAllAsync();
+        System.Threading.Tasks.Task<RegistrationResponse> RegisterAsync(RegistrationRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<CustomerListDto>> CustomersAllAsync(CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<RegistrationResponse> RegisterAsync(RegistrationRequest body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task CustomersPOSTAsync(CreateCustomerCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Created</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task CustomersPOSTAsync(CreateCustomerCommand body, CancellationToken cancellationToken);
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<CustomerDetailDto> CustomersGETAsync(int id);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<CustomerDetailDto> CustomersGETAsync(int id, CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task CustomersPUTAsync(string id, UpdateCustomerCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task CustomersPUTAsync(string id, UpdateCustomerCommand body, CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task CustomersDELETEAsync(int id);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task CustomersDELETEAsync(int id, CancellationToken cancellationToken);
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<OrderListDto>> OrdersAllAsync();
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<OrderListDto>> OrdersAllAsync(CancellationToken cancellationToken);
-
-        /// <returns>Created</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<int> OrdersPOSTAsync(CreateOrderCommand body);
+        System.Threading.Tasks.Task CustomersPOSTAsync(CreateCustomerCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<int> OrdersPOSTAsync(CreateOrderCommand body, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task CustomersPOSTAsync(CreateCustomerCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<OrderDetailDto> OrdersGETAsync(int id);
+        System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<OrderDetailDto> OrdersGETAsync(int id, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task OrdersPUTAsync(string id, UpdateOrderCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task OrdersPUTAsync(string id, UpdateOrderCommand body, CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task OrdersDELETEAsync(int id);
+        System.Threading.Tasks.Task CustomersPUTAsync(string id, UpdateCustomerCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task OrdersDELETEAsync(int id, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task CustomersPUTAsync(string id, UpdateCustomerCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task CustomersDELETEAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task CustomersDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<ProductListDto>> ProductsAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<ProductListDto>> ProductsAllAsync(CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<int> ProductsPOSTAsync(CreateProductCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Created</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<int> ProductsPOSTAsync(CreateProductCommand body, CancellationToken cancellationToken);
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ProductDetailDto> ProductsGETAsync(int id);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ProductDetailDto> ProductsGETAsync(int id, CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task ProductsPUTAsync(string id, UpdateProductCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task ProductsPUTAsync(string id, UpdateProductCommand body, CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task ProductsDELETEAsync(int id);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task ProductsDELETEAsync(int id, CancellationToken cancellationToken);
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<SalesChannelListDto>> SalesChannelsAllAsync();
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<SalesChannelListDto>> SalesChannelsAllAsync(CancellationToken cancellationToken);
-
-        /// <returns>Created</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<int> SalesChannelsPOSTAsync(CreateSalesChannelCommand body);
+        System.Threading.Tasks.Task<int> OrdersPOSTAsync(CreateOrderCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<int> SalesChannelsPOSTAsync(CreateSalesChannelCommand body, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<int> OrdersPOSTAsync(CreateOrderCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id);
+        System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body, CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task SalesChannelsDELETEAsync(int id);
+        System.Threading.Tasks.Task OrdersPUTAsync(string id, UpdateOrderCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task SalesChannelsDELETEAsync(int id, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task OrdersPUTAsync(string id, UpdateOrderCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task OrdersDELETEAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task OrdersDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<TaxClassListDto>> V1TaxClassesAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<TaxClassListDto>> V1TaxClassesAllAsync(CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Created</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body, CancellationToken cancellationToken);
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id, CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body, CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task V1TaxClassesDELETEAsync(int id);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task V1TaxClassesDELETEAsync(int id, CancellationToken cancellationToken);
-
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<UserListDto>> UsersAllAsync();
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<UserListDto>> UsersAllAsync(CancellationToken cancellationToken);
-
-        /// <returns>Created</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<int> UsersPOSTAsync(CreateUserCommand body);
+        System.Threading.Tasks.Task<int> ProductsPOSTAsync(CreateProductCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<int> UsersPOSTAsync(CreateUserCommand body, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<int> ProductsPOSTAsync(CreateProductCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<UserDetailDto> UsersGETAsync(string id);
+        System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<UserDetailDto> UsersGETAsync(string id, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task UsersPUTAsync(string id, UpdateUserCommand body);
+        System.Threading.Tasks.Task ProductsPUTAsync(string id, UpdateProductCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task UsersPUTAsync(string id, UpdateUserCommand body, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task ProductsPUTAsync(string id, UpdateProductCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task ProductsDELETEAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task ProductsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<WarehouseListDto>> WarehousesAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<ICollection<WarehouseListDto>> WarehousesAllAsync(CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task WarehousesPOSTAsync(CreateWarehouseCommand body);
+        System.Threading.Tasks.Task<int> SalesChannelsPOSTAsync(CreateSalesChannelCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task WarehousesPOSTAsync(CreateWarehouseCommand body, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<int> SalesChannelsPOSTAsync(CreateSalesChannelCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<WarehouseDetailDto> WarehousesGETAsync(int id);
+        System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task<WarehouseDetailDto> WarehousesGETAsync(int id, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body, CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task WarehousesDELETEAsync(int id);
+        System.Threading.Tasks.Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        Task WarehousesDELETEAsync(int id, CancellationToken cancellationToken);
+        System.Threading.Tasks.Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task SalesChannelsDELETEAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task SalesChannelsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> V1TaxClassesAllAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> V1TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Created</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Created</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task V1TaxClassesDELETEAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task V1TaxClassesDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync(System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Created</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<int> UsersPOSTAsync(CreateUserCommand body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Created</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<int> UsersPOSTAsync(CreateUserCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task UsersPUTAsync(string id, UpdateUserCommand body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task UsersPUTAsync(string id, UpdateUserCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync();
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync(System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Created</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task WarehousesPOSTAsync(CreateWarehouseCommand body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Created</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task WarehousesPOSTAsync(CreateWarehouseCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task WarehousesDELETEAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task WarehousesDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
     }
 
-    [GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Client : IClient
     {
-        private HttpClient _httpClient;
-        private static Lazy<JsonSerializerOptions> _settings = new Lazy<JsonSerializerOptions>(CreateSerializerSettings, true);
+        private System.Net.Http.HttpClient _httpClient;
+        private static System.Lazy<System.Text.Json.JsonSerializerOptions> _settings = new System.Lazy<System.Text.Json.JsonSerializerOptions>(CreateSerializerSettings, true);
 
     #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public Client(HttpClient httpClient)
+        public Client(System.Net.Http.HttpClient httpClient)
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             _httpClient = httpClient;
         }
 
-        private static JsonSerializerOptions CreateSerializerSettings()
+        private static System.Text.Json.JsonSerializerOptions CreateSerializerSettings()
         {
-            var settings = new JsonSerializerOptions();
+            var settings = new System.Text.Json.JsonSerializerOptions();
             UpdateJsonSerializerSettings(settings);
             return settings;
         }
 
-        protected JsonSerializerOptions JsonSerializerSettings { get { return _settings.Value; } }
+        protected System.Text.Json.JsonSerializerOptions JsonSerializerSettings { get { return _settings.Value; } }
 
-        static partial void UpdateJsonSerializerSettings(JsonSerializerOptions settings);
+        static partial void UpdateJsonSerializerSettings(System.Text.Json.JsonSerializerOptions settings);
 
-        partial void PrepareRequest(HttpClient client, HttpRequestMessage request, string url);
-        partial void PrepareRequest(HttpClient client, HttpRequestMessage request, StringBuilder urlBuilder);
-        partial void ProcessResponse(HttpClient client, HttpResponseMessage response);
+        partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url);
+        partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
+        partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<AuthResponse> LoginAsync(AuthRequest body)
+        public virtual System.Threading.Tasks.Task<AuthResponse> LoginAsync(AuthRequest body)
         {
-            return LoginAsync(body, CancellationToken.None);
+            return LoginAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<AuthResponse> LoginAsync(AuthRequest body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AuthResponse> LoginAsync(AuthRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("POST");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Auth/login"
                     urlBuilder_.Append("api/v1/Auth/login");
@@ -421,15 +411,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -472,30 +462,30 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<RegistrationResponse> RegisterAsync(RegistrationRequest body)
+        public virtual System.Threading.Tasks.Task<RegistrationResponse> RegisterAsync(RegistrationRequest body)
         {
-            return RegisterAsync(body, CancellationToken.None);
+            return RegisterAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<RegistrationResponse> RegisterAsync(RegistrationRequest body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<RegistrationResponse> RegisterAsync(RegistrationRequest body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("POST");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Auth/register"
                     urlBuilder_.Append("api/v1/Auth/register");
@@ -503,15 +493,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -554,26 +544,26 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<ICollection<CustomerListDto>> CustomersAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync()
         {
-            return CustomersAllAsync(CancellationToken.None);
+            return CustomersAllAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<ICollection<CustomerListDto>> CustomersAllAsync(CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Customers"
                     urlBuilder_.Append("api/v1/Customers");
@@ -581,15 +571,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -603,7 +593,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ICollection<CustomerListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<CustomerListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -632,29 +622,29 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task CustomersPOSTAsync(CreateCustomerCommand body)
+        public virtual System.Threading.Tasks.Task CustomersPOSTAsync(CreateCustomerCommand body)
         {
-            return CustomersPOSTAsync(body, CancellationToken.None);
+            return CustomersPOSTAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task CustomersPOSTAsync(CreateCustomerCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task CustomersPOSTAsync(CreateCustomerCommand body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("POST");
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Customers"
                     urlBuilder_.Append("api/v1/Customers");
@@ -662,15 +652,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -718,46 +708,46 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<CustomerDetailDto> CustomersGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id)
         {
-            return CustomersGETAsync(id, CancellationToken.None);
+            return CustomersGETAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<CustomerDetailDto> CustomersGETAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Customers/{id}"
                     urlBuilder_.Append("api/v1/Customers/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -800,49 +790,49 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task CustomersPUTAsync(string id, UpdateCustomerCommand body)
+        public virtual System.Threading.Tasks.Task CustomersPUTAsync(string id, UpdateCustomerCommand body)
         {
-            return CustomersPUTAsync(id, body, CancellationToken.None);
+            return CustomersPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task CustomersPUTAsync(string id, UpdateCustomerCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task CustomersPUTAsync(string id, UpdateCustomerCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("PUT");
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Customers/{id}"
                     urlBuilder_.Append("api/v1/Customers/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -904,45 +894,45 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task CustomersDELETEAsync(int id)
+        public virtual System.Threading.Tasks.Task CustomersDELETEAsync(int id)
         {
-            return CustomersDELETEAsync(id, CancellationToken.None);
+            return CustomersDELETEAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task CustomersDELETEAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task CustomersDELETEAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("DELETE");
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Customers/{id}"
                     urlBuilder_.Append("api/v1/Customers/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -994,26 +984,26 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<ICollection<OrderListDto>> OrdersAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync()
         {
-            return OrdersAllAsync(CancellationToken.None);
+            return OrdersAllAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<ICollection<OrderListDto>> OrdersAllAsync(CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Orders"
                     urlBuilder_.Append("api/v1/Orders");
@@ -1021,15 +1011,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1043,7 +1033,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ICollection<OrderListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<OrderListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1072,30 +1062,30 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<int> OrdersPOSTAsync(CreateOrderCommand body)
+        public virtual System.Threading.Tasks.Task<int> OrdersPOSTAsync(CreateOrderCommand body)
         {
-            return OrdersPOSTAsync(body, CancellationToken.None);
+            return OrdersPOSTAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<int> OrdersPOSTAsync(CreateOrderCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> OrdersPOSTAsync(CreateOrderCommand body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("POST");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Orders"
                     urlBuilder_.Append("api/v1/Orders");
@@ -1103,15 +1093,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1164,46 +1154,46 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<OrderDetailDto> OrdersGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id)
         {
-            return OrdersGETAsync(id, CancellationToken.None);
+            return OrdersGETAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<OrderDetailDto> OrdersGETAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Orders/{id}"
                     urlBuilder_.Append("api/v1/Orders/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1246,49 +1236,49 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task OrdersPUTAsync(string id, UpdateOrderCommand body)
+        public virtual System.Threading.Tasks.Task OrdersPUTAsync(string id, UpdateOrderCommand body)
         {
-            return OrdersPUTAsync(id, body, CancellationToken.None);
+            return OrdersPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task OrdersPUTAsync(string id, UpdateOrderCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task OrdersPUTAsync(string id, UpdateOrderCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("PUT");
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Orders/{id}"
                     urlBuilder_.Append("api/v1/Orders/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1350,45 +1340,45 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task OrdersDELETEAsync(int id)
+        public virtual System.Threading.Tasks.Task OrdersDELETEAsync(int id)
         {
-            return OrdersDELETEAsync(id, CancellationToken.None);
+            return OrdersDELETEAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task OrdersDELETEAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task OrdersDELETEAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("DELETE");
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Orders/{id}"
                     urlBuilder_.Append("api/v1/Orders/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1440,26 +1430,26 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<ICollection<ProductListDto>> ProductsAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync()
         {
-            return ProductsAllAsync(CancellationToken.None);
+            return ProductsAllAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<ICollection<ProductListDto>> ProductsAllAsync(CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Products"
                     urlBuilder_.Append("api/v1/Products");
@@ -1467,15 +1457,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1489,7 +1479,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ICollection<ProductListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ProductListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1518,30 +1508,30 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<int> ProductsPOSTAsync(CreateProductCommand body)
+        public virtual System.Threading.Tasks.Task<int> ProductsPOSTAsync(CreateProductCommand body)
         {
-            return ProductsPOSTAsync(body, CancellationToken.None);
+            return ProductsPOSTAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<int> ProductsPOSTAsync(CreateProductCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> ProductsPOSTAsync(CreateProductCommand body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("POST");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Products"
                     urlBuilder_.Append("api/v1/Products");
@@ -1549,15 +1539,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1610,46 +1600,46 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<ProductDetailDto> ProductsGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id)
         {
-            return ProductsGETAsync(id, CancellationToken.None);
+            return ProductsGETAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<ProductDetailDto> ProductsGETAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Products/{id}"
                     urlBuilder_.Append("api/v1/Products/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1692,49 +1682,49 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task ProductsPUTAsync(string id, UpdateProductCommand body)
+        public virtual System.Threading.Tasks.Task ProductsPUTAsync(string id, UpdateProductCommand body)
         {
-            return ProductsPUTAsync(id, body, CancellationToken.None);
+            return ProductsPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task ProductsPUTAsync(string id, UpdateProductCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task ProductsPUTAsync(string id, UpdateProductCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("PUT");
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Products/{id}"
                     urlBuilder_.Append("api/v1/Products/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1796,45 +1786,45 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task ProductsDELETEAsync(int id)
+        public virtual System.Threading.Tasks.Task ProductsDELETEAsync(int id)
         {
-            return ProductsDELETEAsync(id, CancellationToken.None);
+            return ProductsDELETEAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task ProductsDELETEAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task ProductsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("DELETE");
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Products/{id}"
                     urlBuilder_.Append("api/v1/Products/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1886,26 +1876,26 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<ICollection<SalesChannelListDto>> SalesChannelsAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync()
         {
-            return SalesChannelsAllAsync(CancellationToken.None);
+            return SalesChannelsAllAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<ICollection<SalesChannelListDto>> SalesChannelsAllAsync(CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/SalesChannels"
                     urlBuilder_.Append("api/v1/SalesChannels");
@@ -1913,15 +1903,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -1935,7 +1925,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ICollection<SalesChannelListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<SalesChannelListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1964,30 +1954,30 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<int> SalesChannelsPOSTAsync(CreateSalesChannelCommand body)
+        public virtual System.Threading.Tasks.Task<int> SalesChannelsPOSTAsync(CreateSalesChannelCommand body)
         {
-            return SalesChannelsPOSTAsync(body, CancellationToken.None);
+            return SalesChannelsPOSTAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<int> SalesChannelsPOSTAsync(CreateSalesChannelCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> SalesChannelsPOSTAsync(CreateSalesChannelCommand body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("POST");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/SalesChannels"
                     urlBuilder_.Append("api/v1/SalesChannels");
@@ -1995,15 +1985,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2056,46 +2046,46 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id)
         {
-            return SalesChannelsGETAsync(id, CancellationToken.None);
+            return SalesChannelsGETAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/SalesChannels/{id}"
                     urlBuilder_.Append("api/v1/SalesChannels/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2138,49 +2128,49 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body)
+        public virtual System.Threading.Tasks.Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body)
         {
-            return SalesChannelsPUTAsync(id, body, CancellationToken.None);
+            return SalesChannelsPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("PUT");
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/SalesChannels/{id}"
                     urlBuilder_.Append("api/v1/SalesChannels/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2242,45 +2232,45 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task SalesChannelsDELETEAsync(int id)
+        public virtual System.Threading.Tasks.Task SalesChannelsDELETEAsync(int id)
         {
-            return SalesChannelsDELETEAsync(id, CancellationToken.None);
+            return SalesChannelsDELETEAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task SalesChannelsDELETEAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task SalesChannelsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("DELETE");
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/SalesChannels/{id}"
                     urlBuilder_.Append("api/v1/SalesChannels/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2332,26 +2322,26 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<ICollection<TaxClassListDto>> V1TaxClassesAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> V1TaxClassesAllAsync()
         {
-            return V1TaxClassesAllAsync(CancellationToken.None);
+            return V1TaxClassesAllAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<ICollection<TaxClassListDto>> V1TaxClassesAllAsync(CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> V1TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1TaxClasses"
                     urlBuilder_.Append("api/v1TaxClasses");
@@ -2359,15 +2349,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2381,7 +2371,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ICollection<TaxClassListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<TaxClassListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2410,30 +2400,30 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body)
+        public virtual System.Threading.Tasks.Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body)
         {
-            return V1TaxClassesPOSTAsync(body, CancellationToken.None);
+            return V1TaxClassesPOSTAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("POST");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1TaxClasses"
                     urlBuilder_.Append("api/v1TaxClasses");
@@ -2441,15 +2431,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2502,46 +2492,46 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id)
         {
-            return V1TaxClassesGETAsync(id, CancellationToken.None);
+            return V1TaxClassesGETAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1TaxClasses/{id}"
                     urlBuilder_.Append("api/v1TaxClasses/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2584,49 +2574,49 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body)
+        public virtual System.Threading.Tasks.Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body)
         {
-            return V1TaxClassesPUTAsync(id, body, CancellationToken.None);
+            return V1TaxClassesPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("PUT");
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1TaxClasses/{id}"
                     urlBuilder_.Append("api/v1TaxClasses/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2688,45 +2678,45 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task V1TaxClassesDELETEAsync(int id)
+        public virtual System.Threading.Tasks.Task V1TaxClassesDELETEAsync(int id)
         {
-            return V1TaxClassesDELETEAsync(id, CancellationToken.None);
+            return V1TaxClassesDELETEAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task V1TaxClassesDELETEAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task V1TaxClassesDELETEAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("DELETE");
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1TaxClasses/{id}"
                     urlBuilder_.Append("api/v1TaxClasses/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2778,26 +2768,26 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<ICollection<UserListDto>> UsersAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync()
         {
-            return UsersAllAsync(CancellationToken.None);
+            return UsersAllAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<ICollection<UserListDto>> UsersAllAsync(CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Users"
                     urlBuilder_.Append("api/v1/Users");
@@ -2805,15 +2795,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2827,7 +2817,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ICollection<UserListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<UserListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2856,30 +2846,30 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<int> UsersPOSTAsync(CreateUserCommand body)
+        public virtual System.Threading.Tasks.Task<int> UsersPOSTAsync(CreateUserCommand body)
         {
-            return UsersPOSTAsync(body, CancellationToken.None);
+            return UsersPOSTAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<int> UsersPOSTAsync(CreateUserCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> UsersPOSTAsync(CreateUserCommand body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("POST");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Users"
                     urlBuilder_.Append("api/v1/Users");
@@ -2887,15 +2877,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -2948,46 +2938,46 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<UserDetailDto> UsersGETAsync(string id)
+        public virtual System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id)
         {
-            return UsersGETAsync(id, CancellationToken.None);
+            return UsersGETAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<UserDetailDto> UsersGETAsync(string id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Users/{id}"
                     urlBuilder_.Append("api/v1/Users/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -3030,49 +3020,49 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task UsersPUTAsync(string id, UpdateUserCommand body)
+        public virtual System.Threading.Tasks.Task UsersPUTAsync(string id, UpdateUserCommand body)
         {
-            return UsersPUTAsync(id, body, CancellationToken.None);
+            return UsersPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task UsersPUTAsync(string id, UpdateUserCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task UsersPUTAsync(string id, UpdateUserCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("PUT");
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Users/{id}"
                     urlBuilder_.Append("api/v1/Users/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -3134,26 +3124,26 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<ICollection<WarehouseListDto>> WarehousesAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync()
         {
-            return WarehousesAllAsync(CancellationToken.None);
+            return WarehousesAllAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<ICollection<WarehouseListDto>> WarehousesAllAsync(CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Warehouses"
                     urlBuilder_.Append("api/v1/Warehouses");
@@ -3161,15 +3151,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -3183,7 +3173,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ICollection<WarehouseListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<WarehouseListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -3212,29 +3202,29 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task WarehousesPOSTAsync(CreateWarehouseCommand body)
+        public virtual System.Threading.Tasks.Task WarehousesPOSTAsync(CreateWarehouseCommand body)
         {
-            return WarehousesPOSTAsync(body, CancellationToken.None);
+            return WarehousesPOSTAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task WarehousesPOSTAsync(CreateWarehouseCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task WarehousesPOSTAsync(CreateWarehouseCommand body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("POST");
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Warehouses"
                     urlBuilder_.Append("api/v1/Warehouses");
@@ -3242,15 +3232,15 @@ namespace maERP.SharedUI.Services.Base
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -3298,46 +3288,46 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task<WarehouseDetailDto> WarehousesGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id)
         {
-            return WarehousesGETAsync(id, CancellationToken.None);
+            return WarehousesGETAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task<WarehouseDetailDto> WarehousesGETAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Warehouses/{id}"
                     urlBuilder_.Append("api/v1/Warehouses/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -3380,49 +3370,49 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body)
+        public virtual System.Threading.Tasks.Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body)
         {
-            return WarehousesPUTAsync(id, body, CancellationToken.None);
+            return WarehousesPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var json_ = JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
-                    var content_ = new ByteArrayContent(json_);
-                    content_.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                    var json_ = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(body, _settings.Value);
+                    var content_ = new System.Net.Http.ByteArrayContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new HttpMethod("PUT");
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Warehouses/{id}"
                     urlBuilder_.Append("api/v1/Warehouses/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -3484,45 +3474,45 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual Task WarehousesDELETEAsync(int id)
+        public virtual System.Threading.Tasks.Task WarehousesDELETEAsync(int id)
         {
-            return WarehousesDELETEAsync(id, CancellationToken.None);
+            return WarehousesDELETEAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async Task WarehousesDELETEAsync(int id, CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task WarehousesDELETEAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
-                throw new ArgumentNullException("id");
+                throw new System.ArgumentNullException("id");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
-                using (var request_ = new HttpRequestMessage())
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new HttpMethod("DELETE");
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
 
-                    var urlBuilder_ = new StringBuilder();
+                    var urlBuilder_ = new System.Text.StringBuilder();
                 
                     // Operation Path: "api/v1/Warehouses/{id}"
                     urlBuilder_.Append("api/v1/Warehouses/");
-                    urlBuilder_.Append(Uri.EscapeDataString(ConvertToString(id, CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
                     var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
 
                     PrepareRequest(client_, request_, url_);
 
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     var disposeResponse_ = true;
                     try
                     {
-                        var headers_ = new Dictionary<string, IEnumerable<string>>();
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
                         foreach (var item_ in response_.Headers)
                             headers_[item_.Key] = item_.Value;
                         if (response_.Content != null && response_.Content.Headers != null)
@@ -3587,7 +3577,7 @@ namespace maERP.SharedUI.Services.Base
 
         public bool ReadResponseAsString { get; set; }
 
-        protected virtual async Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers, CancellationToken cancellationToken)
+        protected virtual async System.Threading.Tasks.Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(System.Net.Http.HttpResponseMessage response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Threading.CancellationToken cancellationToken)
         {
             if (response == null || response.Content == null)
             {
@@ -3599,10 +3589,10 @@ namespace maERP.SharedUI.Services.Base
                 var responseText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    var typedBody = JsonSerializer.Deserialize<T>(responseText, JsonSerializerSettings);
+                    var typedBody = System.Text.Json.JsonSerializer.Deserialize<T>(responseText, JsonSerializerSettings);
                     return new ObjectResponseResult<T>(typedBody, responseText);
                 }
-                catch (JsonException exception)
+                catch (System.Text.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
                     throw new ApiException(message, (int)response.StatusCode, responseText, headers, exception);
@@ -3614,11 +3604,11 @@ namespace maERP.SharedUI.Services.Base
                 {
                     using (var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
                     {
-                        var typedBody = await JsonSerializer.DeserializeAsync<T>(responseStream, JsonSerializerSettings, cancellationToken).ConfigureAwait(false);
+                        var typedBody = await System.Text.Json.JsonSerializer.DeserializeAsync<T>(responseStream, JsonSerializerSettings, cancellationToken).ConfigureAwait(false);
                         return new ObjectResponseResult<T>(typedBody, string.Empty);
                     }
                 }
-                catch (JsonException exception)
+                catch (System.Text.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
                     throw new ApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
@@ -3626,40 +3616,40 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        private string ConvertToString(object value, CultureInfo cultureInfo)
+        private string ConvertToString(object value, System.Globalization.CultureInfo cultureInfo)
         {
             if (value == null)
             {
                 return "";
             }
 
-            if (value is Enum)
+            if (value is System.Enum)
             {
-                var name = Enum.GetName(value.GetType(), value);
+                var name = System.Enum.GetName(value.GetType(), value);
                 if (name != null)
                 {
-                    var field = IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
+                    var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
                     if (field != null)
                     {
-                        var attribute = CustomAttributeExtensions.GetCustomAttribute(field, typeof(EnumMemberAttribute)) 
-                            as EnumMemberAttribute;
+                        var attribute = System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute)) 
+                            as System.Runtime.Serialization.EnumMemberAttribute;
                         if (attribute != null)
                         {
                             return attribute.Value != null ? attribute.Value : name;
                         }
                     }
 
-                    var converted = Convert.ToString(Convert.ChangeType(value, Enum.GetUnderlyingType(value.GetType()), cultureInfo));
+                    var converted = System.Convert.ToString(System.Convert.ChangeType(value, System.Enum.GetUnderlyingType(value.GetType()), cultureInfo));
                     return converted == null ? string.Empty : converted;
                 }
             }
             else if (value is bool) 
             {
-                return Convert.ToString((bool)value, cultureInfo).ToLowerInvariant();
+                return System.Convert.ToString((bool)value, cultureInfo).ToLowerInvariant();
             }
             else if (value is byte[])
             {
-                return Convert.ToBase64String((byte[]) value);
+                return System.Convert.ToBase64String((byte[]) value);
             }
             else if (value is string[])
             {
@@ -3667,7 +3657,7 @@ namespace maERP.SharedUI.Services.Base
             }
             else if (value.GetType().IsArray)
             {
-                var valueArray = (Array)value;
+                var valueArray = (System.Array)value;
                 var valueTextArray = new string[valueArray.Length];
                 for (var i = 0; i < valueArray.Length; i++)
                 {
@@ -3676,568 +3666,568 @@ namespace maERP.SharedUI.Services.Base
                 return string.Join(",", valueTextArray);
             }
 
-            var result = Convert.ToString(value, cultureInfo);
+            var result = System.Convert.ToString(value, cultureInfo);
             return result == null ? "" : result;
         }
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class AuthRequest
     {
 
-        [JsonPropertyName("Email")]
+        [System.Text.Json.Serialization.JsonPropertyName("Email")]
         public string Email { get; set; }
 
-        [JsonPropertyName("Password")]
+        [System.Text.Json.Serialization.JsonPropertyName("Password")]
         public string Password { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class AuthResponse
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public string Id { get; set; }
 
-        [JsonPropertyName("UserName")]
+        [System.Text.Json.Serialization.JsonPropertyName("UserName")]
         public string UserName { get; set; }
 
-        [JsonPropertyName("Email")]
+        [System.Text.Json.Serialization.JsonPropertyName("Email")]
         public string Email { get; set; }
 
-        [JsonPropertyName("Token")]
+        [System.Text.Json.Serialization.JsonPropertyName("Token")]
         public string Token { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CreateCustomerCommand
     {
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CreateOrderCommand
     {
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CreateProductCommand
     {
 
-        [JsonPropertyName("Sku")]
+        [System.Text.Json.Serialization.JsonPropertyName("Sku")]
         public string Sku { get; set; }
 
-        [JsonPropertyName("Name")]
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("Ean")]
+        [System.Text.Json.Serialization.JsonPropertyName("Ean")]
         public string Ean { get; set; }
 
-        [JsonPropertyName("Asin")]
+        [System.Text.Json.Serialization.JsonPropertyName("Asin")]
         public string Asin { get; set; }
 
-        [JsonPropertyName("Description")]
+        [System.Text.Json.Serialization.JsonPropertyName("Description")]
         public string Description { get; set; }
 
-        [JsonPropertyName("Price")]
+        [System.Text.Json.Serialization.JsonPropertyName("Price")]
         public double Price { get; set; }
 
-        [JsonPropertyName("Msrp")]
+        [System.Text.Json.Serialization.JsonPropertyName("Msrp")]
         public double Msrp { get; set; }
 
-        [JsonPropertyName("TaxClassId")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxClassId")]
         public int TaxClassId { get; set; }
 
-        [JsonPropertyName("ProductSalesChannelId")]
-        public ICollection<int> ProductSalesChannelId { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("ProductSalesChannelId")]
+        public System.Collections.Generic.ICollection<int> ProductSalesChannelId { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CreateSalesChannelCommand
     {
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CreateTaxClassCommand
     {
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CreateUserCommand
     {
 
-        [JsonPropertyName("Email")]
+        [System.Text.Json.Serialization.JsonPropertyName("Email")]
         public string Email { get; set; }
 
-        [JsonPropertyName("Password")]
+        [System.Text.Json.Serialization.JsonPropertyName("Password")]
         public string Password { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CreateWarehouseCommand
     {
 
-        [JsonPropertyName("Name")]
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CustomerDetailDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("Firstname")]
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
         public string Firstname { get; set; }
 
-        [JsonPropertyName("Lastname")]
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
         public string Lastname { get; set; }
 
-        [JsonPropertyName("EnrollmentDate")]
-        public DateTimeOffset EnrollmentDate { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("EnrollmentDate")]
+        public System.DateTimeOffset EnrollmentDate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CustomerListDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("Firstname")]
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
         public string Firstname { get; set; }
 
-        [JsonPropertyName("Lastname")]
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
         public string Lastname { get; set; }
 
-        [JsonPropertyName("EnrollmentDate")]
-        public DateTimeOffset EnrollmentDate { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("EnrollmentDate")]
+        public System.DateTimeOffset EnrollmentDate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class OrderDetailDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class OrderListDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("CustomerId")]
+        [System.Text.Json.Serialization.JsonPropertyName("CustomerId")]
         public int CustomerId { get; set; }
 
-        [JsonPropertyName("Status")]
-        [Required]
+        [System.Text.Json.Serialization.JsonPropertyName("Status")]
+        [System.ComponentModel.DataAnnotations.Required]
         public string Status { get; set; }
 
-        [JsonPropertyName("DateCreated")]
-        public DateTimeOffset DateCreated { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("DateCreated")]
+        public System.DateTimeOffset DateCreated { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ProblemDetails
     {
 
-        [JsonPropertyName("type")]
+        [System.Text.Json.Serialization.JsonPropertyName("type")]
         public string Type { get; set; }
 
-        [JsonPropertyName("title")]
+        [System.Text.Json.Serialization.JsonPropertyName("title")]
         public string Title { get; set; }
 
-        [JsonPropertyName("status")]
+        [System.Text.Json.Serialization.JsonPropertyName("status")]
         public int? Status { get; set; }
 
-        [JsonPropertyName("detail")]
+        [System.Text.Json.Serialization.JsonPropertyName("detail")]
         public string Detail { get; set; }
 
-        [JsonPropertyName("instance")]
+        [System.Text.Json.Serialization.JsonPropertyName("instance")]
         public string Instance { get; set; }
 
-        private IDictionary<string, object> _additionalProperties;
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
-        [JsonExtensionData]
-        public IDictionary<string, object> AdditionalProperties
+        [System.Text.Json.Serialization.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
         {
-            get { return _additionalProperties ?? (_additionalProperties = new Dictionary<string, object>()); }
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
             set { _additionalProperties = value; }
         }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ProductDetailDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("Sku")]
+        [System.Text.Json.Serialization.JsonPropertyName("Sku")]
         public string Sku { get; set; }
 
-        [JsonPropertyName("Name")]
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("Ean")]
+        [System.Text.Json.Serialization.JsonPropertyName("Ean")]
         public string Ean { get; set; }
 
-        [JsonPropertyName("Price")]
+        [System.Text.Json.Serialization.JsonPropertyName("Price")]
         public double Price { get; set; }
 
-        [JsonPropertyName("ProductSalesChannel")]
-        public ICollection<ProductSalesChannelDetailDto> ProductSalesChannel { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("ProductSalesChannel")]
+        public System.Collections.Generic.ICollection<ProductSalesChannelDetailDto> ProductSalesChannel { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ProductListDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("Sku")]
+        [System.Text.Json.Serialization.JsonPropertyName("Sku")]
         public string Sku { get; set; }
 
-        [JsonPropertyName("Name")]
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("Ean")]
+        [System.Text.Json.Serialization.JsonPropertyName("Ean")]
         public string Ean { get; set; }
 
-        [JsonPropertyName("Price")]
+        [System.Text.Json.Serialization.JsonPropertyName("Price")]
         public double Price { get; set; }
 
-        [JsonPropertyName("TaxClass")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxClass")]
         public TaxClassListDto TaxClass { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ProductSalesChannelDetailDto
     {
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class RegistrationRequest
     {
 
-        [JsonPropertyName("Firstname")]
-        [Required]
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
+        [System.ComponentModel.DataAnnotations.Required]
         public string Firstname { get; set; }
 
-        [JsonPropertyName("Lastname")]
-        [Required]
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
+        [System.ComponentModel.DataAnnotations.Required]
         public string Lastname { get; set; }
 
-        [JsonPropertyName("Email")]
-        [Required]
+        [System.Text.Json.Serialization.JsonPropertyName("Email")]
+        [System.ComponentModel.DataAnnotations.Required]
         public string Email { get; set; }
 
-        [JsonPropertyName("Username")]
-        [Required]
-        [StringLength(int.MaxValue, MinimumLength = 6)]
+        [System.Text.Json.Serialization.JsonPropertyName("Username")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.StringLength(int.MaxValue, MinimumLength = 6)]
         public string Username { get; set; }
 
-        [JsonPropertyName("Password")]
-        [Required]
-        [StringLength(int.MaxValue, MinimumLength = 6)]
+        [System.Text.Json.Serialization.JsonPropertyName("Password")]
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.StringLength(int.MaxValue, MinimumLength = 6)]
         public string Password { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class RegistrationResponse
     {
 
-        [JsonPropertyName("UserId")]
+        [System.Text.Json.Serialization.JsonPropertyName("UserId")]
         public string UserId { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class SalesChannelDetailDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("Type")]
+        [System.Text.Json.Serialization.JsonPropertyName("Type")]
         public int Type { get; set; }
 
-        [JsonPropertyName("Name")]
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("Url")]
+        [System.Text.Json.Serialization.JsonPropertyName("Url")]
         public string Url { get; set; }
 
-        [JsonPropertyName("Username")]
+        [System.Text.Json.Serialization.JsonPropertyName("Username")]
         public string Username { get; set; }
 
-        [JsonPropertyName("Password")]
+        [System.Text.Json.Serialization.JsonPropertyName("Password")]
         public string Password { get; set; }
 
-        [JsonPropertyName("ImportProducts")]
+        [System.Text.Json.Serialization.JsonPropertyName("ImportProducts")]
         public bool ImportProducts { get; set; }
 
-        [JsonPropertyName("ExportProducts")]
+        [System.Text.Json.Serialization.JsonPropertyName("ExportProducts")]
         public bool ExportProducts { get; set; }
 
-        [JsonPropertyName("ImportCustomers")]
+        [System.Text.Json.Serialization.JsonPropertyName("ImportCustomers")]
         public bool ImportCustomers { get; set; }
 
-        [JsonPropertyName("ExportCustomers")]
+        [System.Text.Json.Serialization.JsonPropertyName("ExportCustomers")]
         public bool ExportCustomers { get; set; }
 
-        [JsonPropertyName("ImportOrders")]
+        [System.Text.Json.Serialization.JsonPropertyName("ImportOrders")]
         public bool ImportOrders { get; set; }
 
-        [JsonPropertyName("ExportOrders")]
+        [System.Text.Json.Serialization.JsonPropertyName("ExportOrders")]
         public bool ExportOrders { get; set; }
 
-        [JsonPropertyName("WarehouseId")]
+        [System.Text.Json.Serialization.JsonPropertyName("WarehouseId")]
         public int WarehouseId { get; set; }
 
-        [JsonPropertyName("Warehouse")]
+        [System.Text.Json.Serialization.JsonPropertyName("Warehouse")]
         public WarehouseDetailDto Warehouse { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class SalesChannelListDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("Type")]
+        [System.Text.Json.Serialization.JsonPropertyName("Type")]
         public int Type { get; set; }
 
-        [JsonPropertyName("Name")]
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("Url")]
+        [System.Text.Json.Serialization.JsonPropertyName("Url")]
         public string Url { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class TaxClassDetailDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class TaxClassListDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UpdateCustomerCommand
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UpdateOrderCommand
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UpdateProductCommand
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UpdateSalesChannelCommand
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UpdateTaxClassCommand
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UpdateUserCommand
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("TaxRate")]
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UpdateWarehouseCommand
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("Name")]
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UserDetailDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public string Id { get; set; }
 
-        [JsonPropertyName("Firstname")]
-        [Required]
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
+        [System.ComponentModel.DataAnnotations.Required]
         public string Firstname { get; set; }
 
-        [JsonPropertyName("Lastname")]
-        [Required]
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
+        [System.ComponentModel.DataAnnotations.Required]
         public string Lastname { get; set; }
 
-        [JsonPropertyName("Email")]
-        [Required]
+        [System.Text.Json.Serialization.JsonPropertyName("Email")]
+        [System.ComponentModel.DataAnnotations.Required]
         public string Email { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UserListDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public string Id { get; set; }
 
-        [JsonPropertyName("Firstname")]
-        [Required]
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
+        [System.ComponentModel.DataAnnotations.Required]
         public string Firstname { get; set; }
 
-        [JsonPropertyName("Lastname")]
-        [Required]
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
+        [System.ComponentModel.DataAnnotations.Required]
         public string Lastname { get; set; }
 
-        [JsonPropertyName("Email")]
-        [Required]
+        [System.Text.Json.Serialization.JsonPropertyName("Email")]
+        [System.ComponentModel.DataAnnotations.Required]
         public string Email { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class WarehouseDetailDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("Name")]
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
 
     }
 
-    [GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class WarehouseListDto
     {
 
-        [JsonPropertyName("Id")]
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("Name")]
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
 
     }
 
 
 
-    [GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ApiException : Exception
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ApiException : System.Exception
     {
         public int StatusCode { get; private set; }
 
         public string Response { get; private set; }
 
-        public IReadOnlyDictionary<string, IEnumerable<string>> Headers { get; private set; }
+        public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
 
-        public ApiException(string message, int statusCode, string response, IReadOnlyDictionary<string, IEnumerable<string>> headers, Exception innerException)
+        public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
             : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + ((response == null) ? "(null)" : response.Substring(0, response.Length >= 512 ? 512 : response.Length)), innerException)
         {
             StatusCode = statusCode;
@@ -4251,12 +4241,12 @@ namespace maERP.SharedUI.Services.Base
         }
     }
 
-    [GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ApiException<TResult> : ApiException
     {
         public TResult Result { get; private set; }
 
-        public ApiException(string message, int statusCode, string response, IReadOnlyDictionary<string, IEnumerable<string>> headers, TResult result, Exception innerException)
+        public ApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
             : base(message, statusCode, response, headers, innerException)
         {
             Result = result;
