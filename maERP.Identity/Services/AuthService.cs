@@ -40,7 +40,7 @@ public class AuthService : IAuthService
 
         if (!result.Succeeded)
         {
-            throw new NotFoundException($"Credentials for  {request.Email} aren't valid.", request.Email);
+            throw new NotFoundException($"Credentials for {request.Email} aren't valid.", request.Email);
         }
 
         var jwtSecurityToken = await GenerateToken(user);
