@@ -5,5 +5,5 @@ public class OrderVM
     public int Id { get; set; }
     public int CustomerId { get; set; }
     public string Status { get; set; } = string.Empty;
-    public DateTime DateCreated { get; set; }
+    // public DateTime DateCreated { get; set; }
 }

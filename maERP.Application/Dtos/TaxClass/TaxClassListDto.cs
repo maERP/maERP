@@ -2,6 +2,6 @@
 
 public class TaxClassListDto
 {
-    public virtual int Id { get; set; }
-    public virtual double TaxRate { get; set; }
+    public int Id { get; set; }
+    public double TaxRate { get; set; }
 }

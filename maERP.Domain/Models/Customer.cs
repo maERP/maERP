@@ -20,4 +20,6 @@ public class Customer : BaseEntity
     public ICollection<CustomerAddress>? CustomerAddresses { get; set; }
 
     public ICollection<Order>? Orders { get; set; }
+    
+    public DateTime DateEnrollment { get; set; }
 }

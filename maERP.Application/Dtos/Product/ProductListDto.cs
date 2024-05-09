@@ -4,10 +4,10 @@ namespace maERP.Application.Dtos.Product;
 
 public class ProductListDto
 {
-    public virtual int Id { get; set; }
-    public virtual string Sku { get; set; } = string.Empty;
-    public virtual string Name { get; set; } = string.Empty;
-    public virtual string Ean { get; set; } = string.Empty;
-    public virtual decimal Price { get; set; }
-    public virtual TaxClassListDto TaxClass { get; set; } = new();
+    public int Id { get; set; }
+    public string Sku { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Ean { get; set; } = string.Empty;
+    public decimal Price { get; set; }
+    public TaxClassListDto TaxClass { get; set; } = new();
 }

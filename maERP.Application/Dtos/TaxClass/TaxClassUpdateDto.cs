@@ -2,5 +2,5 @@
 
 public class TaxClassUpdateDto
 {
-    public virtual double TaxRate { get; set; }
+    public double TaxRate { get; set; }
 }

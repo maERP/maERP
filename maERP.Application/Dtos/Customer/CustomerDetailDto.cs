@@ -2,8 +2,8 @@
 
 public class CustomerDetailDto
 {
-    public virtual int Id { get; set; }
-    public virtual string Firstname { get; set; } = string.Empty;
-    public virtual string Lastname { get; set; } = string.Empty;
-    public virtual DateTime EnrollmentDate { get; set; }
+    public int Id { get; set; }
+    public string Firstname { get; set; } = string.Empty;
+    public string Lastname { get; set; } = string.Empty;
+    public DateTime DateEnrollment { get; set; }
 }

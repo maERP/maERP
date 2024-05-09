@@ -5,14 +5,14 @@ namespace maERP.Application.Dtos.User;
 public class UserCreateDto
 {
     [Required]
-    public virtual string Firstname { get; set; } = string.Empty;
+    public string Firstname { get; set; } = string.Empty;
 
     [Required]
-    public virtual string Lastname { get; set; } = string.Empty;
+    public string Lastname { get; set; } = string.Empty;
 
     [Required]
     [DataType(DataType.EmailAddress)]
-    public virtual string Email { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 
     [Required]
     [StringLength(15, ErrorMessage = "Das Passwort muss {2} bis {1} Zeichen haben.", MinimumLength = 8)]

@@ -2,5 +2,5 @@
 
 public class TaxClassCreateDto
 {
-    public virtual double TaxRate { get; set; }
+    public double TaxRate { get; set; }
 }
