@@ -135,17 +135,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    
-    var context = services.GetRequiredService<MaErpIdentityDbContext>();
-    if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
-    {
-        context.Database.Migrate();
-    }
-}
-
 app.Run();
 
 public partial class Program { }
