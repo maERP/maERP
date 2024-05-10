@@ -128,16 +128,16 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    var context1 = services.GetRequiredService<ApplicationDbContext>();
-    if (context1.Database.IsRelational() && context1.Database.GetPendingMigrations().Any())
+    var identityContext = services.GetRequiredService<MaErpIdentityDbContext>();
+    if (identityContext.Database.IsRelational() && identityContext.Database.GetPendingMigrations().Any())
     {
-        context1.Database.Migrate();
+        identityContext.Database.Migrate();
     }
-
-    var context2 = services.GetRequiredService<MaErpIdentityDbContext>();
-    if (context2.Database.IsRelational() && context2.Database.GetPendingMigrations().Any())
+    
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
     {
-        context2.Database.Migrate();
+        context.Database.Migrate();
     }
 }
 
