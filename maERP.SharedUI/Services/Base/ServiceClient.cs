@@ -3804,8 +3804,8 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
         public string Lastname { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
-        public System.DateTime DateEnrollment { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("EnrollmentDate")]
+        public System.DateTimeOffset EnrollmentDate { get; set; }
 
     }
 
@@ -3822,8 +3822,9 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
         public string Lastname { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
-        public System.DateTime DateEnrollment { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("EnrollmentDate")]
+        public System.DateTimeOffset EnrollmentDate { get; set; }
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
