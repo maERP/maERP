@@ -18,6 +18,11 @@ public class MappingProfiles : Profile
         CreateMap<CustomerVM, CustomerDetailDto>().ReverseMap();
         CreateMap<CustomerVM, CreateCustomerCommand>().ReverseMap();
         CreateMap<CustomerVM, UpdateCustomerCommand>().ReverseMap();
+        
+        CreateMap<CustomerVM, CustomerListDto>().ReverseMap();
+        CreateMap<CustomerVM, CustomerDetailDto>().ReverseMap();
+        CreateMap<CustomerVM, CreateCustomerCommand>().ReverseMap();
+        CreateMap<CustomerVM, UpdateCustomerCommand>().ReverseMap();
 
         CreateMap<OrderVM, OrderListDto>().ReverseMap();
         CreateMap<OrderVM, OrderDetailDto>().ReverseMap();

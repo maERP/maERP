@@ -3,5 +3,52 @@
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">Kundendetails</MudText>
+<PageTitle>Kundendetails</PageTitle>
 
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Kundendetails</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/Customers/{customerId}/edit")" />
+</MudStack>
+
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+    <MudTabPanel Text="Kunde">
+
+        <MudTextField @bind-Value="customer.Firstname"
+                      For="@(() => customer.Firstname)"
+                      Label="Vorname"
+                      Required="true"
+                      Variant="Variant.Text"
+                      InputType="InputType.Text"
+                      Class="mt-6"
+                      Disabled="true">
+        </MudTextField>
+
+        <MudTextField @bind-Value="customer.Lastname"
+                      For="@(() => customer.Lastname)"
+                      Label="Nachname"
+                      Required="true"
+                      Variant="Variant.Text"
+                      InputType="InputType.Text"
+                      Class="mt-6"
+                      Disabled="true">
+        </MudTextField>
+
+    </MudTabPanel>
+    <MudTabPanel Text="Adressen">
+
+        <MudDataGrid Items="@customer.CustomerAddresses" SortMode="SortMode.Single" Class="mb-8">
+            <Columns>
+                <PropertyColumn Property="x => x.Id" Title="Id" />
+                <PropertyColumn Property="x => x.Street" Title="Straße" />
+                <PropertyColumn Property="x => x.HouseNr" Title="Hausnummer" />
+                <PropertyColumn Property="x => x.HouseNr" Title="PLZ" />
+                <PropertyColumn Property="x => x.HouseNr" Title="Stadt" />
+            </Columns>
+        </MudDataGrid>
+        
+    </MudTabPanel>
+    <MudTabPanel Text="Bestellungen">
+        <MudText>Content Three</MudText>
+    </MudTabPanel>
+</MudTabs>

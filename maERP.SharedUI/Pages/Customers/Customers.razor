@@ -25,6 +25,7 @@ else
             @*<PropertyColumn Property="x => x.EnrollmentDate" Title="Kunde seit" />*@
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
+                    <MudButton Href="@($"/Customers/{context.Item.Id}")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Details</MudButton>
                     <MudButton Href="@($"/Customers/{context.Item.Id}/edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
                 </CellTemplate>
             </TemplateColumn>

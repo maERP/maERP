@@ -23,7 +23,7 @@ public class GetCustomerDetailQueryHandler : IRequestHandler<GetCustomerDetailQu
     }
     public async Task<CustomerDetailDto> Handle(GetCustomerDetailQuery request, CancellationToken cancellationToken)
     {
-        var customer = await _customerRepository.GetByIdAsync(request.Id);
+        var customer = await _customerRepository.GetCustomerWithDetails(request.Id);
 
         if(customer == null)
         {

@@ -22,6 +22,12 @@ public partial class CustomersDetail
         if (customerId != 0)
         {
             customer = await _customerService.GetCustomerDetails(customerId);
+            Console.WriteLine("loaded");
         }
+    }
+
+    protected void NavEditCustomer()
+    {
+        _navigationManager.NavigateTo($"/Customers/{customerId}/edit");
     }
 }
