@@ -71,12 +71,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task CustomersPUTAsync(string id, UpdateCustomerCommand body);
+        System.Threading.Tasks.Task CustomersPUTAsync(int id, UpdateCustomerCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task CustomersPUTAsync(string id, UpdateCustomerCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task CustomersPUTAsync(int id, UpdateCustomerCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -116,12 +116,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task OrdersPUTAsync(string id, UpdateOrderCommand body);
+        System.Threading.Tasks.Task OrdersPUTAsync(int id, UpdateOrderCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task OrdersPUTAsync(string id, UpdateOrderCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task OrdersPUTAsync(int id, UpdateOrderCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -161,12 +161,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task ProductsPUTAsync(string id, UpdateProductCommand body);
+        System.Threading.Tasks.Task ProductsPUTAsync(int id, UpdateProductCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task ProductsPUTAsync(string id, UpdateProductCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task ProductsPUTAsync(int id, UpdateProductCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -206,12 +206,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body);
+        System.Threading.Tasks.Task SalesChannelsPUTAsync(int id, UpdateSalesChannelCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task SalesChannelsPUTAsync(int id, UpdateSalesChannelCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -224,48 +224,48 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> V1TaxClassesAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> V1TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body);
+        System.Threading.Tasks.Task<int> TaxClassesPOSTAsync(CreateTaxClassCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<int> TaxClassesPOSTAsync(CreateTaxClassCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id);
+        System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V1TaxClassesDELETEAsync(int id);
+        System.Threading.Tasks.Task TaxClassesPUTAsync(int id, UpdateTaxClassCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task V1TaxClassesDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task TaxClassesPUTAsync(int id, UpdateTaxClassCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task TaxClassesDELETEAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task TaxClassesDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -296,12 +296,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task UsersPUTAsync(string id, UpdateUserCommand body);
+        System.Threading.Tasks.Task UsersPUTAsync(int id, UpdateUserCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task UsersPUTAsync(string id, UpdateUserCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task UsersPUTAsync(int id, UpdateUserCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -332,12 +332,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body);
+        System.Threading.Tasks.Task WarehousesPUTAsync(int id, UpdateWarehouseCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task WarehousesPUTAsync(int id, UpdateWarehouseCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -790,7 +790,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task CustomersPUTAsync(string id, UpdateCustomerCommand body)
+        public virtual System.Threading.Tasks.Task CustomersPUTAsync(int id, UpdateCustomerCommand body)
         {
             return CustomersPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
@@ -798,7 +798,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task CustomersPUTAsync(string id, UpdateCustomerCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task CustomersPUTAsync(int id, UpdateCustomerCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1236,7 +1236,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task OrdersPUTAsync(string id, UpdateOrderCommand body)
+        public virtual System.Threading.Tasks.Task OrdersPUTAsync(int id, UpdateOrderCommand body)
         {
             return OrdersPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
@@ -1244,7 +1244,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task OrdersPUTAsync(string id, UpdateOrderCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task OrdersPUTAsync(int id, UpdateOrderCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1682,7 +1682,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task ProductsPUTAsync(string id, UpdateProductCommand body)
+        public virtual System.Threading.Tasks.Task ProductsPUTAsync(int id, UpdateProductCommand body)
         {
             return ProductsPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
@@ -1690,7 +1690,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task ProductsPUTAsync(string id, UpdateProductCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task ProductsPUTAsync(int id, UpdateProductCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2128,7 +2128,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body)
+        public virtual System.Threading.Tasks.Task SalesChannelsPUTAsync(int id, UpdateSalesChannelCommand body)
         {
             return SalesChannelsPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
@@ -2136,7 +2136,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task SalesChannelsPUTAsync(string id, UpdateSalesChannelCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task SalesChannelsPUTAsync(int id, UpdateSalesChannelCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2322,15 +2322,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> V1TaxClassesAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync()
         {
-            return V1TaxClassesAllAsync(System.Threading.CancellationToken.None);
+            return TaxClassesAllAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> V1TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2343,8 +2343,8 @@ namespace maERP.SharedUI.Services.Base
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1TaxClasses"
-                    urlBuilder_.Append("api/v1TaxClasses");
+                    // Operation Path: "api/v1/TaxClasses"
+                    urlBuilder_.Append("api/v1/TaxClasses");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2400,15 +2400,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body)
+        public virtual System.Threading.Tasks.Task<int> TaxClassesPOSTAsync(CreateTaxClassCommand body)
         {
-            return V1TaxClassesPOSTAsync(body, System.Threading.CancellationToken.None);
+            return TaxClassesPOSTAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<int> V1TaxClassesPOSTAsync(CreateTaxClassCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<int> TaxClassesPOSTAsync(CreateTaxClassCommand body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2425,8 +2425,8 @@ namespace maERP.SharedUI.Services.Base
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1TaxClasses"
-                    urlBuilder_.Append("api/v1TaxClasses");
+                    // Operation Path: "api/v1/TaxClasses"
+                    urlBuilder_.Append("api/v1/TaxClasses");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2492,15 +2492,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id)
         {
-            return V1TaxClassesGETAsync(id, System.Threading.CancellationToken.None);
+            return TaxClassesGETAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<TaxClassDetailDto> V1TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2516,8 +2516,8 @@ namespace maERP.SharedUI.Services.Base
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1TaxClasses/{id}"
-                    urlBuilder_.Append("api/v1TaxClasses/");
+                    // Operation Path: "api/v1/TaxClasses/{id}"
+                    urlBuilder_.Append("api/v1/TaxClasses/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -2574,15 +2574,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body)
+        public virtual System.Threading.Tasks.Task TaxClassesPUTAsync(int id, UpdateTaxClassCommand body)
         {
-            return V1TaxClassesPUTAsync(id, body, System.Threading.CancellationToken.None);
+            return TaxClassesPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task V1TaxClassesPUTAsync(string id, UpdateTaxClassCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task TaxClassesPUTAsync(int id, UpdateTaxClassCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2601,8 +2601,8 @@ namespace maERP.SharedUI.Services.Base
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1TaxClasses/{id}"
-                    urlBuilder_.Append("api/v1TaxClasses/");
+                    // Operation Path: "api/v1/TaxClasses/{id}"
+                    urlBuilder_.Append("api/v1/TaxClasses/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -2678,15 +2678,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task V1TaxClassesDELETEAsync(int id)
+        public virtual System.Threading.Tasks.Task TaxClassesDELETEAsync(int id)
         {
-            return V1TaxClassesDELETEAsync(id, System.Threading.CancellationToken.None);
+            return TaxClassesDELETEAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task V1TaxClassesDELETEAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task TaxClassesDELETEAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2701,8 +2701,8 @@ namespace maERP.SharedUI.Services.Base
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1TaxClasses/{id}"
-                    urlBuilder_.Append("api/v1TaxClasses/");
+                    // Operation Path: "api/v1/TaxClasses/{id}"
+                    urlBuilder_.Append("api/v1/TaxClasses/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -3020,7 +3020,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task UsersPUTAsync(string id, UpdateUserCommand body)
+        public virtual System.Threading.Tasks.Task UsersPUTAsync(int id, UpdateUserCommand body)
         {
             return UsersPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
@@ -3028,7 +3028,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task UsersPUTAsync(string id, UpdateUserCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task UsersPUTAsync(int id, UpdateUserCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -3370,7 +3370,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body)
+        public virtual System.Threading.Tasks.Task WarehousesPUTAsync(int id, UpdateWarehouseCommand body)
         {
             return WarehousesPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
@@ -3378,7 +3378,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task WarehousesPUTAsync(string id, UpdateWarehouseCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task WarehousesPUTAsync(int id, UpdateWarehouseCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -3527,6 +3527,16 @@ namespace maERP.SharedUI.Services.Base
                         if (status_ == 204)
                         {
                             return;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<ProblemDetails>("Bad Request", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -3705,8 +3715,11 @@ namespace maERP.SharedUI.Services.Base
     public partial class CreateCustomerCommand
     {
 
-        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
-        public double TaxRate { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
+        public string Firstname { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
+        public string Lastname { get; set; }
 
     }
 
@@ -3714,8 +3727,8 @@ namespace maERP.SharedUI.Services.Base
     public partial class CreateOrderCommand
     {
 
-        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
-        public double TaxRate { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
 
     }
 
@@ -3756,8 +3769,41 @@ namespace maERP.SharedUI.Services.Base
     public partial class CreateSalesChannelCommand
     {
 
-        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
-        public double TaxRate { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("Type")]
+        public int Type { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Url")]
+        public string Url { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Username")]
+        public string Username { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Password")]
+        public string Password { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ImportProducts")]
+        public bool ImportProducts { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ExportProducts")]
+        public bool ExportProducts { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ImportCustomers")]
+        public bool ImportCustomers { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ExportCustomers")]
+        public bool ExportCustomers { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ImportOrders")]
+        public bool ImportOrders { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ExportOrders")]
+        public bool ExportOrders { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("WarehouseId")]
+        public int WarehouseId { get; set; }
 
     }
 
@@ -3792,6 +3838,27 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CustomerAddressListDto
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Street")]
+        public string Street { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HouseNr")]
+        public string HouseNr { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Zip")]
+        public string Zip { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("City")]
+        public string City { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CustomerDetailDto
     {
 
@@ -3804,8 +3871,11 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
         public string Lastname { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("EnrollmentDate")]
-        public System.DateTimeOffset EnrollmentDate { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("CustomerAddresses")]
+        public System.Collections.Generic.ICollection<CustomerAddressListDto> CustomerAddresses { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
+        public System.DateTimeOffset DateEnrollment { get; set; }
 
     }
 
@@ -3822,8 +3892,8 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
         public string Lastname { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("EnrollmentDate")]
-        public System.DateTimeOffset EnrollmentDate { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
+        public System.DateTimeOffset DateEnrollment { get; set; }
 
     }
 
@@ -3833,6 +3903,15 @@ namespace maERP.SharedUI.Services.Base
 
         [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("OrderId")]
+        public int OrderId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("RemoteOrderId")]
+        public string RemoteOrderId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("CustomerId")]
+        public int CustomerId { get; set; }
 
     }
 
@@ -4073,8 +4152,11 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
-        public double TaxRate { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
+        public string Firstname { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
+        public string Lastname { get; set; }
 
     }
 
@@ -4085,9 +4167,6 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
-        public double TaxRate { get; set; }
-
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -4096,9 +4175,6 @@ namespace maERP.SharedUI.Services.Base
 
         [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
-        public double TaxRate { get; set; }
 
     }
 
@@ -4109,8 +4185,41 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
-        public double TaxRate { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("Type")]
+        public int Type { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Url")]
+        public string Url { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Username")]
+        public string Username { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Password")]
+        public string Password { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ImportProducts")]
+        public bool ImportProducts { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ExportProducts")]
+        public bool ExportProducts { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ImportCustomers")]
+        public bool ImportCustomers { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ExportCustomers")]
+        public bool ExportCustomers { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ImportOrders")]
+        public bool ImportOrders { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ExportOrders")]
+        public bool ExportOrders { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("WarehouseId")]
+        public int WarehouseId { get; set; }
 
     }
 
@@ -4133,8 +4242,8 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
-        public double TaxRate { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("Email")]
+        public string Email { get; set; }
 
     }
 

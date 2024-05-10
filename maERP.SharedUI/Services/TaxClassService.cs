@@ -18,14 +18,14 @@ public class TaxClassService : BaseHttpService, ITaxClassService
     public async Task<List<TaxClassVM>> GetTaxClasses()
     {
         await AddBearerToken();
-        var taxClasss = await _client.V1TaxClassesAllAsync();
+        var taxClasss = await _client.TaxClassesAllAsync();
         return _mapper.Map<List<TaxClassVM>>(taxClasss);
     }
 
     public async Task<TaxClassVM> GetTaxClassDetails(int id)
     {
         await AddBearerToken();
-        var taxClass = await _client.V1TaxClassesGETAsync(id);
+        var taxClass = await _client.TaxClassesGETAsync(id);
         return _mapper.Map<TaxClassVM>(taxClass);
     }
 
@@ -35,7 +35,7 @@ public class TaxClassService : BaseHttpService, ITaxClassService
         {
             await AddBearerToken();
             var createTaxClassCommand = _mapper.Map<CreateTaxClassCommand>(taxClass);
-            await _client.V1TaxClassesPOSTAsync(createTaxClassCommand);
+            await _client.TaxClassesPOSTAsync(createTaxClassCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -53,7 +53,7 @@ public class TaxClassService : BaseHttpService, ITaxClassService
         {
             await AddBearerToken();
             var updateTaxClassCommand = _mapper.Map<UpdateTaxClassCommand>(taxClass);
-            await _client.V1TaxClassesPUTAsync(id.ToString(), updateTaxClassCommand);
+            await _client.TaxClassesPUTAsync(id, updateTaxClassCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -69,7 +69,7 @@ public class TaxClassService : BaseHttpService, ITaxClassService
         try
         {
             await AddBearerToken();
-            await _client.V1TaxClassesDELETEAsync(id);
+            await _client.TaxClassesDELETEAsync(id);
             return new Response<Guid>
             {
                 Success = true

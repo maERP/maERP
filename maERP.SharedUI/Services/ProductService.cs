@@ -53,7 +53,7 @@ public class ProductService : BaseHttpService, IProductService
         {
             await AddBearerToken();
             var updateProductCommand = _mapper.Map<UpdateProductCommand>(product);
-            await _client.ProductsPUTAsync(id.ToString(), updateProductCommand);
+            await _client.ProductsPUTAsync(id, updateProductCommand);
             return new Response<Guid>
             {
                 Success = true

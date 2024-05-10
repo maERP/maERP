@@ -53,7 +53,7 @@ public class OrderService : BaseHttpService, IOrderService
         {
             await AddBearerToken();
             var updateOrderCommand = _mapper.Map<UpdateOrderCommand>(order);
-            await _client.OrdersPUTAsync(id.ToString(), updateOrderCommand);
+            await _client.OrdersPUTAsync(id, updateOrderCommand);
             return new Response<Guid>
             {
                 Success = true

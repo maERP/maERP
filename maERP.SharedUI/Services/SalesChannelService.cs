@@ -53,7 +53,7 @@ public class SalesChannelService : BaseHttpService, ISalesChannelService
         {
             await AddBearerToken();
             var updateSalesChannelCommand = _mapper.Map<UpdateSalesChannelCommand>(salesChannel);
-            await _client.SalesChannelsPUTAsync(id.ToString(), updateSalesChannelCommand);
+            await _client.SalesChannelsPUTAsync(id, updateSalesChannelCommand);
             return new Response<Guid>
             {
                 Success = true

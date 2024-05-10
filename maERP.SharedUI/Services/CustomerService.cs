@@ -53,7 +53,7 @@ public class CustomerService : BaseHttpService, ICustomerService
         {
             await AddBearerToken();
             var updateCustomerCommand = _mapper.Map<UpdateCustomerCommand>(customer);
-            await _client.CustomersPUTAsync(id.ToString(), updateCustomerCommand);
+            await _client.CustomersPUTAsync(id, updateCustomerCommand);
             return new Response<Guid>
             {
                 Success = true

@@ -53,7 +53,7 @@ public class WarehouseService : BaseHttpService, IWarehouseService
         {
             await AddBearerToken();
             var updateWarehouseCommand = _mapper.Map<UpdateWarehouseCommand>(warehouse);
-            await _client.WarehousesPUTAsync(id.ToString(), updateWarehouseCommand);
+            await _client.WarehousesPUTAsync(id, updateWarehouseCommand);
             return new Response<Guid>
             {
                 Success = true

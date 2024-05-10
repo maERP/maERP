@@ -53,7 +53,7 @@ public class UserService : BaseHttpService, IUserService
         {
             await AddBearerToken();
             var updateUserCommand = _mapper.Map<UpdateUserCommand>(user);
-            await _client.UsersPUTAsync(id, updateUserCommand);
+            await _client.UsersPUTAsync(Convert.ToInt32(id), updateUserCommand);
             return new Response<Guid>
             {
                 Success = true
