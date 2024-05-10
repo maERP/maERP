@@ -127,12 +127,6 @@ app.UseAuthorization(); // what are you allowed to do?
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-
-    var identityContext = services.GetRequiredService<MaErpIdentityDbContext>();
-    if (identityContext.Database.IsRelational() && identityContext.Database.GetPendingMigrations().Any())
-    {
-        identityContext.Database.Migrate();
-    }
     
     var context = services.GetRequiredService<ApplicationDbContext>();
     if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
