@@ -3844,6 +3844,15 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("Id")]
         public int Id { get; set; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
+        public string Firstname { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
+        public string Lastname { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("CompanyName")]
+        public string CompanyName { get; set; }
+
         [System.Text.Json.Serialization.JsonPropertyName("Street")]
         public string Street { get; set; }
 
@@ -3855,6 +3864,12 @@ namespace maERP.SharedUI.Services.Base
 
         [System.Text.Json.Serialization.JsonPropertyName("City")]
         public string City { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DefaultDeliveryAddress")]
+        public bool DefaultDeliveryAddress { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DefaultInvoiceAddress")]
+        public bool DefaultInvoiceAddress { get; set; }
 
     }
 
