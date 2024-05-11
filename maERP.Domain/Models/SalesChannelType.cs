@@ -7,6 +7,9 @@ public enum SalesChannelType
     [Description("Kein Typ")]
     notype,
 
+    [Description("Kasse")]
+    pos,
+
     [Description("Shopware 5")]
     shopware5,
 

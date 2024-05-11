@@ -12,5 +12,5 @@ public class Order : BaseEntity
     public int CustomerId { get; set; }
 
     [Required, Display(Name = "Bestellstatus")]
-    public virtual OrderStatus Status { get; set; }
+    public OrderStatus Status { get; set; }
 }
