@@ -1,14 +1,19 @@
 ﻿using maERP.Domain.Models;
 using maERP.Domain.Models.Common;
+using maERP.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.DatabaseContext;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+        base.OnModelCreating(modelBuilder);
+
+        // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        modelBuilder.ApplyConfiguration(new CountryConfiguration());
+        modelBuilder.ApplyConfiguration(new WarehouseConfiguration());
     }
 
     public DbSet<Country> Country { get; set; }
@@ -21,16 +26,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<SalesChannel> SalesChannel { get; set; }
     public DbSet<ShippingProvider> ShippingProvider { get; set; }
     public DbSet<ShippingProviderRate> ShippingProviderRate { get; set; }
+    public DbSet<Setting> Setting { get; set; }
     public DbSet<TaxClass> TaxClass { get; set; }
     public DbSet<Warehouse> Warehouse { get; set; }
-
-    /* protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-
-        // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-        // modelBuilder.ApplyConfiguration(new CountryConfiguration());
-    } */
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

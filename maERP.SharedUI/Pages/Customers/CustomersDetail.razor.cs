@@ -22,7 +22,6 @@ public partial class CustomersDetail
         if (customerId != 0)
         {
             customer = await _customerService.GetCustomerDetails(customerId);
-            Console.WriteLine("loaded");
         }
     }
 
