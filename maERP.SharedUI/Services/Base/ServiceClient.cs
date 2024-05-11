@@ -3875,7 +3875,7 @@ namespace maERP.SharedUI.Services.Base
         public System.Collections.Generic.ICollection<CustomerAddressListDto> CustomerAddresses { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
-        public System.DateTimeOffset DateEnrollment { get; set; }
+        public System.DateTime DateEnrollment { get; set; }
 
     }
 
@@ -3893,7 +3893,7 @@ namespace maERP.SharedUI.Services.Base
         public string Lastname { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
-        public System.DateTimeOffset DateEnrollment { get; set; }
+        public System.DateTime DateEnrollment { get; set; }
 
     }
 
@@ -3930,7 +3930,7 @@ namespace maERP.SharedUI.Services.Base
         public string Status { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("DateCreated")]
-        public System.DateTimeOffset DateCreated { get; set; }
+        public System.DateTime DateCreated { get; set; }
 
     }
 
