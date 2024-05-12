@@ -20,13 +20,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Customer> Customer { get; set; }
     public DbSet<CustomerAddress> CustomerAddress { get; set; }
     public DbSet<Order> Order { get; set; }
+    public DbSet<OrderItem> OrderItem { get; set; }
     public DbSet<Product> Product { get; set; }
     public DbSet<ProductSalesChannel> ProductSalesChannel { get; set; }
     public DbSet<ProductStock> ProductStock { get; set; }
     public DbSet<SalesChannel> SalesChannel { get; set; }
+    public DbSet<Setting> Setting { get; set; }
+    public DbSet<Shipping> Shipping { get; set; }
     public DbSet<ShippingProvider> ShippingProvider { get; set; }
     public DbSet<ShippingProviderRate> ShippingProviderRate { get; set; }
-    public DbSet<Setting> Setting { get; set; }
     public DbSet<TaxClass> TaxClass { get; set; }
     public DbSet<Warehouse> Warehouse { get; set; }
 

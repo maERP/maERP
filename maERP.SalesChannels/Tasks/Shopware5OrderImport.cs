@@ -55,7 +55,7 @@ public class OrderDownloadTask : IHostedService
 
         foreach (var salesChannel in salesChannels)
         {
-            if (salesChannel.Type != SalesChannelType.shopware5 || salesChannel.ImportOrders != true)
+            if (salesChannel.Type != SalesChannelType.Shopware5 || salesChannel.ImportOrders != true)
             {
                 continue;
             }

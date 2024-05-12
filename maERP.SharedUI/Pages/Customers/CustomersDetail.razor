@@ -39,11 +39,9 @@
 
         <MudDataGrid Items="@customer.CustomerAddresses" SortMode="SortMode.Single" Class="mb-8">
             <Columns>
-                <PropertyColumn Property="x => x.Id" Title="Id" />
-                <PropertyColumn Property="x => x.Street" Title="Straße" />
-                <PropertyColumn Property="x => x.HouseNr" Title="Hausnummer" />
-                <PropertyColumn Property="x => x.HouseNr" Title="PLZ" />
-                <PropertyColumn Property="x => x.HouseNr" Title="Stadt" />
+                <PropertyColumn Property="x => x.DefaultDeliveryAddress" Title="Std. Liefer" />
+                <PropertyColumn Property="x => x.DefaultInvoiceAddress" Title="Std. Rechnung" />
+                <PropertyColumn Property="x => x.FullAddress" Title="Adresse" />
             </Columns>
         </MudDataGrid>
         

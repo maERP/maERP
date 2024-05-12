@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using maERP.SharedUI.Models.Customer;
+using maERP.SharedUI.Models.CustomerAddress;
 using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Models.Product;
 using maERP.SharedUI.Models.SalesChannel;
@@ -19,7 +20,7 @@ public class MappingProfiles : Profile
         CreateMap<CustomerVM, CreateCustomerCommand>().ReverseMap();
         CreateMap<CustomerVM, UpdateCustomerCommand>().ReverseMap();
 
-        CreateMap<CustomerAddressVM, CustomerAddressListDto>().ReverseMap();
+        CreateMap<CustomerAddressListVM, CustomerAddressListDto>().ReverseMap();
         // CreateMap<CustomerAddressVM, CustomerAddressDetailDto>().ReverseMap();
 
         CreateMap<CustomerVM, CustomerListDto>().ReverseMap();

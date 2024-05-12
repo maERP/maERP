@@ -14,6 +14,8 @@ public class CustomerAddress : BaseEntity
     public string City { get; set; } = string.Empty;
     public bool DefaultDeliveryAddress { get; set; }
     public bool DefaultInvoiceAddress { get; set; }
-    public required Country Country { get; set; }
-    public required Customer Customer { get; set; }
+    public Country? Country { get; set; }
+    public int CountryId { get; set; }
+    public Customer? Customer { get; set; }
+    public int CustomerId { get; set; }
 }

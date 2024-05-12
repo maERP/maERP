@@ -4,18 +4,15 @@ namespace maERP.Domain.Models;
 
 public enum SalesChannelType
 {
-    [Description("Kein Typ")]
-    notype,
-
     [Description("Kasse")]
-    pos,
+    PointOfSale = 1,
 
     [Description("Shopware 5")]
-    shopware5,
+    Shopware5 = 10,
 
     [Description("Shopware 6")]
-    shopware6,
+    Shopware6 = 11,
 
     [Description("WooCommerce")]
-    woocommerce
+    WooCommerce = 20
 }

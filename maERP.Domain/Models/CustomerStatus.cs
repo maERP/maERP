@@ -2,7 +2,7 @@
 
 public enum CustomerStatus
 {
-    active = 1,
-    inactive = 2,
-    no_doi = 3,
+    Active = 1,
+    Inactive = 2,
+    NoDOI = 3,
 }
