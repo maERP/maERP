@@ -18,6 +18,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         return await _context.Customer
             .Where(x => x.Id == id)
             .Include(x => x.CustomerAddresses)
+            .Include(x => x.Orders)
             .FirstOrDefaultAsync() ?? throw new NotFoundException("User not found", "User not found");
     }
 }

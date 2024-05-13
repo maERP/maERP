@@ -3889,6 +3889,9 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("CustomerAddresses")]
         public System.Collections.Generic.ICollection<CustomerAddressListDto> CustomerAddresses { get; set; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("Orders")]
+        public System.Collections.Generic.ICollection<OrderListDto> Orders { get; set; }
+
         [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
         public System.DateTime DateEnrollment { get; set; }
 
@@ -3953,19 +3956,19 @@ namespace maERP.SharedUI.Services.Base
     public partial class ProblemDetails
     {
 
-        [System.Text.Json.Serialization.JsonPropertyName("type")]
+        [System.Text.Json.Serialization.JsonPropertyName("Type")]
         public string Type { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("title")]
+        [System.Text.Json.Serialization.JsonPropertyName("Title")]
         public string Title { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("status")]
+        [System.Text.Json.Serialization.JsonPropertyName("Status")]
         public int? Status { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("detail")]
+        [System.Text.Json.Serialization.JsonPropertyName("Detail")]
         public string Detail { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("instance")]
+        [System.Text.Json.Serialization.JsonPropertyName("Instance")]
         public string Instance { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
