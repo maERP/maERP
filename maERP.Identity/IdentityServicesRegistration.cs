@@ -1,12 +1,8 @@
 using System.Text;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Models.Identity;
-using maERP.Domain.Models;
-using maERP.Identity.DatabaseContext;
 using maERP.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -19,12 +15,6 @@ public static class IdentityServicesRegistration
         IConfiguration configuration)
     {
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
-
-        services.AddDbContext<MaErpIdentityDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<MaErpIdentityDbContext>().AddDefaultTokenProviders();
 
         services.AddTransient<IAuthService, AuthService>();
         services.AddTransient<IUserService, UserService>();

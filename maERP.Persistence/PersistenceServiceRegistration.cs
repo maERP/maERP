@@ -1,5 +1,7 @@
-﻿using maERP.Persistence.Configurations.Options;
+﻿using maERP.Domain.Models;
+using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -18,6 +20,10 @@ public static class PersistenceServiceRegistration
             options.UseNpgsql(dbOptions.Value.DefaultConnection,
                 b => b.MigrationsAssembly("maERP.Persistence"));
         });
+
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
         return services;
     }

@@ -12,8 +12,9 @@ public static class SalesChannelServiceRegistration
         services.AddScoped<IProductImportRepository, ProductImportRepository>();
         services.AddScoped<IShopware5Repository, Shopware5Repository>();
         
-        services.AddHostedService<ProductDownloadTask>();
-        services.AddHostedService<OrderDownloadTask>();
+        services.AddHostedService<Shopware5OrderImportTask>();
+        services.AddHostedService<Shopware5ProductImportTask>();
+        services.AddHostedService<WooCommerceProductImportTask>();
 
         return services;
     }

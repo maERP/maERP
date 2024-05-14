@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="WooCommerceNET" Version="0.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\maERP.Persistence\maERP.Persistence.csproj" />
   </ItemGroup>
 

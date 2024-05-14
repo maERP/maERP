@@ -16,8 +16,6 @@ public class SalesChannel : BaseEntity
     public bool ExportCustomers { get; set; }
     public bool ExportOrders { get; set; }
 
+    // public Warehouse Warehouse { get; set; } = new();
     public int WarehouseId { get; set; } = new();
-
-    // [JsonIgnore]
-    public Warehouse Warehouse { get; set; } = new();
 }

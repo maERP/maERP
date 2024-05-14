@@ -15,6 +15,23 @@ public class Order : BaseEntity
     public OrderStatus Status { get; set; }
     public OrderItem? OrderItems { get; set; }
 
+    public string PaymentMethod { get; set; } = string.Empty;
+    public string PaymentStatus { get; set; } = string.Empty;
+    public string PaymentProvider { get; set; } = string.Empty;
+    public string PaymentTransactionId { get; set; } = string.Empty;
+
+    public string ShippingMethod { get; set; } = string.Empty;
+    public string ShippingStatus { get; set; } = string.Empty;
+    public string ShippingProvider { get; set; } = string.Empty;
+    public string ShippingTrackingId { get; set; } = string.Empty;
+
+    public decimal Subtotal { get; set; }
+    public decimal ShippingCost { get; set; }
+    public decimal Tax { get; set; }
+    public decimal Total { get; set; }
+
+    public string Note { get; set; } = string.Empty;
+
     public string DeliveryAddressFirstName { get; set; } = string.Empty;
     public string DeliveryAddressLastName { get; set; } = string.Empty;
     public string DeliveryAddressCompanyName { get; set; } = string.Empty;

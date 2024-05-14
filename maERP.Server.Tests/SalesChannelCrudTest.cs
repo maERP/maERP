@@ -26,8 +26,10 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
         var saleschannel = new SalesChannelCreateDto
         {
             Type = 1,
-            Name = "SalesChannel 1",
-            Url = "http://localhost"
+            Name = "SalesChannel 2",
+            Url = string.Empty,
+            Username = string.Empty,
+            Password = string.Empty
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, saleschannel);
@@ -46,27 +48,28 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
         await _webApplicationFactory.InitializeDbForTests(
             new List<SalesChannel> {
                 new() {
-                    Id = 2,
-                    Name = "SalesChannel 2"
+                    Id = 3,
+                    Name = "SalesChannel 3"
                 }
         });
 
         ICollection<SalesChannelListDto>? result = await httpClient.GetFromJsonAsync<ICollection<SalesChannelListDto>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.Count, 1);
+        Assert.Equal(result?.Count, 2);
     }
 
     [Theory]
-    [InlineData("/api/v1/SalesChannels/3")]
+    [InlineData("/api/v1/SalesChannels/4")]
     public async Task GetDetail(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
             new List<SalesChannel> {
                 new() {
-                    Id = 3,
-                    Name = "SalesChannel 3"
+                    Id = 4,
+                    Name = "SalesChannel 4",
+                    WarehouseId = 1
                 }
         });
 
@@ -77,7 +80,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
     }
 
     [Theory]
-    [InlineData("/api/v1/SalesChannels/4")]
+    [InlineData("/api/v1/SalesChannels/5")]
     public async Task Update(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
@@ -85,14 +88,15 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
         await _webApplicationFactory.InitializeDbForTests(
             new List<SalesChannel> {
                 new() {
-                    Id = 4,
-                    Name = "SalesChannel 4"
+                    Id = 5,
+                    Type = SalesChannelType.PointOfSale,
+                    Name = "SalesChannel 5"
                 }
         });
 
         var saleschannel = new SalesChannelUpdateDto
         {
-            Name = "SalesChannel 3 updated",
+            Name = "SalesChannel 5 updated",
         };
 
         HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, saleschannel);

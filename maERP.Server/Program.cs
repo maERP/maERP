@@ -3,7 +3,6 @@
 using maERP.Application;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
-using maERP.Identity.DatabaseContext;
 using maERP.Infrastructure;
 using maERP.Persistence;
 using maERP.Persistence.Configurations.Options;
@@ -129,17 +128,6 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     
     var context = services.GetRequiredService<ApplicationDbContext>();
-    if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
-    {
-        context.Database.Migrate();
-    }
-}
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-
-    var context = services.GetRequiredService<MaErpIdentityDbContext>();
     if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
     {
         context.Database.Migrate();

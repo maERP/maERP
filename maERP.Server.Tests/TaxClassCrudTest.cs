@@ -24,7 +24,7 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
         await _webApplicationFactory.InitializeDbForTests();
         var taxclass = new TaxClassCreateDto
         {
-            TaxRate = 19
+            TaxRate = 20
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, taxclass);
@@ -43,29 +43,23 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
         await _webApplicationFactory.InitializeDbForTests(
             new List<TaxClass> {
                 new() {
-                    Id = 2,
-                    TaxRate = 19
+                    Id = 4,
+                    TaxRate = 21
                 }
         });
 
         ICollection<TaxClassListDto>? result = await httpClient.GetFromJsonAsync<ICollection<TaxClassListDto>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.Count, 1);
+        Assert.Equal(result?.Count, 4);
     }
 
     [Theory]
-    [InlineData("/api/v1/TaxClasses/3")]
+    [InlineData("/api/v1/TaxClasses/1")]
     public async Task GetDetail(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
-        await _webApplicationFactory.InitializeDbForTests(
-            new List<TaxClass> {
-                new() {
-                    Id = 3,
-                    TaxRate = 19
-                }
-        });
+        await _webApplicationFactory.InitializeDbForTests();
 
         TaxClassDetailDto? result = await httpClient.GetFromJsonAsync<TaxClassDetailDto>(url);
 
@@ -74,7 +68,7 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
     }
 
     [Theory]
-    [InlineData("/api/v1/TaxClasses/4")]
+    [InlineData("/api/v1/TaxClasses/6")]
     public async Task Update(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
@@ -82,14 +76,14 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
         await _webApplicationFactory.InitializeDbForTests(
             new List<TaxClass> {
                 new() {
-                    Id = 4,
-                    TaxRate = 19
+                    Id = 6,
+                    TaxRate = 23
                 }
         });
 
         var taxclass = new TaxClassUpdateDto
         {
-            TaxRate = 20
+            TaxRate = 24
         };
 
         HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, taxclass);

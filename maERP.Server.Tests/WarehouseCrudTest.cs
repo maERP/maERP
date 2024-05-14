@@ -51,7 +51,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
         ICollection<WarehouseListDto>? result = await httpClient.GetFromJsonAsync<ICollection<WarehouseListDto>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.Count, 1);
+        Assert.Equal(result?.Count, 2);
     }
 
     [Theory]

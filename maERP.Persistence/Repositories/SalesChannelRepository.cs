@@ -16,7 +16,7 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
     public async Task<SalesChannel> GetDetails(int id)
     {
         var salesChannel = await _context.SalesChannel
-            .Include(s => s.Warehouse)
+            .Include(s => s.WarehouseId)
             .FirstOrDefaultAsync(s => s.Id == id);
 
         if (salesChannel == null)
@@ -24,7 +24,7 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
             throw new NotFoundException("SalesChannel not found", id);
         }
         
-        salesChannel.WarehouseId = salesChannel.Warehouse.Id;
+        salesChannel.WarehouseId = salesChannel.WarehouseId;
 
         return salesChannel;
     }

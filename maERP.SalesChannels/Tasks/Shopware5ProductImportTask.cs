@@ -4,20 +4,25 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.SalesChannel;
 using maERP.Domain.Models;
+using maERP.Domain.Models.SalesChannelData;
 using maERP.Domain.Models.SalesChannelData.Shopware5;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace maERP.SalesChannels.Tasks;
 
-public class OrderDownloadTask : IHostedService
+public class Shopware5ProductImportTask : IHostedService
 {
     private readonly IServiceScopeFactory _service;
+    private readonly ILogger<Shopware5ProductImportTask> _logger;
 
-    public OrderDownloadTask(IServiceScopeFactory serviceScopeFactory)
+    public Shopware5ProductImportTask(IServiceScopeFactory serviceScopeFactory, ILogger<Shopware5ProductImportTask> logger)
     {
         _service = serviceScopeFactory;
+        _logger = logger;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -26,15 +31,15 @@ public class OrderDownloadTask : IHostedService
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                Console.WriteLine("OrderDownload MainLoop start");
+                _logger.LogInformation("Shopware5ProductImportTask MainLoop start");
 
                 await MainLoop();
 
-                await Task.Delay(new TimeSpan(0, 0, 60)); // 60 second delay
+                await Task.Delay(new TimeSpan(0, 0, 60)); // 5 second delay
 
-                Console.WriteLine("OrderDownload MainLoop finished");
+                _logger.LogInformation("Shopware5ProductImportTask MainLoop finished");
             }
-        }, cancellationToken);
+        });
 
         return Task.CompletedTask;
     }
@@ -49,18 +54,18 @@ public class OrderDownloadTask : IHostedService
         var scope = _service.CreateScope();
 
         var salesChannelRepository = scope.ServiceProvider.GetService<ISalesChannelRepository>();
-        var orderRepository = scope.ServiceProvider.GetService<IOrderRepository>();
+        var productImportRepository = scope.ServiceProvider.GetService<IProductImportRepository>();
 
         var salesChannels = await salesChannelRepository.GetAllAsync();
 
         foreach (var salesChannel in salesChannels)
         {
-            if (salesChannel.Type != SalesChannelType.Shopware5 || salesChannel.ImportOrders != true)
+            if (salesChannel.Type != SalesChannelType.Shopware5 || salesChannel.ImportProducts == false)
             {
                 continue;
             }
 
-            Console.WriteLine($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
+            _logger.LogInformation($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             int requestStart = 0;
             int requestLimit = 100;
@@ -71,7 +76,7 @@ public class OrderDownloadTask : IHostedService
                 try
                 {
                     var client = new HttpClient();
-                    string requestUrl = salesChannel.URL + $"/api/orders?start={requestStart}&limit={requestLimit}";
+                    string requestUrl = salesChannel.URL + $"/api/articles?start={requestStart}&limit={requestLimit}";
                     client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000000));
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -80,64 +85,63 @@ public class OrderDownloadTask : IHostedService
                     var base64EncodedAuthenticationString = Convert.ToBase64String(ASCIIEncoding.UTF8.GetBytes(authenticationString));
                     client.DefaultRequestHeaders.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
 
-                    HttpResponseMessage response = new();
+                    HttpResponseMessage response = new HttpResponseMessage();
                     response = await client.GetAsync(requestUrl).ConfigureAwait(false);
 
                     if (response.IsSuccessStatusCode)
                     {
                         string result = response.Content.ReadAsStringAsync().Result;
 
-                        Shopware5Response<Shopware5OrderResponse> remoteOrders = new();
+                        Shopware5Response<Shopware5ProductResponse> remoteProducts = new();
 
                         try
                         {
-                            remoteOrders = JsonSerializer.Deserialize<Shopware5Response<Shopware5OrderResponse>>(result);
+                            remoteProducts = JsonSerializer.Deserialize<Shopware5Response<Shopware5ProductResponse>>(result);
 
-                            if(remoteOrders.data == null || remoteOrders.success == false)
-                            {
-                                throw new Exception("No data in response");
-                            }
-
-                            requestMax = remoteOrders.total;
+                            requestMax = remoteProducts.total;
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Import Order error: {ex.Message}");
-
-                            Console.WriteLine(result);
+                            _logger.LogError($"Import Product error: {ex.Message}");
                         }
 
-                        foreach (var remoteOrder in remoteOrders.data)
+                        foreach (var remoteProduct in remoteProducts.data)
                         {
-                            Console.WriteLine("Import Order {0}", remoteOrder.id.ToString());
+                            var importProduct = new SalesChannelImportProduct();
 
-                            var order = await orderRepository.GetByRemoteOrderIdAsync(remoteOrder.id.ToString(), salesChannel.Id);
-
-                            // new order
-                            if (order == null)
+                            if (remoteProduct.mainDetail.ean.Length > 13)
                             {
-                                var localOrder = new Order
-                                {
-                                    RemoteOrderId = remoteOrder.id.ToString()
-                                };
-
-                                await orderRepository.CreateAsync(localOrder);
+                                remoteProduct.mainDetail.ean = remoteProduct.mainDetail.ean.Substring(0, 13);
                             }
-                            // existing order
+                            
+                            if (remoteProduct.descriptionLong.Length > 4000)
+                            {
+                                remoteProduct.descriptionLong = remoteProduct.descriptionLong.Substring(0, 4000);
+                            }
+
+                            importProduct.Name = remoteProduct.name;
+                            importProduct.Ean = remoteProduct.mainDetail.ean;
+                            importProduct.Price = (decimal)remoteProduct.mainDetail.purchasePrice;
+                            importProduct.Sku = remoteProduct.mainDetail.number;
+                            importProduct.TaxRate = 19;
+                            importProduct.Description = remoteProduct.descriptionLong;
+
+
+                            await productImportRepository.ImportOrUpdateFromSalesChannel(salesChannel.Id, importProduct);
                         }
 
                         response.Dispose();
 
                         requestStart += requestLimit;
 
-                        Console.WriteLine($"Import Orders: {requestUrl} (max {requestMax} Orders)");
+                        _logger.LogInformation($"Import Products: {requestUrl} (max {requestMax} Products)");
 
                         await Task.Delay(new TimeSpan(0, 0, 1)); // 5 second delay
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    _logger.LogError(ex.StackTrace);
                 }
             }
             while (requestMax != 0 && requestStart <= requestMax);
