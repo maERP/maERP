@@ -45,7 +45,7 @@
 		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.5" />
 		<PackageReference Include="Microsoft.AspNetCore.OData" Version="8.2.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
