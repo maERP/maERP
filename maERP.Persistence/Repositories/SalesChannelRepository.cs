@@ -29,6 +29,18 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
         return salesChannel;
     }
 
+    public async Task<bool> SalesChannelIsUniqueAsync(SalesChannel salesChannel, int? id = null)
+    {
+        if(id == null)
+        {
+            return await _context.SalesChannel
+                .AnyAsync(s => s.Name == salesChannel.Name) ? false : true;
+        }
+
+        return await _context.SalesChannel
+            .AnyAsync(s => s.Name == salesChannel.Name && s.Id != id) ? false : true;
+    }
+
     /*
     public async Task<SalesChannelDetailDto> AddWithDetailsAsync(SalesChannelCreateDto salesChannelCreateDto)
     {

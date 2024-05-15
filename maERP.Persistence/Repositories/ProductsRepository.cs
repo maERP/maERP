@@ -14,6 +14,6 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     
     public async Task<Product?> GetBySkuAsync(string sku)
     {
-        return await _context.Product.FirstOrDefaultAsync(p => p.Sku == sku);
+        return await _context.Product.Include(ps => ps.ProductSalesChannel).FirstOrDefaultAsync(p => p.Sku == sku);
     }
 }

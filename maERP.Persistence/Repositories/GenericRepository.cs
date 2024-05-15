@@ -27,14 +27,14 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await _context.Set<T>().AsNoTracking().ToListAsync();
     }
 
-    public async Task<IReadOnlyList<T>> GetAsync()
+    public async Task<T?> GetByIdAsync(int id, bool asNoTracking = false)
     {
-        return await _context.Set<T>().AsNoTracking().ToListAsync();
-    }
+        if (asNoTracking)
+        {
+            return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
 
-    public async Task<T?> GetByIdAsync(int id)
-    {
-        return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task UpdateAsync(T entity)

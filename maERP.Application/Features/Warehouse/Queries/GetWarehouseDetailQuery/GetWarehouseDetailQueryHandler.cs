@@ -23,7 +23,7 @@ public class GetWarehouseDetailQueryHandler : IRequestHandler<GetWarehouseDetail
     }
     public async Task<WarehouseDetailDto> Handle(GetWarehouseDetailQuery request, CancellationToken cancellationToken)
     {
-        var warehouse = await _warehouseRepository.GetByIdAsync(request.Id);
+        var warehouse = await _warehouseRepository.GetByIdAsync(request.Id, true);
 
         if (warehouse == null)
         {

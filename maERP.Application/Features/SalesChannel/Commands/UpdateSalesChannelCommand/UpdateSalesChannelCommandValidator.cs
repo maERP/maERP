@@ -20,16 +20,18 @@ public class UpdateSalesChannelCommandValidator : AbstractValidator<UpdateSalesC
             .NotEmpty().WithMessage("{PropertyName} is required.");
 
         RuleFor(s => s)
-            .MustAsync(IsUnique).WithMessage("SalesChannel not found.");
+            .MustAsync(IsUnique).WithMessage("Sales Channel is not unique.");
     }
     
     private async Task<bool> IsUnique(UpdateSalesChannelCommand command, CancellationToken cancellationToken)
     {
-        var salesChannel = new maERP.Domain.Models.SalesChannel
+        var salesChannel = new Domain.Models.SalesChannel
         {
             Name = command.Name
         };
 
-        return await _salesChannelRepository.IsUniqueAsync(salesChannel, command.Id);
+        var test = await _salesChannelRepository.SalesChannelIsUniqueAsync(salesChannel, command.Id);
+
+        return test;
     }
 }

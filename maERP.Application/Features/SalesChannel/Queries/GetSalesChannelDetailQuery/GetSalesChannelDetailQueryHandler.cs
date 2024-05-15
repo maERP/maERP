@@ -23,7 +23,7 @@ public class GetSalesChannelDetailQueryHandler : IRequestHandler<GetSalesChannel
     }
     public async Task<SalesChannelDetailDto> Handle(GetSalesChannelDetailQuery request, CancellationToken cancellationToken)
     {
-        var salesChannel = await _salesChannelRepository.GetByIdAsync(request.Id);
+        var salesChannel = await _salesChannelRepository.GetByIdAsync(request.Id, true);
 
         if(salesChannel == null)
         {

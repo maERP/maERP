@@ -23,7 +23,7 @@ public class GetTaxClassDetailQueryHandler : IRequestHandler<GetTaxClassDetailQu
     }
     public async Task<TaxClassDetailDto> Handle(GetTaxClassDetailQuery request, CancellationToken cancellationToken)
     {
-        var taxClass = await _taxClassRepository.GetByIdAsync(request.Id);
+        var taxClass = await _taxClassRepository.GetByIdAsync(request.Id, true);
 
         if(taxClass == null)
         {

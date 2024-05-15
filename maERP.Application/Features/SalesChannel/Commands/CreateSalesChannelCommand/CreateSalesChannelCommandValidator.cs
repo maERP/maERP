@@ -10,13 +10,9 @@ public class CreateSalesChannelCommandValidator : AbstractValidator<CreateSalesC
     public CreateSalesChannelCommandValidator(ISalesChannelRepository salesChannelRepository)
     {
         _salesChannelRepository = salesChannelRepository;
-
-        RuleFor(p => p.Url)
-            .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.");
         
         RuleFor(s => s)
-            .MustAsync(IsUniqueAsync).WithMessage("SalesChannel with the same Id already exists.");
+            .MustAsync(IsUniqueAsync).WithMessage("SalesChannel with the same name already exists.");
     }
     
     private async Task<bool> IsUniqueAsync(CreateSalesChannelCommand command, CancellationToken cancellationToken)
@@ -26,6 +22,7 @@ public class CreateSalesChannelCommandValidator : AbstractValidator<CreateSalesC
             Name = command.Name
         };
 
-        return await _salesChannelRepository.IsUniqueAsync(salesChannel);
+        var test = await _salesChannelRepository.SalesChannelIsUniqueAsync(salesChannel, null);
+        return test;
     }
 }

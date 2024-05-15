@@ -28,7 +28,7 @@ public class UpdateTaxClassCommandValidator : AbstractValidator<UpdateTaxClassCo
     
     private async Task<bool> TaxClassExists(UpdateTaxClassCommand command, CancellationToken cancellationToken)
     {
-        return await _taxClassRepository.GetByIdAsync(command.Id) != null;
+        return await _taxClassRepository.GetByIdAsync(command.Id, true) != null;
     }
 
     private async Task<bool> IsUniqueAsync(UpdateTaxClassCommand command, CancellationToken cancellationToken)

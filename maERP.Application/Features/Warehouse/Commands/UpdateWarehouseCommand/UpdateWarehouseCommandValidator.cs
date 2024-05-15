@@ -27,7 +27,7 @@ public class UpdateWarehouseCommandValidator : AbstractValidator<UpdateWarehouse
     
     private async Task<bool> WarehouseExists(UpdateWarehouseCommand command, CancellationToken cancellationToken)
     {
-        return await _warehouseRepository.GetByIdAsync(command.Id) != null;
+        return await _warehouseRepository.GetByIdAsync(command.Id, true) != null;
     }
     
     private async Task<bool> IsUniqueAsync(UpdateWarehouseCommand command, CancellationToken cancellationToken)

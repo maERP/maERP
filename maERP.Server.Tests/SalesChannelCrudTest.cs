@@ -90,17 +90,36 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
                 new() {
                     Id = 5,
                     Type = SalesChannelType.PointOfSale,
-                    Name = "SalesChannel 5"
+                    Name = "SalesChannel 5",
+                    URL = string.Empty,
+                    Username = string.Empty,
+                    Password = string.Empty,
+                    ImportProducts = false,
+                    ImportCustomers = false,
+                    ImportOrders = false,
+                    ExportProducts = false,
+                    ExportCustomers = false,
+                    ExportOrders = false,
+                    WarehouseId = 1
                 }
         });
 
         var saleschannel = new SalesChannelUpdateDto
         {
+            Type = SalesChannelType.PointOfSale,
             Name = "SalesChannel 5 updated",
+            Username = string.Empty,
+            Password = string.Empty,
+            ImportProducts = false,
+            ImportCustomers = false,
+            ImportOrders = false,
+            ExportProducts = false,
+            ExportCustomers = false,
+            ExportOrders = false,
+            WarehouseId = 1
         };
 
         HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, saleschannel);
-
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }
 

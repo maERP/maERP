@@ -25,6 +25,6 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
     
     private async Task<bool> ProductExists(UpdateProductCommand command, CancellationToken cancellationToken)
     {
-        return await _productRepository.GetByIdAsync(command.Id) != null;
+        return await _productRepository.GetByIdAsync(command.Id, true) != null;
     }
 }

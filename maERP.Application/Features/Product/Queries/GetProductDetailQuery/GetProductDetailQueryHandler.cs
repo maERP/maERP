@@ -23,7 +23,7 @@ public class GetProductDetailQueryHandler : IRequestHandler<GetProductDetailQuer
     }
     public async Task<ProductDetailDto> Handle(GetProductDetailQuery request, CancellationToken cancellationToken)
     {
-        var product = await _productRepository.GetByIdAsync(request.Id);
+        var product = await _productRepository.GetByIdAsync(request.Id, true);
 
         if(product == null)
         {

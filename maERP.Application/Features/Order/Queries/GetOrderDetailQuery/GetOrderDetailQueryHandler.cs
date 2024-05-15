@@ -23,7 +23,7 @@ public class GetOrderDetailQueryHandler : IRequestHandler<GetOrderDetailQuery, O
     }
     public async Task<OrderDetailDto> Handle(GetOrderDetailQuery request, CancellationToken cancellationToken)
     {
-        var order = await _orderRepository.GetByIdAsync(request.Id);
+        var order = await _orderRepository.GetByIdAsync(request.Id, true);
 
         if(order == null)
         {
