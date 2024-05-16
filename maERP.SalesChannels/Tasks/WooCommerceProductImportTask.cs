@@ -1,7 +1,7 @@
 ﻿using maERP.Application.Contracts.Persistence;
-using maERP.Application.Contracts.SalesChannel;
 using maERP.Domain.Models;
-using maERP.Domain.Models.SalesChannelData;
+using maERP.SalesChannels.Contracts;
+using maERP.SalesChannels.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

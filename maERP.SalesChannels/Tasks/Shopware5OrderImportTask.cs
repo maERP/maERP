@@ -4,11 +4,12 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
-using maERP.Domain.Models;
-using maERP.Domain.Models.SalesChannelData.Shopware5;
+using maERP.SalesChannels.Models.Shopware5;
+using maERP.SalesChannels.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using maERP.Domain.Models;
 
 namespace maERP.SalesChannels.Tasks;
 
@@ -112,7 +113,7 @@ public class Shopware5OrderImportTask : IHostedService
                         {
                             _logger.LogInformation("Import Order {0}", remoteOrder.id.ToString());
 
-                            var order = await orderRepository.GetByRemoteOrderIdAsync(remoteOrder.id.ToString(), salesChannel.Id);
+                            var order = await orderRepository.GetByRemoteOrderIdAsync(salesChannel.Id, remoteOrder.id.ToString());
 
                             // new order
                             if (order == null)

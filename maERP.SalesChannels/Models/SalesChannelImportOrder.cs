@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using maERP.Domain.Models.Common;
+﻿using maERP.Domain.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace maERP.Domain.Models;
+namespace maERP.SalesChannels.Models;
 
-public class Order : BaseEntity
+public class SalesChannelImportOrder
 {
     public int SalesChannelId { get; set; }
     public string RemoteOrderId { get; set; } = string.Empty;

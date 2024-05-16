@@ -11,11 +11,13 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
     }
 
-    public async Task<Order> GetByRemoteOrderIdAsync(string remoteOrderId, int salesChannelId)
+    public async Task<Order?> GetByRemoteOrderIdAsync(int salesChannelId, string remoteOrderId)
     {
-        return await _context.Order
+        var test = await _context.Order
             .Where(o => o.RemoteOrderId == remoteOrderId)
             .Where(o => o.SalesChannelId == salesChannelId)
-            .FirstOrDefaultAsync() ?? throw new Exception($"Order with RemoteOrderId {remoteOrderId} not found");
+            .FirstOrDefaultAsync() ?? null;
+
+        return test;
     }
 }

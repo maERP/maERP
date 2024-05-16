@@ -1,6 +1,6 @@
-﻿using maERP.Domain.Models.SalesChannelData;
+﻿using maERP.SalesChannels.Models;
 
-namespace maERP.Application.Contracts.SalesChannel;
+namespace maERP.SalesChannels.Contracts;
 
 public interface IProductImportRepository
 {

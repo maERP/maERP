@@ -2,13 +2,15 @@
 
 public enum OrderStatus
 {
-    open = 1,
-    in_progress = 2,
-    fully_completed = 3,
-    partially_completed = 4,
-    cancelled = 5,
-    ready_for_delivery = 6,
-    partially_delivered = 7,
-    fully_delivered = 8,
-    clarification = 9
+    Unknown = 0,
+    Pending = 1,
+    Processing = 2,
+    ReadyForDelivery = 3,
+    PartiallyDelivered = 4,
+    Completed = 5,
+    Cancelled = 6,
+    Returned = 7,
+    Refunded = 8,
+    OnHold = 10,
+    Failed = 11,
 }

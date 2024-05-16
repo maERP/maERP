@@ -1,4 +1,4 @@
-﻿namespace maERP.Domain.Models.SalesChannelData;
+﻿namespace maERP.SalesChannels.Models;
 
 public class SalesChannelImportProduct
 {

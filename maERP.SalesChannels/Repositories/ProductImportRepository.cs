@@ -1,8 +1,8 @@
 ﻿using maERP.Application.Contracts.Persistence;
-using maERP.Application.Contracts.SalesChannel;
 using maERP.Application.Exceptions;
 using maERP.Domain.Models;
-using maERP.Domain.Models.SalesChannelData;
+using maERP.SalesChannels.Contracts;
+using maERP.SalesChannels.Models;
 using Microsoft.Extensions.Logging;
 
 namespace maERP.SalesChannels.Repositories;
