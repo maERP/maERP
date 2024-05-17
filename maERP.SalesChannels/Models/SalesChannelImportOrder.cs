@@ -15,6 +15,8 @@ public class SalesChannelImportOrder
     public OrderStatus Status { get; set; }
     public OrderItem? OrderItems { get; set; }
 
+    public SalesChannelImportCustomer? Customer { get; set; }
+
     public string PaymentMethod { get; set; } = string.Empty;
     public string PaymentStatus { get; set; } = string.Empty;
     public string PaymentProvider { get; set; } = string.Empty;
