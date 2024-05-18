@@ -22,7 +22,6 @@ public class CreateSalesChannelCommandValidator : AbstractValidator<CreateSalesC
             Name = command.Name
         };
 
-        var test = await _salesChannelRepository.SalesChannelIsUniqueAsync(salesChannel, null);
-        return test;
+        return await _salesChannelRepository.SalesChannelIsUniqueAsync(salesChannel, null);
     }
 }

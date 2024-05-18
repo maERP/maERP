@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
 using MediatR;
@@ -8,16 +7,14 @@ namespace maERP.Application.Features.Customer.Commands.DeleteCustomerCommand;
 
 public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, int>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<DeleteCustomerCommandHandler> _logger;
     private readonly ICustomerRepository _customerRepository;
 
 
-    public DeleteCustomerCommandHandler(IMapper mapper,
+    public DeleteCustomerCommandHandler(
         IAppLogger<DeleteCustomerCommandHandler> logger,
         ICustomerRepository customerRepository)
     {
-        _mapper = mapper;
         _logger = logger;
         _customerRepository = customerRepository;
     }

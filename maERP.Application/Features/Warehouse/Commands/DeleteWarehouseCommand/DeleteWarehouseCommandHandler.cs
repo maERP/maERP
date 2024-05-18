@@ -8,15 +8,13 @@ namespace maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
 
 public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseCommand, int>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<DeleteWarehouseCommandHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
     
-    public DeleteWarehouseCommandHandler(IMapper mapper,
+    public DeleteWarehouseCommandHandler(
         IAppLogger<DeleteWarehouseCommandHandler> logger,
         IWarehouseRepository warehouseRepository)
     {
-        _mapper = mapper;
         _logger = logger;
         _warehouseRepository = warehouseRepository;
     }

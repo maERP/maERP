@@ -1,8 +1,6 @@
-﻿using System.Linq.Expressions;
-using maERP.Application.Contracts.Persistence;
+﻿using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Models;
 using maERP.Persistence.DatabaseContext;
-using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.Repositories;
 

@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
 using maERP.SalesChannels.Models.Shopware5;
-using maERP.SalesChannels.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

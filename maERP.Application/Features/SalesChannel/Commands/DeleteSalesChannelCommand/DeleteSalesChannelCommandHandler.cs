@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
 using MediatR;
@@ -8,16 +7,14 @@ namespace maERP.Application.Features.SalesChannel.Commands.DeleteSalesChannelCom
 
 public class DeleteSalesChannelCommandHandler : IRequestHandler<DeleteSalesChannelCommand, int>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<DeleteSalesChannelCommandHandler> _logger;
     private readonly ISalesChannelRepository _salesChannelRepository;
 
 
-    public DeleteSalesChannelCommandHandler(IMapper mapper,
+    public DeleteSalesChannelCommandHandler(
         IAppLogger<DeleteSalesChannelCommandHandler> logger,
         ISalesChannelRepository salesChannelRepository)
     {
-        _mapper = mapper;
         _logger = logger;
         _salesChannelRepository = salesChannelRepository;
     }

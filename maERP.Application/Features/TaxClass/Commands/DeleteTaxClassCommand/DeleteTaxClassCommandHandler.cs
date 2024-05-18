@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
 using MediatR;
@@ -8,16 +7,14 @@ namespace maERP.Application.Features.TaxClass.Commands.DeleteTaxClassCommand;
 
 public class DeleteTaxClassCommandHandler : IRequestHandler<DeleteTaxClassCommand, int>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<DeleteTaxClassCommandHandler> _logger;
     private readonly ITaxClassRepository _taxClassRepository;
 
 
-    public DeleteTaxClassCommandHandler(IMapper mapper,
+    public DeleteTaxClassCommandHandler(
         IAppLogger<DeleteTaxClassCommandHandler> logger,
         ITaxClassRepository taxClassRepository)
     {
-        _mapper = mapper;
         _logger = logger;
         _taxClassRepository = taxClassRepository;
     }
