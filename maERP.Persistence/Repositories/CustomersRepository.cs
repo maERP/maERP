@@ -46,5 +46,20 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         };
         
         await _context.CustomerSalesChannel.AddAsync(CustomerSalesChannel);
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task<ICollection<CustomerAddress>> GetCustomerAddressByCustomerIdAsync(int customerId)
+    {
+        return await _context.CustomerAddress
+            .Where(x => x.CustomerId == customerId)
+            .ToListAsync();
+    }
+
+    public async Task<CustomerAddress> AddCustomerAddressAsync(CustomerAddress customerAddress)
+    {
+        await _context.CustomerAddress.AddAsync(customerAddress);
+        await _context.SaveChangesAsync();
+        return customerAddress;
     }
 }

@@ -14,8 +14,5 @@ public class SalesChannelImportCustomer
     public string VatNumber { get; set; } = string.Empty;
     public string Note { get; set; } = string.Empty;
     public CustomerStatus CustomerStatus { get; set; }
-
-    public ICollection<SalesChannelImportCustomerAddress>? CustomerAddresses { get; set; }
-    public ICollection<Order>? Orders { get; set; }
     public DateTime DateEnrollment { get; set; }
 }

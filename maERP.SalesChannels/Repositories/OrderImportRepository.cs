@@ -71,12 +71,89 @@ public class OrderImportRepository : IOrderImportRepository
                 _logger.LogInformation("CustomerSalesChannel added for Customer {0} ", customer.Id);
             }
 
+            int billingAddressId = 0;
+            int shippingAddressId = 0; 
+            var customerAddresses = await _customerRepository.GetCustomerAddressByCustomerIdAsync(customer.Id);
+            
+            foreach(var address in customerAddresses)
+            {
+                if (address.Firstname == importOrder.BillingAddress.Firstname &&
+                    address.Lastname == importOrder.BillingAddress.Lastname &&
+                    address.CompanyName == importOrder.BillingAddress.CompanyName &&
+                    address.Street == importOrder.BillingAddress.Street &&
+                    address.City == importOrder.BillingAddress.City &&
+                    address.Zip == importOrder.BillingAddress.Zip)
+                {
+                    billingAddressId = address.Id;
+                }
+                
+                if (address.Firstname == importOrder.ShippingAddress.Firstname &&
+                    address.Lastname == importOrder.ShippingAddress.Lastname &&
+                    address.CompanyName == importOrder.ShippingAddress.CompanyName &&
+                    address.Street == importOrder.ShippingAddress.Street &&
+                    address.City == importOrder.ShippingAddress.City &&
+                    address.Zip == importOrder.ShippingAddress.Zip)
+                {
+                    shippingAddressId = address.Id;
+                }
+                
+                if(billingAddressId > 0 && shippingAddressId > 0)
+                {
+                    break;
+                }
+            }
+
+            if (billingAddressId == 0)
+            {
+                var newAddress = new CustomerAddress
+                {
+                    Firstname = importOrder.BillingAddress.Firstname,
+                    Lastname = importOrder.BillingAddress.Lastname,
+                    CompanyName = importOrder.BillingAddress.CompanyName,
+                    Street = importOrder.BillingAddress.Street,
+                    City = importOrder.BillingAddress.City,
+                    Zip = importOrder.BillingAddress.Zip,
+                };
+                
+                await _customerRepository.AddCustomerAddressAsync(newAddress);
+            }
+            
+            if(shippingAddressId > 0 && shippingAddressId != billingAddressId)
+            {
+                var newAddress = new CustomerAddress
+                {
+                    Firstname = importOrder.ShippingAddress.Firstname,
+                    Lastname = importOrder.ShippingAddress.Lastname,
+                    CompanyName = importOrder.ShippingAddress.CompanyName,
+                    Street = importOrder.ShippingAddress.Street,
+                    City = importOrder.ShippingAddress.City,
+                    Zip = importOrder.ShippingAddress.Zip,
+                };
+                
+                await _customerRepository.AddCustomerAddressAsync(newAddress);
+            }
+
             var newOrder = new Order
             {
                 SalesChannelId = salesChannelId,
                 RemoteOrderId = importOrder.RemoteOrderId,
                 CustomerId = customer.Id,
                 Status = importOrder.Status,
+                
+                InvoiceAddressFirstName = importOrder.BillingAddress.Firstname,
+                InvoiceAddressLastName = importOrder.BillingAddress.Lastname,
+                InvoiceAddressCompanyName = importOrder.BillingAddress.CompanyName,
+                InvoiceAddressStreet = importOrder.BillingAddress.Street,
+                InvoiceAddressCity = importOrder.BillingAddress.City,
+                InvoiceAddressZip = importOrder.BillingAddress.Zip,
+                InvoiceAddressCountry = importOrder.BillingAddress.Country,
+                
+                DeliveryAddressFirstName = importOrder.ShippingAddress.Firstname,
+                DeliveryAddressLastName = importOrder.ShippingAddress.Lastname,
+                DeliveryAddressCompanyName = importOrder.ShippingAddress.CompanyName,
+                DeliveryAddressStreet = importOrder.ShippingAddress.Street,
+                DeliveryAddressCity = importOrder.ShippingAddress.City,
+                DeliverAddressZip = importOrder.ShippingAddress.Zip
             };
 
             await _orderRepository.CreateAsync(newOrder);
