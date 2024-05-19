@@ -22,12 +22,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new WarehouseConfiguration());
         modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
         modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
-
     }
 
     public DbSet<Country> Country { get; set; }
     public DbSet<Customer> Customer { get; set; }
     public DbSet<CustomerAddress> CustomerAddress { get; set; }
+    public DbSet<CustomerSalesChannel> CustomerSalesChannel { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<OrderItem> OrderItem { get; set; }
     public DbSet<Product> Product { get; set; }

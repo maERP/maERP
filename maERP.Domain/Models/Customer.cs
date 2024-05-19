@@ -17,7 +17,8 @@ public class Customer : BaseEntity
     [Required]
     public CustomerStatus CustomerStatus { get; set; }
     
-    public ICollection<CustomerAddress>? CustomerAddresses { get; set; }
+    public ICollection<CustomerAddress>? CustomerAddress { get; set; }
+    public ICollection<CustomerSalesChannel>? CustomerSalesChannel { get; set; }
     public ICollection<Order>? Orders { get; set; }
     public DateTime DateEnrollment { get; set; }
 }

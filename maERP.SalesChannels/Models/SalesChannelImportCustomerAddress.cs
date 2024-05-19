@@ -17,4 +17,7 @@ public class SalesChannelImportCustomerAddress
     public int CountryId { get; set; }
     public Customer? Customer { get; set; }
     public int CustomerId { get; set; }
+
+    public bool isBillingAddress { get; set; } = false;
+    public bool isShippingAddress { get; set; } = false;
 }

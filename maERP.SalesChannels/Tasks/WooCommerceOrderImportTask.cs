@@ -76,7 +76,7 @@ public class WooCommerceOrderImportTask : IHostedService
             if (remoteOrders.Count > 0)
             { 
                 foreach (var remoteOrder in remoteOrders)
-                {                    
+                {
                     var salesChannelImportOrder = new SalesChannelImportOrder
                     {
                         RemoteOrderId = remoteOrder.id.ToString(),
@@ -84,9 +84,43 @@ public class WooCommerceOrderImportTask : IHostedService
                         Total = remoteOrder.total ?? throw new ValidationException(),
                         Status = MapOrderStatus(remoteOrder.status),
 
-                        CustomerId = 1
+                        Customer = new SalesChannelImportCustomer
+                        {
+                            Firstname = remoteOrder.billing.first_name,
+                            Lastname = remoteOrder.billing.last_name,
+                            CompanyName = remoteOrder.billing.company,
+                            Email = remoteOrder.billing.email,
+                            Phone = remoteOrder.billing.phone,
+                            CustomerAddresses = new List<SalesChannelImportCustomerAddress> 
+                            {
+                                new SalesChannelImportCustomerAddress
+                                {
+                                    Firstname = remoteOrder.billing.first_name,
+                                    Lastname = remoteOrder.billing.last_name,
+                                    CompanyName = remoteOrder.billing.company,
+                                    Street = remoteOrder.billing.address_1,
+                                    City = remoteOrder.billing.city,
+                                    Zip = remoteOrder.billing.postcode,
+                                    Country = remoteOrder.billing.country,
+                                    isBillingAddress = true,
+                                    isShippingAddress = false
+                                },
+                                new SalesChannelImportCustomerAddress
+                                {
+                                    Firstname = remoteOrder.shipping.first_name,
+                                    Lastname = remoteOrder.shipping.last_name,
+                                    CompanyName = remoteOrder.shipping.company,
+                                    Street = remoteOrder.shipping.address_1,
+                                    City = remoteOrder.shipping.city,
+                                    Zip = remoteOrder.shipping.postcode,
+                                    Country = remoteOrder.shipping.country,
+                                    isBillingAddress = false,
+                                    isShippingAddress = true
+                                }
+                            }
+                        }
                     };
-
+                    
                     await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel.Id, salesChannelImportOrder);
                 }
             }

@@ -7,9 +7,8 @@ public class SalesChannelImportOrder
 {
     public int SalesChannelId { get; set; }
     public string RemoteOrderId { get; set; } = string.Empty;
-
     [Required]
-    public int CustomerId { get; set; }
+    public string RemoteCustomerId { get; set; } = string.Empty;
 
     [Required]
     public OrderStatus Status { get; set; }
