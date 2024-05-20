@@ -140,6 +140,21 @@ public class OrderImportRepository : IOrderImportRepository
                 CustomerId = customer.Id,
                 Status = importOrder.Status,
                 
+                PaymentMethod = importOrder.PaymentMethod,
+                PaymentStatus = importOrder.PaymentStatus,
+                PaymentProvider = importOrder.PaymentProvider,
+                PaymentTransactionId = importOrder.PaymentTransactionId,
+
+                ShippingMethod = importOrder.ShippingMethod,
+                ShippingStatus = importOrder.ShippingStatus,
+                ShippingProvider = importOrder.ShippingProvider,
+                ShippingTrackingId = importOrder.ShippingTrackingId,
+
+                Subtotal = importOrder.Subtotal,
+                ShippingCost = importOrder.ShippingCost,
+                TotalTax = importOrder.TotalTax,
+                Total = importOrder.Total,
+                            
                 InvoiceAddressFirstName = importOrder.BillingAddress.Firstname,
                 InvoiceAddressLastName = importOrder.BillingAddress.Lastname,
                 InvoiceAddressCompanyName = importOrder.BillingAddress.CompanyName,

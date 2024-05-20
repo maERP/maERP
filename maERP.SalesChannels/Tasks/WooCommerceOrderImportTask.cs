@@ -77,12 +77,26 @@ public class WooCommerceOrderImportTask : IHostedService
             { 
                 foreach (var remoteOrder in remoteOrders)
                 {
+                    // WooCommerce does not provide a subtotal
+                    decimal subtotal = remoteOrder.total ?? 0;
+                    subtotal -= remoteOrder.total_tax ?? 0;
+                    subtotal -= remoteOrder.shipping_total ?? 0;
+                    
                     var salesChannelImportOrder = new SalesChannelImportOrder
                     {
                         RemoteOrderId = remoteOrder.id.ToString(),
                         DateOrdered = remoteOrder.date_created ?? throw new ValidationException(),
-                        Total = remoteOrder.total ?? throw new ValidationException(),
                         Status = MapOrderStatus(remoteOrder.status),
+                        
+                        ShippingMethod = remoteOrder.shipping_lines.FirstOrDefault()?.method_title ?? string.Empty,
+                        ShippingStatus = null,
+                        ShippingProvider = null,
+                        ShippingTrackingId = null,
+
+                        Subtotal = subtotal,
+                        ShippingCost = remoteOrder.shipping_total ?? 0,
+                        TotalTax = remoteOrder.total_tax ?? 0,
+                        Total = remoteOrder.total ?? 0,
 
                         Customer = new SalesChannelImportCustomer
                         {

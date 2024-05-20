@@ -30,7 +30,7 @@ public class SalesChannelImportOrder
 
     public decimal Subtotal { get; set; }
     public decimal ShippingCost { get; set; }
-    public decimal Tax { get; set; }
+    public decimal TotalTax { get; set; }
     public decimal Total { get; set; }
 
     public string Note { get; set; } = string.Empty;
