@@ -2,7 +2,7 @@
 
 namespace maERP.Application.Contracts.Persistence;
 
-public interface ITaxClassRepository : IGenericRepository<TaxClass>
+public interface ICountryRepository : IGenericRepository<Country>
 {
-    Task<TaxClass?> GetByTaxRateAsync(double taxRate);
+    Task<Country?> GetCountryByString(string country);
 }

@@ -1,4 +1,5 @@
 ﻿using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using maERP.Domain.Models;
 using maERP.SalesChannels.Contracts;
 using maERP.SalesChannels.Models;
@@ -11,15 +12,18 @@ public class OrderImportRepository : IOrderImportRepository
     private readonly ILogger<ProductImportRepository> _logger;
     private readonly IOrderRepository _orderRepository;
     private readonly ICustomerRepository _customerRepository;
+    private readonly ICountryRepository _countryRepository;
 
     public OrderImportRepository(
         ILogger<ProductImportRepository> logger,
         IOrderRepository orderRepository,
-        ICustomerRepository customerRepository)
+        ICustomerRepository customerRepository,
+        ICountryRepository countryRepository)
     {
         _logger = logger;
         _orderRepository = orderRepository;
         _customerRepository = customerRepository;
+        _countryRepository = countryRepository;
     }
 
     public async Task ImportOrUpdateFromSalesChannel(int salesChannelId, SalesChannelImportOrder importOrder)
@@ -74,8 +78,11 @@ public class OrderImportRepository : IOrderImportRepository
             int billingAddressId = 0;
             int shippingAddressId = 0; 
             var customerAddresses = await _customerRepository.GetCustomerAddressByCustomerIdAsync(customer.Id);
-            
-            foreach(var address in customerAddresses)
+
+            Country billingAddressCountry = await MapCountryFromStringAsync(importOrder.BillingAddress.Country);
+            Country shippingAddressCountry = await MapCountryFromStringAsync(importOrder.ShippingAddress.Country);
+
+            foreach (var address in customerAddresses)
             {
                 if (address.Firstname == importOrder.BillingAddress.Firstname &&
                     address.Lastname == importOrder.BillingAddress.Lastname &&
@@ -107,12 +114,16 @@ public class OrderImportRepository : IOrderImportRepository
             {
                 var newAddress = new CustomerAddress
                 {
+                    Customer = customer,
+                    CustomerId = customer.Id,
                     Firstname = importOrder.BillingAddress.Firstname,
                     Lastname = importOrder.BillingAddress.Lastname,
                     CompanyName = importOrder.BillingAddress.CompanyName,
                     Street = importOrder.BillingAddress.Street,
                     City = importOrder.BillingAddress.City,
                     Zip = importOrder.BillingAddress.Zip,
+                    Country = billingAddressCountry,
+                    CountryId = billingAddressCountry.Id
                 };
                 
                 await _customerRepository.AddCustomerAddressAsync(newAddress);
@@ -122,12 +133,16 @@ public class OrderImportRepository : IOrderImportRepository
             {
                 var newAddress = new CustomerAddress
                 {
+                    Customer = customer,
+                    CustomerId = customer.Id,
                     Firstname = importOrder.ShippingAddress.Firstname,
                     Lastname = importOrder.ShippingAddress.Lastname,
                     CompanyName = importOrder.ShippingAddress.CompanyName,
                     Street = importOrder.ShippingAddress.Street,
                     City = importOrder.ShippingAddress.City,
                     Zip = importOrder.ShippingAddress.Zip,
+                    Country = shippingAddressCountry,
+                    CountryId = shippingAddressCountry.Id,
                 };
                 
                 await _customerRepository.AddCustomerAddressAsync(newAddress);
@@ -161,14 +176,15 @@ public class OrderImportRepository : IOrderImportRepository
                 InvoiceAddressStreet = importOrder.BillingAddress.Street,
                 InvoiceAddressCity = importOrder.BillingAddress.City,
                 InvoiceAddressZip = importOrder.BillingAddress.Zip,
-                InvoiceAddressCountry = importOrder.BillingAddress.Country,
+                InvoiceAddressCountry = billingAddressCountry.Name,
                 
                 DeliveryAddressFirstName = importOrder.ShippingAddress.Firstname,
                 DeliveryAddressLastName = importOrder.ShippingAddress.Lastname,
                 DeliveryAddressCompanyName = importOrder.ShippingAddress.CompanyName,
                 DeliveryAddressStreet = importOrder.ShippingAddress.Street,
                 DeliveryAddressCity = importOrder.ShippingAddress.City,
-                DeliverAddressZip = importOrder.ShippingAddress.Zip
+                DeliverAddressZip = importOrder.ShippingAddress.Zip,
+                DeliveryAddressCountry = shippingAddressCountry.Name,
             };
 
             await _orderRepository.CreateAsync(newOrder);
@@ -185,5 +201,10 @@ public class OrderImportRepository : IOrderImportRepository
                 _logger.LogInformation("Order {0} updated", importOrder.RemoteOrderId);
             }
         }
+    }
+
+    private async Task<Country> MapCountryFromStringAsync(string country)
+    {
+        return await _countryRepository.GetCountryByString(country) ?? throw new NotFoundException("Country {0} not found", country);
     }
 }

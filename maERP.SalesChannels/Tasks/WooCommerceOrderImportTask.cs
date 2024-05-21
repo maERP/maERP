@@ -8,6 +8,7 @@ using maERP.SalesChannels.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using WooCommerceNET;
 using WooCommerceNET.WooCommerce.v3;
 
@@ -89,9 +90,9 @@ public class WooCommerceOrderImportTask : IHostedService
                         Status = MapOrderStatus(remoteOrder.status),
                         
                         ShippingMethod = remoteOrder.shipping_lines.FirstOrDefault()?.method_title ?? string.Empty,
-                        ShippingStatus = null,
-                        ShippingProvider = null,
-                        ShippingTrackingId = null,
+                        ShippingStatus = string.Empty,
+                        ShippingProvider = string.Empty,
+                        ShippingTrackingId = string.Empty,
 
                         Subtotal = subtotal,
                         ShippingCost = remoteOrder.shipping_total ?? 0,
@@ -129,7 +130,15 @@ public class WooCommerceOrderImportTask : IHostedService
                             Country = remoteOrder.shipping.country 
                         }
                     };
-                    
+
+                    salesChannelImportOrder.Items = remoteOrder.line_items.Select(item => new SalesChannelImportOrderItem
+                    {
+                        Name = item.name,
+                        Quantity = (double)item.quantity,
+                        Price = (decimal)item.price,
+                        TaxRate = item.tax_class.IsNullOrEmpty() ? 0 : Convert.ToDouble(item.tax_class),
+                    }).ToList();
+
                     await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel.Id, salesChannelImportOrder);
                 }
             }

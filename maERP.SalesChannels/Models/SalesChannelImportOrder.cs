@@ -17,6 +17,7 @@ public class SalesChannelImportOrder
     public SalesChannelImportCustomer? Customer { get; set; }
     public SalesChannelImportCustomerAddress BillingAddress { get; set; } = new();
     public SalesChannelImportCustomerAddress ShippingAddress { get; set; } = new();
+    public ICollection<SalesChannelImportOrderItem>? Items { get; set; }
 
     public string PaymentMethod { get; set; } = string.Empty;
     public string PaymentStatus { get; set; } = string.Empty;
