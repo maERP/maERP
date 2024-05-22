@@ -45,7 +45,7 @@ public class ProductImportRepository : IProductImportRepository
                 Price = importProduct.Price,
                 Sku = importProduct.Sku,
                 TaxClass = taxClass,
-                ProductStock = [new ProductStock { WarehouseId = 1, Quantity = 1 }],
+                ProductStock = [new ProductStock { WarehouseId = 1, Stock = 1 }],
                 ProductSalesChannel =
                 [
                     new ProductSalesChannel

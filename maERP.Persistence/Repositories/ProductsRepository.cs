@@ -16,4 +16,24 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         return await _context.Product.Include(ps => ps.ProductSalesChannel).FirstOrDefaultAsync(p => p.Sku == sku);
     }
+
+    public async Task<Product?> GetWithDetailsAsync(int id)
+    {
+        return await _context.Product.Include(ps => ps.ProductSalesChannel).Include(ps => ps.ProductStock).FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task<bool> UpdateStockAsync(int productId, int warehouseId, int newStock)
+    {
+        var productStock = await _context.ProductStock.FirstOrDefaultAsync(ps => ps.ProductId == productId && ps.WarehouseId == warehouseId);
+        
+        if (productStock == null)
+        {
+            return false;
+        }
+
+        productStock.Stock = newStock;
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
 }

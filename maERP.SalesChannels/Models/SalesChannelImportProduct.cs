@@ -10,5 +10,5 @@ public class SalesChannelImportProduct
     public string Description { get; set; } = string.Empty;
     public double TaxRate { get; set; }
     public decimal Price { get; set; }
-    public double Quantity { get; set; }
+    public double Stock { get; set; }
 }

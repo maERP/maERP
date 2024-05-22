@@ -1,6 +1,5 @@
 ﻿#nullable disable
 
-using System.ComponentModel.DataAnnotations;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Models;
 using maERP.SalesChannels.Contracts;
@@ -86,7 +85,7 @@ public class WooCommerceOrderImportTask : IHostedService
                     var salesChannelImportOrder = new SalesChannelImportOrder
                     {
                         RemoteOrderId = remoteOrder.id.ToString(),
-                        DateOrdered = remoteOrder.date_created ?? throw new ValidationException(),
+                        DateOrdered = remoteOrder.date_created ?? DateTime.UtcNow,
                         Status = MapOrderStatus(remoteOrder.status),
                         
                         ShippingMethod = remoteOrder.shipping_lines.FirstOrDefault()?.method_title ?? string.Empty,
@@ -106,6 +105,7 @@ public class WooCommerceOrderImportTask : IHostedService
                             CompanyName = remoteOrder.billing.company,
                             Email = remoteOrder.billing.email,
                             Phone = remoteOrder.billing.phone,
+                            DateEnrollment = remoteOrder.date_created_gmt ?? DateTime.UtcNow
                         },
                         
                         BillingAddress = new SalesChannelImportCustomerAddress
@@ -134,12 +134,13 @@ public class WooCommerceOrderImportTask : IHostedService
                     salesChannelImportOrder.Items = remoteOrder.line_items.Select(item => new SalesChannelImportOrderItem
                     {
                         Name = item.name,
+                        SKU = item.sku,
                         Quantity = (double)item.quantity,
                         Price = (decimal)item.price,
                         TaxRate = item.tax_class.IsNullOrEmpty() ? 0 : Convert.ToDouble(item.tax_class),
                     }).ToList();
 
-                    await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel.Id, salesChannelImportOrder);
+                    await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, salesChannelImportOrder);
                 }
             }
         }

@@ -1,9 +1,9 @@
 ﻿using maERP.Application.Contracts.Persistence;
-using maERP.Application.Exceptions;
 using maERP.Domain.Models;
 using maERP.SalesChannels.Contracts;
 using maERP.SalesChannels.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace maERP.SalesChannels.Repositories;
 
@@ -13,29 +13,32 @@ public class OrderImportRepository : IOrderImportRepository
     private readonly IOrderRepository _orderRepository;
     private readonly ICustomerRepository _customerRepository;
     private readonly ICountryRepository _countryRepository;
+    private readonly IProductRepository _productRepository;
 
     public OrderImportRepository(
         ILogger<ProductImportRepository> logger,
         IOrderRepository orderRepository,
         ICustomerRepository customerRepository,
-        ICountryRepository countryRepository)
+        ICountryRepository countryRepository,
+        IProductRepository productRepository)
     {
         _logger = logger;
         _orderRepository = orderRepository;
         _customerRepository = customerRepository;
         _countryRepository = countryRepository;
+        _productRepository = productRepository;
     }
 
-    public async Task ImportOrUpdateFromSalesChannel(int salesChannelId, SalesChannelImportOrder importOrder)
+    public async Task ImportOrUpdateFromSalesChannel(SalesChannel salesChannel, SalesChannelImportOrder importOrder)
     {
-        var existingOrder = await _orderRepository.GetByRemoteOrderIdAsync(salesChannelId, importOrder.RemoteOrderId);
+        var existingOrder = await _orderRepository.GetByRemoteOrderIdAsync(salesChannel.Id, importOrder.RemoteOrderId);
 
         if (existingOrder == null)
         {
-            _logger.LogInformation("Order {0} does not exist, creating Order", importOrder.RemoteOrderId);
+            _logger.LogInformation("Order {0}: does not exist, create order...", importOrder.RemoteOrderId);
             
             // try to find customer in sales channel
-            var customer = await _customerRepository.GetCustomerByRemoteCustomerIdAsync(salesChannelId, importOrder.RemoteCustomerId);
+            var customer = await _customerRepository.GetCustomerByRemoteCustomerIdAsync(salesChannel.Id, importOrder.RemoteCustomerId);
 
             // when not found, try to find via email
             if (customer == null && importOrder.Customer != null && !string.IsNullOrEmpty(importOrder.Customer.Email))
@@ -45,7 +48,7 @@ public class OrderImportRepository : IOrderImportRepository
                 // when found, add to CustomerSalesChannel
                 if (customer != null)
                 {
-                    await _customerRepository.AddCustomerToSalesChannelAsync(customer.Id, salesChannelId, importOrder.RemoteCustomerId);
+                    await _customerRepository.AddCustomerToSalesChannelAsync(customer.Id, salesChannel.Id, importOrder.RemoteCustomerId);
                     _logger.LogInformation("CustomerSalesChannel added for Customer {0} ", customer.Id);
                 }
             }
@@ -71,7 +74,7 @@ public class OrderImportRepository : IOrderImportRepository
                 _logger.LogInformation("Customer {0} created", importOrder.Customer?.Email);
                 customer = newCustomer;
                 
-                await _customerRepository.AddCustomerToSalesChannelAsync(newCustomer.Id, salesChannelId, importOrder.RemoteCustomerId);
+                await _customerRepository.AddCustomerToSalesChannelAsync(newCustomer.Id, salesChannel.Id, importOrder.RemoteCustomerId);
                 _logger.LogInformation("CustomerSalesChannel added for Customer {0} ", customer.Id);
             }
 
@@ -79,8 +82,20 @@ public class OrderImportRepository : IOrderImportRepository
             int shippingAddressId = 0; 
             var customerAddresses = await _customerRepository.GetCustomerAddressByCustomerIdAsync(customer.Id);
 
-            Country billingAddressCountry = await MapCountryFromStringAsync(importOrder.BillingAddress.Country);
-            Country shippingAddressCountry = await MapCountryFromStringAsync(importOrder.ShippingAddress.Country);
+            Country? billingAddressCountry = await MapCountryFromStringAsync(importOrder.BillingAddress.Country);
+            Country? shippingAddressCountry = await MapCountryFromStringAsync(importOrder.ShippingAddress.Country);
+
+            if(billingAddressCountry == null)
+            {
+                _logger.LogError("Order {0}: Cannot import, country {1} not found", importOrder.RemoteOrderId, importOrder.BillingAddress.Country);
+                return;
+            }
+
+            if (shippingAddressCountry == null)
+            {
+                _logger.LogError("Order {0}: Cannot import, country {1} not found", importOrder.RemoteOrderId, importOrder.ShippingAddress.Country);
+                return;
+            }
 
             foreach (var address in customerAddresses)
             {
@@ -150,11 +165,11 @@ public class OrderImportRepository : IOrderImportRepository
 
             var newOrder = new Order
             {
-                SalesChannelId = salesChannelId,
+                SalesChannelId = salesChannel.Id,
                 RemoteOrderId = importOrder.RemoteOrderId,
                 CustomerId = customer.Id,
                 Status = importOrder.Status,
-                
+
                 PaymentMethod = importOrder.PaymentMethod,
                 PaymentStatus = importOrder.PaymentStatus,
                 PaymentProvider = importOrder.PaymentProvider,
@@ -169,7 +184,7 @@ public class OrderImportRepository : IOrderImportRepository
                 ShippingCost = importOrder.ShippingCost,
                 TotalTax = importOrder.TotalTax,
                 Total = importOrder.Total,
-                            
+
                 InvoiceAddressFirstName = importOrder.BillingAddress.Firstname,
                 InvoiceAddressLastName = importOrder.BillingAddress.Lastname,
                 InvoiceAddressCompanyName = importOrder.BillingAddress.CompanyName,
@@ -177,7 +192,7 @@ public class OrderImportRepository : IOrderImportRepository
                 InvoiceAddressCity = importOrder.BillingAddress.City,
                 InvoiceAddressZip = importOrder.BillingAddress.Zip,
                 InvoiceAddressCountry = billingAddressCountry.Name,
-                
+
                 DeliveryAddressFirstName = importOrder.ShippingAddress.Firstname,
                 DeliveryAddressLastName = importOrder.ShippingAddress.Lastname,
                 DeliveryAddressCompanyName = importOrder.ShippingAddress.CompanyName,
@@ -185,26 +200,85 @@ public class OrderImportRepository : IOrderImportRepository
                 DeliveryAddressCity = importOrder.ShippingAddress.City,
                 DeliverAddressZip = importOrder.ShippingAddress.Zip,
                 DeliveryAddressCountry = shippingAddressCountry.Name,
+
+                DateOrdered = importOrder.DateOrdered.ToUniversalTime()
             };
 
+            if (importOrder.Items != null && importOrder.Items.Count > 0)
+            {
+                foreach (var item in importOrder.Items)
+                {
+                    if(item.SKU.IsNullOrEmpty())
+                    {
+                        _logger.LogError("Order {0}: Cannot import, product has empty SKU", importOrder.RemoteOrderId);
+                        return;
+                    }
+
+                    var product = await _productRepository.GetBySkuAsync(item.SKU);
+
+                    if(product == null)
+                    {
+                        _logger.LogError("Order {0}: Cannot import, product with SKU {1} not found", importOrder.RemoteOrderId, item.SKU);
+                        return;
+                    }
+
+                    newOrder.OrderItems.Add(new OrderItem
+                    {
+                        ProductId = product.Id,
+                        Name = item.Name,
+                        Quantity = item.Quantity,
+                        Price = item.Price
+                    });
+
+                    _logger.LogInformation("Order {0}: Add Item {1}", importOrder.RemoteOrderId, item.Name);
+                }
+            }
+
             await _orderRepository.CreateAsync(newOrder);
-            _logger.LogInformation("Order {0} created", importOrder.RemoteOrderId);
+            _logger.LogInformation("Order {0}: created", importOrder.RemoteOrderId);
+
+            if(salesChannel.ImportProducts == false)
+            {
+
+               _logger.LogInformation("Order {0}: SalesChannel product import is disabled, updating Stock", importOrder.RemoteOrderId);
+
+                foreach (var orderItem in newOrder.OrderItems)
+                {
+                    Product product = await _productRepository.GetWithDetailsAsync(orderItem.ProductId) ?? throw new Exception("OrderImportRepository: Product not found");
+                    product.ProductStock.FirstOrDefault(w => w.WarehouseId == salesChannel.WarehouseId)!.Stock -= orderItem.Quantity;
+                    await _productRepository.UpdateAsync(product);
+                    _logger.LogInformation("Order {0}: Stock updated for product {1}", importOrder.RemoteOrderId, product.Sku);
+                }
+
+                return;
+            }
         }
         else
         {
-            _logger.LogInformation("Order {0} already exists, check for SalesChannel", existingOrder.RemoteOrderId);
+            _logger.LogInformation("Order {0}: already exists, check for changes", existingOrder.RemoteOrderId);
             bool somethingChanged = false;
+
+            if(existingOrder.Status != importOrder.Status)
+            {
+                existingOrder.Status = importOrder.Status;
+                somethingChanged = true;
+                _logger.LogInformation("Order {0}: Status updated, new status is {1}", importOrder.RemoteOrderId, importOrder.Status);
+            }
 
             if (somethingChanged)
             {
                 await _orderRepository.UpdateAsync(existingOrder);
-                _logger.LogInformation("Order {0} updated", importOrder.RemoteOrderId);
+                _logger.LogInformation("Order {0}: updated", importOrder.RemoteOrderId);
+            }
+            else
+            {
+                _logger.LogInformation("Order {0}: has no changes", importOrder.RemoteOrderId);
             }
         }
     }
 
-    private async Task<Country> MapCountryFromStringAsync(string country)
+    private async Task<Country?> MapCountryFromStringAsync(string countryString)
     {
-        return await _countryRepository.GetCountryByString(country) ?? throw new NotFoundException("Country {0} not found", country);
+        return await _countryRepository.GetCountryByString(countryString);
     }
 }

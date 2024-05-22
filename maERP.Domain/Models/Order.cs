@@ -13,7 +13,7 @@ public class Order : BaseEntity
 
     [Required]
     public OrderStatus Status { get; set; }
-    public OrderItem? OrderItems { get; set; }
+    public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
     public string PaymentMethod { get; set; } = string.Empty;
     public string PaymentStatus { get; set; } = string.Empty;

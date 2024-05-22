@@ -9,5 +9,5 @@ public class ProductStock : BaseEntity
     public int ProductId { get; set; }
     public int WarehouseId { get; set; }
     public Warehouse Warehouse { get; set; } = null!;
-    public int Quantity { get; set; } = 0;
+    public double Stock { get; set; } = 0;
 }

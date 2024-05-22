@@ -30,6 +30,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<CustomerSalesChannel> CustomerSalesChannel { get; set; }
     public DbSet<Order> Order { get; set; }
     public DbSet<OrderItem> OrderItem { get; set; }
+    public DbSet<OrderItemSerialNumber> OrderItemSerialNumber { get; set; }
     public DbSet<Product> Product { get; set; }
     public DbSet<ProductSalesChannel> ProductSalesChannel { get; set; }
     public DbSet<ProductStock> ProductStock { get; set; }

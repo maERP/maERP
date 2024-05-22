@@ -9,6 +9,7 @@ using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
 using maERP.Persistence.Repositories;
 using maERP.SalesChannels;
+using maERP.Server;
 using maERP.Server.Middlewares;
 using maERP.Server.ServiceRegistrations;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,9 @@ using Microsoft.Net.Http.Headers;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
 
@@ -74,6 +78,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
+// app.UseExceptionHandler();
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
