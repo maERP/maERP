@@ -1,15 +1,24 @@
 {
     "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "maERP.Server",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "maERP.Server-build",
-            "program": "${workspaceFolder}/bin/Debug/<target-framework>/<project-name.dll>",
+            "program": "${workspaceFolder}/maERP.Server/bin/Debug/net8.0/maERP.Server.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
-            "console": "internalConsole"
-        }
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
     ]
 }

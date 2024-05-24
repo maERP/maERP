@@ -36,6 +36,6 @@
                 "${workspaceFolder}/maERP.Server/maERP.Server.csproj"
             ],
             "problemMatcher": "$msCompile"
-        }
+        },
     ]
 }
