@@ -5,12 +5,10 @@ namespace maERP.Application.Dtos.Order;
 public class OrderListDto
 {
     public int Id { get; set; }
-
-    [Required, Display(Name = "Kundennummer"), DisplayFormat(NullDisplayText = "0")]
     public int CustomerId { get; set; }
-
-    [Required, Display(Name = "Bestellstatus")]
+    public string CustomerName { get; set; } = string.Empty;
+    public decimal Total { get; set; }
     public string Status { get; set; } = string.Empty;
 
-    public DateTime DateCreated { get; set; }
+    public DateTime DateOrdered { get; set; }
 }

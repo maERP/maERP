@@ -24,30 +24,30 @@ namespace maERP.SharedUI.Services.Base
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial interface IClient
     {
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<AuthResponse> LoginAsync(AuthRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<AuthResponse> LoginAsync(AuthRequest body, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<RegistrationResponse> RegisterAsync(RegistrationRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<RegistrationResponse> RegisterAsync(RegistrationRequest body, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync(System.Threading.CancellationToken cancellationToken);
 
@@ -60,12 +60,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task CustomersPOSTAsync(CreateCustomerCommand body, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
@@ -87,12 +87,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task CustomersDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync(System.Threading.CancellationToken cancellationToken);
 
@@ -105,12 +105,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<int> OrdersPOSTAsync(CreateOrderCommand body, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
@@ -132,12 +132,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task OrdersDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync(System.Threading.CancellationToken cancellationToken);
 
@@ -150,12 +150,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<int> ProductsPOSTAsync(CreateProductCommand body, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
@@ -177,12 +177,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task ProductsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync(System.Threading.CancellationToken cancellationToken);
 
@@ -195,12 +195,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<int> SalesChannelsPOSTAsync(CreateSalesChannelCommand body, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
@@ -222,12 +222,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task SalesChannelsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken);
 
@@ -240,12 +240,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<int> TaxClassesPOSTAsync(CreateTaxClassCommand body, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
@@ -267,12 +267,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task TaxClassesDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync(System.Threading.CancellationToken cancellationToken);
 
@@ -285,12 +285,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<int> UsersPOSTAsync(CreateUserCommand body, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id, System.Threading.CancellationToken cancellationToken);
 
@@ -303,12 +303,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task UsersPUTAsync(int id, UpdateUserCommand body, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync(System.Threading.CancellationToken cancellationToken);
 
@@ -321,12 +321,12 @@ namespace maERP.SharedUI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task WarehousesPOSTAsync(CreateWarehouseCommand body, System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
@@ -378,7 +378,7 @@ namespace maERP.SharedUI.Services.Base
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<AuthResponse> LoginAsync(AuthRequest body)
         {
@@ -386,7 +386,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<AuthResponse> LoginAsync(AuthRequest body, System.Threading.CancellationToken cancellationToken)
         {
@@ -460,7 +460,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<RegistrationResponse> RegisterAsync(RegistrationRequest body)
         {
@@ -468,7 +468,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<RegistrationResponse> RegisterAsync(RegistrationRequest body, System.Threading.CancellationToken cancellationToken)
         {
@@ -542,7 +542,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync()
         {
@@ -550,7 +550,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -706,7 +706,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id)
         {
@@ -714,7 +714,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
@@ -982,7 +982,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync()
         {
@@ -990,7 +990,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -1152,7 +1152,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id)
         {
@@ -1160,7 +1160,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
@@ -1428,7 +1428,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync()
         {
@@ -1436,7 +1436,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -1598,7 +1598,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id)
         {
@@ -1606,7 +1606,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
@@ -1874,7 +1874,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync()
         {
@@ -1882,7 +1882,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -2044,7 +2044,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id)
         {
@@ -2052,7 +2052,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
@@ -2320,7 +2320,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync()
         {
@@ -2328,7 +2328,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -2490,7 +2490,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id)
         {
@@ -2498,7 +2498,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
@@ -2766,7 +2766,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync()
         {
@@ -2774,7 +2774,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -2936,7 +2936,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id)
         {
@@ -2944,7 +2944,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id, System.Threading.CancellationToken cancellationToken)
         {
@@ -3122,7 +3122,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync()
         {
@@ -3130,7 +3130,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -3286,7 +3286,7 @@ namespace maERP.SharedUI.Services.Base
             }
         }
 
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id)
         {
@@ -3294,7 +3294,7 @@ namespace maERP.SharedUI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success</returns>
+        /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
@@ -3889,9 +3889,6 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("CustomerAddresses")]
         public System.Collections.Generic.ICollection<CustomerAddressListDto> CustomerAddresses { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("Orders")]
-        public System.Collections.Generic.ICollection<OrderListDto> Orders { get; set; }
-
         [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
         public System.DateTime DateEnrollment { get; set; }
 
@@ -3943,12 +3940,17 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("CustomerId")]
         public int CustomerId { get; set; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("CustomerName")]
+        public string CustomerName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Total")]
+        public double Total { get; set; }
+
         [System.Text.Json.Serialization.JsonPropertyName("Status")]
-        [System.ComponentModel.DataAnnotations.Required]
         public string Status { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("DateCreated")]
-        public System.DateTime DateCreated { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("DateOrdered")]
+        public System.DateTime DateOrdered { get; set; }
 
     }
 
@@ -3956,19 +3958,19 @@ namespace maERP.SharedUI.Services.Base
     public partial class ProblemDetails
     {
 
-        [System.Text.Json.Serialization.JsonPropertyName("Type")]
+        [System.Text.Json.Serialization.JsonPropertyName("type")]
         public string Type { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("Title")]
+        [System.Text.Json.Serialization.JsonPropertyName("title")]
         public string Title { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("Status")]
+        [System.Text.Json.Serialization.JsonPropertyName("status")]
         public int? Status { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("Detail")]
+        [System.Text.Json.Serialization.JsonPropertyName("detail")]
         public string Detail { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("Instance")]
+        [System.Text.Json.Serialization.JsonPropertyName("instance")]
         public string Instance { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;

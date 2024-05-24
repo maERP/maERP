@@ -15,11 +15,11 @@ public class OrderService : BaseHttpService, IOrderService
         _mapper = mapper;
     }
 
-    public async Task<List<OrderVM>> GetOrders()
+    public async Task<List<OrderListVM>> GetOrders()
     {
         await AddBearerToken();
         var orders = await _client.OrdersAllAsync();
-        return _mapper.Map<List<OrderVM>>(orders);
+        return _mapper.Map<List<OrderListVM>>(orders);
     }
 
     public async Task<OrderVM> GetOrderDetails(int id)
