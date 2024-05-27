@@ -1,0 +1,46 @@
+/*
+    This is a configuration file for the SwitchStartupProject Visual Studio Extension
+    See https://heptapod.host/thirteen/switchstartupproject/blob/branch/current/Configuration.md
+*/
+{
+  "Version": 3,
+  "ListAllProjects": false,
+  "MultiProjectConfigurations": {
+    "maERP.Server": {
+      "Projects": {
+        "maERP.Server": {}
+      },
+      "SolutionConfiguration": "Debug"
+    },
+    "maERP.Web": {
+      "Projects": {
+        "maERP.Web": {
+          "StartBrowserWithURL": "https://localhost:8444"
+        }
+      },
+      "SolutionConfiguration": "Debug"
+    },
+    "maERP.Client": {
+      "Projects": {
+        "maERP.Client": {}
+      },
+      "SolutionConfiguration": "Debug"
+    },
+    "maERP.Server + Web": {
+      "Projects": {
+        "maERP.Server": {},
+        "maERP.Web": {
+          "StartBrowserWithURL": "https://localhost:8444"
+        }
+      },
+      "SolutionConfiguration": "Debug"
+    },
+    "maERP.Server + Client": {
+      "Projects": {
+        "maERP.Server": {},
+        "maERP.Client": {}
+      },
+      "SolutionConfiguration": "Debug"
+    }
+  }
+}
