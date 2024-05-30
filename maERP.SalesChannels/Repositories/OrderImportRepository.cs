@@ -67,7 +67,7 @@ public class OrderImportRepository : IOrderImportRepository
                     VatNumber = importOrder.Customer?.VatNumber ?? string.Empty,
                     Note = importOrder.Customer?.Note ?? string.Empty,
                     CustomerStatus = importOrder.Customer?.CustomerStatus ?? CustomerStatus.Active,
-                    DateEnrollment = importOrder.Customer?.DateEnrollment ?? DateTime.Now,
+                    DateEnrollment = importOrder.Customer?.DateEnrollment ?? DateTime.UtcNow,
                 };
 
                 await _customerRepository.CreateAsync(newCustomer);

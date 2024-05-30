@@ -137,39 +137,38 @@ public class Shopware5OrderImportTask : IHostedService
                                     TotalTax = remoteOrder.invoiceAmount - remoteOrder.invoiceAmountNet,
                                     Total = remoteOrder.invoiceAmount,
 
-                                    /*
+                                    
                                     Customer = new SalesChannelImportCustomer
                                     {
-                                        Firstname = remoteOrder.billing.first_name,
-                                        Lastname = remoteOrder.billing.last_name,
-                                        CompanyName = remoteOrder.billing.company,
-                                        Email = remoteOrder.billing.email,
-                                        Phone = remoteOrder.billing.phone,
-                                        DateEnrollment = remoteOrder.date_created_gmt ?? DateTime.UtcNow
+                                        Firstname = string.Empty,
+                                        Lastname = string.Empty,
+                                        CompanyName = string.Empty,
+                                        // Email = remoteOrder.customer.email ?? string.Empty,
+                                        Phone = string.Empty,
+                                        DateEnrollment = DateTime.UtcNow
                                     },
 
                                     BillingAddress = new SalesChannelImportCustomerAddress
                                     {
-                                        Firstname = remoteOrder.billing.first_name,
-                                        Lastname = remoteOrder.billing.last_name,
-                                        CompanyName = remoteOrder.billing.company,
-                                        Street = remoteOrder.billing.address_1,
-                                        City = remoteOrder.billing.city,
-                                        Zip = remoteOrder.billing.postcode,
-                                        Country = remoteOrder.billing.country
+                                        Firstname = string.Empty,
+                                        Lastname = string.Empty,
+                                        CompanyName = string.Empty,
+                                        Street = string.Empty,
+                                        City = string.Empty,
+                                        Zip = string.Empty,
+                                        Country = "DE"
                                     },
 
                                     ShippingAddress = new SalesChannelImportCustomerAddress
                                     {
-                                        Firstname = remoteOrder.shipping.first_name,
-                                        Lastname = remoteOrder.shipping.last_name,
-                                        CompanyName = remoteOrder.shipping.company,
-                                        Street = remoteOrder.shipping.address_1,
-                                        City = remoteOrder.shipping.city,
-                                        Zip = remoteOrder.shipping.postcode,
-                                        Country = remoteOrder.shipping.country
+                                        Firstname = string.Empty,
+                                        Lastname = string.Empty,
+                                        CompanyName = string.Empty,
+                                        Street = string.Empty,
+                                        City = string.Empty,
+                                        Zip = string.Empty,
+                                        Country = "DE"
                                     }
-                                    */
                                 }; 
 
                                 /*
