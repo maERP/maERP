@@ -21,11 +21,12 @@ else
         <Columns>
             <PropertyColumn Property="x => x.Sku" Title="SKU" />
             <PropertyColumn Property="x => x.Name" Title="Name" />
-            <PropertyColumn Property="x => x.Price" Title="Preis" />
+            <PropertyColumn Property="x => x.Price" Title="Preis" Format="C" />
             <PropertyColumn Property="x => x.Ean" Title="EAN" />
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
-                    <MudButton Href="@($"/Products/{context.Item.Id}/edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                    <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/Products/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/Products/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>

@@ -1,7 +1,6 @@
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.Order;
 using Microsoft.AspNetCore.Components;
-using System.Globalization;
 
 namespace maERP.SharedUI.Pages.Orders;
 

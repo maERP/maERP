@@ -3916,17 +3916,174 @@ namespace maERP.SharedUI.Services.Base
     public partial class OrderDetailDto
     {
 
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("OrderId")]
-        public int OrderId { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("SalesChannelId")]
+        public int SalesChannelId { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("RemoteOrderId")]
         public string RemoteOrderId { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("CustomerId")]
         public int CustomerId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Status")]
+        public OrderStatus Status { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("OrderItems")]
+        public System.Collections.Generic.ICollection<OrderItem> OrderItems { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PaymentMethod")]
+        public string PaymentMethod { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PaymentStatus")]
+        public string PaymentStatus { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PaymentProvider")]
+        public string PaymentProvider { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PaymentTransactionId")]
+        public string PaymentTransactionId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ShippingMethod")]
+        public string ShippingMethod { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ShippingStatus")]
+        public string ShippingStatus { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ShippingProvider")]
+        public string ShippingProvider { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ShippingTrackingId")]
+        public string ShippingTrackingId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Subtotal")]
+        public double Subtotal { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ShippingCost")]
+        public double ShippingCost { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalTax")]
+        public double TotalTax { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Total")]
+        public double Total { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Note")]
+        public string Note { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DeliveryAddressFirstName")]
+        public string DeliveryAddressFirstName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DeliveryAddressLastName")]
+        public string DeliveryAddressLastName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DeliveryAddressCompanyName")]
+        public string DeliveryAddressCompanyName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DeliveryAddressPhone")]
+        public string DeliveryAddressPhone { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DeliveryAddressStreet")]
+        public string DeliveryAddressStreet { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DeliveryAddressCity")]
+        public string DeliveryAddressCity { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DeliverAddressZip")]
+        public string DeliverAddressZip { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DeliveryAddressCountry")]
+        public string DeliveryAddressCountry { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressFirstName")]
+        public string InvoiceAddressFirstName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressLastName")]
+        public string InvoiceAddressLastName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressCompanyName")]
+        public string InvoiceAddressCompanyName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressPhone")]
+        public string InvoiceAddressPhone { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressStreet")]
+        public string InvoiceAddressStreet { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressCity")]
+        public string InvoiceAddressCity { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressZip")]
+        public string InvoiceAddressZip { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressCountry")]
+        public string InvoiceAddressCountry { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DateOrdered")]
+        public System.DateTime DateOrdered { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class OrderItem
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DateCreated")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTime DateCreated { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DateModified")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTime DateModified { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("OrderId")]
+        public int OrderId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ProductId")]
+        public int ProductId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Quantity")]
+        public double Quantity { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Price")]
+        public double Price { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
+        public double TaxRate { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ShippingId")]
+        public int ShippingId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("SerialNumbers")]
+        public System.Collections.Generic.ICollection<OrderItemSerialNumber> SerialNumbers { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class OrderItemSerialNumber
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DateCreated")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTime DateCreated { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DateModified")]
+        [System.Text.Json.Serialization.JsonConverter(typeof(DateFormatConverter))]
+        public System.DateTime DateModified { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("OrderItemId")]
+        public int OrderItemId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("SerialNumber")]
+        public string SerialNumber { get; set; }
 
     }
 
@@ -3951,6 +4108,34 @@ namespace maERP.SharedUI.Services.Base
 
         [System.Text.Json.Serialization.JsonPropertyName("DateOrdered")]
         public System.DateTime DateOrdered { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum OrderStatus
+    {
+
+        _0 = 0,
+
+        _1 = 1,
+
+        _2 = 2,
+
+        _3 = 3,
+
+        _4 = 4,
+
+        _5 = 5,
+
+        _6 = 6,
+
+        _7 = 7,
+
+        _8 = 8,
+
+        _10 = 10,
+
+        _11 = 11,
 
     }
 
@@ -4343,6 +4528,26 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
 
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    internal class DateFormatConverter : System.Text.Json.Serialization.JsonConverter<System.DateTime>
+    {
+        public override System.DateTime Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options)
+        {
+            var dateTime = reader.GetString();
+            if (dateTime == null)
+            {
+                throw new System.Text.Json.JsonException("Unexpected JsonTokenType.Null");
+            }
+
+            return System.DateTime.Parse(dateTime);
+        }
+
+        public override void Write(System.Text.Json.Utf8JsonWriter writer, System.DateTime value, System.Text.Json.JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString("yyyy-MM-dd"));
+        }
     }
 
 

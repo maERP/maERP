@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using maERP.Domain.Models;
+using maERP.SalesChannels.Models;
+using maERP.SalesChannels.Repositories;
+using maERP.SalesChannels.Contracts;
 
 namespace maERP.SalesChannels.Tasks;
 
@@ -53,6 +56,7 @@ public class Shopware5OrderImportTask : IHostedService
 
         var salesChannelRepository = scope.ServiceProvider.GetService<ISalesChannelRepository>();
         var orderRepository = scope.ServiceProvider.GetService<IOrderRepository>();
+        var orderImportRepository = scope.ServiceProvider.GetService<IOrderImportRepository>();
 
         var salesChannels = await salesChannelRepository.GetAllAsync();
 
@@ -117,12 +121,69 @@ public class Shopware5OrderImportTask : IHostedService
                             // new order
                             if (order == null)
                             {
-                                var localOrder = new Order
+                                var salesChannelImportOrder = new SalesChannelImportOrder
                                 {
-                                    RemoteOrderId = remoteOrder.id.ToString()
-                                };
+                                    RemoteOrderId = remoteOrder.id.ToString(),
+                                    DateOrdered = DateTime.UtcNow, // remoteOrder.orderTime,
+                                    Status = OrderStatus.Unknown, // MapOrderStatus(remoteOrder.status),
 
-                                await orderRepository.CreateAsync(localOrder);
+                                    ShippingMethod = string.Empty,
+                                    ShippingStatus = string.Empty,
+                                    ShippingProvider = string.Empty,
+                                    ShippingTrackingId = string.Empty,
+
+                                    Subtotal = remoteOrder.invoiceAmountNet,
+                                    ShippingCost = remoteOrder.invoiceShippingNet,
+                                    TotalTax = remoteOrder.invoiceAmount - remoteOrder.invoiceAmountNet,
+                                    Total = remoteOrder.invoiceAmount,
+
+                                    /*
+                                    Customer = new SalesChannelImportCustomer
+                                    {
+                                        Firstname = remoteOrder.billing.first_name,
+                                        Lastname = remoteOrder.billing.last_name,
+                                        CompanyName = remoteOrder.billing.company,
+                                        Email = remoteOrder.billing.email,
+                                        Phone = remoteOrder.billing.phone,
+                                        DateEnrollment = remoteOrder.date_created_gmt ?? DateTime.UtcNow
+                                    },
+
+                                    BillingAddress = new SalesChannelImportCustomerAddress
+                                    {
+                                        Firstname = remoteOrder.billing.first_name,
+                                        Lastname = remoteOrder.billing.last_name,
+                                        CompanyName = remoteOrder.billing.company,
+                                        Street = remoteOrder.billing.address_1,
+                                        City = remoteOrder.billing.city,
+                                        Zip = remoteOrder.billing.postcode,
+                                        Country = remoteOrder.billing.country
+                                    },
+
+                                    ShippingAddress = new SalesChannelImportCustomerAddress
+                                    {
+                                        Firstname = remoteOrder.shipping.first_name,
+                                        Lastname = remoteOrder.shipping.last_name,
+                                        CompanyName = remoteOrder.shipping.company,
+                                        Street = remoteOrder.shipping.address_1,
+                                        City = remoteOrder.shipping.city,
+                                        Zip = remoteOrder.shipping.postcode,
+                                        Country = remoteOrder.shipping.country
+                                    }
+                                    */
+                                }; 
+
+                                /*
+                                salesChannelImportOrder.Items = remoteOrder.line_items.Select(item => new SalesChannelImportOrderItem
+                                {
+                                    Name = item.name,
+                                    SKU = item.sku,
+                                    Quantity = (double)item.quantity,
+                                    Price = (decimal)item.price,
+                                    TaxRate = item.tax_class.IsNullOrEmpty() ? 0 : Convert.ToDouble(item.tax_class),
+                                }).ToList();
+                                */
+
+                                await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, salesChannelImportOrder);
                             }
                             // existing order
                         }
