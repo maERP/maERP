@@ -3,7 +3,7 @@
 public interface IGenericRepository<T> where T : class
 {
     Task<int> CreateAsync(T entity);
-    Task<IReadOnlyList<T>> GetAllAsync();
+    Task<ICollection<T>> GetAllAsync();
     Task<T?> GetByIdAsync(int id, bool asNoTracking = false);
     Task UpdateAsync(T entity);
     Task DeleteAsync(T entity);

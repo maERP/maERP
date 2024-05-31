@@ -12,6 +12,7 @@ using maERP.Domain.Models;
 using maERP.SalesChannels.Models;
 using maERP.SalesChannels.Repositories;
 using maERP.SalesChannels.Contracts;
+using Microsoft.IdentityModel.Tokens;
 
 namespace maERP.SalesChannels.Tasks;
 
@@ -94,11 +95,11 @@ public class Shopware5OrderImportTask : IHostedService
                     {
                         string result = response.Content.ReadAsStringAsync().Result;
 
-                        Shopware5Response<Shopware5OrderResponse> remoteOrders = new();
+                        BaseListResponse<OrderResponse> remoteOrders = new();
 
                         try
                         {
-                            remoteOrders = JsonSerializer.Deserialize<Shopware5Response<Shopware5OrderResponse>>(result);
+                            remoteOrders = JsonSerializer.Deserialize<BaseListResponse<OrderResponse>>(result);
 
                             if(remoteOrders.data == null || remoteOrders.success == false)
                             {
@@ -121,79 +122,117 @@ public class Shopware5OrderImportTask : IHostedService
                             // new order
                             if (order == null)
                             {
-                                var salesChannelImportOrder = new SalesChannelImportOrder
+                                string requestDetailUrl = salesChannel.URL + $"/api/orders/{remoteOrder.id}";
+                                response = await client.GetAsync(requestDetailUrl).ConfigureAwait(false);
+
+                                if (response.IsSuccessStatusCode)
                                 {
-                                    RemoteOrderId = remoteOrder.id.ToString(),
-                                    DateOrdered = DateTime.UtcNow, // remoteOrder.orderTime,
-                                    Status = OrderStatus.Unknown, // MapOrderStatus(remoteOrder.status),
+                                    string detailResult = response.Content.ReadAsStringAsync().Result;
 
-                                    ShippingMethod = string.Empty,
-                                    ShippingStatus = string.Empty,
-                                    ShippingProvider = string.Empty,
-                                    ShippingTrackingId = string.Empty,
+                                    BaseResponse<OrderDetailResponse> remoteOrderDetailResponse = new();
 
-                                    Subtotal = remoteOrder.invoiceAmountNet,
-                                    ShippingCost = remoteOrder.invoiceShippingNet,
-                                    TotalTax = remoteOrder.invoiceAmount - remoteOrder.invoiceAmountNet,
-                                    Total = remoteOrder.invoiceAmount,
-
-                                    
-                                    Customer = new SalesChannelImportCustomer
+                                    try
                                     {
-                                        Firstname = string.Empty,
-                                        Lastname = string.Empty,
-                                        CompanyName = string.Empty,
-                                        // Email = remoteOrder.customer.email ?? string.Empty,
-                                        Phone = string.Empty,
-                                        DateEnrollment = DateTime.UtcNow
-                                    },
+                                        remoteOrderDetailResponse = JsonSerializer.Deserialize<BaseResponse<OrderDetailResponse>>(detailResult);
 
-                                    BillingAddress = new SalesChannelImportCustomerAddress
-                                    {
-                                        Firstname = string.Empty,
-                                        Lastname = string.Empty,
-                                        CompanyName = string.Empty,
-                                        Street = string.Empty,
-                                        City = string.Empty,
-                                        Zip = string.Empty,
-                                        Country = "DE"
-                                    },
+                                        if (remoteOrderDetailResponse.data == null || remoteOrderDetailResponse.success == false)
+                                        {
+                                            throw new Exception("No data in response");
+                                        }
 
-                                    ShippingAddress = new SalesChannelImportCustomerAddress
-                                    {
-                                        Firstname = string.Empty,
-                                        Lastname = string.Empty,
-                                        CompanyName = string.Empty,
-                                        Street = string.Empty,
-                                        City = string.Empty,
-                                        Zip = string.Empty,
-                                        Country = "DE"
+
+                                        OrderDetailResponse remoteOrderDetail = remoteOrderDetailResponse.data;
+
+                                        if (remoteOrderDetail.customer == null)
+                                        {
+                                            remoteOrderDetail.customer = new(); //  Models.Shopware5.Customer();
+                                        }
+
+                                        var salesChannelImportOrder = new SalesChannelImportOrder
+                                        {
+                                            RemoteOrderId = remoteOrder.id.ToString(),
+                                            DateOrdered = DateTime.Parse(remoteOrderDetail.orderTime), // remoteOrder.orderTime,
+                                            Status = OrderStatus.Unknown, // MapOrderStatus(remoteOrder.status),
+
+                                            ShippingMethod = string.Empty,
+                                            ShippingStatus = string.Empty,
+                                            ShippingProvider = string.Empty,
+                                            ShippingTrackingId = string.Empty,
+                                            
+                                            Subtotal = remoteOrder.invoiceAmountNet,
+                                            ShippingCost = remoteOrder.invoiceShippingNet,
+                                            TotalTax = remoteOrder.invoiceAmount - remoteOrder.invoiceAmountNet,
+                                            Total = remoteOrder.invoiceAmount,
+
+                                            Customer = new SalesChannelImportCustomer
+                                            {
+                                                Firstname = remoteOrderDetail.billing.firstName,
+                                                Lastname = remoteOrderDetail.billing.lastName,
+                                                CompanyName = remoteOrderDetail.billing.company,
+                                                Email = remoteOrderDetail.customer.email.IsNullOrEmpty() ? string.Empty : remoteOrderDetail.customer.email,
+                                                Phone = remoteOrderDetail.billing.phone,
+                                                DateEnrollment = DateTime.Parse(remoteOrderDetail.customer.firstLogin)
+                                            },
+
+                                            BillingAddress = new SalesChannelImportCustomerAddress
+                                            {
+                                                Firstname = remoteOrderDetail.billing.firstName,
+                                                Lastname = remoteOrderDetail.billing.lastName,
+                                                CompanyName = remoteOrderDetail.billing.company,
+                                                Street = remoteOrderDetail.billing.street,
+                                                City = remoteOrderDetail.billing.city,
+                                                Zip = remoteOrderDetail.billing.zipCode,
+                                                Country = remoteOrderDetail.billing.country.iso
+                                            },
+
+                                            ShippingAddress = new SalesChannelImportCustomerAddress
+                                            {
+                                                Firstname = remoteOrderDetail.shipping.firstName,
+                                                Lastname = remoteOrderDetail.shipping.lastName,
+                                                CompanyName = remoteOrderDetail.shipping.company,
+                                                Street = remoteOrderDetail.shipping.street,
+                                                City = remoteOrderDetail.shipping.city,
+                                                Zip = remoteOrderDetail.shipping.zipCode,
+                                                Country = remoteOrderDetail.shipping.country.iso
+                                            }
+                                        };
+
+                                        salesChannelImportOrder.Items = remoteOrderDetail.details.Select(item => new SalesChannelImportOrderItem
+                                        {
+                                            Name = item.articleName,
+                                            SKU = item.articleNumber,
+                                            Quantity = (double)item.quantity,
+                                            Price = (decimal)item.price,
+                                            TaxRate = item.taxRate,
+                                        }).ToList();
+
+                                        await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, salesChannelImportOrder);
                                     }
-                                }; 
-
-                                /*
-                                salesChannelImportOrder.Items = remoteOrder.line_items.Select(item => new SalesChannelImportOrderItem
+                                    catch (Exception ex)
+                                    {
+                                        _logger.LogError($"Import Order error: {ex.Message}");
+                                        continue;
+                                    }
+                                }
+                                else
                                 {
-                                    Name = item.name,
-                                    SKU = item.sku,
-                                    Quantity = (double)item.quantity,
-                                    Price = (decimal)item.price,
-                                    TaxRate = item.tax_class.IsNullOrEmpty() ? 0 : Convert.ToDouble(item.tax_class),
-                                }).ToList();
-                                */
-
-                                await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, salesChannelImportOrder);
+                                    _logger.LogError($"Import Order error: {response.StatusCode}");
+                                }
                             }
-                            // existing order
+                            else
+                            {
+                                //existing order
+                                _logger.LogInformation("Order {0} already exists", remoteOrder.id.ToString());
+                            }
+
+                            _logger.LogInformation("Import Order {0} finished", remoteOrder.id.ToString());
                         }
 
                         response.Dispose();
 
                         requestStart += requestLimit;
 
-                        _logger.LogInformation($"Import Orders: {requestUrl} (max {requestMax} Orders)");
-
-                        await Task.Delay(new TimeSpan(0, 0, 1)); // 5 second delay
+                        await Task.Delay(new TimeSpan(0, 0, 10));
                     }
                 }
                 catch (Exception ex)

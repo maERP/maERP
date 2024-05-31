@@ -1,6 +1,6 @@
 ﻿namespace maERP.SalesChannels.Models.Shopware5;
 
-public class Shopware5ProductResponse
+public class ProductResponse
 {
     public int id { get; set; }
     public int mainDetailId { get; set; }

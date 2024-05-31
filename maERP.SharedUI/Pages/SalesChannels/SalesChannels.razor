@@ -24,7 +24,8 @@ else
             <PropertyColumn Property="x => x.Url" Title="URL" />
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
-                    <MudButton Href="@($"/SalesChannels/{context.Item.Id}/Edit")" Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Bearbeiten</MudButton>
+                    <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/SalesChannels/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/SalesChannels/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>

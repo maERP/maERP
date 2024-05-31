@@ -1,6 +1,6 @@
 ﻿namespace maERP.SalesChannels.Models.Shopware5;
 
-public class Shopware5OrderResponse
+public class OrderResponse
 {
     public int id { get; set; }
     // public DateTime changed { get; set; }

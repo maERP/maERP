@@ -23,10 +23,10 @@ public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, List<OrderL
     public async Task<List<OrderListDto>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
     {
         // Query the database
-        var orderes = await _orderRepository.GetAllAsync();
+        var orders = await _orderRepository.GetAllAsync();
 
         // Convert data objects to DTO objects
-        var data = _mapper.Map<List<OrderListDto>>(orderes);
+        var data = _mapper.Map<List<OrderListDto>>(orders);
 
         // Return list of DTO objects
         _logger.LogInformation("All Orderes are retrieved successfully.");

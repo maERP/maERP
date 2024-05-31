@@ -92,11 +92,11 @@ public class Shopware5ProductImportTask : IHostedService
                     {
                         string result = response.Content.ReadAsStringAsync().Result;
 
-                        Shopware5Response<Shopware5ProductResponse> remoteProducts = new();
+                        BaseListResponse<ProductResponse> remoteProducts = new();
 
                         try
                         {
-                            remoteProducts = JsonSerializer.Deserialize<Shopware5Response<Shopware5ProductResponse>>(result);
+                            remoteProducts = JsonSerializer.Deserialize<BaseListResponse<ProductResponse>>(result);
 
                             requestMax = remoteProducts.total;
                         }

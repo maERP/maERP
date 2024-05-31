@@ -216,21 +216,22 @@ public class OrderImportRepository : IOrderImportRepository
 
                     var product = await _productRepository.GetBySkuAsync(item.SKU);
 
-                    if(product == null)
+                    if(product != null)
+                    {
+                        newOrder.OrderItems.Add(new OrderItem
+                        {
+                            ProductId = product.Id,
+                            Name = item.Name,
+                            Quantity = item.Quantity,
+                            Price = item.Price
+                        });
+
+                        _logger.LogInformation("Order {0}: Add Item {1}", importOrder.RemoteOrderId, item.Name);
+                    }
+                    else
                     {
                         _logger.LogError("Order {0}: Cannot import, product with SKU {1} not found", importOrder.RemoteOrderId, item.SKU);
-                        return;
                     }
-
-                    newOrder.OrderItems.Add(new OrderItem
-                    {
-                        ProductId = product.Id,
-                        Name = item.Name,
-                        Quantity = item.Quantity,
-                        Price = item.Price
-                    });
-
-                    _logger.LogInformation("Order {0}: Add Item {1}", importOrder.RemoteOrderId, item.Name);
                 }
             }
 

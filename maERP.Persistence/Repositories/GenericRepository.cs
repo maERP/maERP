@@ -22,9 +22,9 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return entity.Id;
     }
 
-    public async Task<IReadOnlyList<T>> GetAllAsync()
+    public async Task<ICollection<T>> GetAllAsync()
     {
-        return await _context.Set<T>().AsNoTracking().ToListAsync();
+        return await _context.Set<T>().OrderByDescending(x => x.DateCreated).AsNoTracking().ToListAsync();
     }
 
     public async Task<T?> GetByIdAsync(int id, bool asNoTracking = false)
