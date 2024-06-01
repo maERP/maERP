@@ -151,7 +151,7 @@ public class Shopware5OrderImportTask : IHostedService
                                         var salesChannelImportOrder = new SalesChannelImportOrder
                                         {
                                             RemoteOrderId = remoteOrder.id.ToString(),
-                                            DateOrdered = DateTime.Parse(remoteOrderDetail.orderTime), // remoteOrder.orderTime,
+                                            DateOrdered = DateTime.Parse(remoteOrderDetail.orderTime).ToUniversalTime(), // remoteOrder.orderTime,
                                             Status = OrderStatus.Unknown, // MapOrderStatus(remoteOrder.status),
 
                                             ShippingMethod = string.Empty,
@@ -171,7 +171,7 @@ public class Shopware5OrderImportTask : IHostedService
                                                 CompanyName = remoteOrderDetail.billing.company,
                                                 Email = remoteOrderDetail.customer.email.IsNullOrEmpty() ? string.Empty : remoteOrderDetail.customer.email,
                                                 Phone = remoteOrderDetail.billing.phone,
-                                                DateEnrollment = DateTime.Parse(remoteOrderDetail.customer.firstLogin)
+                                                DateEnrollment = DateTime.Parse(remoteOrderDetail.customer.firstLogin).ToUniversalTime()
                                             },
 
                                             BillingAddress = new SalesChannelImportCustomerAddress
