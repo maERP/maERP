@@ -151,6 +151,7 @@ public class Shopware5OrderImportTask : IHostedService
                                         var salesChannelImportOrder = new SalesChannelImportOrder
                                         {
                                             RemoteOrderId = remoteOrder.id.ToString(),
+                                            RemoteCustomerId = remoteOrderDetail.customer.id.ToString(),
                                             DateOrdered = DateTime.Parse(remoteOrderDetail.orderTime).ToUniversalTime(), // remoteOrder.orderTime,
                                             Status = OrderStatus.Unknown, // MapOrderStatus(remoteOrder.status),
 
