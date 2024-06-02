@@ -34,7 +34,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
-        // Assert.True(resultContent != null && resultContent.Id != default);
+        Assert.True(resultContent != null && resultContent.CustomerId == 1);
     }
 
     [Theory]
