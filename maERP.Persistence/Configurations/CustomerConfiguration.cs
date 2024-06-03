@@ -22,7 +22,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                 CustomerStatus = CustomerStatus.Active,
                 Note = "This is a note",
                 DateEnrollment = DateTime.UtcNow,
-                CustomerAddress = new List<CustomerAddress>
+                CustomerAddresses = new List<CustomerAddress>
                 {
                     new CustomerAddress
                     {

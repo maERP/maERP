@@ -68,6 +68,12 @@ public class Shopware5OrderImportTask : IHostedService
                 continue;
             }
 
+            if (salesChannel.ImportProducts == true && salesChannel.InitialProductImportCompleted == false)
+            {
+                _logger.LogInformation($"Initial Product Import not completed for {salesChannel.Name} (ID: {salesChannel.Id})");
+                continue;                
+            }
+
             _logger.LogInformation($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             int requestStart = 0;
@@ -205,6 +211,7 @@ public class Shopware5OrderImportTask : IHostedService
                                             Quantity = (double)item.quantity,
                                             Price = (decimal)item.price,
                                             TaxRate = item.taxRate,
+                                            Ean = item.ean
                                         }).ToList();
 
                                         await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, salesChannelImportOrder);
@@ -243,5 +250,20 @@ public class Shopware5OrderImportTask : IHostedService
             }
             while (requestMax != 0 && requestStart <= requestMax);
         }
+    }
+
+    private OrderStatus MapOrderStatus(string orderStatus)
+    {
+        return orderStatus switch
+        {
+            "pending" => OrderStatus.Pending,
+            "processing" => OrderStatus.Processing,
+            "on-hold" => OrderStatus.OnHold,
+            "completed" => OrderStatus.Completed,
+            "cancelled" => OrderStatus.Cancelled,
+            "refunded" => OrderStatus.Refunded,
+            "failed" => OrderStatus.Failed,
+            _ => OrderStatus.Unknown
+        };
     }
 }

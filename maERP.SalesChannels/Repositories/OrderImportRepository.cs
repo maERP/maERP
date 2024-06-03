@@ -216,22 +216,28 @@ public class OrderImportRepository : IOrderImportRepository
 
                     var product = await _productRepository.GetBySkuAsync(item.SKU);
 
+                    var newOrderItem = new OrderItem
+                    {
+                        Name = item.Name,
+                        Quantity = item.Quantity,
+                        Price = item.Price,
+                        TaxRate = item.TaxRate
+                    };
+
                     if(product != null)
                     {
-                        newOrder.OrderItems.Add(new OrderItem
-                        {
-                            ProductId = product.Id,
-                            Name = item.Name,
-                            Quantity = item.Quantity,
-                            Price = item.Price
-                        });
-
+                        newOrderItem.ProductId = product.Id;
                         _logger.LogInformation("Order {0}: Add Item {1}", importOrder.RemoteOrderId, item.Name);
                     }
                     else
                     {
-                        _logger.LogError("Order {0}: Cannot import, product with SKU {1} not found", importOrder.RemoteOrderId, item.SKU);
+                        newOrderItem.MissingProductSku = item.SKU;
+                        newOrderItem.MissingProductEan = item.Ean;
+
+                        _logger.LogInformation("Order {0}: Cannot import, product with SKU {1} not found", importOrder.RemoteOrderId, item.SKU);
                     }
+
+                    newOrder.OrderItems.Add(newOrderItem);
                 }
             }
 
@@ -240,13 +246,12 @@ public class OrderImportRepository : IOrderImportRepository
 
             if(salesChannel.ImportProducts == false)
             {
-
                _logger.LogInformation("Order {0}: SalesChannel product import is disabled, updating Stock", importOrder.RemoteOrderId);
 
                 foreach (var orderItem in newOrder.OrderItems)
                 {
                     Product product = await _productRepository.GetWithDetailsAsync(orderItem.ProductId) ?? throw new Exception("OrderImportRepository: Product not found");
-                    product.ProductStock.FirstOrDefault(w => w.WarehouseId == salesChannel.WarehouseId)!.Stock -= orderItem.Quantity;
+                    product.ProductStocks.FirstOrDefault(w => w.WarehouseId == salesChannel.WarehouseId)!.Stock -= orderItem.Quantity;
                     await _productRepository.UpdateAsync(product);
                     _logger.LogInformation("Order {0}: Stock updated for product {1}", importOrder.RemoteOrderId, product.Sku);
                 }

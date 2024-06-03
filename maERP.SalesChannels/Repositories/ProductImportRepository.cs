@@ -45,8 +45,8 @@ public class ProductImportRepository : IProductImportRepository
                 Price = importProduct.Price,
                 Sku = importProduct.Sku,
                 TaxClass = taxClass,
-                ProductStock = [new ProductStock { WarehouseId = 1, Stock = 1 }],
-                ProductSalesChannel =
+                ProductStocks = [new ProductStock { WarehouseId = 1, Stock = 1 }],
+                ProductSalesChannels =
                 [
                     new ProductSalesChannel
                     {
@@ -70,9 +70,9 @@ public class ProductImportRepository : IProductImportRepository
             bool somethingChanged = false;
             bool salesChannelExist = false;
             
-            if(existingProduct.ProductSalesChannel != null)
+            if(existingProduct.ProductSalesChannels != null)
             {
-                salesChannelExist = existingProduct.ProductSalesChannel.Any(s => s.SalesChannelId == salesChannelId);
+                salesChannelExist = existingProduct.ProductSalesChannels.Any(s => s.SalesChannelId == salesChannelId);
             }
 
             // TODO update price when salesChannelExist is true
@@ -80,7 +80,7 @@ public class ProductImportRepository : IProductImportRepository
             {
                 _logger.LogInformation("Creating SalesChannel entry for Product {0}", importProduct.Sku);
 
-                existingProduct.ProductSalesChannel = 
+                existingProduct.ProductSalesChannels = 
                 [
                     new ProductSalesChannel
                     {

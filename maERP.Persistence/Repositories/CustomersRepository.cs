@@ -17,7 +17,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
     {
         return await _context.Customer
             .Where(x => x.Id == id)
-            .Include(x => x.CustomerAddress)
+            .Include(x => x.CustomerAddresses)
             .Include(x => x.Orders)
             .FirstOrDefaultAsync() ?? throw new NotFoundException("User not found", "User not found");
     }
@@ -32,7 +32,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
     public async Task<Customer?> GetCustomerByRemoteCustomerIdAsync(int salesChannelId, string remoteCustomerId)
     {
         return await _context.Customer
-            .Where(x => x.CustomerSalesChannel!.Any(y => y.SalesChannelId == salesChannelId && y.RemoteCustomerId == remoteCustomerId))
+            .Where(x => x.CustomerSalesChannels!.Any(y => y.SalesChannelId == salesChannelId && y.RemoteCustomerId == remoteCustomerId))
             .FirstOrDefaultAsync() ?? null;
     }
     

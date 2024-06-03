@@ -20,7 +20,7 @@ else
     <MudDataGrid Items="@orders" SortMode="SortMode.Single" Class="mb-8">
         <Columns>
             <PropertyColumn Property="x => x.Id" Title="Bestellnr." />
-            <PropertyColumn Property="x => x.CustomerName" Title="Kunde" />
+            <PropertyColumn Property="x => x.FullName" Title="Kunde" />
             <PropertyColumn Property="x => x.Total" Title="Summe" Format="C" />
             <PropertyColumn Property="x => x.Status" Title="Status" />
             <PropertyColumn Property="x => x.DateOrdered" Title="Datum" />

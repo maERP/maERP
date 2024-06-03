@@ -126,7 +126,6 @@ public class Shopware5ProductImportTask : IHostedService
                             importProduct.TaxRate = 19;
                             importProduct.Description = remoteProduct.descriptionLong;
 
-
                             await productImportRepository.ImportOrUpdateFromSalesChannel(salesChannel.Id, importProduct);
                         }
 
@@ -145,6 +144,12 @@ public class Shopware5ProductImportTask : IHostedService
                 }
             }
             while (requestMax != 0 && requestStart <= requestMax);
+
+            if (salesChannel.InitialProductImportCompleted == false)
+            {
+                salesChannel.InitialProductImportCompleted = true;
+                await salesChannelRepository.UpdateAsync(salesChannel);
+            }
         }
     }
 }

@@ -14,12 +14,12 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     
     public async Task<Product?> GetBySkuAsync(string sku)
     {
-        return await _context.Product.Include(ps => ps.ProductSalesChannel).FirstOrDefaultAsync(p => p.Sku == sku);
+        return await _context.Product.Include(ps => ps.ProductSalesChannels).FirstOrDefaultAsync(p => p.Sku == sku);
     }
 
     public async Task<Product?> GetWithDetailsAsync(int id)
     {
-        return await _context.Product.Include(ps => ps.ProductSalesChannel).Include(ps => ps.ProductStock).FirstOrDefaultAsync(p => p.Id == id);
+        return await _context.Product.Include(ps => ps.ProductSalesChannels).Include(ps => ps.ProductStocks).FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<bool> UpdateStockAsync(int productId, int warehouseId, int newStock)

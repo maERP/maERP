@@ -17,5 +17,6 @@ public partial class Orders
     protected override async Task OnInitializedAsync()
     {
         orders = await _orderService.GetOrders();
+        Console.WriteLine("");
     }
 }

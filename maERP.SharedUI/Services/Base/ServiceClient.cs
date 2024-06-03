@@ -4056,6 +4056,12 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("MissingProductSku")]
+        public string MissingProductSku { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("MissingProductEan")]
+        public string MissingProductEan { get; set; }
+
         [System.Text.Json.Serialization.JsonPropertyName("ShippingId")]
         public int ShippingId { get; set; }
 
@@ -4097,8 +4103,11 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("CustomerId")]
         public int CustomerId { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("CustomerName")]
-        public string CustomerName { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressFirstName")]
+        public string InvoiceAddressFirstName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressLastName")]
+        public string InvoiceAddressLastName { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("Total")]
         public double Total { get; set; }

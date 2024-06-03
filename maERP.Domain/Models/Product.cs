@@ -21,7 +21,7 @@ public class Product : BaseEntity
     public int TaxClassId { get; set; }
     public TaxClass? TaxClass { get; set; }
 
-    public ICollection<ProductSalesChannel>? ProductSalesChannel { get; set; } = [];
+    public ICollection<ProductSalesChannel>? ProductSalesChannels { get; set; } = [];
 
-    public ICollection<ProductStock> ProductStock { get; set; } = [];
+    public ICollection<ProductStock> ProductStocks { get; set; } = [];
 }

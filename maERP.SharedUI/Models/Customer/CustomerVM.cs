@@ -9,4 +9,6 @@ public class CustomerVM
     public string Lastname { get; set; } = string.Empty;
     public List<CustomerAddressListVM> CustomerAddresses { get; set; } = new();
     public DateTime DateEnrollment { get; set; }
+
+    public string FullName => $"{Firstname} {Lastname}";
 }

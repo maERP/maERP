@@ -11,13 +11,19 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
     }
 
+    public async Task<Order?> GetWithDetailsAsync(int id)
+    {
+        return await _context.Order
+            .Where(o => o.Id == id)
+            .Include(o => o.OrderItems)
+            .FirstOrDefaultAsync() ?? null;
+    }
+
     public async Task<Order?> GetByRemoteOrderIdAsync(int salesChannelId, string remoteOrderId)
     {
-        var test = await _context.Order
+        return await _context.Order
             .Where(o => o.RemoteOrderId == remoteOrderId)
             .Where(o => o.SalesChannelId == salesChannelId)
             .FirstOrDefaultAsync() ?? null;
-
-        return test;
     }
 }
