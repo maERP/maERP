@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using maERP.Domain.Models;
 using maERP.SalesChannels.Models;
-using maERP.SalesChannels.Repositories;
 using maERP.SalesChannels.Contracts;
 using Microsoft.IdentityModel.Tokens;
 
@@ -71,7 +70,7 @@ public class Shopware5OrderImportTask : IHostedService
             if (salesChannel.ImportProducts == true && salesChannel.InitialProductImportCompleted == false)
             {
                 _logger.LogInformation($"Initial Product Import not completed for {salesChannel.Name} (ID: {salesChannel.Id})");
-                continue;                
+                continue;
             }
 
             _logger.LogInformation($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
@@ -107,7 +106,7 @@ public class Shopware5OrderImportTask : IHostedService
                         {
                             remoteOrders = JsonSerializer.Deserialize<BaseListResponse<OrderResponse>>(result);
 
-                            if(remoteOrders.data == null || remoteOrders.success == false)
+                            if (remoteOrders.data == null || remoteOrders.success == false)
                             {
                                 throw new Exception("No data in response");
                             }
@@ -123,114 +122,98 @@ public class Shopware5OrderImportTask : IHostedService
                         {
                             _logger.LogInformation("Import Order {0}", remoteOrder.id.ToString());
 
-                            var order = await orderRepository.GetByRemoteOrderIdAsync(salesChannel.Id, remoteOrder.id.ToString());
+                            string requestDetailUrl = salesChannel.URL + $"/api/orders/{remoteOrder.id}";
+                            response = await client.GetAsync(requestDetailUrl).ConfigureAwait(false);
 
-                            // new order
-                            if (order == null)
+                            if (response.IsSuccessStatusCode)
                             {
-                                string requestDetailUrl = salesChannel.URL + $"/api/orders/{remoteOrder.id}";
-                                response = await client.GetAsync(requestDetailUrl).ConfigureAwait(false);
+                                string detailResult = response.Content.ReadAsStringAsync().Result;
 
-                                if (response.IsSuccessStatusCode)
+                                BaseResponse<OrderDetailResponse> remoteOrderDetailResponse = new();
+
+                                try
                                 {
-                                    string detailResult = response.Content.ReadAsStringAsync().Result;
+                                    remoteOrderDetailResponse = JsonSerializer.Deserialize<BaseResponse<OrderDetailResponse>>(detailResult);
 
-                                    BaseResponse<OrderDetailResponse> remoteOrderDetailResponse = new();
-
-                                    try
+                                    if (remoteOrderDetailResponse.data == null || remoteOrderDetailResponse.success == false)
                                     {
-                                        remoteOrderDetailResponse = JsonSerializer.Deserialize<BaseResponse<OrderDetailResponse>>(detailResult);
-
-                                        if (remoteOrderDetailResponse.data == null || remoteOrderDetailResponse.success == false)
-                                        {
-                                            throw new Exception("No data in response");
-                                        }
-
-
-                                        OrderDetailResponse remoteOrderDetail = remoteOrderDetailResponse.data;
-
-                                        if (remoteOrderDetail.customer == null)
-                                        {
-                                            remoteOrderDetail.customer = new(); //  Models.Shopware5.Customer();
-                                        }
-
-                                        var salesChannelImportOrder = new SalesChannelImportOrder
-                                        {
-                                            RemoteOrderId = remoteOrder.id.ToString(),
-                                            RemoteCustomerId = remoteOrderDetail.customer.id.ToString(),
-                                            DateOrdered = DateTime.Parse(remoteOrderDetail.orderTime).ToUniversalTime(), // remoteOrder.orderTime,
-                                            Status = OrderStatus.Unknown, // MapOrderStatus(remoteOrder.status),
-
-                                            ShippingMethod = string.Empty,
-                                            ShippingStatus = string.Empty,
-                                            ShippingProvider = string.Empty,
-                                            ShippingTrackingId = string.Empty,
-                                            
-                                            Subtotal = remoteOrder.invoiceAmountNet,
-                                            ShippingCost = remoteOrder.invoiceShippingNet,
-                                            TotalTax = remoteOrder.invoiceAmount - remoteOrder.invoiceAmountNet,
-                                            Total = remoteOrder.invoiceAmount,
-
-                                            Customer = new SalesChannelImportCustomer
-                                            {
-                                                Firstname = remoteOrderDetail.billing.firstName,
-                                                Lastname = remoteOrderDetail.billing.lastName,
-                                                CompanyName = remoteOrderDetail.billing.company,
-                                                Email = remoteOrderDetail.customer.email.IsNullOrEmpty() ? string.Empty : remoteOrderDetail.customer.email,
-                                                Phone = remoteOrderDetail.billing.phone,
-                                                DateEnrollment = DateTime.Parse(remoteOrderDetail.customer.firstLogin).ToUniversalTime()
-                                            },
-
-                                            BillingAddress = new SalesChannelImportCustomerAddress
-                                            {
-                                                Firstname = remoteOrderDetail.billing.firstName,
-                                                Lastname = remoteOrderDetail.billing.lastName,
-                                                CompanyName = remoteOrderDetail.billing.company,
-                                                Street = remoteOrderDetail.billing.street,
-                                                City = remoteOrderDetail.billing.city,
-                                                Zip = remoteOrderDetail.billing.zipCode,
-                                                Country = remoteOrderDetail.billing.country.iso
-                                            },
-
-                                            ShippingAddress = new SalesChannelImportCustomerAddress
-                                            {
-                                                Firstname = remoteOrderDetail.shipping.firstName,
-                                                Lastname = remoteOrderDetail.shipping.lastName,
-                                                CompanyName = remoteOrderDetail.shipping.company,
-                                                Street = remoteOrderDetail.shipping.street,
-                                                City = remoteOrderDetail.shipping.city,
-                                                Zip = remoteOrderDetail.shipping.zipCode,
-                                                Country = remoteOrderDetail.shipping.country.iso
-                                            }
-                                        };
-
-                                        salesChannelImportOrder.Items = remoteOrderDetail.details.Select(item => new SalesChannelImportOrderItem
-                                        {
-                                            Name = item.articleName,
-                                            SKU = item.articleNumber,
-                                            Quantity = (double)item.quantity,
-                                            Price = (decimal)item.price,
-                                            TaxRate = item.taxRate,
-                                            Ean = item.ean
-                                        }).ToList();
-
-                                        await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, salesChannelImportOrder);
+                                        throw new Exception("No data in response");
                                     }
-                                    catch (Exception ex)
+
+                                    OrderDetailResponse remoteOrderDetail = remoteOrderDetailResponse.data;
+
+                                    if (remoteOrderDetail.customer == null)
                                     {
-                                        _logger.LogError($"Import Order error: {ex.Message}");
-                                        continue;
+                                        remoteOrderDetail.customer = new(); //  Models.Shopware5.Customer();
                                     }
+
+                                    var salesChannelImportOrder = new SalesChannelImportOrder
+                                    {
+                                        RemoteOrderId = remoteOrder.id.ToString(),
+                                        RemoteCustomerId = remoteOrderDetail.customer.id.ToString(),
+                                        DateOrdered = DateTime.Parse(remoteOrderDetail.orderTime).ToUniversalTime(), // remoteOrder.orderTime,
+                                        Status = MapOrderStatus(remoteOrder.orderStatusId),
+                                        PaymentStatus = MapPaymentStatus(remoteOrder.paymentStatusId),
+
+                                        Subtotal = remoteOrder.invoiceAmountNet,
+                                        ShippingCost = remoteOrder.invoiceShippingNet,
+                                        TotalTax = remoteOrder.invoiceAmount - remoteOrder.invoiceAmountNet,
+                                        Total = remoteOrder.invoiceAmount,
+
+                                        Customer = new SalesChannelImportCustomer
+                                        {
+                                            Firstname = remoteOrderDetail.billing.firstName,
+                                            Lastname = remoteOrderDetail.billing.lastName,
+                                            CompanyName = remoteOrderDetail.billing.company,
+                                            Email = remoteOrderDetail.customer.email.IsNullOrEmpty() ? string.Empty : remoteOrderDetail.customer.email,
+                                            Phone = remoteOrderDetail.billing.phone,
+                                            DateEnrollment = DateTime.Parse(remoteOrderDetail.customer.firstLogin).ToUniversalTime()
+                                        },
+
+                                        BillingAddress = new SalesChannelImportCustomerAddress
+                                        {
+                                            Firstname = remoteOrderDetail.billing.firstName,
+                                            Lastname = remoteOrderDetail.billing.lastName,
+                                            CompanyName = remoteOrderDetail.billing.company,
+                                            Street = remoteOrderDetail.billing.street,
+                                            City = remoteOrderDetail.billing.city,
+                                            Zip = remoteOrderDetail.billing.zipCode,
+                                            Country = remoteOrderDetail.billing.country.iso
+                                        },
+
+                                        ShippingAddress = new SalesChannelImportCustomerAddress
+                                        {
+                                            Firstname = remoteOrderDetail.shipping.firstName,
+                                            Lastname = remoteOrderDetail.shipping.lastName,
+                                            CompanyName = remoteOrderDetail.shipping.company,
+                                            Street = remoteOrderDetail.shipping.street,
+                                            City = remoteOrderDetail.shipping.city,
+                                            Zip = remoteOrderDetail.shipping.zipCode,
+                                            Country = remoteOrderDetail.shipping.country.iso
+                                        }
+                                    };
+
+                                    salesChannelImportOrder.Items = remoteOrderDetail.details.Select(item => new SalesChannelImportOrderItem
+                                    {
+                                        Name = item.articleName,
+                                        SKU = item.articleNumber,
+                                        Quantity = (double)item.quantity,
+                                        Price = (decimal)item.price,
+                                        TaxRate = item.taxRate,
+                                        Ean = item.ean
+                                    }).ToList();
+
+                                    await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, salesChannelImportOrder);
                                 }
-                                else
+                                catch (Exception ex)
                                 {
-                                    _logger.LogError($"Import Order error: {response.StatusCode}");
+                                    _logger.LogError($"Import Order error: {ex.Message}");
+                                    continue;
                                 }
                             }
                             else
                             {
-                                //existing order
-                                _logger.LogInformation("Order {0} already exists", remoteOrder.id.ToString());
+                                _logger.LogError($"Import Order error: {response.StatusCode}");
                             }
 
                             _logger.LogInformation("Import Order {0} finished", remoteOrder.id.ToString());
@@ -252,18 +235,68 @@ public class Shopware5OrderImportTask : IHostedService
         }
     }
 
-    private OrderStatus MapOrderStatus(string orderStatus)
+    private OrderStatus MapOrderStatus(int orderStatusId)
     {
-        return orderStatus switch
+        /* 
+         * -1 state cancelled Abgebrochen
+         * 0 state open Offen
+         * 1 state in_process In Bearbeitung (wartet)
+         * 2 state completed Komplett abgeschlossen
+         * 3 state partially_completed Teilweise abgeschlossen
+         * 4 state cancelled_rejected Storniert / Abgelehnt
+         * 5 state ready_for_delivery Zur Lieferung bereit
+         * 6 state partially_delivered Teilweise ausgeliefert
+         * 7 state completely_delivered Komplett ausgeliefert
+         * 8 state clarification_required Klärung notwendig
+         * 9 state partially_invoiced Teilweise in Rechnung gestellt
+         */
+
+        return orderStatusId switch
         {
-            "pending" => OrderStatus.Pending,
-            "processing" => OrderStatus.Processing,
-            "on-hold" => OrderStatus.OnHold,
-            "completed" => OrderStatus.Completed,
-            "cancelled" => OrderStatus.Cancelled,
-            "refunded" => OrderStatus.Refunded,
-            "failed" => OrderStatus.Failed,
+            0 => OrderStatus.Pending,
+            1 => OrderStatus.Processing,
+            8 => OrderStatus.OnHold,
+            7 => OrderStatus.Completed,
+            4 => OrderStatus.Cancelled,
+            -1 => OrderStatus.Failed,
             _ => OrderStatus.Unknown
+        };
+    }
+
+    private PaymentStatus MapPaymentStatus(int orderPaymentStatusId)
+    {
+        /* 
+         * 11 payment partially_paid Teilweise bezahlt
+         * 12 payment completely_paid Komplett bezahlt
+         * 13 payment 1st_reminder 1. Mahnung
+         * 14 payment 2nd_reminder 2. Mahnung
+         * 15 payment 3rd_reminder 3. Mahnung
+         * 16 payment encashment Inkasso
+         * 17 payment open offen
+         * 18 payment reserved Reserviert
+         * 19 payment delayed Verzögert
+         * 20 payment re_crediting Wiedergutschrift
+         * 21 payment review_necessary Überprüfung notwendig
+         * 22 payment no_credit_approved Es wurde kein Kredit genehmigt
+         * 23 payment the_credit_has_been_preliminarily_accepted Der Kredit wurde vorläufig akzeptiert
+         */
+
+        return orderPaymentStatusId switch
+        {
+            17 => PaymentStatus.Invoiced,
+            11 => PaymentStatus.PartiallyPaid,
+            12 => PaymentStatus.CompletelyPaid,
+            13 => PaymentStatus.FirstReminder,
+            14 => PaymentStatus.SecondReminder,
+            15 => PaymentStatus.ThirdReminder,
+            16 => PaymentStatus.Encashment,
+            18 => PaymentStatus.Reserved,
+            19 => PaymentStatus.Delayed,
+            20 => PaymentStatus.ReCrediting,
+            21 => PaymentStatus.ReviewNecessary,
+            22 => PaymentStatus.NoCreditApproved,
+            23 => PaymentStatus.CreditPreliminarilyAccepted,
+            _ => PaymentStatus.Unknown
         };
     }
 }

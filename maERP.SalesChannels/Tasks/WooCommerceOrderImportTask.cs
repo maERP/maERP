@@ -87,11 +87,11 @@ public class WooCommerceOrderImportTask : IHostedService
                         RemoteOrderId = remoteOrder.id.ToString(),
                         DateOrdered = remoteOrder.date_created ?? DateTime.UtcNow,
                         Status = MapOrderStatus(remoteOrder.status),
-                        
-                        ShippingMethod = remoteOrder.shipping_lines.FirstOrDefault()?.method_title ?? string.Empty,
-                        ShippingStatus = string.Empty,
-                        ShippingProvider = string.Empty,
-                        ShippingTrackingId = string.Empty,
+                        PaymentStatus = PaymentStatus.Unknown,
+
+                        PaymentMethod = remoteOrder.payment_method,
+                        PaymentProvider = remoteOrder.payment_method_title,
+                        PaymentTransactionId = remoteOrder.transaction_id,
 
                         Subtotal = subtotal,
                         ShippingCost = remoteOrder.shipping_total ?? 0,
@@ -158,6 +158,27 @@ public class WooCommerceOrderImportTask : IHostedService
             "refunded" => OrderStatus.Refunded,
             "failed" => OrderStatus.Failed,
             _ => OrderStatus.Unknown
+        };
+    }
+
+    private PaymentStatus MapPaymentStatus(int orderPaymentStatusId)
+    {
+        return orderPaymentStatusId switch
+        {
+            1 => PaymentStatus.Invoiced,
+            2 => PaymentStatus.PartiallyPaid,
+            3 => PaymentStatus.CompletelyPaid,
+            4 => PaymentStatus.FirstReminder,
+            5 => PaymentStatus.SecondReminder,
+            6 => PaymentStatus.ThirdReminder,
+            7 => PaymentStatus.Encashment,
+            8 => PaymentStatus.Reserved,
+            9 => PaymentStatus.Delayed,
+            10 => PaymentStatus.ReCrediting,
+            11 => PaymentStatus.ReviewNecessary,
+            12 => PaymentStatus.NoCreditApproved,
+            13 => PaymentStatus.CreditPreliminarilyAccepted,
+            _ => PaymentStatus.Unknown
         };
     }
 }

@@ -3931,29 +3931,17 @@ namespace maERP.SharedUI.Services.Base
         [System.Text.Json.Serialization.JsonPropertyName("OrderItems")]
         public System.Collections.Generic.ICollection<OrderItem> OrderItems { get; set; }
 
-        [System.Text.Json.Serialization.JsonPropertyName("PaymentMethod")]
-        public string PaymentMethod { get; set; }
-
         [System.Text.Json.Serialization.JsonPropertyName("PaymentStatus")]
         public string PaymentStatus { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PaymentMethod")]
+        public string PaymentMethod { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("PaymentProvider")]
         public string PaymentProvider { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("PaymentTransactionId")]
         public string PaymentTransactionId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ShippingMethod")]
-        public string ShippingMethod { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ShippingStatus")]
-        public string ShippingStatus { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ShippingProvider")]
-        public string ShippingProvider { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ShippingTrackingId")]
-        public string ShippingTrackingId { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("Subtotal")]
         public double Subtotal { get; set; }
@@ -4114,6 +4102,9 @@ namespace maERP.SharedUI.Services.Base
 
         [System.Text.Json.Serialization.JsonPropertyName("Status")]
         public string Status { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PaymentStatus")]
+        public string PaymentStatus { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("DateOrdered")]
         public System.DateTime DateOrdered { get; set; }

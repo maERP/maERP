@@ -10,6 +10,7 @@ public class OrderListDto
     public string InvoiceAddressLastName { get; set; } = string.Empty;
     public decimal Total { get; set; }
     public string Status { get; set; } = string.Empty;
+    public string PaymentStatus { get; set; } = string.Empty;
 
     public DateTime DateOrdered { get; set; }
 }

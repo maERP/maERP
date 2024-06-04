@@ -15,15 +15,10 @@ public class OrderDetailDto
     public OrderStatus Status { get; set; }
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
-    public string PaymentMethod { get; set; } = string.Empty;
     public string PaymentStatus { get; set; } = string.Empty;
+    public string PaymentMethod { get; set; } = string.Empty;
     public string PaymentProvider { get; set; } = string.Empty;
     public string PaymentTransactionId { get; set; } = string.Empty;
-
-    public string ShippingMethod { get; set; } = string.Empty;
-    public string ShippingStatus { get; set; } = string.Empty;
-    public string ShippingProvider { get; set; } = string.Empty;
-    public string ShippingTrackingId { get; set; } = string.Empty;
 
     public decimal Subtotal { get; set; }
     public decimal ShippingCost { get; set; }

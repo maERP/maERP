@@ -95,7 +95,7 @@
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
-    <PackageReference Include="MudBlazor" Version="6.19.1" />
+    <PackageReference Include="MudBlazor" Version="6.20.0" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.14" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.40" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.40" />    

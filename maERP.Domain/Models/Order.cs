@@ -14,23 +14,18 @@ public class Order : BaseEntity
     [Required]
     public OrderStatus Status { get; set; }
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-
-    public string PaymentMethod { get; set; } = string.Empty;
-    public string PaymentStatus { get; set; } = string.Empty;
-    public string PaymentProvider { get; set; } = string.Empty;
-    public string PaymentTransactionId { get; set; } = string.Empty;
-
-    public string ShippingMethod { get; set; } = string.Empty;
-    public string ShippingStatus { get; set; } = string.Empty;
-    public string ShippingProvider { get; set; } = string.Empty;
-    public string ShippingTrackingId { get; set; } = string.Empty;
-
     public decimal Subtotal { get; set; }
     public decimal ShippingCost { get; set; }
     public decimal TotalTax { get; set; }
     public decimal Total { get; set; }
 
-    public string Note { get; set; } = string.Empty;
+    public PaymentStatus PaymentStatus { get; set; }
+    public string PaymentMethod { get; set; } = string.Empty;
+    public string PaymentProvider { get; set; } = string.Empty;
+    public string PaymentTransactionId { get; set; } = string.Empty;
+
+    public string CustomerNote { get; set; } = string.Empty;
+    public string InternalNote { get; set; } = string.Empty;
 
     public string DeliveryAddressFirstName { get; set; } = string.Empty;
     public string DeliveryAddressLastName { get; set; } = string.Empty;

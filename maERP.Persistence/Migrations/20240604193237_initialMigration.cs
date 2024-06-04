@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace maERP.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class initDb : Migration
+    public partial class initialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -321,6 +321,29 @@ namespace maERP.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomerSalesChannel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CustomerId = table.Column<int>(type: "integer", nullable: false),
+                    SalesChannelId = table.Column<int>(type: "integer", nullable: false),
+                    RemoteCustomerId = table.Column<string>(type: "text", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DateModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerSalesChannel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerSalesChannel_Customer_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Order",
                 columns: table => new
                 {
@@ -330,19 +353,16 @@ namespace maERP.Persistence.Migrations
                     RemoteOrderId = table.Column<string>(type: "text", nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
-                    PaymentMethod = table.Column<string>(type: "text", nullable: false),
-                    PaymentStatus = table.Column<string>(type: "text", nullable: false),
-                    PaymentProvider = table.Column<string>(type: "text", nullable: false),
-                    PaymentTransactionId = table.Column<string>(type: "text", nullable: false),
-                    ShippingMethod = table.Column<string>(type: "text", nullable: false),
-                    ShippingStatus = table.Column<string>(type: "text", nullable: false),
-                    ShippingProvider = table.Column<string>(type: "text", nullable: false),
-                    ShippingTrackingId = table.Column<string>(type: "text", nullable: false),
                     Subtotal = table.Column<decimal>(type: "numeric", nullable: false),
                     ShippingCost = table.Column<decimal>(type: "numeric", nullable: false),
-                    Tax = table.Column<decimal>(type: "numeric", nullable: false),
+                    TotalTax = table.Column<decimal>(type: "numeric", nullable: false),
                     Total = table.Column<decimal>(type: "numeric", nullable: false),
-                    Note = table.Column<string>(type: "text", nullable: false),
+                    PaymentStatus = table.Column<int>(type: "integer", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "text", nullable: false),
+                    PaymentProvider = table.Column<string>(type: "text", nullable: false),
+                    PaymentTransactionId = table.Column<string>(type: "text", nullable: false),
+                    CustomerNote = table.Column<string>(type: "text", nullable: false),
+                    InternalNote = table.Column<string>(type: "text", nullable: false),
                     DeliveryAddressFirstName = table.Column<string>(type: "text", nullable: false),
                     DeliveryAddressLastName = table.Column<string>(type: "text", nullable: false),
                     DeliveryAddressCompanyName = table.Column<string>(type: "text", nullable: false),
@@ -448,6 +468,8 @@ namespace maERP.Persistence.Migrations
                     ExportProducts = table.Column<bool>(type: "boolean", nullable: false),
                     ExportCustomers = table.Column<bool>(type: "boolean", nullable: false),
                     ExportOrders = table.Column<bool>(type: "boolean", nullable: false),
+                    InitialProductImportCompleted = table.Column<bool>(type: "boolean", nullable: false),
+                    InitialProductExportCompleted = table.Column<bool>(type: "boolean", nullable: false),
                     WarehouseId = table.Column<int>(type: "integer", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DateModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -471,11 +493,12 @@ namespace maERP.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     OrderId = table.Column<int>(type: "integer", nullable: false),
                     ProductId = table.Column<int>(type: "integer", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    Quantity = table.Column<double>(type: "double precision", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
-                    TaxRate = table.Column<decimal>(type: "numeric", nullable: false),
-                    SerialNumber = table.Column<string>(type: "text", nullable: false),
+                    TaxRate = table.Column<double>(type: "double precision", nullable: false),
+                    MissingProductSku = table.Column<string>(type: "text", nullable: false),
+                    MissingProductEan = table.Column<string>(type: "text", nullable: false),
                     ShippingId = table.Column<int>(type: "integer", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DateModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -499,7 +522,7 @@ namespace maERP.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ProductId = table.Column<int>(type: "integer", nullable: false),
                     WarehouseId = table.Column<int>(type: "integer", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    Stock = table.Column<double>(type: "double precision", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DateModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -550,6 +573,28 @@ namespace maERP.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "OrderItemSerialNumber",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OrderItemId = table.Column<int>(type: "integer", nullable: false),
+                    SerialNumber = table.Column<string>(type: "text", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DateModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItemSerialNumber", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItemSerialNumber_OrderItem_OrderItemId",
+                        column: x => x.OrderItemId,
+                        principalTable: "OrderItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
@@ -564,8 +609,8 @@ namespace maERP.Persistence.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "Firstname", "Lastname", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "1d27e8c0-ffb8-478b-a750-97273c3d72f5", "admin@localhost.com", true, "System", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEOXhHeXl4NVx1Zf+QSWHdFSZn5UhATvNcwW19jezs04AekmxdL7T7V9GvWaT9Htaxw==", null, false, "565e7a6c-23e4-4a78-a012-264a0b68f91f", false, "admin@localhost.com" },
-                    { "9e224968-33e4-4652-b7b7-8574d048cdb9", 0, "71345e0c-c782-4e69-a2ec-2cfc5271e115", "user@localhost.com", true, "System", "User", false, null, "USER@LOCALHOST.COM", "USER@LOCALHOST.COM", "AQAAAAIAAYagAAAAEFmRbhv9XYlVs/ssYZhzYzq0gw/m8IDZel59u7cyO4jfixtabnArBuHJ3k0rR4oFWA==", null, false, "d86463a0-da27-47ff-9d30-2c866f553943", false, "user@localhost.com" }
+                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "8fcb1c13-f65e-49f8-8d28-53b89efa4a09", "admin@localhost.com", true, "System", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEMkKvTeWRHLVAEFZppkEl0qaTy0qtc7u8tBbEt5klc+fhiqdT2GOv7tOIcYSfsUg2g==", null, false, "382c65c8-6d76-428b-b760-706b02b50fcf", false, "admin@localhost.com" },
+                    { "9e224968-33e4-4652-b7b7-8574d048cdb9", 0, "a7f9d4e3-b7ac-46b2-bdfd-41075fabcf52", "user@localhost.com", true, "System", "User", false, null, "USER@LOCALHOST.COM", "USER@LOCALHOST.COM", "AQAAAAIAAYagAAAAEBq85fZPcJ+y5L73zBAu8Tp0YM8XtZdfJGadKc5w7U5+kTjtyR0BjSSqSahD7+Pz7A==", null, false, "b75637f7-1d18-4f20-90e1-7535b49fbf4d", false, "user@localhost.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -573,126 +618,126 @@ namespace maERP.Persistence.Migrations
                 columns: new[] { "Id", "CountryCode", "DateCreated", "DateModified", "Name" },
                 values: new object[,]
                 {
-                    { 1, "DE", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3940), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3953), "Germany" },
-                    { 2, "AT", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3959), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3959), "Austria" },
-                    { 3, "CH", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3960), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3960), "Switzerland" },
-                    { 4, "AD", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3961), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3961), "Andorra" },
-                    { 5, "AF", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3962), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3962), "Afghanistan" },
-                    { 6, "AG", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3963), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3963), "Antigua and Barbuda" },
-                    { 7, "AL", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3963), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3964), "Albania" },
-                    { 8, "AM", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3964), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3965), "Armenia" },
-                    { 9, "AO", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3967), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3967), "Angola" },
-                    { 10, "AX", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3968), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3968), "Åland Islands" },
-                    { 11, "AR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3969), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3969), "Argentina" },
-                    { 12, "AT", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3969), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3970), "Antarctica" },
-                    { 13, "AU", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3970), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3971), "Australia" },
-                    { 14, "AZ", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3971), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3972), "Azerbaijan" },
-                    { 15, "BA", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3972), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3972), "Bosnia and Herzegovina" },
-                    { 16, "BB", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3973), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3973), "Barbados" },
-                    { 17, "BE", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3974), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3974), "Belgium" },
-                    { 18, "BG", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3975), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3975), "Bulgaria" },
-                    { 19, "BL", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3976), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3976), "Saint Barthélemy" },
-                    { 20, "BO", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3977), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3977), "Bolivia" },
-                    { 21, "BR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3978), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3978), "Brazil" },
-                    { 22, "BS", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3979), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3979), "Bahamas" },
-                    { 23, "BY", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3979), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3980), "Belarus" },
-                    { 24, "BZ", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3980), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3981), "Belize" },
-                    { 25, "CA", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3981), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3982), "Canada" },
-                    { 26, "CH", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3982), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3982), "Cocos (Keeling) Islands" },
-                    { 27, "CI", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3983), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3983), "Ivory Coast" },
-                    { 28, "CL", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3984), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3984), "Chile" },
-                    { 29, "CN", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3985), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3985), "China" },
-                    { 30, "CO", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3986), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3986), "Colombia" },
-                    { 31, "CR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3987), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3987), "Costa Rica" },
-                    { 32, "CU", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3988), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3988), "Cuba" },
-                    { 33, "CY", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3988), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3989), "Cyprus" },
-                    { 34, "CZ", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3989), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3990), "Czech Republic" },
-                    { 35, "DO", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3990), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3991), "Dominican Republic" },
-                    { 36, "DK", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3991), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3991), "Denmark" },
-                    { 37, "DZ", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3992), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3992), "Algeria" },
-                    { 38, "EC", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3993), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3993), "Ecuador" },
-                    { 39, "EE", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3994), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3994), "Estonia" },
-                    { 40, "EG", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3995), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3995), "Egypt" },
-                    { 41, "ER", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3996), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3996), "Eritrea" },
-                    { 42, "ES", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3997), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3997), "Spain" },
-                    { 43, "ET", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3998), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3998), "Ethiopia" },
-                    { 44, "FI", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3998), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3999), "Finland" },
-                    { 45, "FR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(3999), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4000), "France" },
-                    { 46, "GB", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4000), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4001), "United Kingdom" },
-                    { 47, "GE", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4001), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4001), "Georgia" },
-                    { 48, "GF", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4002), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4002), "French Guiana" },
-                    { 49, "GH", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4003), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4003), "Ghana" },
-                    { 50, "GL", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4004), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4004), "Greenland" },
-                    { 51, "GP", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4005), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4005), "Guadeloupe" },
-                    { 52, "GR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4006), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4006), "Greece" },
-                    { 53, "GT", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4007), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4007), "Guatemala" },
-                    { 54, "GY", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4008), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4008), "Guyana" },
-                    { 55, "HN", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4009), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4009), "Honduras" },
-                    { 56, "HR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4009), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4010), "Croatia" },
-                    { 57, "HT", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4010), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4011), "Haiti" },
-                    { 58, "HU", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4011), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4011), "Hungary" },
-                    { 59, "ID", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4012), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4012), "Indonesia" },
-                    { 60, "IE", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4013), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4013), "Ireland" },
-                    { 61, "IN", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4014), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4014), "India" },
-                    { 62, "IR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4015), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4015), "Iran" },
-                    { 63, "IS", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4016), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4016), "Iceland" },
-                    { 64, "IT", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4017), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4017), "Italy" },
-                    { 65, "JM", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4018), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4018), "Jamaica" },
-                    { 66, "JP", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4018), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4019), "Japan" },
-                    { 67, "KE", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4019), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4020), "Kenya" },
-                    { 68, "KG", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4020), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4020), "Kyrgyzstan" },
-                    { 69, "KR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4021), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4021), "South Korea" },
-                    { 70, "KW", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4022), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4022), "Kuwait" },
-                    { 71, "KZ", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4023), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4023), "Kazakhstan" },
-                    { 72, "LU", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4024), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4024), "Luxembourg" },
-                    { 73, "LT", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4025), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4025), "Lithuania" },
-                    { 74, "LV", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4026), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4026), "Latvia" },
-                    { 75, "MA", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4027), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4027), "Morocco" },
-                    { 76, "MC", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4027), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4028), "Monaco" },
-                    { 77, "MD", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4028), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4029), "Moldova" },
-                    { 78, "MF", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4029), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4030), "Saint Martin" },
-                    { 79, "MG", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4030), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4030), "Madagascar" },
-                    { 80, "MQ", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4031), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4031), "Martinique" },
-                    { 81, "MT", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4032), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4032), "Malta" },
-                    { 82, "MX", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4033), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4033), "Mexico" },
-                    { 83, "MY", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4034), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4034), "Malaysia" },
-                    { 84, "NG", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4035), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4035), "Nigeria" },
-                    { 85, "NI", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4036), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4036), "Nicaragua" },
-                    { 86, "NL", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4037), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4037), "Netherlands" },
-                    { 87, "NO", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4037), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4038), "Norway" },
-                    { 88, "NZ", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4038), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4039), "New Zealand" },
-                    { 89, "OM", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4039), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4040), "Oman" },
-                    { 90, "PA", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4040), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4040), "Panama" },
-                    { 91, "PE", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4041), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4041), "Peru" },
-                    { 92, "PL", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4042), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4042), "Poland" },
-                    { 93, "PM", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4043), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4043), "Saint Pierre and Miquelon" },
-                    { 94, "PR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4044), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4044), "Puerto Rico" },
-                    { 95, "PT", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4045), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4045), "Portugal" },
-                    { 96, "PY", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4046), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4046), "Paraguay" },
-                    { 97, "QA", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4046), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4047), "Qatar" },
-                    { 98, "RO", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4047), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4048), "Romania" },
-                    { 99, "RS", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4048), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4049), "Serbia" },
-                    { 100, "RU", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4049), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4049), "Russia" },
-                    { 101, "SA", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4050), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4050), "Saudi Arabia" },
-                    { 102, "SE", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4051), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4051), "Sweden" },
-                    { 103, "SG", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4052), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4052), "Singapore" },
-                    { 104, "SI", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4053), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4053), "Slovenia" },
-                    { 105, "SK", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4054), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4054), "Slovakia" },
-                    { 106, "SN", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4055), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4055), "Senegal" },
-                    { 107, "SR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4056), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4056), "Suriname" },
-                    { 108, "SV", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4056), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4057), "El Salvador" },
-                    { 109, "TR", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4057), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4058), "Turkey" },
-                    { 110, "TT", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4058), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4058), "Trinidad and Tobago" },
-                    { 111, "UA", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4059), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4060), "Ukraine" },
-                    { 112, "US", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4060), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4060), "United States" },
-                    { 113, "UY", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4061), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4061), "Uruguay" },
-                    { 114, "VE", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4062), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4062), "Venezuela" },
-                    { 115, "VI", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4063), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4063), "Virgin Islands" },
-                    { 116, "VN", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4064), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4064), "Vietnam" },
-                    { 117, "YE", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4065), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4065), "Yemen" },
-                    { 118, "ZA", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4066), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4066), "South Africa" },
-                    { 119, "ZM", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4067), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4067), "Zambia" },
-                    { 120, "ZW", new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4067), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(4068), "Zimbabwe" }
+                    { 1, "DE", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6057), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6072), "Germany" },
+                    { 2, "AT", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6080), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6082), "Austria" },
+                    { 3, "CH", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6084), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6084), "Switzerland" },
+                    { 4, "AD", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6085), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6086), "Andorra" },
+                    { 5, "AF", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6087), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6089), "Afghanistan" },
+                    { 6, "AG", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6089), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6090), "Antigua and Barbuda" },
+                    { 7, "AL", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6090), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6090), "Albania" },
+                    { 8, "AM", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6091), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6091), "Armenia" },
+                    { 9, "AO", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6092), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6094), "Angola" },
+                    { 10, "AX", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6094), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6094), "Åland Islands" },
+                    { 11, "AR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6095), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6097), "Argentina" },
+                    { 12, "AT", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6098), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6098), "Antarctica" },
+                    { 13, "AU", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6099), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6100), "Australia" },
+                    { 14, "AZ", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6100), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6101), "Azerbaijan" },
+                    { 15, "BA", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6101), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6101), "Bosnia and Herzegovina" },
+                    { 16, "BB", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6102), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6103), "Barbados" },
+                    { 17, "BE", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6104), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6104), "Belgium" },
+                    { 18, "BG", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6105), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6105), "Bulgaria" },
+                    { 19, "BL", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6105), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6107), "Saint Barthélemy" },
+                    { 20, "BO", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6107), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6108), "Bolivia" },
+                    { 21, "BR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6108), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6109), "Brazil" },
+                    { 22, "BS", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6109), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6110), "Bahamas" },
+                    { 23, "BY", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6110), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6110), "Belarus" },
+                    { 24, "BZ", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6111), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6111), "Belize" },
+                    { 25, "CA", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6112), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6112), "Canada" },
+                    { 26, "CH", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6113), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6113), "Cocos (Keeling) Islands" },
+                    { 27, "CI", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6114), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6116), "Ivory Coast" },
+                    { 28, "CL", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6116), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6117), "Chile" },
+                    { 29, "CN", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6117), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6119), "China" },
+                    { 30, "CO", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6119), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6121), "Colombia" },
+                    { 31, "CR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6122), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6122), "Costa Rica" },
+                    { 32, "CU", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6123), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6125), "Cuba" },
+                    { 33, "CY", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6126), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6127), "Cyprus" },
+                    { 34, "CZ", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6128), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6130), "Czech Republic" },
+                    { 35, "DO", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6130), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6132), "Dominican Republic" },
+                    { 36, "DK", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6132), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6135), "Denmark" },
+                    { 37, "DZ", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6135), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6138), "Algeria" },
+                    { 38, "EC", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6138), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6141), "Ecuador" },
+                    { 39, "EE", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6141), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6142), "Estonia" },
+                    { 40, "EG", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6142), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6144), "Egypt" },
+                    { 41, "ER", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6145), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6146), "Eritrea" },
+                    { 42, "ES", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6147), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6148), "Spain" },
+                    { 43, "ET", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6149), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6151), "Ethiopia" },
+                    { 44, "FI", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6152), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6154), "Finland" },
+                    { 45, "FR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6155), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6158), "France" },
+                    { 46, "GB", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6159), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6161), "United Kingdom" },
+                    { 47, "GE", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6161), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6161), "Georgia" },
+                    { 48, "GF", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6162), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6164), "French Guiana" },
+                    { 49, "GH", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6164), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6166), "Ghana" },
+                    { 50, "GL", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6166), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6168), "Greenland" },
+                    { 51, "GP", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6169), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6172), "Guadeloupe" },
+                    { 52, "GR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6172), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6174), "Greece" },
+                    { 53, "GT", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6175), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6176), "Guatemala" },
+                    { 54, "GY", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6177), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6179), "Guyana" },
+                    { 55, "HN", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6179), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6180), "Honduras" },
+                    { 56, "HR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6180), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6182), "Croatia" },
+                    { 57, "HT", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6183), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6184), "Haiti" },
+                    { 58, "HU", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6185), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6187), "Hungary" },
+                    { 59, "ID", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6187), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6190), "Indonesia" },
+                    { 60, "IE", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6190), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6192), "Ireland" },
+                    { 61, "IN", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6192), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6197), "India" },
+                    { 62, "IR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6197), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6199), "Iran" },
+                    { 63, "IS", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6200), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6200), "Iceland" },
+                    { 64, "IT", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6201), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6203), "Italy" },
+                    { 65, "JM", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6204), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6206), "Jamaica" },
+                    { 66, "JP", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6206), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6208), "Japan" },
+                    { 67, "KE", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6209), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6211), "Kenya" },
+                    { 68, "KG", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6212), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6214), "Kyrgyzstan" },
+                    { 69, "KR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6215), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6216), "South Korea" },
+                    { 70, "KW", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6217), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6219), "Kuwait" },
+                    { 71, "KZ", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6220), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6220), "Kazakhstan" },
+                    { 72, "LU", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6223), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6224), "Luxembourg" },
+                    { 73, "LT", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6224), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6226), "Lithuania" },
+                    { 74, "LV", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6227), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6228), "Latvia" },
+                    { 75, "MA", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6229), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6231), "Morocco" },
+                    { 76, "MC", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6231), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6233), "Monaco" },
+                    { 77, "MD", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6234), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6236), "Moldova" },
+                    { 78, "MF", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6236), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6238), "Saint Martin" },
+                    { 79, "MG", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6238), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6239), "Madagascar" },
+                    { 80, "MQ", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6239), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6242), "Martinique" },
+                    { 81, "MT", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6242), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6244), "Malta" },
+                    { 82, "MX", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6244), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6247), "Mexico" },
+                    { 83, "MY", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6247), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6249), "Malaysia" },
+                    { 84, "NG", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6250), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6252), "Nigeria" },
+                    { 85, "NI", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6252), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6254), "Nicaragua" },
+                    { 86, "NL", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6255), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6257), "Netherlands" },
+                    { 87, "NO", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6258), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6258), "Norway" },
+                    { 88, "NZ", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6258), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6260), "New Zealand" },
+                    { 89, "OM", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6386), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6386), "Oman" },
+                    { 90, "PA", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6387), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6387), "Panama" },
+                    { 91, "PE", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6388), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6388), "Peru" },
+                    { 92, "PL", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6388), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6389), "Poland" },
+                    { 93, "PM", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6389), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6390), "Saint Pierre and Miquelon" },
+                    { 94, "PR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6390), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6391), "Puerto Rico" },
+                    { 95, "PT", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6391), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6391), "Portugal" },
+                    { 96, "PY", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6392), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6392), "Paraguay" },
+                    { 97, "QA", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6393), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6393), "Qatar" },
+                    { 98, "RO", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6394), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6394), "Romania" },
+                    { 99, "RS", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6395), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6395), "Serbia" },
+                    { 100, "RU", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6396), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6396), "Russia" },
+                    { 101, "SA", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6396), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6397), "Saudi Arabia" },
+                    { 102, "SE", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6397), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6398), "Sweden" },
+                    { 103, "SG", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6398), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6398), "Singapore" },
+                    { 104, "SI", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6399), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6399), "Slovenia" },
+                    { 105, "SK", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6400), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6400), "Slovakia" },
+                    { 106, "SN", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6401), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6401), "Senegal" },
+                    { 107, "SR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6402), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6402), "Suriname" },
+                    { 108, "SV", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6403), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6403), "El Salvador" },
+                    { 109, "TR", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6403), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6404), "Turkey" },
+                    { 110, "TT", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6404), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6405), "Trinidad and Tobago" },
+                    { 111, "UA", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6405), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6405), "Ukraine" },
+                    { 112, "US", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6406), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6406), "United States" },
+                    { 113, "UY", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6407), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6407), "Uruguay" },
+                    { 114, "VE", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6408), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6408), "Venezuela" },
+                    { 115, "VI", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6409), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6409), "Virgin Islands" },
+                    { 116, "VN", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6410), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6410), "Vietnam" },
+                    { 117, "YE", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6410), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6411), "Yemen" },
+                    { 118, "ZA", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6411), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6412), "South Africa" },
+                    { 119, "ZM", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6412), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6412), "Zambia" },
+                    { 120, "ZW", new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6413), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(6413), "Zimbabwe" }
                 });
 
             migrationBuilder.InsertData(
@@ -700,15 +745,15 @@ namespace maERP.Persistence.Migrations
                 columns: new[] { "Id", "DateCreated", "DateModified", "TaxRate" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(6246), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(6246), 19.0 },
-                    { 2, new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(6250), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(6251), 7.0 },
-                    { 3, new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(6251), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(6251), 0.0 }
+                    { 1, new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(8667), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(8668), 19.0 },
+                    { 2, new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(8706), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(8706), 7.0 },
+                    { 3, new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(8707), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(8707), 0.0 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Warehouse",
                 columns: new[] { "Id", "DateCreated", "DateModified", "Name" },
-                values: new object[] { 1, new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(5613), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(5613), "Testlager" });
+                values: new object[] { 1, new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(8040), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(8041), "Testlager" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -721,8 +766,8 @@ namespace maERP.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "SalesChannel",
-                columns: new[] { "Id", "DateCreated", "DateModified", "ExportCustomers", "ExportOrders", "ExportProducts", "ImportCustomers", "ImportOrders", "ImportProducts", "Name", "Password", "Type", "URL", "Username", "WarehouseId" },
-                values: new object[] { 1, new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(5916), new DateTime(2024, 5, 14, 18, 44, 20, 789, DateTimeKind.Utc).AddTicks(5917), false, false, false, false, false, false, "Kasse Ladengeschäft", "", 1, "", "", 1 });
+                columns: new[] { "Id", "DateCreated", "DateModified", "ExportCustomers", "ExportOrders", "ExportProducts", "ImportCustomers", "ImportOrders", "ImportProducts", "InitialProductExportCompleted", "InitialProductImportCompleted", "Name", "Password", "Type", "URL", "Username", "WarehouseId" },
+                values: new object[] { 1, new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(8353), new DateTime(2024, 6, 4, 15, 32, 36, 976, DateTimeKind.Utc).AddTicks(8353), false, false, false, false, false, false, false, false, "Kasse Ladengeschäft", "", 1, "", "", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -772,6 +817,11 @@ namespace maERP.Persistence.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomerSalesChannel_CustomerId",
+                table: "CustomerSalesChannel",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Order_CustomerId",
                 table: "Order",
                 column: "CustomerId");
@@ -779,8 +829,12 @@ namespace maERP.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItem_OrderId",
                 table: "OrderItem",
-                column: "OrderId",
-                unique: true);
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItemSerialNumber_OrderItemId",
+                table: "OrderItemSerialNumber",
+                column: "OrderItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Product_Sku",
@@ -846,7 +900,10 @@ namespace maERP.Persistence.Migrations
                 name: "CustomerAddress");
 
             migrationBuilder.DropTable(
-                name: "OrderItem");
+                name: "CustomerSalesChannel");
+
+            migrationBuilder.DropTable(
+                name: "OrderItemSerialNumber");
 
             migrationBuilder.DropTable(
                 name: "ProductSalesChannel");
@@ -873,7 +930,7 @@ namespace maERP.Persistence.Migrations
                 name: "Country");
 
             migrationBuilder.DropTable(
-                name: "Order");
+                name: "OrderItem");
 
             migrationBuilder.DropTable(
                 name: "SalesChannel");
@@ -885,13 +942,16 @@ namespace maERP.Persistence.Migrations
                 name: "ShippingProvider");
 
             migrationBuilder.DropTable(
-                name: "Customer");
+                name: "Order");
 
             migrationBuilder.DropTable(
                 name: "Warehouse");
 
             migrationBuilder.DropTable(
                 name: "TaxClass");
+
+            migrationBuilder.DropTable(
+                name: "Customer");
         }
     }
 }

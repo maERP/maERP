@@ -170,15 +170,10 @@ public class OrderImportRepository : IOrderImportRepository
                 CustomerId = customer.Id,
                 Status = importOrder.Status,
 
-                PaymentMethod = importOrder.PaymentMethod,
                 PaymentStatus = importOrder.PaymentStatus,
+                PaymentMethod = importOrder.PaymentMethod,
                 PaymentProvider = importOrder.PaymentProvider,
                 PaymentTransactionId = importOrder.PaymentTransactionId,
-
-                ShippingMethod = importOrder.ShippingMethod,
-                ShippingStatus = importOrder.ShippingStatus,
-                ShippingProvider = importOrder.ShippingProvider,
-                ShippingTrackingId = importOrder.ShippingTrackingId,
 
                 Subtotal = importOrder.Subtotal,
                 ShippingCost = importOrder.ShippingCost,
