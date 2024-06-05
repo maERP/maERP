@@ -23,10 +23,13 @@ public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, List<Pr
     public async Task<List<ProductListDto>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
         // Query the database
-        var productes = await _productRepository.GetAllAsync();
+        var products = await _productRepository.GetAllAsync();
+
+        // Sort by DateCreated
+        products = products.OrderByDescending(o => o.DateCreated).ToList();
 
         // Convert data objects to DTO objects
-        var data = _mapper.Map<List<ProductListDto>>(productes);
+        var data = _mapper.Map<List<ProductListDto>>(products);
 
         // Return list of DTO objects
         _logger.LogInformation("All Productes are retrieved successfully.");

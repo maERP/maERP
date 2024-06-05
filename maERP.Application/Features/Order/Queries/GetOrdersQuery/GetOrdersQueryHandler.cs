@@ -25,6 +25,9 @@ public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, List<OrderL
         // Query the database
         var orders = await _orderRepository.GetAllAsync();
 
+        // Sort the orders by DateOrdered
+        orders = orders.OrderByDescending(o => o.DateOrdered).ToList();
+
         // Convert data objects to DTO objects
         var data = _mapper.Map<List<OrderListDto>>(orders);
 

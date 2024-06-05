@@ -122,6 +122,12 @@ public class Shopware5OrderImportTask : IHostedService
                         {
                             _logger.LogInformation("Import Order {0}", remoteOrder.id.ToString());
 
+                            if(remoteOrder.orderStatusId == -1)
+                            {
+                                _logger.LogInformation("Import Order {0} skip order because cancelled in sales channel", remoteOrder.id.ToString());
+                                continue;
+                            }
+
                             string requestDetailUrl = salesChannel.URL + $"/api/orders/{remoteOrder.id}";
                             response = await client.GetAsync(requestDetailUrl).ConfigureAwait(false);
 
@@ -144,7 +150,10 @@ public class Shopware5OrderImportTask : IHostedService
 
                                     if (remoteOrderDetail.customer == null)
                                     {
-                                        remoteOrderDetail.customer = new(); //  Models.Shopware5.Customer();
+                                        remoteOrderDetail.customer = new Models.Shopware5.Customer
+                                        {
+                                            firstLogin = DateTime.MinValue.ToString()
+                                        };
                                     }
 
                                     var salesChannelImportOrder = new SalesChannelImportOrder

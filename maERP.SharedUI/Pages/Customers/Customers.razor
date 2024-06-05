@@ -22,7 +22,7 @@ else
             <PropertyColumn Property="x => x.Id" Title="Kundennr." />
             <PropertyColumn Property="x => x.Firstname" Title="Vorname" />
             <PropertyColumn Property="x => x.Lastname" Title="Nachname" />
-            @*<PropertyColumn Property="x => x.EnrollmentDate" Title="Kunde seit" />*@
+            <PropertyColumn Property="x => x.DateEnrollment" Title="Kunde seit" />
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
                     <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/Customers/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>

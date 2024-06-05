@@ -20,11 +20,11 @@ else
     <MudDataGrid Items="@orders" SortMode="SortMode.Single" Class="mb-8">
         <Columns>
             <PropertyColumn Property="x => x.Id" Title="Bestellnr." />
+            <PropertyColumn Property="x => x.DateOrdered" Title="Datum" />
             <PropertyColumn Property="x => x.FullName" Title="Kunde" />
             <PropertyColumn Property="x => x.Total" Title="Summe" Format="C" />
             <PropertyColumn Property="x => x.Status" Title="Status" />
-            <PropertyColumn Property="x => x.PaymentStatus" Title="Status" />
-            <PropertyColumn Property="x => x.DateOrdered" Title="Datum" />
+            <PropertyColumn Property="x => x.PaymentStatus" Title="Zahlstatus" />
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
                     <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/Orders/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>

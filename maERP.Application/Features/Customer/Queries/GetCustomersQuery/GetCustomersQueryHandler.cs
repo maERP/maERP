@@ -23,10 +23,13 @@ public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, List<
     public async Task<List<CustomerListDto>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
     {
         // Query the database
-        var customeres = await _customerRepository.GetAllAsync();
+        var customers = await _customerRepository.GetAllAsync();
+
+        // Sort by DateEnrollment
+        customers = customers.OrderByDescending(o => o.DateEnrollment).ToList();
 
         // Convert data objects to DTO objects
-        var data = _mapper.Map<List<CustomerListDto>>(customeres);
+        var data = _mapper.Map<List<CustomerListDto>>(customers);
 
         // Return list of DTO objects
         _logger.LogInformation("All Customeres are retrieved successfully.");
