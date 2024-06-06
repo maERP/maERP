@@ -14,3 +14,10 @@ public abstract class BaseEntity
     [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime DateModified { get; set; } = DateTime.UtcNow;
 }
+
+public interface IBaseEntity
+{
+    int Id { get; set; }
+    DateTime DateCreated { get; set; }
+    DateTime DateModified { get; set; }
+}
