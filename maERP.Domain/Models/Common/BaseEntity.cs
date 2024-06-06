@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Domain.Models.Common;
 
-public abstract class BaseEntity
+// public abstract class BaseEntity
+public class BaseEntity
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
@@ -13,4 +14,11 @@ public abstract class BaseEntity
 
     [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime DateModified { get; set; } = DateTime.UtcNow;
+}
+
+public interface IBaseEntity
+{
+    int Id { get; set; }
+    DateTime DateCreated { get; set; }
+    DateTime DateModified { get; set; }
 }

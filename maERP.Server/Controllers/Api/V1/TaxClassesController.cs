@@ -36,7 +36,7 @@ public class TaxClassesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<TaxClassDetailDto> GetDetails(int id)
     {
-        return await _mediator.Send(new GetTaxClassDetailQuery { Id = id });
+        return await _mediator.Send(new GetTaxClassDetailsQuery { Id = id });
     }
 
     // POST api/<TaxClassesController>

@@ -3,7 +3,7 @@ using maERP.Domain.Models.Common;
 
 namespace maERP.Domain.Models;
 
-public class Order : BaseEntity
+public class Order : BaseEntity, IBaseEntity
 {
     public int SalesChannelId { get; set; }
     public string RemoteOrderId { get; set; } = string.Empty;

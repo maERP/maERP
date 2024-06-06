@@ -28,7 +28,7 @@ public class UsersController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     public async Task<UserDetailDto> GetDetails(string id)
     {
-        return await mediator.Send(new GetUserDetailQuery { Id = id });
+        return await mediator.Send(new GetUserDetailsQuery { Id = id });
     }
 
     // POST api/<UsersController>

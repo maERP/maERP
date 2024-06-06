@@ -1,5 +1,8 @@
 ﻿namespace maERP.Domain.Models;
 
+/// <summary>
+/// Represents the status of a shipping process.
+/// </summary>
 public enum ShippingStatus
 {
     Open = 1,

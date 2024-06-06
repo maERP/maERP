@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\maERP.Domain\maERP.Domain.csproj" />
+    <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj" />
   </ItemGroup>
 
 </Project>

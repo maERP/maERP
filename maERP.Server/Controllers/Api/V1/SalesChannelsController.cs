@@ -29,7 +29,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     public async Task<SalesChannelDetailDto> GetDetails(int id)
     {
-        return await mediator.Send(new GetSalesChannelDetailQuery { Id = id });
+        return await mediator.Send(new GetSalesChannelDetailsQuery { Id = id });
     }
 
     // POST api/<SalesChannelsController>
