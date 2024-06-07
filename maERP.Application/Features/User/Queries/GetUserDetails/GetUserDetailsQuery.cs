@@ -1,7 +1,6 @@
-﻿using maERP.Application.Dtos.User;
-using MediatR;
+﻿using MediatR;
 
-namespace maERP.Application.Features.User.Queries.GetUserDetailQuery;
+namespace maERP.Application.Features.User.Queries.GetUserDetails;
 
 public class GetUserDetailsQuery : IRequest<UserDetailDto>
 {

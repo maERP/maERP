@@ -1,7 +1,6 @@
-﻿using maERP.Application.Dtos.Warehouse;
-using MediatR;
+﻿using MediatR;
 
-namespace maERP.Application.Features.Warehouse.Queries.GetWarehouseDetailQuery;
+namespace maERP.Application.Features.Warehouse.Queries.GetWarehouseDetails;
 
 public class GetWarehouseDetailQuery : IRequest<WarehouseDetailDto>
 {

@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using maERP.Application.Dtos.Product;
-using maERP.Application.Features.Product.Commands.CreateProductCommand;
-using maERP.Application.Features.Product.Commands.DeleteProductCommand;
-using maERP.Application.Features.Product.Commands.UpdateProductCommand;
+using maERP.Application.Features.Product.Commands.CreateProduct;
+using maERP.Application.Features.Product.Commands.DeleteProduct;
+using maERP.Application.Features.Product.Commands.UpdateProduct;
+using maERP.Application.Features.Product.Queries.GetProductDetail;
+using maERP.Application.Features.Product.Queries.GetProducts;
 using maERP.Domain.Models;
 
 namespace maERP.Application.MappingProfiles;
@@ -11,10 +12,10 @@ public class ProductProfile : Profile
 {
     public ProductProfile()
     {
-        CreateMap<Product, ProductCreateDto>();
-        CreateMap<Product, ProductDetailDto>();
-        CreateMap<Product, ProductListDto>();
-        CreateMap<Product, ProductUpdateDto>();
+        CreateMap<Product, CreateProductResponse>();
+        CreateMap<Product, GetProductDetailResponse>();
+        CreateMap<Product, GetProductsResponse>();
+        CreateMap<Product, UpdateProductResponse>();
 
         CreateMap<CreateProductCommand, Product>();
         CreateMap<DeleteProductCommand, Product>();

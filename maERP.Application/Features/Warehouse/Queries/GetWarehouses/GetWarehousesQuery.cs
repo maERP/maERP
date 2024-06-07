@@ -1,6 +1,5 @@
-﻿using maERP.Application.Dtos.Warehouse;
-using MediatR;
+﻿using MediatR;
 
-namespace maERP.Application.Features.Warehouse.Queries.GetWarehousesQuery;
+namespace maERP.Application.Features.Warehouse.Queries.GetWarehouses;
 
 public record GetWarehousesQuery : IRequest<List<WarehouseListDto>>;

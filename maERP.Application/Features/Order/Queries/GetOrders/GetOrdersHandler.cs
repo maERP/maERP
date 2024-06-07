@@ -9,7 +9,7 @@ using maERP.Application.Specifications;
 using maERP.Shared.Wrapper;
 using MediatR;
 
-namespace maERP.Application.Features.Order.Queries.GetOrdersQuery;
+namespace maERP.Application.Features.Order.Queries.GetOrders;
 
 public class GetOrdersHandler : IRequestHandler<GetOrdersQuery, PaginatedResult<GetOrdersResponse>>
 {

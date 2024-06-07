@@ -1,12 +1,12 @@
-﻿using maERP.Application.Dtos.Product;
-using maERP.Application.Dtos.SalesChannel;
+﻿using maERP.Application.Features.Product.Commands.CreateProduct;
+using maERP.Application.Features.SalesChannel.Commands.CreateSalesChannel;
 
 namespace maERP.Application.Dtos.ProductSalesChannel;
 
 public class ProductSalesChannelCreateDto
 {
-    public virtual SalesChannelCreateDto? SalesChannel { get; set; }
-    public virtual ProductCreateDto? ProductId { get; set; }
+    public virtual CreateSalesChannelResponse? SalesChannel { get; set; }
+    public virtual CreateProductResponse? ProductId { get; set; }
 
     public int RemoteProductId { get; set; }
 

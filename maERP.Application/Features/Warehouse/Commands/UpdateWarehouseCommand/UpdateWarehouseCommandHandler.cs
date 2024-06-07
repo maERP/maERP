@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Dtos.Warehouse;
 using maERP.Application.Exceptions;
 using MediatR;
 

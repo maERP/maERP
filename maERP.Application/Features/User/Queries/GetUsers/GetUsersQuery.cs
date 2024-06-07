@@ -1,6 +1,5 @@
-﻿using maERP.Application.Dtos.User;
-using MediatR;
+﻿using MediatR;
 
-namespace maERP.Application.Features.User.Queries.GetUsersQuery;
+namespace maERP.Application.Features.User.Queries.GetUsers;
 
 public record GetUsersQuery : IRequest<List<UserListDto>>;

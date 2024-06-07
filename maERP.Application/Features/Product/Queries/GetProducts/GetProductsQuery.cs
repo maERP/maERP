@@ -1,6 +1,5 @@
-﻿using maERP.Application.Dtos.Product;
-using MediatR;
+﻿using MediatR;
 
-namespace maERP.Application.Features.Product.Queries.GetProductsQuery;
+namespace maERP.Application.Features.Product.Queries.GetProducts;
 
-public record GetProductsQuery : IRequest<List<ProductListDto>>;
+public record GetProductsQuery : IRequest<List<GetProductsResponse>>;

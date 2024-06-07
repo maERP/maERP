@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using maERP.Application.Dtos.CustomerAddress;
-using maERP.Application.Features.Customer.Commands.CreateCustomerCommand;
-using maERP.Application.Features.Customer.Commands.DeleteCustomerCommand;
-using maERP.Application.Features.Customer.Commands.UpdateCustomerCommand;
+using maERP.Application.Features.Customer.Commands.CreateCustomer;
+using maERP.Application.Features.Customer.Commands.DeleteCustomer;
+using maERP.Application.Features.Customer.Commands.UpdateCustomer;
 using maERP.Domain.Models;
 
 namespace maERP.Application.MappingProfiles;

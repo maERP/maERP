@@ -1,10 +1,9 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Dtos.Customer;
-using maERP.Application.Features.Customer.Commands.CreateCustomerCommand;
-using maERP.Application.Features.Customer.Commands.DeleteCustomerCommand;
-using maERP.Application.Features.Customer.Commands.UpdateCustomerCommand;
-using maERP.Application.Features.Customer.Queries.GetCustomerDetailQuery;
-using maERP.Application.Features.Customer.Queries.GetCustomersQuery;
+using maERP.Application.Features.Customer.Commands.CreateCustomer;
+using maERP.Application.Features.Customer.Commands.DeleteCustomer;
+using maERP.Application.Features.Customer.Commands.UpdateCustomer;
+using maERP.Application.Features.Customer.Queries.GetCustomerDetail;
+using maERP.Application.Features.Customer.Queries.GetCustomers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,17 +18,18 @@ public class CustomersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<CustomersController>
     [HttpGet]
-    public async Task<List<CustomerListDto>> Get()
+    public async Task<ActionResult> Get()
     {
         var customers = await mediator.Send(new GetCustomersQuery());
-        return customers;
+        return Ok(customers);
     }
 
     // GET api/<CustomersController>/5
     [HttpGet("{id}")]
-    public async Task<CustomerDetailDto> GetDetails(int id)
+    public async Task<ActionResult> GetDetails(int id)
     {
-        return await mediator.Send(new GetCustomerDetailsQuery { Id = id });
+        var customer = await mediator.Send(new GetCustomerDetailQuery { Id = id });
+        return Ok(customer);
     }
 
     // POST api/<CustomersController>

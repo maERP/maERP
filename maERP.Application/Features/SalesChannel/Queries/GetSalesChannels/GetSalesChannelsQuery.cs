@@ -1,6 +1,5 @@
-﻿using maERP.Application.Dtos.SalesChannel;
-using MediatR;
+﻿using MediatR;
 
-namespace maERP.Application.Features.SalesChannel.Queries.GetSalesChannelsQuery;
+namespace maERP.Application.Features.SalesChannel.Queries.GetSalesChannels;
 
-public record GetSalesChannelsQuery : IRequest<List<SalesChannelListDto>>;
+public record GetSalesChannelsQuery : IRequest<List<GetSalesChannelsResponse>>;

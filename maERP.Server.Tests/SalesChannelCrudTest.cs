@@ -1,8 +1,10 @@
 using maERP.Application.Dtos;
 using maERP.Application.Dtos.SalesChannel;
+using maERP.Application.Features.SalesChannel.Queries.GetSalesChannels;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
+using maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetail;
 
 namespace maERP.Server.Tests;
 
@@ -33,7 +35,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, saleschannel);
-        SalesChannelDetailDto? resultContent = await result.Content.ReadFromJsonAsync<SalesChannelDetailDto>();
+        GetSalesChannelDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<GetSalesChannelDetailResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -53,7 +55,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
                 }
         });
 
-        ICollection<SalesChannelListDto>? result = await httpClient.GetFromJsonAsync<ICollection<SalesChannelListDto>>(url);
+        ICollection<GetSalesChannelsResponse>? result = await httpClient.GetFromJsonAsync<ICollection<GetSalesChannelsResponse>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 2);
@@ -73,7 +75,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
                 }
         });
 
-        SalesChannelDetailDto? result = await httpClient.GetFromJsonAsync<SalesChannelDetailDto>(url);
+        GetSalesChannelDetailResponse? result = await httpClient.GetFromJsonAsync<GetSalesChannelDetailResponse>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);

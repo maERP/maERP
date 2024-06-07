@@ -1,4 +1,4 @@
-﻿namespace maERP.Application.Features.Order.Queries.GetOrdersQuery;
+﻿namespace maERP.Application.Features.Order.Queries.GetOrders;
 
 public class GetOrdersResponse
 {

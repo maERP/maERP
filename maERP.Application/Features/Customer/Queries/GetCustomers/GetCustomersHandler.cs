@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Dtos.Customer;
 using MediatR;
 
-namespace maERP.Application.Features.Customer.Queries.GetCustomersQuery;
+namespace maERP.Application.Features.Customer.Queries.GetCustomers;
 
-public class GetCustomersHandler : IRequestHandler<GetCustomersQuery, List<CustomerListDto>>
+public class GetCustomersHandler : IRequestHandler<GetCustomersQuery, List<GetCustomersResponse>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<GetCustomersHandler> _logger;
@@ -20,7 +19,7 @@ public class GetCustomersHandler : IRequestHandler<GetCustomersQuery, List<Custo
         _logger = logger;
         _customerRepository = customerRepository; 
     }
-    public async Task<List<CustomerListDto>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
+    public async Task<List<GetCustomersResponse>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
     {
         // Query the database
         var customers = await _customerRepository.GetAllAsync();
@@ -29,7 +28,7 @@ public class GetCustomersHandler : IRequestHandler<GetCustomersQuery, List<Custo
         customers = customers.OrderByDescending(o => o.DateEnrollment).ToList();
 
         // Convert data objects to DTO objects
-        var data = _mapper.Map<List<CustomerListDto>>(customers);
+        var data = _mapper.Map<List<GetCustomersResponse>>(customers);
 
         // Return list of DTO objects
         _logger.LogInformation("All Customeres are retrieved successfully.");

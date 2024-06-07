@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Dtos.User;
 using MediatR;
 
-namespace maERP.Application.Features.User.Queries.GetUserDetailQuery;
+namespace maERP.Application.Features.User.Queries.GetUserDetails;
 
 public class GetUserDetailsHandler : IRequestHandler<GetUserDetailsQuery, UserDetailDto>
 {

@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using maERP.Application.Dtos.SalesChannel;
-using maERP.Application.Features.SalesChannel.Commands.CreateSalesChannelCommand;
-using maERP.Application.Features.SalesChannel.Commands.DeleteSalesChannelCommand;
-using maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannelCommand;
+using maERP.Application.Features.SalesChannel.Commands.CreateSalesChannel;
+using maERP.Application.Features.SalesChannel.Commands.DeleteSalesChannel;
+using maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannel;
+using maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetail;
+using maERP.Application.Features.SalesChannel.Queries.GetSalesChannels;
 using maERP.Domain.Models;
 
 namespace maERP.Application.MappingProfiles;
@@ -11,8 +12,8 @@ public class SalesChannelProfile : Profile
 {
     public SalesChannelProfile()
     {
-        CreateMap<SalesChannel, SalesChannelListDto>();
-        CreateMap<SalesChannel, SalesChannelDetailDto>();
+        CreateMap<SalesChannel, GetSalesChannelsResponse>();
+        CreateMap<SalesChannel, GetSalesChannelDetailResponse>();
         
         CreateMap<CreateSalesChannelCommand, SalesChannel>();
         CreateMap<DeleteSalesChannelCommand, SalesChannel>();

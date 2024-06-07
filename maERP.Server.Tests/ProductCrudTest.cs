@@ -1,7 +1,9 @@
 using maERP.Application.Dtos.Product;
+using maERP.Application.Features.Product.Queries.GetProducts;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
+using maERP.Application.Features.Product.Queries.GetProductDetail;
 
 namespace maERP.Server.Tests;
 
@@ -33,7 +35,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, product);
-        ProductDetailDto? resultContent = await result.Content.ReadFromJsonAsync<ProductDetailDto>();
+        GetProductDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<GetProductDetailResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -53,7 +55,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
                 }
         });
 
-        ICollection<ProductListDto>? result = await httpClient.GetFromJsonAsync<ICollection<ProductListDto>>(url);
+        ICollection<GetProductsResponse>? result = await httpClient.GetFromJsonAsync<ICollection<GetProductsResponse>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 1);
@@ -72,7 +74,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
                 }
         });
 
-        ProductDetailDto? result = await httpClient.GetFromJsonAsync<ProductDetailDto>(url);
+        GetProductDetailResponse? result = await httpClient.GetFromJsonAsync<GetProductDetailResponse>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);

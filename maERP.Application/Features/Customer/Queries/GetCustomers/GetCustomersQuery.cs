@@ -1,6 +1,5 @@
-﻿using maERP.Application.Dtos.Customer;
-using MediatR;
+﻿using MediatR;
 
-namespace maERP.Application.Features.Customer.Queries.GetCustomersQuery;
+namespace maERP.Application.Features.Customer.Queries.GetCustomers;
 
-public record GetCustomersQuery : IRequest<List<CustomerListDto>>;
+public record GetCustomersQuery : IRequest<List<GetCustomersResponse>>;
