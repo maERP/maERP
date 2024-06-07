@@ -1,4 +1,6 @@
 using maERP.Application.Dtos.Warehouse;
+using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetails;
+using maERP.Application.Features.Warehouse.Queries.GetWarehouses;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;

@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace maERP.Domain.Models.Common;
 
-public abstract class BaseEntity
+// public abstract class BaseEntity
+public class BaseEntity
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }

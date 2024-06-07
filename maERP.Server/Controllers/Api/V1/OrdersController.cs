@@ -1,10 +1,9 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Dtos.Order;
-using maERP.Application.Features.Order.Commands.CreateOrderCommand;
-using maERP.Application.Features.Order.Commands.DeleteOrderCommand;
-using maERP.Application.Features.Order.Commands.UpdateOrderCommand;
-using maERP.Application.Features.Order.Queries.GetOrderDetailQuery;
-using maERP.Application.Features.Order.Queries.GetOrdersQuery;
+using maERP.Application.Features.Order.Commands.CreateOrder;
+using maERP.Application.Features.Order.Commands.DeleteOrder;
+using maERP.Application.Features.Order.Commands.UpdateOrder;
+using maERP.Application.Features.Order.Queries.GetOrderDetail;
+using maERP.Application.Features.Order.Queries.GetOrders;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +18,20 @@ public class OrdersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<OrdersController>
     [HttpGet]
-    public async Task<List<OrderListDto>> Get()
+    public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
-        var orders = await mediator.Send(new GetOrdersQuery());
-        return orders;
+        if (string.IsNullOrEmpty(orderBy))
+        {
+            orderBy = "DateCreated Descending";
+        }
+
+        var orders = await mediator.Send(new GetOrdersQuery(pageNumber, pageSize, searchString, orderBy));
+        return Ok(orders);
     }
 
     // GET api/<OrdersController>/5
     [HttpGet("{id}")]
-    public async Task<OrderDetailDto> GetDetails(int id)
+    public async Task<GetOrderDetailResponse> GetDetails(int id)
     {
         return await mediator.Send(new GetOrderDetailQuery { Id = id });
     }

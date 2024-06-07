@@ -1,10 +1,9 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Dtos.Product;
-using maERP.Application.Features.Product.Commands.CreateProductCommand;
-using maERP.Application.Features.Product.Commands.DeleteProductCommand;
-using maERP.Application.Features.Product.Commands.UpdateProductCommand;
-using maERP.Application.Features.Product.Queries.GetProductDetailQuery;
-using maERP.Application.Features.Product.Queries.GetProductsQuery;
+using maERP.Application.Features.Product.Commands.CreateProduct;
+using maERP.Application.Features.Product.Commands.DeleteProduct;
+using maERP.Application.Features.Product.Commands.UpdateProduct;
+using maERP.Application.Features.Product.Queries.GetProductDetail;
+using maERP.Application.Features.Product.Queries.GetProducts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +18,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<ProductsController>
     [HttpGet]
-    public async Task<List<ProductListDto>> Get()
+    public async Task<List<GetProductsResponse>> Get()
     {
         var products = await mediator.Send(new GetProductsQuery());
         return products;
@@ -27,7 +26,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
 
     // GET api/<ProductsController>/5
     [HttpGet("{id}")]
-    public async Task<ProductDetailDto> GetDetails(int id)
+    public async Task<GetProductDetailResponse> GetDetails(int id)
     {
         return await mediator.Send(new GetProductDetailQuery { Id = id });
     }

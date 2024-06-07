@@ -1,10 +1,9 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Dtos.TaxClass;
-using maERP.Application.Features.TaxClass.Commands.CreateTaxClassCommand;
-using maERP.Application.Features.TaxClass.Commands.DeleteTaxClassCommand;
-using maERP.Application.Features.TaxClass.Commands.UpdateTaxClassCommand;
-using maERP.Application.Features.TaxClass.Queries.GetTaxClassDetailQuery;
-using maERP.Application.Features.TaxClass.Queries.GetTaxClassesQuery;
+using maERP.Application.Features.TaxClass.Commands.CreateTaxClass;
+using maERP.Application.Features.TaxClass.Commands.DeleteTaxClass;
+using maERP.Application.Features.TaxClass.Commands.UpdateTaxClass;
+using maERP.Application.Features.TaxClass.Queries.GetTaxClassDetail;
+using maERP.Application.Features.TaxClass.Queries.GetTaxClasses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,17 +25,18 @@ public class TaxClassesController : ControllerBase
 
     // GET: api/<TaxClassesController>
     [HttpGet]
-    public async Task<List<TaxClassListDto>> GetAll()
+    public async Task<ActionResult> GetAll()
     {
         var taxClasses = await _mediator.Send(new GetTaxClassesQuery());
-        return taxClasses;
+        return Ok(taxClasses);
     }
 
     // GET api/TaxClassesController>/5
     [HttpGet("{id}")]
-    public async Task<TaxClassDetailDto> GetDetails(int id)
+    public async Task<ActionResult> GetDetails(int id)
     {
-        return await _mediator.Send(new GetTaxClassDetailQuery { Id = id });
+        var taxClass = await _mediator.Send(new GetTaxClassDetailQuery { Id = id });
+        return Ok(taxClass);
     }
 
     // POST api/<TaxClassesController>

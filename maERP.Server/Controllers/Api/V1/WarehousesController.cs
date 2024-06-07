@@ -1,10 +1,9 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Dtos.Warehouse;
 using maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
 using maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
 using maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
-using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetailQuery;
-using maERP.Application.Features.Warehouse.Queries.GetWarehousesQuery;
+using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetails;
+using maERP.Application.Features.Warehouse.Queries.GetWarehouses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,17 +18,18 @@ public class WarehousesController(IMediator mediator) : ControllerBase
 {
     // GET: api/<WarehousesController>
     [HttpGet]
-    public async Task<List<WarehouseListDto>> Get()
+    public async Task<ActionResult> Get()
     {
         var warehouses = await mediator.Send(new GetWarehousesQuery());
-        return warehouses;
+        return Ok(warehouses);
     }
 
     // GET api/<WarehousesController>/5
     [HttpGet("{id}")]
-    public async Task<WarehouseDetailDto> GetDetails(int id)
+    public async Task<ActionResult> GetDetails(int id)
     {
-        return await mediator.Send(new GetWarehouseDetailQuery { Id = id });
+        var warehouse = await mediator.Send(new GetWarehouseDetailQuery { Id = id });
+        return Ok(warehouse);
     }
 
     // POST api/<WarehousesController>

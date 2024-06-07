@@ -1,10 +1,9 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Dtos.SalesChannel;
-using maERP.Application.Features.SalesChannel.Commands.CreateSalesChannelCommand;
-using maERP.Application.Features.SalesChannel.Commands.DeleteSalesChannelCommand;
-using maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannelCommand;
-using maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetailQuery;
-using maERP.Application.Features.SalesChannel.Queries.GetSalesChannelsQuery;
+using maERP.Application.Features.SalesChannel.Commands.CreateSalesChannel;
+using maERP.Application.Features.SalesChannel.Commands.DeleteSalesChannel;
+using maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannel;
+using maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetail;
+using maERP.Application.Features.SalesChannel.Queries.GetSalesChannels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +18,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<SalesChannelsController>
     [HttpGet]
-    public async Task<List<SalesChannelListDto>> Get()
+    public async Task<List<GetSalesChannelsResponse>> Get()
     {
         var salesChannels = await mediator.Send(new GetSalesChannelsQuery());
         return salesChannels;
@@ -27,7 +26,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
 
     // GET api/<SalesChannelsController>/5
     [HttpGet("{id}")]
-    public async Task<SalesChannelDetailDto> GetDetails(int id)
+    public async Task<GetSalesChannelDetailResponse> GetDetails(int id)
     {
         return await mediator.Send(new GetSalesChannelDetailQuery { Id = id });
     }

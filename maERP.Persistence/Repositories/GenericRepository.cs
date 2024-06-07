@@ -14,7 +14,21 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         _context = context;
     }
-    
+
+    public IQueryable<CT> GetContext<CT>() where CT : class => _context.Set<CT>();
+
+    public IQueryable<T> Entities => _context.Set<T>();
+
+    public void Attach(T entity)
+    {
+        _context.Set<T>().Attach(entity);
+    }
+
+    public void AttachRange(IEnumerable<T> entities)
+    {
+        _context.Set<T>().AttachRange(entities);
+    }
+
     public async Task<int> CreateAsync(T entity)
     {
         await _context.AddAsync(entity);
