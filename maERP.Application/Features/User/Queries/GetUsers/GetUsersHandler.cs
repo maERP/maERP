@@ -5,7 +5,7 @@ using MediatR;
 
 namespace maERP.Application.Features.User.Queries.GetUsers;
 
-public class GetUsersHandler : IRequestHandler<GetUsersQuery, List<UserListDto>>
+public class GetUsersHandler : IRequestHandler<GetUsersQuery, List<GetUsersResponse>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<GetUsersHandler> _logger;
@@ -20,13 +20,13 @@ public class GetUsersHandler : IRequestHandler<GetUsersQuery, List<UserListDto>>
         _userRepository = userRepository; 
     }
 
-    public async Task<List<UserListDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
+    public async Task<List<GetUsersResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
     {
         // Query the database
         var useres = await _userRepository.GetAllAsync();
 
         // Convert data objects to DTO objects
-        var data = _mapper.Map<List<UserListDto>>(useres);
+        var data = _mapper.Map<List<GetUsersResponse>>(useres);
 
         // Return list of DTO objects
         _logger.LogInformation("All Useres are retrieved successfully.");

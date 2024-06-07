@@ -1,6 +1,8 @@
+using maERP.Shared.Wrapper;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.Order;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace maERP.SharedUI.Pages.Orders;
 
@@ -12,11 +14,17 @@ public partial class Orders
     [Inject]
     public required IOrderService _orderService { get; set; }
 
-    private ICollection<OrderListVM>? orders;
+    private string _searchString = string.Empty;
 
-    protected override async Task OnInitializedAsync()
+    private async Task<GridData<OrderListVM>> LoadGridData(GridState<OrderListVM> state)
     {
-        orders = await _orderService.GetOrders();
-        Console.WriteLine("");
+        var apiResponse = await _orderService.GetOrders(state.Page, state.PageSize);
+        GridData<OrderListVM> data = new()
+        {
+            Items = apiResponse.Data,
+            TotalItems = apiResponse.TotalCount
+        };
+
+        return data;
     }
 }

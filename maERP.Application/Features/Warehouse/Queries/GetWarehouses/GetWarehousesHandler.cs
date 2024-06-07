@@ -5,7 +5,7 @@ using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Queries.GetWarehouses;
 
-public class GetWarehousesHandler : IRequestHandler<GetWarehousesQuery, List<WarehouseListDto>>
+public class GetWarehousesHandler : IRequestHandler<GetWarehousesQuery, List<GetWarehousesResponse>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<GetWarehousesHandler> _logger;
@@ -19,13 +19,13 @@ public class GetWarehousesHandler : IRequestHandler<GetWarehousesQuery, List<War
         _logger = logger;
         _warehouseRepository = warehouseRepository; 
     }
-    public async Task<List<WarehouseListDto>> Handle(GetWarehousesQuery request, CancellationToken cancellationToken)
+    public async Task<List<GetWarehousesResponse>> Handle(GetWarehousesQuery request, CancellationToken cancellationToken)
     {
         // Query the database
         var warehouses = await _warehouseRepository.GetAllAsync();
 
         // Convert data objects to DTO objects
-        var data = _mapper.Map<List<WarehouseListDto>>(warehouses);
+        var data = _mapper.Map<List<GetWarehousesResponse>>(warehouses);
 
         // Return list of DTO objects
         _logger.LogInformation("All Warehouses are retrieved successfully.");

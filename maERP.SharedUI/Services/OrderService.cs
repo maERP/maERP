@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blazored.LocalStorage;
+using maERP.Shared.Wrapper;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Services.Base;
@@ -15,17 +16,17 @@ public class OrderService : BaseHttpService, IOrderService
         _mapper = mapper;
     }
 
-    public async Task<List<OrderListVM>> GetOrders()
+    public async Task<PaginatedResult<OrderListVM>> GetOrders(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var orders = await _client.OrdersAllAsync();
-        return _mapper.Map<List<OrderListVM>>(orders);
+        var orders = await _client.OrdersGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<OrderListVM>>(orders);
     }
 
     public async Task<OrderVM> GetOrderDetails(int id)
     {
         await AddBearerToken();
-        var order = await _client.OrdersGETAsync(id);
+        var order = await _client.OrdersGET2Async(id);
         return _mapper.Map<OrderVM>(order);
     }
 

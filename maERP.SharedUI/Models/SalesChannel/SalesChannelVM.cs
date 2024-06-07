@@ -1,4 +1,5 @@
-﻿using maERP.SharedUI.Services.Base;
+﻿using maERP.SharedUI.Models.Warehouse;
+using maERP.SharedUI.Services.Base;
 
 namespace maERP.SharedUI.Models.SalesChannel;
 
@@ -21,6 +22,6 @@ public class SalesChannelVM
     public bool ExportOrders { get; set; }
 
     public int WarehouseId { get; set; }
-    public WarehouseDetailDto? Warehouse { get; set; }
+    public WarehouseVM? Warehouse { get; set; }
 }
 

@@ -20,8 +20,4 @@
     <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\Warehouse\" />
-  </ItemGroup>
-
 </Project>

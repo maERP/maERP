@@ -4,16 +4,16 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
 using MediatR;
 
-namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
+namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouse;
 
-public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseCommand, int>
+public class CreateWarehouseHandler : IRequestHandler<CreateWarehouseCommand, int>
 {
     private readonly IMapper _mapper;
-    private readonly IAppLogger<CreateWarehouseCommandHandler> _logger;
+    private readonly IAppLogger<CreateWarehouseHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
 
-    public CreateWarehouseCommandHandler(IMapper mapper,
-        IAppLogger<CreateWarehouseCommandHandler> logger,
+    public CreateWarehouseHandler(IMapper mapper,
+        IAppLogger<CreateWarehouseHandler> logger,
         IWarehouseRepository warehouseRepository)
     {
         _mapper = mapper;
@@ -24,7 +24,7 @@ public class CreateWarehouseCommandHandler : IRequestHandler<CreateWarehouseComm
     public async Task<int> Handle(CreateWarehouseCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
-        var validator = new CreateWarehouseCommandValidator(_warehouseRepository);
+        var validator = new CreateWarehouseValidator(_warehouseRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if(validationResult.Errors.Any())

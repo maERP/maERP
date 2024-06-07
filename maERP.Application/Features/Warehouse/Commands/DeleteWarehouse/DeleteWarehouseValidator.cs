@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
 
-namespace maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
+namespace maERP.Application.Features.Warehouse.Commands.DeleteWarehouse;
 
-public class DeleteWarehouseCommandValidator : AbstractValidator<DeleteWarehouseCommand>
+public class DeleteWarehouseValidator : AbstractValidator<DeleteWarehouseCommand>
 {
     private readonly IWarehouseRepository _warehouseRepository;
 
-    public DeleteWarehouseCommandValidator(IWarehouseRepository warehouseRepository)
+    public DeleteWarehouseValidator(IWarehouseRepository warehouseRepository)
     {
         _warehouseRepository = warehouseRepository;
         

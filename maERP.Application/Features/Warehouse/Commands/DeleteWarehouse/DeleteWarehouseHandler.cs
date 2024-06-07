@@ -1,18 +1,17 @@
-﻿using AutoMapper;
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
 using MediatR;
 
-namespace maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
+namespace maERP.Application.Features.Warehouse.Commands.DeleteWarehouse;
 
-public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseCommand, int>
+public class DeleteWarehouseHandler : IRequestHandler<DeleteWarehouseCommand, int>
 {
-    private readonly IAppLogger<DeleteWarehouseCommandHandler> _logger;
+    private readonly IAppLogger<DeleteWarehouseHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
     
-    public DeleteWarehouseCommandHandler(
-        IAppLogger<DeleteWarehouseCommandHandler> logger,
+    public DeleteWarehouseHandler(
+        IAppLogger<DeleteWarehouseHandler> logger,
         IWarehouseRepository warehouseRepository)
     {
         _logger = logger;
@@ -22,12 +21,12 @@ public class DeleteWarehouseCommandHandler : IRequestHandler<DeleteWarehouseComm
     public async Task<int> Handle(DeleteWarehouseCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
-        var validator = new DeleteWarehouseCommandValidator(_warehouseRepository);
+        var validator = new DeleteWarehouseValidator(_warehouseRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if(validationResult.Errors.Any())
         {
-            _logger.LogWarning("Validation errors in delete request for {0} - {1}", nameof(CreateWarehouseCommand), request.Id);
+            _logger.LogWarning("Validation errors in delete request for {0} - {1}", nameof(DeleteWarehouseCommand), request.Id);
             throw new ValidationException("Invalid Warehouse", validationResult);
         }
 

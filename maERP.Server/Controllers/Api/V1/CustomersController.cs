@@ -18,7 +18,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<CustomersController>
     [HttpGet]
-    public async Task<ActionResult> Get()
+    public async Task<ActionResult<List<GetCustomersResponse>>> Get()
     {
         var customers = await mediator.Send(new GetCustomersQuery());
         return Ok(customers);
@@ -26,7 +26,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
 
     // GET api/<CustomersController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult> GetDetails(int id)
+    public async Task<ActionResult<GetCustomersResponse>> GetDetails(int id)
     {
         var customer = await mediator.Send(new GetCustomerDetailQuery { Id = id });
         return Ok(customer);
@@ -36,7 +36,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Create(CreateCustomerCommand createCustomerCommand)
+    public async Task<ActionResult<CreateCustomerResponse>> Create(CreateCustomerCommand createCustomerCommand)
     {
         var response = await mediator.Send(createCustomerCommand);
         return CreatedAtAction(nameof(Get), new { id = response });
@@ -48,7 +48,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<int>> Update(int id, UpdateCustomerCommand updateCustomerCommand)
+    public async Task<ActionResult<UpdateCustomerResponse>> Update(int id, UpdateCustomerCommand updateCustomerCommand)
     {
         updateCustomerCommand.Id = id;
         await mediator.Send(updateCustomerCommand);

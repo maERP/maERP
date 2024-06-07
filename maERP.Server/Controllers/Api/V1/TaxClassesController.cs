@@ -25,7 +25,7 @@ public class TaxClassesController : ControllerBase
 
     // GET: api/<TaxClassesController>
     [HttpGet]
-    public async Task<ActionResult> GetAll()
+    public async Task<ActionResult<List<GetTaxClassesResponse>>> Get()
     {
         var taxClasses = await _mediator.Send(new GetTaxClassesQuery());
         return Ok(taxClasses);
@@ -33,7 +33,7 @@ public class TaxClassesController : ControllerBase
 
     // GET api/TaxClassesController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult> GetDetails(int id)
+    public async Task<ActionResult<GetTaxClassDetailResponse>> GetDetails(int id)
     {
         var taxClass = await _mediator.Send(new GetTaxClassDetailQuery { Id = id });
         return Ok(taxClass);

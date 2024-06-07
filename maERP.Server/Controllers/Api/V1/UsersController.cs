@@ -17,7 +17,7 @@ public class UsersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<UsersController>
     [HttpGet]
-    public async Task<ActionResult> Get()
+    public async Task<ActionResult<List<GetUsersResponse>>> Get()
     {
         var users = await mediator.Send(new GetUsersQuery());
         return Ok(users);
@@ -25,7 +25,7 @@ public class UsersController(IMediator mediator) : ControllerBase
 
     // GET api/<UsersController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult> GetDetails(string id)
+    public async Task<ActionResult<GetUserDetailResponse>> GetDetails(string id)
     {
         var user = await mediator.Send(new GetUserDetailsQuery { Id = id });
         return Ok(user);

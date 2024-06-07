@@ -44,30 +44,30 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetCustomersResponse>> CustomersAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetCustomersResponse>> CustomersAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task CustomersPOSTAsync(CreateCustomerCommand body);
+        System.Threading.Tasks.Task<CreateCustomerResponse> CustomersPOSTAsync(CreateCustomerCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task CustomersPOSTAsync(CreateCustomerCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<CreateCustomerResponse> CustomersPOSTAsync(CreateCustomerCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id);
+        System.Threading.Tasks.Task<GetCustomersResponse> CustomersGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GetCustomersResponse> CustomersGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -89,12 +89,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync();
+        System.Threading.Tasks.Task<GetOrdersResponsePaginatedResult> OrdersGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GetOrdersResponsePaginatedResult> OrdersGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -107,12 +107,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id);
+        System.Threading.Tasks.Task<GetOrderDetailResponse> OrdersGET2Async(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GetOrderDetailResponse> OrdersGET2Async(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -134,12 +134,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetProductsResponse>> ProductsAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetProductsResponse>> ProductsAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -152,12 +152,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id);
+        System.Threading.Tasks.Task<GetProductDetailResponse> ProductsGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GetProductDetailResponse> ProductsGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -179,12 +179,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetSalesChannelsResponse>> SalesChannelsAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetSalesChannelsResponse>> SalesChannelsAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -197,12 +197,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id);
+        System.Threading.Tasks.Task<GetSalesChannelDetailResponse> SalesChannelsGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GetSalesChannelDetailResponse> SalesChannelsGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -224,12 +224,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetTaxClassesResponse>> TaxClassesAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetTaxClassesResponse>> TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -242,12 +242,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id);
+        System.Threading.Tasks.Task<GetTaxClassDetailResponse> TaxClassesGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GetTaxClassDetailResponse> TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -269,12 +269,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetUsersResponse>> UsersAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetUsersResponse>> UsersAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -287,12 +287,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id);
+        System.Threading.Tasks.Task<GetUserDetailResponse> UsersGETAsync(string id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GetUserDetailResponse> UsersGETAsync(string id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -305,12 +305,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetWarehousesResponse>> WarehousesAllAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetWarehousesResponse>> WarehousesAllAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -323,12 +323,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id);
+        System.Threading.Tasks.Task<GetWarehouseDetailResponse> WarehousesGETAsync(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GetWarehouseDetailResponse> WarehousesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -544,7 +544,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetCustomersResponse>> CustomersAllAsync()
         {
             return CustomersAllAsync(System.Threading.CancellationToken.None);
         }
@@ -552,7 +552,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListDto>> CustomersAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetCustomersResponse>> CustomersAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -593,7 +593,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<CustomerListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GetCustomersResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -622,7 +622,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task CustomersPOSTAsync(CreateCustomerCommand body)
+        public virtual System.Threading.Tasks.Task<CreateCustomerResponse> CustomersPOSTAsync(CreateCustomerCommand body)
         {
             return CustomersPOSTAsync(body, System.Threading.CancellationToken.None);
         }
@@ -630,7 +630,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task CustomersPOSTAsync(CreateCustomerCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<CreateCustomerResponse> CustomersPOSTAsync(CreateCustomerCommand body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -643,6 +643,7 @@ namespace maERP.SharedUI.Services.Base
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
@@ -674,7 +675,12 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 201)
                         {
-                            return;
+                            var objectResponse_ = await ReadObjectResponseAsync<CreateCustomerResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
                         }
                         else
                         if (status_ == 400)
@@ -708,7 +714,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<GetCustomersResponse> CustomersGETAsync(int id)
         {
             return CustomersGETAsync(id, System.Threading.CancellationToken.None);
         }
@@ -716,7 +722,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<CustomerDetailDto> CustomersGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GetCustomersResponse> CustomersGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -761,7 +767,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<CustomerDetailDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetCustomersResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -984,15 +990,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync()
+        public virtual System.Threading.Tasks.Task<GetOrdersResponsePaginatedResult> OrdersGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy)
         {
-            return OrdersAllAsync(System.Threading.CancellationToken.None);
+            return OrdersGETAsync(pageNumber, pageSize, searchString, orderBy, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<OrderListDto>> OrdersAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GetOrdersResponsePaginatedResult> OrdersGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1007,6 +1013,24 @@ namespace maERP.SharedUI.Services.Base
                 
                     // Operation Path: "api/v1/Orders"
                     urlBuilder_.Append("api/v1/Orders");
+                    urlBuilder_.Append('?');
+                    if (pageNumber != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("pageNumber")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (pageSize != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("pageSize")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (searchString != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("searchString")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(searchString, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (orderBy != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("orderBy")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1033,7 +1057,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<OrderListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetOrdersResponsePaginatedResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1154,15 +1178,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<GetOrderDetailResponse> OrdersGET2Async(int id)
         {
-            return OrdersGETAsync(id, System.Threading.CancellationToken.None);
+            return OrdersGET2Async(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<OrderDetailDto> OrdersGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GetOrderDetailResponse> OrdersGET2Async(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1207,7 +1231,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OrderDetailDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetOrderDetailResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1430,7 +1454,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetProductsResponse>> ProductsAllAsync()
         {
             return ProductsAllAsync(System.Threading.CancellationToken.None);
         }
@@ -1438,7 +1462,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ProductListDto>> ProductsAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetProductsResponse>> ProductsAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1479,7 +1503,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<ProductListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GetProductsResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1600,7 +1624,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<GetProductDetailResponse> ProductsGETAsync(int id)
         {
             return ProductsGETAsync(id, System.Threading.CancellationToken.None);
         }
@@ -1608,7 +1632,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProductDetailDto> ProductsGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GetProductDetailResponse> ProductsGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1653,7 +1677,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProductDetailDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetProductDetailResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1876,7 +1900,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetSalesChannelsResponse>> SalesChannelsAllAsync()
         {
             return SalesChannelsAllAsync(System.Threading.CancellationToken.None);
         }
@@ -1884,7 +1908,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListDto>> SalesChannelsAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetSalesChannelsResponse>> SalesChannelsAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1925,7 +1949,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<SalesChannelListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GetSalesChannelsResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2046,7 +2070,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<GetSalesChannelDetailResponse> SalesChannelsGETAsync(int id)
         {
             return SalesChannelsGETAsync(id, System.Threading.CancellationToken.None);
         }
@@ -2054,7 +2078,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SalesChannelDetailDto> SalesChannelsGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GetSalesChannelDetailResponse> SalesChannelsGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2099,7 +2123,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<SalesChannelDetailDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetSalesChannelDetailResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2322,7 +2346,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetTaxClassesResponse>> TaxClassesAllAsync()
         {
             return TaxClassesAllAsync(System.Threading.CancellationToken.None);
         }
@@ -2330,7 +2354,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListDto>> TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetTaxClassesResponse>> TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2371,7 +2395,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<TaxClassListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GetTaxClassesResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2492,7 +2516,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<GetTaxClassDetailResponse> TaxClassesGETAsync(int id)
         {
             return TaxClassesGETAsync(id, System.Threading.CancellationToken.None);
         }
@@ -2500,7 +2524,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<TaxClassDetailDto> TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GetTaxClassDetailResponse> TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2545,7 +2569,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<TaxClassDetailDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetTaxClassDetailResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2768,7 +2792,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetUsersResponse>> UsersAllAsync()
         {
             return UsersAllAsync(System.Threading.CancellationToken.None);
         }
@@ -2776,7 +2800,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UserListDto>> UsersAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetUsersResponse>> UsersAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2817,7 +2841,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<UserListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GetUsersResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2938,7 +2962,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id)
+        public virtual System.Threading.Tasks.Task<GetUserDetailResponse> UsersGETAsync(string id)
         {
             return UsersGETAsync(id, System.Threading.CancellationToken.None);
         }
@@ -2946,7 +2970,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<UserDetailDto> UsersGETAsync(string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GetUserDetailResponse> UsersGETAsync(string id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2991,7 +3015,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UserDetailDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetUserDetailResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -3124,7 +3148,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetWarehousesResponse>> WarehousesAllAsync()
         {
             return WarehousesAllAsync(System.Threading.CancellationToken.None);
         }
@@ -3132,7 +3156,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListDto>> WarehousesAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GetWarehousesResponse>> WarehousesAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -3173,7 +3197,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<WarehouseListDto>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<GetWarehousesResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -3288,7 +3312,7 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<GetWarehouseDetailResponse> WarehousesGETAsync(int id)
         {
             return WarehousesGETAsync(id, System.Threading.CancellationToken.None);
         }
@@ -3296,7 +3320,7 @@ namespace maERP.SharedUI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<WarehouseDetailDto> WarehousesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GetWarehouseDetailResponse> WarehousesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -3341,7 +3365,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<WarehouseDetailDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetWarehouseDetailResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -3724,6 +3748,21 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CreateCustomerResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
+        public string Firstname { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
+        public string Lastname { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
+        public System.DateTime DateEnrollment { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class CreateOrderCommand
     {
 
@@ -3838,64 +3877,7 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CustomerAddressListDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
-        public string Firstname { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
-        public string Lastname { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("CompanyName")]
-        public string CompanyName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Street")]
-        public string Street { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("HouseNr")]
-        public string HouseNr { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Zip")]
-        public string Zip { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("City")]
-        public string City { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("DefaultDeliveryAddress")]
-        public bool DefaultDeliveryAddress { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("DefaultInvoiceAddress")]
-        public bool DefaultInvoiceAddress { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CustomerDetailDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
-        public string Firstname { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
-        public string Lastname { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("CustomerAddresses")]
-        public System.Collections.Generic.ICollection<CustomerAddressListDto> CustomerAddresses { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
-        public System.DateTime DateEnrollment { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class CustomerListDto
+    public partial class GetCustomersResponse
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("Id")]
@@ -3913,7 +3895,7 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class OrderDetailDto
+    public partial class GetOrderDetailResponse
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("SalesChannelId")]
@@ -4012,6 +3994,276 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetOrdersResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("CustomerId")]
+        public int CustomerId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressFirstName")]
+        public string InvoiceAddressFirstName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressLastName")]
+        public string InvoiceAddressLastName { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Total")]
+        public double Total { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Status")]
+        public string Status { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PaymentStatus")]
+        public string PaymentStatus { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("DateOrdered")]
+        public System.DateTime DateOrdered { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetOrdersResponsePaginatedResult
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("StatusCode")]
+        public ResultStatusCode StatusCode { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Messages")]
+        public System.Collections.Generic.ICollection<string> Messages { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Succeeded")]
+        public bool Succeeded { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Data")]
+        public System.Collections.Generic.ICollection<GetOrdersResponse> Data { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("CurrentPage")]
+        public int CurrentPage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalPages")]
+        public int TotalPages { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalCount")]
+        public int TotalCount { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PageSize")]
+        public int PageSize { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HasPreviousPage")]
+        public bool HasPreviousPage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HasNextPage")]
+        public bool HasNextPage { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetProductDetailResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Sku")]
+        public string Sku { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Ean")]
+        public string Ean { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Price")]
+        public double Price { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ProductSalesChannel")]
+        public System.Collections.Generic.ICollection<ProductSalesChannelDetailDto> ProductSalesChannel { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetProductsResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Sku")]
+        public string Sku { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Ean")]
+        public string Ean { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Price")]
+        public double Price { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TaxClass")]
+        public GetTaxClassesResponse TaxClass { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetSalesChannelDetailResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Type")]
+        public int Type { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Url")]
+        public string Url { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Username")]
+        public string Username { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Password")]
+        public string Password { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ImportProducts")]
+        public bool ImportProducts { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ExportProducts")]
+        public bool ExportProducts { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ImportCustomers")]
+        public bool ImportCustomers { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ExportCustomers")]
+        public bool ExportCustomers { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ImportOrders")]
+        public bool ImportOrders { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("ExportOrders")]
+        public bool ExportOrders { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("WarehouseId")]
+        public int WarehouseId { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Warehouse")]
+        public GetWarehouseDetailResponse Warehouse { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetSalesChannelsResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Type")]
+        public int Type { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Url")]
+        public string Url { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetTaxClassDetailResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
+        public double TaxRate { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetTaxClassesResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
+        public double TaxRate { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetUserDetailResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public string Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Firstname { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Lastname { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Email")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Email { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetUsersResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public string Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Firstname { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Lastname { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Email")]
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Email { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetWarehouseDetailResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetWarehousesResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class OrderItem
     {
 
@@ -4082,36 +4334,6 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class OrderListDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("CustomerId")]
-        public int CustomerId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressFirstName")]
-        public string InvoiceAddressFirstName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("InvoiceAddressLastName")]
-        public string InvoiceAddressLastName { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Total")]
-        public double Total { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Status")]
-        public string Status { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("PaymentStatus")]
-        public string PaymentStatus { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("DateOrdered")]
-        public System.DateTime DateOrdered { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum OrderStatus
     {
 
@@ -4170,54 +4392,6 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ProductDetailDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Sku")]
-        public string Sku { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Name")]
-        public string Name { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Ean")]
-        public string Ean { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Price")]
-        public double Price { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ProductSalesChannel")]
-        public System.Collections.Generic.ICollection<ProductSalesChannelDetailDto> ProductSalesChannel { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ProductListDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Sku")]
-        public string Sku { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Name")]
-        public string Name { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Ean")]
-        public string Ean { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Price")]
-        public double Price { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("TaxClass")]
-        public TaxClassListDto TaxClass { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ProductSalesChannelDetailDto
     {
 
@@ -4261,92 +4435,12 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SalesChannelDetailDto
+    public enum ResultStatusCode
     {
 
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
+        _0 = 0,
 
-        [System.Text.Json.Serialization.JsonPropertyName("Type")]
-        public int Type { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Name")]
-        public string Name { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Url")]
-        public string Url { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Username")]
-        public string Username { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Password")]
-        public string Password { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ImportProducts")]
-        public bool ImportProducts { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ExportProducts")]
-        public bool ExportProducts { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ImportCustomers")]
-        public bool ImportCustomers { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ExportCustomers")]
-        public bool ExportCustomers { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ImportOrders")]
-        public bool ImportOrders { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("ExportOrders")]
-        public bool ExportOrders { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("WarehouseId")]
-        public int WarehouseId { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Warehouse")]
-        public WarehouseDetailDto Warehouse { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class SalesChannelListDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Type")]
-        public int Type { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Name")]
-        public string Name { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Url")]
-        public string Url { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class TaxClassDetailDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
-        public double TaxRate { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class TaxClassListDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
-        public double TaxRate { get; set; }
+        _1 = 1,
 
     }
 
@@ -4454,72 +4548,6 @@ namespace maERP.SharedUI.Services.Base
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class UpdateWarehouseCommand
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Name")]
-        public string Name { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UserDetailDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public string Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Firstname { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Lastname { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Email")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Email { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class UserListDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public string Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Firstname")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Firstname { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Lastname")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Lastname { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Email")]
-        [System.ComponentModel.DataAnnotations.Required]
-        public string Email { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class WarehouseDetailDto
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Name")]
-        public string Name { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class WarehouseListDto
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("Id")]

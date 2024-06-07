@@ -11,8 +11,8 @@ public class UserProfile : Profile
 {
     public UserProfile()
     {
-        CreateMap<ApplicationUser, UserListDto>();
-        CreateMap<ApplicationUser, UserDetailDto>();
+        CreateMap<ApplicationUser, GetUsersResponse>();
+        CreateMap<ApplicationUser, GetUserDetailResponse>();
         
         CreateMap<CreateUserCommand, ApplicationUser>();
         CreateMap<UpdateUserCommand, ApplicationUser>();

@@ -2,4 +2,4 @@
 
 namespace maERP.Application.Features.User.Queries.GetUsers;
 
-public record GetUsersQuery : IRequest<List<UserListDto>>;
+public record GetUsersQuery : IRequest<List<GetUsersResponse>>;

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
+namespace maERP.Application.Features.Warehouse.Commands.DeleteWarehouse;
 
 public class DeleteWarehouseCommand : IRequest<int>
 {

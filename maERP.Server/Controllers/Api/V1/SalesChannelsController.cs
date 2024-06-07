@@ -18,17 +18,18 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<SalesChannelsController>
     [HttpGet]
-    public async Task<List<GetSalesChannelsResponse>> Get()
+    public async Task<ActionResult<List<GetSalesChannelsResponse>>> Get()
     {
         var salesChannels = await mediator.Send(new GetSalesChannelsQuery());
-        return salesChannels;
+        return Ok(salesChannels);
     }
 
     // GET api/<SalesChannelsController>/5
     [HttpGet("{id}")]
-    public async Task<GetSalesChannelDetailResponse> GetDetails(int id)
+    public async Task<ActionResult<GetSalesChannelDetailResponse>> GetDetails(int id)
     {
-        return await mediator.Send(new GetSalesChannelDetailQuery { Id = id });
+        var salesChannel = await mediator.Send(new GetSalesChannelDetailQuery { Id = id });
+        return Ok(salesChannel);
     }
 
     // POST api/<SalesChannelsController>

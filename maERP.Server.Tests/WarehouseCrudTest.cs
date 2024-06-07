@@ -30,7 +30,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, warehouse);
-        WarehouseDetailDto? resultContent = await result.Content.ReadFromJsonAsync<WarehouseDetailDto>();
+        GetWarehouseDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<GetWarehouseDetailResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -69,7 +69,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
                 }
         });
 
-        WarehouseDetailDto? result = await httpClient.GetFromJsonAsync<WarehouseDetailDto>(url);
+        GetWarehouseDetailResponse? result = await httpClient.GetFromJsonAsync<GetWarehouseDetailResponse>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);

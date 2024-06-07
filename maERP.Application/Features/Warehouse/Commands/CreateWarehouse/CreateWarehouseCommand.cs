@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
+namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouse;
 
 public class CreateWarehouseCommand : IRequest<int>
 {

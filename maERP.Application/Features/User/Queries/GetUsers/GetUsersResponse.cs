@@ -2,7 +2,7 @@
 
 namespace maERP.Application.Features.User.Queries.GetUsers;
 
-public class UserListDto
+public class GetUsersResponse
 {
     public string? Id { get; set; }
 

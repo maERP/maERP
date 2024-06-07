@@ -1,8 +1,8 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
-using maERP.Application.Features.Warehouse.Commands.DeleteWarehouseCommand;
-using maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
-using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetails;
+using maERP.Application.Features.Warehouse.Commands.CreateWarehouse;
+using maERP.Application.Features.Warehouse.Commands.DeleteWarehouse;
+using maERP.Application.Features.Warehouse.Commands.UpdateWarehouse;
+using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetail;
 using maERP.Application.Features.Warehouse.Queries.GetWarehouses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +18,7 @@ public class WarehousesController(IMediator mediator) : ControllerBase
 {
     // GET: api/<WarehousesController>
     [HttpGet]
-    public async Task<ActionResult> Get()
+    public async Task<ActionResult<List<GetWarehousesResponse>>> Get()
     {
         var warehouses = await mediator.Send(new GetWarehousesQuery());
         return Ok(warehouses);
@@ -26,7 +26,7 @@ public class WarehousesController(IMediator mediator) : ControllerBase
 
     // GET api/<WarehousesController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult> GetDetails(int id)
+    public async Task<ActionResult<GetWarehouseDetailResponse>> GetDetails(int id)
     {
         var warehouse = await mediator.Send(new GetWarehouseDetailQuery { Id = id });
         return Ok(warehouse);
@@ -48,7 +48,7 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<WarehouseDetailDto>> Update(int id, UpdateWarehouseCommand updateWarehouseCommand)
+    public async Task<ActionResult<GetWarehouseDetailResponse>> Update(int id, UpdateWarehouseCommand updateWarehouseCommand)
     {
         updateWarehouseCommand.Id = id;
         await mediator.Send(updateWarehouseCommand);

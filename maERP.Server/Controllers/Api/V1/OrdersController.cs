@@ -4,6 +4,7 @@ using maERP.Application.Features.Order.Commands.DeleteOrder;
 using maERP.Application.Features.Order.Commands.UpdateOrder;
 using maERP.Application.Features.Order.Queries.GetOrderDetail;
 using maERP.Application.Features.Order.Queries.GetOrders;
+using maERP.Shared.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<OrdersController>
     [HttpGet]
-    public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<GetOrdersResponse>>> GetAll(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -31,9 +32,10 @@ public class OrdersController(IMediator mediator) : ControllerBase
 
     // GET api/<OrdersController>/5
     [HttpGet("{id}")]
-    public async Task<GetOrderDetailResponse> GetDetails(int id)
+    public async Task<ActionResult<GetOrderDetailResponse>> GetDetails(int id)
     {
-        return await mediator.Send(new GetOrderDetailQuery { Id = id });
+        var order = await mediator.Send(new GetOrderDetailQuery { Id = id });
+        return Ok(order);
     }
 
     // POST api/<OrdersController>
@@ -43,7 +45,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<int>> Create(CreateOrderCommand createOrderCommand)
     {
         var response = await mediator.Send(createOrderCommand);
-        return CreatedAtAction(nameof(Get), new { id = response });
+        return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
     // PUT: api/<OrdersController>/5

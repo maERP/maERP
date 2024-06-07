@@ -10,32 +10,25 @@ namespace maERP.Application.Specifications
     {
         public OrderFilterSpecification(string searchString)
         {
-            // Includes.Add(p => p.Likes);
+            Console.WriteLine("debug 1");
 
-            /*
+            Includes.Add(c => c.OrderItems);
+
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = p => (p.Title.Contains(searchString) || p.Slug.Contains(searchString) || p.Summary.Contains(searchString));
+                Criteria = o => (o.InvoiceAddressCompanyName.Contains(searchString) || o.InvoiceAddressFirstName.Contains(searchString) || o.InvoiceAddressLastName.Contains(searchString));
             }
             else
             {
-                if (categoryId.HasValue)
-                {
-                    Criteria = p => p.Categories.Select(cat => cat.Id).Contains(categoryId.Value);
-                }
-                else
-                {
-                    Criteria = p => statuses.Contains(p.Status);
-                }
+                Criteria = p => true;               
             }
-            */
         }
 
         public OrderFilterSpecification(int id)
         {
-            //Includes.Add(p => p.Categories);
+            Includes.Add(o => o.OrderItems);
             // Includes.Add(p => p.PostTags);
-            Criteria = p => p.Id == id;
+            Criteria = o => o.Id == id;
         }
     }
 }

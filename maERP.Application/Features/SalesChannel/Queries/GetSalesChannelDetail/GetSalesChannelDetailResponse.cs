@@ -1,4 +1,4 @@
-﻿using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetails;
+﻿using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetail;
 
 namespace maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetail;
 
@@ -21,5 +21,5 @@ public class GetSalesChannelDetailResponse
     public bool ExportOrders { get; set; }
 
     public int WarehouseId { get; set; }
-    public WarehouseDetailDto? Warehouse { get; set; }
+    public GetWarehouseDetailResponse? Warehouse { get; set; }
 }

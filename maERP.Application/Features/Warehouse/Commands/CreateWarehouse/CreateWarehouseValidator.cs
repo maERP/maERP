@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
 
-namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouseCommand;
+namespace maERP.Application.Features.Warehouse.Commands.CreateWarehouse;
 
-public class CreateWarehouseCommandValidator : AbstractValidator<CreateWarehouseCommand>
+public class CreateWarehouseValidator : AbstractValidator<CreateWarehouseCommand>
 {
     private readonly IWarehouseRepository _warehouseRepository;
     
-    public CreateWarehouseCommandValidator(IWarehouseRepository warehouseRepository)
+    public CreateWarehouseValidator(IWarehouseRepository warehouseRepository)
     {
         _warehouseRepository = warehouseRepository;
         

@@ -4,17 +4,17 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
 using MediatR;
 
-namespace maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
+namespace maERP.Application.Features.Warehouse.Commands.UpdateWarehouse;
 
-public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseCommand, int>
+public class UpdateWarehouseHandler : IRequestHandler<UpdateWarehouseCommand, int>
 {
     private readonly IMapper _mapper;
-    private readonly IAppLogger<UpdateWarehouseCommandHandler> _logger;
+    private readonly IAppLogger<UpdateWarehouseHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
 
 
-    public UpdateWarehouseCommandHandler(IMapper mapper,
-        IAppLogger<UpdateWarehouseCommandHandler> logger,
+    public UpdateWarehouseHandler(IMapper mapper,
+        IAppLogger<UpdateWarehouseHandler> logger,
         IWarehouseRepository warehouseRepository)
     {
         _mapper = mapper;
@@ -25,12 +25,12 @@ public class UpdateWarehouseCommandHandler : IRequestHandler<UpdateWarehouseComm
     public async Task<int> Handle(UpdateWarehouseCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
-        var validator = new UpdateWarehouseCommandValidator(_warehouseRepository);
+        var validator = new UpdateWarehouseValidator(_warehouseRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if(validationResult.Errors.Any())
         {
-            _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(CreateWarehouseCommand), request.Name);
+            _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(UpdateWarehouseCommand), request.Name);
             throw new ValidationException("Invalid Warehouse", validationResult);
         }
         

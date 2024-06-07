@@ -10,6 +10,7 @@ public class Order : BaseEntity, IBaseEntity
 
     [Required]
     public int CustomerId { get; set; }
+    public Customer Customer { get; set; } = null!;
 
     [Required]
     public OrderStatus Status { get; set; }

@@ -18,17 +18,18 @@ public class ProductsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<ProductsController>
     [HttpGet]
-    public async Task<List<GetProductsResponse>> Get()
+    public async Task<ActionResult<List<GetProductsResponse>>> Get()
     {
         var products = await mediator.Send(new GetProductsQuery());
-        return products;
+        return Ok(products);
     }
 
     // GET api/<ProductsController>/5
     [HttpGet("{id}")]
-    public async Task<GetProductDetailResponse> GetDetails(int id)
+    public async Task<ActionResult<GetProductDetailResponse>> GetDetails(int id)
     {
-        return await mediator.Send(new GetProductDetailQuery { Id = id });
+        var product = await mediator.Send(new GetProductDetailQuery { Id = id });
+        return Ok(product);
     }
 
     // POST api/<ProductsController>

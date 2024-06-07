@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace maERP.Application.Features.Warehouse.Commands.UpdateWarehouseCommand;
+namespace maERP.Application.Features.Warehouse.Commands.UpdateWarehouse;
 
 public class UpdateWarehouseCommand : IRequest<int>
 {
