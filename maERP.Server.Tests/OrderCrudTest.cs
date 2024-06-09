@@ -1,8 +1,12 @@
-using maERP.Application.Dtos.Order;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
+using maERP.Application.Features.Order.Commands.CreateOrder;
+using maERP.Application.Features.Order.Commands.UpdateOrder;
 using maERP.Application.Features.Order.Queries.GetOrderDetail;
+using maERP.Application.Features.Order.Queries.GetOrders;
+using maERP.Shared.Wrapper;
+
 
 namespace maERP.Server.Tests;
 
@@ -23,7 +27,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var order = new OrderCreateDto
+        var order = new UpdateOrderCommand
         {
             SalesChannelId = 1,
             CustomerId = 1,
@@ -51,10 +55,10 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
                 }
         });
 
-        ICollection<OrderListDto>? result = await httpClient.GetFromJsonAsync<ICollection<OrderListDto>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<GetOrdersResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.Count, 1);
+        Assert.Equal(result?.TotalCount, 1);
     }
 
     [Theory]
@@ -90,7 +94,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
                 }
         });
 
-        var order = new OrderUpdateDto
+        var order = new UpdateOrderCommand
         {
             RemoteOrderId = "444-updated",
         };

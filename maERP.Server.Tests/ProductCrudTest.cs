@@ -1,9 +1,10 @@
-using maERP.Application.Dtos.Product;
+using maERP.Application.Features.Product.Commands.CreateProduct;
+using maERP.Application.Features.Product.Commands.UpdateProduct;
+using maERP.Application.Features.Product.Queries.GetProductDetail;
 using maERP.Application.Features.Product.Queries.GetProducts;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
-using maERP.Application.Features.Product.Queries.GetProductDetail;
 
 namespace maERP.Server.Tests;
 
@@ -24,7 +25,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var product = new ProductCreateDto
+        var product = new CreateProductCommand
         {
             Sku = "SKU-001",
             Name = "Product 1",
@@ -94,7 +95,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
                 }
         });
 
-        var product = new ProductUpdateDto
+        var product = new UpdateProductCommand
         {
             Name = "Product 3 updated",
         };

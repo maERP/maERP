@@ -1,10 +1,10 @@
-using maERP.Application.Dtos;
-using maERP.Application.Dtos.SalesChannel;
+using maERP.Application.Features.SalesChannel.Commands.CreateSalesChannel;
+using maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannel;
 using maERP.Application.Features.SalesChannel.Queries.GetSalesChannels;
+using maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetail;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
-using maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetail;
 
 namespace maERP.Server.Tests;
 
@@ -25,7 +25,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var saleschannel = new SalesChannelCreateDto
+        var saleschannel = new CreateSalesChannelCommand
         {
             Type = 1,
             Name = "SalesChannel 2",
@@ -106,7 +106,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
                 }
         });
 
-        var saleschannel = new SalesChannelUpdateDto
+        var saleschannel = new UpdateSalesChannelCommand
         {
             Type = SalesChannelType.PointOfSale,
             Name = "SalesChannel 5 updated",

@@ -1,5 +1,7 @@
-using maERP.Application.Dtos.Warehouse;
-using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetails;
+using maERP.Application.Features.Warehouse.Commands.CreateWarehouse;
+using maERP.Application.Features.Warehouse.Commands.UpdateWarehouse;
+using maERP.Application.Features.Warehouse.Commands.DeleteWarehouse;
+using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetail;
 using maERP.Application.Features.Warehouse.Queries.GetWarehouses;
 using maERP.Domain.Models;
 using System.Net;
@@ -24,7 +26,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var warehouse = new WarehouseCreateDto
+        var warehouse = new CreateWarehouseCommand
         {
             Name = "Warehouse 1"
         };
@@ -50,7 +52,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
                 }
         });
 
-        ICollection<WarehouseListDto>? result = await httpClient.GetFromJsonAsync<ICollection<WarehouseListDto>>(url);
+        ICollection<GetWarehousesResponse>? result = await httpClient.GetFromJsonAsync<ICollection<GetWarehousesResponse>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 2);
@@ -89,7 +91,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
                 }
         });
 
-        var warehouse = new WarehouseUpdateDto
+        var warehouse = new UpdateWarehouseCommand
         {
             Name = "Warehouse 3 updated",
         };

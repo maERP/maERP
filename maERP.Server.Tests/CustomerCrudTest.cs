@@ -1,9 +1,12 @@
-using maERP.Application.Dtos.Customer;
+using maERP.Application.Features.Customer.Commands.CreateCustomer;
+using maERP.Application.Features.Customer.Commands.UpdateCustomer;
+using maERP.Application.Features.Customer.Commands.DeleteCustomer;
 using maERP.Application.Features.Customer.Queries.GetCustomers;
+using maERP.Application.Features.Customer.Queries.GetCustomerDetail;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
-using maERP.Application.Features.Customer.Queries.GetCustomerDetail;
+
 
 namespace maERP.Server.Tests;
 
@@ -24,7 +27,7 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var customer = new CustomerCreateDto
+        var customer = new CreateCustomerCommand
         {
             Firstname = "Customer Firstname",
             Lastname = "Customer Lastname",
@@ -93,7 +96,7 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
                 }
         });
 
-        var customer = new CustomerUpdateDto
+        var customer = new UpdateCustomerCommand
         {
             Firstname = "Customer 4 Firstname updated",
             Lastname = "Customer 4 Lastname updated",

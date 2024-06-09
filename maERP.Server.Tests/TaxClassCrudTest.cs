@@ -1,4 +1,5 @@
-using maERP.Application.Dtos.TaxClass;
+using maERP.Application.Features.TaxClass.Commands.CreateTaxClass;
+using maERP.Application.Features.TaxClass.Commands.UpdateTaxClass;
 using maERP.Application.Features.TaxClass.Queries.GetTaxClasses;
 using maERP.Domain.Models;
 using System.Net;
@@ -24,7 +25,7 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var taxclass = new TaxClassCreateDto
+        var taxclass = new CreateTaxClassCommand
         {
             TaxRate = 20
         };
@@ -83,7 +84,7 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
                 }
         });
 
-        var taxclass = new TaxClassUpdateDto
+        var taxclass = new UpdateTaxClassCommand
         {
             TaxRate = 24
         };
