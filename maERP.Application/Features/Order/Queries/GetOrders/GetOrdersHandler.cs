@@ -8,6 +8,7 @@ using maERP.Application.Extensions;
 using maERP.Application.Specifications;
 using maERP.Shared.Wrapper;
 using MediatR;
+using System.Linq.Dynamic.Core;
 
 namespace maERP.Application.Features.Order.Queries.GetOrders;
 
@@ -43,7 +44,7 @@ public class GetOrdersHandler : IRequestHandler<GetOrdersQuery, PaginatedResult<
 
             return await _orderRepository.Entities
                .Specify(orderFilterSpec)
-               .OrderBy(x => x.DateCreated)
+               .OrderBy(ordering)
                .ProjectTo<GetOrdersResponse>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }

@@ -10,8 +10,6 @@ namespace maERP.Application.Specifications
     {
         public OrderFilterSpecification(string searchString)
         {
-            Console.WriteLine("debug 1");
-
             Includes.Add(c => c.OrderItems);
 
             if (!string.IsNullOrEmpty(searchString))
@@ -27,7 +25,6 @@ namespace maERP.Application.Specifications
         public OrderFilterSpecification(int id)
         {
             Includes.Add(o => o.OrderItems);
-            // Includes.Add(p => p.PostTags);
             Criteria = o => o.Id == id;
         }
     }

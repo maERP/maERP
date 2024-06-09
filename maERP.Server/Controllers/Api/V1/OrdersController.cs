@@ -23,7 +23,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     {
         if (string.IsNullOrEmpty(orderBy))
         {
-            orderBy = "DateCreated Descending";
+            orderBy = "DateOrdered Descending";
         }
 
         var orders = await mediator.Send(new GetOrdersQuery(pageNumber, pageSize, searchString, orderBy));
