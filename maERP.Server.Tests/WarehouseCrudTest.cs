@@ -1,11 +1,10 @@
-using maERP.Application.Features.Warehouse.Commands.CreateWarehouse;
-using maERP.Application.Features.Warehouse.Commands.UpdateWarehouse;
-using maERP.Application.Features.Warehouse.Commands.DeleteWarehouse;
-using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetail;
-using maERP.Application.Features.Warehouse.Queries.GetWarehouses;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
+using maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
+using maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
+using maERP.Application.Features.Warehouse.Queries.WarehouseDetail;
+using maERP.Application.Features.Warehouse.Queries.WarehouseList;
 
 namespace maERP.Server.Tests;
 
@@ -26,13 +25,13 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var warehouse = new CreateWarehouseCommand
+        var warehouse = new WarehouseCreateCommand
         {
             Name = "Warehouse 1"
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, warehouse);
-        GetWarehouseDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<GetWarehouseDetailResponse>();
+        WarehouseDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<WarehouseDetailResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -52,7 +51,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
                 }
         });
 
-        ICollection<GetWarehousesResponse>? result = await httpClient.GetFromJsonAsync<ICollection<GetWarehousesResponse>>(url);
+        ICollection<WarehouseListResponse>? result = await httpClient.GetFromJsonAsync<ICollection<WarehouseListResponse>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 2);
@@ -71,7 +70,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
                 }
         });
 
-        GetWarehouseDetailResponse? result = await httpClient.GetFromJsonAsync<GetWarehouseDetailResponse>(url);
+        WarehouseDetailResponse? result = await httpClient.GetFromJsonAsync<WarehouseDetailResponse>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);
@@ -91,7 +90,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
                 }
         });
 
-        var warehouse = new UpdateWarehouseCommand
+        var warehouse = new WarehouseUpdateCommand
         {
             Name = "Warehouse 3 updated",
         };

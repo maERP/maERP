@@ -1,10 +1,10 @@
-using maERP.Application.Features.SalesChannel.Commands.CreateSalesChannel;
-using maERP.Application.Features.SalesChannel.Commands.UpdateSalesChannel;
-using maERP.Application.Features.SalesChannel.Queries.GetSalesChannels;
-using maERP.Application.Features.SalesChannel.Queries.GetSalesChannelDetail;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
+using maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
+using maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
+using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
+using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 
 namespace maERP.Server.Tests;
 
@@ -25,7 +25,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var saleschannel = new CreateSalesChannelCommand
+        var saleschannel = new SalesChannelCreateCommand
         {
             Type = 1,
             Name = "SalesChannel 2",
@@ -35,7 +35,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, saleschannel);
-        GetSalesChannelDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<GetSalesChannelDetailResponse>();
+        SalesChannelDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<SalesChannelDetailResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -55,7 +55,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
                 }
         });
 
-        ICollection<GetSalesChannelsResponse>? result = await httpClient.GetFromJsonAsync<ICollection<GetSalesChannelsResponse>>(url);
+        ICollection<SalesChannelListResponse>? result = await httpClient.GetFromJsonAsync<ICollection<SalesChannelListResponse>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 2);
@@ -75,7 +75,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
                 }
         });
 
-        GetSalesChannelDetailResponse? result = await httpClient.GetFromJsonAsync<GetSalesChannelDetailResponse>(url);
+        SalesChannelDetailResponse? result = await httpClient.GetFromJsonAsync<SalesChannelDetailResponse>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);
@@ -106,7 +106,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
                 }
         });
 
-        var saleschannel = new UpdateSalesChannelCommand
+        var saleschannel = new SalesChannelUpdateCommand
         {
             Type = SalesChannelType.PointOfSale,
             Name = "SalesChannel 5 updated",

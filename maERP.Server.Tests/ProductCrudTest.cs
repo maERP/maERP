@@ -1,10 +1,10 @@
-using maERP.Application.Features.Product.Commands.CreateProduct;
-using maERP.Application.Features.Product.Commands.UpdateProduct;
-using maERP.Application.Features.Product.Queries.GetProductDetail;
-using maERP.Application.Features.Product.Queries.GetProducts;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
+using maERP.Application.Features.Product.Commands.ProductCreate;
+using maERP.Application.Features.Product.Queries.ProductDetail;
+using maERP.Application.Features.Product.Queries.ProductList;
+using maERP.Application.Features.Product.Commands.ProductUpdate;
 
 namespace maERP.Server.Tests;
 
@@ -25,7 +25,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var product = new CreateProductCommand
+        var product = new ProductCreateCommand
         {
             Sku = "SKU-001",
             Name = "Product 1",
@@ -36,7 +36,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, product);
-        GetProductDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<GetProductDetailResponse>();
+        ProductDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<ProductDetailResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -56,7 +56,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
                 }
         });
 
-        ICollection<GetProductsResponse>? result = await httpClient.GetFromJsonAsync<ICollection<GetProductsResponse>>(url);
+        ICollection<ProductListResponse>? result = await httpClient.GetFromJsonAsync<ICollection<ProductListResponse>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 1);
@@ -75,7 +75,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
                 }
         });
 
-        GetProductDetailResponse? result = await httpClient.GetFromJsonAsync<GetProductDetailResponse>(url);
+        ProductDetailResponse? result = await httpClient.GetFromJsonAsync<ProductDetailResponse>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);
@@ -95,7 +95,7 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
                 }
         });
 
-        var product = new UpdateProductCommand
+        var product = new ProductUpdateCommand
         {
             Name = "Product 3 updated",
         };

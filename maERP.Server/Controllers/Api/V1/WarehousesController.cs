@@ -1,9 +1,9 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Features.Warehouse.Commands.CreateWarehouse;
-using maERP.Application.Features.Warehouse.Commands.DeleteWarehouse;
-using maERP.Application.Features.Warehouse.Commands.UpdateWarehouse;
-using maERP.Application.Features.Warehouse.Queries.GetWarehouseDetail;
-using maERP.Application.Features.Warehouse.Queries.GetWarehouses;
+using maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
+using maERP.Application.Features.Warehouse.Commands.WarehouseDelete;
+using maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
+using maERP.Application.Features.Warehouse.Queries.WarehouseDetail;
+using maERP.Application.Features.Warehouse.Queries.WarehouseList;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +18,17 @@ public class WarehousesController(IMediator mediator) : ControllerBase
 {
     // GET: api/<WarehousesController>
     [HttpGet]
-    public async Task<ActionResult<List<GetWarehousesResponse>>> Get()
+    public async Task<ActionResult<List<WarehouseListResponse>>> Get()
     {
-        var warehouses = await mediator.Send(new GetWarehousesQuery());
+        var warehouses = await mediator.Send(new WarehouseListQuery());
         return Ok(warehouses);
     }
 
     // GET api/<WarehousesController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetWarehouseDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<WarehouseDetailResponse>> GetDetails(int id)
     {
-        var warehouse = await mediator.Send(new GetWarehouseDetailQuery { Id = id });
+        var warehouse = await mediator.Send(new WarehouseDetailQuery { Id = id });
         return Ok(warehouse);
     }
 
@@ -36,9 +36,9 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Create(CreateWarehouseCommand createWarehouseCommand)
+    public async Task<ActionResult> Create(WarehouseCreateCommand warehouseCreateCommand)
     {
-        var response = await mediator.Send(createWarehouseCommand);
+        var response = await mediator.Send(warehouseCreateCommand);
         return CreatedAtAction(nameof(Get), new { id = response });
     }
 
@@ -48,10 +48,10 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<GetWarehouseDetailResponse>> Update(int id, UpdateWarehouseCommand updateWarehouseCommand)
+    public async Task<ActionResult<WarehouseDetailResponse>> Update(int id, WarehouseUpdateCommand warehouseUpdateCommand)
     {
-        updateWarehouseCommand.Id = id;
-        await mediator.Send(updateWarehouseCommand);
+        warehouseUpdateCommand.Id = id;
+        await mediator.Send(warehouseUpdateCommand);
         return NoContent();
     }
 
@@ -63,7 +63,7 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(int id)
     {
-        var command = new DeleteWarehouseCommand { Id = id };
+        var command = new WarehouseDeleteCommand { Id = id };
         await mediator.Send(command);
         return NoContent();
     }

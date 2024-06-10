@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using maERP.Application.Features.User.Commands.CreateUserCommand;
-using maERP.Application.Features.User.Commands.UpdateUserCommand;
-using maERP.Application.Features.User.Queries.GetUserDetails;
-using maERP.Application.Features.User.Queries.GetUsers;
+using maERP.Application.Features.User.Commands.UserCreate;
+using maERP.Application.Features.User.Commands.UserUpdate;
+using maERP.Application.Features.User.Queries.UserDetail;
+using maERP.Application.Features.User.Queries.UserList;
 using maERP.Domain.Models;
 
 namespace maERP.Application.MappingProfiles;
@@ -11,10 +11,10 @@ public class UserProfile : Profile
 {
     public UserProfile()
     {
-        CreateMap<ApplicationUser, GetUsersResponse>();
-        CreateMap<ApplicationUser, GetUserDetailResponse>();
+        CreateMap<ApplicationUser, UserListResponse>();
+        CreateMap<ApplicationUser, UserDetailResponse>();
         
-        CreateMap<CreateUserCommand, ApplicationUser>();
-        CreateMap<UpdateUserCommand, ApplicationUser>();
+        CreateMap<UserCreateCommand, ApplicationUser>();
+        CreateMap<UserUpdateCommand, ApplicationUser>();
     }
 }

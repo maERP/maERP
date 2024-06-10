@@ -1,9 +1,9 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Features.Product.Commands.CreateProduct;
-using maERP.Application.Features.Product.Commands.DeleteProduct;
-using maERP.Application.Features.Product.Commands.UpdateProduct;
-using maERP.Application.Features.Product.Queries.GetProductDetail;
-using maERP.Application.Features.Product.Queries.GetProducts;
+using maERP.Application.Features.Product.Commands.ProductCreate;
+using maERP.Application.Features.Product.Commands.ProductDelete;
+using maERP.Application.Features.Product.Commands.ProductUpdate;
+using maERP.Application.Features.Product.Queries.ProductDetail;
+using maERP.Application.Features.Product.Queries.ProductList;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,17 +18,17 @@ public class ProductsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<ProductsController>
     [HttpGet]
-    public async Task<ActionResult<List<GetProductsResponse>>> Get()
+    public async Task<ActionResult<List<ProductListResponse>>> Get()
     {
-        var products = await mediator.Send(new GetProductsQuery());
+        var products = await mediator.Send(new ProductListQuery());
         return Ok(products);
     }
 
     // GET api/<ProductsController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetProductDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<ProductDetailResponse>> GetDetails(int id)
     {
-        var product = await mediator.Send(new GetProductDetailQuery { Id = id });
+        var product = await mediator.Send(new ProductDetailQuery { Id = id });
         return Ok(product);
     }
 
@@ -36,9 +36,9 @@ public class ProductsController(IMediator mediator) : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<int>> Create(CreateProductCommand createProductCommand)
+    public async Task<ActionResult<int>> Create(ProductCreateCommand productCreateCommand)
     {
-        var response = await mediator.Send(createProductCommand);
+        var response = await mediator.Send(productCreateCommand);
         return CreatedAtAction(nameof(Get), new { id = response });
     }
 
@@ -48,10 +48,10 @@ public class ProductsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, UpdateProductCommand updateProductCommand)
+    public async Task<ActionResult> Update(int id, ProductUpdateCommand productUpdateCommand)
     {
-        updateProductCommand.Id = id;
-        await mediator.Send(updateProductCommand);
+        productUpdateCommand.Id = id;
+        await mediator.Send(productUpdateCommand);
         return NoContent();
     }
 
@@ -62,7 +62,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(int id)
     {
-        var command = new DeleteProductCommand { Id = id };
+        var command = new ProductDeleteCommand { Id = id };
         await mediator.Send(command);
         return NoContent();
     }

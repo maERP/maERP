@@ -1,8 +1,8 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Features.User.Commands.CreateUserCommand;
-using maERP.Application.Features.User.Commands.UpdateUserCommand;
-using maERP.Application.Features.User.Queries.GetUserDetails;
-using maERP.Application.Features.User.Queries.GetUsers;
+using maERP.Application.Features.User.Commands.UserCreate;
+using maERP.Application.Features.User.Commands.UserUpdate;
+using maERP.Application.Features.User.Queries.UserDetail;
+using maERP.Application.Features.User.Queries.UserList;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,17 +17,17 @@ public class UsersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<UsersController>
     [HttpGet]
-    public async Task<ActionResult<List<GetUsersResponse>>> Get()
+    public async Task<ActionResult<List<UserListResponse>>> Get()
     {
-        var users = await mediator.Send(new GetUsersQuery());
+        var users = await mediator.Send(new UserListQuery());
         return Ok(users);
     }
 
     // GET api/<UsersController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetUserDetailResponse>> GetDetails(string id)
+    public async Task<ActionResult<UserDetailResponse>> GetDetails(string id)
     {
-        var user = await mediator.Send(new GetUserDetailsQuery { Id = id });
+        var user = await mediator.Send(new UserDetailQuery { Id = id });
         return Ok(user);
     }
 
@@ -35,9 +35,9 @@ public class UsersController(IMediator mediator) : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<int>> Create(CreateUserCommand createUserCommand)
+    public async Task<ActionResult<int>> Create(UserCreateCommand userCreateCommand)
     {
-        var response = await mediator.Send(createUserCommand);
+        var response = await mediator.Send(userCreateCommand);
         return CreatedAtAction(nameof(Get), new { id = response });
     }
 
@@ -47,10 +47,10 @@ public class UsersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, UpdateUserCommand updateUserCommand)
+    public async Task<ActionResult> Update(int id, UserUpdateCommand userUpdateCommand)
     {
-        updateUserCommand.Id = id;
-        await mediator.Send(updateUserCommand);
+        userUpdateCommand.Id = id;
+        await mediator.Send(userUpdateCommand);
         return NoContent();
     }
 }

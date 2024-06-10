@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using maERP.Application.Features.Order.Commands.CreateOrder;
-using maERP.Application.Features.Order.Commands.DeleteOrder;
-using maERP.Application.Features.Order.Commands.UpdateOrder;
-using maERP.Application.Features.Order.Queries.GetOrderDetail;
-using maERP.Application.Features.Order.Queries.GetOrders;
+using maERP.Application.Features.Order.Commands.OrderCreate;
+using maERP.Application.Features.Order.Commands.OrderDelete;
+using maERP.Application.Features.Order.Commands.OrderUpdate;
+using maERP.Application.Features.Order.Queries.OrderDetail;
+using maERP.Application.Features.Order.Queries.OrderList;
 using maERP.Domain.Models;
 
 namespace maERP.Application.MappingProfiles;
@@ -12,13 +12,13 @@ public class OrderProfile : Profile
 {
     public OrderProfile()
     {
-        CreateMap<Order, CreateOrderResponse>();
-        CreateMap<Order, GetOrderDetailResponse>();
-        CreateMap<Order, GetOrdersResponse>();
-        CreateMap<Order, UpdateOrderResponse>();
+        CreateMap<Order, OrderCreateResponse>();
+        CreateMap<Order, OrderDetailResponse>();
+        CreateMap<Order, OrderListResponse>();
+        CreateMap<Order, OrderUpdateResponse>();
 
-        CreateMap<CreateOrderCommand, Order>();
+        CreateMap<OrderCreateCommand, Order>();
         CreateMap<DeleteOrderCommand, Order>();
-        CreateMap<UpdateOrderCommand, Order>();
+        CreateMap<OrderUpdateCommand, Order>();
     }
 }

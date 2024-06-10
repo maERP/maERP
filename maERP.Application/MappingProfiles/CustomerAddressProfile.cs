@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using maERP.Application.Dtos.CustomerAddress;
-using maERP.Application.Features.Customer.Commands.CreateCustomer;
-using maERP.Application.Features.Customer.Commands.DeleteCustomer;
-using maERP.Application.Features.Customer.Commands.UpdateCustomer;
+using maERP.Application.Features.Customer.Commands.CustomerCreate;
+using maERP.Application.Features.Customer.Commands.CustomerDelete;
+using maERP.Application.Features.Customer.Commands.CustomerUpdate;
 using maERP.Domain.Models;
 
 namespace maERP.Application.MappingProfiles;
@@ -16,8 +16,8 @@ public class CustomerAddressProfile : Profile
         CreateMap<CustomerAddress, CustomerAddressListDto>();
         CreateMap<CustomerAddress, CustomerAddressUpdateDto>();
 
-        CreateMap<CreateCustomerCommand, CustomerAddress>();
-        CreateMap<DeleteCustomerCommand, CustomerAddress>();
-        CreateMap<UpdateCustomerCommand, CustomerAddress>();
+        CreateMap<CustomerCreateCommand, CustomerAddress>();
+        CreateMap<CustomerDeleteCommand, CustomerAddress>();
+        CreateMap<CustomerUpdateCommand, CustomerAddress>();
     }
 }

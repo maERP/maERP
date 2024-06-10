@@ -1,10 +1,10 @@
-using maERP.Application.Features.TaxClass.Commands.CreateTaxClass;
-using maERP.Application.Features.TaxClass.Commands.UpdateTaxClass;
-using maERP.Application.Features.TaxClass.Queries.GetTaxClasses;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
-using maERP.Application.Features.TaxClass.Queries.GetTaxClassDetail;
+using maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
+using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
+using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
+using maERP.Application.Features.TaxClass.Queries.TaxClassList;
 
 namespace maERP.Server.Tests;
 
@@ -25,13 +25,13 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var taxclass = new CreateTaxClassCommand
+        var taxclass = new TaxClassCreateCommand
         {
             TaxRate = 20
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, taxclass);
-        GetTaxClassDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<GetTaxClassDetailResponse>();
+        TaxClassDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<TaxClassDetailResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -51,7 +51,7 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
                 }
         });
 
-        ICollection<GetTaxClassesResponse>? result = await httpClient.GetFromJsonAsync<ICollection<GetTaxClassesResponse>>(url);
+        ICollection<TaxClassListResponse>? result = await httpClient.GetFromJsonAsync<ICollection<TaxClassListResponse>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 4);
@@ -64,7 +64,7 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests();
 
-        GetTaxClassDetailResponse? result = await httpClient.GetFromJsonAsync<GetTaxClassDetailResponse>(url);
+        TaxClassDetailResponse? result = await httpClient.GetFromJsonAsync<TaxClassDetailResponse>(url);
 
         Assert.NotNull(result);
         Assert.Equal(19, result.TaxRate);
@@ -84,7 +84,7 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
                 }
         });
 
-        var taxclass = new UpdateTaxClassCommand
+        var taxclass = new TaxClassUpdateCommand
         {
             TaxRate = 24
         };

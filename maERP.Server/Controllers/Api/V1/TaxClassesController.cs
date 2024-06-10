@@ -1,9 +1,9 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Features.TaxClass.Commands.CreateTaxClass;
-using maERP.Application.Features.TaxClass.Commands.DeleteTaxClass;
-using maERP.Application.Features.TaxClass.Commands.UpdateTaxClass;
-using maERP.Application.Features.TaxClass.Queries.GetTaxClassDetail;
-using maERP.Application.Features.TaxClass.Queries.GetTaxClasses;
+using maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
+using maERP.Application.Features.TaxClass.Commands.TaxClassDelete;
+using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
+using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
+using maERP.Application.Features.TaxClass.Queries.TaxClassList;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,17 +25,17 @@ public class TaxClassesController : ControllerBase
 
     // GET: api/<TaxClassesController>
     [HttpGet]
-    public async Task<ActionResult<List<GetTaxClassesResponse>>> Get()
+    public async Task<ActionResult<List<TaxClassListResponse>>> Get()
     {
-        var taxClasses = await _mediator.Send(new GetTaxClassesQuery());
+        var taxClasses = await _mediator.Send(new TaxClassListQuery());
         return Ok(taxClasses);
     }
 
     // GET api/TaxClassesController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetTaxClassDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<TaxClassDetailResponse>> GetDetails(int id)
     {
-        var taxClass = await _mediator.Send(new GetTaxClassDetailQuery { Id = id });
+        var taxClass = await _mediator.Send(new TaxClassDetailQuery { Id = id });
         return Ok(taxClass);
     }
 
@@ -43,9 +43,9 @@ public class TaxClassesController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<int>> Create(CreateTaxClassCommand createTaxClassCommand)
+    public async Task<ActionResult<int>> Create(TaxClassCreateCommand taxClassCreateCommand)
     {
-        var response = await _mediator.Send(createTaxClassCommand);
+        var response = await _mediator.Send(taxClassCreateCommand);
         return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
@@ -55,10 +55,10 @@ public class TaxClassesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, UpdateTaxClassCommand updateTaxClassCommand)
+    public async Task<ActionResult> Update(int id, TaxClassUpdateCommand taxClassUpdateCommand)
     {
-        updateTaxClassCommand.Id = id;
-        await _mediator.Send(updateTaxClassCommand);
+        taxClassUpdateCommand.Id = id;
+        await _mediator.Send(taxClassUpdateCommand);
         return NoContent();
     }
 
@@ -69,7 +69,7 @@ public class TaxClassesController : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(int id)
     {
-        var command = new DeleteTaxClassCommand { Id = id };
+        var command = new TaxClassDeleteCommand { Id = id };
         await _mediator.Send(command);
         return NoContent();
     }

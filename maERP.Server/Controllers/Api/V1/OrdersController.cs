@@ -1,9 +1,9 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Features.Order.Commands.CreateOrder;
-using maERP.Application.Features.Order.Commands.DeleteOrder;
-using maERP.Application.Features.Order.Commands.UpdateOrder;
-using maERP.Application.Features.Order.Queries.GetOrderDetail;
-using maERP.Application.Features.Order.Queries.GetOrders;
+using maERP.Application.Features.Order.Commands.OrderCreate;
+using maERP.Application.Features.Order.Commands.OrderDelete;
+using maERP.Application.Features.Order.Commands.OrderUpdate;
+using maERP.Application.Features.Order.Queries.OrderDetail;
+using maERP.Application.Features.Order.Queries.OrderList;
 using maERP.Shared.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -19,22 +19,22 @@ public class OrdersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<OrdersController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<GetOrdersResponse>>> GetAll(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<OrderListResponse>>> GetAll(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
             orderBy = "DateOrdered Descending";
         }
 
-        var orders = await mediator.Send(new GetOrdersQuery(pageNumber, pageSize, searchString, orderBy));
+        var orders = await mediator.Send(new OrderListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(orders);
     }
 
     // GET api/<OrdersController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<GetOrderDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<OrderDetailResponse>> GetDetails(int id)
     {
-        var order = await mediator.Send(new GetOrderDetailQuery { Id = id });
+        var order = await mediator.Send(new OrderDetailQuery { Id = id });
         return Ok(order);
     }
 
@@ -42,9 +42,9 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<int>> Create(CreateOrderCommand createOrderCommand)
+    public async Task<ActionResult<int>> Create(OrderCreateCommand orderCreateCommand)
     {
-        var response = await mediator.Send(createOrderCommand);
+        var response = await mediator.Send(orderCreateCommand);
         return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
@@ -54,10 +54,10 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, UpdateOrderCommand updateOrderCommand)
+    public async Task<ActionResult> Update(int id, OrderUpdateCommand orderUpdateCommand)
     {
-        updateOrderCommand.Id = id;
-        await mediator.Send(updateOrderCommand);
+        orderUpdateCommand.Id = id;
+        await mediator.Send(orderUpdateCommand);
         return NoContent();
     }
 

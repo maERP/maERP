@@ -1,11 +1,10 @@
-using maERP.Application.Features.Customer.Commands.CreateCustomer;
-using maERP.Application.Features.Customer.Commands.UpdateCustomer;
-using maERP.Application.Features.Customer.Commands.DeleteCustomer;
-using maERP.Application.Features.Customer.Queries.GetCustomers;
-using maERP.Application.Features.Customer.Queries.GetCustomerDetail;
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
+using maERP.Application.Features.Customer.Commands.CustomerCreate;
+using maERP.Application.Features.Customer.Commands.CustomerUpdate;
+using maERP.Application.Features.Customer.Queries.CustomerDetail;
+using maERP.Application.Features.Customer.Queries.CustomerList;
 
 
 namespace maERP.Server.Tests;
@@ -27,14 +26,14 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var customer = new CreateCustomerCommand
+        var customer = new CustomerCreateCommand()
         {
             Firstname = "Customer Firstname",
             Lastname = "Customer Lastname",
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, customer);
-        GetCustomerDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<GetCustomerDetailResponse>();
+        CustomerDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<CustomerDetailResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -55,7 +54,7 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
                 }
         });
 
-        ICollection<GetCustomersResponse>? result = await httpClient.GetFromJsonAsync<ICollection<GetCustomersResponse>>(url);
+        ICollection<CustomerListResponse>? result = await httpClient.GetFromJsonAsync<ICollection<CustomerListResponse>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.Count, 1);
@@ -75,7 +74,7 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
                 }
         });
 
-        GetCustomerDetailResponse? result = await httpClient.GetFromJsonAsync<GetCustomerDetailResponse>(url);
+        CustomerDetailResponse? result = await httpClient.GetFromJsonAsync<CustomerDetailResponse>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Firstname.Length > 0);
@@ -96,7 +95,7 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
                 }
         });
 
-        var customer = new UpdateCustomerCommand
+        var customer = new CustomerUpdateCommand
         {
             Firstname = "Customer 4 Firstname updated",
             Lastname = "Customer 4 Lastname updated",

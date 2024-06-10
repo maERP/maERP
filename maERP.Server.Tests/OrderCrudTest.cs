@@ -1,10 +1,9 @@
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
-using maERP.Application.Features.Order.Commands.CreateOrder;
-using maERP.Application.Features.Order.Commands.UpdateOrder;
-using maERP.Application.Features.Order.Queries.GetOrderDetail;
-using maERP.Application.Features.Order.Queries.GetOrders;
+using maERP.Application.Features.Order.Commands.OrderUpdate;
+using maERP.Application.Features.Order.Queries.OrderDetail;
+using maERP.Application.Features.Order.Queries.OrderList;
 using maERP.Shared.Wrapper;
 
 
@@ -27,7 +26,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var order = new UpdateOrderCommand
+        var order = new OrderUpdateCommand
         {
             SalesChannelId = 1,
             CustomerId = 1,
@@ -35,7 +34,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, order);
-        GetOrderDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<GetOrderDetailResponse>();
+        OrderDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<OrderDetailResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -55,7 +54,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
                 }
         });
 
-        var result = await httpClient.GetFromJsonAsync<PaginatedResult<GetOrdersResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<OrderListResponse>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(result?.TotalCount, 1);
@@ -74,7 +73,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
                 }
         });
 
-        GetOrderDetailResponse? result = await httpClient.GetFromJsonAsync<GetOrderDetailResponse>(url);
+        OrderDetailResponse? result = await httpClient.GetFromJsonAsync<OrderDetailResponse>(url);
 
         Assert.NotNull(result);
         Assert.True(result.RemoteOrderId.Length > 0);
@@ -94,7 +93,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
                 }
         });
 
-        var order = new UpdateOrderCommand
+        var order = new OrderUpdateCommand
         {
             RemoteOrderId = "444-updated",
         };

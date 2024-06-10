@@ -8,6 +8,7 @@ using maERP.SharedUI.Models.SalesChannel;
 using maERP.SharedUI.Models.TaxClass;
 using maERP.SharedUI.Models.User;
 using maERP.SharedUI.Models.Warehouse;
+using maERP.SharedUI.Pages.Customers;
 using maERP.SharedUI.Services.Base;
 
 namespace maERP.SharedUI.MappingProfiles;
@@ -16,46 +17,44 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<CustomerVM, GetCustomersResponse>().ReverseMap();
-        // CreateMap<CustomerVM, GetCustomerDetailResponse>().ReverseMap();
-        CreateMap<CustomerVM, CreateCustomerCommand>().ReverseMap();
-        CreateMap<CustomerVM, UpdateCustomerCommand>().ReverseMap();
+        CreateMap<CustomerVM, CustomerListResponse>().ReverseMap();
+        CreateMap<CustomerVM, CustomerDetailResponse>().ReverseMap();
+        CreateMap<CustomerVM, CustomerCreateCommand>().ReverseMap();
+        CreateMap<CustomerVM, CustomerUpdateCommand>().ReverseMap();
 
         // CreateMap<CustomerAddressListVM, CustomerAddressListDto>().ReverseMap();
         // CreateMap<CustomerAddressVM, CustomerAddressDetailDto>().ReverseMap();
 
-        CreateMap<OrderListVM, GetOrdersResponse>().ReverseMap();
-        CreateMap<OrderListVM, GetOrdersResponse>().ReverseMap();
+        CreateMap<OrderListVM, OrderListResponse>().ReverseMap();
 
-        CreateMap<PaginatedResult<OrderListVM>, GetOrdersResponsePaginatedResult>().ReverseMap();
+        CreateMap<PaginatedResult<OrderListVM>, OrderListResponsePaginatedResult>().ReverseMap();
+        CreateMap<OrderVM, OrderDetailResponse>().ReverseMap();
+        CreateMap<OrderVM, OrderCreateCommand>().ReverseMap();
+        CreateMap<OrderVM, OrderUpdateCommand>().ReverseMap();
 
-        CreateMap<OrderVM, GetOrderDetailResponse>().ReverseMap();
-        CreateMap<OrderVM, CreateOrderCommand>().ReverseMap();
-        CreateMap<OrderVM, UpdateOrderCommand>().ReverseMap();
+        CreateMap<ProductVM, ProductListResponse>().ReverseMap();
+        CreateMap<ProductVM, ProductDetailResponse>().ReverseMap();
+        CreateMap<ProductVM, ProductCreateCommand>().ReverseMap();
+        CreateMap<ProductVM, ProductCreateCommand>().ReverseMap();
 
-        CreateMap<ProductVM, GetProductsResponse>().ReverseMap();
-        CreateMap<ProductVM, GetProductDetailResponse>().ReverseMap();
-        CreateMap<ProductVM, CreateProductCommand>().ReverseMap();
-        CreateMap<ProductVM, UpdateProductCommand>().ReverseMap();
+        CreateMap<SalesChannelVM, SalesChannelListResponse>().ReverseMap();
+        CreateMap<SalesChannelVM, SalesChannelDetailResponse>().ReverseMap();
+        CreateMap<SalesChannelVM, SalesChannelCreateCommand>().ReverseMap();
+        CreateMap<SalesChannelVM, SalesChannelUpdateCommand>().ReverseMap();
 
-        CreateMap<SalesChannelVM, GetSalesChannelsResponse>().ReverseMap();
-        CreateMap<SalesChannelVM, GetSalesChannelDetailResponse>().ReverseMap();
-        CreateMap<SalesChannelVM, CreateSalesChannelCommand>().ReverseMap();
-        CreateMap<SalesChannelVM, UpdateSalesChannelCommand>().ReverseMap();
+        CreateMap<TaxClassVM, TaxClassListResponse>().ReverseMap();
+        CreateMap<TaxClassVM, TaxClassDetailResponse>().ReverseMap();
+        CreateMap<TaxClassVM, TaxClassCreateCommand>().ReverseMap();
+        CreateMap<TaxClassVM, TaxClassUpdateCommand>().ReverseMap();
 
-        CreateMap<TaxClassVM, GetTaxClassesResponse>().ReverseMap();
-        CreateMap<TaxClassVM, GetTaxClassDetailResponse>().ReverseMap();
-        CreateMap<TaxClassVM, CreateTaxClassCommand>().ReverseMap();
-        CreateMap<TaxClassVM, UpdateTaxClassCommand>().ReverseMap();
+        CreateMap<UserVM, UserListResponse>().ReverseMap();
+        CreateMap<UserVM, UserDetailResponse>().ReverseMap();
+        CreateMap<UserVM, UserCreateCommand>().ReverseMap();
+        CreateMap<UserVM, UserUpdateCommand>().ReverseMap();
 
-        // CreateMap<UserVM, GetUsersResponse>().ReverseMap();
-        // CreateMap<UserVM, GetUserDetailResponse>().ReverseMap();
-        CreateMap<UserVM, CreateUserCommand>().ReverseMap();
-        CreateMap<UserVM, UpdateUserCommand>().ReverseMap();
-
-        CreateMap<WarehouseVM, GetWarehousesResponse>().ReverseMap();
-        CreateMap<WarehouseVM, GetWarehouseDetailResponse>().ReverseMap();
-        CreateMap<WarehouseVM, CreateWarehouseCommand>().ReverseMap();
-        CreateMap<WarehouseVM, UpdateWarehouseCommand>().ReverseMap();
+        CreateMap<WarehouseVM, WarehouseListResponse>().ReverseMap();
+        CreateMap<WarehouseVM, WarehouseDetailResponse>().ReverseMap();
+        CreateMap<WarehouseVM, WarehouseCreateCommand>().ReverseMap();
+        CreateMap<WarehouseVM, WarehouseUpdateCommand>().ReverseMap();
     }
 }

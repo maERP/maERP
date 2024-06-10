@@ -34,8 +34,8 @@ public class CustomerService : BaseHttpService, ICustomerService
         try
         {
             await AddBearerToken();
-            var createCustomerCommand = _mapper.Map<CreateCustomerCommand>(customer);
-            await _client.CustomersPOSTAsync(createCustomerCommand);
+            var customerCreateCommand = _mapper.Map<CustomerCreateCommand>(customer);
+            await _client.CustomersPOSTAsync(customerCreateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -52,8 +52,8 @@ public class CustomerService : BaseHttpService, ICustomerService
         try
         {
             await AddBearerToken();
-            var updateCustomerCommand = _mapper.Map<UpdateCustomerCommand>(customer);
-            await _client.CustomersPUTAsync(id, updateCustomerCommand);
+            var customerUpdateCommand = _mapper.Map<CustomerUpdateCommand>(customer);
+            await _client.CustomersPUTAsync(id, customerUpdateCommand);
             return new Response<Guid>
             {
                 Success = true

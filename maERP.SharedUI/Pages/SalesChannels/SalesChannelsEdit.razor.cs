@@ -26,7 +26,7 @@ namespace maERP.SharedUI.Pages.SalesChannels
 
         private MudForm _form = new();
 
-        protected string Title = "hinzufügen";
+        protected string Title = "hinzufÃ¼gen";
 
         protected SalesChannelVM salesChannel = new();
         protected List<WarehouseVM> warehouses = new();

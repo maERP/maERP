@@ -34,8 +34,8 @@ public class ProductService : BaseHttpService, IProductService
         try
         {
             await AddBearerToken();
-            var createProductCommand = _mapper.Map<CreateProductCommand>(product);
-            await _client.ProductsPOSTAsync(createProductCommand);
+            var productCreateCommand = _mapper.Map<ProductCreateCommand>(product);
+            await _client.ProductsPOSTAsync(productCreateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -52,8 +52,8 @@ public class ProductService : BaseHttpService, IProductService
         try
         {
             await AddBearerToken();
-            var updateProductCommand = _mapper.Map<UpdateProductCommand>(product);
-            await _client.ProductsPUTAsync(id, updateProductCommand);
+            var productUpdateCommand = _mapper.Map<ProductUpdateCommand>(product);
+            await _client.ProductsPUTAsync(id, productUpdateCommand);
             return new Response<Guid>
             {
                 Success = true
