@@ -1,11 +1,16 @@
-﻿using AutoMapper;
+﻿using System.Linq.Dynamic.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Extensions;
+using maERP.Application.Specifications;
+using maERP.Shared.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Product.Queries.ProductList;
 
-public class ProductListHandler : IRequestHandler<ProductListQuery, List<ProductListResponse>>
+public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedResult<ProductListResponse>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<ProductListHandler> _logger;
@@ -19,19 +24,26 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, List<Product
         _logger = logger;
         _productRepository = productRepository; 
     }
-    public async Task<List<ProductListResponse>> Handle(ProductListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<ProductListResponse>> Handle(ProductListQuery request, CancellationToken cancellationToken)
     {
-        // Query the database
-        var products = await _productRepository.GetAllAsync();
+        var orderFilterSpec = new ProductFilterSpecification(request.SearchString);
 
-        // Sort by DateCreated
-        products = products.OrderByDescending(o => o.DateCreated).ToList();
+        if (request.OrderBy?.Any() != true)
+        {
+            return await _productRepository.Entities
+               .Specify(orderFilterSpec)
+               .ProjectTo<ProductListResponse>(_mapper.ConfigurationProvider)
+               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        }
+        else
+        {
+            var ordering = string.Join(",", request.OrderBy);
 
-        // Convert data objects to DTO objects
-        var data = _mapper.Map<List<ProductListResponse>>(products);
-
-        // Return list of DTO objects
-        _logger.LogInformation("All Productes are retrieved successfully.");
-        return data;
+            return await _productRepository.Entities
+               .Specify(orderFilterSpec)
+               .OrderBy(ordering)
+               .ProjectTo<ProductListResponse>(_mapper.ConfigurationProvider)
+               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        }
     }
 }

@@ -22,17 +22,14 @@ public class MappingProfiles : Profile
         CreateMap<CustomerVM, CustomerCreateCommand>().ReverseMap();
         CreateMap<CustomerVM, CustomerUpdateCommand>().ReverseMap();
 
-        // CreateMap<CustomerAddressListVM, CustomerAddressListDto>().ReverseMap();
-        // CreateMap<CustomerAddressVM, CustomerAddressDetailDto>().ReverseMap();
-
-        CreateMap<OrderListVM, OrderListResponse>().ReverseMap();
-
         CreateMap<PaginatedResult<OrderListVM>, OrderListResponsePaginatedResult>().ReverseMap();
+        CreateMap<OrderListVM, OrderListResponse>().ReverseMap();
         CreateMap<OrderVM, OrderDetailResponse>().ReverseMap();
         CreateMap<OrderVM, OrderCreateCommand>().ReverseMap();
         CreateMap<OrderVM, OrderUpdateCommand>().ReverseMap();
 
-        CreateMap<ProductVM, ProductListResponse>().ReverseMap();
+        CreateMap<PaginatedResult<ProductListVM>, ProductListResponsePaginatedResult>().ReverseMap();
+        CreateMap<ProductListVM, ProductListResponse>().ReverseMap();
         CreateMap<ProductVM, ProductDetailResponse>().ReverseMap();
         CreateMap<ProductVM, ProductCreateCommand>().ReverseMap();
         CreateMap<ProductVM, ProductCreateCommand>().ReverseMap();

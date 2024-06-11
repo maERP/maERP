@@ -1,9 +1,11 @@
 ﻿using Asp.Versioning;
+using maERP.Application.Features.Order.Queries.OrderList;
 using maERP.Application.Features.Product.Commands.ProductCreate;
 using maERP.Application.Features.Product.Commands.ProductDelete;
 using maERP.Application.Features.Product.Commands.ProductUpdate;
 using maERP.Application.Features.Product.Queries.ProductDetail;
 using maERP.Application.Features.Product.Queries.ProductList;
+using maERP.Shared.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +20,14 @@ public class ProductsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<ProductsController>
     [HttpGet]
-    public async Task<ActionResult<List<ProductListResponse>>> Get()
+    public async Task<ActionResult<PaginatedResult<ProductListResponse>>> GetAll(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
-        var products = await mediator.Send(new ProductListQuery());
+        if (string.IsNullOrEmpty(orderBy))
+        {
+            orderBy = "DateCreated Descending";
+        }
+
+        var products = await mediator.Send(new ProductListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(products);
     }
 
@@ -39,7 +46,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<int>> Create(ProductCreateCommand productCreateCommand)
     {
         var response = await mediator.Send(productCreateCommand);
-        return CreatedAtAction(nameof(Get), new { id = response });
+        return CreatedAtAction(nameof(GetAll), new { id = response });
     }
 
     // PUT: api/<ProductsController>/5

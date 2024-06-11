@@ -1,6 +1,7 @@
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.Product;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace maERP.SharedUI.Pages.Products;
 
@@ -12,24 +13,27 @@ public partial class Products
     [Inject]
     public required IProductService _productService { get; set; }
 
-    private ICollection<ProductVM>? products;
-    public string? filter { get; set; }
+    private string _searchString = string.Empty;
 
-    protected override async Task OnInitializedAsync()
+    private MudDataGrid<ProductListVM> _dataGrid = new();
+
+    private async Task<GridData<ProductListVM>> LoadGridData(GridState<ProductListVM> state)
     {
-        products = await _productService.GetProducts();
+        var apiResponse = await _productService.GetProducts(state.Page, state.PageSize, _searchString);
+        GridData<ProductListVM> data = new()
+        {
+            Items = apiResponse.Data,
+            TotalItems = apiResponse.TotalCount
+        };
+
+        return data;
     }
 
-    public bool IsVisible(ProductVM product)
+    private async Task Search()
     {
-        if (string.IsNullOrEmpty(filter))
-            return true;
-
-        if (product.Sku.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
-            product.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
-            product.Ean.Contains(filter, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        return false;
+        if (_dataGrid is not null)
+        {
+            await _dataGrid!.ReloadServerData();
+        }
     }
 }
