@@ -1,11 +1,17 @@
-﻿using AutoMapper;
+﻿using System.Linq.Dynamic.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Extensions;
+using maERP.Application.Specifications;
+using maERP.Shared.Wrapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 
-public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, List<SalesChannelListResponse>>
+public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, PaginatedResult<SalesChannelListResponse>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<SalesChannelListHandler> _logger;
@@ -19,16 +25,26 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Li
         _logger = logger;
         _salesChannelRepository = salesChannelRepository; 
     }
-    public async Task<List<SalesChannelListResponse>> Handle(SalesChannelListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<SalesChannelListResponse>> Handle(SalesChannelListQuery request, CancellationToken cancellationToken)
     {
-        // Query the database
-        var salesChanneles = await _salesChannelRepository.GetAllAsync();
+        var salesChannelFilterSpec = new SalesChannelFilterSpecification(request.SearchString);
 
-        // Convert data objects to DTO objects
-        var data = _mapper.Map<List<SalesChannelListResponse>>(salesChanneles);
+        if (request.OrderBy?.Any() != true)
+        {
+            return await _salesChannelRepository.Entities
+               .Specify(salesChannelFilterSpec)
+               .ProjectTo<SalesChannelListResponse>(_mapper.ConfigurationProvider)
+               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        }
+        else
+        {
+            var ordering = string.Join(",", request.OrderBy);
 
-        // Return list of DTO objects
-        _logger.LogInformation("All SalesChannels retrieved successfully.");
-        return data;
+            return await _salesChannelRepository.Entities
+               .Specify(salesChannelFilterSpec)
+               .OrderBy(ordering)
+               .ProjectTo<SalesChannelListResponse>(_mapper.ConfigurationProvider)
+               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        }
     }
 }

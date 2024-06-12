@@ -5,6 +5,7 @@ using maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 using maERP.Application.Features.TaxClass.Queries.TaxClassList;
+using maERP.Shared.Wrapper;
 
 namespace maERP.Server.Tests;
 
@@ -51,10 +52,10 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
                 }
         });
 
-        ICollection<TaxClassListResponse>? result = await httpClient.GetFromJsonAsync<ICollection<TaxClassListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<TaxClassListResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.Count, 4);
+        Assert.Equal(result?.TotalCount, 4);
     }
 
     [Theory]

@@ -2,7 +2,7 @@
 
 namespace maERP.Domain.Models;
 
-public class Shipping : BaseEntity
+public class Shipping : BaseEntity, IBaseEntity
 {
     public int OrderId { get; set; }
     public int ShippingProviderId { get; set; }

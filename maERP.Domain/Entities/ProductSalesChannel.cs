@@ -3,7 +3,7 @@ using maERP.Domain.Models.Common;
 
 namespace maERP.Domain.Models;
 
-public class ProductSalesChannel : BaseEntity
+public class ProductSalesChannel : BaseEntity, IBaseEntity
 {
     public SalesChannel SalesChannel { get; set; } = new();
     public int SalesChannelId { get; set; }

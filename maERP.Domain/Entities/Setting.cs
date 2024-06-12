@@ -2,7 +2,7 @@
 
 namespace maERP.Domain.Models;
 
-public class Setting : BaseEntity
+public class Setting : BaseEntity, IBaseEntity
 {
     public int Section { get; set; }
     public string Key { get; set; } = string.Empty;

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Blazored.LocalStorage;
+using maERP.Shared.Wrapper;
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Models.Warehouse;
 using maERP.SharedUI.Services.Base;
 
@@ -15,17 +17,17 @@ public class WarehouseService : BaseHttpService, IWarehouseService
         _mapper = mapper;
     }
 
-    public async Task<List<WarehouseVM>> GetWarehouses()
+    public async Task<PaginatedResult<WarehouseVM>> GetWarehouses(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var warehouses = await _client.WarehousesAllAsync();
-        return _mapper.Map<List<WarehouseVM>>(warehouses);
+        var warehouses = await _client.WarehousesGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<WarehouseVM>>(warehouses);
     }
 
     public async Task<WarehouseVM> GetWarehouseDetails(int id)
     {
         await AddBearerToken();
-        var warehouse = await _client.WarehousesGETAsync(id);
+        var warehouse = await _client.WarehousesGET2Async(id);
         return _mapper.Map<WarehouseVM>(warehouse);
     }
 

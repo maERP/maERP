@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace maERP.Domain.Models;
 
-public class ProductStock : BaseEntity
+public class ProductStock : BaseEntity, IBaseEntity
 {
     [Required]
     public int ProductId { get; set; }

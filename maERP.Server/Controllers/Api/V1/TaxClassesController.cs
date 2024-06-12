@@ -1,11 +1,14 @@
 ﻿using Asp.Versioning;
+using maERP.Application.Features.Order.Queries.OrderList;
 using maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 using maERP.Application.Features.TaxClass.Commands.TaxClassDelete;
 using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 using maERP.Application.Features.TaxClass.Queries.TaxClassList;
+using maERP.Shared.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 
 namespace maERP.Server.Controllers.Api.V1;
@@ -25,9 +28,14 @@ public class TaxClassesController : ControllerBase
 
     // GET: api/<TaxClassesController>
     [HttpGet]
-    public async Task<ActionResult<List<TaxClassListResponse>>> Get()
+    public async Task<ActionResult<PaginatedResult<TaxClassListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
-        var taxClasses = await _mediator.Send(new TaxClassListQuery());
+        if (string.IsNullOrEmpty(orderBy))
+        {
+            orderBy = "DateCreated Descending";
+        }
+
+        var taxClasses = await _mediator.Send(new TaxClassListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(taxClasses);
     }
 

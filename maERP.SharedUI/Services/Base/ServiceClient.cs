@@ -44,12 +44,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListResponse>> CustomersAllAsync();
+        System.Threading.Tasks.Task<CustomerListResponsePaginatedResult> CustomersGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListResponse>> CustomersAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<CustomerListResponsePaginatedResult> CustomersGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -62,12 +62,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CustomerDetailResponse> CustomersGETAsync(int id);
+        System.Threading.Tasks.Task<CustomerDetailResponse> CustomersGET2Async(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<CustomerDetailResponse> CustomersGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<CustomerDetailResponse> CustomersGET2Async(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -179,12 +179,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListResponse>> SalesChannelsAllAsync();
+        System.Threading.Tasks.Task<SalesChannelListResponsePaginatedResult> SalesChannelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListResponse>> SalesChannelsAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SalesChannelListResponsePaginatedResult> SalesChannelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -197,12 +197,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SalesChannelDetailResponse> SalesChannelsGETAsync(int id);
+        System.Threading.Tasks.Task<SalesChannelDetailResponse> SalesChannelsGET2Async(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<SalesChannelDetailResponse> SalesChannelsGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<SalesChannelDetailResponse> SalesChannelsGET2Async(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -224,12 +224,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListResponse>> TaxClassesAllAsync();
+        System.Threading.Tasks.Task<TaxClassListResponsePaginatedResult> TaxClassesGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListResponse>> TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<TaxClassListResponsePaginatedResult> TaxClassesGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -242,12 +242,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TaxClassDetailResponse> TaxClassesGETAsync(int id);
+        System.Threading.Tasks.Task<TaxClassDetailResponse> TaxClassesGET2Async(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TaxClassDetailResponse> TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<TaxClassDetailResponse> TaxClassesGET2Async(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -305,12 +305,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListResponse>> WarehousesAllAsync();
+        System.Threading.Tasks.Task<WarehouseListResponsePaginatedResult> WarehousesGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListResponse>> WarehousesAllAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<WarehouseListResponsePaginatedResult> WarehousesGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -323,12 +323,12 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<WarehouseDetailResponse> WarehousesGETAsync(int id);
+        System.Threading.Tasks.Task<WarehouseDetailResponse> WarehousesGET2Async(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<WarehouseDetailResponse> WarehousesGETAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<WarehouseDetailResponse> WarehousesGET2Async(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -544,15 +544,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListResponse>> CustomersAllAsync()
+        public virtual System.Threading.Tasks.Task<CustomerListResponsePaginatedResult> CustomersGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy)
         {
-            return CustomersAllAsync(System.Threading.CancellationToken.None);
+            return CustomersGETAsync(pageNumber, pageSize, searchString, orderBy, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<CustomerListResponse>> CustomersAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<CustomerListResponsePaginatedResult> CustomersGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -567,6 +567,24 @@ namespace maERP.SharedUI.Services.Base
                 
                     // Operation Path: "api/v1/Customers"
                     urlBuilder_.Append("api/v1/Customers");
+                    urlBuilder_.Append('?');
+                    if (pageNumber != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("pageNumber")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (pageSize != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("pageSize")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (searchString != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("searchString")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(searchString, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (orderBy != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("orderBy")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -593,7 +611,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<CustomerListResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<CustomerListResponsePaginatedResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -714,15 +732,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<CustomerDetailResponse> CustomersGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<CustomerDetailResponse> CustomersGET2Async(int id)
         {
-            return CustomersGETAsync(id, System.Threading.CancellationToken.None);
+            return CustomersGET2Async(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<CustomerDetailResponse> CustomersGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<CustomerDetailResponse> CustomersGET2Async(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -1918,15 +1936,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListResponse>> SalesChannelsAllAsync()
+        public virtual System.Threading.Tasks.Task<SalesChannelListResponsePaginatedResult> SalesChannelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy)
         {
-            return SalesChannelsAllAsync(System.Threading.CancellationToken.None);
+            return SalesChannelsGETAsync(pageNumber, pageSize, searchString, orderBy, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<SalesChannelListResponse>> SalesChannelsAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SalesChannelListResponsePaginatedResult> SalesChannelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1941,6 +1959,24 @@ namespace maERP.SharedUI.Services.Base
                 
                     // Operation Path: "api/v1/SalesChannels"
                     urlBuilder_.Append("api/v1/SalesChannels");
+                    urlBuilder_.Append('?');
+                    if (pageNumber != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("pageNumber")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (pageSize != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("pageSize")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (searchString != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("searchString")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(searchString, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (orderBy != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("orderBy")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1967,7 +2003,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<SalesChannelListResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SalesChannelListResponsePaginatedResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2088,15 +2124,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<SalesChannelDetailResponse> SalesChannelsGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<SalesChannelDetailResponse> SalesChannelsGET2Async(int id)
         {
-            return SalesChannelsGETAsync(id, System.Threading.CancellationToken.None);
+            return SalesChannelsGET2Async(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<SalesChannelDetailResponse> SalesChannelsGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<SalesChannelDetailResponse> SalesChannelsGET2Async(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -2364,15 +2400,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListResponse>> TaxClassesAllAsync()
+        public virtual System.Threading.Tasks.Task<TaxClassListResponsePaginatedResult> TaxClassesGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy)
         {
-            return TaxClassesAllAsync(System.Threading.CancellationToken.None);
+            return TaxClassesGETAsync(pageNumber, pageSize, searchString, orderBy, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<TaxClassListResponse>> TaxClassesAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TaxClassListResponsePaginatedResult> TaxClassesGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -2387,6 +2423,24 @@ namespace maERP.SharedUI.Services.Base
                 
                     // Operation Path: "api/v1/TaxClasses"
                     urlBuilder_.Append("api/v1/TaxClasses");
+                    urlBuilder_.Append('?');
+                    if (pageNumber != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("pageNumber")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (pageSize != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("pageSize")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (searchString != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("searchString")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(searchString, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (orderBy != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("orderBy")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2413,7 +2467,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<TaxClassListResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<TaxClassListResponsePaginatedResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -2534,15 +2588,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<TaxClassDetailResponse> TaxClassesGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<TaxClassDetailResponse> TaxClassesGET2Async(int id)
         {
-            return TaxClassesGETAsync(id, System.Threading.CancellationToken.None);
+            return TaxClassesGET2Async(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<TaxClassDetailResponse> TaxClassesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TaxClassDetailResponse> TaxClassesGET2Async(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -3166,15 +3220,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListResponse>> WarehousesAllAsync()
+        public virtual System.Threading.Tasks.Task<WarehouseListResponsePaginatedResult> WarehousesGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy)
         {
-            return WarehousesAllAsync(System.Threading.CancellationToken.None);
+            return WarehousesGETAsync(pageNumber, pageSize, searchString, orderBy, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<WarehouseListResponse>> WarehousesAllAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<WarehouseListResponsePaginatedResult> WarehousesGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -3189,6 +3243,24 @@ namespace maERP.SharedUI.Services.Base
                 
                     // Operation Path: "api/v1/Warehouses"
                     urlBuilder_.Append("api/v1/Warehouses");
+                    urlBuilder_.Append('?');
+                    if (pageNumber != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("pageNumber")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(pageNumber, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (pageSize != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("pageSize")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(pageSize, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (searchString != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("searchString")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(searchString, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (orderBy != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("orderBy")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(orderBy, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -3215,7 +3287,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<WarehouseListResponse>>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<WarehouseListResponsePaginatedResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -3330,15 +3402,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<WarehouseDetailResponse> WarehousesGETAsync(int id)
+        public virtual System.Threading.Tasks.Task<WarehouseDetailResponse> WarehousesGET2Async(int id)
         {
-            return WarehousesGETAsync(id, System.Threading.CancellationToken.None);
+            return WarehousesGET2Async(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<WarehouseDetailResponse> WarehousesGETAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<WarehouseDetailResponse> WarehousesGET2Async(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -3852,6 +3924,42 @@ namespace maERP.SharedUI.Services.Base
 
         [System.Text.Json.Serialization.JsonPropertyName("DateEnrollment")]
         public System.DateTime DateEnrollment { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CustomerListResponsePaginatedResult
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("StatusCode")]
+        public ResultStatusCode StatusCode { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Messages")]
+        public System.Collections.Generic.ICollection<string> Messages { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Succeeded")]
+        public bool Succeeded { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Data")]
+        public System.Collections.Generic.ICollection<CustomerListResponse> Data { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("CurrentPage")]
+        public int CurrentPage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalPages")]
+        public int TotalPages { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalCount")]
+        public int TotalCount { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PageSize")]
+        public int PageSize { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HasPreviousPage")]
+        public bool HasPreviousPage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HasNextPage")]
+        public bool HasNextPage { get; set; }
 
     }
 
@@ -4484,6 +4592,42 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SalesChannelListResponsePaginatedResult
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("StatusCode")]
+        public ResultStatusCode StatusCode { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Messages")]
+        public System.Collections.Generic.ICollection<string> Messages { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Succeeded")]
+        public bool Succeeded { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Data")]
+        public System.Collections.Generic.ICollection<SalesChannelListResponse> Data { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("CurrentPage")]
+        public int CurrentPage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalPages")]
+        public int TotalPages { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalCount")]
+        public int TotalCount { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PageSize")]
+        public int PageSize { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HasPreviousPage")]
+        public bool HasPreviousPage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HasNextPage")]
+        public bool HasNextPage { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum SalesChannelType
     {
 
@@ -4572,6 +4716,42 @@ namespace maERP.SharedUI.Services.Base
 
         [System.Text.Json.Serialization.JsonPropertyName("TaxRate")]
         public double TaxRate { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class TaxClassListResponsePaginatedResult
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("StatusCode")]
+        public ResultStatusCode StatusCode { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Messages")]
+        public System.Collections.Generic.ICollection<string> Messages { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Succeeded")]
+        public bool Succeeded { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Data")]
+        public System.Collections.Generic.ICollection<TaxClassListResponse> Data { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("CurrentPage")]
+        public int CurrentPage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalPages")]
+        public int TotalPages { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalCount")]
+        public int TotalCount { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PageSize")]
+        public int PageSize { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HasPreviousPage")]
+        public bool HasPreviousPage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HasNextPage")]
+        public bool HasNextPage { get; set; }
 
     }
 
@@ -4683,6 +4863,42 @@ namespace maERP.SharedUI.Services.Base
 
         [System.Text.Json.Serialization.JsonPropertyName("Name")]
         public string Name { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class WarehouseListResponsePaginatedResult
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("StatusCode")]
+        public ResultStatusCode StatusCode { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Messages")]
+        public System.Collections.Generic.ICollection<string> Messages { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Succeeded")]
+        public bool Succeeded { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Data")]
+        public System.Collections.Generic.ICollection<WarehouseListResponse> Data { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("CurrentPage")]
+        public int CurrentPage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalPages")]
+        public int TotalPages { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("TotalCount")]
+        public int TotalCount { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("PageSize")]
+        public int PageSize { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HasPreviousPage")]
+        public bool HasPreviousPage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("HasNextPage")]
+        public bool HasNextPage { get; set; }
 
     }
 

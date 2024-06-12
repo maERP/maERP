@@ -2,7 +2,7 @@
 
 namespace maERP.Domain.Models;
 
-public class CustomerSalesChannel : BaseEntity
+public class CustomerSalesChannel : BaseEntity, IBaseEntity
 {
     public required int CustomerId { get; set; }
     public required int SalesChannelId { get; set; }

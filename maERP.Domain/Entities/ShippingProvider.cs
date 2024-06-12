@@ -3,7 +3,7 @@ using maERP.Domain.Models.Common;
 
 namespace maERP.Domain.Models;
 
-public class ShippingProvider : BaseEntity
+public class ShippingProvider : BaseEntity, IBaseEntity
 {
     [Required, Display(Name = "Name")]
     public string Name { get; set; } = string.Empty;

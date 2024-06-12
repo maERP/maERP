@@ -31,6 +31,7 @@ namespace maERP.SharedUI.Pages.SalesChannels
         protected SalesChannelVM salesChannel = new();
         protected List<WarehouseVM> warehouses = new();
 
+        /*
         protected override async Task OnParametersSetAsync()
         {
             warehouses = await _warehouseService.GetWarehouses();
@@ -40,6 +41,7 @@ namespace maERP.SharedUI.Pages.SalesChannels
                 salesChannel = await _salesChannelService.GetSalesChannelDetails(salesChannelId);
             }
         }
+        */
 
         protected async Task Save()
         {

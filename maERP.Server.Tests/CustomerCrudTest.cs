@@ -5,6 +5,8 @@ using maERP.Application.Features.Customer.Commands.CustomerCreate;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
 using maERP.Application.Features.Customer.Queries.CustomerDetail;
 using maERP.Application.Features.Customer.Queries.CustomerList;
+using maERP.Shared.Wrapper;
+using maERP.Application.Features.Order.Queries.OrderList;
 
 
 namespace maERP.Server.Tests;
@@ -54,10 +56,10 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
                 }
         });
 
-        ICollection<CustomerListResponse>? result = await httpClient.GetFromJsonAsync<ICollection<CustomerListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<CustomerListResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.Count, 1);
+        Assert.Equal(result?.TotalCount, 1);
     }
 
     [Theory]

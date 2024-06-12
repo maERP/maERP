@@ -2,7 +2,7 @@
 
 namespace maERP.Domain.Models;
 
-public class CustomerAddress : BaseEntity
+public class CustomerAddress : BaseEntity, IBaseEntity
 {
     public string Firstname { get; set; } = string.Empty;
     public string Lastname { get; set; } = string.Empty;

@@ -1,5 +1,6 @@
 ﻿@page "/Customers"
 @using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Models.Customer
 
 @attribute [Authorize]
 
@@ -11,24 +12,25 @@
     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Customers/Add" />
 </MudStack>
 
-@if (customers == null)
-{
-    <p><em>Lade...</em></p>
-}
-else
-{
-    <MudDataGrid Items="@customers" SortMode="SortMode.Single" Class="mb-8">
-        <Columns>
-            <PropertyColumn Property="x => x.Id" Title="Kundennr." />
-            <PropertyColumn Property="x => x.Firstname" Title="Vorname" />
-            <PropertyColumn Property="x => x.Lastname" Title="Nachname" />
-            <PropertyColumn Property="x => x.DateEnrollment" Title="Kunde seit" />
-            <TemplateColumn CellClass="d-flex justify-end">
-                <CellTemplate>
-                    <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/Customers/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
-                    <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/Customers/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
-                </CellTemplate>
-            </TemplateColumn>
-        </Columns>
-    </MudDataGrid>
-}
+<MudDataGrid T="CustomerVM" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
+    <ToolBarContent>
+        @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" TextChanged="this.Search" Placeholder="Suche" Adornment="Adornment.Start" Immediate="true" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="Kundennr." />
+        <PropertyColumn Property="x => x.Firstname" Title="Vorname" />
+        <PropertyColumn Property="x => x.Lastname" Title="Nachname" />
+        <PropertyColumn Property="x => x.DateEnrollment" Title="Kunde seit" />
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/Customers/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/Customers/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="CustomerVM" />
+    </PagerContent>
+</MudDataGrid>

@@ -5,6 +5,7 @@ using maERP.Application.Features.Product.Commands.ProductCreate;
 using maERP.Application.Features.Product.Queries.ProductDetail;
 using maERP.Application.Features.Product.Queries.ProductList;
 using maERP.Application.Features.Product.Commands.ProductUpdate;
+using maERP.Shared.Wrapper;
 
 namespace maERP.Server.Tests;
 
@@ -56,10 +57,10 @@ public class ProductCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
                 }
         });
 
-        ICollection<ProductListResponse>? result = await httpClient.GetFromJsonAsync<ICollection<ProductListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<ProductListResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.Count, 1);
+        Assert.Equal(result?.TotalCount, 1);
     }
 
     [Theory]

@@ -15,18 +15,18 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class OrdersController(IMediator mediator) : ControllerBase
+public class OrdersController(IMediator _mediator) : ControllerBase
 {
     // GET: api/<OrdersController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<OrderListResponse>>> GetAll(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<OrderListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
             orderBy = "DateOrdered Descending";
         }
 
-        var orders = await mediator.Send(new OrderListQuery(pageNumber, pageSize, searchString, orderBy));
+        var orders = await _mediator.Send(new OrderListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(orders);
     }
 
@@ -34,7 +34,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<OrderDetailResponse>> GetDetails(int id)
     {
-        var order = await mediator.Send(new OrderDetailQuery { Id = id });
+        var order = await _mediator.Send(new OrderDetailQuery { Id = id });
         return Ok(order);
     }
 
@@ -44,7 +44,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Create(OrderCreateCommand orderCreateCommand)
     {
-        var response = await mediator.Send(orderCreateCommand);
+        var response = await _mediator.Send(orderCreateCommand);
         return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
@@ -57,7 +57,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> Update(int id, OrderUpdateCommand orderUpdateCommand)
     {
         orderUpdateCommand.Id = id;
-        await mediator.Send(orderUpdateCommand);
+        await _mediator.Send(orderUpdateCommand);
         return NoContent();
     }
 
@@ -69,7 +69,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> Delete(int id)
     {
         var command = new DeleteOrderCommand { Id = id };
-        await mediator.Send(command);
+        await _mediator.Send(command);
         return NoContent();
     }
 }

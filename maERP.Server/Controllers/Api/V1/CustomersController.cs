@@ -4,6 +4,8 @@ using maERP.Application.Features.Customer.Commands.CustomerDelete;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
 using maERP.Application.Features.Customer.Queries.CustomerDetail;
 using maERP.Application.Features.Customer.Queries.CustomerList;
+using maERP.Application.Features.Order.Queries.OrderList;
+using maERP.Shared.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +20,14 @@ public class CustomersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<CustomersController>
     [HttpGet]
-    public async Task<ActionResult<List<CustomerListResponse>>> Get()
+    public async Task<ActionResult<PaginatedResult<CustomerListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
-        var customers = await mediator.Send(new CustomerListQuery());
+        if (string.IsNullOrEmpty(orderBy))
+        {
+            orderBy = "DateEnrollment Descending";
+        }
+
+        var customers = await mediator.Send(new CustomerListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(customers);
     }
 
@@ -39,7 +46,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<CustomerCreateResponse>> Create(CustomerCreateCommand customerCreateCommand)
     {
         var response = await mediator.Send(customerCreateCommand);
-        return CreatedAtAction(nameof(Get), new { id = response });
+        return CreatedAtAction(nameof(GetAll), new { id = response });
     }
 
     // PUT: api/<CustomersController>/5

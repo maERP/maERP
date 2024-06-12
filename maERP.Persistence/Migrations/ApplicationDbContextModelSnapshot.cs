@@ -180,7 +180,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.ApplicationUser", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -290,7 +290,7 @@ namespace maERP.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Country", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Country", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1280,7 +1280,7 @@ namespace maERP.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Customer", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1337,7 +1337,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("Customer");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.CustomerAddress", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.CustomerAddress", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1400,7 +1400,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("CustomerAddress");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.CustomerSalesChannel", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.CustomerSalesChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1431,7 +1431,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("CustomerSalesChannel");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Order", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1567,7 +1567,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.OrderItem", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.OrderItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1618,7 +1618,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("OrderItem");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.OrderItemSerialNumber", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.OrderItemSerialNumber", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1646,7 +1646,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("OrderItemSerialNumber");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Product", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1711,7 +1711,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.ProductSalesChannel", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.ProductSalesChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1746,7 +1746,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("ProductSalesChannel");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.ProductStock", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.ProductStock", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1778,7 +1778,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("ProductStock");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.SalesChannel", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.SalesChannel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1868,7 +1868,7 @@ namespace maERP.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Setting", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Setting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1898,7 +1898,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("Setting");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Shipping", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Shipping", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1939,7 +1939,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("Shipping");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.ShippingProvider", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.ShippingProvider", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1962,7 +1962,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("ShippingProvider");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.ShippingProviderRate", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.ShippingProviderRate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2002,7 +2002,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("ShippingProviderRate");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.TaxClass", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.TaxClass", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2047,7 +2047,7 @@ namespace maERP.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Warehouse", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Warehouse", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -2091,7 +2091,7 @@ namespace maERP.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.ApplicationUser", null)
+                    b.HasOne("maERP.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2100,7 +2100,7 @@ namespace maERP.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.ApplicationUser", null)
+                    b.HasOne("maERP.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2115,7 +2115,7 @@ namespace maERP.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("maERP.Domain.Models.ApplicationUser", null)
+                    b.HasOne("maERP.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2124,22 +2124,22 @@ namespace maERP.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.ApplicationUser", null)
+                    b.HasOne("maERP.Domain.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.CustomerAddress", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.CustomerAddress", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.Country", "Country")
+                    b.HasOne("maERP.Domain.Entities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("maERP.Domain.Models.Customer", "Customer")
+                    b.HasOne("maERP.Domain.Entities.Customer", "Customer")
                         .WithMany("CustomerAddresses")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2150,45 +2150,45 @@ namespace maERP.Persistence.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.CustomerSalesChannel", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.CustomerSalesChannel", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.Customer", null)
+                    b.HasOne("maERP.Domain.Entities.Customer", null)
                         .WithMany("CustomerSalesChannels")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Order", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.Customer", null)
+                    b.HasOne("maERP.Domain.Entities.Customer", null)
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.OrderItem", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.OrderItem", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.Order", null)
+                    b.HasOne("maERP.Domain.Entities.Order", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.OrderItemSerialNumber", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.OrderItemSerialNumber", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.OrderItem", null)
+                    b.HasOne("maERP.Domain.Entities.OrderItem", null)
                         .WithMany("SerialNumbers")
                         .HasForeignKey("OrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Product", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.TaxClass", "TaxClass")
+                    b.HasOne("maERP.Domain.Entities.TaxClass", "TaxClass")
                         .WithMany("Products")
                         .HasForeignKey("TaxClassId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2197,15 +2197,15 @@ namespace maERP.Persistence.Migrations
                     b.Navigation("TaxClass");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.ProductSalesChannel", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.ProductSalesChannel", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.Product", "Product")
+                    b.HasOne("maERP.Domain.Entities.Product", "Product")
                         .WithMany("ProductSalesChannels")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("maERP.Domain.Models.SalesChannel", "SalesChannel")
+                    b.HasOne("maERP.Domain.Entities.SalesChannel", "SalesChannel")
                         .WithMany()
                         .HasForeignKey("SalesChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2216,15 +2216,15 @@ namespace maERP.Persistence.Migrations
                     b.Navigation("SalesChannel");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.ProductStock", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.ProductStock", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.Product", null)
+                    b.HasOne("maERP.Domain.Entities.Product", null)
                         .WithMany("ProductStocks")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("maERP.Domain.Models.Warehouse", "Warehouse")
+                    b.HasOne("maERP.Domain.Entities.Warehouse", "Warehouse")
                         .WithMany()
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2233,23 +2233,23 @@ namespace maERP.Persistence.Migrations
                     b.Navigation("Warehouse");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.SalesChannel", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.SalesChannel", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.Warehouse", null)
+                    b.HasOne("maERP.Domain.Entities.Warehouse", null)
                         .WithMany("SalesChannels")
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.ShippingProviderRate", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.ShippingProviderRate", b =>
                 {
-                    b.HasOne("maERP.Domain.Models.ShippingProvider", null)
+                    b.HasOne("maERP.Domain.Entities.ShippingProvider", null)
                         .WithMany("ShippingRates")
                         .HasForeignKey("ShippingProviderId");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Customer", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Customer", b =>
                 {
                     b.Navigation("CustomerAddresses");
 
@@ -2258,34 +2258,34 @@ namespace maERP.Persistence.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Order", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Order", b =>
                 {
                     b.Navigation("OrderItems");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.OrderItem", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.OrderItem", b =>
                 {
                     b.Navigation("SerialNumbers");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Product", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Product", b =>
                 {
                     b.Navigation("ProductSalesChannels");
 
                     b.Navigation("ProductStocks");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.ShippingProvider", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.ShippingProvider", b =>
                 {
                     b.Navigation("ShippingRates");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.TaxClass", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.TaxClass", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("maERP.Domain.Models.Warehouse", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.Warehouse", b =>
                 {
                     b.Navigation("SalesChannels");
                 });

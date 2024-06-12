@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Blazored.LocalStorage;
+using maERP.Shared.Wrapper;
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Models.TaxClass;
 using maERP.SharedUI.Services.Base;
 
@@ -15,17 +17,17 @@ public class TaxClassService : BaseHttpService, ITaxClassService
         _mapper = mapper;
     }
 
-    public async Task<List<TaxClassVM>> GetTaxClasses()
+    public async Task<PaginatedResult<TaxClassVM>> GetTaxClasses(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var taxClasss = await _client.TaxClassesAllAsync();
-        return _mapper.Map<List<TaxClassVM>>(taxClasss);
+        var taxClasses = await _client.TaxClassesGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<TaxClassVM>>(taxClasses);
     }
 
     public async Task<TaxClassVM> GetTaxClassDetails(int id)
     {
         await AddBearerToken();
-        var taxClass = await _client.TaxClassesGETAsync(id);
+        var taxClass = await _client.TaxClassesGET2Async(id);
         return _mapper.Map<TaxClassVM>(taxClass);
     }
 

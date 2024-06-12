@@ -20,7 +20,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<ProductsController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<ProductListResponse>>> GetAll(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<ProductListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {

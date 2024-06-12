@@ -1,5 +1,6 @@
 ﻿@page "/TaxClasses"
 @using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Models.TaxClass
 
 @attribute [Authorize]
 
@@ -11,22 +12,22 @@
     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/TaxClasses/Add" />
 </MudStack>
 
-@if (taxClasses == null)
-{
-    <p><em>Lade...</em></p>
-}
-else
-{
-
-    <MudDataGrid Items="@taxClasses" SortMode="SortMode.Single" Class="mb-8">
-        <Columns>
-            <PropertyColumn Property="x => x.TaxRate" Title="Steuersatz in %" />
-            <TemplateColumn CellClass="d-flex justify-end">
-                <CellTemplate>
-                    <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/TaxClasses/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
-                    <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/TaxClasses/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
-                </CellTemplate>
-            </TemplateColumn>
-        </Columns>
-    </MudDataGrid>
-}
+<MudDataGrid T="TaxClassVM" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
+    <ToolBarContent>
+        @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" TextChanged="this.Search" Placeholder="Suche" Adornment="Adornment.Start" Immediate="true" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.TaxRate" Title="Steuersatz in %" />
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/TaxClasses/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/TaxClasses/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="TaxClassVM" />
+    </PagerContent>
+</MudDataGrid>

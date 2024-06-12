@@ -5,6 +5,7 @@ using maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
+using maERP.Shared.Wrapper;
 
 namespace maERP.Server.Tests;
 
@@ -55,10 +56,10 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
                 }
         });
 
-        ICollection<SalesChannelListResponse>? result = await httpClient.GetFromJsonAsync<ICollection<SalesChannelListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<SalesChannelListResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.Count, 2);
+        Assert.Equal(result?.TotalCount, 2);
     }
 
     [Theory]

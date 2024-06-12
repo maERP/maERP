@@ -1,11 +1,16 @@
-﻿using AutoMapper;
+﻿using System.Linq.Dynamic.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Extensions;
+using maERP.Application.Specifications;
+using maERP.Shared.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Queries.WarehouseList;
 
-public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, List<WarehouseListResponse>>
+public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, PaginatedResult<WarehouseListResponse>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<WarehouseListHandler> _logger;
@@ -19,16 +24,26 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, List<War
         _logger = logger;
         _warehouseRepository = warehouseRepository; 
     }
-    public async Task<List<WarehouseListResponse>> Handle(WarehouseListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<WarehouseListResponse>> Handle(WarehouseListQuery request, CancellationToken cancellationToken)
     {
-        // Query the database
-        var warehouses = await _warehouseRepository.GetAllAsync();
+        var warehouseFilterSpec = new WarehouseFilterSpecification(request.SearchString);
 
-        // Convert data objects to DTO objects
-        var data = _mapper.Map<List<WarehouseListResponse>>(warehouses);
+        if (request.OrderBy?.Any() != true)
+        {
+            return await _warehouseRepository.Entities
+               .Specify(warehouseFilterSpec)
+               .ProjectTo<WarehouseListResponse>(_mapper.ConfigurationProvider)
+               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        }
+        else
+        {
+            var ordering = string.Join(",", request.OrderBy);
 
-        // Return list of DTO objects
-        _logger.LogInformation("All Warehouses are retrieved successfully.");
-        return data;
+            return await _warehouseRepository.Entities
+               .Specify(warehouseFilterSpec)
+               .OrderBy(ordering)
+               .ProjectTo<WarehouseListResponse>(_mapper.ConfigurationProvider)
+               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        }
     }
 }

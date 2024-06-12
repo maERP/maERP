@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blazored.LocalStorage;
+using maERP.Shared.Wrapper;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.SalesChannel;
 using maERP.SharedUI.Services.Base;
@@ -15,17 +16,17 @@ public class SalesChannelService : BaseHttpService, ISalesChannelService
         _mapper = mapper;
     }
 
-    public async Task<List<SalesChannelVM>> GetSalesChannels()
+    public async Task<PaginatedResult<SalesChannelVM>> GetSalesChannels(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var salesChannels = await _client.SalesChannelsAllAsync();
-        return _mapper.Map<List<SalesChannelVM>>(salesChannels);
+        var salesChannels = await _client.SalesChannelsGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<SalesChannelVM>>(salesChannels);
     }
 
     public async Task<SalesChannelVM> GetSalesChannelDetails(int id)
     {
         await AddBearerToken();
-        var salesChannel = await _client.SalesChannelsGETAsync(id);
+        var salesChannel = await _client.SalesChannelsGET2Async(id);
         return _mapper.Map<SalesChannelVM>(salesChannel);
     }
 

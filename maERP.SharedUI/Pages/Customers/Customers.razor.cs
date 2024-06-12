@@ -1,6 +1,9 @@
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.Customer;
+using maERP.SharedUI.Models.Order;
+using maERP.SharedUI.Services;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace maERP.SharedUI.Pages.Customers;
 
@@ -12,11 +15,27 @@ public partial class Customers
     [Inject]
     public required ICustomerService _customerService { get; set; }
 
+    private string _searchString = string.Empty;
 
-    private ICollection<CustomerVM>? customers;
+    private MudDataGrid<OrderListVM> _dataGrid = new();
 
-    protected override async Task OnInitializedAsync()
+    private async Task<GridData<CustomerVM>> LoadGridData(GridState<CustomerVM> state)
     {
-        customers = await _customerService.GetCustomers();
+        var apiResponse = await _customerService.GetCustomers(state.Page, state.PageSize, _searchString);
+        GridData<CustomerVM> data = new()
+        {
+            Items = apiResponse.Data,
+            TotalItems = apiResponse.TotalCount
+        };
+
+        return data;
+    }
+
+    private async Task Search()
+    {
+        if (_dataGrid is not null)
+        {
+            await _dataGrid!.ReloadServerData();
+        }
     }
 }

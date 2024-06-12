@@ -5,6 +5,7 @@ using maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
 using maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
 using maERP.Application.Features.Warehouse.Queries.WarehouseDetail;
 using maERP.Application.Features.Warehouse.Queries.WarehouseList;
+using maERP.Shared.Wrapper;
 
 namespace maERP.Server.Tests;
 
@@ -51,10 +52,10 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
                 }
         });
 
-        ICollection<WarehouseListResponse>? result = await httpClient.GetFromJsonAsync<ICollection<WarehouseListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<WarehouseListResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.Count, 2);
+        Assert.Equal(result?.TotalCount, 2);
     }
 
     [Theory]

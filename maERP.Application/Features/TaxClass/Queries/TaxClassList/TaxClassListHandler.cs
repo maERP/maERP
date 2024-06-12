@@ -1,11 +1,17 @@
-﻿using AutoMapper;
+﻿using System.Linq.Dynamic.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Extensions;
+using maERP.Application.Specifications;
+using maERP.Shared.Wrapper;
 using MediatR;
+
 
 namespace maERP.Application.Features.TaxClass.Queries.TaxClassList;
 
-public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, List<TaxClassListResponse>>
+public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, PaginatedResult<TaxClassListResponse>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<TaxClassListHandler> _logger;
@@ -19,16 +25,26 @@ public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, List<TaxCl
         _logger = logger;
         _taxClassRepository = taxClassRepository; 
     }
-    public async Task<List<TaxClassListResponse>> Handle(TaxClassListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<TaxClassListResponse>> Handle(TaxClassListQuery request, CancellationToken cancellationToken)
     {
-        // Query the database
-        var taxClasses = await _taxClassRepository.GetAllAsync();
+        var orderFilterSpec = new TaxClassFilterSpecification(request.SearchString);
 
-        // Convert data objects to DTO objects
-        var data = _mapper.Map<List<TaxClassListResponse>>(taxClasses);
+        if (request.OrderBy?.Any() != true)
+        {
+            return await _taxClassRepository.Entities
+               .Specify(orderFilterSpec)
+               .ProjectTo<TaxClassListResponse>(_mapper.ConfigurationProvider)
+               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        }
+        else
+        {
+            var ordering = string.Join(",", request.OrderBy);
 
-        // Return list of DTO objects
-        _logger.LogInformation("All TaxClasses are retrieved successfully.");
-        return data;
+            return await _taxClassRepository.Entities
+               .Specify(orderFilterSpec)
+               .OrderBy(ordering)
+               .ProjectTo<TaxClassListResponse>(_mapper.ConfigurationProvider)
+               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace maERP.Domain.Models;
 
-public class Warehouse : BaseEntity
+public class Warehouse : BaseEntity, IBaseEntity
 {
     public string Name { get; set; } = string.Empty;
 
