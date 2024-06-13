@@ -34,7 +34,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, order);
-        OrderDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<OrderDetailResponse>();
+        StatisticDashboardResponse? resultContent = await result.Content.ReadFromJsonAsync<StatisticDashboardResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -73,7 +73,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
                 }
         });
 
-        OrderDetailResponse? result = await httpClient.GetFromJsonAsync<OrderDetailResponse>(url);
+        StatisticDashboardResponse? result = await httpClient.GetFromJsonAsync<StatisticDashboardResponse>(url);
 
         Assert.NotNull(result);
         Assert.True(result.RemoteOrderId.Length > 0);
