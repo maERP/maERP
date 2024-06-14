@@ -1,6 +1,7 @@
 using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
+using maERP.Application.Features.Order.Commands.OrderCreate;
 using maERP.Application.Features.Order.Commands.OrderUpdate;
 using maERP.Application.Features.Order.Queries.OrderDetail;
 using maERP.Application.Features.Order.Queries.OrderList;
@@ -34,7 +35,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, order);
-        StatisticDashboardResponse? resultContent = await result.Content.ReadFromJsonAsync<StatisticDashboardResponse>();
+        OrderCreateResponse? resultContent = await result.Content.ReadFromJsonAsync<OrderCreateResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -73,7 +74,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
                 }
         });
 
-        StatisticDashboardResponse? result = await httpClient.GetFromJsonAsync<StatisticDashboardResponse>(url);
+        OrderDetailResponse? result = await httpClient.GetFromJsonAsync<OrderDetailResponse>(url);
 
         Assert.NotNull(result);
         Assert.True(result.RemoteOrderId.Length > 0);

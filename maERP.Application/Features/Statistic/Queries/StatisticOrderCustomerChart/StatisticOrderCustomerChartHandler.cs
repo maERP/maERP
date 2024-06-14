@@ -29,14 +29,16 @@ public class StatisticOrderCustomerChartHandler : IRequestHandler<StatisticOrder
     { 
         var response = new StatisticOrderCustomerChartResponse();
 
-        response.chartData = _orderRepository.Entities.Where(x => x.DateOrdered >= DateTime.UtcNow.AddDays(-30))
-            .GroupBy(x => x.DateOrdered)
-            .Select(x => new OrderCustomerChartDto
+        response.chartData = await _orderRepository.Entities
+            .Where(order => order.DateOrdered >= DateTime.UtcNow.AddDays(-30))
+            .GroupBy(order => order.DateOrdered.Date)
+            .Select(group => new OrderCustomerChartDto
             {
-                Date = DateTime.UtcNow,
-                OrdersNew = x.Count(),
-                CustomersNew = _customerRepository.Entities.Count(y => y.DateCreated == x.Key)
-            };
+                Date = group.Key,
+                OrdersNew = group.Count(),
+                CustomersNew = group.Select(order => order.CustomerId).Distinct().Count()
+            })
+            .ToListAsync();
         
         return response;
     }
