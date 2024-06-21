@@ -13,7 +13,7 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
     <PackageReference Include="MediatR" Version="12.3.0" />
     <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
-	<PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.0" />
+	<PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.1" />
   </ItemGroup>
 
   <ItemGroup>
