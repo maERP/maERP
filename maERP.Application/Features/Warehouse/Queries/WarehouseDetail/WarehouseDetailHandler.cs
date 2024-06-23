@@ -31,7 +31,7 @@ public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, Ware
 
         var data = _mapper.Map<WarehouseDetailResponse>(warehouse);
 
-        _logger.LogInformation("All Warehouses are retrieved successfully.");
+        _logger.LogInformation("Warehous retrieved successfully.");
         return data;
     }
 }

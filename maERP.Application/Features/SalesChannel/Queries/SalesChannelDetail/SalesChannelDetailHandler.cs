@@ -31,7 +31,7 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
 
         var data = _mapper.Map<SalesChannelDetailResponse>(salesChannel);
 
-        _logger.LogInformation("All SalesChanneles are retrieved successfully.");
+        _logger.LogInformation("SalesChannel retrieved successfully.");
         return data;
     }
 }

@@ -31,7 +31,7 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Custom
 
         var data = _mapper.Map<CustomerDetailResponse>(customer);
 
-        _logger.LogInformation("All Customeres are retrieved successfully.");
+        _logger.LogInformation("Customere retrieved successfully.");
         return data;
     }
 }

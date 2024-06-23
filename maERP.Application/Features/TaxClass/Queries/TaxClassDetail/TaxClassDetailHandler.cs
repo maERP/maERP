@@ -31,7 +31,7 @@ public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, TaxCla
 
         var data = _mapper.Map<TaxClassDetailResponse>(taxClass);
 
-        _logger.LogInformation("All TaxClasses are retrieved successfully.");
+        _logger.LogInformation("TaxClass retrieved successfully.");
         return data;
     }
 }

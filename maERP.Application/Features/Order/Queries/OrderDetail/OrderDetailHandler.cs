@@ -31,7 +31,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, OrderDetailR
 
         var data = _mapper.Map<OrderDetailResponse>(order);
 
-        _logger.LogInformation("All Orderes are retrieved successfully.");
+        _logger.LogInformation("Order retrieved successfully.");
         return data;
     }
 }

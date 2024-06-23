@@ -31,7 +31,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, ProductD
 
         var data = _mapper.Map<ProductDetailResponse>(product);
 
-        _logger.LogInformation("All Productes are retrieved successfully.");
+        _logger.LogInformation("Product retrieved successfully.");
         return data;
     }
 }

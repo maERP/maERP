@@ -29,7 +29,7 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, UserDetailResp
         var data = _mapper.Map<UserDetailResponse>(user);
 
         // Return list of DTO objects
-        _logger.LogInformation("All Users retrieved successfully.");
+        _logger.LogInformation("User retrieved successfully.");
         return data;
     }
 }
