@@ -26,25 +26,25 @@ public class AIModelsController(IMediator _mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var aimodels = await _mediator.Send(new AIModelListQuery(pageNumber, pageSize, searchString, orderBy));
-        return Ok(aimodels);
+        var aiModels = await _mediator.Send(new AIModelListQuery(pageNumber, pageSize, searchString, orderBy));
+        return Ok(aiModels);
     }
 
     // GET api/<AIModelsController>/5
     [HttpGet("{id}")]
     public async Task<ActionResult<AIModelDetailResponse>> GetDetails(int id)
     {
-        var aimodel = await _mediator.Send(new AIModelDetailQuery { Id = id });
-        return Ok(aimodel);
+        var aiModel = await _mediator.Send(new AIModelDetailQuery { Id = id });
+        return Ok(aiModel);
     }
 
     // POST api/<AIModelsController>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Create(AIModelCreateCommand aimodelCreateCommand)
+    public async Task<ActionResult> Create(AIModelCreateCommand aiModelCreateCommand)
     {
-        var response = await _mediator.Send(aimodelCreateCommand);
+        var response = await _mediator.Send(aiModelCreateCommand);
         return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
@@ -54,10 +54,10 @@ public class AIModelsController(IMediator _mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<AIModelDetailResponse>> Update(int id, AIModelUpdateCommand aimodelUpdateCommand)
+    public async Task<ActionResult<AIModelDetailResponse>> Update(int id, AIModelUpdateCommand aiModelUpdateCommand)
     {
-        aimodelUpdateCommand.Id = id;
-        await _mediator.Send(aimodelUpdateCommand);
+        aiModelUpdateCommand.Id = id;
+        await _mediator.Send(aiModelUpdateCommand);
         return NoContent();
     }
 

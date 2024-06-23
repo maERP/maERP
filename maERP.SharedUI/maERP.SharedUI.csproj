@@ -24,4 +24,11 @@
     <ProjectReference Include="..\maERP.Shared\maERP.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="Pages\AIModels\AIModels.razor" />
+    <AdditionalFiles Include="Pages\AIModels\AIModelsDelete.razor" />
+    <AdditionalFiles Include="Pages\AIModels\AIModelsDetail.razor" />
+    <AdditionalFiles Include="Pages\AIModels\AIModelsEdit.razor" />
+  </ItemGroup>
+
 </Project>

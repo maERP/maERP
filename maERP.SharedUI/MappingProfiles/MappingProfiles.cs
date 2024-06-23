@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using maERP.Shared.Wrapper;
+using maERP.SharedUI.Models.AIModel;
 using maERP.SharedUI.Models.Customer;
 using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Models.Product;
@@ -15,6 +16,12 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
+        CreateMap<PaginatedResult<AIModelVM>, AIModelListResponsePaginatedResult>().ReverseMap();
+        CreateMap<AIModelVM, AIModelListResponse>().ReverseMap();
+        CreateMap<AIModelVM, AIModelDetailResponse>().ReverseMap();
+        CreateMap<AIModelVM, AIModelCreateCommand>().ReverseMap();
+        CreateMap<AIModelVM, AIModelUpdateCommand>().ReverseMap();
+        
         CreateMap<PaginatedResult<CustomerVM>, CustomerListResponsePaginatedResult>().ReverseMap();
         CreateMap<CustomerVM, CustomerListResponse>().ReverseMap();
         CreateMap<CustomerVM, CustomerDetailResponse>().ReverseMap();

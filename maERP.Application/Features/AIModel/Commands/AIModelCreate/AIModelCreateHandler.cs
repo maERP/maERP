@@ -10,21 +10,21 @@ public class AIModelCreateHandler : IRequestHandler<AIModelCreateCommand, int>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<AIModelCreateHandler> _logger;
-    private readonly IAIModelRepository _aimodelRepository;
+    private readonly IAIModelRepository _aiModelRepository;
 
     public AIModelCreateHandler(IMapper mapper,
         IAppLogger<AIModelCreateHandler> logger,
-        IAIModelRepository aimodelRepository)
+        IAIModelRepository aiModelRepository)
     {
         _mapper = mapper;
         _logger = logger;
-        _aimodelRepository = aimodelRepository;
+        _aiModelRepository = aiModelRepository;
     }
 
     public async Task<int> Handle(AIModelCreateCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
-        var validator = new AIModelCreateValidator(_aimodelRepository);
+        var validator = new AIModelCreateValidator(_aiModelRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if(validationResult.Errors.Any())
@@ -34,12 +34,12 @@ public class AIModelCreateHandler : IRequestHandler<AIModelCreateCommand, int>
         }
 
         // convert to domain entity object
-        var aimodelToCreate = _mapper.Map<Domain.Entities.AIModel>(request);
+        var aiModelToCreate = _mapper.Map<Domain.Entities.AIModel>(request);
 
         // add to database
-        await _aimodelRepository.CreateAsync(aimodelToCreate);
+        await _aiModelRepository.CreateAsync(aiModelToCreate);
 
         // return record id
-        return aimodelToCreate.Id;
+        return aiModelToCreate.Id;
     }
 }

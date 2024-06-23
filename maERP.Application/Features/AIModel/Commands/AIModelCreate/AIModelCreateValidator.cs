@@ -5,11 +5,11 @@ namespace maERP.Application.Features.AIModel.Commands.AIModelCreate;
 
 public class AIModelCreateValidator : AbstractValidator<AIModelCreateCommand>
 {
-    private readonly IAIModelRepository _aimodelRepository;
+    private readonly IAIModelRepository _aiModelRepository;
     
-    public AIModelCreateValidator(IAIModelRepository aimodelRepository)
+    public AIModelCreateValidator(IAIModelRepository aiModelRepository)
     {
-        _aimodelRepository = aimodelRepository;
+        _aiModelRepository = aiModelRepository;
         
         RuleFor(p => p.Name)
             .NotEmpty().WithMessage("{PropertyName} is required.")
@@ -22,11 +22,11 @@ public class AIModelCreateValidator : AbstractValidator<AIModelCreateCommand>
 
     private async Task<bool> IsUniqueAsync(AIModelCreateCommand command, CancellationToken cancellationToken)
     {
-        var aimodel = new Domain.Entities.AIModel()
+        var aiModel = new Domain.Entities.AIModel()
         {
             Name = command.Name,
         };
         
-        return await _aimodelRepository.IsUniqueAsync(aimodel);
+        return await _aiModelRepository.IsUniqueAsync(aiModel);
     }
 }

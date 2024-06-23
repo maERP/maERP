@@ -5,11 +5,11 @@ namespace maERP.Application.Features.AIModel.Commands.AIModelUpdate;
 
 public class AIModelUpdateValidator : AbstractValidator<AIModelUpdateCommand>
 {
-    private readonly IAIModelRepository _aimodelRepository;
+    private readonly IAIModelRepository _aiModelRepository;
     
-    public AIModelUpdateValidator(IAIModelRepository aimodelRepository)
+    public AIModelUpdateValidator(IAIModelRepository aiModelRepository)
     {
-        _aimodelRepository = aimodelRepository;
+        _aiModelRepository = aiModelRepository;
         
         RuleFor(p => p.Id)
             .NotNull().WithMessage("{PropertyName} must not be null.")
@@ -27,16 +27,16 @@ public class AIModelUpdateValidator : AbstractValidator<AIModelUpdateCommand>
     
     private async Task<bool> AIModelExists(AIModelUpdateCommand command, CancellationToken cancellationToken)
     {
-        return await _aimodelRepository.GetByIdAsync(command.Id, true) != null;
+        return await _aiModelRepository.GetByIdAsync(command.Id, true) != null;
     }
     
     private async Task<bool> IsUniqueAsync(AIModelUpdateCommand command, CancellationToken cancellationToken)
     {
-        var aimodel = new Domain.Entities.AIModel()
+        var aiModel = new Domain.Entities.AIModel()
         {
             Name = command.Name,
         };
 
-        return await _aimodelRepository.IsUniqueAsync(aimodel, command.Id);
+        return await _aiModelRepository.IsUniqueAsync(aiModel, command.Id);
     }
 }

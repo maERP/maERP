@@ -10,22 +10,22 @@ public class AIModelUpdateHandler : IRequestHandler<AIModelUpdateCommand, int>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<AIModelUpdateHandler> _logger;
-    private readonly IAIModelRepository _aimodelRepository;
+    private readonly IAIModelRepository _aiModelRepository;
 
 
     public AIModelUpdateHandler(IMapper mapper,
         IAppLogger<AIModelUpdateHandler> logger,
-        IAIModelRepository aimodelRepository)
+        IAIModelRepository aiModelRepository)
     {
         _mapper = mapper;
         _logger = logger;
-        _aimodelRepository = aimodelRepository;
+        _aiModelRepository = aiModelRepository;
     }
 
     public async Task<int> Handle(AIModelUpdateCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
-        var validator = new AIModelUpdateValidator(_aimodelRepository);
+        var validator = new AIModelUpdateValidator(_aiModelRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if(validationResult.Errors.Any())
@@ -34,10 +34,10 @@ public class AIModelUpdateHandler : IRequestHandler<AIModelUpdateCommand, int>
             throw new ValidationException("Invalid AIModel", validationResult);
         }
         
-        var aimodelToUpdate = _mapper.Map<Domain.Entities.AIModel>(request);
+        var aiModelToUpdate = _mapper.Map<Domain.Entities.AIModel>(request);
         
-        await _aimodelRepository.UpdateAsync(aimodelToUpdate);
+        await _aiModelRepository.UpdateAsync(aiModelToUpdate);
 
-        return aimodelToUpdate.Id;
+        return aiModelToUpdate.Id;
     }
 }

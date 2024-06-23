@@ -26,12 +26,12 @@ public class AIModelCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var aimodel = new AIModelCreateCommand
+        var aiModel = new AIModelCreateCommand
         {
             Name = "AIModel 1"
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, aimodel);
+        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, aiModel);
         AIModelDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<AIModelDetailResponse>();
 
         Assert.NotNull(resultContent);
@@ -91,12 +91,12 @@ public class AIModelCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
                 }
         });
 
-        var aimodel = new AIModelUpdateCommand
+        var aiModel = new AIModelUpdateCommand
         {
             Name = "AIModel 3 updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, aimodel);
+        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, aiModel);
 
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }

@@ -15,26 +15,26 @@ public class AIModelListHandler : IRequestHandler<AIModelListQuery, PaginatedRes
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<AIModelListHandler> _logger;
-    private readonly IAIModelRepository _aimodelRepository;
+    private readonly IAIModelRepository _aiModelRepository;
 
     public AIModelListHandler(IMapper mapper,
         IAppLogger<AIModelListHandler> logger, 
-        IAIModelRepository aimodelRepository)
+        IAIModelRepository aiModelRepository)
     {
         _mapper = mapper;
         _logger = logger;
-        _aimodelRepository = aimodelRepository; 
+        _aiModelRepository = aiModelRepository; 
     }
     public async Task<PaginatedResult<AIModelListResponse>> Handle(AIModelListQuery request, CancellationToken cancellationToken)
     {
-        var aimodelFilterSpec = new AIModelFilterSpecification(request.SearchString);
+        var aiModelFilterSpec = new AIModelFilterSpecification(request.SearchString);
         
         _logger.LogInformation("Handle AIModelListQuery: {0}", request);
 
         if (request.OrderBy.Any() != true)
         {
-            return await _aimodelRepository.Entities
-               .Specify(aimodelFilterSpec)
+            return await _aiModelRepository.Entities
+               .Specify(aiModelFilterSpec)
                .ProjectTo<AIModelListResponse>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
@@ -42,8 +42,8 @@ public class AIModelListHandler : IRequestHandler<AIModelListQuery, PaginatedRes
         {
             var ordering = string.Join(",", request.OrderBy);
 
-            return await _aimodelRepository.Entities
-               .Specify(aimodelFilterSpec)
+            return await _aiModelRepository.Entities
+               .Specify(aiModelFilterSpec)
                .OrderBy(ordering)
                .ProjectTo<AIModelListResponse>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);

@@ -5,11 +5,11 @@ namespace maERP.Application.Features.AIModel.Commands.AIModelDelete;
 
 public class AIModelDeleteValidator : AbstractValidator<AIModelDeleteCommand>
 {
-    private readonly IAIModelRepository _aimodelRepository;
+    private readonly IAIModelRepository _aiModelRepository;
 
-    public AIModelDeleteValidator(IAIModelRepository aimodelRepository)
+    public AIModelDeleteValidator(IAIModelRepository aiModelRepository)
     {
-        _aimodelRepository = aimodelRepository;
+        _aiModelRepository = aiModelRepository;
         
         RuleFor(p => p.Id)
             .NotNull()
@@ -23,6 +23,6 @@ public class AIModelDeleteValidator : AbstractValidator<AIModelDeleteCommand>
     
     private async Task<bool> AIModelExists(AIModelDeleteCommand command, CancellationToken cancellationToken)
     {
-        return await _aimodelRepository.ExistsAsync(command.Id);
+        return await _aiModelRepository.ExistsAsync(command.Id);
     }
 }

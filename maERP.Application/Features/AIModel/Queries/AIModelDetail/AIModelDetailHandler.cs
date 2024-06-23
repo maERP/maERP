@@ -10,26 +10,26 @@ public class AIModelDetailHandler : IRequestHandler<AIModelDetailQuery, AIModelD
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<AIModelDetailHandler> _logger;
-    private readonly IAIModelRepository _aimodelRepository;
+    private readonly IAIModelRepository _aiModelRepository;
 
     public AIModelDetailHandler(IMapper mapper,
         IAppLogger<AIModelDetailHandler> logger,
-        IAIModelRepository aimodelRepository)
+        IAIModelRepository aiModelRepository)
     {
         _mapper = mapper;
         _logger = logger;
-        _aimodelRepository = aimodelRepository;
+        _aiModelRepository = aiModelRepository;
     }
     public async Task<AIModelDetailResponse> Handle(AIModelDetailQuery request, CancellationToken cancellationToken)
     {
-        var aimodel = await _aimodelRepository.GetByIdAsync(request.Id, true);
+        var aiModel = await _aiModelRepository.GetByIdAsync(request.Id, true);
 
-        if (aimodel == null)
+        if (aiModel == null)
         {
-            throw new NotFoundException("NotFoundException", "aimodel not found.");
+            throw new NotFoundException("NotFoundException", "aiModel not found.");
         }
 
-        var data = _mapper.Map<AIModelDetailResponse>(aimodel);
+        var data = _mapper.Map<AIModelDetailResponse>(aiModel);
 
         _logger.LogInformation("AIModel retrieved successfully.");
         return data;

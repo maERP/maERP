@@ -1,0 +1,29 @@
+﻿@page "/AIModels/Add"
+@page "/AIModels/{aiModelId:int}/Edit"
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<MudText Typo="Typo.h4" Class="mb-8">AI Modell bearbeiten</MudText>
+
+<MudForm Model="@aiModel" @ref="@_form">
+    <MudGrid>
+        <MudItem xs="6">
+
+            <MudTextField @bind-Value="aiModel.Name"
+                          For="@(() => aiModel.Name)"
+                          Label="Modellname"
+                          Required="true"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Class="mt-6" />
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       ButtonType="ButtonType.Button"
+                       OnClick="@(Save)"
+                       Class="mt-6">Speichern</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>

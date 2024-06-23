@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Blazored.LocalStorage;
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Models.AIModel;
 using maERP.SharedUI.Providers;
 using maERP.SharedUI.Services;
 using maERP.SharedUI.Services.Base;
@@ -26,6 +27,7 @@ public static class UIServicesRegistration
         services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+        services.AddScoped<IAIModelService, AIModelService>();
         services.AddScoped<IStatisticService, StatisticService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IOrderService, OrderService>();

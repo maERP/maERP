@@ -8,20 +8,20 @@ namespace maERP.Application.Features.AIModel.Commands.AIModelDelete;
 public class AIModelDeleteHandler : IRequestHandler<AIModelDeleteCommand, int>
 {
     private readonly IAppLogger<AIModelDeleteHandler> _logger;
-    private readonly IAIModelRepository _aimodelRepository;
+    private readonly IAIModelRepository _aiModelRepository;
     
     public AIModelDeleteHandler(
         IAppLogger<AIModelDeleteHandler> logger,
-        IAIModelRepository aimodelRepository)
+        IAIModelRepository aiModelRepository)
     {
         _logger = logger;
-        _aimodelRepository = aimodelRepository;
+        _aiModelRepository = aiModelRepository;
     }
 
     public async Task<int> Handle(AIModelDeleteCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
-        var validator = new AIModelDeleteValidator(_aimodelRepository);
+        var validator = new AIModelDeleteValidator(_aiModelRepository);
         var validationResult = await validator.ValidateAsync(request);
 
         if(validationResult.Errors.Any())
@@ -31,14 +31,14 @@ public class AIModelDeleteHandler : IRequestHandler<AIModelDeleteCommand, int>
         }
 
         // convert to domain entity object
-        // var aimodelToDelete = _mapper.Map<Domain.Entities.AIModel>(request);
-        var aimodelToDelete = new Domain.Entities.AIModel()
+        // var aiModelToDelete = _mapper.Map<Domain.Entities.AIModel>(request);
+        var aiModelToDelete = new Domain.Entities.AIModel()
         {
             Id = request.Id
         };
         
-        await _aimodelRepository.DeleteAsync(aimodelToDelete);
+        await _aiModelRepository.DeleteAsync(aiModelToDelete);
         
-        return aimodelToDelete.Id;
+        return aiModelToDelete.Id;
     }
 }
