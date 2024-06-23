@@ -1,5 +1,5 @@
-﻿using maERP.Domain.Models;
-using maERP.Domain.Models.Common;
+﻿using maERP.Domain.Entities;
+using maERP.Domain.Entities.Common;
 using maERP.Identity.Configurations;
 using maERP.Persistence.Configurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -24,6 +24,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
     }
 
+    public DbSet<AIModel> AIModel { get; set; }
     public DbSet<Country> Country { get; set; }
     public DbSet<Customer> Customer { get; set; }
     public DbSet<CustomerAddress> CustomerAddress { get; set; }
@@ -34,6 +35,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Product> Product { get; set; }
     public DbSet<ProductSalesChannel> ProductSalesChannel { get; set; }
     public DbSet<ProductStock> ProductStock { get; set; }
+    public DbSet<Prompt> Prompt { get; set; }
     public DbSet<SalesChannel> SalesChannel { get; set; }
     public DbSet<Setting> Setting { get; set; }
     public DbSet<Shipping> Shipping { get; set; }

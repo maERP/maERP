@@ -30,7 +30,7 @@ public class CustomerDeleteHandler : IRequestHandler<CustomerDeleteCommand, int>
             throw new ValidationException("Invalid Customer", validationResult);
         }
 
-        var customerToDelete = new Domain.Models.Customer()
+        var customerToDelete = new Domain.Entities.Customer()
         {
             Id = request.Id
         };

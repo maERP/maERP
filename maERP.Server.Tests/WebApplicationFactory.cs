@@ -12,6 +12,7 @@ public class maERPWebApplicationFactory<TStartup> : WebApplicationFactory<TStart
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(
+            // ReSharper disable once AsyncVoidLambda
             async services =>
             {
                 var descriptor = services.Single(

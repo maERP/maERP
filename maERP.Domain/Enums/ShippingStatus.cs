@@ -1,4 +1,4 @@
-﻿namespace maERP.Domain.Models;
+﻿namespace maERP.Domain.Enums;
 
 /// <summary>
 /// Represents the status of a shipping process.

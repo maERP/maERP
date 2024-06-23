@@ -1,4 +1,5 @@
-﻿namespace maERP.Shared.Wrapper;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+namespace maERP.Shared.Wrapper;
 
 /// <summary>
 /// Class to represent a result from APIs or services
@@ -6,13 +7,9 @@
 /// </summary>
 public class Result : IResult
 {
-    public Result()
-    {
-    }
-
     public ResultStatusCode StatusCode { get; set; } = ResultStatusCode.Ok;
 
-    public List<string> Messages { get; set; } = new List<string>();
+    public List<string> Messages { get; set; } = [];
 
     public bool Succeeded { get; set; }
 
@@ -69,10 +66,6 @@ public class Result : IResult
 
 public class Result<T> : Result, IResult<T>
 {
-    public Result()
-    {
-    }
-
     public T Data { get; set; }
 
     public new static Result<T> Fail()
@@ -85,7 +78,7 @@ public class Result<T> : Result, IResult<T>
         return new Result<T> { Succeeded = false, Messages = new List<string> { message } };
     }
 
-    public new static Result<T> Fail(ResultStatusCode status, string message)
+    public static Result<T> Fail(ResultStatusCode status, string message)
     {
         return new Result<T> { StatusCode = status, Succeeded = false, Messages = new List<string> { message } };
     }
@@ -95,17 +88,20 @@ public class Result<T> : Result, IResult<T>
         return new Result<T> { Succeeded = false, Messages = messages };
     }
 
+    // ReSharper disable once UnusedMember.Global
     public new static Task<Result<T>> FailAsync()
     {
         return Task.FromResult(Fail());
     }
 
+    // ReSharper disable once UnusedMember.Global
     public new static Task<Result<T>> FailAsync(string message)
     {
         return Task.FromResult(Fail(message));
     }
 
-    public new static Task<Result<T>> FailAsync(ResultStatusCode status, string message)
+    // ReSharper disable once UnusedMember.Global
+    public static Task<Result<T>> FailAsync(ResultStatusCode status, string message)
     {
         return Task.FromResult(Fail(status, message));
     }

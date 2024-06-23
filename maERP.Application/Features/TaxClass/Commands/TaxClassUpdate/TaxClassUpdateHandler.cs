@@ -34,7 +34,7 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, int>
             throw new ValidationException("Invalid TaxClass", validationResult);
         }
 
-        var taxClassToUpdate = _mapper.Map<Domain.Models.TaxClass>(request);
+        var taxClassToUpdate = _mapper.Map<Domain.Entities.TaxClass>(request);
 
         await _taxClassRepository.UpdateAsync(taxClassToUpdate);
 

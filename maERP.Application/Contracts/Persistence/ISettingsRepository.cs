@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Models;
+﻿using maERP.Domain.Entities;
 
 namespace maERP.Application.Contracts.Persistence;
 

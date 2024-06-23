@@ -1,6 +1,6 @@
 ﻿using maERP.Application.Exceptions;
-using maERP.Domain.Models.Common;
 using maERP.Application.Specifications.Base;
+using maERP.Domain.Entities.Common;
 using maERP.Shared.Wrapper;
 using Microsoft.EntityFrameworkCore;
 

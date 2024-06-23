@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Models;
+﻿using maERP.Domain.Enums;
 using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;

@@ -29,7 +29,7 @@ public class CustomerCreateValidator : AbstractValidator<CustomerCreateCommand>
 
     private async Task<bool> IsUniqueAsync(CustomerCreateCommand command, CancellationToken cancellationToken)
     {
-        var customer = new Domain.Models.Customer()
+        var customer = new Domain.Entities.Customer()
         {
             Firstname = command.Firstname,
         };

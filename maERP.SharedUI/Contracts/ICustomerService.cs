@@ -1,6 +1,5 @@
 ﻿using maERP.Shared.Wrapper;
 using maERP.SharedUI.Models.Customer;
-using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Services.Base;
 
 namespace maERP.SharedUI.Contracts;

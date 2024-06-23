@@ -30,7 +30,7 @@ public class TaxClassDeleteHandler : IRequestHandler<TaxClassDeleteCommand, int>
             throw new ValidationException("Invalid TaxClass", validationResult);
         }
 
-        var taxClassToDelete = new Domain.Models.TaxClass
+        var taxClassToDelete = new Domain.Entities.TaxClass
         {
             Id = request.Id
         };

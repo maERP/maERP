@@ -4,7 +4,7 @@ using maERP.Application.Features.Order.Commands.OrderDelete;
 using maERP.Application.Features.Order.Commands.OrderUpdate;
 using maERP.Application.Features.Order.Queries.OrderDetail;
 using maERP.Application.Features.Order.Queries.OrderList;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 
 namespace maERP.Application.MappingProfiles;
 

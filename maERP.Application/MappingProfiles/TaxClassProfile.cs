@@ -4,7 +4,7 @@ using maERP.Application.Features.TaxClass.Commands.TaxClassDelete;
 using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 using maERP.Application.Features.TaxClass.Queries.TaxClassList;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 
 namespace maERP.Application.MappingProfiles;
 

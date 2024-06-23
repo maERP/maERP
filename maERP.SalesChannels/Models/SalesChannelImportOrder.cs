@@ -1,5 +1,6 @@
-﻿using maERP.Domain.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using maERP.Domain.Entities;
+using maERP.Domain.Enums;
 
 namespace maERP.SalesChannels.Models;
 

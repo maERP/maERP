@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Features.Order.Queries.OrderList;
 using maERP.Application.Features.Product.Commands.ProductCreate;
 using maERP.Application.Features.Product.Commands.ProductDelete;
 using maERP.Application.Features.Product.Commands.ProductUpdate;

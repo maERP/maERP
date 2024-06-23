@@ -1,7 +1,7 @@
-﻿using maERP.Domain.Models.Common;
+﻿using maERP.Domain.Entities.Common;
 using Microsoft.EntityFrameworkCore;
 
-namespace maERP.Domain.Models;
+namespace maERP.Domain.Entities;
 
 [Index(nameof(Sku), IsUnique = true)]
 public class Product : BaseEntity, IBaseEntity

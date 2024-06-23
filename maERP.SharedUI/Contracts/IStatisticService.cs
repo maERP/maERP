@@ -1,6 +1,4 @@
-﻿using maERP.Shared.Wrapper;
-using maERP.SharedUI.Models.Warehouse;
-using maERP.SharedUI.Services.Base;
+﻿using maERP.SharedUI.Services.Base;
 
 namespace maERP.SharedUI.Contracts;
 

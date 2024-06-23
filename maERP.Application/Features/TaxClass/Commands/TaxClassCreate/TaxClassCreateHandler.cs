@@ -32,7 +32,7 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, int>
             throw new ValidationException("Invalid TaxClass", validationResult);
         }
 
-        var taxClassToCreate = _mapper.Map<Domain.Models.TaxClass>(request);
+        var taxClassToCreate = _mapper.Map<Domain.Entities.TaxClass>(request);
 
         await _taxClassRepository.CreateAsync(taxClassToCreate);
 

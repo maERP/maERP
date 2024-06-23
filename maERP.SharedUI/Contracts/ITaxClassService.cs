@@ -1,5 +1,4 @@
 ﻿using maERP.Shared.Wrapper;
-using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Models.TaxClass;
 using maERP.SharedUI.Services.Base;
 

@@ -31,9 +31,6 @@ public partial class Products
 
     private async Task Search()
     {
-        if (_dataGrid is not null)
-        {
-            await _dataGrid!.ReloadServerData();
-        }
+        await _dataGrid.ReloadServerData();
     }
 }

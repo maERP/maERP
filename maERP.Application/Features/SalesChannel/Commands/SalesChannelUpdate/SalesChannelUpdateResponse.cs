@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using maERP.Domain.Models;
+using maERP.Domain.Enums;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 

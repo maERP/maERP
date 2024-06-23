@@ -4,7 +4,7 @@ using maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 
 namespace maERP.Application.MappingProfiles;
 

@@ -1,6 +1,6 @@
-﻿using maERP.Domain.Models.Common;
+﻿using maERP.Domain.Entities.Common;
 
-namespace maERP.Domain.Models;
+namespace maERP.Domain.Entities;
 
 public class Warehouse : BaseEntity, IBaseEntity
 {

@@ -32,7 +32,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, int>
             throw new ValidationException("Invalid Product", validationResult);
         }
 
-        var productToCreate = _mapper.Map<Domain.Models.Product>(request);
+        var productToCreate = _mapper.Map<Domain.Entities.Product>(request);
 
         await _productRepository.CreateAsync(productToCreate);
 

@@ -144,5 +144,5 @@ app.Run();
 
 namespace maERP.Server
 {
-    public partial class Program { }
+    public class Program { }
 }

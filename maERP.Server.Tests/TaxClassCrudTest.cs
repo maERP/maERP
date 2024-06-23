@@ -1,10 +1,10 @@
-using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
 using maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 using maERP.Application.Features.TaxClass.Queries.TaxClassList;
+using maERP.Domain.Entities;
 using maERP.Shared.Wrapper;
 
 namespace maERP.Server.Tests;
@@ -55,7 +55,7 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
         var result = await httpClient.GetFromJsonAsync<PaginatedResult<TaxClassListResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.TotalCount, 4);
+        Assert.Equal(4, result.TotalCount);
     }
 
     [Theory]
@@ -110,7 +110,7 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
 
         HttpResponseMessage result = await httpClient.DeleteAsync(url);
 
-        Assert.Equal(HttpStatusCode.NoContent, result?.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }
 
     [Theory]
@@ -122,6 +122,6 @@ public class TaxClassCrudTest : IClassFixture<maERPWebApplicationFactory<Program
 
         HttpResponseMessage result = await httpClient.GetAsync(url);
 
-        Assert.Equal(result?.StatusCode, HttpStatusCode.NotFound);
+        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 }

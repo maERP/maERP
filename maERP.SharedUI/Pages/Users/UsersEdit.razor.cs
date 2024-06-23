@@ -16,14 +16,17 @@ public partial class UsersEdit
     [Parameter]
     public string userId { get; set; } = "";
 
+    // ReSharper disable once NotAccessedField.Local
     private MudForm? _form;
 
-    protected string Title = "hinzufügen";
+    // ReSharper disable once NotAccessedField.Local
+    protected string Title = "hinzufÃ¼gen";
 
     protected UserVM user = new();
 
     protected override async Task OnParametersSetAsync()
     {
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (userId != null)
         {
             Title = "bearbeiten";

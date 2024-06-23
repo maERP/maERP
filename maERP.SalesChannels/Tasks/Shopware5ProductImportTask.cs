@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
-using maERP.Domain.Models;
+using maERP.Domain.Enums;
 using maERP.SalesChannels.Models;
 using maERP.SalesChannels.Contracts;
 using maERP.SalesChannels.Models.Shopware5;
@@ -82,11 +82,10 @@ public class Shopware5ProductImportTask : IHostedService
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     var authenticationString = $"{salesChannel.Username}:{salesChannel.Password}";
-                    var base64EncodedAuthenticationString = Convert.ToBase64String(ASCIIEncoding.UTF8.GetBytes(authenticationString));
+                    var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
                     client.DefaultRequestHeaders.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
 
-                    HttpResponseMessage response = new HttpResponseMessage();
-                    response = await client.GetAsync(requestUrl).ConfigureAwait(false);
+                    var response = await client.GetAsync(requestUrl).ConfigureAwait(false);
 
                     if (response.IsSuccessStatusCode)
                     {

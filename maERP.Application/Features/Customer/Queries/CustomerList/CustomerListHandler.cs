@@ -27,8 +27,10 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
     public async Task<PaginatedResult<CustomerListResponse>> Handle(CustomerListQuery request, CancellationToken cancellationToken)
     {
         var customerFilterSpec = new CustomerFilterSpecification(request.SearchString);
+        
+        _logger.LogInformation("CustomerListHandler.Handle: Retrieving customers.");
 
-        if (request.OrderBy?.Any() != true)
+        if (request.OrderBy.Any() != true)
         {
             return await _customerRepository.Entities
                .Specify(customerFilterSpec)

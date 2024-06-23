@@ -1,5 +1,5 @@
 ﻿using maERP.Application.Contracts.Persistence;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +13,7 @@ public class TaxClassRepository : GenericRepository<TaxClass>, ITaxClassReposito
     
     public async Task<TaxClass?> GetByTaxRateAsync(double taxRate)
     {
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
         return await _context.TaxClass.FirstOrDefaultAsync(p => p.TaxRate == taxRate);
     }
 }

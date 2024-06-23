@@ -27,8 +27,10 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
     public async Task<PaginatedResult<ProductListResponse>> Handle(ProductListQuery request, CancellationToken cancellationToken)
     {
         var orderFilterSpec = new ProductFilterSpecification(request.SearchString);
+        
+        _logger.LogInformation("Handle ProductListQuery: {0}", request);
 
-        if (request.OrderBy?.Any() != true)
+        if (request.OrderBy.Any() != true)
         {
             return await _productRepository.Entities
                .Specify(orderFilterSpec)

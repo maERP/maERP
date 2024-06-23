@@ -1,5 +1,5 @@
-﻿using maERP.Domain.Models.Common;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using maERP.Domain.Entities.Common;
 
 namespace maERP.Application.Specifications.Base
 {

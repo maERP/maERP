@@ -24,6 +24,7 @@ namespace maERP.SharedUI.Pages.SalesChannels
         [Parameter]
         public int salesChannelId { get; set; }
 
+        // ReSharper disable once NotAccessedField.Local
         private MudForm _form = new();
 
         protected string Title = "hinzufügen";

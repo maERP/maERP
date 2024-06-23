@@ -1,8 +1,8 @@
-﻿namespace maERP.Application.Features.Statistic.Queries.StatisticOrderChart;
+﻿namespace maERP.Application.Features.Statistic.Queries.StatisticOrderCustomerChart;
 
 public class StatisticOrderCustomerChartResponse
 {
-    public List<OrderCustomerChartDto> chartData { get; set; } = new List<OrderCustomerChartDto>();
+    public List<OrderCustomerChartDto> chartData { get; set; } = new();
 }
 
 public class OrderCustomerChartDto

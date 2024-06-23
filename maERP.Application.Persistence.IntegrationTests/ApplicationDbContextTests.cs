@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Models;
+﻿using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +17,7 @@ public class ApplicationDbContextTests
     }
 
     [Fact]
-    public async void Save_SetDateCreatedValue()
+    public async Task Save_SetDateCreatedValue()
     {
         // Arrange
         var warehouse = new Warehouse
@@ -35,7 +35,7 @@ public class ApplicationDbContextTests
     }
 
     [Fact]
-    public async void Save_SetDateModifiedValue()
+    public async Task Save_SetDateModifiedValue()
     {
         // Arrange
         var warehouse = new Warehouse

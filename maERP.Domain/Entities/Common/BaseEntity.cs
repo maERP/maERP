@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace maERP.Domain.Models.Common;
+namespace maERP.Domain.Entities.Common;
 
 // public abstract class BaseEntity
 public class BaseEntity

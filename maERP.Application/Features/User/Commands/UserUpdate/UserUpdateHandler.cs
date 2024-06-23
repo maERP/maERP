@@ -30,7 +30,7 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, string>
         }
 
         // convert to domain entity object
-        var userToUpdate = _mapper.Map<Domain.Models.User>(request);
+        var userToUpdate = _mapper.Map<Domain.Entities.User>(request);
         
         // TODO  add to database
         // await _userRepository.UpdateAsync(userToUpdate);

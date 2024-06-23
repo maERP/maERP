@@ -21,9 +21,6 @@ public partial class UsersDetail
 
     protected override async Task OnParametersSetAsync()
     {
-        if (userId != null)
-        {
-            user = await _userService.GetUserDetails(userId);
-        }
+        user = await _userService.GetUserDetails(userId);
     }
 }

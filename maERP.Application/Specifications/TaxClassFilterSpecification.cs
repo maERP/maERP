@@ -1,5 +1,6 @@
-﻿using maERP.Application.Specifications.Base;
-using maERP.Domain.Models;
+﻿using System.Globalization;
+using maERP.Application.Specifications.Base;
+using maERP.Domain.Entities;
 
 namespace maERP.Application.Specifications
 {
@@ -12,7 +13,7 @@ namespace maERP.Application.Specifications
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = t => (t.TaxRate.ToString().Contains(searchString));
+                Criteria = t => (t.TaxRate.ToString(CultureInfo.InvariantCulture).Contains(searchString));
             }
             else
             {

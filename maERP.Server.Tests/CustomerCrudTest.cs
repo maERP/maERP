@@ -1,12 +1,11 @@
-using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
 using maERP.Application.Features.Customer.Commands.CustomerCreate;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
 using maERP.Application.Features.Customer.Queries.CustomerDetail;
 using maERP.Application.Features.Customer.Queries.CustomerList;
+using maERP.Domain.Entities;
 using maERP.Shared.Wrapper;
-using maERP.Application.Features.Order.Queries.OrderList;
 
 
 namespace maERP.Server.Tests;
@@ -59,7 +58,7 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
         var result = await httpClient.GetFromJsonAsync<PaginatedResult<CustomerListResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.TotalCount, 1);
+        Assert.Equal(1, result.TotalCount);
     }
 
     [Theory]
@@ -124,7 +123,7 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
 
         HttpResponseMessage result = await httpClient.DeleteAsync(url);
 
-        Assert.Equal(result?.StatusCode, HttpStatusCode.NoContent);
+        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }
 
     [Theory]
@@ -136,6 +135,6 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
 
         HttpResponseMessage result = await httpClient.GetAsync(url);
 
-        Assert.Equal(result?.StatusCode, HttpStatusCode.NotFound);
+        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 }

@@ -28,8 +28,10 @@ public class OrderListHandler : IRequestHandler<OrderListQuery, PaginatedResult<
     public async Task<PaginatedResult<OrderListResponse>> Handle(OrderListQuery request, CancellationToken cancellationToken)
     {
         var orderFilterSpec = new OrderFilterSpecification(request.SearchString);
+        
+        _logger.LogInformation("Handle OrderListQuery: {0}", request);
 
-        if (request.OrderBy?.Any() != true)
+        if (request.OrderBy.Any() != true)
         {
             return await _orderRepository.Entities
                .Specify(orderFilterSpec)

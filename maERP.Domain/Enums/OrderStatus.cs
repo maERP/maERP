@@ -1,4 +1,4 @@
-﻿namespace maERP.Domain.Models;
+﻿namespace maERP.Domain.Enums;
 
 public enum OrderStatus
 {

@@ -2,7 +2,7 @@
 
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Models.Identity;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Identity.Services;
@@ -22,8 +22,8 @@ public class UserService : IUserService
         
         return new Employee
         {
-            Email = employee.Email,
-            Id = employee.Id,
+            Email = employee?.Email ?? string.Empty,
+            Id = employee!.Id,
             Firstname = employee.Firstname,
             Lastname = employee.Lastname
         };
@@ -36,7 +36,7 @@ public class UserService : IUserService
         return employees.Select(q => new Employee
         {
             Id = q.Id,
-            Email = q.Email,
+            Email = q.Email ?? string.Empty,
             Firstname = q.Firstname,
             Lastname = q.Lastname
         }).ToList();

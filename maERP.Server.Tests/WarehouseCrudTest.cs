@@ -1,10 +1,10 @@
-using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
 using maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
 using maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
 using maERP.Application.Features.Warehouse.Queries.WarehouseDetail;
 using maERP.Application.Features.Warehouse.Queries.WarehouseList;
+using maERP.Domain.Entities;
 using maERP.Shared.Wrapper;
 
 namespace maERP.Server.Tests;
@@ -55,7 +55,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
         var result = await httpClient.GetFromJsonAsync<PaginatedResult<WarehouseListResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.TotalCount, 2);
+        Assert.Equal(2, result.TotalCount);
     }
 
     [Theory]
@@ -116,7 +116,7 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
 
         HttpResponseMessage result = await httpClient.DeleteAsync(url);
 
-        Assert.Equal(HttpStatusCode.NoContent, result?.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }
 
     [Theory]
@@ -128,6 +128,6 @@ public class WarehouseCrudTest : IClassFixture<maERPWebApplicationFactory<Progra
 
         HttpResponseMessage result = await httpClient.GetAsync(url);
 
-        Assert.Equal(result?.StatusCode, HttpStatusCode.NotFound);
+        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 }

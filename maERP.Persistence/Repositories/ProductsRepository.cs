@@ -1,5 +1,5 @@
 ﻿using maERP.Application.Contracts.Persistence;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 

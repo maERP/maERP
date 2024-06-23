@@ -29,7 +29,7 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, int>
             throw new ValidationException("Invalid Product", validationResult);
         }
 
-        var productToDelete = new Domain.Models.Product
+        var productToDelete = new Domain.Entities.Product
         {
             Id = request.Id
         };

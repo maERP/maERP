@@ -3,7 +3,7 @@ using maERP.Application.Features.User.Commands.UserCreate;
 using maERP.Application.Features.User.Commands.UserUpdate;
 using maERP.Application.Features.User.Queries.UserDetail;
 using maERP.Application.Features.User.Queries.UserList;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 
 namespace maERP.Application.MappingProfiles;
 

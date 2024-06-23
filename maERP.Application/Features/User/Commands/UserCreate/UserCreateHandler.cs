@@ -2,7 +2,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 using MediatR;
 
 namespace maERP.Application.Features.User.Commands.UserCreate;

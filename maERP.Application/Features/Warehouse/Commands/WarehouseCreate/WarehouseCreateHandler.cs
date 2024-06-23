@@ -34,7 +34,7 @@ public class WarehouseCreateHandler : IRequestHandler<WarehouseCreateCommand, in
         }
 
         // convert to domain entity object
-        var warehouseToCreate = _mapper.Map<Domain.Models.Warehouse>(request);
+        var warehouseToCreate = _mapper.Map<Domain.Entities.Warehouse>(request);
 
         // add to database
         await _warehouseRepository.CreateAsync(warehouseToCreate);

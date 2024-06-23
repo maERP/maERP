@@ -3,7 +3,6 @@ using Blazored.LocalStorage;
 using maERP.Shared.Wrapper;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.Customer;
-using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Services.Base;
 
 namespace maERP.SharedUI.Services;

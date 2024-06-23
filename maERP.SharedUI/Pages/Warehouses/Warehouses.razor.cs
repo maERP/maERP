@@ -1,7 +1,6 @@
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Models.Warehouse;
-using maERP.SharedUI.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -33,9 +32,6 @@ public partial class Warehouses
 
     private async Task Search()
     {
-        if (_dataGrid is not null)
-        {
-            await _dataGrid!.ReloadServerData();
-        }
+        await _dataGrid.ReloadServerData();
     }
 }

@@ -32,7 +32,7 @@ public class WarehouseUpdateValidator : AbstractValidator<WarehouseUpdateCommand
     
     private async Task<bool> IsUniqueAsync(WarehouseUpdateCommand command, CancellationToken cancellationToken)
     {
-        var warehouse = new Domain.Models.Warehouse()
+        var warehouse = new Domain.Entities.Warehouse()
         {
             Name = command.Name,
         };

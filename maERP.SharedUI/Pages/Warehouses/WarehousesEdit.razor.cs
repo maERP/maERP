@@ -16,9 +16,11 @@ public partial class WarehousesEdit
     [Parameter]
     public int warehouseId { get; set; }
 
+    // ReSharper disable once NotAccessedField.Local
     MudForm? _form;
 
-    protected string Title = "hinzufügen";
+    // ReSharper disable once NotAccessedField.Local
+    protected string Title = "hinzufÃ¼gen";
 
     protected WarehouseVM warehouse = new();
 

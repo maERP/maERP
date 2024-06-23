@@ -1,7 +1,7 @@
 ﻿#nullable disable
 
 using maERP.Application.Contracts.Persistence;
-using maERP.Domain.Models;
+using maERP.Domain.Enums;
 using maERP.SalesChannels.Contracts;
 using maERP.SalesChannels.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -135,8 +135,8 @@ public class WooCommerceOrderImportTask : IHostedService
                     {
                         Name = item.name,
                         SKU = item.sku,
-                        Quantity = (double)item.quantity,
-                        Price = (decimal)item.price,
+                        Quantity = (double)item.quantity!,
+                        Price = (decimal)item.price!,
                         TaxRate = item.tax_class.IsNullOrEmpty() ? 0 : Convert.ToDouble(item.tax_class),
                     }).ToList();
 
@@ -161,6 +161,7 @@ public class WooCommerceOrderImportTask : IHostedService
         };
     }
 
+    // ReSharper disable once UnusedMember.Local
     private PaymentStatus MapPaymentStatus(int orderPaymentStatusId)
     {
         return orderPaymentStatusId switch

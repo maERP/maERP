@@ -30,7 +30,7 @@ public class SalesChannelDeleteHandler : IRequestHandler<SalesChanneLDeleteComma
             throw new ValidationException("Invalid SalesChannel", validationResult);
         }
 
-        var salesChannelToDelete = new Domain.Models.SalesChannel
+        var salesChannelToDelete = new Domain.Entities.SalesChannel
         {
             Id = request.Id
         };

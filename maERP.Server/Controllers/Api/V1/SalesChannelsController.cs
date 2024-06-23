@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Features.Order.Queries.OrderList;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;

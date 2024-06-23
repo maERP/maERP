@@ -24,7 +24,9 @@ public partial class Login
     private bool _showServerOverlay;
     private string newServer = string.Empty;
 
+    // ReSharper disable once NotAccessedField.Local
     MudForm? _form;
+    // ReSharper disable once RedundantDefaultMemberInitializer
     bool _success = false;
     bool _loading = false;
 

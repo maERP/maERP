@@ -15,7 +15,7 @@ public partial class Orders
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<OrderListVM> _dataGrid = new();
+    private readonly MudDataGrid<OrderListVM> _dataGrid = new();
 
     private async Task<GridData<OrderListVM>> LoadGridData(GridState<OrderListVM> state)
     {
@@ -31,9 +31,6 @@ public partial class Orders
 
     private async Task Search()
     {
-        if (_dataGrid is not null)
-        {
-            await _dataGrid!.ReloadServerData();
-        }
+        await _dataGrid.ReloadServerData();
     }
 }

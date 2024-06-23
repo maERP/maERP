@@ -10,6 +10,7 @@ using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Queries.WarehouseList;
 
+// ReSharper disable once UnusedType.Global
 public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, PaginatedResult<WarehouseListResponse>>
 {
     private readonly IMapper _mapper;
@@ -27,8 +28,10 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
     public async Task<PaginatedResult<WarehouseListResponse>> Handle(WarehouseListQuery request, CancellationToken cancellationToken)
     {
         var warehouseFilterSpec = new WarehouseFilterSpecification(request.SearchString);
+        
+        _logger.LogInformation("Handle WarehouseListQuery: {0}", request);
 
-        if (request.OrderBy?.Any() != true)
+        if (request.OrderBy.Any() != true)
         {
             return await _warehouseRepository.Entities
                .Specify(warehouseFilterSpec)

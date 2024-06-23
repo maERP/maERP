@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Models;
+﻿using maERP.Domain.Entities;
 using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.AspNetCore.Identity;

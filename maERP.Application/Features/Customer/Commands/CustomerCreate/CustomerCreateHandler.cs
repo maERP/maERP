@@ -34,7 +34,7 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, int>
         }
 
         // convert to domain entity object
-        var customerToCreate = _mapper.Map<Domain.Models.Customer>(request);
+        var customerToCreate = _mapper.Map<Domain.Entities.Customer>(request);
 
         // add to database
         await _customerRepository.CreateAsync(customerToCreate);

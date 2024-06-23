@@ -19,9 +19,10 @@ public partial class TaxClassesEdit
     [Parameter]
     public int taxClassId { get; set; }
 
+    // ReSharper disable once NotAccessedField.Local
     private MudForm _form = new();
 
-    protected string Title = "hinzufügen";
+    protected string Title = "hinzufÃ¼gen";
 
     protected TaxClassVM taxClass = new();
 

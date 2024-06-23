@@ -4,11 +4,11 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Enums;
 using maERP.SalesChannels.Models.Shopware5;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using maERP.Domain.Models;
 using maERP.SalesChannels.Models;
 using maERP.SalesChannels.Contracts;
 using Microsoft.IdentityModel.Tokens;
@@ -55,7 +55,6 @@ public class Shopware5OrderImportTask : IHostedService
         var scope = _service.CreateScope();
 
         var salesChannelRepository = scope.ServiceProvider.GetService<ISalesChannelRepository>();
-        var orderRepository = scope.ServiceProvider.GetService<IOrderRepository>();
         var orderImportRepository = scope.ServiceProvider.GetService<IOrderImportRepository>();
 
         var salesChannels = await salesChannelRepository.GetAllAsync();
@@ -67,7 +66,7 @@ public class Shopware5OrderImportTask : IHostedService
                 continue;
             }
 
-            if (salesChannel.ImportProducts == true && salesChannel.InitialProductImportCompleted == false)
+            if (salesChannel.ImportProducts && salesChannel.InitialProductImportCompleted == false)
             {
                 _logger.LogInformation($"Initial Product Import not completed for {salesChannel.Name} (ID: {salesChannel.Id})");
                 continue;
@@ -90,10 +89,10 @@ public class Shopware5OrderImportTask : IHostedService
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     var authenticationString = $"{salesChannel.Username}:{salesChannel.Password}";
-                    var base64EncodedAuthenticationString = Convert.ToBase64String(ASCIIEncoding.UTF8.GetBytes(authenticationString));
+                    var base64EncodedAuthenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes(authenticationString));
                     client.DefaultRequestHeaders.Add("Authorization", "Basic " + base64EncodedAuthenticationString);
 
-                    HttpResponseMessage response = new();
+                    HttpResponseMessage response;
                     response = await client.GetAsync(requestUrl).ConfigureAwait(false);
 
                     if (response.IsSuccessStatusCode)
@@ -135,11 +134,9 @@ public class Shopware5OrderImportTask : IHostedService
                             {
                                 string detailResult = response.Content.ReadAsStringAsync().Result;
 
-                                BaseResponse<OrderDetailResponse> remoteOrderDetailResponse = new();
-
                                 try
                                 {
-                                    remoteOrderDetailResponse = JsonSerializer.Deserialize<BaseResponse<OrderDetailResponse>>(detailResult);
+                                    var remoteOrderDetailResponse = JsonSerializer.Deserialize<BaseResponse<OrderDetailResponse>>(detailResult);
 
                                     if (remoteOrderDetailResponse.data == null || remoteOrderDetailResponse.success == false)
                                     {
@@ -150,7 +147,7 @@ public class Shopware5OrderImportTask : IHostedService
 
                                     if (remoteOrderDetail.customer == null)
                                     {
-                                        remoteOrderDetail.customer = new Models.Shopware5.Customer
+                                        remoteOrderDetail.customer = new Customer
                                         {
                                             firstLogin = DateTime.MinValue.ToString()
                                         };
@@ -207,7 +204,7 @@ public class Shopware5OrderImportTask : IHostedService
                                         Name = item.articleName,
                                         SKU = item.articleNumber,
                                         Quantity = (double)item.quantity,
-                                        Price = (decimal)item.price,
+                                        Price = item.price,
                                         TaxRate = item.taxRate,
                                         Ean = item.ean
                                     }).ToList();

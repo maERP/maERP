@@ -1,5 +1,6 @@
 ﻿using maERP.Application.Contracts.Persistence;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
+using maERP.Domain.Enums;
 using maERP.SalesChannels.Contracts;
 using maERP.SalesChannels.Models;
 using Microsoft.Extensions.Logging;
@@ -250,8 +251,6 @@ public class OrderImportRepository : IOrderImportRepository
                     await _productRepository.UpdateAsync(product);
                     _logger.LogInformation("Order {0}: Stock updated for product {1}", importOrder.RemoteOrderId, product.Sku);
                 }
-
-                return;
             }
         }
         else

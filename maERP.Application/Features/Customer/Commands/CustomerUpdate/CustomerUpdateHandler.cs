@@ -33,7 +33,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, int>
             throw new ValidationException("Invalid Customer", validationResult);
         }
 
-        var customerToUpdate = _mapper.Map<Domain.Models.Customer>(request);
+        var customerToUpdate = _mapper.Map<Domain.Entities.Customer>(request);
 
         await _customerRepository.UpdateAsync(customerToUpdate);
 

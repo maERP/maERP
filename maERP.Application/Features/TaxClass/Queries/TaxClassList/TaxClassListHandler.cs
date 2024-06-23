@@ -11,6 +11,7 @@ using MediatR;
 
 namespace maERP.Application.Features.TaxClass.Queries.TaxClassList;
 
+// ReSharper disable once UnusedType.Global
 public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, PaginatedResult<TaxClassListResponse>>
 {
     private readonly IMapper _mapper;
@@ -28,8 +29,10 @@ public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, PaginatedR
     public async Task<PaginatedResult<TaxClassListResponse>> Handle(TaxClassListQuery request, CancellationToken cancellationToken)
     {
         var orderFilterSpec = new TaxClassFilterSpecification(request.SearchString);
+        
+        _logger.LogInformation("Handle TaxClassListQuery: {0}", request);
 
-        if (request.OrderBy?.Any() != true)
+        if (request.OrderBy.Any() != true)
         {
             return await _taxClassRepository.Entities
                .Specify(orderFilterSpec)

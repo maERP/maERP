@@ -16,9 +16,8 @@ public partial class CustomersEdit
     [Parameter]
     public int customerId { get; set; }
 
+    // ReSharper disable once NotAccessedField.Local
     private MudForm? _form;
-
-    protected string Title = "hinzufügen";
 
     protected CustomerVM customer = new();
 

@@ -7,7 +7,6 @@ using maERP.Application.Extensions;
 using maERP.Application.Specifications;
 using maERP.Shared.Wrapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 
@@ -28,8 +27,10 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
     public async Task<PaginatedResult<SalesChannelListResponse>> Handle(SalesChannelListQuery request, CancellationToken cancellationToken)
     {
         var salesChannelFilterSpec = new SalesChannelFilterSpecification(request.SearchString);
+        
+        _logger.LogInformation("Handle SalesChannelListQuery: {0}", request);
 
-        if (request.OrderBy?.Any() != true)
+        if (request.OrderBy.Any() != true)
         {
             return await _salesChannelRepository.Entities
                .Specify(salesChannelFilterSpec)

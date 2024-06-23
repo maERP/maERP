@@ -25,7 +25,7 @@ public class SalesChannelUpdateValidator : AbstractValidator<SalesChannelUpdateC
     
     private async Task<bool> IsUnique(SalesChannelUpdateCommand command, CancellationToken cancellationToken)
     {
-        var salesChannel = new Domain.Models.SalesChannel
+        var salesChannel = new Domain.Entities.SalesChannel
         {
             Name = command.Name
         };

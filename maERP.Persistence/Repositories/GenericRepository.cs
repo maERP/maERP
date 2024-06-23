@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using maERP.Application.Contracts.Persistence;
-using maERP.Domain.Models.Common;
+using maERP.Domain.Entities.Common;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 

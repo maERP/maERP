@@ -28,6 +28,7 @@ public class LoginServer
 
 public class LoginFormModelFluentValidator : AbstractValidator<LoginFormModel>
 {
+    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly IStringLocalizer<LoginFormModelFluentValidator> _localizer;
 
     public LoginFormModelFluentValidator(IStringLocalizer<LoginFormModelFluentValidator> localizer)

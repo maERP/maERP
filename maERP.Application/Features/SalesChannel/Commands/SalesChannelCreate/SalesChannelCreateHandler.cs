@@ -32,7 +32,7 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
             throw new ValidationException("Invalid SalesChannel", validationResult);
         }
 
-        var salesChannelToCreate = _mapper.Map<Domain.Models.SalesChannel>(request);
+        var salesChannelToCreate = _mapper.Map<Domain.Entities.SalesChannel>(request);
 
         await _salesChannelRepository.CreateAsync(salesChannelToCreate);
 

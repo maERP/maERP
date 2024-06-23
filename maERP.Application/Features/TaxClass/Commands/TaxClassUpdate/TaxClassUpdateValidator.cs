@@ -33,7 +33,7 @@ public class TaxClassUpdateValidator : AbstractValidator<TaxClassUpdateCommand>
 
     private async Task<bool> IsUniqueAsync(TaxClassUpdateCommand command, CancellationToken cancellationToken)
     {
-        var taxClass = new Domain.Models.TaxClass
+        var taxClass = new Domain.Entities.TaxClass
         {
             TaxRate = command.TaxRate
         };

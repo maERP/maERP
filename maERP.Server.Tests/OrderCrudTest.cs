@@ -1,10 +1,10 @@
-using maERP.Domain.Models;
 using System.Net;
 using System.Net.Http.Json;
 using maERP.Application.Features.Order.Commands.OrderCreate;
 using maERP.Application.Features.Order.Commands.OrderUpdate;
 using maERP.Application.Features.Order.Queries.OrderDetail;
 using maERP.Application.Features.Order.Queries.OrderList;
+using maERP.Domain.Entities;
 using maERP.Shared.Wrapper;
 
 
@@ -58,7 +58,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
         var result = await httpClient.GetFromJsonAsync<PaginatedResult<OrderListResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(result?.TotalCount, 1);
+        Assert.Equal(1, result.TotalCount);
     }
 
     [Theory]
@@ -119,7 +119,7 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
 
         HttpResponseMessage result = await httpClient.DeleteAsync(url);
 
-        Assert.Equal(HttpStatusCode.NoContent, result?.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }
 
     [Theory]
@@ -131,6 +131,6 @@ public class OrderCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
 
         HttpResponseMessage result = await httpClient.GetAsync(url);
 
-        Assert.Equal(result?.StatusCode, HttpStatusCode.NotFound);
+        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
 }

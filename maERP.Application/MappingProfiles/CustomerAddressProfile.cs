@@ -3,7 +3,7 @@ using maERP.Application.Dtos.CustomerAddress;
 using maERP.Application.Features.Customer.Commands.CustomerCreate;
 using maERP.Application.Features.Customer.Commands.CustomerDelete;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 
 namespace maERP.Application.MappingProfiles;
 

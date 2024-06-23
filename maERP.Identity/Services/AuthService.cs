@@ -4,7 +4,7 @@ using System.Text;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Exceptions;
 using maERP.Application.Models.Identity;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -94,9 +94,9 @@ public class AuthService : IAuthService
 #nullable disable
         var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? throw new InvalidOperationException()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? throw new InvalidOperationException()),
                 new Claim("uid", user.Id)
             }
             .Union(userClaims)

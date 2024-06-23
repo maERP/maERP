@@ -17,11 +17,12 @@ public class OrderCreateValidator : AbstractValidator<OrderCreateCommand>
         */
     }
 
-    private async Task<bool> OrderUniqueAsync(OrderCreateCommand command, CancellationToken cancellationToken)
+    // ReSharper disable once UnusedMember.Local
+    private async Task<bool> OrderUniqueAsync(OrderCreateCommand command)
     {
-        var orderToCreate = new Domain.Models.Order
+        var orderToCreate = new Domain.Entities.Order
         {
-             
+             Id = command.Id
         };
 
         return await _orderRepository.IsUniqueAsync(orderToCreate);

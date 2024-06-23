@@ -34,7 +34,7 @@ public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, in
             throw new ValidationException("Invalid Warehouse", validationResult);
         }
         
-        var warehouseToUpdate = _mapper.Map<Domain.Models.Warehouse>(request);
+        var warehouseToUpdate = _mapper.Map<Domain.Entities.Warehouse>(request);
         
         await _warehouseRepository.UpdateAsync(warehouseToUpdate);
 

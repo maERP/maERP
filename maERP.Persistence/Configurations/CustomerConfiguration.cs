@@ -1,4 +1,5 @@
-﻿using maERP.Domain.Models;
+﻿using maERP.Domain.Entities;
+using maERP.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

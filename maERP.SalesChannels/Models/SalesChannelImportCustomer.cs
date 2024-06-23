@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Models;
+﻿using maERP.Domain.Enums;
 
 namespace maERP.SalesChannels.Models;
 

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
 using MediatR;
@@ -8,16 +7,13 @@ namespace maERP.Application.Features.Order.Commands.OrderDelete;
 
 public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, int>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<DeleteOrderHandler> _logger;
     private readonly IOrderRepository _orderRepository;
 
 
-    public DeleteOrderHandler(IMapper mapper,
-        IAppLogger<DeleteOrderHandler> logger,
+    public DeleteOrderHandler(IAppLogger<DeleteOrderHandler> logger,
         IOrderRepository orderRepository)
     {
-        _mapper = mapper;
         _logger = logger;
         _orderRepository = orderRepository;
     }
@@ -33,7 +29,7 @@ public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, int>
             throw new ValidationException("Invalid Order", validationResult);
         }
 
-        var orderToDelete = new Domain.Models.Order
+        var orderToDelete = new Domain.Entities.Order
         {
             Id = request.Id
         };

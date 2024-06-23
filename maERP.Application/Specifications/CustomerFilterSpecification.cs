@@ -1,5 +1,5 @@
 ﻿using maERP.Application.Specifications.Base;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
 
 namespace maERP.Application.Specifications
 {

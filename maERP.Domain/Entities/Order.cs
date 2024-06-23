@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using maERP.Domain.Models.Common;
+using maERP.Domain.Entities.Common;
+using maERP.Domain.Enums;
 
-namespace maERP.Domain.Models;
+namespace maERP.Domain.Entities;
 
 public class Order : BaseEntity, IBaseEntity
 {

@@ -1,5 +1,4 @@
 ﻿using maERP.SharedUI.Models.Warehouse;
-using maERP.SharedUI.Services.Base;
 
 namespace maERP.SharedUI.Models.SalesChannel;
 

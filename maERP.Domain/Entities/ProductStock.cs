@@ -1,7 +1,7 @@
-﻿using maERP.Domain.Models.Common;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using maERP.Domain.Entities.Common;
 
-namespace maERP.Domain.Models;
+namespace maERP.Domain.Entities;
 
 public class ProductStock : BaseEntity, IBaseEntity
 {

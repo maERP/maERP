@@ -1,6 +1,7 @@
-﻿using maERP.Domain.Models.Common;
+﻿using maERP.Domain.Entities.Common;
+using maERP.Domain.Enums;
 
-namespace maERP.Domain.Models;
+namespace maERP.Domain.Entities;
 
 public class SalesChannel : BaseEntity, IBaseEntity
 {

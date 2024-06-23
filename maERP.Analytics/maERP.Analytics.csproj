@@ -7,4 +7,8 @@
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -33,7 +33,7 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, int>
             throw new ValidationException("Invalid Order", validationResult);
         }
 
-        var orderToUpdate = _mapper.Map<Domain.Models.Order>(request);
+        var orderToUpdate = _mapper.Map<Domain.Entities.Order>(request);
 
         await _orderRepository.UpdateAsync(orderToUpdate);
 

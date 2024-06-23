@@ -17,11 +17,11 @@ public class SalesChanneLCreateValidator : AbstractValidator<SalesChannelCreateC
     
     private async Task<bool> IsUniqueAsync(SalesChannelCreateCommand command, CancellationToken cancellationToken)
     {
-        var salesChannel = new Domain.Models.SalesChannel
+        var salesChannel = new Domain.Entities.SalesChannel
         {
             Name = command.Name
         };
 
-        return await _salesChannelRepository.SalesChannelIsUniqueAsync(salesChannel, null);
+        return await _salesChannelRepository.SalesChannelIsUniqueAsync(salesChannel);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using maERP.Domain.Models;
+using maERP.Domain.Entities;
+using maERP.Domain.Enums;
 
 namespace maERP.Application.Features.Order.Queries.OrderDetail;
 
