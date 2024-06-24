@@ -16,11 +16,11 @@ public class AIModelService : BaseHttpService, IAIModelService
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResult<AIModelVM>> GetAIModels(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<PaginatedResult<AIModelListVM>> GetAIModels(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
         var aiModels = await _client.AIModelsGETAsync(pageNumber, pageSize, searchString, orderBy);
-        return _mapper.Map<PaginatedResult<AIModelVM>>(aiModels);
+        return _mapper.Map<PaginatedResult<AIModelListVM>>(aiModels);
     }
 
     public async Task<AIModelVM> GetAIModelDetails(int id)

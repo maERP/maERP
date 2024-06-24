@@ -5,14 +5,17 @@ namespace maERP.SharedUI.Models.SalesChannel;
 public enum SalesChannelType
 {
     [Description("Kein Typ")]
-    notype,
+    NoType,
+    
+    [Description("Kasse")]
+    PointOfSale,
 
     [Description("Shopware 5")]
-    shopware5,
+    Shopware5,
 
     [Description("Shopware 6")]
-    shopware6,
+    Shopware6,
 
     [Description("WooCommerce")]
-    woocommerce
+    WooCommerce
 }

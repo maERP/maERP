@@ -16,8 +16,8 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<PaginatedResult<AIModelVM>, AIModelListResponsePaginatedResult>().ReverseMap();
-        CreateMap<AIModelVM, AIModelListResponse>().ReverseMap();
+        CreateMap<PaginatedResult<AIModelListVM>, AIModelListResponsePaginatedResult>().ReverseMap();
+        CreateMap<AIModelListVM, AIModelListResponse>().ReverseMap();
         CreateMap<AIModelVM, AIModelDetailResponse>().ReverseMap();
         CreateMap<AIModelVM, AIModelCreateCommand>().ReverseMap();
         CreateMap<AIModelVM, AIModelUpdateCommand>().ReverseMap();

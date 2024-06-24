@@ -12,9 +12,10 @@
         <MudItem xs="6">
 
             <MudSelect T="SalesChannelType" Label="Typ" HelperText="Vertriebskanal-Typ" Placeholder="Typ auswählen" @bind-Value="@salesChannel.Type" Class="mt-6">
-                <MudSelectItem Value="SalesChannelType.shopware5">Shopware 5</MudSelectItem>
-                <MudSelectItem Value="SalesChannelType.shopware6">Shopware 6</MudSelectItem>
-                <MudSelectItem Value="SalesChannelType.woocommerce">WooCommerce</MudSelectItem>
+                <MudSelectItem Value="SalesChannelType.PointOfSale">Shopware 5</MudSelectItem>
+                <MudSelectItem Value="SalesChannelType.Shopware5">Shopware 5</MudSelectItem>
+                <MudSelectItem Value="SalesChannelType.Shopware6">Shopware 6</MudSelectItem>
+                <MudSelectItem Value="SalesChannelType.WooCommerce">WooCommerce</MudSelectItem>
             </MudSelect>
 
             <MudTextField @bind-Value="salesChannel.Name"

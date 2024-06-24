@@ -15,12 +15,12 @@ public partial class AIModels
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<AIModelVM> _dataGrid = new();
+    private MudDataGrid<AIModelListVM> _dataGrid = new();
 
-    private async Task<GridData<AIModelVM>> LoadGridData(GridState<AIModelVM> state)
+    private async Task<GridData<AIModelListVM>> LoadGridData(GridState<AIModelListVM> state)
     {
         var apiResponse = await _aiModelService.GetAIModels(state.Page, state.PageSize, _searchString);
-        GridData<AIModelVM> data = new()
+        GridData<AIModelListVM> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

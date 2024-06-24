@@ -1,6 +1,6 @@
 namespace maERP.Domain.Enums;
 
-public enum AIType
+public enum AIModelType
 {
     None = 0,
     ChatGPT4o = 100,

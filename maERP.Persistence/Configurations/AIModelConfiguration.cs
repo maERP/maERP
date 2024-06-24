@@ -13,7 +13,7 @@ public class AIModelConfiguration : IEntityTypeConfiguration<AIModel>
             new AIModel()
             {
                 Id = 1,
-                AIType = AIType.ChatGPT4o,
+                AiModelType = AIModelType.ChatGPT4o,
                 Name = "ChatGPT 4o Demo",
                 ApiUsername = "demo",
                 ApiKey = "demo",

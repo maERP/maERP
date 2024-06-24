@@ -28,6 +28,7 @@ public class AIModelCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         await _webApplicationFactory.InitializeDbForTests();
         var aiModel = new AIModelCreateCommand
         {
+            AIType = 0,
             Name = "AIModel 1"
         };
 
@@ -48,6 +49,7 @@ public class AIModelCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
             new List<AIModel> {
                 new() {
                     Id = 2,
+                    AiModelType = 0,
                     Name = "AIModel 2"
                 }
         });
@@ -55,7 +57,7 @@ public class AIModelCrudTest : IClassFixture<maERPWebApplicationFactory<Program>
         var result = await httpClient.GetFromJsonAsync<PaginatedResult<AIModelListResponse>>(url);
 
         Assert.NotNull(result);
-        Assert.Equal(2, result.TotalCount);
+        Assert.Equal(1, result.TotalCount);
     }
 
     [Theory]

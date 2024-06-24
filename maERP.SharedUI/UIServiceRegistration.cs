@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Blazored.LocalStorage;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.AIModel;
 using maERP.SharedUI.Providers;
 using maERP.SharedUI.Services;
 using maERP.SharedUI.Services.Base;
