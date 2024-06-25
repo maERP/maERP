@@ -67,6 +67,7 @@ builder.Services.AddSalesChannelServices();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
 builder.Services.AddScoped<IAIModelRepository, AIModelRepository>();
+builder.Services.AddScoped<IAIPromptRepository, AIPromptRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
@@ -127,7 +128,7 @@ else
     app.MapControllers();    
 }
 
-app.UseAuthentication(); // where are you?
+app.UseAuthentication(); // who are you?
 app.UseAuthorization(); // what are you allowed to do?
 
 using (var scope = app.Services.CreateScope())
