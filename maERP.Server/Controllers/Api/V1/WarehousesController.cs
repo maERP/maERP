@@ -4,7 +4,7 @@ using maERP.Application.Features.Warehouse.Commands.WarehouseDelete;
 using maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
 using maERP.Application.Features.Warehouse.Queries.WarehouseDetail;
 using maERP.Application.Features.Warehouse.Queries.WarehouseList;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

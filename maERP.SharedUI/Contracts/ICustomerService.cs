@@ -1,4 +1,4 @@
-﻿using maERP.Shared.Wrapper;
+﻿using maERP.Domain.Wrapper;
 using maERP.SharedUI.Models.Customer;
 using maERP.SharedUI.Services.Base;
 

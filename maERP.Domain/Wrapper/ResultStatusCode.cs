@@ -1,4 +1,4 @@
-﻿namespace maERP.Shared.Wrapper;
+﻿namespace maERP.Domain.Wrapper;
 
 public enum ResultStatusCode
 {

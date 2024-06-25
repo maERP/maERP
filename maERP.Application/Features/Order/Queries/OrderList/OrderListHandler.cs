@@ -5,7 +5,7 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Order.Queries.OrderList;

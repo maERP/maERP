@@ -4,7 +4,7 @@ using maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

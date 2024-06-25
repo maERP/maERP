@@ -1,4 +1,4 @@
-﻿using maERP.Shared.Wrapper;
+﻿using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Queries.WarehouseList;

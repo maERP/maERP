@@ -4,7 +4,7 @@ using maERP.Application.Features.Product.Commands.ProductDelete;
 using maERP.Application.Features.Product.Commands.ProductUpdate;
 using maERP.Application.Features.Product.Queries.ProductDetail;
 using maERP.Application.Features.Product.Queries.ProductList;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

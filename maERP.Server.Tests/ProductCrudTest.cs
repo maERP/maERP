@@ -5,7 +5,7 @@ using maERP.Application.Features.Product.Queries.ProductDetail;
 using maERP.Application.Features.Product.Queries.ProductList;
 using maERP.Application.Features.Product.Commands.ProductUpdate;
 using maERP.Domain.Entities;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 
 namespace maERP.Server.Tests;
 

@@ -1,7 +1,7 @@
 ﻿using maERP.Application.Exceptions;
 using maERP.Application.Specifications.Base;
 using maERP.Domain.Entities.Common;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Extensions;

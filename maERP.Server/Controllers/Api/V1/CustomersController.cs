@@ -4,7 +4,7 @@ using maERP.Application.Features.Customer.Commands.CustomerDelete;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
 using maERP.Application.Features.Customer.Queries.CustomerDetail;
 using maERP.Application.Features.Customer.Queries.CustomerList;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

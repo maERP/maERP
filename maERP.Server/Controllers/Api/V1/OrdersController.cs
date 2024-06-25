@@ -4,7 +4,7 @@ using maERP.Application.Features.Order.Commands.OrderDelete;
 using maERP.Application.Features.Order.Commands.OrderUpdate;
 using maERP.Application.Features.Order.Queries.OrderDetail;
 using maERP.Application.Features.Order.Queries.OrderList;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

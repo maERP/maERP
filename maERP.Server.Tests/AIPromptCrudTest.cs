@@ -1,40 +1,39 @@
 using System.Net;
 using System.Net.Http.Json;
-using maERP.Application.Features.Customer.Commands.CustomerCreate;
-using maERP.Application.Features.Customer.Commands.CustomerUpdate;
-using maERP.Application.Features.Customer.Queries.CustomerDetail;
-using maERP.Application.Features.Customer.Queries.CustomerList;
+using maERP.Application.Features.AIPrompt.Commands.AIPromptCreate;
+using maERP.Application.Features.AIPrompt.Commands.AIPromptUpdate;
+using maERP.Application.Features.AIPrompt.Queries.AIPromptDetail;
+using maERP.Application.Features.AIPrompt.Queries.AIPromptList;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
-
 
 namespace maERP.Server.Tests;
 
 [Collection("Sequential")]
-public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
+public class AIPromptCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
 {
     private readonly maERPWebApplicationFactory<Program> _webApplicationFactory;
 
-    public CustomerCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
+    public AIPromptCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers")]
+    [InlineData("/api/v1/AIPrompts")]
     public async Task Create(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var customer = new CustomerCreateCommand()
+        var aiPrompt = new AIPromptCreateCommand
         {
-            Firstname = "Customer Firstname",
-            Lastname = "Customer Lastname",
+            Identifier = "prompt_test_1",
+            PromptText = "Prompt Text 1"
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, customer);
-        CustomerDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<CustomerDetailResponse>();
+        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, aiPrompt);
+        AIPromptDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<AIPromptDetailResponse>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -42,82 +41,80 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/")]
+    [InlineData("/api/v1/AIPrompts/")]
     public async Task GetAll(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<AIPrompt> {
                 new() {
-                    Id = 1,
-                    Firstname = "Customer 2 Firstname",
-                    Lastname = "Customer 2 Lastname"
+                    Id = 2,
+                    AiModelType = 0,
+                    Identifier = "prompt_test_2",
+                    PromptText = "Prompt Text 2"
                 }
         });
 
-        var result = await httpClient.GetFromJsonAsync<PaginatedResult<CustomerListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<AIPromptListResponse>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(1, result.TotalCount);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/3")]
+    [InlineData("/api/v1/AIPrompts/3")]
     public async Task GetDetail(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<AIPrompt> {
                 new() {
                     Id = 3,
-                    Firstname = "Customer 3 Firstname",
-                    Lastname = "Customer 3 Lastname"
+                    Identifier = "prompt_test_3",
+                    PromptText = "Prompt Text 3"
                 }
         });
 
-        CustomerDetailResponse? result = await httpClient.GetFromJsonAsync<CustomerDetailResponse>(url);
+        AIPromptDetailResponse? result = await httpClient.GetFromJsonAsync<AIPromptDetailResponse>(url);
 
         Assert.NotNull(result);
-        Assert.True(result.Firstname.Length > 0);
+        Assert.True(result.PromptText.Length > 0);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/4")]
+    [InlineData("/api/v1/AIPrompts/4")]
     public async Task Update(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<AIPrompt> {
                 new() {
                     Id = 4,
-                    Firstname = "Customer 4 Firstname",
-                    Lastname = "Customer 4 Lastname"
+                    Identifier = "prompt_test_4"
                 }
         });
 
-        var customer = new CustomerUpdateCommand
+        var aiPrompt = new AIPromptUpdateCommand
         {
-            Firstname = "Customer 4 Firstname updated",
-            Lastname = "Customer 4 Lastname updated",
+            Identifier = "prompt_test_4_updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, customer);
+        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, aiPrompt);
 
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/5")]
+    [InlineData("/api/v1/AIPrompts/5")]
     public async Task Delete(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
-            new List<Customer> {
+            new List<AIPrompt> {
                 new() {
                     Id = 5,
-                    Firstname = "Customer 5 Firstname",
-                    Lastname = "Customer 5 Lastname"
+                    Identifier = "prompt_test_5"
                 }
         });
 
@@ -127,7 +124,7 @@ public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program
     }
 
     [Theory]
-    [InlineData("/api/v1/Customers/999999")]
+    [InlineData("/api/v1/AIPrompts/999999")]
     public async Task NotExist(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();

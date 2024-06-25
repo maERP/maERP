@@ -4,7 +4,7 @@ using maERP.Application.Features.AIPrompt.Commands.AIPromptDelete;
 using maERP.Application.Features.AIPrompt.Commands.AIPromptUpdate;
 using maERP.Application.Features.AIPrompt.Queries.AIPromptDetail;
 using maERP.Application.Features.AIPrompt.Queries.AIPromptList;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

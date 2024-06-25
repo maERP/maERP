@@ -5,7 +5,7 @@ using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 using maERP.Application.Features.TaxClass.Queries.TaxClassList;
 using maERP.Domain.Entities;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 
 namespace maERP.Server.Tests;
 

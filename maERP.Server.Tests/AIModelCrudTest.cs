@@ -5,7 +5,7 @@ using maERP.Application.Features.AIModel.Commands.AIModelUpdate;
 using maERP.Application.Features.AIModel.Queries.AIModelDetail;
 using maERP.Application.Features.AIModel.Queries.AIModelList;
 using maERP.Domain.Entities;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 
 namespace maERP.Server.Tests;
 

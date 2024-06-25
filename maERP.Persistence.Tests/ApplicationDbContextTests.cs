@@ -2,7 +2,7 @@
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace maERP.Application.Persistence.IntegrationTests;
+namespace maERP.Persistence.Tests;
 
 public class ApplicationDbContextTests
 {

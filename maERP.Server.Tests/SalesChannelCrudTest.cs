@@ -6,7 +6,7 @@ using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 
 namespace maERP.Server.Tests;
 

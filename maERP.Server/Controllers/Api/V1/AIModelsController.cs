@@ -4,7 +4,7 @@ using maERP.Application.Features.AIModel.Commands.AIModelDelete;
 using maERP.Application.Features.AIModel.Commands.AIModelUpdate;
 using maERP.Application.Features.AIModel.Queries.AIModelDetail;
 using maERP.Application.Features.AIModel.Queries.AIModelList;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

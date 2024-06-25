@@ -4,7 +4,7 @@ using maERP.Application.Features.TaxClass.Commands.TaxClassDelete;
 using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 using maERP.Application.Features.TaxClass.Queries.TaxClassList;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

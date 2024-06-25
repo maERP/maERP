@@ -5,7 +5,7 @@ using maERP.Application.Features.Order.Commands.OrderUpdate;
 using maERP.Application.Features.Order.Queries.OrderDetail;
 using maERP.Application.Features.Order.Queries.OrderList;
 using maERP.Domain.Entities;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 
 
 namespace maERP.Server.Tests;

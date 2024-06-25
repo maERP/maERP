@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Blazored.LocalStorage;
-using maERP.Shared.Wrapper;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models.Order;
 using maERP.SharedUI.Services.Base;
