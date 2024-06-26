@@ -1,24 +1,24 @@
 ﻿using AutoMapper;
-using maERP.Application.Features.AIPrompt.Commands.AIPromptCreate;
-using maERP.Application.Features.AIPrompt.Commands.AIPromptDelete;
-using maERP.Application.Features.AIPrompt.Commands.AIPromptUpdate;
-using maERP.Application.Features.AIPrompt.Queries.AIPromptDetail;
-using maERP.Application.Features.AIPrompt.Queries.AIPromptList;
+using maERP.Application.Features.AiPrompt.Commands.AiPromptCreate;
+using maERP.Application.Features.AiPrompt.Commands.AiPromptDelete;
+using maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
+using maERP.Application.Features.AiPrompt.Queries.AiPromptDetail;
+using maERP.Application.Features.AiPrompt.Queries.AiPromptList;
 using maERP.Domain.Entities;
 
 namespace maERP.Application.MappingProfiles;
 
-public class AIPromptProfile : Profile
+public class AiPromptProfile : Profile
 {
-    public AIPromptProfile()
+    public AiPromptProfile()
     {
-        CreateMap<AIPrompt, AIPromptCreateResponse>().ReverseMap();
-        CreateMap<AIPrompt, AIPromptDetailResponse>().ReverseMap();
-        CreateMap<AIPrompt, AIPromptListResponse>().ReverseMap();
-        CreateMap<AIPrompt, AIPromptUpdateResponse>().ReverseMap();
+        CreateMap<AiPrompt, AiPromptCreateResponse>().ReverseMap();
+        CreateMap<AiPrompt, AiPromptDetailResponse>().ReverseMap();
+        CreateMap<AiPrompt, AiPromptListResponse>().ReverseMap();
+        CreateMap<AiPrompt, AiPromptUpdateResponse>().ReverseMap();
 
-        CreateMap<AIPromptCreateCommand, AIPrompt>();
-        CreateMap<AIPromptDeleteCommand, AIPrompt>();
-        CreateMap<AIPromptUpdateCommand, AIPrompt>();
+        CreateMap<AiPromptCreateCommand, AiPrompt>();
+        CreateMap<AiPromptDeleteCommand, AiPrompt>();
+        CreateMap<AiPromptUpdateCommand, AiPrompt>();
     }
 }

@@ -26,48 +26,48 @@ namespace maERP.SharedUI.Services.Base
     {
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AIModelListResponsePaginatedResult> AIModelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy);
+        System.Threading.Tasks.Task<AiModelListResponsePaginatedResult> AiModelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AIModelListResponsePaginatedResult> AIModelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AiModelListResponsePaginatedResult> AiModelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task AIModelsPOSTAsync(AIModelCreateCommand body);
+        System.Threading.Tasks.Task AiModelsPOSTAsync(AiModelCreateCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task AIModelsPOSTAsync(AIModelCreateCommand body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task AiModelsPOSTAsync(AiModelCreateCommand body, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AIModelDetailResponse> AIModelsGET2Async(int id);
+        System.Threading.Tasks.Task<AiModelDetailResponse> AiModelsGET2Async(int id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AIModelDetailResponse> AIModelsGET2Async(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AiModelDetailResponse> AiModelsGET2Async(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task AIModelsPUTAsync(int id, AIModelUpdateCommand body);
-
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task AIModelsPUTAsync(int id, AIModelUpdateCommand body, System.Threading.CancellationToken cancellationToken);
-
-        /// <returns>No Content</returns>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task AIModelsDELETEAsync(int id);
+        System.Threading.Tasks.Task AiModelsPUTAsync(int id, AiModelUpdateCommand body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task AIModelsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task AiModelsPUTAsync(int id, AiModelUpdateCommand body, System.Threading.CancellationToken cancellationToken);
+
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task AiModelsDELETEAsync(int id);
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>No Content</returns>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task AiModelsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -434,15 +434,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<AIModelListResponsePaginatedResult> AIModelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy)
+        public virtual System.Threading.Tasks.Task<AiModelListResponsePaginatedResult> AiModelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy)
         {
-            return AIModelsGETAsync(pageNumber, pageSize, searchString, orderBy, System.Threading.CancellationToken.None);
+            return AiModelsGETAsync(pageNumber, pageSize, searchString, orderBy, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<AIModelListResponsePaginatedResult> AIModelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AiModelListResponsePaginatedResult> AiModelsGETAsync(int? pageNumber, int? pageSize, string searchString, string orderBy, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -455,8 +455,8 @@ namespace maERP.SharedUI.Services.Base
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/AIModels"
-                    urlBuilder_.Append("api/v1/AIModels");
+                    // Operation Path: "api/v1/AiModels"
+                    urlBuilder_.Append("api/v1/AiModels");
                     urlBuilder_.Append('?');
                     if (pageNumber != null)
                     {
@@ -501,7 +501,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<AIModelListResponsePaginatedResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AiModelListResponsePaginatedResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -530,15 +530,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task AIModelsPOSTAsync(AIModelCreateCommand body)
+        public virtual System.Threading.Tasks.Task AiModelsPOSTAsync(AiModelCreateCommand body)
         {
-            return AIModelsPOSTAsync(body, System.Threading.CancellationToken.None);
+            return AiModelsPOSTAsync(body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task AIModelsPOSTAsync(AIModelCreateCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task AiModelsPOSTAsync(AiModelCreateCommand body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -554,8 +554,8 @@ namespace maERP.SharedUI.Services.Base
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/AIModels"
-                    urlBuilder_.Append("api/v1/AIModels");
+                    // Operation Path: "api/v1/AiModels"
+                    urlBuilder_.Append("api/v1/AiModels");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -616,15 +616,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<AIModelDetailResponse> AIModelsGET2Async(int id)
+        public virtual System.Threading.Tasks.Task<AiModelDetailResponse> AiModelsGET2Async(int id)
         {
-            return AIModelsGET2Async(id, System.Threading.CancellationToken.None);
+            return AiModelsGET2Async(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<AIModelDetailResponse> AIModelsGET2Async(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AiModelDetailResponse> AiModelsGET2Async(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -640,8 +640,8 @@ namespace maERP.SharedUI.Services.Base
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/AIModels/{id}"
-                    urlBuilder_.Append("api/v1/AIModels/");
+                    // Operation Path: "api/v1/AiModels/{id}"
+                    urlBuilder_.Append("api/v1/AiModels/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -669,7 +669,7 @@ namespace maERP.SharedUI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<AIModelDetailResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AiModelDetailResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -698,15 +698,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task AIModelsPUTAsync(int id, AIModelUpdateCommand body)
+        public virtual System.Threading.Tasks.Task AiModelsPUTAsync(int id, AiModelUpdateCommand body)
         {
-            return AIModelsPUTAsync(id, body, System.Threading.CancellationToken.None);
+            return AiModelsPUTAsync(id, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task AIModelsPUTAsync(int id, AIModelUpdateCommand body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task AiModelsPUTAsync(int id, AiModelUpdateCommand body, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -725,8 +725,8 @@ namespace maERP.SharedUI.Services.Base
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/AIModels/{id}"
-                    urlBuilder_.Append("api/v1/AIModels/");
+                    // Operation Path: "api/v1/AiModels/{id}"
+                    urlBuilder_.Append("api/v1/AiModels/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -802,15 +802,15 @@ namespace maERP.SharedUI.Services.Base
 
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task AIModelsDELETEAsync(int id)
+        public virtual System.Threading.Tasks.Task AiModelsDELETEAsync(int id)
         {
-            return AIModelsDELETEAsync(id, System.Threading.CancellationToken.None);
+            return AiModelsDELETEAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>No Content</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task AIModelsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task AiModelsDELETEAsync(int id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -825,8 +825,8 @@ namespace maERP.SharedUI.Services.Base
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/AIModels/{id}"
-                    urlBuilder_.Append("api/v1/AIModels/");
+                    // Operation Path: "api/v1/AiModels/{id}"
+                    urlBuilder_.Append("api/v1/AiModels/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -4396,7 +4396,7 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.8.0 (NJsonSchema v11.0.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class AIModelCreateCommand
+    public partial class AiModelCreateCommand
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("Name")]
@@ -4405,19 +4405,7 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.8.0 (NJsonSchema v11.0.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class AIModelDetailResponse
-    {
-
-        [System.Text.Json.Serialization.JsonPropertyName("Id")]
-        public int Id { get; set; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("Name")]
-        public string Name { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.8.0 (NJsonSchema v11.0.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class AIModelListResponse
+    public partial class AiModelDetailResponse
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("Id")]
@@ -4429,7 +4417,19 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.8.0 (NJsonSchema v11.0.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class AIModelListResponsePaginatedResult
+    public partial class AiModelListResponse
+    {
+
+        [System.Text.Json.Serialization.JsonPropertyName("Id")]
+        public int Id { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("Name")]
+        public string Name { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.8.0 (NJsonSchema v11.0.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class AiModelListResponsePaginatedResult
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("StatusCode")]
@@ -4442,7 +4442,7 @@ namespace maERP.SharedUI.Services.Base
         public bool Succeeded { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("Data")]
-        public System.Collections.Generic.ICollection<AIModelListResponse> Data { get; set; }
+        public System.Collections.Generic.ICollection<AiModelListResponse> Data { get; set; }
 
         [System.Text.Json.Serialization.JsonPropertyName("CurrentPage")]
         public int CurrentPage { get; set; }
@@ -4465,7 +4465,7 @@ namespace maERP.SharedUI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.8.0 (NJsonSchema v11.0.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class AIModelUpdateCommand
+    public partial class AiModelUpdateCommand
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("Id")]

@@ -4,9 +4,9 @@ using maERP.Persistence.DatabaseContext;
 
 namespace maERP.Persistence.Repositories;
 
-public class AIModelRepository : GenericRepository<AIModel>, IAIModelRepository
+public class AiModelRepository : GenericRepository<AiModel>, IAiModelRepository
 {
-    public AIModelRepository(ApplicationDbContext context) : base(context)
+    public AiModelRepository(ApplicationDbContext context) : base(context)
     {
 
     }

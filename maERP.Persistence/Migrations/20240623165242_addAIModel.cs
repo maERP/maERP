@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace maERP.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class addAIModel : Migration
+    public partial class addAiModel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,12 +17,12 @@ namespace maERP.Persistence.Migrations
                 table: "Setting");
 
             migrationBuilder.CreateTable(
-                name: "AIModel",
+                name: "AiModel",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AIType = table.Column<int>(type: "integer", nullable: false),
+                    AiModelType = table.Column<int>(type: "integer", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     ApiUsername = table.Column<string>(type: "text", nullable: false),
                     ApiPassword = table.Column<string>(type: "text", nullable: false),
@@ -32,7 +32,7 @@ namespace maERP.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AIModel", x => x.Id);
+                    table.PrimaryKey("PK_AiModel", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -43,7 +43,7 @@ namespace maERP.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Identifier = table.Column<string>(type: "text", nullable: false),
                     PromptText = table.Column<string>(type: "text", nullable: false),
-                    AIType = table.Column<int>(type: "integer", nullable: false),
+                    AiModelType = table.Column<int>(type: "integer", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DateModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -946,7 +946,7 @@ namespace maERP.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AIModel");
+                name: "AiModel");
 
             migrationBuilder.DropTable(
                 name: "Prompt");

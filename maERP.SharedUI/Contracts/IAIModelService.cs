@@ -1,14 +1,14 @@
 ﻿using maERP.Domain.Wrapper;
-using maERP.SharedUI.Models.AIModel;
+using maERP.SharedUI.Models.AiModel;
 using maERP.SharedUI.Services.Base;
 
 namespace maERP.SharedUI.Contracts;
 
-public interface IAIModelService
+public interface IAiModelService
 {
-    Task<PaginatedResult<AIModelListVM>> GetAIModels(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
-    Task<AIModelVM> GetAIModelDetails(int id);
-    Task<Response<Guid>> CreateAIModel(AIModelVM warehouse);
-    Task<Response<Guid>> UpdateAIModel(int id, AIModelVM warehouse);
-    Task<Response<Guid>> DeleteAIModel(int id);
+    Task<PaginatedResult<AiModelListVM>> GetAiModels(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
+    Task<AiModelVM> GetAiModelDetails(int id);
+    Task<Response<Guid>> CreateAiModel(AiModelVM warehouse);
+    Task<Response<Guid>> UpdateAiModel(int id, AiModelVM warehouse);
+    Task<Response<Guid>> DeleteAiModel(int id);
 }

@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace maERP.Persistence.Configurations;
 
-public class AIModelConfiguration : IEntityTypeConfiguration<AIModel>
+public class AiModelConfiguration : IEntityTypeConfiguration<AiModel>
 {
-    public void Configure(EntityTypeBuilder<AIModel> modelBuilder)
+    public void Configure(EntityTypeBuilder<AiModel> modelBuilder)
     {
         modelBuilder.HasData(
-            new AIModel()
+            new AiModel()
             {
                 Id = 1,
-                AiModelType = AIModelType.ChatGPT4o,
+                AiModelType = AiModelType.ChatGPT4o,
                 Name = "ChatGPT 4o Demo",
                 ApiUsername = "demo",
                 ApiKey = "demo",

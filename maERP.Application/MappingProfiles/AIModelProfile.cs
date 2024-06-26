@@ -1,24 +1,24 @@
 ﻿using AutoMapper;
-using maERP.Application.Features.AIModel.Commands.AIModelCreate;
-using maERP.Application.Features.AIModel.Commands.AIModelDelete;
-using maERP.Application.Features.AIModel.Commands.AIModelUpdate;
-using maERP.Application.Features.AIModel.Queries.AIModelDetail;
-using maERP.Application.Features.AIModel.Queries.AIModelList;
+using maERP.Application.Features.AiModel.Commands.AiModelCreate;
+using maERP.Application.Features.AiModel.Commands.AiModelDelete;
+using maERP.Application.Features.AiModel.Commands.AiModelUpdate;
+using maERP.Application.Features.AiModel.Queries.AiModelDetail;
+using maERP.Application.Features.AiModel.Queries.AiModelList;
 using maERP.Domain.Entities;
 
 namespace maERP.Application.MappingProfiles;
 
-public class AIModelProfile : Profile
+public class AiModelProfile : Profile
 {
-    public AIModelProfile()
+    public AiModelProfile()
     {
-        CreateMap<AIModel, AIModelCreateResponse>().ReverseMap();
-        CreateMap<AIModel, AIModelDetailResponse>().ReverseMap();
-        CreateMap<AIModel, AIModelListResponse>().ReverseMap();
-        CreateMap<AIModel, AIModelUpdateResponse>().ReverseMap();
+        CreateMap<AiModel, AiModelCreateResponse>().ReverseMap();
+        CreateMap<AiModel, AiModelDetailResponse>().ReverseMap();
+        CreateMap<AiModel, AiModelListResponse>().ReverseMap();
+        CreateMap<AiModel, AiModelUpdateResponse>().ReverseMap();
 
-        CreateMap<AIModelCreateCommand, AIModel>();
-        CreateMap<AIModelDeleteCommand, AIModel>();
-        CreateMap<AIModelUpdateCommand, AIModel>();
+        CreateMap<AiModelCreateCommand, AiModel>();
+        CreateMap<AiModelDeleteCommand, AiModel>();
+        CreateMap<AiModelUpdateCommand, AiModel>();
     }
 }

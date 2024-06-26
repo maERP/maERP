@@ -2,6 +2,6 @@
 
 namespace maERP.Application.Contracts.Persistence;
 
-public interface IAIModelRepository : IGenericRepository<AIModel>
+public interface IAiModelRepository : IGenericRepository<AiModel>
 {
 }

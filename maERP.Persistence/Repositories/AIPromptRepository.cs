@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.Repositories;
 
-public class AIPromptRepository : GenericRepository<AIPrompt>, IAIPromptRepository
+public class AiPromptRepository : GenericRepository<AiPrompt>, IAiPromptRepository
 {
-    public AIPromptRepository(ApplicationDbContext context) : base(context)
+    public AiPromptRepository(ApplicationDbContext context) : base(context)
     {
 
     }
     
-    public async Task<AIPrompt?> GetByIdentifier(string identifier)
+    public async Task<AiPrompt?> GetByIdentifier(string identifier)
     {
         return await _context.Prompt.FirstOrDefaultAsync(p => p.Identifier == identifier);
     }

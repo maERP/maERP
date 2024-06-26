@@ -2,7 +2,7 @@
 
 namespace maERP.Application.Contracts.Persistence;
 
-public interface IAIPromptRepository : IGenericRepository<AIPrompt>
+public interface IAiPromptRepository : IGenericRepository<AiPrompt>
 {
-    Task<AIPrompt?> GetByIdentifier(string identifier);
+    Task<AiPrompt?> GetByIdentifier(string identifier);
 }

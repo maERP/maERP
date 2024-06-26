@@ -1,8 +1,8 @@
 using System.ComponentModel;
 
-namespace maERP.SharedUI.Models.AIModel;
+namespace maERP.SharedUI.Models.AiModel;
 
-public enum AIModelType
+public enum AiModelType
 {
     [Description("Kein Typ")]
     None,

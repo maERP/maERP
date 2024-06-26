@@ -6,9 +6,9 @@ namespace maERP.Application.Specifications
     /// <summary>
     /// Specification for filtering orders
     /// </summary>
-    public class AIPromptFilterSpecification : FilterSpecification<AIPrompt>
+    public class AiPromptFilterSpecification : FilterSpecification<AiPrompt>
     {
-        public AIPromptFilterSpecification(string searchString)
+        public AiPromptFilterSpecification(string searchString)
         {
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -20,7 +20,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public AIPromptFilterSpecification(int id)
+        public AiPromptFilterSpecification(int id)
         {
             Criteria = o => o.Id == id;
         }

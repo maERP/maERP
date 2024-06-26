@@ -12,8 +12,8 @@ using maERP.Persistence.DatabaseContext;
 namespace maERP.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240623165242_addAIModel")]
-    partial class addAIModel
+    [Migration("20240623165242_addAiModel")]
+    partial class addAiModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -183,7 +183,7 @@ namespace maERP.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("maERP.Domain.Entities.AIModel", b =>
+            modelBuilder.Entity("maERP.Domain.Entities.AiModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -191,7 +191,7 @@ namespace maERP.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AIType")
+                    b.Property<int>("AiModelType")
                         .HasColumnType("integer");
 
                     b.Property<string>("ApiKey")
@@ -218,7 +218,7 @@ namespace maERP.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AIModel");
+                    b.ToTable("AiModel");
                 });
 
             modelBuilder.Entity("maERP.Domain.Entities.ApplicationUser", b =>
@@ -1827,7 +1827,7 @@ namespace maERP.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AIType")
+                    b.Property<int>("AiModelType")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("DateCreated")

@@ -21,10 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="Pages\AIModels\AIModels.razor" />
-    <AdditionalFiles Include="Pages\AIModels\AIModelsDelete.razor" />
-    <AdditionalFiles Include="Pages\AIModels\AIModelsDetail.razor" />
-    <AdditionalFiles Include="Pages\AIModels\AIModelsEdit.razor" />
+    <AdditionalFiles Include="Pages\AiModels\AiModels.razor" />
+    <AdditionalFiles Include="Pages\AiModels\AiModelsDelete.razor" />
+    <AdditionalFiles Include="Pages\AiModels\AiModelsDetail.razor" />
+    <AdditionalFiles Include="Pages\AiModels\AiModelsEdit.razor" />
   </ItemGroup>
 
   <ItemGroup>
