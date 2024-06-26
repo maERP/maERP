@@ -1,4 +1,6 @@
-﻿namespace maERP.SharedUI.Models.AiModel;
+﻿using maERP.SharedUI.Services.Base;
+
+namespace maERP.SharedUI.Models.AiModel;
 
 public class AiModelVM
 {

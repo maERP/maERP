@@ -27,6 +27,7 @@ public static class UIServicesRegistration
         services.AddScoped<IAuthenticationService, AuthenticationService>();
 
         services.AddScoped<IAiModelService, AiModelService>();
+        services.AddScoped<IAiPromptService, AiPromptService>();
         services.AddScoped<IStatisticService, StatisticService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IOrderService, OrderService>();

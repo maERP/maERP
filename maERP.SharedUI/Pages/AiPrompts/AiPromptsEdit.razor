@@ -1,0 +1,36 @@
+﻿@page "/AiPrompts/Add"
+@page "/AiPrompts/{aiPromptId:int}/Edit"
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<MudText Typo="Typo.h4" Class="mb-8">AI Modell bearbeiten</MudText>
+
+<MudForm Model="@aiPrompt" @ref="@_form">
+    <MudGrid>
+        <MudItem xs="6">
+            <MudTextField @bind-Value="aiPrompt.Identifier"
+                          For="@(() => aiPrompt.Identifier)"
+                          Label="Identifier"
+                          Required="true"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Class="mt-6"/>
+
+            <MudTextField @bind-Value="aiPrompt.PromptText"
+                          For="@(() => aiPrompt.PromptText)"
+                          Label="Prompt Text"
+                          Required="true"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Class="mt-6"/>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       ButtonType="ButtonType.Button"
+                       OnClick="@(Save)"
+                       Class="mt-6">Speichern</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>

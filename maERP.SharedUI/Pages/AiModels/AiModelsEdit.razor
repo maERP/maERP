@@ -1,6 +1,6 @@
 ﻿@page "/AiModels/Add"
 @page "/AiModels/{aiModelId:int}/Edit"
-@using maERP.SharedUI.Models.AiModel
+@using maERP.SharedUI.Services.Base
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
@@ -10,9 +10,9 @@
 <MudForm Model="@aiModel" @ref="@_form">
     <MudGrid>
         <MudItem xs="6">
-            <MudSelect T="AiModelType" Label="Typ" HelperText="Vertriebskanal-Typ" Placeholder="Typ auswählen" @bind-Value="@aiModel.AiModelType" Class="mt-6">
-                <MudSelectItem Value="AiModelType.ChatGPT4o">ChatGPT 4o</MudSelectItem>
-                <MudSelectItem Value="AiModelType.Claude35">Claude Opus 3.5</MudSelectItem>
+            <MudSelect T="AiModelType" Label="Typ" HelperText="Model-Typ" Placeholder="Typ auswählen" @bind-Value="@aiModel.AiModelType" Class="mt-6">
+                <MudSelectItem Value="AiModelType._100">ChatGPT 4o</MudSelectItem>
+                <MudSelectItem Value="AiModelType._200">Claude Opus 3.5</MudSelectItem>
             </MudSelect>
             
             <MudTextField @bind-Value="aiModel.Name"
