@@ -14,6 +14,6 @@ public class AiPromptRepository : GenericRepository<AiPrompt>, IAiPromptReposito
     
     public async Task<AiPrompt?> GetByIdentifier(string identifier)
     {
-        return await _context.Prompt.FirstOrDefaultAsync(p => p.Identifier == identifier);
+        return await _context.AiPrompt.FirstOrDefaultAsync(p => p.Identifier == identifier);
     }
 }

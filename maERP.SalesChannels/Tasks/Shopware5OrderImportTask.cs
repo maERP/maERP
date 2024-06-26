@@ -66,7 +66,7 @@ public class Shopware5OrderImportTask : IHostedService
                 continue;
             }
 
-            if (salesChannel.ImportProducts && salesChannel.InitialProductImportCompleted == false)
+            if (salesChannel.ImportProducts && !salesChannel.InitialProductImportCompleted)
             {
                 _logger.LogInformation($"Initial Product Import not completed for {salesChannel.Name} (ID: {salesChannel.Id})");
                 continue;

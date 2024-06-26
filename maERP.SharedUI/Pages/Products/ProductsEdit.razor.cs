@@ -18,6 +18,8 @@ public partial class ProductsEdit
 
     protected MudForm? _form;
 
+    protected bool productAiHelperVisible;
+
     protected ProductVM product = new();
 
     protected override async Task OnParametersSetAsync()
@@ -45,5 +47,10 @@ public partial class ProductsEdit
     public void Cancel()
     {
         _navigationManager.NavigateTo("/Products");
+    }
+
+    public void OpenProductAiHelper()
+    {
+        productAiHelperVisible = true;
     }
 }

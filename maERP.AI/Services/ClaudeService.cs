@@ -1,6 +1,8 @@
+using maERP.Application.Contracts.Ai;
+
 namespace maERP.AI.Services;
 
-public class ClaudeService
+public class ClaudeService : IClaudeService
 {
     
 }

@@ -1,6 +1,7 @@
 ﻿@page "/Products/Add"
 @page "/Products/{productId:int}/Edit"
 @using Microsoft.AspNetCore.Authorization
+@using maERP.SharedUI.Components
 
 @attribute [Authorize]
 
@@ -13,6 +14,12 @@ else
 {
     <MudText Typo="Typo.h4" Class="mb-8">Produkt bearbeiten</MudText>
 
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenProductAiHelper">AI Assist</MudButton>
+    
+    <MudOverlay @bind-Visible="productAiHelperVisible" DarkBackground="true" AutoClose="false" Class="pt-8 white">
+        <ProductAiHelper />
+    </MudOverlay>
+    
     <MudForm Model="@product" @ref="@_form">
         <MudGrid>
             <MudItem xs="6">

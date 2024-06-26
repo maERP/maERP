@@ -25,7 +25,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     }
 
     public DbSet<AiModel> AiModel { get; set; }
-    public DbSet<AiPrompt> Prompt { get; set; }
+    public DbSet<AiPrompt> AiPrompt { get; set; }
     public DbSet<Country> Country { get; set; }
     public DbSet<Customer> Customer { get; set; }
     public DbSet<CustomerAddress> CustomerAddress { get; set; }
