@@ -8,9 +8,13 @@ public class Product : BaseEntity, IBaseEntity
 {
     public string Sku { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
+    public string NameOptimized { get; set; } = string.Empty;
     public string Ean { get; set; } = string.Empty;
     public string Asin { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public string DescriptionOptimized { get; set; } = string.Empty; 
+    
+    public bool UseOptimized { get; set; }
     public decimal Price { get; set; }
     public decimal Msrp { get; set; }
     public decimal Weight { get; set; }
