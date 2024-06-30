@@ -38,7 +38,7 @@ public partial class MainLayout : LayoutComponentBase
         _defaultDarkMode = false; //  await _mudThemeProvider.GetSystemPreference();
 
         CurrentTheme = Theme.ApplicationTheme();
-        CurrentTheme.Palette.Primary = PrimaryColor;
+        CurrentTheme.PaletteLight.Primary = PrimaryColor;
         CurrentTheme.PaletteDark.Primary = PrimaryColor;
         CurrentTheme.LayoutProperties.DefaultBorderRadius = BorderRadius + "px";
 
