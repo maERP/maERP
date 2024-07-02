@@ -11,6 +11,7 @@
 * Cross-Platform: Windows, MacOS, Linux (Server), iOS, Android
 * Offene API zur Erweiterung und Anbindung von Anwendungen Dritter
 * Unterstützt `Docker` out of the box
+* OpenAI und Claude AI Integration
 
 ## Projektübersicht
 
