@@ -1,3 +1,4 @@
+// ReSharper disable UnusedMember.Local
 namespace maERP.AI.Services;
 
 public abstract class AiService

@@ -18,6 +18,7 @@ public class AiMessageHandler : IRequestHandler<AiMessageCommand, string>
 
     public async Task<string> Handle(AiMessageCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("AiMessageCommand.Handle");
         return await _aiServiceWrapper.AskAsync(request.PromptText);
     }
 }

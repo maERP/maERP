@@ -1,8 +1,4 @@
 ﻿using Asp.Versioning;
-using maERP.Application.Features.AiModel.Commands.AiModelCreate;
-using maERP.Application.Features.AiModel.Commands.AiModelDelete;
-using maERP.Application.Features.AiModel.Commands.AiModelUpdate;
-using maERP.Application.Features.AiModel.Queries.AiModelDetail;
 using maERP.Application.Features.AiModel.Queries.AiModelList;
 using maERP.Domain.Wrapper;
 using MediatR;

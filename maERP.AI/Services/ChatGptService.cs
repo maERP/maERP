@@ -6,7 +6,7 @@ namespace maERP.AI.Services;
 
 public class ChatGptService : AiService
 {
-    private OpenAIAPI _api;
+    private OpenAIAPI _api = new();
     private Conversation _chat;
 
     public override void StartNewChat()

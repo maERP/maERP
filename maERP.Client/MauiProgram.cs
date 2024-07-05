@@ -1,7 +1,4 @@
 ﻿using maERP.SharedUI;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Maui.Controls.Hosting;
-using Microsoft.Maui.Hosting;
 
 namespace maERP.Client;
 

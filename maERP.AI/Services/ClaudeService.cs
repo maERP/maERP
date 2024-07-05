@@ -7,11 +7,16 @@ public class ClaudeService : AiService
     private Anthropic _api;
     private IMessages _chat;
 
+    public ClaudeService()
+    {
+        _api = new Anthropic();
+    }
+
     public async override void StartNewChat()
     {
         var message = await _api.Messages.CreateAsync(new()
         {
-            Model = Claudia.Models.Claude3_5Sonnet,
+            Model = Models.Claude3_5Sonnet,
             MaxTokens = 1024,
             Messages = [new() { Role = "user", Content = "Hello, Claude" }]
         });
@@ -21,7 +26,7 @@ public class ClaudeService : AiService
     {
         var message = await _api.Messages.CreateAsync(new()
         {
-            Model = Claudia.Models.Claude3_5Sonnet,
+            Model = Models.Claude3_5Sonnet,
             MaxTokens = 1024,
             Messages = [new() { Role = "user", Content = prompt }]
         });
