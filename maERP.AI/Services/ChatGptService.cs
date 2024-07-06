@@ -11,7 +11,7 @@ public class ChatGptService : AiService
 
     public override void StartNewChat()
     {
-        _api = new OpenAIAPI("YOUR_API_KEY"); 
+        _api = new OpenAIAPI("YOUR_API_KEY_GOES_HERE"); 
         _api.Chat.CreateConversation();
         _chat.Model = Model.GPT4_Turbo;
         _chat.RequestParameters.Temperature = 0;
