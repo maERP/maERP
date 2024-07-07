@@ -15,8 +15,4 @@
       <PackageReference Include="OpenAI" Version="1.11.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Contracts\" />
-    </ItemGroup>
-
 </Project>

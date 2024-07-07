@@ -2,7 +2,7 @@ using OpenAI_API;
 using OpenAI_API.Chat;
 using OpenAI_API.Models;
 
-namespace maERP.AI.Services;
+namespace maERP.Ai.Services;
 
 public class ChatGptService : AiService
 {

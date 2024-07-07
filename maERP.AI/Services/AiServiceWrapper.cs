@@ -2,7 +2,7 @@ using maERP.Application.Contracts.Ai;
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
 
-namespace maERP.AI.Services;
+namespace maERP.Ai.Services;
 
 public class AiServiceWrapper : IAiServiceWrapper
 {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace maERP.AI;
+namespace maERP.Ai;
 
-public static class AIServiceRegistration
+public static class AiServiceRegistration
 {
     public static IServiceCollection AddAIServices(this IServiceCollection services, IServiceScopeFactory serviceScopeFactory)
     {

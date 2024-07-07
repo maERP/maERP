@@ -1,6 +1,6 @@
 using Claudia;
 
-namespace maERP.AI.Services;
+namespace maERP.Ai.Services;
 
 public class ClaudeService : AiService
 {
