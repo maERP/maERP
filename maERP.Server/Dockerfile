@@ -5,13 +5,14 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-ENV ConnectionStrings__DefaultConnection Server=localhost;Port=5432;Database=maerp_01;User Id=maerp;Pwd=maerp;
+ENV ConnectionStrings__DefaultConnection Server=localhost;Port=3306;Database=maerp_01;Uid=maerp;Password=maerp;
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["maERP.Server/maERP.Server.csproj", "maERP.Server/"]
 COPY ["maERP.Application/maERP.Application.csproj", "maERP.Application/"]
 COPY ["maERP.Domain/maERP.Domain.csproj", "maERP.Domain/"]
+COPY ["maERP.Ai/maERP.Ai.csproj", "maERP.Ai/"]
 COPY ["maERP.Analytics/maERP.Analytics.csproj", "maERP.Analytics/"]
 COPY ["maERP.Identity/maERP.Identity.csproj", "maERP.Identity/"]
 COPY ["maERP.Infrastructure/maERP.Infrastructure.csproj", "maERP.Infrastructure/"]

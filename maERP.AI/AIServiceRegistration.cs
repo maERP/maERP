@@ -1,11 +1,15 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using maERP.Ai.Services;
+using maERP.Application.Contracts.Ai;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace maERP.Ai;
 
 public static class AiServiceRegistration
 {
-    public static IServiceCollection AddAIServices(this IServiceCollection services, IServiceScopeFactory serviceScopeFactory)
+    public static IServiceCollection AddAiServices(this IServiceCollection services)
     {
+        services.AddScoped<IAiServiceWrapper, AiServiceWrapper>();
+
         return services;
     }
 }

@@ -17,7 +17,7 @@ public static class PersistenceServiceRegistration
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseNpgsql(dbOptions.Value.DefaultConnection,
+            options.UseMySql(dbOptions.Value.DefaultConnection, (ServerVersion.AutoDetect(dbOptions.Value.DefaultConnection)),
                 b => b.MigrationsAssembly("maERP.Persistence"));
         });
 

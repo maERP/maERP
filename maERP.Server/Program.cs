@@ -1,6 +1,8 @@
 ﻿#nullable disable
 
 using maERP.Application;
+using maERP.Ai;
+using maERP.Application.Contracts.Ai;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
 using maERP.Infrastructure;
@@ -63,6 +65,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddSalesChannelServices();
+builder.Services.AddAiServices();
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();

@@ -30,8 +30,8 @@ Web: [https://www.maERP.de](https://www.maerp.de)
 
 ## maERP installieren
 
-maERP.Server per Docker mit externem Postgres-Server starten:
+maERP.Server per Docker mit externem MySQL-Server starten:
 
 ```
-docker run -d --name maerp-server -p 8082:80 maerp/server -e ConnectionStrings__DefaultConnection="Server=localhost;Port=5432;Database=maerp_01;User Id=maerp;Pwd=maerp;"
+docker run -d --name maerp-server -p 8082:80 maerp/server -e ConnectionStrings__DefaultConnection="Server=localhost;Port=3306;Database=maerp_01;Uid=maerp;Password=maerp;"
 ```
