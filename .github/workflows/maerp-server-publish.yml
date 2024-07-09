@@ -8,6 +8,7 @@ on:
       - 'maERP.Core/**'
       - 'maERP.Domain/**'
       - 'maERP.Application/**'
+      - 'maERP.Ai/**'
       - 'maERP.Analytics/**'
       - 'maERP.Identity/**'
       - 'maERP.Infrastructure/**'

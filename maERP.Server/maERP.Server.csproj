@@ -68,11 +68,11 @@
 		<PackageReference Include="Serilog.Sinks.Async" Version="2.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\maERP.Ai\maERP.Ai.csproj" />
-		<ProjectReference Include="..\maERP.Analytics\maERP.Analytics.csproj" />
-		<ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
-		<ProjectReference Include="..\maERP.Infrastructure\maERP.Infrastructure.csproj" />
-		<ProjectReference Include="..\maERP.Persistence\maERP.Persistence.csproj" />
-		<ProjectReference Include="..\maERP.SalesChannels\maERP.SalesChannels.csproj" />
+		<ProjectReference Include="../maERP.Ai/maERP.Ai.csproj" />
+		<ProjectReference Include="../maERP.Analytics/maERP.Analytics.csproj" />
+		<ProjectReference Include="../maERP.Application/maERP.Application.csproj" />
+		<ProjectReference Include="../maERP.Infrastructure/maERP.Infrastructure.csproj" />
+		<ProjectReference Include="../maERP.Persistence/maERP.Persistence.csproj" />
+		<ProjectReference Include="../maERP.SalesChannels/maERP.SalesChannels.csproj" />
 	</ItemGroup>
 </Project>
