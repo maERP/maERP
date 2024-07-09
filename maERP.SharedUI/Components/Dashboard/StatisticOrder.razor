@@ -1,0 +1,16 @@
+﻿@if(statisticOrder != null)
+{
+    <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+        @statisticOrder.Order30Days Bestellungen in den letzten 30 Tagen<br />
+        @statisticOrder.OrderTotal Bestellungen gesamt<br />
+        @statisticOrder.CustomerTotal Kunden gesamt
+    </MudPaper>
+}
+else
+{
+    <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+        <MudSkeleton Width="80%" />
+        <MudSkeleton Width="60%" />
+        <MudSkeleton Width="80%" />
+    </MudPaper>
+}

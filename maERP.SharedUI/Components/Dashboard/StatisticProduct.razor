@@ -1,0 +1,15 @@
+﻿@if(statisticProduct != null)
+{
+    <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+        @statisticProduct.ProductTotal Produkte gesamt<br />
+        @statisticProduct.ProductInStock auf Lager<br />
+    </MudPaper>
+}
+else
+{
+    <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+        <MudSkeleton Width="80%" />
+        <MudSkeleton Width="60%" />
+        <MudSkeleton Width="80%" />
+    </MudPaper>
+}

@@ -1,5 +1,3 @@
-using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Services.Base;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -10,11 +8,6 @@ public partial class Dashboard
     [Inject]
     public required NavigationManager? _navigationManager { get; set; }
 
-    [Inject]
-    public required IStatisticService _statisticService { get; set; }
-
-    private StatisticOrderResponse? statisticOrder;
-
     public ChartOptions Options = new ChartOptions();
 
     public List<ChartSeries> Series = new List<ChartSeries>
@@ -24,9 +17,4 @@ public partial class Dashboard
     };
 
     public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
-
-    protected override async Task OnInitializedAsync()
-    {
-        statisticOrder = await _statisticService.GetStatisticOrderAsync();
-    }
 }
