@@ -99,6 +99,8 @@ public class Shopware5OrderImportTask : IHostedService
                     {
                         string result = response.Content.ReadAsStringAsync().Result;
 
+                        _logger.LogInformation("Import Orders from {0} to {1}", requestStart, requestStart + requestLimit);
+
                         BaseListResponse<OrderResponse> remoteOrders = new();
 
                         try

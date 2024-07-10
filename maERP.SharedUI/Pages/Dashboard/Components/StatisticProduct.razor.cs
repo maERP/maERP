@@ -2,7 +2,7 @@ using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Services.Base;
 using Microsoft.AspNetCore.Components;
 
-namespace maERP.SharedUI.Components.Dashboard;
+namespace maERP.SharedUI.Pages.Dashboard.Components;
 
 public partial class StatisticProduct
 {
