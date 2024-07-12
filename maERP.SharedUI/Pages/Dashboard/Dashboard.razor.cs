@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace maERP.SharedUI.Pages;
+namespace maERP.SharedUI.Pages.Dashboard;
 
 public partial class Dashboard
 {

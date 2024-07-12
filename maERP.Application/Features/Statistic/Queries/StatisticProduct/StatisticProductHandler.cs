@@ -24,8 +24,15 @@ public class StatisticProductHandler : IRequestHandler<StatisticProductQuery, St
         var response = new StatisticProductResponse();
 
         response.ProductTotal = await _productRepository.Entities.CountAsync();
-        response.ProductInStock = await _productRepository.Entities.CountAsync();
-        
+
+        response.ProductInStock = await _productRepository.Entities
+            .Where(p => p.ProductStocks.Any(w => w.Stock > 0))
+            .CountAsync();
+
+        response.ProductInWarehouse = await _productRepository.Entities
+            .Where(p => p.ProductStocks.Any(w => w.Stock > 0))
+            .SumAsync(p => p.ProductStocks.Sum(w => w.Stock));
+           
         return response;
     }
 }

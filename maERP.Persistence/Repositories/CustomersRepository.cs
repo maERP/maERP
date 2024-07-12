@@ -47,6 +47,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         
         await _context.CustomerSalesChannel.AddAsync(CustomerSalesChannel);
         await _context.SaveChangesAsync();
+        Console.WriteLine("saved");
     }
     
     public async Task<ICollection<CustomerAddress>> GetCustomerAddressByCustomerIdAsync(int customerId)
