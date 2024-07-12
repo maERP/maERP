@@ -38,6 +38,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Domain", "maERP.Domai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Application", "maERP.Application\maERP.Application.csproj", "{4B5229CE-848D-43E8-A8A0-90290765C19A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Ai", "maERP.Ai\maERP.Ai.csproj", "{F7BFEFA0-5733-4E4D-9E7D-0A0940CDBE0F}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Persistence", "maERP.Persistence\maERP.Persistence.csproj", "{E39C2020-9D52-4117-AF28-8A290B43436E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Infrastructure", "maERP.Infrastructure\maERP.Infrastructure.csproj", "{E724B9C9-4B31-4D1A-AFF5-00DBA54C471F}"
@@ -56,8 +58,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Ai", "maERP.Ai\maERP.Ai.csproj", "{F7BFEFA0-5733-4E4D-9E7D-0A0940CDBE0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
