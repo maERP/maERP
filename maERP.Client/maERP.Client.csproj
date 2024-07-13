@@ -103,7 +103,6 @@
     <ProjectReference Include="..\maERP.SharedUI\maERP.SharedUI.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.60" />
     <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.70" />
   </ItemGroup>
 </Project>
