@@ -2,7 +2,6 @@
 
 using maERP.Application;
 using maERP.Ai;
-using maERP.Application.Contracts.Ai;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
 using maERP.Infrastructure;
