@@ -9,8 +9,9 @@ public class AiServiceWrapper : IAiServiceWrapper
     AiService _aiService;
     AiPrompt _aiPrompt;
     
-    public AiServiceWrapper()
+    public AiServiceWrapper(AiService aiService)
     {
+        _aiService = aiService;
         _aiPrompt = new AiPrompt();
     }
 
