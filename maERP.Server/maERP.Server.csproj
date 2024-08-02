@@ -63,7 +63,7 @@
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
 		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="2.0.0" />
 	</ItemGroup>
