@@ -17,5 +17,4 @@
       <PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.15.0" />
       <PackageReference Include="OpenAI" Version="1.11.0" />
     </ItemGroup>
-
 </Project>
