@@ -7,18 +7,19 @@ namespace maERP.Application.Features.Ai.Commands.AiMessage;
 public class AiMessageHandler : IRequestHandler<AiMessageCommand, string>
 {
     private readonly IAppLogger<AiMessageHandler> _logger;
-    private readonly IAiServiceWrapper _aiServiceWrapper;
+    //private readonly IAiServiceWrapper _aiServiceWrapper;
 
-    public AiMessageHandler(IAppLogger<AiMessageHandler> logger,
-        IAiServiceWrapper aiServiceWrapper)
+    public AiMessageHandler(IAppLogger<AiMessageHandler> logger)
     {
         _logger = logger;
-        _aiServiceWrapper = aiServiceWrapper;
+        //_aiServiceWrapper = aiServiceWrapper;
     }
 
     public async Task<string> Handle(AiMessageCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("AiMessageCommand.Handle");
-        return await _aiServiceWrapper.AskAsync(request.PromptText);
+        //return await _aiServiceWrapper.AskAsync(request.PromptText);
+        await Task.CompletedTask;
+        return string.Empty;
     }
 }

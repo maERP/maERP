@@ -1,8 +1,9 @@
 using Claudia;
+using maERP.Application.Contracts.Ai;
 
 namespace maERP.Ai.Services;
 
-public class ClaudeService : AiService
+public class ClaudeService : AiService, IClaudeService
 {
     private Anthropic _api;
     private IMessages _chat;
@@ -12,7 +13,7 @@ public class ClaudeService : AiService
         _api = new Anthropic();
     }
 
-    public async override void StartNewChat()
+    public override async void StartNewChat()
     {
         var message = await _api.Messages.CreateAsync(new()
         {
@@ -22,7 +23,7 @@ public class ClaudeService : AiService
         });
     }
     
-    public async override Task<string> AskAsync(string prompt)
+    public override async Task<string> AskAsync(string prompt)
     {
         var message = await _api.Messages.CreateAsync(new()
         {

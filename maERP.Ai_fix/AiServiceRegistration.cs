@@ -8,6 +8,7 @@ public static class AiServiceRegistration
 {
     public static IServiceCollection AddAiServices(this IServiceCollection services)
     {
+        services.AddScoped<IAiService, AiService>();
         services.AddScoped<IAiServiceWrapper, AiServiceWrapper>();
 
         return services;

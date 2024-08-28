@@ -6,10 +6,10 @@ namespace maERP.Ai.Services;
 
 public class AiServiceWrapper : IAiServiceWrapper
 {
-    AiService _aiService;
+    IAiService _aiService;
     AiPrompt _aiPrompt;
     
-    public AiServiceWrapper(AiService aiService)
+    public AiServiceWrapper(IAiService aiService)
     {
         _aiService = aiService;
         _aiPrompt = new AiPrompt();

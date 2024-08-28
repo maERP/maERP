@@ -1,10 +1,11 @@
+using maERP.Application.Contracts.Ai;
 using OpenAI_API;
 using OpenAI_API.Chat;
 using OpenAI_API.Models;
 
 namespace maERP.Ai.Services;
 
-public class ChatGptService : AiService
+public class ChatGptService : AiService, IChatGptService
 {
     private OpenAIAPI _api = new();
     private Conversation _chat;
