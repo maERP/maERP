@@ -49,7 +49,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.8" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.80" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.82" />
     <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.8" />
     <PackageReference Include="MudBlazor" Version="7.6.0" />
