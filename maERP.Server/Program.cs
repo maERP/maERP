@@ -20,8 +20,6 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using OpenTelemetry.Exporter.OpenTelemetryProtocol;
-using OpenTelemetry.Extensions.Hosting;
 using Serilog;
 
 const string serviceName = "maERP.Server";
@@ -39,24 +37,6 @@ builder.Logging.AddOpenTelemetry(options =>
                 .AddService(serviceName))
         .AddConsoleExporter();
 });
-builder.Services.AddOpenTelemetry()
-    .ConfigureResource(resource => resource.AddService(serviceName))
-    .WithTracing(tracing => tracing
-        .AddAspNetCoreInstrumentation()
-        .AddConsoleExporter()
-        .AddOtlpExporter(options =>
-        {
-            options.Endpoint = new Uri("http://maerp.de:4318");
-            options.Protocol = OtlpExportProtocol.HttpProtobuf;
-        }))
-    .WithMetrics(metrics => metrics
-        .AddAspNetCoreInstrumentation()
-        .AddConsoleExporter()
-        .AddOtlpExporter(options =>
-        {
-            options.Endpoint = new Uri("http://maerp.de:4318");
-            options.Protocol = OtlpExportProtocol.HttpProtobuf;
-        }));
 
 builder.Logging.AddOpenTelemetry(logging => {
     // The rest of your setup code goes here
@@ -88,6 +68,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSwaggerServices();
 builder.Services.AddApiVersioningServices(builder.Configuration);
+builder.Services.AddOpenTelemetryServices(builder.Configuration, serviceName);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>
