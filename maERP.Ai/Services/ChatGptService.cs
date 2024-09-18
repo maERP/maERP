@@ -1,26 +1,26 @@
 using maERP.Application.Contracts.Ai;
-using OpenAI_API;
-using OpenAI_API.Chat;
-using OpenAI_API.Models;
+using OpenAI;
+using OpenAI.Chat;
+using OpenAI.Models;
 
 namespace maERP.Ai.Services;
 
 public class ChatGptService : AiService, IChatGptService
 {
-    private OpenAIAPI _api = new();
-    private Conversation _chat;
+    private ChatClient _chat;
 
     public override void StartNewChat()
     {
-        _api = new OpenAIAPI("YOUR_API_KEY_GOES_HERE"); 
-        _api.Chat.CreateConversation();
-        _chat.Model = Model.GPT4_Turbo;
-        _chat.RequestParameters.Temperature = 0;
+        _chat = new(model: "gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
     }
     
     public override async Task<string> AskAsync(string question)
     {
-        _chat.AppendUserInput(question);
-        return await _chat.GetResponseFromChatbotAsync();
+        var chatCompletion = _chat.CompleteChat(
+        [
+            new UserChatMessage(question),
+        ]);
+
+        return "ok";
     }
 }

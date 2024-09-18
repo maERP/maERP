@@ -1,83 +1,77 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<RootNamespace>maERP.Server</RootNamespace>
-		<UserSecretsId>53b9bd57-4cf0-45d7-bba7-64c04472618f</UserSecretsId>
-		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-
-		<Version>0.1</Version>
-		<Authors>Martin Andrich</Authors>
-		<Company>Martin Andrich Softwareentwicklung</Company>
-		<Copyright>Martin Andrich</Copyright>
-		<RepositoryUrl>https://github.com/maERP/maERP</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<Description>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>maERP.Server</RootNamespace>
+    <UserSecretsId>53b9bd57-4cf0-45d7-bba7-64c04472618f</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <Version>0.1</Version>
+    <Authors>Martin Andrich</Authors>
+    <Company>Martin Andrich Softwareentwicklung</Company>
+    <Copyright>Martin Andrich</Copyright>
+    <RepositoryUrl>https://github.com/maERP/maERP</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Description>
 			OpenSource, self-hosted, client/server-based ERP system with multiplatform GUI written in CSharp
 		</Description>
-		<Platforms>AnyCPU;x64</Platforms>
-		<IsPackable>true</IsPackable>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageId>maERP</PackageId>
-		<PackageTags>maerp;erp;open source;server;docker;shopware</PackageTags>
-		<Configurations>Debug;Release</Configurations>
-
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-	</PropertyGroup>
-
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<Optimize>true</Optimize>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
-	<ItemGroup>
-		<Folder Include="Controllers\Web\" />
-		<Folder Include="wwwroot\lib\" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
-		<PackageReference Include="Microsoft.AspNetCore.OData" Version="9.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="AutoMapper" Version="13.0.1" />
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
-		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
-		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
-		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
-		<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
-		<PackageReference Include="Serilog.Sinks.Async" Version="2.0.0" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="../maERP.Ai/maERP.Ai.csproj" />
-		<ProjectReference Include="../maERP.Analytics/maERP.Analytics.csproj" />
-		<ProjectReference Include="../maERP.Application/maERP.Application.csproj" />
-		<ProjectReference Include="../maERP.Infrastructure/maERP.Infrastructure.csproj" />
-		<ProjectReference Include="../maERP.Persistence/maERP.Persistence.csproj" />
-		<ProjectReference Include="../maERP.SalesChannels/maERP.SalesChannels.csproj" />
-	</ItemGroup>
+    <Platforms>AnyCPU;x64</Platforms>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>maERP</PackageId>
+    <PackageTags>maerp;erp;open source;server;docker;shopware</PackageTags>
+    <Configurations>Debug;Release</Configurations>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+  <ItemGroup>
+    <Folder Include="Controllers\Web\" />
+    <Folder Include="wwwroot\lib\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0-rc.1.24452.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0-rc.1.24452.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.0-rc.1.24452.1" />
+    <PackageReference Include="Microsoft.AspNetCore.OData" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0-rc.1.24451.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-rc.1.24451.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.0-rc.1.24431.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0-rc.1.24451.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0-rc.1.24451.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0-rc.1.24457.2" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../maERP.Ai/maERP.Ai.csproj" />
+    <ProjectReference Include="../maERP.Analytics/maERP.Analytics.csproj" />
+    <ProjectReference Include="../maERP.Application/maERP.Application.csproj" />
+    <ProjectReference Include="../maERP.Infrastructure/maERP.Infrastructure.csproj" />
+    <ProjectReference Include="../maERP.Persistence/maERP.Persistence.csproj" />
+    <ProjectReference Include="../maERP.SalesChannels/maERP.SalesChannels.csproj" />
+  </ItemGroup>
 </Project>
