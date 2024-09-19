@@ -36,6 +36,7 @@
     <NeutralLanguage>de-DE</NeutralLanguage>
 	
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	<WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
@@ -93,7 +94,7 @@
     <BundleResource Include="MauiResources\Images\dotnet_bot.svg" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+	<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Maui.Core" Version="8.0.90" />
     <PackageReference Include="MudBlazor" Version="7.8.0" />

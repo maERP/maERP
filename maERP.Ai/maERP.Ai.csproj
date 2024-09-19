@@ -4,6 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,6 +17,6 @@
       <PackageReference Include="LLamaSharp" Version="0.16.0" />
       <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.16.0" />
       <PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.16.0" />
-      <PackageReference Include="OpenAI" Version="1.11.0" />
+      <PackageReference Include="OpenAI" Version="2.0.0-beta.1" />
     </ItemGroup>
 </Project>
