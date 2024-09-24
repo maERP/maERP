@@ -15,12 +15,12 @@ using maERP.Server.Middlewares;
 using maERP.Server.ServiceRegistrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
-using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using OpenTelemetry.Exporter;
 
 const string serviceName = "maERP.Server";
 
@@ -29,21 +29,28 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Logging.AddOpenTelemetry(options =>
-{
-    options
-        .SetResourceBuilder(
-            ResourceBuilder.CreateDefault()
-                .AddService(serviceName))
-        .AddConsoleExporter();
-});
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracing => tracing
+        // The rest of your setup code goes here
+        .AddOtlpExporter(options =>
+        {
+            options.Endpoint = new Uri("http://maerp.de:4317");
+            options.Protocol = OtlpExportProtocol.Grpc;
+        }))
+    .WithMetrics(metrics => metrics
+        // The rest of your setup code goes here
+        .AddOtlpExporter(options =>
+        {
+            options.Endpoint = new Uri("http://maerp.de:4317");
+            options.Protocol = OtlpExportProtocol.Grpc;
+        }));
 
 builder.Logging.AddOpenTelemetry(logging => {
     // The rest of your setup code goes here
     logging.AddOtlpExporter(options =>
     {
-        options.Endpoint = new Uri("http://maerp.de:4318");
-        options.Protocol = OtlpExportProtocol.HttpProtobuf;
+        options.Endpoint = new Uri("http://maerp.de:4317");
+        options.Protocol = OtlpExportProtocol.Grpc;
     });
 });
 

@@ -33,7 +33,7 @@ public class StatisticOrderCustomerChartHandler : IRequestHandler<StatisticOrder
                 CustomersNew = group.Select(order => order.CustomerId).Distinct().Count()
             })
             .ToListAsync();
-        
+
         return response;
     }
 }
