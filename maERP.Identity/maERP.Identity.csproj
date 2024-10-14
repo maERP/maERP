@@ -13,18 +13,18 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
-      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
-      <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.10" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.10" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.*" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.*" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.*" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.*" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.*" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.*">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
-      <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
+      <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.*" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.*" />
+      <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.*" />
     </ItemGroup>
 
 </Project>

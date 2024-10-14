@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WooCommerceNET" Version="0.8.6" />
+    <PackageReference Include="WooCommerceNET" Version="0.8.*" />
   </ItemGroup>
 
   <ItemGroup>

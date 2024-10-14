@@ -43,35 +43,35 @@
 		<Folder Include="wwwroot\lib\" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.OData" Version="9.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.*" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.*" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.*" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.*" />
+		<PackageReference Include="Microsoft.AspNetCore.OData" Version="9.0.*" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.*" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.*" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.*" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.*">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.*">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="AutoMapper" Version="13.0.1" />
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
-		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
-		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
-		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.1" />
-		<PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
-		<PackageReference Include="Serilog.Sinks.Async" Version="2.0.0" />
+		<PackageReference Include="AutoMapper" Version="13.0.*" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.*" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.*" />
+		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.9.*" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.*" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.*" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.*" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.*" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.*" />
+		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.*" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.*" />
+		<PackageReference Include="Serilog.AspNetCore" Version="8.0.*" />
+		<PackageReference Include="Serilog.Sinks.Async" Version="2.0.*" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="../maERP.Ai/maERP.Ai.csproj" />
