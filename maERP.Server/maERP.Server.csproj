@@ -51,11 +51,11 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.*" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.*" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.*" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.*">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.*">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
@@ -69,7 +69,7 @@
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.*" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="6.0.*" />
 		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.*" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.*" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.*" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="2.0.*" />
 	</ItemGroup>
