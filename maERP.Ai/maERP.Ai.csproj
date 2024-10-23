@@ -14,9 +14,9 @@
 
     <ItemGroup>
       <PackageReference Include="Claudia" Version="1.3.*" />
-      <PackageReference Include="LLamaSharp" Version="0.17.*" />
-      <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.17.*" />
-      <PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.16.*" />
+      <PackageReference Include="LLamaSharp" Version="0.18.0" />
+      <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.18.0" />
+      <PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.18.0" />
       <PackageReference Include="OpenAI" Version="2.0.*" />
     </ItemGroup>
 </Project>
