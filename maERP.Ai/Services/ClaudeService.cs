@@ -11,6 +11,7 @@ public class ClaudeService : AiService, IClaudeService
     public ClaudeService()
     {
         _api = new Anthropic();
+        _chat = _api.Messages;
     }
 
     public override async void StartNewChat()
