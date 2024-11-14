@@ -24,30 +24,30 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
     }
 
-    public DbSet<AiModel> AiModel { get; set; }
-    public DbSet<AiPrompt> AiPrompt { get; set; }
-    public DbSet<Country> Country { get; set; }
-    public DbSet<Customer> Customer { get; set; }
-    public DbSet<CustomerAddress> CustomerAddress { get; set; }
-    public DbSet<CustomerSalesChannel> CustomerSalesChannel { get; set; }
-    public DbSet<Order> Order { get; set; }
-    public DbSet<OrderItem> OrderItem { get; set; }
-    public DbSet<OrderItemSerialNumber> OrderItemSerialNumber { get; set; }
-    public DbSet<Product> Product { get; set; }
-    public DbSet<ProductSalesChannel> ProductSalesChannel { get; set; }
-    public DbSet<ProductStock> ProductStock { get; set; }
-    public DbSet<SalesChannel> SalesChannel { get; set; }
-    public DbSet<Setting> Setting { get; set; }
-    public DbSet<Shipping> Shipping { get; set; }
-    public DbSet<ShippingProvider> ShippingProvider { get; set; }
-    public DbSet<ShippingProviderRate> ShippingProviderRate { get; set; }
-    public DbSet<TaxClass> TaxClass { get; set; }
-    public DbSet<Warehouse> Warehouse { get; set; }
+    public DbSet<AiModel> AiModel { get; set; } = null!;
+    public DbSet<AiPrompt> AiPrompt { get; set; } = null!;
+    public DbSet<Country> Country { get; set; } = null!;
+    public DbSet<Customer> Customer { get; set; } = null!;
+    public DbSet<CustomerAddress> CustomerAddress { get; set; } = null!;
+    public DbSet<CustomerSalesChannel> CustomerSalesChannel { get; set; } = null!;
+    public DbSet<Order> Order { get; set; } = null!;
+    public DbSet<OrderItem> OrderItem { get; set; } = null!;
+    public DbSet<OrderItemSerialNumber> OrderItemSerialNumber { get; set; } = null!;
+    public DbSet<Product> Product { get; set; } = null!;
+    public DbSet<ProductSalesChannel> ProductSalesChannel { get; set; } = null!;
+    public DbSet<ProductStock> ProductStock { get; set; } = null!;
+    public DbSet<SalesChannel> SalesChannel { get; set; } = null!;
+    public DbSet<Setting> Setting { get; set; } = null!;
+    public DbSet<Shipping> Shipping { get; set; } = null!;
+    public DbSet<ShippingProvider> ShippingProvider { get; set; } = null!;
+    public DbSet<ShippingProviderRate> ShippingProviderRate { get; set; } = null!;
+    public DbSet<TaxClass> TaxClass { get; set; } = null!;
+    public DbSet<Warehouse> Warehouse { get; set; } = null!;
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         foreach (var entry in base.ChangeTracker.Entries<BaseEntity>().Where(q => q.State == EntityState.Added || q.State == EntityState.Modified))
-        { 
+        {
             entry.Entity.DateModified = DateTime.UtcNow;
 
             if (entry.State == EntityState.Added)

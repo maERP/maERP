@@ -173,7 +173,7 @@ public class Shopware5OrderImportTask : IHostedService
                                             Firstname = remoteOrderDetail.billing.firstName,
                                             Lastname = remoteOrderDetail.billing.lastName,
                                             CompanyName = remoteOrderDetail.billing.company,
-                                            Email = remoteOrderDetail.customer.email.IsNullOrEmpty() ? string.Empty : remoteOrderDetail.customer.email,
+                                            Email = String.IsNullOrEmpty(remoteOrderDetail.customer.email) ? string.Empty : remoteOrderDetail.customer.email,
                                             Phone = remoteOrderDetail.billing.phone,
                                             DateEnrollment = DateTime.Parse(remoteOrderDetail.customer.firstLogin).ToUniversalTime()
                                         },

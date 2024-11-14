@@ -1,14 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <UserSecretsId>08b84e2b-7423-4996-917f-eb3ddcac664d</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-
     <Version>0.1</Version>
     <Authors>Martin Andrich</Authors>
     <Company>Martin Andrich Softwareentwicklung</Company>
@@ -28,12 +26,10 @@
     <PackageProjectUrl>https://github.com/maERP/maERP</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/maERP/maERP/blob/main/LICENSE.txt</PackageLicenseUrl>
     <NeutralLanguage>de</NeutralLanguage>
-	<BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
-
+    <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-	<WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
+    <WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
   </PropertyGroup>
-
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' ">
     <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
@@ -45,20 +41,19 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.*" />
-    <PackageReference Include="Blazored.LocalStorage" Version="4.5.*" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.*" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.10" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.*" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.93" />
-    <PackageReference Include="System.Net.Http.Json" Version="8.0.*" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.*" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.0" />
+    <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
     <PackageReference Include="MudBlazor" Version="7.15.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
-  </ItemGroup>  
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\maERP.SharedUI\maERP.SharedUI.csproj" />
   </ItemGroup>

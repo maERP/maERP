@@ -137,7 +137,7 @@ public class WooCommerceOrderImportTask : IHostedService
                         SKU = item.sku,
                         Quantity = (double)item.quantity!,
                         Price = (decimal)item.price!,
-                        TaxRate = item.tax_class.IsNullOrEmpty() ? 0 : Convert.ToDouble(item.tax_class),
+                        TaxRate = String.IsNullOrEmpty(item.tax_class) ? 0 : Convert.ToDouble(item.tax_class),
                     }).ToList();
 
                     await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, salesChannelImportOrder);
