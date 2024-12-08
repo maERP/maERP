@@ -204,7 +204,7 @@ public class OrderImportRepository : IOrderImportRepository
             {
                 foreach (var item in importOrder.Items)
                 {
-                    if(item.SKU.IsNullOrEmpty())
+                    if(String.IsNullOrEmpty(item.SKU))
                     {
                         _logger.LogError("Order {0}: Cannot import, product has empty SKU", importOrder.RemoteOrderId);
                         return;
