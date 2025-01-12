@@ -34,6 +34,8 @@ This project contains the front-end pages developed in Blazor and used by maERP.
 The project is structured as follows:
 ```
 maERP/
+├── .github/                      # GitHub Actions
+├── maERP.sln                     # Solution file
 ├── src/
     ├── maERP.AI/                 # AI Services
     ├── maERP.Analytics/          # Analytics Services
