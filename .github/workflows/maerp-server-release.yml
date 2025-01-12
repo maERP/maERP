@@ -13,21 +13,21 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '9.0.x'
         
     - name: Restore dependencies
-      run: dotnet restore maERP.Server/maERP.Server.csproj
+      run: dotnet restore src/maERP.Server/maERP.Server.csproj
       
     - name: Build
-      run: dotnet build maERP.Server/maERP.Server.csproj --configuration Release --no-restore
+      run: dotnet build src/maERP.Server/maERP.Server.csproj --configuration Release --no-restore
       
     - name: Test
-      run: dotnet test maERP.Server.Tests/maERP.Server.Tests.csproj --configuration Release --no-build
+      run: dotnet test src/maERP.Server.Tests/maERP.Server.Tests.csproj --configuration Release --no-build
       
     - name: Publish
-      run: dotnet publish maERP.Server/maERP.Server.csproj --configuration Release --no-build --output ./publish
+      run: dotnet publish src/maERP.Server/maERP.Server.csproj --configuration Release --no-build --output ./publish
       
     - name: Create Release
       id: create_release

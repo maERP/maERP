@@ -24,6 +24,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\maERP.Server\maERP.Server.csproj" />
+    <ProjectReference Include="..\..\src\maERP.Server\maERP.Server.csproj" />
   </ItemGroup>
 </Project>

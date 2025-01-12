@@ -4,37 +4,38 @@ on:
   push:
     branches-ignore: [ main ]
     paths:
-      - 'maERP.Server/**'
-      - 'maERP.Core/**'
-      - 'maERP.Domain/**'
-      - 'maERP.Application/**'
-      - 'maERP.Ai/**'
-      - 'maERP.Analytics/**'
-      - 'maERP.Identity/**'
-      - 'maERP.Infrastructure/**'
-      - 'maERP.Persistence/**'
-      - 'maERP.SalesChannels/**'
-      - 'maERP.Persistence/**'
-      - 'maERP.Application.Persistence.IntegrationTests/**'
-      - 'maERP.Application.UnitTests/**'
-      - 'maERP.Server.Tests/**'
+      - '.github/workflows/**'
+      - 'src/maERP.Server/**'
+      - 'src/maERP.Core/**'
+      - 'src/maERP.Domain/**'
+      - 'src/maERP.Application/**'
+      - 'src/maERP.Ai/**'
+      - 'src/maERP.Analytics/**'
+      - 'src/maERP.Identity/**'
+      - 'src/maERP.Infrastructure/**'
+      - 'src/maERP.Persistence/**'
+      - 'src/maERP.SalesChannels/**'
+      - 'src/maERP.Persistence/**'
+      - 'src/maERP.Application.Persistence.IntegrationTests/**'
+      - 'src/maERP.Application.UnitTests/**'
+      - 'src/maERP.Server.Tests/**'
   pull_request:
     branches: [ main ]
     paths:
-      - 'maERP.Server/**'
-      - 'maERP.Core/**'
-      - 'maERP.Domain/**'
-      - 'maERP.Ai/**'
-      - 'maERP.Application/**'
-      - 'maERP.Analytics/**'
-      - 'maERP.Identity/**'
-      - 'maERP.Infrastructure/**'
-      - 'maERP.Persistence/**'
-      - 'maERP.SalesChannels/**'
-      - 'maERP.Persistence/**'
-      - 'maERP.Application.Persistence.IntegrationTests/**'
-      - 'maERP.Application.UnitTests/**'
-      - 'maERP.Server.Tests/**'
+      - 'src/maERP.Server/**'
+      - 'src/maERP.Core/**'
+      - 'src/maERP.Domain/**'
+      - 'src/maERP.Ai/**'
+      - 'src/maERP.Application/**'
+      - 'src/maERP.Analytics/**'
+      - 'src/maERP.Identity/**'
+      - 'src/maERP.Infrastructure/**'
+      - 'src/maERP.Persistence/**'
+      - 'src/maERP.SalesChannels/**'
+      - 'src/maERP.Persistence/**'
+      - 'src/maERP.Application.Persistence.IntegrationTests/**'
+      - 'src/maERP.Application.UnitTests/**'
+      - 'src/maERP.Server.Tests/**'
 
 jobs:
   test:
@@ -42,13 +43,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 9.0.x
+          cache: true
 
       - name: Restore maERP.Server.Tests
-        run: dotnet restore maERP.Server.Tests
+        run: dotnet restore src/maERP.Server.Tests --locked-mode
       - name: Build maERP.Server.Tests
-        run: dotnet build maERP.Server.Tests --no-restore
+        run: dotnet build src/maERP.Server.Tests --no-restore
       - name: Test maERP.Server.Tests
-        run: dotnet test maERP.Server.Tests --no-build --verbosity normal
+        run: dotnet test src/maERP.Server.Tests --no-build --verbosity normal

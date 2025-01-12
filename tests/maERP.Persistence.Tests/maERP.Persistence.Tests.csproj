@@ -23,8 +23,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
-    <ProjectReference Include="..\maERP.Persistence\maERP.Persistence.csproj" />
+    <ProjectReference Include="..\..\src\maERP.Application\maERP.Application.csproj" />
+    <ProjectReference Include="..\..\src\maERP.Persistence\maERP.Persistence.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Xunit" />

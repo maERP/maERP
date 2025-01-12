@@ -4,13 +4,14 @@ on:
   push:
     branches-ignore: [ main ]
     paths:
-      - 'maERP.Web/**'
-      - 'maERP.SharedUI/**'
+      - '.github/workflows/**'
+      - 'src/maERP.Web/**'
+      - 'src/maERP.SharedUI/**'
   pull_request:
     branches: [ main ]
     paths:
-      - 'maERP.Web/**'
-      - 'maERP.SharedUI/**'
+      - 'src/maERP.Web/**'
+      - 'src/maERP.SharedUI/**'
 
 jobs:
   test:
@@ -18,13 +19,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 9.0.x
+          cache: true
 
       - name: Restore maERP.Web.Tests
-        run: dotnet restore maERP.Web.Tests
+        run: dotnet restore src/maERP.Web.Tests --locked-mode
       - name: Build maERP.Web.Tests
-        run: dotnet build maERP.Web.Tests --no-restore
+        run: dotnet build src/maERP.Web.Tests --no-restore
       - name: Test maERP.Web.Tests
-        run: dotnet test maERP.Web.Tests --no-build --verbosity normal
+        run: dotnet test src/maERP.Web.Tests --no-build --verbosity normal

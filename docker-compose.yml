@@ -5,7 +5,7 @@ services:
     image: ${DOCKER_REGISTRY-}maerpserver
     build:
       context: .
-      dockerfile: maERP.Server/Dockerfile
+      dockerfile: src/maERP.Server/Dockerfile
     environment:
       - ConnectionStrings__DefaultConnection=Server=postgres;Port=5432;Database=maerp_01;User Id=maerp;Password=maerp
     ports:
@@ -23,7 +23,7 @@ services:
     image: ${DOCKER_REGISTRY-}maerpweb
     build:
       context: .
-      dockerfile: maERP.Web/Dockerfile
+      dockerfile: src/maERP.Web/Dockerfile
     environment:
       # set server url (example: https://erp-server.domain.tld)
       - SERVER_URL="maerp.server"
