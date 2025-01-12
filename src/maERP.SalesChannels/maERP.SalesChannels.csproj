@@ -1,15 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904;NU1608</WarningsNotAsErrors>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="WooCommerceNET" Version="0.8.6" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\maERP.Persistence\maERP.Persistence.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904;NU1608</WarningsNotAsErrors>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="WooCommerceNET" Version="0.8.6" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\maERP.Persistence\maERP.Persistence.csproj" />
+	</ItemGroup>
 </Project>
