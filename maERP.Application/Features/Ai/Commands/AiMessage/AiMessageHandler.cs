@@ -1,5 +1,4 @@
-﻿using maERP.Application.Contracts.Ai;
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using MediatR;
 
 namespace maERP.Application.Features.Ai.Commands.AiMessage;

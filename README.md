@@ -1,13 +1,17 @@
 # maERP
 
- maERP ist ein Client-Server, Cross-Plattform, Open-Source ERP System entwickelt mit .NET 8, MAUI und Entity Framework. 
+maERP ist ein Client-Server, Cross-Plattform, Open-Source ERP System entwickelt mit .NET 8, MAUI und Entity Framework.
 
 * :house: **GitHub:** [https://github.com/maERP/maERP](https://github.com/maERP/maERP)
 * :speech_balloon: **Docker:** [https://hub.docker.com/u/maerp](https://hub.docker.com/u/maerp)
 
+## In development
+
+maERP is still in developmentand is not yet ready for production use.
+
 ## Technologien
 
-* Moderne Architektur mittels `ASP.NET Core 8`, `Entity Framework Core 8` und Dotnet MAUI
+* Moderne Architektur mittels `ASP.NET Core 9`, `Entity Framework Core 9` und Dotnet MAUI
 * Cross-Platform: Windows, MacOS, Linux (Server), iOS, Android
 * Offene API zur Erweiterung und Anbindung von Anwendungen Dritter
 * Unterstützt `Docker` out of the box

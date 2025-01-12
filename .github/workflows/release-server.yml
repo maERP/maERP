@@ -1,0 +1,56 @@
+name: Release maERP.Server
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore maERP.Server/maERP.Server.csproj
+      
+    - name: Build
+      run: dotnet build maERP.Server/maERP.Server.csproj --configuration Release --no-restore
+      
+    - name: Test
+      run: dotnet test maERP.Server.Tests/maERP.Server.Tests.csproj --configuration Release --no-build
+      
+    - name: Publish
+      run: dotnet publish maERP.Server/maERP.Server.csproj --configuration Release --no-build --output ./publish
+      
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        
+    - name: Zip Release
+      run: |
+        cd publish
+        zip -r ../maERP.Server.zip .
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./maERP.Server.zip
+        asset_name: maERP.Server.zip
+        asset_content_type: application/zip

@@ -1,0 +1,7 @@
+{
+  "projects": [ "maERP.Domain", "maERP.Application", "maERP.Ai", "maERP.Analytics", "maERP.Identity", "maERP.Infrastructure", "maERP.Persistence", "maERP.SalesChannels", "maERP.Server", "maERP.Client", "maERP.SharedUI", "maERP.Web", "maERP.Persistence.Tests", "maERP.Server.Tests"],
+  "sdk": {
+    "version": "9.0.100",
+    "rollForward": "latestMinor"
+  }
+}
