@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 		nuget.config = nuget.config
 		README.md = README.md
 		SECURITY.md = SECURITY.md
+		.cursorrules = .cursorrules
+		.windsurfrules = .windsurfrules
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client", "maERP.Client\maERP.Client.csproj", "{56BD2DA1-3439-4760-ADE0-177F500E23C6}"
