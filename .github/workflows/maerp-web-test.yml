@@ -23,6 +23,7 @@ jobs:
         with:
           dotnet-version: 9.x
           cache: true
+          cache-dependency-path: "**/packages.lock.json"
 
       - name: Restore maERP.Web.Tests
         run: dotnet restore src/maERP.Web.Tests --locked-mode
