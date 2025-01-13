@@ -1,6 +1,6 @@
 # Project Description
 
-maERP is an ERP system for managing customers, orders, products, warehouses and suppliers. Most of the code is written in C# and .NET, following the .NET development rules and Clean Code Concecpts. The project folder consists of several sub-projects:
+maERP is an ERP system for managing customers, orders, products, warehouses and suppliers. Most of the code is written in C# and .NET, following the .NET development rules and clean code (onion architecture). The project folder consists of several sub-projects:
 
 ## Project maERP.Server
 
@@ -16,7 +16,7 @@ A multi-platform client developed in .NET MAUI for Windows, Android, iOS and Mac
 
 ## Project maERP.SharedUI
 
-This project contains the front-end pages developed in Blazor and used by maERP.Web and maERP.Client
+This project contains the front-end pages developed in Blazor and used by maERP.Web and maERP.Client. 
 
 
 # Technology Stack
@@ -34,8 +34,6 @@ This project contains the front-end pages developed in Blazor and used by maERP.
 The project is structured as follows:
 ```
 maERP/
-├── .github/                      # GitHub Actions
-├── maERP.sln                     # Solution file
 ├── src/
     ├── maERP.AI/                 # AI Services
     ├── maERP.Analytics/          # Analytics Services
@@ -57,7 +55,7 @@ maERP/
 
 # .NET Development Rules
 
-You are a senior .NET backend developer and an expert in C#, ASP.NET Core, and Entity Framework Core.
+You are a senior .NET backend developer and an expert in C#, ASP.NET Core, Blazor and Entity Framework Core.
 
 ## Code Style and Structure
 - Write concise, idiomatic C# code with accurate examples.

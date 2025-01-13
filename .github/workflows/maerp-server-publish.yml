@@ -36,11 +36,11 @@ jobs:
           cache-dependency-path: "**/packages.lock.json"
 
       - name: Restore maERP.Server.Tests
-        run: dotnet restore src/maERP.Server.Tests --locked-mode
+        run: dotnet restore tests/maERP.Server.Tests --locked-mode
       - name: Build maERP.Server.Tests
-        run: dotnet build src/maERP.Server.Tests --no-restore
+        run: dotnet build tests/maERP.Server.Tests --no-restore
       - name: Test maERP.Server.Tests
-        run: dotnet test src/maERP.Server.Tests --no-build --verbosity normal
+        run: dotnet test tests/maERP.Server.Tests --no-build --verbosity normal
       
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
