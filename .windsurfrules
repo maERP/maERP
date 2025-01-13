@@ -1,6 +1,6 @@
 # Project Description
 
-maERP is an ERP system for managing customers, orders, products, warehouses and suppliers. Most of the code is written in C# and .NET, following the .NET development rules and Clean Code Concecpts. The project folder consists of several sub-projects:
+maERP is an ERP system for managing customers, orders, products, warehouses and suppliers. Most of the code is written in C# and .NET, following the .NET development rules and clean code (onion architecture). The project folder consists of several sub-projects:
 
 ## Project maERP.Server
 
