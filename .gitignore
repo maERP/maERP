@@ -1,8 +1,8 @@
 .DS_Store
 .idea/
 .vscode/settings.json
-*/appsettings.Development.json
-*.upgrade.json
+**/appsettings.Development.json
+**.upgrade.json
 
 
 ## Ignore Visual Studio temporary files, build results, and
