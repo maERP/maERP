@@ -59,6 +59,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 		maERP.sln.startup.json = maERP.sln.startup.json
 		README.md = README.md
 		SECURITY.md = SECURITY.md
+		.github\workflows\maerp-server-publish.yml = .github\workflows\maerp-server-publish.yml
+		.github\workflows\maerp-server-release.yml = .github\workflows\maerp-server-release.yml
+		.github\workflows\maerp-server-test.yml = .github\workflows\maerp-server-test.yml
+		.github\workflows\maerp-web-publish.yml = .github\workflows\maerp-web-publish.yml
+		.github\workflows\maerp-web-test.yml = .github\workflows\maerp-web-test.yml
 	EndProjectSection
 EndProject
 Global

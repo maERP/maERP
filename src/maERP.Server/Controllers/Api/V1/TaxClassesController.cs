@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using maERP.Application.Exceptions;
 using maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 using maERP.Application.Features.TaxClass.Commands.TaxClassDelete;
 using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
@@ -39,10 +40,19 @@ public class TaxClassesController : ControllerBase
 
     // GET api/TaxClassesController>/5
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TaxClassDetailResponse>> GetDetails(int id)
     {
-        var taxClass = await _mediator.Send(new TaxClassDetailQuery { Id = id });
-        return Ok(taxClass);
+        try 
+        {
+            var taxClass = await _mediator.Send(new TaxClassDetailQuery { Id = id });
+            return Ok(taxClass);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     // POST api/<TaxClassesController>

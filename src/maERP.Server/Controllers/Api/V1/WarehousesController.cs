@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using maERP.Application.Exceptions;
 using maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
 using maERP.Application.Features.Warehouse.Commands.WarehouseDelete;
 using maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
@@ -32,10 +33,19 @@ public class WarehousesController(IMediator _mediator) : ControllerBase
 
     // GET api/<WarehousesController>/5
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<WarehouseDetailResponse>> GetDetails(int id)
     {
-        var warehouse = await _mediator.Send(new WarehouseDetailQuery { Id = id });
-        return Ok(warehouse);
+        try 
+        {
+            var warehouse = await _mediator.Send(new WarehouseDetailQuery { Id = id });
+            return Ok(warehouse);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     // POST api/<WarehousesController>

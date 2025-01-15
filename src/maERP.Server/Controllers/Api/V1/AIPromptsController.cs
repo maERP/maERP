@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using maERP.Application.Exceptions;
 using maERP.Application.Features.AiPrompt.Commands.AiPromptCreate;
 using maERP.Application.Features.AiPrompt.Commands.AiPromptDelete;
 using maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
@@ -32,10 +33,19 @@ public class AiPromptsController(IMediator _mediator) : ControllerBase
 
     // GET api/<AiPromptsController>/5
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AiPromptDetailResponse>> GetDetails(int id)
     {
-        var aIPrompt = await _mediator.Send(new AiPromptDetailQuery { Id = id });
-        return Ok(aIPrompt);
+        try 
+        {
+            var aiPrompt = await _mediator.Send(new AiPromptDetailQuery { Id = id });
+            return Ok(aiPrompt);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     // POST api/<AiPromptsController>

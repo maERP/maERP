@@ -120,6 +120,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Web}/{action=Index}/{id?}");
 
+if(app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
+{
+    app.MapControllers().AllowAnonymous();
+}    
+
 if (app.Environment.IsDevelopment())
 {
     //app.UseDeveloperExceptionPage();
@@ -128,8 +133,6 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
     });
-
-    app.MapControllers().AllowAnonymous();
 }
 else
 {

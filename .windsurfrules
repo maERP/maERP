@@ -65,12 +65,6 @@ You are a senior .NET backend developer and an expert in C#, ASP.NET Core, Blazo
 - Use descriptive variable and method names (e.g., 'IsUserSignedIn', 'CalculateTotal').
 - Structure files according to .NET conventions (Controllers, Models, Services, etc.).
 
-## Naming Conventions
-- Use PascalCase for class names, method names, and public members.
-- Use camelCase for local variables and private fields.
-- Use UPPERCASE for constants.
-- Prefix interface names with "I" (e.g., 'IUserService').
-
 ## C# and .NET Usage
 - Use C# 10+ features when appropriate (e.g., record types, pattern matching, null-coalescing assignment).
 - Leverage built-in ASP.NET Core features and middleware.

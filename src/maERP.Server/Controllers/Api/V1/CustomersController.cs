@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using maERP.Application.Exceptions;
 using maERP.Application.Features.Customer.Commands.CustomerCreate;
 using maERP.Application.Features.Customer.Commands.CustomerDelete;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
@@ -32,10 +33,19 @@ public class CustomersController(IMediator mediator) : ControllerBase
 
     // GET api/<CustomersController>/5
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CustomerDetailResponse>> GetDetails(int id)
     {
-        var customer = await mediator.Send(new CustomerDetailQuery { Id = id });
-        return Ok(customer);
+        try 
+        {
+            var customer = await mediator.Send(new CustomerDetailQuery { Id = id });
+            return Ok(customer);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     // POST api/<CustomersController>

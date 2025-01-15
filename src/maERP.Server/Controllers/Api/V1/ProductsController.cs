@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using maERP.Application.Exceptions;
 using maERP.Application.Features.Product.Commands.ProductCreate;
 using maERP.Application.Features.Product.Commands.ProductDelete;
 using maERP.Application.Features.Product.Commands.ProductUpdate;
@@ -32,10 +33,19 @@ public class ProductsController(IMediator mediator) : ControllerBase
 
     // GET api/<ProductsController>/5
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDetailResponse>> GetDetails(int id)
     {
-        var product = await mediator.Send(new ProductDetailQuery { Id = id });
-        return Ok(product);
+        try 
+        {
+            var product = await mediator.Send(new ProductDetailQuery { Id = id });
+            return Ok(product);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     // POST api/<ProductsController>

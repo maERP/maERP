@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using maERP.Application.Exceptions;
 using maERP.Application.Features.Order.Commands.OrderCreate;
 using maERP.Application.Features.Order.Commands.OrderDelete;
 using maERP.Application.Features.Order.Commands.OrderUpdate;
@@ -32,10 +33,19 @@ public class OrdersController(IMediator _mediator) : ControllerBase
 
     // GET api/<OrdersController>/5
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<OrderDetailResponse>> GetDetails(int id)
     {
-        var order = await _mediator.Send(new OrderDetailQuery { Id = id });
-        return Ok(order);
+        try 
+        {
+            var order = await _mediator.Send(new OrderDetailQuery { Id = id });
+            return Ok(order);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     // POST api/<OrdersController>

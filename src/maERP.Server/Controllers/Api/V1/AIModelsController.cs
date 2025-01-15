@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using maERP.Application.Exceptions;
 using maERP.Application.Features.AiModel.Commands.AiModelCreate;
 using maERP.Application.Features.AiModel.Commands.AiModelDelete;
 using maERP.Application.Features.AiModel.Commands.AiModelUpdate;
@@ -32,10 +33,19 @@ public class AiModelsController(IMediator _mediator) : ControllerBase
 
     // GET api/<AiModelsController>/5
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AiModelDetailResponse>> GetDetails(int id)
     {
-        var aiModel = await _mediator.Send(new AiModelDetailQuery { Id = id });
-        return Ok(aiModel);
+        try 
+        {
+            var aiModel = await _mediator.Send(new AiModelDetailQuery { Id = id });
+            return Ok(aiModel);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     // POST api/<AiModelsController>

@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
+using maERP.Application.Exceptions;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
@@ -32,10 +33,19 @@ public class SalesChannelsController(IMediator _mediator) : ControllerBase
 
     // GET api/<SalesChannelsController>/5
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SalesChannelDetailResponse>> GetDetails(int id)
     {
-        var salesChannel = await _mediator.Send(new SalesChannelDetailQuery { Id = id });
-        return Ok(salesChannel);
+        try 
+        {
+            var salesChannel = await _mediator.Send(new SalesChannelDetailQuery { Id = id });
+            return Ok(salesChannel);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     // POST api/<SalesChannelsController>
