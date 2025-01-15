@@ -92,7 +92,7 @@
 		<PackageReference Include="MudBlazor" Version="7.15.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.22" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.22" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="9.0.22" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="9.0.30" />
 		<ProjectReference Include="..\maERP.SharedUI\maERP.SharedUI.csproj" />
 	</ItemGroup>
 </Project>
