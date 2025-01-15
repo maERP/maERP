@@ -13,9 +13,9 @@
       },
       "Microsoft.AspNetCore.Components.WebView.Maui": {
         "type": "Direct",
-        "requested": "[9.0.22, )",
-        "resolved": "9.0.22",
-        "contentHash": "22lYlMspu8xvSGPzjGReG6r+q11vMxL0Xz+iV0XUry7hqYu3ZQT89ocvAwou3mq9NZ4MMZA5Gy/cML9OJXJ9Rw==",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "YnCuq0mBrszfeEXFDqmnl/+EbAxyOl3QNU0yQSXfGPWlQkUcx5PYBHyfmdeNkcKHvQtPuGd3zRzO+9c8kxl69A==",
         "dependencies": {
           "Microsoft.AspNetCore.Authorization": "9.0.0",
           "Microsoft.AspNetCore.Components.WebView": "9.0.0",
@@ -1563,9 +1563,9 @@
       },
       "Microsoft.AspNetCore.Components.WebView.Maui": {
         "type": "Direct",
-        "requested": "[9.0.22, )",
-        "resolved": "9.0.22",
-        "contentHash": "22lYlMspu8xvSGPzjGReG6r+q11vMxL0Xz+iV0XUry7hqYu3ZQT89ocvAwou3mq9NZ4MMZA5Gy/cML9OJXJ9Rw==",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "YnCuq0mBrszfeEXFDqmnl/+EbAxyOl3QNU0yQSXfGPWlQkUcx5PYBHyfmdeNkcKHvQtPuGd3zRzO+9c8kxl69A==",
         "dependencies": {
           "Microsoft.AspNetCore.Authorization": "9.0.0",
           "Microsoft.AspNetCore.Components.WebView": "9.0.0",
@@ -2138,9 +2138,9 @@
       },
       "Microsoft.AspNetCore.Components.WebView.Maui": {
         "type": "Direct",
-        "requested": "[9.0.22, )",
-        "resolved": "9.0.22",
-        "contentHash": "22lYlMspu8xvSGPzjGReG6r+q11vMxL0Xz+iV0XUry7hqYu3ZQT89ocvAwou3mq9NZ4MMZA5Gy/cML9OJXJ9Rw==",
+        "requested": "[9.0.30, )",
+        "resolved": "9.0.30",
+        "contentHash": "YnCuq0mBrszfeEXFDqmnl/+EbAxyOl3QNU0yQSXfGPWlQkUcx5PYBHyfmdeNkcKHvQtPuGd3zRzO+9c8kxl69A==",
         "dependencies": {
           "Microsoft.AspNetCore.Authorization": "9.0.0",
           "Microsoft.AspNetCore.Components.WebView": "9.0.0",
