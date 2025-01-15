@@ -49,7 +49,7 @@
 		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.22" />
 		<PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.1" />
 		<PackageReference Include="MudBlazor" Version="7.15.0" />
 	</ItemGroup>
 	<ItemGroup>
