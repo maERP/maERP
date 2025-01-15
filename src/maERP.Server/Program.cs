@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 
 using maERP.Application;
 using maERP.Ai;
@@ -75,12 +75,22 @@ builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(Dat
 // IOptions<DatabaseOptions> dbOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<DatabaseOptions>>();
 // builder.Services.AddPersistenceServices(dbOptions);
 var serviceScopeFactory = builder.Services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>();
-builder.Services.AddPersistenceServices(serviceScopeFactory);
+
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddPersistenceServices(serviceScopeFactory);    
+}
+
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
-builder.Services.AddSalesChannelServices();
+
 builder.Services.AddAiServices();
+
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddSalesChannelServices();
+}
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
@@ -149,14 +159,17 @@ else
 app.UseAuthentication(); // who are you?
 app.UseAuthorization(); // what are you allowed to do?
 
-using (var scope = app.Services.CreateScope())
+if (!builder.Environment.IsEnvironment("Testing"))
 {
-    var services = scope.ServiceProvider;
-    
-    var context = services.GetRequiredService<ApplicationDbContext>();
-    if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
+    using (var scope = app.Services.CreateScope())
     {
-        context.Database.Migrate();
+        var services = scope.ServiceProvider;
+        
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
+        {
+            context.Database.Migrate();
+        }
     }
 }
 

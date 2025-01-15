@@ -37,14 +37,14 @@ maERP/
 ├── src/
     ├── maERP.AI/                 # AI Services
     ├── maERP.Analytics/          # Analytics Services
-    ├── maERP.Application/        # Application Layer
+    ├── maERP.Application/        # Application Layer, DTOs, MappingProfiles
     ├── maERP.Client/             # Multi-Platform Client
-    └── maERP.Domain/             # Entities, Enums, Common, ValueObjects
+    └── maERP.Domain/             # Entities, Enums, Wrappers
     ├── maERP.Identity/           # Services, Roles, Users, Permissions 
     ├── maERP.Infrastructure/     # Infrastructure Layer
     ├── maERP.Persistence/        # DB Context 
     ├── maERP.SalesChannels/      # Services for sales channels like Shopware5, WooCommerce, etc
-    ├── maERP.Server/             # Headless ERP Sysstem withREST API
+    ├── maERP.Server/             # Headless ERP System with REST API, Controllers
     ├── maERP.Shared/             # Common classes
     ├── maERP.SharedUI/           # Blazor Pages for Web and Client
     ├── maERP.Web/                # WASM Web Client
