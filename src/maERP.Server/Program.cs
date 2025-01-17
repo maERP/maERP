@@ -178,7 +178,5 @@ if (!builder.Environment.IsEnvironment("Testing"))
 
 app.Run();
 
-namespace maERP.Server
-{
-    public class Program { }
-}
+// Make program visible to tests
+public partial class Program;
