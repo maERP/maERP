@@ -14,6 +14,8 @@ using maERP.Server;
 using maERP.Server.Middlewares;
 using maERP.Server.ServiceRegistrations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Net.Http.Headers;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -84,6 +86,11 @@ if (!builder.Environment.IsEnvironment("Testing"))
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
+
+// Add health checks
+builder.Services.AddHealthChecks()
+    // .AddDbContextCheck<ApplicationDbContext>("Database")
+    .AddCheck("Self", () => HealthCheckResult.Healthy("Service is running."));
 
 builder.Services.AddAiServices();
 
@@ -161,6 +168,26 @@ else
 
 app.UseAuthentication(); // who are you?
 app.UseAuthorization(); // what are you allowed to do?
+
+// Add health check endpoint
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        var result = new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(e => new
+            {
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+                description = e.Value.Description
+            })
+        };
+        await context.Response.WriteAsJsonAsync(result);
+    }
+});
 
 if (!builder.Environment.IsEnvironment("Testing"))
 {

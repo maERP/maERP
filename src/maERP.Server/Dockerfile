@@ -29,4 +29,8 @@ RUN dotnet publish "maERP.Server.csproj" -c Release -o /app/publish /p:UseAppHos
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
+
 ENTRYPOINT ["dotnet", "maERP.Server.dll"]
