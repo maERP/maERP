@@ -178,5 +178,4 @@ if (!builder.Environment.IsEnvironment("Testing"))
 
 app.Run();
 
-// Make program visible to tests
-public partial class Program;
+public partial class Program { }
