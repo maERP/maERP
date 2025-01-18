@@ -5,7 +5,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "maERP.Server-build",
-            "program": "${workspaceFolder}/maERP.Server/bin/Debug/net8.0/maERP.Server.dll",
+            "program": "${workspaceFolder}/src/maERP.Server/bin/Debug/net8.0/maERP.Server.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,

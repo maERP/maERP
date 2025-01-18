@@ -1551,7 +1551,7 @@
     "net9.0-android35.0/android-x64": {},
     "net9.0-android35.0/iossimulator-arm64": {},
     "net9.0-android35.0/maccatalyst-arm64": {},
-    "net9.0-ios18.1": {
+    "net9.0-ios18.2": {
       "Blazored.LocalStorage": {
         "type": "Direct",
         "requested": "[4.5.0, )",
@@ -2122,11 +2122,11 @@
         }
       }
     },
-    "net9.0-ios18.1/android-arm64": {},
-    "net9.0-ios18.1/android-x64": {},
-    "net9.0-ios18.1/iossimulator-arm64": {},
-    "net9.0-ios18.1/maccatalyst-arm64": {},
-    "net9.0-maccatalyst18.1": {
+    "net9.0-ios18.2/android-arm64": {},
+    "net9.0-ios18.2/android-x64": {},
+    "net9.0-ios18.2/iossimulator-arm64": {},
+    "net9.0-ios18.2/maccatalyst-arm64": {},
+    "net9.0-maccatalyst18.2": {
       "Blazored.LocalStorage": {
         "type": "Direct",
         "requested": "[4.5.0, )",
@@ -2697,9 +2697,9 @@
         }
       }
     },
-    "net9.0-maccatalyst18.1/android-arm64": {},
-    "net9.0-maccatalyst18.1/android-x64": {},
-    "net9.0-maccatalyst18.1/iossimulator-arm64": {},
-    "net9.0-maccatalyst18.1/maccatalyst-arm64": {}
+    "net9.0-maccatalyst18.2/android-arm64": {},
+    "net9.0-maccatalyst18.2/android-x64": {},
+    "net9.0-maccatalyst18.2/iossimulator-arm64": {},
+    "net9.0-maccatalyst18.2/maccatalyst-arm64": {}
   }
 }
