@@ -71,13 +71,13 @@
       },
       "MudBlazor": {
         "type": "Direct",
-        "requested": "[7.16.0, )",
-        "resolved": "7.16.0",
-        "contentHash": "68bEFn7MLCyOB4yYxtvZG+AA+bZbxBDcIOhnSVFrHrAg8LLXVw1LxHCp9EyRktlREpnoAO1JxINp+5WeHc9Z4w==",
+        "requested": "[8.0.0, )",
+        "resolved": "8.0.0",
+        "contentHash": "itY10dugofdvLYnJ1VZSzUIiKVqNvnTz4eEMYlHUdrOfsk9xShj7k1EW5H6ssMmkbQzShlLBHlUt+VPFGoEJGw==",
         "dependencies": {
-          "Microsoft.AspNetCore.Components": "8.0.8",
-          "Microsoft.AspNetCore.Components.Web": "8.0.8",
-          "Microsoft.Extensions.Localization": "8.0.8"
+          "Microsoft.AspNetCore.Components": "9.0.1",
+          "Microsoft.AspNetCore.Components.Web": "9.0.1",
+          "Microsoft.Extensions.Localization": "9.0.1"
         }
       },
       "System.IdentityModel.Tokens.Jwt": {
@@ -284,19 +284,19 @@
       },
       "Microsoft.Extensions.Localization": {
         "type": "Transitive",
-        "resolved": "8.0.8",
-        "contentHash": "n32ZGmc2UOv9R/xsBHQPOxBsqCSAAJSoMtFqoQ8zOegB2P+H6+773OyCWg4jRBkO/3dmCyBJXB0yLAOVW2/C/w==",
+        "resolved": "9.0.1",
+        "contentHash": "UgvX4Yb2T3tEsKT30ktZr0H7kTRPapCgEH0bdTwxiEGSdA39/hAQMvvb+vgHpqmevDU5+puyI9ujRkmmbF946w==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.1",
-          "Microsoft.Extensions.Localization.Abstractions": "8.0.8",
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.1",
-          "Microsoft.Extensions.Options": "8.0.2"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.1",
+          "Microsoft.Extensions.Localization.Abstractions": "9.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.1",
+          "Microsoft.Extensions.Options": "9.0.1"
         }
       },
       "Microsoft.Extensions.Localization.Abstractions": {
         "type": "Transitive",
-        "resolved": "8.0.8",
-        "contentHash": "WYIsqP/A6dH/LWJznrvgoNPc7Q+CUJD0E78765GL3aonBtyFK1BKtPzBvvlnrr3SVqSO2r6xJCLgCEiCMG1gfA=="
+        "resolved": "9.0.1",
+        "contentHash": "CABog43lyaZQMjmlktuImCy6zmAzRBaXqN81uPaMQjlp//ISDVYItZPh6KWpWRF4MY/B67X5oDc3JTUpfdocZw=="
       },
       "Microsoft.Extensions.Logging": {
         "type": "Transitive",
