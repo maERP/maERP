@@ -25,9 +25,9 @@
       },
       "LLamaSharp.Backend.Cpu": {
         "type": "Direct",
-        "requested": "[0.19.0, )",
-        "resolved": "0.19.0",
-        "contentHash": "zG6xQCE2072MDqAgXRgyXXe2hWws4y6r40vU/vuxLzzYUXTyQwypPCpm+ZHuFJqL3YmZ9SNOzPFo3LnN7bDNKA=="
+        "requested": "[0.20.0, )",
+        "resolved": "0.20.0",
+        "contentHash": "+ODwBxsgGvaODkmC0qucXid1r88pR0uP1udnhHIysl1EDKOyXT/FTbaP33iar3UIiv9iWT7evtO0oxIFFD4lfQ=="
       },
       "LLamaSharp.Backend.Cuda12": {
         "type": "Direct",
