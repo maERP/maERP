@@ -13,30 +13,30 @@
       },
       "LLamaSharp": {
         "type": "Direct",
-        "requested": "[0.19.0, )",
-        "resolved": "0.19.0",
-        "contentHash": "lfFrPHVNe6AVRascLBNc6m8g5Rj4vGJvcOo2Zg/3GFUrNBsDOh4fyI2kJ94UDiDEvJ1OFnhExff7W7aYngzqdw==",
+        "requested": "[0.20.0, )",
+        "resolved": "0.20.0",
+        "contentHash": "6bz7dHB6ibza3UMlDvXMNF3dsbtyj89bkCT7ePNGSlIXMxbCwld3HYqn6n/th20A2FcK8LFQU6g8SCosnrgUCg==",
         "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "8.0.0",
-          "Microsoft.Extensions.AI.Abstractions": "9.0.0-preview.9.24525.1",
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.1",
-          "System.Numerics.Tensors": "8.0.0"
+          "Microsoft.Bcl.AsyncInterfaces": "9.0.0",
+          "Microsoft.Extensions.AI.Abstractions": "9.1.0-preview.1.25064.3",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "System.Numerics.Tensors": "9.0.0"
         }
       },
       "LLamaSharp.Backend.Cpu": {
         "type": "Direct",
-        "requested": "[0.19.0, )",
-        "resolved": "0.19.0",
-        "contentHash": "zG6xQCE2072MDqAgXRgyXXe2hWws4y6r40vU/vuxLzzYUXTyQwypPCpm+ZHuFJqL3YmZ9SNOzPFo3LnN7bDNKA=="
+        "requested": "[0.20.0, )",
+        "resolved": "0.20.0",
+        "contentHash": "+ODwBxsgGvaODkmC0qucXid1r88pR0uP1udnhHIysl1EDKOyXT/FTbaP33iar3UIiv9iWT7evtO0oxIFFD4lfQ=="
       },
       "LLamaSharp.Backend.Cuda12": {
         "type": "Direct",
-        "requested": "[0.19.0, )",
-        "resolved": "0.19.0",
-        "contentHash": "mv0khmMLJ8oXfJQRxBPnvns5ZikBWSHWF0YbeqsQa3evWKIXpxCnPHEP6VgfTc9aJwuq8JoLiiP+OfgqaBse7g==",
+        "requested": "[0.20.0, )",
+        "resolved": "0.20.0",
+        "contentHash": "EDxaQHqZLYQCy32YIxF9ynxTqFXf1U3MW12OYuBfFsxrF/aBZEHyly6veCeaYaK+89ViVrtrvMX8uDfem2RP1Q==",
         "dependencies": {
-          "LLamaSharp.Backend.Cuda12.Linux": "0.19.0",
-          "LLamaSharp.Backend.Cuda12.Windows": "0.19.0"
+          "LLamaSharp.Backend.Cuda12.Linux": "0.20.0",
+          "LLamaSharp.Backend.Cuda12.Windows": "0.20.0"
         }
       },
       "OpenAI": {
@@ -79,13 +79,19 @@
       },
       "LLamaSharp.Backend.Cuda12.Linux": {
         "type": "Transitive",
-        "resolved": "0.19.0",
-        "contentHash": "lF0zpF/g26HI4hpUdeIhn3nZ5WiSzpXLOUuYCCvFWNLkwliQMmzR05/pUzo6/jOy27EF6RpSGOGRagBwTyGvEg=="
+        "resolved": "0.20.0",
+        "contentHash": "0YGp3DzBR5kxoaZzS23cj4bqagG5cqoKJ3pEM02nRAUFCLtKGmVBrgBWMGFFlbTSL/oReFn4Ex2KPNpxPZpRog==",
+        "dependencies": {
+          "LLamaSharp.Backend.Cpu": "0.20.0"
+        }
       },
       "LLamaSharp.Backend.Cuda12.Windows": {
         "type": "Transitive",
-        "resolved": "0.19.0",
-        "contentHash": "ZxQwX2ciGGrBm21rtvr7eIMpfWsi75jiavvYm8inlHdoaykSrWAsM9MHJm7uW43KQY3TSu+uS+t/ROrdUSZvUg=="
+        "resolved": "0.20.0",
+        "contentHash": "0zvWoYNXH8vPT3xL0J41/nhl66iX7zZxU/I0O8sbAkqGl3djqVfXTwqvbcAFrIfIe+1RvcuJHfeQ4Kz/plnvKw==",
+        "dependencies": {
+          "LLamaSharp.Backend.Cpu": "0.20.0"
+        }
       },
       "MediatR": {
         "type": "Transitive",
@@ -125,8 +131,8 @@
       },
       "Microsoft.Bcl.AsyncInterfaces": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "3WA9q9yVqJp222P3x1wYIGDAkpjAku0TMUaaQV22g6L67AI0LdOIrVS7Ht2vJfLHGSPVuqN94vIr15qn+HEkHw=="
+        "resolved": "9.0.0",
+        "contentHash": "owmu2Cr3IQ8yQiBleBHlGk8dSQ12oaF2e7TpzwJKEl4m84kkZJjEY1n33L67Y3zM5jPOjmmbdHjbfiL0RqcMRQ=="
       },
       "Microsoft.EntityFrameworkCore": {
         "type": "Transitive",
@@ -162,8 +168,8 @@
       },
       "Microsoft.Extensions.AI.Abstractions": {
         "type": "Transitive",
-        "resolved": "9.0.0-preview.9.24525.1",
-        "contentHash": "b5EntLa7aYjui129KSWQRZpXgUNn6l5G9OYQwVFlDXPiADMcmMEJCveD3BDBDxSbt1jkhIYs0eGuYKM0mXVkFw=="
+        "resolved": "9.1.0-preview.1.25064.3",
+        "contentHash": "qxGgo8ipnJz9viMQBMrnmYymi9cZWV0kep/wNTHgLhieYBCVvkMnOskaoNzRjCMl9hwEkXnZTQIwYk2WbpmmWA=="
       },
       "Microsoft.Extensions.Caching.Abstractions": {
         "type": "Transitive",
@@ -304,8 +310,8 @@
       },
       "System.Numerics.Tensors": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "fhODzTe9ON9IzmRfyVeA6L8yXOciMtpq1YufkRVBliggcVKZE+XDxqIn46+yF4PWR6wNPuDpXtPpuY86VcKxUA=="
+        "resolved": "9.0.0",
+        "contentHash": "hyJB4UlpAi19Xr9AXzu2NuagKC4lPfHObNMEAA0HmqFz2rX7wKgzeYzO/jM/eBHDhnUGFFEjk5cOoJaxqg5J4A=="
       },
       "System.Runtime.CompilerServices.Unsafe": {
         "type": "Transitive",

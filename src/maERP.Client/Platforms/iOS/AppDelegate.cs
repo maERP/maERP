@@ -1,4 +1,4 @@
-﻿using Microsoft.Maui;
+﻿using Foundation;
 
 namespace maERP.Client;
 

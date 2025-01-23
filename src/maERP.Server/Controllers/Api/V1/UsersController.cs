@@ -1,5 +1,6 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 using maERP.Application.Features.User.Commands.UserCreate;
+using maERP.Application.Features.User.Commands.UserDelete;
 using maERP.Application.Features.User.Commands.UserUpdate;
 using maERP.Application.Features.User.Queries.UserDetail;
 using maERP.Application.Features.User.Queries.UserList;
@@ -51,6 +52,17 @@ public class UsersController(IMediator mediator) : ControllerBase
     {
         userUpdateCommand.Id = id;
         await mediator.Send(userUpdateCommand);
+        return NoContent();
+    }
+
+    // DELETE api/<UsersController>/5
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Delete(string id)
+    {
+        await mediator.Send(new UserDeleteCommand(id));
         return NoContent();
     }
 }
