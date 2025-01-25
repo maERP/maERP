@@ -8,10 +8,10 @@ namespace maERP.SharedUI.Pages.AiPrompts;
 public partial class AiPromptsEdit
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IAiPromptService _aiPromptService { get; set; }
+    public required IAiPromptService AiPromptService { get; set; }
 
     [Parameter]
     public int aiPromptId { get; set; }
@@ -22,14 +22,14 @@ public partial class AiPromptsEdit
     // ReSharper disable once NotAccessedField.Local
     protected string Title = "hinzufügen";
 
-    protected AiPromptVM aiPrompt = new();
+    protected AiPromptVm AiPrompt = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (aiPromptId != 0)
         {
             Title = "Bearbeiten";
-            aiPrompt = await _aiPromptService.GetAiPromptDetails(aiPromptId);
+            AiPrompt = await AiPromptService.GetAiPromptDetails(aiPromptId);
         }
     }
 
@@ -37,11 +37,11 @@ public partial class AiPromptsEdit
     {
         if (aiPromptId != 0)
         {
-            await _aiPromptService.UpdateAiPrompt(aiPromptId, aiPrompt);
+            await AiPromptService.UpdateAiPrompt(aiPromptId, AiPrompt);
         }
         else
         {
-            await _aiPromptService.CreateAiPrompt(aiPrompt);
+            await AiPromptService.CreateAiPrompt(AiPrompt);
         }
 
         NavigateToList();
@@ -50,6 +50,6 @@ public partial class AiPromptsEdit
     public void NavigateToList()
     {
         StateHasChanged();
-        _navigationManager.NavigateTo("/AiPrompts");
+        NavigationManager.NavigateTo("/AiPrompts");
     }
 }

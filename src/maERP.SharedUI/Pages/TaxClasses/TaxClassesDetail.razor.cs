@@ -7,24 +7,24 @@ namespace maERP.SharedUI.Pages.TaxClasses;
 public partial class TaxClassesDetail
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ITaxClassService _taxClassService { get; set; }
+    public required ITaxClassService TaxClassService { get; set; }
 
     [Parameter]
     public int taxClassId { get; set; }
 
-    protected string Title = "Steuersätze";
+    protected string Title = "Steuersï¿½tze";
 
-    protected TaxClassVM taxClass = new();
+    protected TaxClassVm TaxClass = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (taxClassId != 0)
         {
             Title = "Bearbeiten";
-            taxClass = await _taxClassService.GetTaxClassDetails(taxClassId);
+            TaxClass = await TaxClassService.GetTaxClassDetails(taxClassId);
         }
         else Title = "nicht gefunden";
 

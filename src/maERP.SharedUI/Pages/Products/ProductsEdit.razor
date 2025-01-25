@@ -6,7 +6,7 @@
 @attribute [Authorize]
 
 @* ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract *@
-@if (product == null)
+@if (Product == null)
 {
     <p><em>Lade...</em></p>
 }
@@ -16,55 +16,55 @@ else
 
     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenProductAiHelper">AI Assist</MudButton>
     
-    <MudOverlay @bind-Visible="productAiHelperVisible" DarkBackground="true" AutoClose="false" Class="pt-8 white">
+    <MudOverlay @bind-Visible="ProductAiHelperVisible" DarkBackground="true" AutoClose="false" Class="pt-8 white">
         <ProductAiHelper />
     </MudOverlay>
     
-    <MudForm Model="@product" @ref="@_form">
+    <MudForm Model="@Product" @ref="@Form">
         <MudGrid>
             <MudItem xs="6">
-                <MudTextField @bind-Value="product.Name"
-                              For="@(() => product.Name)"
+                <MudTextField @bind-Value="Product.Name"
+                              For="@(() => Product.Name)"
                               Label="Name"
                               Variant="Variant.Text"
                               InputType="InputType.Text"
                               Required="true"
                               Class="mt-6" />
 
-                <MudTextField @bind-Value="product.Sku"
-                              For="@(() => product.Sku)"
+                <MudTextField @bind-Value="Product.Sku"
+                              For="@(() => Product.Sku)"
                               Label="SKU"
                               Variant="Variant.Text"
                               InputType="InputType.Text"
                               Required="true"
                               Class="mt-6" />
 
-                <MudTextField @bind-Value="product.Ean"
-                              For="@(() => product.Ean)"
+                <MudTextField @bind-Value="Product.Ean"
+                              For="@(() => Product.Ean)"
                               Label="EAN"
                               Variant="Variant.Text"
                               InputType="InputType.Text"
                               Required="false"
                               Class="mt-6" />
 
-                <MudTextField @bind-Value="product.Price"
-                              For="@(() => product.Price)"
+                <MudTextField @bind-Value="Product.Price"
+                              For="@(() => Product.Price)"
                               Label="Preis in EUR"
                               Variant="Variant.Text"
                               InputType="InputType.Text"
                               Required="false"
                               Class="mt-6" />
 
-                <MudTextField @bind-Value="product.Msrp"
-                              For="@(() => product.Msrp)"
+                <MudTextField @bind-Value="Product.Msrp"
+                              For="@(() => Product.Msrp)"
                               Label="UVP in EUR"
                               Variant="Variant.Text"
                               InputType="InputType.Text"
                               Required="false"
                               Class="mt-6" />
 
-                <MudTextField @bind-Value="product.Description"
-                              For="@(() => product.Description)"
+                <MudTextField @bind-Value="Product.Description"
+                              For="@(() => Product.Description)"
                               Label="Beschreibung"
                               Variant="Variant.Text"
                               InputType="InputType.Text"

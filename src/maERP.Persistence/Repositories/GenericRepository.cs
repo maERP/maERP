@@ -8,64 +8,64 @@ namespace maERP.Persistence.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
-    protected readonly ApplicationDbContext _context;
+    protected readonly ApplicationDbContext Context;
 
     public GenericRepository(ApplicationDbContext context)
     {
-        _context = context;
+        Context = context;
     }
 
-    public IQueryable<CT> GetContext<CT>() where CT : class => _context.Set<CT>();
+    public IQueryable<TCt> GetContext<TCt>() where TCt : class => Context.Set<TCt>();
 
-    public IQueryable<T> Entities => _context.Set<T>();
+    public IQueryable<T> Entities => Context.Set<T>();
 
     public void Attach(T entity)
     {
-        _context.Set<T>().Attach(entity);
+        Context.Set<T>().Attach(entity);
     }
 
     public void AttachRange(IEnumerable<T> entities)
     {
-        _context.Set<T>().AttachRange(entities);
+        Context.Set<T>().AttachRange(entities);
     }
 
     public async Task<int> CreateAsync(T entity)
     {
-        await _context.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        await Context.AddAsync(entity);
+        await Context.SaveChangesAsync();
         return entity.Id;
     }
 
     public async Task<ICollection<T>> GetAllAsync()
     {
-        return await _context.Set<T>().AsNoTracking().ToListAsync();
+        return await Context.Set<T>().AsNoTracking().ToListAsync();
     }
 
     public async Task<T?> GetByIdAsync(int id, bool asNoTracking = false)
     {
         if (asNoTracking)
         {
-            return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return await Context.Set<T>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        return await _context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
+        return await Context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task UpdateAsync(T entity)
     {
-        _context.Entry(entity).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        Context.Entry(entity).State = EntityState.Modified;
+        await Context.SaveChangesAsync();
     }
     
     public async Task DeleteAsync(T entity)
     {
-        _context.Remove(entity);
-        await _context.SaveChangesAsync();
+        Context.Remove(entity);
+        await Context.SaveChangesAsync();
     }
     
     public async Task<bool> ExistsAsync(int id)
     {
-        return await _context.Set<T>().AsNoTracking().AnyAsync(e => e.Id == id);
+        return await Context.Set<T>().AsNoTracking().AnyAsync(e => e.Id == id);
     }
     
     public async Task<bool> IsUniqueAsync(T entity, int? id = null)
@@ -95,7 +95,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
                 lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, lambda.Parameters);
             }
 
-            if (await _context.Set<T>().AnyAsync(lambda))
+            if (await Context.Set<T>().AnyAsync(lambda))
             {
                 return false;
             }

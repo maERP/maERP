@@ -8,25 +8,25 @@ namespace maERP.SharedUI.Pages.Products;
 public partial class ProductsEdit
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IProductService _productService { get; set; }
+    public required IProductService ProductService { get; set; }
 
     [Parameter]
     public int productId { get; set; }
 
-    protected MudForm? _form;
+    protected MudForm? Form;
 
-    protected bool productAiHelperVisible;
+    protected bool ProductAiHelperVisible;
 
-    protected ProductVM product = new();
+    protected ProductVm Product = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (productId != 0)
         {
-            product = await _productService.GetProductDetails(productId);
+            Product = await ProductService.GetProductDetails(productId);
         }
     }
 
@@ -34,11 +34,11 @@ public partial class ProductsEdit
     {
         if (productId != 0)
         {
-            await _productService.UpdateProduct(productId, product);
+            await ProductService.UpdateProduct(productId, Product);
         }
         else
         {
-            await _productService.CreateProduct(product);
+            await ProductService.CreateProduct(Product);
         }
 
         Cancel();
@@ -46,11 +46,11 @@ public partial class ProductsEdit
 
     public void Cancel()
     {
-        _navigationManager.NavigateTo("/Products");
+        NavigationManager.NavigateTo("/Products");
     }
 
     public void OpenProductAiHelper()
     {
-        productAiHelperVisible = true;
+        ProductAiHelperVisible = true;
     }
 }

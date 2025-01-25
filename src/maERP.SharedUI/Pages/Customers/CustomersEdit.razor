@@ -5,20 +5,20 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">Kunde bearbeiten</MudText>
 
-<MudForm Model="@customer" @ref="@_form">
+<MudForm Model="@Customer" @ref="@_form">
     <MudGrid>
         <MudItem xs="6">
 
-            <MudTextField @bind-Value="customer.Firstname"
-                          For="@(() => customer.Firstname)"
+            <MudTextField @bind-Value="Customer.Firstname"
+                          For="@(() => Customer.Firstname)"
                           Label="Vorname"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6">
             </MudTextField>
 
-            <MudTextField @bind-Value="customer.Lastname"
-                          For="@(() => customer.Lastname)"
+            <MudTextField @bind-Value="Customer.Lastname"
+                          For="@(() => Customer.Lastname)"
                           Label="Nachname"
                           Variant="Variant.Text"
                           InputType="InputType.Text"

@@ -8,13 +8,13 @@ namespace maERP.SharedUI.Pages.TaxClasses;
 public partial class TaxClassesEdit
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ITaxClassService _taxClassService { get; set; }
+    public required ITaxClassService TaxClassService { get; set; }
 
     [Inject]
-    public required ISnackbar _snackbar { get; set; }
+    public required ISnackbar Snackbar { get; set; }
 
     [Parameter]
     public int taxClassId { get; set; }
@@ -24,14 +24,14 @@ public partial class TaxClassesEdit
 
     protected string Title = "hinzufügen";
 
-    protected TaxClassVM taxClass = new();
+    protected TaxClassVm TaxClass = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (taxClassId != 0)
         {
             Title = "Bearbeiten";
-            taxClass = await _taxClassService.GetTaxClassDetails(taxClassId);
+            TaxClass = await TaxClassService.GetTaxClassDetails(taxClassId);
         }
     }
 
@@ -39,20 +39,20 @@ public partial class TaxClassesEdit
     {
         if (taxClassId != 0)
         {
-            await _taxClassService.UpdateTaxClass(taxClassId, taxClass);
+            await TaxClassService.UpdateTaxClass(taxClassId, TaxClass);
         }
         else
         {
-            await _taxClassService.CreateTaxClass(taxClass);
+            await TaxClassService.CreateTaxClass(TaxClass);
         }
 
-        _snackbar.Add("Steuerklasse gespeichert", Severity.Success);
+        Snackbar.Add("Steuerklasse gespeichert", Severity.Success);
 
         Cancel();
     }
 
     public void Cancel()
     {
-        _navigationManager.NavigateTo("/TaxClasses");
+        NavigationManager.NavigateTo("/TaxClasses");
     }
 }

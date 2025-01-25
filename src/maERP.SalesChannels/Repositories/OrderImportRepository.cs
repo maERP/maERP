@@ -204,13 +204,13 @@ public class OrderImportRepository : IOrderImportRepository
             {
                 foreach (var item in importOrder.Items)
                 {
-                    if(String.IsNullOrEmpty(item.SKU))
+                    if(String.IsNullOrEmpty(item.Sku))
                     {
                         _logger.LogError("Order {0}: Cannot import, product has empty SKU", importOrder.RemoteOrderId);
                         return;
                     }
 
-                    var product = await _productRepository.GetBySkuAsync(item.SKU);
+                    var product = await _productRepository.GetBySkuAsync(item.Sku);
 
                     var newOrderItem = new OrderItem
                     {
@@ -227,10 +227,10 @@ public class OrderImportRepository : IOrderImportRepository
                     }
                     else
                     {
-                        newOrderItem.MissingProductSku = item.SKU;
+                        newOrderItem.MissingProductSku = item.Sku;
                         newOrderItem.MissingProductEan = item.Ean;
 
-                        _logger.LogInformation("Order {0}: Cannot import, product with SKU {1} not found", importOrder.RemoteOrderId, item.SKU);
+                        _logger.LogInformation("Order {0}: Cannot import, product with SKU {1} not found", importOrder.RemoteOrderId, item.Sku);
                     }
 
                     newOrder.OrderItems.Add(newOrderItem);

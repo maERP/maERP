@@ -8,19 +8,19 @@ namespace maERP.SharedUI.Pages.Orders;
 public partial class Orders
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IOrderService _orderService { get; set; }
+    public required IOrderService OrderService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private readonly MudDataGrid<OrderListVM> _dataGrid = new();
+    private readonly MudDataGrid<OrderListVm> _dataGrid = new();
 
-    private async Task<GridData<OrderListVM>> LoadGridData(GridState<OrderListVM> state)
+    private async Task<GridData<OrderListVm>> LoadGridData(GridState<OrderListVm> state)
     {
-        var apiResponse = await _orderService.GetOrders(state.Page, state.PageSize, _searchString);
-        GridData<OrderListVM> data = new()
+        var apiResponse = await OrderService.GetOrders(state.Page, state.PageSize, _searchString);
+        GridData<OrderListVm> data = new()
         {  
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

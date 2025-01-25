@@ -6,10 +6,10 @@ namespace maERP.SharedUI.Pages.Customers;
 public partial class CustomersDelete
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ICustomerService _customerService { get; set; }
+    public required ICustomerService CustomerService { get; set; }
 
 
     [Parameter]
@@ -19,8 +19,8 @@ public partial class CustomersDelete
     {
         if (customerId > 0)
         {
-            await _customerService.DeleteCustomer(customerId);
-            _navigationManager.NavigateTo("/Customers");
+            await CustomerService.DeleteCustomer(customerId);
+            NavigationManager.NavigateTo("/Customers");
         }
     }
 }

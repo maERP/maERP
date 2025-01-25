@@ -6,7 +6,7 @@ namespace maERP.SharedUI.Pages.Dashboard;
 public partial class Dashboard
 {
     [Inject]
-    public required NavigationManager? _navigationManager { get; set; }
+    public required NavigationManager? NavigationManager { get; set; }
 
     public ChartOptions Options = new ChartOptions();
 

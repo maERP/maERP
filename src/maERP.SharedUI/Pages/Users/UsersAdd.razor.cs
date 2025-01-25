@@ -7,26 +7,26 @@ namespace maERP.SharedUI.Pages.Users;
 public partial class UsersAdd
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IUserService _userService { get; set; }
+    public required IUserService UserService { get; set; }
 
     [Parameter]
     public string userId { get; set; } = "";
 
-    protected string Title = "hinzufügen";
+    protected string Title = "hinzufï¿½gen";
 
-    protected UserVM user = new();
+    protected UserVm User = new();
 
     protected async Task Save()
     {
-        await _userService.CreateUser(user);
+        await UserService.CreateUser(User);
         ReturnToList();
     }
 
     public void ReturnToList()
     {
-        _navigationManager.NavigateTo("/users");
+        NavigationManager.NavigateTo("/users");
     }
 }

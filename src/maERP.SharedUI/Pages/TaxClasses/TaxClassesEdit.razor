@@ -6,11 +6,11 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">Steuersatz bearbeiten</MudText>
 
-<MudForm Model="@taxClass" @ref="@_form">
+<MudForm Model="@TaxClass" @ref="@_form">
     <MudGrid>
         <MudItem xs="6">
-            <MudTextField @bind-Value="taxClass.TaxRate"
-                          For="@(() => taxClass.TaxRate)"
+            <MudTextField @bind-Value="TaxClass.TaxRate"
+                          For="@(() => TaxClass.TaxRate)"
                           Label="Steuersatz"
                           Variant="Variant.Text"
                           InputType="InputType.Number"

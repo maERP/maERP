@@ -7,44 +7,44 @@
 
 <hr />
 
-<EditForm Model="@user" OnValidSubmit="Save">
+<EditForm Model="@User" OnValidSubmit="Save">
     <DataAnnotationsValidator />
 
     <div class="mb-3">
         <label for="Email" class="form-label">E-Mail</label>
         <div class="col-md-4">
-            <InputText id="Email" class="form-control" @bind-Value="@user.Email" />
+            <InputText id="Email" class="form-control" @bind-Value="@User.Email" />
         </div>
-        <ValidationMessage For="@(() => user.Email)" />
+        <ValidationMessage For="@(() => User.Email)" />
     </div>
     <div class="mb-3">
         <label for="Firstname" class="form-label">Vorname</label>
         <div class="col-md-4">
-            <InputText id="Firstname" class="form-control" @bind-Value="@user.Firstname" />
+            <InputText id="Firstname" class="form-control" @bind-Value="@User.Firstname" />
         </div>
-        <ValidationMessage For="@(() => user.Firstname)" />
+        <ValidationMessage For="@(() => User.Firstname)" />
     </div>
     <div class="mb-3">
         <label for="Lastname" class="form-label">Nachname</label>
         <div class="col-md-4">
-            <InputText id="Lastname" class="form-control" @bind-Value="@user.Lastname" />
+            <InputText id="Lastname" class="form-control" @bind-Value="@User.Lastname" />
         </div>
-        <ValidationMessage For="@(() => user.Lastname)" />
+        <ValidationMessage For="@(() => User.Lastname)" />
     </div>
 
     <div class="mb-3">
         <label for="password" class="form-label">Passwort</label>
         <div class="col-md-4">
-            <InputText id="password" type="password" class="form-control" @bind-Value="@user.Password" />
+            <InputText id="password" type="password" class="form-control" @bind-Value="@User.Password" />
         </div>
-        <ValidationMessage For="@(() => user.Password)" />
+        <ValidationMessage For="@(() => User.Password)" />
     </div>
     <div class="mb-3">
         <label for="passwordConfirm" class="form-label">Passwort bestätigen</label>
         <div class="col-md-4">
-            <InputText id="passwordConfirm" type="password" class="form-control" @bind-Value="@user.PasswordConfirm" />
+            <InputText id="passwordConfirm" type="password" class="form-control" @bind-Value="@User.PasswordConfirm" />
         </div>
-        <ValidationMessage For="@(() => user.PasswordConfirm)" />
+        <ValidationMessage For="@(() => User.PasswordConfirm)" />
     </div>
 
     <div class="form-group">

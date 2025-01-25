@@ -28,11 +28,11 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
                 Password = password
             };
 
-            var authenticationResponse = await _client.LoginAsync(authenticationRequest);
+            var authenticationResponse = await Client.LoginAsync(authenticationRequest);
 
             if(authenticationResponse.Token != string.Empty)
             {
-                await _localstorage.SetItemAsync("authToken", authenticationResponse.Token);
+                await Localstorage.SetItemAsync("authToken", authenticationResponse.Token);
                 
                 await ((ApiAuthenticationStateProvider) _authenticataionStateProvider).LoggedIn();
 
@@ -63,7 +63,7 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
             Password = password
         };
 
-        var response = await _client.RegisterAsync(registrationRequest);
+        var response = await Client.RegisterAsync(registrationRequest);
 
         if(!string.IsNullOrEmpty(response.UserId))
         {

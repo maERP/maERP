@@ -6,9 +6,9 @@ namespace maERP.SharedUI.Contracts;
 
 public interface ICustomerService
 {
-    Task<PaginatedResult<CustomerVM>> GetCustomers(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
-    Task<CustomerVM> GetCustomerDetails(int id);
-    Task<Response<Guid>> CreateCustomer(CustomerVM customer);
-    Task<Response<Guid>> UpdateCustomer(int id, CustomerVM customer);
+    Task<PaginatedResult<CustomerVm>> GetCustomers(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
+    Task<CustomerVm> GetCustomerDetails(int id);
+    Task<Response<Guid>> CreateCustomer(CustomerVm customer);
+    Task<Response<Guid>> UpdateCustomer(int id, CustomerVm customer);
     Task<Response<Guid>> DeleteCustomer(int id);
 }

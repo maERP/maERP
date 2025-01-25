@@ -14,6 +14,6 @@ public class TaxClassRepository : GenericRepository<TaxClass>, ITaxClassReposito
     public async Task<TaxClass?> GetByTaxRateAsync(double taxRate)
     {
         // ReSharper disable once CompareOfFloatsByEqualityOperator
-        return await _context.TaxClass.FirstOrDefaultAsync(p => p.TaxRate == taxRate);
+        return await Context.TaxClass.FirstOrDefaultAsync(p => p.TaxRate == taxRate);
     }
 }

@@ -15,27 +15,27 @@ public class UserService : BaseHttpService, IUserService
         _mapper = mapper;
     }
 
-    public async Task<List<UserVM>> GetUsers()
+    public async Task<List<UserVm>> GetUsers()
     {
         await AddBearerToken();
-        var users = await _client.UsersAllAsync();
-        return _mapper.Map<List<UserVM>>(users);
+        var users = await Client.UsersAllAsync();
+        return _mapper.Map<List<UserVm>>(users);
     }
 
-    public async Task<UserVM> GetUserDetails(string id)
+    public async Task<UserVm> GetUserDetails(string id)
     {
         await AddBearerToken();
-        var user = await _client.UsersGETAsync(id);
-        return _mapper.Map<UserVM>(user);
+        var user = await Client.UsersGETAsync(id);
+        return _mapper.Map<UserVm>(user);
     }
 
-    public async Task<Response<Guid>> CreateUser(UserVM user)
+    public async Task<Response<Guid>> CreateUser(UserVm user)
     {
         try
         {
             await AddBearerToken();
             var userCreateCommand = _mapper.Map<UserCreateCommand>(user);
-            await _client.UsersPOSTAsync(userCreateCommand);
+            await Client.UsersPOSTAsync(userCreateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -47,13 +47,13 @@ public class UserService : BaseHttpService, IUserService
         }
     }
 
-    public async Task<Response<Guid>> UpdateUser(string id, UserVM user)
+    public async Task<Response<Guid>> UpdateUser(string id, UserVm user)
     {
         try
         {
             await AddBearerToken();
             var userUpdateCommand = _mapper.Map<UserUpdateCommand>(user);
-            await _client.UsersPUTAsync(Convert.ToInt32(id), userUpdateCommand);
+            await Client.UsersPUTAsync(Convert.ToInt32(id), userUpdateCommand);
             return new Response<Guid>
             {
                 Success = true

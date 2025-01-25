@@ -2,7 +2,7 @@
 
 namespace maERP.SharedUI.Models.Order;
 
-public class OrderVM
+public class OrderVm
 {
     public int Id { get; set; }
     public int SalesChannelId { get; set; }

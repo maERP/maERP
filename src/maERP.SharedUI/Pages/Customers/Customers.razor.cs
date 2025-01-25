@@ -9,19 +9,19 @@ namespace maERP.SharedUI.Pages.Customers;
 public partial class Customers
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ICustomerService _customerService { get; set; }
+    public required ICustomerService CustomerService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<OrderListVM> _dataGrid = new();
+    private MudDataGrid<OrderListVm> _dataGrid = new();
 
-    private async Task<GridData<CustomerVM>> LoadGridData(GridState<CustomerVM> state)
+    private async Task<GridData<CustomerVm>> LoadGridData(GridState<CustomerVm> state)
     {
-        var apiResponse = await _customerService.GetCustomers(state.Page, state.PageSize, _searchString);
-        GridData<CustomerVM> data = new()
+        var apiResponse = await CustomerService.GetCustomers(state.Page, state.PageSize, _searchString);
+        GridData<CustomerVm> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

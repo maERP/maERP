@@ -7,40 +7,40 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">AI Modell bearbeiten</MudText>
 
-<MudForm Model="@aiModel" @ref="@_form">
+<MudForm Model="@AiModel" @ref="@_form">
     <MudGrid>
         <MudItem xs="6">
-            <MudSelect T="AiModelType" Label="Typ" HelperText="Model-Typ" Placeholder="Typ auswählen" @bind-Value="@aiModel.AiModelType" Class="mt-6">
+            <MudSelect T="AiModelType" Label="Typ" HelperText="Model-Typ" Placeholder="Typ auswählen" @bind-Value="@AiModel.AiModelType" Class="mt-6">
                 <MudSelectItem Value="AiModelType._100">ChatGPT 4o</MudSelectItem>
                 <MudSelectItem Value="AiModelType._200">Claude Opus 3.5</MudSelectItem>
             </MudSelect>
             
-            <MudTextField @bind-Value="aiModel.Name"
-                          For="@(() => aiModel.Name)"
+            <MudTextField @bind-Value="AiModel.Name"
+                          For="@(() => AiModel.Name)"
                           Label="Modellname"
                           Required="true"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6"/>
 
-            <MudTextField @bind-Value="aiModel.ApiUsername"
-                          For="@(() => aiModel.ApiUsername)"
+            <MudTextField @bind-Value="AiModel.ApiUsername"
+                          For="@(() => AiModel.ApiUsername)"
                           Label="API Username"
                           Required="true"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6"/>
 
-            <MudTextField @bind-Value="aiModel.ApiPassword"
-                          For="@(() => aiModel.ApiPassword)"
+            <MudTextField @bind-Value="AiModel.ApiPassword"
+                          For="@(() => AiModel.ApiPassword)"
                           Label="API Passwort"
                           Required="true"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6"/>
 
-            <MudTextField @bind-Value="aiModel.ApiKey"
-                          For="@(() => aiModel.ApiKey)"
+            <MudTextField @bind-Value="AiModel.ApiKey"
+                          For="@(() => AiModel.ApiKey)"
                           Label="API Key"
                           Required="true"
                           Variant="Variant.Text"

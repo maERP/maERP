@@ -7,26 +7,26 @@ namespace maERP.SharedUI.Pages.Customers;
 public partial class CustomersDetail
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ICustomerService _customerService { get; set; }
+    public required ICustomerService CustomerService { get; set; }
 
     [Parameter]
     public int customerId { get; set; }
 
-    protected CustomerVM customer = new();
+    protected CustomerVm Customer = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (customerId != 0)
         {
-            customer = await _customerService.GetCustomerDetails(customerId);
+            Customer = await CustomerService.GetCustomerDetails(customerId);
         }
     }
 
     protected void NavEditCustomer()
     {
-        _navigationManager.NavigateTo($"/Customers/{customerId}/edit");
+        NavigationManager.NavigateTo($"/Customers/{customerId}/edit");
     }
 }

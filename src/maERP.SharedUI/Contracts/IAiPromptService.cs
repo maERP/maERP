@@ -6,9 +6,9 @@ namespace maERP.SharedUI.Contracts;
 
 public interface IAiPromptService
 {
-    Task<PaginatedResult<AiPromptListVM>> GetAiPrompts(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
-    Task<AiPromptVM> GetAiPromptDetails(int id);
-    Task<Response<Guid>> CreateAiPrompt(AiPromptVM warehouse);
-    Task<Response<Guid>> UpdateAiPrompt(int id, AiPromptVM warehouse);
+    Task<PaginatedResult<AiPromptListVm>> GetAiPrompts(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
+    Task<AiPromptVm> GetAiPromptDetails(int id);
+    Task<Response<Guid>> CreateAiPrompt(AiPromptVm warehouse);
+    Task<Response<Guid>> UpdateAiPrompt(int id, AiPromptVm warehouse);
     Task<Response<Guid>> DeleteAiPrompt(int id);
 }

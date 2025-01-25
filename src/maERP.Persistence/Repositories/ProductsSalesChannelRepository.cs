@@ -15,13 +15,13 @@ public class ProductSalesChannelRepository : GenericRepository<ProductSalesChann
     {
         if (salesChannelId > 0)
         {
-            return await _context.ProductSalesChannel
+            return await Context.ProductSalesChannel
                 .Where(p => p.RemoteProductId == productId)
                 // .Where(p => p.SalesChannelId == salesChannelId)
                 .FirstOrDefaultAsync();
         }
 
-        return await _context.ProductSalesChannel
+        return await Context.ProductSalesChannel
                 .Where(p => p.RemoteProductId == productId)
                 .FirstOrDefaultAsync();
     }

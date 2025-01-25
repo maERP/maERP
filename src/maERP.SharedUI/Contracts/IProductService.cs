@@ -6,9 +6,9 @@ namespace maERP.SharedUI.Contracts;
 
 public interface IProductService
 {
-    Task<PaginatedResult<ProductListVM>> GetProducts(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
-    Task<ProductVM> GetProductDetails(int id);
-    Task<Response<Guid>> CreateProduct(ProductVM product);
-    Task<Response<Guid>> UpdateProduct(int id, ProductVM product);
+    Task<PaginatedResult<ProductListVm>> GetProducts(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
+    Task<ProductVm> GetProductDetails(int id);
+    Task<Response<Guid>> CreateProduct(ProductVm product);
+    Task<Response<Guid>> UpdateProduct(int id, ProductVm product);
     Task<Response<Guid>> DeleteProduct(int id);
 }

@@ -12,16 +12,16 @@ public partial class Warehouses
     public required NavigationManager? navigationManager { get; set; }
 
     [Inject]
-    public required IWarehouseService _warehouseService { get; set; }
+    public required IWarehouseService WarehouseService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<OrderListVM> _dataGrid = new();
+    private MudDataGrid<OrderListVm> _dataGrid = new();
 
-    private async Task<GridData<WarehouseVM>> LoadGridData(GridState<WarehouseVM> state)
+    private async Task<GridData<WarehouseVm>> LoadGridData(GridState<WarehouseVm> state)
     {
-        var apiResponse = await _warehouseService.GetWarehouses(state.Page, state.PageSize, _searchString);
-        GridData<WarehouseVM> data = new()
+        var apiResponse = await WarehouseService.GetWarehouses(state.Page, state.PageSize, _searchString);
+        GridData<WarehouseVm> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

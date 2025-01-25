@@ -1,9 +1,9 @@
-﻿@if(statisticProduct != null)
+﻿@if(_statisticProduct != null)
 {
     <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-        @statisticProduct.ProductTotal Produkte gesamt<br />
-        @statisticProduct.ProductInStock davon auf Lager<br />
-        @statisticProduct.ProductInWarehouse im Lager
+        @_statisticProduct.ProductTotal Produkte gesamt<br />
+        @_statisticProduct.ProductInStock davon auf Lager<br />
+        @_statisticProduct.ProductInWarehouse im Lager
     </MudPaper>
 }
 else

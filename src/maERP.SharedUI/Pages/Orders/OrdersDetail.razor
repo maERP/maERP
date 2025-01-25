@@ -10,11 +10,11 @@
     <MudItem xs="12" sm="6" md="4">
         <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
             <MudText Typo="Typo.h6">Datum</MudText>
-            <MudText>@order.DateOrdered Uhr</MudText>
+            <MudText>@Order.DateOrdered Uhr</MudText>
             <MudText Typo="Typo.h6">Summe</MudText>
-            <MudText>@order.Total.ToString("C")</MudText>
+            <MudText>@Order.Total.ToString("C")</MudText>
             <MudText Typo="Typo.h6">Status</MudText>
-            <MudText>@order.Status</MudText>
+            <MudText>@Order.Status</MudText>
         </MudPaper>
     </MudItem>
 
@@ -35,13 +35,13 @@
         <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
             <MudText Typo="Typo.h6">Rechnungsadresse</MudText>
             <MudText>
-                @order.InvoiceAddressFirstName @order.InvoiceAddressLastName<br />
-                @if (@order.InvoiceAddressCompanyName.Length > 0)
+                @Order.InvoiceAddressFirstName @Order.InvoiceAddressLastName<br />
+                @if (Order.InvoiceAddressCompanyName.Length > 0)
                 {
-                    @order.InvoiceAddressCompanyName<br />
+                    @Order.InvoiceAddressCompanyName<br />
                 }
-                @order.InvoiceAddressStreet<br />
-                @order.InvoiceAddressZip @order.InvoiceAddressCity
+                @Order.InvoiceAddressStreet<br />
+                @Order.InvoiceAddressZip @Order.InvoiceAddressCity
             </MudText>
         </MudPaper>
     </MudItem>
@@ -50,13 +50,13 @@
         <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
             <MudText Typo="Typo.h6">Lieferaddresse</MudText>
             <MudText>
-                @order.DeliveryAddressFirstName @order.DeliveryAddressLastName<br />
-                @if(@order.DeliveryAddressCompanyName.Length > 0)
+                @Order.DeliveryAddressFirstName @Order.DeliveryAddressLastName<br />
+                @if(Order.DeliveryAddressCompanyName.Length > 0)
                 {
-                    @order.DeliveryAddressCompanyName<br />
+                    @Order.DeliveryAddressCompanyName<br />
                 }
-                @order.DeliveryAddressStreet<br />
-                @order.DeliverAddressZip @order.DeliveryAddressCity
+                @Order.DeliveryAddressStreet<br />
+                @Order.DeliverAddressZip @Order.DeliveryAddressCity
             </MudText>
         </MudPaper>
     </MudItem>
@@ -64,7 +64,7 @@
 
 <MudPaper Class="p-4 mt-4">
     <MudText Typo="Typo.h6">Artikel</MudText>
-    <MudDataGrid Items="@order.OrderItems" SortMode="SortMode.Single">
+    <MudDataGrid Items="@Order.OrderItems" SortMode="SortMode.Single">
         <Columns>
             <PropertyColumn Property="x => x.Name" Title="Produkt" />
             <PropertyColumn Property="x => x.Quantity" Title="Menge" />

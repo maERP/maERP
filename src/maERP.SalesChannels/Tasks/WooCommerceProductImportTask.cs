@@ -63,11 +63,11 @@ public class WooCommerceProductImportTask : IHostedService
 
             _logger.LogInformation($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
-            salesChannel.URL += "/wp-json/wc/v3/";
+            salesChannel.Url += "/wp-json/wc/v3/";
 
             try
             {
-                RestAPI rest = new RestAPI(salesChannel.URL, salesChannel.Username, salesChannel.Password);
+                RestAPI rest = new RestAPI(salesChannel.Url, salesChannel.Username, salesChannel.Password);
                 WCObject wc = new WCObject(rest);
 
                 var remoteProducts = await wc.Product.GetAll();

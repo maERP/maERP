@@ -66,9 +66,9 @@ public class WooCommerceOrderImportTask : IHostedService
 
             _logger.LogInformation($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
-            salesChannel.URL += "/wp-json/wc/v3/";
+            salesChannel.Url += "/wp-json/wc/v3/";
 
-            RestAPI rest = new RestAPI(salesChannel.URL, salesChannel.Username, salesChannel.Password);
+            RestAPI rest = new RestAPI(salesChannel.Url, salesChannel.Username, salesChannel.Password);
             WCObject wc = new WCObject(rest);
 
             var remoteOrders = await wc.Order.GetAll();
@@ -134,7 +134,7 @@ public class WooCommerceOrderImportTask : IHostedService
                     salesChannelImportOrder.Items = remoteOrder.line_items.Select(item => new SalesChannelImportOrderItem
                     {
                         Name = item.name,
-                        SKU = item.sku,
+                        Sku = item.sku,
                         Quantity = (double)item.quantity!,
                         Price = (decimal)item.price!,
                         TaxRate = String.IsNullOrEmpty(item.tax_class) ? 0 : Convert.ToDouble(item.tax_class),

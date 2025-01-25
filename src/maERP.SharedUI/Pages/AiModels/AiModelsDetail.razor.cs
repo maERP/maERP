@@ -7,24 +7,24 @@ namespace maERP.SharedUI.Pages.AiModels;
 public partial class AiModelsDetail
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IAiModelService _aiModelService { get; set; }
+    public required IAiModelService AiModelService { get; set; }
 
     [Parameter]
     public int aiModelId { get; set; }
 
     protected string Title = "AI Model";
 
-    protected AiModelVM aiModel = new();
+    protected AiModelVm AiModel = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (aiModelId != 0)
         {
             Title = "Bearbeiten";
-            aiModel = await _aiModelService.GetAiModelDetails(aiModelId);
+            AiModel = await AiModelService.GetAiModelDetails(aiModelId);
         }
         else Title = "nicht gefunden";
     }

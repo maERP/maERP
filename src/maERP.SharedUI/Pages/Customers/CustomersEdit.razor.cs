@@ -8,10 +8,10 @@ namespace maERP.SharedUI.Pages.Customers;
 public partial class CustomersEdit
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ICustomerService _customerService { get; set; }
+    public required ICustomerService CustomerService { get; set; }
 
     [Parameter]
     public int customerId { get; set; }
@@ -19,19 +19,19 @@ public partial class CustomersEdit
     // ReSharper disable once NotAccessedField.Local
     private MudForm? _form;
 
-    protected CustomerVM customer = new();
+    protected CustomerVm Customer = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (customerId != 0)
         {
-            customer = await _customerService.GetCustomerDetails(customerId);
+            Customer = await CustomerService.GetCustomerDetails(customerId);
         }
     }
 
     protected async Task Save()
     {
-        await _customerService.UpdateCustomer(customerId, customer);
+        await CustomerService.UpdateCustomer(customerId, Customer);
 
         ReturnToList();
     }
@@ -39,6 +39,6 @@ public partial class CustomersEdit
     public void ReturnToList()
     {
         StateHasChanged();
-        _navigationManager.NavigateTo("/Customers");
+        NavigationManager.NavigateTo("/Customers");
     }
 }

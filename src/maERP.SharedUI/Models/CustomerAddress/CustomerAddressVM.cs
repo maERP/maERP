@@ -1,7 +1,7 @@
 ﻿namespace maERP.SharedUI.Models.CustomerAddress;
 
 // ReSharper disable once UnusedType.Global
-public class CustomerAddressVM
+public class CustomerAddressVm
 {
     public int Id { get; set; }
     public string Firstname { get; set; } = string.Empty;

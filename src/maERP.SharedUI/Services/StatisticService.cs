@@ -13,12 +13,12 @@ public class StatisticService : BaseHttpService, IStatisticService
     public async Task<StatisticOrderResponse> GetStatisticOrderAsync()
     {
         await AddBearerToken();
-        return await _client.OrderStatisticAsync();
+        return await Client.OrderStatisticAsync();
     }
 
     public async Task<StatisticProductResponse> GetStatisticProductAsync()
     {
         await AddBearerToken();
-        return await _client.ProductStatisticAsync();
+        return await Client.ProductStatisticAsync();
     }
 }

@@ -1,9 +1,9 @@
-﻿@if(statisticOrder != null)
+﻿@if(_statisticOrder != null)
 {
     <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-        @statisticOrder.Order30Days Bestellungen in den letzten 30 Tagen<br />
-        @statisticOrder.OrderTotal Bestellungen gesamt<br />
-        @statisticOrder.CustomerTotal Kunden gesamt
+        @_statisticOrder.Order30Days Bestellungen in den letzten 30 Tagen<br />
+        @_statisticOrder.OrderTotal Bestellungen gesamt<br />
+        @_statisticOrder.CustomerTotal Kunden gesamt
     </MudPaper>
 }
 else

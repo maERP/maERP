@@ -16,7 +16,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class AiModelsController(IMediator _mediator) : ControllerBase
+public class AiModelsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<AiModelsController>
     [HttpGet]
@@ -27,7 +27,7 @@ public class AiModelsController(IMediator _mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var aiModels = await _mediator.Send(new AiModelListQuery(pageNumber, pageSize, searchString, orderBy));
+        var aiModels = await mediator.Send(new AiModelListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(aiModels);
     }
 
@@ -39,7 +39,7 @@ public class AiModelsController(IMediator _mediator) : ControllerBase
     {
         try 
         {
-            var aiModel = await _mediator.Send(new AiModelDetailQuery { Id = id });
+            var aiModel = await mediator.Send(new AiModelDetailQuery { Id = id });
             return Ok(aiModel);
         }
         catch (NotFoundException)
@@ -54,7 +54,7 @@ public class AiModelsController(IMediator _mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Create(AiModelCreateCommand aiModelCreateCommand)
     {
-        var response = await _mediator.Send(aiModelCreateCommand);
+        var response = await mediator.Send(aiModelCreateCommand);
         return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
@@ -67,7 +67,7 @@ public class AiModelsController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult<AiModelDetailResponse>> Update(int id, AiModelUpdateCommand aiModelUpdateCommand)
     {
         aiModelUpdateCommand.Id = id;
-        await _mediator.Send(aiModelUpdateCommand);
+        await mediator.Send(aiModelUpdateCommand);
         return NoContent();
     }
 
@@ -80,7 +80,7 @@ public class AiModelsController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult> Delete(int id)
     {
         var command = new AiModelDeleteCommand { Id = id };
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 }

@@ -16,27 +16,27 @@ public class OrderService : BaseHttpService, IOrderService
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResult<OrderListVM>> GetOrders(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<PaginatedResult<OrderListVm>> GetOrders(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var orders = await _client.OrdersGETAsync(pageNumber, pageSize, searchString, orderBy);
-        return _mapper.Map<PaginatedResult<OrderListVM>>(orders);
+        var orders = await Client.OrdersGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<OrderListVm>>(orders);
     }
 
-    public async Task<OrderVM> GetOrderDetails(int id)
+    public async Task<OrderVm> GetOrderDetails(int id)
     {
         await AddBearerToken();
-        var order = await _client.OrdersGET2Async(id);
-        return _mapper.Map<OrderVM>(order);
+        var order = await Client.OrdersGET2Async(id);
+        return _mapper.Map<OrderVm>(order);
     }
 
-    public async Task<Response<Guid>> CreateOrder(OrderVM order)
+    public async Task<Response<Guid>> CreateOrder(OrderVm order)
     {
         try
         {
             await AddBearerToken();
             var orderCreateCommand = _mapper.Map<OrderCreateCommand>(order);
-            await _client.OrdersPOSTAsync(orderCreateCommand);
+            await Client.OrdersPOSTAsync(orderCreateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -48,13 +48,13 @@ public class OrderService : BaseHttpService, IOrderService
         }
     }
 
-    public async Task<Response<Guid>> UpdateOrder(int id, OrderVM order)
+    public async Task<Response<Guid>> UpdateOrder(int id, OrderVm order)
     {
         try
         {
             await AddBearerToken();
             var orderUpdateCommand = _mapper.Map<OrderUpdateCommand>(order);
-            await _client.OrdersPUTAsync(id, orderUpdateCommand);
+            await Client.OrdersPUTAsync(id, orderUpdateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -70,7 +70,7 @@ public class OrderService : BaseHttpService, IOrderService
         try
         {
             await AddBearerToken();
-            await _client.OrdersDELETEAsync(id);
+            await Client.OrdersDELETEAsync(id);
             return new Response<Guid>
             {
                 Success = true

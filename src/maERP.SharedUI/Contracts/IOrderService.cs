@@ -6,9 +6,9 @@ namespace maERP.SharedUI.Contracts;
 
 public interface IOrderService
 {
-    Task<PaginatedResult<OrderListVM>> GetOrders(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
-    Task<OrderVM> GetOrderDetails(int id);
-    Task<Response<Guid>> CreateOrder(OrderVM order);
-    Task<Response<Guid>> UpdateOrder(int id, OrderVM order);
+    Task<PaginatedResult<OrderListVm>> GetOrders(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
+    Task<OrderVm> GetOrderDetails(int id);
+    Task<Response<Guid>> CreateOrder(OrderVm order);
+    Task<Response<Guid>> UpdateOrder(int id, OrderVm order);
     Task<Response<Guid>> DeleteOrder(int id);
 }

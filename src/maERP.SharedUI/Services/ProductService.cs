@@ -16,27 +16,27 @@ public class ProductService : BaseHttpService, IProductService
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResult<ProductListVM>> GetProducts(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<PaginatedResult<ProductListVm>> GetProducts(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var products = await _client.ProductsGETAsync(pageNumber, pageSize, searchString, orderBy);
-        return _mapper.Map<PaginatedResult<ProductListVM>>(products);
+        var products = await Client.ProductsGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<ProductListVm>>(products);
     }
 
-    public async Task<ProductVM> GetProductDetails(int id)
+    public async Task<ProductVm> GetProductDetails(int id)
     {
         await AddBearerToken();
-        var product = await _client.ProductsGET2Async(id);
-        return _mapper.Map<ProductVM>(product);
+        var product = await Client.ProductsGET2Async(id);
+        return _mapper.Map<ProductVm>(product);
     }
 
-    public async Task<Response<Guid>> CreateProduct(ProductVM product)
+    public async Task<Response<Guid>> CreateProduct(ProductVm product)
     {
         try
         {
             await AddBearerToken();
             var productCreateCommand = _mapper.Map<ProductCreateCommand>(product);
-            await _client.ProductsPOSTAsync(productCreateCommand);
+            await Client.ProductsPOSTAsync(productCreateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -48,13 +48,13 @@ public class ProductService : BaseHttpService, IProductService
         }
     }
 
-    public async Task<Response<Guid>> UpdateProduct(int id, ProductVM product)
+    public async Task<Response<Guid>> UpdateProduct(int id, ProductVm product)
     {
         try
         {
             await AddBearerToken();
             var productUpdateCommand = _mapper.Map<ProductUpdateCommand>(product);
-            await _client.ProductsPUTAsync(id, productUpdateCommand);
+            await Client.ProductsPUTAsync(id, productUpdateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -70,7 +70,7 @@ public class ProductService : BaseHttpService, IProductService
         try
         {
             await AddBearerToken();
-            await _client.ProductsDELETEAsync(id);
+            await Client.ProductsDELETEAsync(id);
             return new Response<Guid>
             {
                 Success = true

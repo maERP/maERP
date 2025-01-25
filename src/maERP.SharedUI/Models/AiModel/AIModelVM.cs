@@ -2,7 +2,7 @@
 
 namespace maERP.SharedUI.Models.AiModel;
 
-public class AiModelVM
+public class AiModelVm
 {
     public int Id { get; set; }
     public AiModelType AiModelType { get; set; }

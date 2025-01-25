@@ -15,7 +15,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
     
     public async Task<Customer> GetCustomerWithDetails(int id)
     {
-        return await _context.Customer
+        return await Context.Customer
             .Where(x => x.Id == id)
             .Include(x => x.CustomerAddresses)
             .Include(x => x.Orders)
@@ -24,43 +24,43 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
     
     public async Task<Customer?> GetCustomerByEmailAsync(string email)
     {
-        return await _context.Customer
+        return await Context.Customer
             .Where(x => x.Email == email)
             .FirstOrDefaultAsync() ?? null;
     }
     
     public async Task<Customer?> GetCustomerByRemoteCustomerIdAsync(int salesChannelId, string remoteCustomerId)
     {
-        return await _context.Customer
+        return await Context.Customer
             .Where(x => x.CustomerSalesChannels!.Any(y => y.SalesChannelId == salesChannelId && y.RemoteCustomerId == remoteCustomerId))
             .FirstOrDefaultAsync() ?? null;
     }
     
     public async Task AddCustomerToSalesChannelAsync(int customerId, int salesChannelId, string remoteCustomerId)
     {
-        var CustomerSalesChannel = new CustomerSalesChannel
+        var customerSalesChannel = new CustomerSalesChannel
         {
             CustomerId = customerId,
             SalesChannelId = salesChannelId,
             RemoteCustomerId = remoteCustomerId
         };
         
-        await _context.CustomerSalesChannel.AddAsync(CustomerSalesChannel);
-        await _context.SaveChangesAsync();
+        await Context.CustomerSalesChannel.AddAsync(customerSalesChannel);
+        await Context.SaveChangesAsync();
         Console.WriteLine("saved");
     }
     
     public async Task<ICollection<CustomerAddress>> GetCustomerAddressByCustomerIdAsync(int customerId)
     {
-        return await _context.CustomerAddress
+        return await Context.CustomerAddress
             .Where(x => x.CustomerId == customerId)
             .ToListAsync();
     }
 
     public async Task<CustomerAddress> AddCustomerAddressAsync(CustomerAddress customerAddress)
     {
-        await _context.CustomerAddress.AddAsync(customerAddress);
-        await _context.SaveChangesAsync();
+        await Context.CustomerAddress.AddAsync(customerAddress);
+        await Context.SaveChangesAsync();
         return customerAddress;
     }
 }

@@ -11,16 +11,16 @@ public partial class AiModels
     public required NavigationManager? navigationManager { get; set; }
 
     [Inject]
-    public required IAiModelService _aiModelService { get; set; }
+    public required IAiModelService AiModelService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<AiModelListVM> _dataGrid = new();
+    private MudDataGrid<AiModelListVm> _dataGrid = new();
 
-    private async Task<GridData<AiModelListVM>> LoadGridData(GridState<AiModelListVM> state)
+    private async Task<GridData<AiModelListVm>> LoadGridData(GridState<AiModelListVm> state)
     {
-        var apiResponse = await _aiModelService.GetAiModels(state.Page, state.PageSize, _searchString);
-        GridData<AiModelListVM> data = new()
+        var apiResponse = await AiModelService.GetAiModels(state.Page, state.PageSize, _searchString);
+        GridData<AiModelListVm> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

@@ -8,19 +8,19 @@ namespace maERP.SharedUI.Pages.Products;
 public partial class Products
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IProductService _productService { get; set; }
+    public required IProductService ProductService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<ProductListVM> _dataGrid = new();
+    private MudDataGrid<ProductListVm> _dataGrid = new();
 
-    private async Task<GridData<ProductListVM>> LoadGridData(GridState<ProductListVM> state)
+    private async Task<GridData<ProductListVm>> LoadGridData(GridState<ProductListVm> state)
     {
-        var apiResponse = await _productService.GetProducts(state.Page, state.PageSize, _searchString);
-        GridData<ProductListVM> data = new()
+        var apiResponse = await ProductService.GetProducts(state.Page, state.PageSize, _searchString);
+        GridData<ProductListVm> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

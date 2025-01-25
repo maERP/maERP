@@ -1,6 +1,6 @@
 namespace maERP.SharedUI.Models.CustomerAddress;
 
-public class CustomerAddressListVM
+public class CustomerAddressListVm
 {
     public int Id { get; set; }
     public string Street { get; set; } = string.Empty;

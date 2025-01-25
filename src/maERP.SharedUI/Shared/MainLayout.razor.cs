@@ -5,8 +5,8 @@ namespace maERP.SharedUI.Shared;
 
 public partial class MainLayout : LayoutComponentBase
 {
-    public MudThemeProvider _mudThemeProvider = null!;
-    public bool _defaultDarkMode;
+    public MudThemeProvider MudThemeProvider = null!;
+    public bool DefaultDarkMode;
 
     public string PrimaryColor { get; set; } = "#2d4275";
     public string SecondaryColor { get; set; } = "#ff4081ff";
@@ -22,20 +22,20 @@ public partial class MainLayout : LayoutComponentBase
         await base.OnAfterRenderAsync(firstRender);
         if (firstRender)
         {
-            await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
+            await MudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
             StateHasChanged();
         }
     }
 
     private async Task OnSystemPreferenceChanged(bool newValue)
     {
-        _defaultDarkMode = newValue;
+        DefaultDarkMode = newValue;
         await Task.CompletedTask;
     }
 
     protected override void OnInitialized()
     {
-        _defaultDarkMode = false; //  await _mudThemeProvider.GetSystemPreference();
+        DefaultDarkMode = false; //  await _mudThemeProvider.GetSystemPreference();
 
         CurrentTheme = Theme.ApplicationTheme();
         CurrentTheme.PaletteLight.Primary = PrimaryColor;
@@ -47,6 +47,6 @@ public partial class MainLayout : LayoutComponentBase
 
     public async void IsDarkMode()
     {
-        _defaultDarkMode = await _mudThemeProvider.GetSystemPreference();
+        DefaultDarkMode = await MudThemeProvider.GetSystemPreference();
     }
 }

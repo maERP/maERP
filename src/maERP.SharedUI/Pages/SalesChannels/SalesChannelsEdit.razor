@@ -7,50 +7,50 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">Vertriebskanal bearbeiten</MudText>
 
-<MudForm Model="@salesChannel" @ref="@_form">
+<MudForm Model="@SalesChannel" @ref="@_form">
     <MudGrid>
         <MudItem xs="6">
 
-            <MudSelect T="SalesChannelType" Label="Typ" HelperText="Vertriebskanal-Typ" Placeholder="Typ auswählen" @bind-Value="@salesChannel.Type" Class="mt-6">
+            <MudSelect T="SalesChannelType" Label="Typ" HelperText="Vertriebskanal-Typ" Placeholder="Typ auswählen" @bind-Value="@SalesChannel.Type" Class="mt-6">
                 <MudSelectItem Value="SalesChannelType.PointOfSale">Shopware 5</MudSelectItem>
                 <MudSelectItem Value="SalesChannelType.Shopware5">Shopware 5</MudSelectItem>
                 <MudSelectItem Value="SalesChannelType.Shopware6">Shopware 6</MudSelectItem>
                 <MudSelectItem Value="SalesChannelType.WooCommerce">WooCommerce</MudSelectItem>
             </MudSelect>
 
-            <MudTextField @bind-Value="salesChannel.Name"
-                          For="@(() => salesChannel.Name)"
+            <MudTextField @bind-Value="SalesChannel.Name"
+                          For="@(() => SalesChannel.Name)"
                           Label="Name"
                           Required="true"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6" />
 
-            <MudTextField @bind-Value="salesChannel.Url"
-                          For="@(() => salesChannel.Url)"
+            <MudTextField @bind-Value="SalesChannel.Url"
+                          For="@(() => SalesChannel.Url)"
                           Label="API URL"
                           Variant="Variant.Text"
                           InputType="InputType.Url"
                           Class="mt-6" />
 
-            <MudTextField @bind-Value="salesChannel.Username"
-                          For="@(() => salesChannel.Username)"
+            <MudTextField @bind-Value="SalesChannel.Username"
+                          For="@(() => SalesChannel.Username)"
                           Label="API Benutzername"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6" />
 
-            <MudTextField @bind-Value="salesChannel.Password"
-                          For="@(() => salesChannel.Password)"
+            <MudTextField @bind-Value="SalesChannel.Password"
+                          For="@(() => SalesChannel.Password)"
                           Label="API Passwort"
                           Variant="Variant.Text"
                           InputType="InputType.Password"
                           Class="mt-6" />
 
-            <MudSelect T="int" Label="Lager" HelperText="Lager auswählen" Placeholder="Lager auswählen" @bind-Value="@salesChannel.WarehouseId" Class="mt-6">
-                @foreach (var warehouse in warehouses)
+            <MudSelect T="int" Label="Lager" HelperText="Lager auswählen" Placeholder="Lager auswählen" @bind-Value="@SalesChannel.WarehouseId" Class="mt-6">
+                @foreach (var warehouse in Warehouses)
                 {
-                    if (salesChannel.WarehouseId == warehouse.Id)
+                    if (SalesChannel.WarehouseId == warehouse.Id)
                     {
                         <MudSelectItem Value="@warehouse.Id">@warehouse.Name</MudSelectItem>
                     }
@@ -63,20 +63,20 @@
 
             <MudText Typo="Typo.h6" Class="mt-6">Produkte</MudText>
             <MudStack Row="true">
-                <MudCheckBox @bind-Value="@salesChannel.ImportProducts" Label="Importieren" />
-                <MudCheckBox @bind-Value="@salesChannel.ExportProducts" Label="Exportieren" />
+                <MudCheckBox @bind-Value="@SalesChannel.ImportProducts" Label="Importieren" />
+                <MudCheckBox @bind-Value="@SalesChannel.ExportProducts" Label="Exportieren" />
             </MudStack>
 
             <MudText Typo="Typo.h6" Class="mt-6">Kunden</MudText>
             <MudStack Row="true">
-                <MudCheckBox @bind-Value="@salesChannel.ImportCustomers" Label="Importieren" />
-                <MudCheckBox @bind-Value="@salesChannel.ExportCustomers" Label="Exportieren" />
+                <MudCheckBox @bind-Value="@SalesChannel.ImportCustomers" Label="Importieren" />
+                <MudCheckBox @bind-Value="@SalesChannel.ExportCustomers" Label="Exportieren" />
             </MudStack>
 
             <MudText Typo="Typo.h6" Class="mt-6">Kunden</MudText>
             <MudStack Row="true">
-                <MudCheckBox @bind-Value="@salesChannel.ImportOrders" Label="Importieren" />
-                <MudCheckBox @bind-Value="@salesChannel.ExportOrders" Label="Exportieren" />
+                <MudCheckBox @bind-Value="@SalesChannel.ImportOrders" Label="Importieren" />
+                <MudCheckBox @bind-Value="@SalesChannel.ExportOrders" Label="Exportieren" />
             </MudStack>
 
             <MudButton Variant="Variant.Filled"

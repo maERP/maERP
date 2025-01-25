@@ -16,27 +16,27 @@ public class TaxClassService : BaseHttpService, ITaxClassService
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResult<TaxClassVM>> GetTaxClasses(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<PaginatedResult<TaxClassVm>> GetTaxClasses(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var taxClasses = await _client.TaxClassesGETAsync(pageNumber, pageSize, searchString, orderBy);
-        return _mapper.Map<PaginatedResult<TaxClassVM>>(taxClasses);
+        var taxClasses = await Client.TaxClassesGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<TaxClassVm>>(taxClasses);
     }
 
-    public async Task<TaxClassVM> GetTaxClassDetails(int id)
+    public async Task<TaxClassVm> GetTaxClassDetails(int id)
     {
         await AddBearerToken();
-        var taxClass = await _client.TaxClassesGET2Async(id);
-        return _mapper.Map<TaxClassVM>(taxClass);
+        var taxClass = await Client.TaxClassesGET2Async(id);
+        return _mapper.Map<TaxClassVm>(taxClass);
     }
 
-    public async Task<Response<Guid>> CreateTaxClass(TaxClassVM taxClass)
+    public async Task<Response<Guid>> CreateTaxClass(TaxClassVm taxClass)
     {
         try
         {
             await AddBearerToken();
             var taxClassCreateCommand = _mapper.Map<TaxClassCreateCommand>(taxClass);
-            await _client.TaxClassesPOSTAsync(taxClassCreateCommand);
+            await Client.TaxClassesPOSTAsync(taxClassCreateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -48,13 +48,13 @@ public class TaxClassService : BaseHttpService, ITaxClassService
         }
     }
 
-    public async Task<Response<Guid>> UpdateTaxClass(int id, TaxClassVM taxClass)
+    public async Task<Response<Guid>> UpdateTaxClass(int id, TaxClassVm taxClass)
     {
         try
         {
             await AddBearerToken();
             var taxClassUpdateCommand = _mapper.Map<TaxClassUpdateCommand>(taxClass);
-            await _client.TaxClassesPUTAsync(id, taxClassUpdateCommand);
+            await Client.TaxClassesPUTAsync(id, taxClassUpdateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -70,7 +70,7 @@ public class TaxClassService : BaseHttpService, ITaxClassService
         try
         {
             await AddBearerToken();
-            await _client.TaxClassesDELETEAsync(id);
+            await Client.TaxClassesDELETEAsync(id);
             return new Response<Guid>
             {
                 Success = true

@@ -16,7 +16,7 @@ public class Languagesubshop
     public bool alwaysSecure { get; set; }
     public object secureHost { get; set; } = new object();
     public object secureBasePath { get; set; } = new object();
-    public bool _default { get; set; }
+    public bool Default { get; set; }
     public bool active { get; set; }
     public bool customerScope { get; set; }
     public Locale locale { get; set; } = new Locale();

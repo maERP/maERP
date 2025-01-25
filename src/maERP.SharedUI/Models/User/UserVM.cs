@@ -1,6 +1,6 @@
 ﻿namespace maERP.SharedUI.Models.User;
 
-public class UserVM
+public class UserVm
 {
     public Guid Id { get; set; }
     public string Email { get; set; } = string.Empty;

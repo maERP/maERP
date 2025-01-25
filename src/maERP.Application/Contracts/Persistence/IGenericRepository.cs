@@ -3,7 +3,7 @@
 public interface IGenericRepository<T> where T : class
 {
     IQueryable<T> Entities { get; }
-    IQueryable<CT> GetContext<CT>() where CT : class;
+    IQueryable<TCt> GetContext<TCt>() where TCt : class;
     void Attach(T entity);
     void AttachRange(IEnumerable<T> entities);
     Task<int> CreateAsync(T entity);

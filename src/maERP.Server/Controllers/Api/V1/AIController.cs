@@ -11,7 +11,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class AiController(IMediator _mediator) : ControllerBase
+public class AiController(IMediator mediator) : ControllerBase
 {
     // GET: api/<AiModelsController>
     [HttpGet]
@@ -22,7 +22,7 @@ public class AiController(IMediator _mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var aiModels = await _mediator.Send(new AiModelListQuery(pageNumber, pageSize, searchString, orderBy));
+        var aiModels = await mediator.Send(new AiModelListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(aiModels);
     }
 }

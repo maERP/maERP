@@ -76,7 +76,7 @@ public class Shopware5ProductImportTask : IHostedService
                 try
                 {
                     var client = new HttpClient();
-                    string requestUrl = salesChannel.URL + $"/api/articles?start={requestStart}&limit={requestLimit}";
+                    string requestUrl = salesChannel.Url + $"/api/articles?start={requestStart}&limit={requestLimit}";
                     client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000000));
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

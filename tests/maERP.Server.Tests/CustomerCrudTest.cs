@@ -11,11 +11,11 @@ using maERP.Domain.Wrapper;
 namespace maERP.Server.Tests;
 
 [Collection("Sequential")]
-public class CustomerCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
+public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>>
 {
-    private readonly maERPWebApplicationFactory<Program> _webApplicationFactory;
+    private readonly MaErpWebApplicationFactory<Program> _webApplicationFactory;
 
-    public CustomerCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
+    public CustomerCrudTest(MaErpWebApplicationFactory<Program> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }

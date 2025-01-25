@@ -1,6 +1,6 @@
 ﻿namespace maERP.SharedUI.Models.Order;
 
-public class OrderListVM
+public class OrderListVm
 {
     public int Id { get; set; }
     public int CustomerId { get; set; }

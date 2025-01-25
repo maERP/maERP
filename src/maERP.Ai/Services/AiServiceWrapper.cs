@@ -22,7 +22,7 @@ public class AiServiceWrapper : IAiServiceWrapper
 
     public void SetClass()
     {
-        if (_aiPrompt.AiModelType == AiModelType.ChatGPT4o)
+        if (_aiPrompt.AiModelType == AiModelType.ChatGpt4O)
         {
             _aiService = new ChatGptService();
         }

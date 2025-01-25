@@ -7,24 +7,24 @@ namespace maERP.SharedUI.Pages.AiPrompts;
 public partial class AiPromptsDetail
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IAiPromptService _aiPromptService { get; set; }
+    public required IAiPromptService AiPromptService { get; set; }
 
     [Parameter]
     public int aiPromptId { get; set; }
 
     protected string Title = "AI Model";
 
-    protected AiPromptVM aiPrompt = new();
+    protected AiPromptVm AiPrompt = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (aiPromptId != 0)
         {
             Title = "Bearbeiten";
-            aiPrompt = await _aiPromptService.GetAiPromptDetails(aiPromptId);
+            AiPrompt = await AiPromptService.GetAiPromptDetails(aiPromptId);
         }
         else Title = "nicht gefunden";
     }

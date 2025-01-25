@@ -16,7 +16,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class SalesChannelsController(IMediator _mediator) : ControllerBase
+public class SalesChannelsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<SalesChannelsController>
     [HttpGet]
@@ -27,7 +27,7 @@ public class SalesChannelsController(IMediator _mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var salesChannels = await _mediator.Send(new SalesChannelListQuery(pageNumber, pageSize, searchString, orderBy));
+        var salesChannels = await mediator.Send(new SalesChannelListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(salesChannels);
     }
 
@@ -39,7 +39,7 @@ public class SalesChannelsController(IMediator _mediator) : ControllerBase
     {
         try 
         {
-            var salesChannel = await _mediator.Send(new SalesChannelDetailQuery { Id = id });
+            var salesChannel = await mediator.Send(new SalesChannelDetailQuery { Id = id });
             return Ok(salesChannel);
         }
         catch (NotFoundException)
@@ -54,7 +54,7 @@ public class SalesChannelsController(IMediator _mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Create(SalesChannelCreateCommand salesChannelCreateCommand)
     {
-        var response = await _mediator.Send(salesChannelCreateCommand);
+        var response = await mediator.Send(salesChannelCreateCommand);
         return CreatedAtAction(nameof(GetAll), new { id = response });
     }
 
@@ -67,7 +67,7 @@ public class SalesChannelsController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult> Update(int id, SalesChannelUpdateCommand salesChannelUpdateCommand)
     {
         salesChannelUpdateCommand.Id = id;
-        await _mediator.Send(salesChannelUpdateCommand);
+        await mediator.Send(salesChannelUpdateCommand);
         return NoContent();
     }
 
@@ -79,7 +79,7 @@ public class SalesChannelsController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult> Delete(int id)
     {
         var command = new SalesChanneLDeleteCommand { Id = id };
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 }

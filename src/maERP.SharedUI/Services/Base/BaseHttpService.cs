@@ -5,13 +5,13 @@ namespace maERP.SharedUI.Services.Base;
 
 public class BaseHttpService
 {
-    protected IClient _client;
-    protected readonly ILocalStorageService _localstorage;
+    protected IClient Client;
+    protected readonly ILocalStorageService Localstorage;
 
     public BaseHttpService(IClient client, ILocalStorageService localStorage)
     {
-        _client = client;
-        _localstorage = localStorage;
+        Client = client;
+        Localstorage = localStorage;
     }
 
     protected Response<T> ConvertApiExceptions<T>(ApiException ex)
@@ -44,10 +44,10 @@ public class BaseHttpService
 
     protected async Task AddBearerToken()
     {
-        if(await _localstorage.ContainKeyAsync("authToken"))
+        if(await Localstorage.ContainKeyAsync("authToken"))
         {
-            var token = await _localstorage.GetItemAsync<string>("authToken");
-            _client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var token = await Localstorage.GetItemAsync<string>("authToken");
+            Client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
     }
 }

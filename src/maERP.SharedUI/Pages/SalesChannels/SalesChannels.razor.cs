@@ -9,19 +9,19 @@ namespace maERP.SharedUI.Pages.SalesChannels;
 public partial class SalesChannels
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ISalesChannelService _salesChannelService { get; set; }
+    public required ISalesChannelService SalesChannelService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<OrderListVM> _dataGrid = new();
+    private MudDataGrid<OrderListVm> _dataGrid = new();
 
-    private async Task<GridData<SalesChannelVM>> LoadGridData(GridState<SalesChannelVM> state)
+    private async Task<GridData<SalesChannelVm>> LoadGridData(GridState<SalesChannelVm> state)
     {
-        var apiResponse = await _salesChannelService.GetSalesChannels(state.Page, state.PageSize, _searchString);
-        GridData<SalesChannelVM> data = new()
+        var apiResponse = await SalesChannelService.GetSalesChannels(state.Page, state.PageSize, _searchString);
+        GridData<SalesChannelVm> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

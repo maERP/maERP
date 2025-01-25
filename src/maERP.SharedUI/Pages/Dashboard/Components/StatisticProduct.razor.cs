@@ -7,12 +7,12 @@ namespace maERP.SharedUI.Pages.Dashboard.Components;
 public partial class StatisticProduct
 {
     [Inject]
-    public required IStatisticService _statisticService { get; set; }
+    public required IStatisticService StatisticService { get; set; }
 
-    private StatisticProductResponse? statisticProduct;
+    private StatisticProductResponse? _statisticProduct;
 
     protected override async Task OnInitializedAsync()
     {
-        statisticProduct = await _statisticService.GetStatisticProductAsync();
+        _statisticProduct = await StatisticService.GetStatisticProductAsync();
     }
 }

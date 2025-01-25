@@ -8,10 +8,10 @@ namespace maERP.SharedUI.Pages.Users;
 public partial class UsersEdit
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IUserService _userService { get; set; }
+    public required IUserService UserService { get; set; }
 
     [Parameter]
     public string userId { get; set; } = "";
@@ -22,7 +22,7 @@ public partial class UsersEdit
     // ReSharper disable once NotAccessedField.Local
     protected string Title = "hinzufügen";
 
-    protected UserVM user = new();
+    protected UserVm User = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -30,18 +30,18 @@ public partial class UsersEdit
         if (userId != null)
         {
             Title = "bearbeiten";
-            user = await _userService.GetUserDetails(userId);
+            User = await UserService.GetUserDetails(userId);
         }
     }
 
     protected async Task Save()
     {
-        await _userService.UpdateUser(userId, user);
+        await UserService.UpdateUser(userId, User);
         ReturnToList();
     }
 
     public void ReturnToList()
     {
-        _navigationManager.NavigateTo("/users");
+        NavigationManager.NavigateTo("/users");
     }
 }

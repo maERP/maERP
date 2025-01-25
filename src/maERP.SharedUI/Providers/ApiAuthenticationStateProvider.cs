@@ -8,12 +8,12 @@ namespace maERP.SharedUI.Providers;
 public class ApiAuthenticationStateProvider : AuthenticationStateProvider
 {
     private readonly ILocalStorageService _localStorage;
-    private readonly JwtSecurityTokenHandler jwtSecurityTokenHandler;
+    private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
 
     public ApiAuthenticationStateProvider(ILocalStorageService localStorage)
     {
         _localStorage = localStorage;
-        jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+        _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -27,7 +27,7 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider
         }
 
         var savedToken = await _localStorage.GetItemAsync<string>("authToken");
-        var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
+        var tokenContent = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
 
         if(tokenContent.ValidTo < DateTime.UtcNow)
         {
@@ -60,7 +60,7 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider
     private async Task<List<Claim>> GetClaims()
     {
         var savedToken = await _localStorage.GetItemAsync<string>("authToken");
-        var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
+        var tokenContent = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
         var claims = tokenContent.Claims.ToList();
         claims.Add(new Claim(ClaimTypes.Name, tokenContent.Subject));
         return claims;

@@ -15,7 +15,7 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
 
     public async Task<SalesChannel> GetDetails(int id)
     {
-        var salesChannel = await _context.SalesChannel
+        var salesChannel = await Context.SalesChannel
             .Include(s => s.WarehouseId)
             .FirstOrDefaultAsync(s => s.Id == id);
 
@@ -33,11 +33,11 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
     {
         if(id == null)
         {
-            return await _context.SalesChannel
+            return await Context.SalesChannel
                 .AnyAsync(s => s.Name == salesChannel.Name) ? false : true;
         }
 
-        return await _context.SalesChannel
+        return await Context.SalesChannel
             .AnyAsync(s => s.Name == salesChannel.Name && s.Id != id) ? false : true;
     }
 

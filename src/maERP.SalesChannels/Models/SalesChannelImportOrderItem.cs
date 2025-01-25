@@ -2,7 +2,7 @@
 
 public class SalesChannelImportOrderItem
 {
-    public string SKU { get; set; } = string.Empty;
+    public string Sku { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Ean { get; set; } = string.Empty;
     public double Quantity { get; set; }

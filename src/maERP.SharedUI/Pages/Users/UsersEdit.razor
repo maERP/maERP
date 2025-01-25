@@ -5,11 +5,11 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">Benutzer bearbeiten</MudText>
 
-<MudForm Model="@user" @ref="@_form">
+<MudForm Model="@User" @ref="@_form">
     <MudGrid>
         <MudItem xs="6">
 
-            <MudTextField @bind-Value="user.Email" For="@(() => user.Email)"
+            <MudTextField @bind-Value="User.Email" For="@(() => User.Email)"
                           Label="E-Mail"
                           Required="true"
                           Variant="Variant.Text"
@@ -17,7 +17,7 @@
                           Class="mt-6">
             </MudTextField>
 
-            <MudTextField @bind-Value="user.Firstname" For="@(() => user.Firstname)"
+            <MudTextField @bind-Value="User.Firstname" For="@(() => User.Firstname)"
                           Label="Vorname"
                           Required="true"
                           Variant="Variant.Text"
@@ -25,7 +25,7 @@
                           Class="mt-6">
             </MudTextField>
 
-            <MudTextField @bind-Value="user.Lastname" For="@(() => user.Lastname)"
+            <MudTextField @bind-Value="User.Lastname" For="@(() => User.Lastname)"
                           Label="Nachname"
                           Required="true"
                           Variant="Variant.Text"
@@ -33,7 +33,7 @@
                           Class="mt-6">
             </MudTextField>
 
-            <MudTextField @bind-Value="user.Password" For="@(() => user.Password)"
+            <MudTextField @bind-Value="User.Password" For="@(() => User.Password)"
                           Label="Passwort"
                           Required="true"
                           Variant="Variant.Text"
@@ -41,7 +41,7 @@
                           Class="mt-6">
             </MudTextField>
 
-            <MudTextField @bind-Value="user.PasswordConfirm" For="@(() => user.PasswordConfirm)"
+            <MudTextField @bind-Value="User.PasswordConfirm" For="@(() => User.PasswordConfirm)"
                           Label="Passwort bestätigen"
                           Required="true"
                           Variant="Variant.Text"

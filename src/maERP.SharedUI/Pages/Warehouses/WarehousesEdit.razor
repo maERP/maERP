@@ -6,12 +6,12 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">Lager bearbeiten</MudText>
 
-<MudForm Model="@warehouse" @ref="@_form">
+<MudForm Model="@Warehouse" @ref="@_form">
     <MudGrid>
         <MudItem xs="6">
 
-            <MudTextField @bind-Value="warehouse.Name"
-                          For="@(() => warehouse.Name)"
+            <MudTextField @bind-Value="Warehouse.Name"
+                          For="@(() => Warehouse.Name)"
                           Label="Lagername"
                           Required="true"
                           Variant="Variant.Text"

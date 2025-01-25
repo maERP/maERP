@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace maERP.Server.Tests;
 
-public class maERPWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
+public class MaErpWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {

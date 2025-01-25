@@ -8,10 +8,10 @@ namespace maERP.SharedUI.Pages.Warehouses;
 public partial class WarehousesEdit
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IWarehouseService _warehouseService { get; set; }
+    public required IWarehouseService WarehouseService { get; set; }
 
     [Parameter]
     public int warehouseId { get; set; }
@@ -22,14 +22,14 @@ public partial class WarehousesEdit
     // ReSharper disable once NotAccessedField.Local
     protected string Title = "hinzufügen";
 
-    protected WarehouseVM warehouse = new();
+    protected WarehouseVm Warehouse = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (warehouseId != 0)
         {
             Title = "Bearbeiten";
-            warehouse = await _warehouseService.GetWarehouseDetails(warehouseId);
+            Warehouse = await WarehouseService.GetWarehouseDetails(warehouseId);
         }
     }
 
@@ -37,11 +37,11 @@ public partial class WarehousesEdit
     {
         if (warehouseId != 0)
         {
-            await _warehouseService.UpdateWarehouse(warehouseId, warehouse);
+            await WarehouseService.UpdateWarehouse(warehouseId, Warehouse);
         }
         else
         {
-            await _warehouseService.CreateWarehouse(warehouse);
+            await WarehouseService.CreateWarehouse(Warehouse);
         }
 
         NavigateToList();
@@ -50,6 +50,6 @@ public partial class WarehousesEdit
     public void NavigateToList()
     {
         StateHasChanged();
-        _navigationManager.NavigateTo("/Warehouses");
+        NavigationManager.NavigateTo("/Warehouses");
     }
 }

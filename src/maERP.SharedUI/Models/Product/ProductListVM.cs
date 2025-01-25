@@ -1,6 +1,6 @@
 ﻿namespace maERP.SharedUI.Models.Product;
 
-public class ProductListVM
+public class ProductListVm
 {
     public int Id { get; set; }
     public string Sku { get; set; } = string.Empty;

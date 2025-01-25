@@ -9,19 +9,19 @@ namespace maERP.SharedUI.Pages.TaxClasses;
 public partial class TaxClasses
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ITaxClassService _taxClassService { get; set; }
+    public required ITaxClassService TaxClassService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<OrderListVM> _dataGrid = new();
+    private MudDataGrid<OrderListVm> _dataGrid = new();
 
-    private async Task<GridData<TaxClassVM>> LoadGridData(GridState<TaxClassVM> state)
+    private async Task<GridData<TaxClassVm>> LoadGridData(GridState<TaxClassVm> state)
     {
-        var apiResponse = await _taxClassService.GetTaxClasses(state.Page, state.PageSize, _searchString);
-        GridData<TaxClassVM> data = new()
+        var apiResponse = await TaxClassService.GetTaxClasses(state.Page, state.PageSize, _searchString);
+        GridData<TaxClassVm> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

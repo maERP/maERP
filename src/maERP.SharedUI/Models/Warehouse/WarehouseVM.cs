@@ -2,7 +2,7 @@
 
 namespace maERP.SharedUI.Models.Warehouse;
 
-public class WarehouseVM
+public class WarehouseVm
 {
     public int Id { get; set; }
 

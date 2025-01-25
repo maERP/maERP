@@ -11,16 +11,16 @@ public partial class AiPrompts
     public required NavigationManager? navigationManager { get; set; }
 
     [Inject]
-    public required IAiPromptService _aiPromptService { get; set; }
+    public required IAiPromptService AiPromptService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<AiPromptListVM> _dataGrid = new();
+    private MudDataGrid<AiPromptListVm> _dataGrid = new();
 
-    private async Task<GridData<AiPromptListVM>> LoadGridData(GridState<AiPromptListVM> state)
+    private async Task<GridData<AiPromptListVm>> LoadGridData(GridState<AiPromptListVm> state)
     {
-        var apiResponse = await _aiPromptService.GetAiPrompts(state.Page, state.PageSize, _searchString);
-        GridData<AiPromptListVM> data = new()
+        var apiResponse = await AiPromptService.GetAiPrompts(state.Page, state.PageSize, _searchString);
+        GridData<AiPromptListVm> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

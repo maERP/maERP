@@ -7,21 +7,21 @@ namespace maERP.SharedUI.Pages.Orders;
 public partial class OrdersDetail
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IOrderService _orderService { get; set; }
+    public required IOrderService OrderService { get; set; }
 
     [Parameter]
     public int orderId { get; set; }
 
-    protected OrderVM order = new();
+    protected OrderVm Order = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (orderId != 0)
         {
-            order = await _orderService.GetOrderDetails(orderId);
+            Order = await OrderService.GetOrderDetails(orderId);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace maERP.SharedUI.Models.SalesChannel;
 
-public class SalesChannelVM
+public class SalesChannelVm
 {
     public int Id { get; set; }
     public SalesChannelType Type { get; set; }
@@ -21,6 +21,6 @@ public class SalesChannelVM
     public bool ExportOrders { get; set; }
 
     public int WarehouseId { get; set; }
-    public WarehouseVM? Warehouse { get; set; }
+    public WarehouseVm? Warehouse { get; set; }
 }
 

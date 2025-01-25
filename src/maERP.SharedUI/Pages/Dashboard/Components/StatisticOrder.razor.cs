@@ -7,12 +7,12 @@ namespace maERP.SharedUI.Pages.Dashboard.Components;
 public partial class StatisticOrder
 {
     [Inject]
-    public required IStatisticService _statisticService { get; set; }
+    public required IStatisticService StatisticService { get; set; }
 
-    private StatisticOrderResponse? statisticOrder;
+    private StatisticOrderResponse? _statisticOrder;
 
     protected override async Task OnInitializedAsync()
     {
-        statisticOrder = await _statisticService.GetStatisticOrderAsync();
+        _statisticOrder = await StatisticService.GetStatisticOrderAsync();
     }
 }

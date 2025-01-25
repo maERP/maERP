@@ -11,11 +11,11 @@ using maERP.Domain.Wrapper;
 namespace maERP.Server.Tests;
 
 [Collection("Sequential")]
-public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Program>>
+public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>>
 {
-    private readonly maERPWebApplicationFactory<Program> _webApplicationFactory;
+    private readonly MaErpWebApplicationFactory<Program> _webApplicationFactory;
 
-    public SalesChannelCrudTest(maERPWebApplicationFactory<Program> webApplicationFactory)
+    public SalesChannelCrudTest(MaErpWebApplicationFactory<Program> webApplicationFactory)
     {
         _webApplicationFactory = webApplicationFactory;
     }
@@ -95,7 +95,7 @@ public class SalesChannelCrudTest : IClassFixture<maERPWebApplicationFactory<Pro
                     Id = 5,
                     Type = SalesChannelType.PointOfSale,
                     Name = "SalesChannel 5",
-                    URL = string.Empty,
+                    Url = string.Empty,
                     Username = string.Empty,
                     Password = string.Empty,
                     ImportProducts = false,

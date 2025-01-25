@@ -15,7 +15,7 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
                 Id = 1,
                 Name = "Kasse Ladengeschäft",
                 Type = SalesChannelType.PointOfSale,
-                URL = string.Empty,
+                Url = string.Empty,
                 Username = string.Empty,
                 Password = string.Empty,
                 ImportProducts = false,

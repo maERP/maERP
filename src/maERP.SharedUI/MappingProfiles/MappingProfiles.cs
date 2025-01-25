@@ -17,57 +17,57 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<PaginatedResult<AiModelListVM>, AiModelListResponsePaginatedResult>().ReverseMap();
-        CreateMap<AiModelListVM, AiModelListResponse>().ReverseMap();
-        CreateMap<AiModelVM, AiModelDetailResponse>().ReverseMap();
-        CreateMap<AiModelVM, AiModelCreateCommand>().ReverseMap();
-        CreateMap<AiModelVM, AiModelUpdateCommand>().ReverseMap();
+        CreateMap<PaginatedResult<AiModelListVm>, AiModelListResponsePaginatedResult>().ReverseMap();
+        CreateMap<AiModelListVm, AiModelListResponse>().ReverseMap();
+        CreateMap<AiModelVm, AiModelDetailResponse>().ReverseMap();
+        CreateMap<AiModelVm, AiModelCreateCommand>().ReverseMap();
+        CreateMap<AiModelVm, AiModelUpdateCommand>().ReverseMap();
         
-        CreateMap<PaginatedResult<AiPromptListVM>, AiPromptListResponsePaginatedResult>().ReverseMap();
-        CreateMap<AiPromptListVM, AiPromptListResponse>().ReverseMap();
-        CreateMap<AiPromptVM, AiPromptDetailResponse>().ReverseMap();
-        CreateMap<AiPromptVM, AiPromptCreateCommand>().ReverseMap();
-        CreateMap<AiPromptVM, AiPromptUpdateCommand>().ReverseMap();
+        CreateMap<PaginatedResult<AiPromptListVm>, AiPromptListResponsePaginatedResult>().ReverseMap();
+        CreateMap<AiPromptListVm, AiPromptListResponse>().ReverseMap();
+        CreateMap<AiPromptVm, AiPromptDetailResponse>().ReverseMap();
+        CreateMap<AiPromptVm, AiPromptCreateCommand>().ReverseMap();
+        CreateMap<AiPromptVm, AiPromptUpdateCommand>().ReverseMap();
         
-        CreateMap<PaginatedResult<CustomerVM>, CustomerListResponsePaginatedResult>().ReverseMap();
-        CreateMap<CustomerVM, CustomerListResponse>().ReverseMap();
-        CreateMap<CustomerVM, CustomerDetailResponse>().ReverseMap();
-        CreateMap<CustomerVM, CustomerCreateCommand>().ReverseMap();
-        CreateMap<CustomerVM, CustomerUpdateCommand>().ReverseMap();
+        CreateMap<PaginatedResult<CustomerVm>, CustomerListResponsePaginatedResult>().ReverseMap();
+        CreateMap<CustomerVm, CustomerListResponse>().ReverseMap();
+        CreateMap<CustomerVm, CustomerDetailResponse>().ReverseMap();
+        CreateMap<CustomerVm, CustomerCreateCommand>().ReverseMap();
+        CreateMap<CustomerVm, CustomerUpdateCommand>().ReverseMap();
 
-        CreateMap<PaginatedResult<OrderListVM>, OrderListResponsePaginatedResult>().ReverseMap();
-        CreateMap<OrderListVM, OrderListResponse>().ReverseMap();
-        CreateMap<OrderVM, OrderDetailResponse>().ReverseMap();
-        CreateMap<OrderVM, OrderCreateCommand>().ReverseMap();
-        CreateMap<OrderVM, OrderUpdateCommand>().ReverseMap();
+        CreateMap<PaginatedResult<OrderListVm>, OrderListResponsePaginatedResult>().ReverseMap();
+        CreateMap<OrderListVm, OrderListResponse>().ReverseMap();
+        CreateMap<OrderVm, OrderDetailResponse>().ReverseMap();
+        CreateMap<OrderVm, OrderCreateCommand>().ReverseMap();
+        CreateMap<OrderVm, OrderUpdateCommand>().ReverseMap();
 
-        CreateMap<PaginatedResult<ProductListVM>, ProductListResponsePaginatedResult>().ReverseMap();
-        CreateMap<ProductListVM, ProductListResponse>().ReverseMap();
-        CreateMap<ProductVM, ProductDetailResponse>().ReverseMap();
-        CreateMap<ProductVM, ProductCreateCommand>().ReverseMap();
-        CreateMap<ProductVM, ProductCreateCommand>().ReverseMap();
+        CreateMap<PaginatedResult<ProductListVm>, ProductListResponsePaginatedResult>().ReverseMap();
+        CreateMap<ProductListVm, ProductListResponse>().ReverseMap();
+        CreateMap<ProductVm, ProductDetailResponse>().ReverseMap();
+        CreateMap<ProductVm, ProductCreateCommand>().ReverseMap();
+        CreateMap<ProductVm, ProductCreateCommand>().ReverseMap();
 
-        CreateMap<PaginatedResult<SalesChannelVM>, SalesChannelListResponsePaginatedResult>().ReverseMap();
-        CreateMap<SalesChannelVM, SalesChannelListResponse>().ReverseMap();
-        CreateMap<SalesChannelVM, SalesChannelDetailResponse>().ReverseMap();
-        CreateMap<SalesChannelVM, SalesChannelCreateCommand>().ReverseMap();
-        CreateMap<SalesChannelVM, SalesChannelUpdateCommand>().ReverseMap();
+        CreateMap<PaginatedResult<SalesChannelVm>, SalesChannelListResponsePaginatedResult>().ReverseMap();
+        CreateMap<SalesChannelVm, SalesChannelListResponse>().ReverseMap();
+        CreateMap<SalesChannelVm, SalesChannelDetailResponse>().ReverseMap();
+        CreateMap<SalesChannelVm, SalesChannelCreateCommand>().ReverseMap();
+        CreateMap<SalesChannelVm, SalesChannelUpdateCommand>().ReverseMap();
 
-        CreateMap<PaginatedResult<TaxClassVM>, TaxClassListResponsePaginatedResult>().ReverseMap();
-        CreateMap<TaxClassVM, TaxClassListResponse>().ReverseMap();
-        CreateMap<TaxClassVM, TaxClassDetailResponse>().ReverseMap();
-        CreateMap<TaxClassVM, TaxClassCreateCommand>().ReverseMap();
-        CreateMap<TaxClassVM, TaxClassUpdateCommand>().ReverseMap();
+        CreateMap<PaginatedResult<TaxClassVm>, TaxClassListResponsePaginatedResult>().ReverseMap();
+        CreateMap<TaxClassVm, TaxClassListResponse>().ReverseMap();
+        CreateMap<TaxClassVm, TaxClassDetailResponse>().ReverseMap();
+        CreateMap<TaxClassVm, TaxClassCreateCommand>().ReverseMap();
+        CreateMap<TaxClassVm, TaxClassUpdateCommand>().ReverseMap();
 
-        CreateMap<UserVM, UserListResponse>().ReverseMap();
-        CreateMap<UserVM, UserDetailResponse>().ReverseMap();
-        CreateMap<UserVM, UserCreateCommand>().ReverseMap();
-        CreateMap<UserVM, UserUpdateCommand>().ReverseMap();
+        CreateMap<UserVm, UserListResponse>().ReverseMap();
+        CreateMap<UserVm, UserDetailResponse>().ReverseMap();
+        CreateMap<UserVm, UserCreateCommand>().ReverseMap();
+        CreateMap<UserVm, UserUpdateCommand>().ReverseMap();
 
-        CreateMap<PaginatedResult<WarehouseVM>, WarehouseListResponsePaginatedResult>().ReverseMap();
-        CreateMap<WarehouseVM, WarehouseListResponse>().ReverseMap();
-        CreateMap<WarehouseVM, WarehouseDetailResponse>().ReverseMap();
-        CreateMap<WarehouseVM, WarehouseCreateCommand>().ReverseMap();
-        CreateMap<WarehouseVM, WarehouseUpdateCommand>().ReverseMap();
+        CreateMap<PaginatedResult<WarehouseVm>, WarehouseListResponsePaginatedResult>().ReverseMap();
+        CreateMap<WarehouseVm, WarehouseListResponse>().ReverseMap();
+        CreateMap<WarehouseVm, WarehouseDetailResponse>().ReverseMap();
+        CreateMap<WarehouseVm, WarehouseCreateCommand>().ReverseMap();
+        CreateMap<WarehouseVm, WarehouseUpdateCommand>().ReverseMap();
     }
 }

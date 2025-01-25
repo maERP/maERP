@@ -6,10 +6,10 @@ namespace maERP.SharedUI.Pages.Warehouses;
 public partial class WarehousesDelete
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IWarehouseService _warehouseService { get; set; }
+    public required IWarehouseService WarehouseService { get; set; }
 
     [Parameter]
     public int warehouseId { get; set; }
@@ -18,8 +18,8 @@ public partial class WarehousesDelete
     {
         if (warehouseId > 0)
         {
-            await _warehouseService.DeleteWarehouse(warehouseId);
-            _navigationManager.NavigateTo("/Warehouses");
+            await WarehouseService.DeleteWarehouse(warehouseId);
+            NavigationManager.NavigateTo("/Warehouses");
         }
     }
 }

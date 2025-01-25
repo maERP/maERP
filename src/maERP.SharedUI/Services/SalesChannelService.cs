@@ -16,27 +16,27 @@ public class SalesChannelService : BaseHttpService, ISalesChannelService
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResult<SalesChannelVM>> GetSalesChannels(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<PaginatedResult<SalesChannelVm>> GetSalesChannels(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var salesChannels = await _client.SalesChannelsGETAsync(pageNumber, pageSize, searchString, orderBy);
-        return _mapper.Map<PaginatedResult<SalesChannelVM>>(salesChannels);
+        var salesChannels = await Client.SalesChannelsGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<SalesChannelVm>>(salesChannels);
     }
 
-    public async Task<SalesChannelVM> GetSalesChannelDetails(int id)
+    public async Task<SalesChannelVm> GetSalesChannelDetails(int id)
     {
         await AddBearerToken();
-        var salesChannel = await _client.SalesChannelsGET2Async(id);
-        return _mapper.Map<SalesChannelVM>(salesChannel);
+        var salesChannel = await Client.SalesChannelsGET2Async(id);
+        return _mapper.Map<SalesChannelVm>(salesChannel);
     }
 
-    public async Task<Response<Guid>> CreateSalesChannel(SalesChannelVM salesChannel)
+    public async Task<Response<Guid>> CreateSalesChannel(SalesChannelVm salesChannel)
     {
         try
         {
             await AddBearerToken();
             var salesChannelCreateCommand = _mapper.Map<SalesChannelCreateCommand>(salesChannel);
-            await _client.SalesChannelsPOSTAsync(salesChannelCreateCommand);
+            await Client.SalesChannelsPOSTAsync(salesChannelCreateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -48,13 +48,13 @@ public class SalesChannelService : BaseHttpService, ISalesChannelService
         }
     }
 
-    public async Task<Response<Guid>> UpdateSalesChannel(int id, SalesChannelVM salesChannel)
+    public async Task<Response<Guid>> UpdateSalesChannel(int id, SalesChannelVm salesChannel)
     {
         try
         {
             await AddBearerToken();
             var salesChannelUpdateCommand = _mapper.Map<SalesChannelUpdateCommand>(salesChannel);
-            await _client.SalesChannelsPUTAsync(id, salesChannelUpdateCommand);
+            await Client.SalesChannelsPUTAsync(id, salesChannelUpdateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -70,7 +70,7 @@ public class SalesChannelService : BaseHttpService, ISalesChannelService
         try
         {
             await AddBearerToken();
-            await _client.SalesChannelsDELETEAsync(id);
+            await Client.SalesChannelsDELETEAsync(id);
             return new Response<Guid>
             {
                 Success = true

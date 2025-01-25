@@ -16,7 +16,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class OrdersController(IMediator _mediator) : ControllerBase
+public class OrdersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<OrdersController>
     [HttpGet]
@@ -27,7 +27,7 @@ public class OrdersController(IMediator _mediator) : ControllerBase
             orderBy = "DateOrdered Descending";
         }
 
-        var orders = await _mediator.Send(new OrderListQuery(pageNumber, pageSize, searchString, orderBy));
+        var orders = await mediator.Send(new OrderListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(orders);
     }
 
@@ -39,7 +39,7 @@ public class OrdersController(IMediator _mediator) : ControllerBase
     {
         try 
         {
-            var order = await _mediator.Send(new OrderDetailQuery { Id = id });
+            var order = await mediator.Send(new OrderDetailQuery { Id = id });
             return Ok(order);
         }
         catch (NotFoundException)
@@ -54,7 +54,7 @@ public class OrdersController(IMediator _mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Create(OrderCreateCommand orderCreateCommand)
     {
-        var response = await _mediator.Send(orderCreateCommand);
+        var response = await mediator.Send(orderCreateCommand);
         return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
@@ -67,7 +67,7 @@ public class OrdersController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult> Update(int id, OrderUpdateCommand orderUpdateCommand)
     {
         orderUpdateCommand.Id = id;
-        await _mediator.Send(orderUpdateCommand);
+        await mediator.Send(orderUpdateCommand);
         return NoContent();
     }
 
@@ -79,7 +79,7 @@ public class OrdersController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult> Delete(int id)
     {
         var command = new DeleteOrderCommand { Id = id };
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 }

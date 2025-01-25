@@ -16,27 +16,27 @@ public class AiPromptService : BaseHttpService, IAiPromptService
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResult<AiPromptListVM>> GetAiPrompts(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<PaginatedResult<AiPromptListVm>> GetAiPrompts(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var aiPrompts = await _client.AiPromptsGETAsync(pageNumber, pageSize, searchString, orderBy);
-        return _mapper.Map<PaginatedResult<AiPromptListVM>>(aiPrompts);
+        var aiPrompts = await Client.AiPromptsGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<AiPromptListVm>>(aiPrompts);
     }
 
-    public async Task<AiPromptVM> GetAiPromptDetails(int id)
+    public async Task<AiPromptVm> GetAiPromptDetails(int id)
     {
         await AddBearerToken();
-        var aiPrompt = await _client.AiPromptsGET2Async(id);
-        return _mapper.Map<AiPromptVM>(aiPrompt);
+        var aiPrompt = await Client.AiPromptsGET2Async(id);
+        return _mapper.Map<AiPromptVm>(aiPrompt);
     }
 
-    public async Task<Response<Guid>> CreateAiPrompt(AiPromptVM aiPrompt)
+    public async Task<Response<Guid>> CreateAiPrompt(AiPromptVm aiPrompt)
     {
         try
         {
             await AddBearerToken();
             var aiPromptCreateCommand = _mapper.Map<AiPromptCreateCommand>(aiPrompt);
-            await _client.AiPromptsPOSTAsync(aiPromptCreateCommand);
+            await Client.AiPromptsPOSTAsync(aiPromptCreateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -48,13 +48,13 @@ public class AiPromptService : BaseHttpService, IAiPromptService
         }
     }
 
-    public async Task<Response<Guid>> UpdateAiPrompt(int id, AiPromptVM aiPrompt)
+    public async Task<Response<Guid>> UpdateAiPrompt(int id, AiPromptVm aiPrompt)
     {
         try
         {
             await AddBearerToken();
             var aiPromptUpdateCommand = _mapper.Map<AiPromptUpdateCommand>(aiPrompt);
-            await _client.AiPromptsPUTAsync(id, aiPromptUpdateCommand);
+            await Client.AiPromptsPUTAsync(id, aiPromptUpdateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -70,7 +70,7 @@ public class AiPromptService : BaseHttpService, IAiPromptService
         try
         {
             await AddBearerToken();
-            await _client.AiPromptsDELETEAsync(id);
+            await Client.AiPromptsDELETEAsync(id);
             return new Response<Guid>
             {
                 Success = true

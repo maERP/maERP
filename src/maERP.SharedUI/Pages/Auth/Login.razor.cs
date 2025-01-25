@@ -10,19 +10,19 @@ namespace maERP.SharedUI.Pages.Auth;
 public partial class Login
 {
     [Inject]
-    private NavigationManager? _navigationManager { get; set; }
+    private NavigationManager? NavigationManager { get; set; }
 
     [Inject]
-    private ILocalStorageService? _localStorage { get; set; }
+    private ILocalStorageService? LocalStorage { get; set; }
 
     [Inject]
-    private IAuthenticationService? _authenticationService { get; set; }
+    private IAuthenticationService? AuthenticationService { get; set; }
 
     [Inject]
-    public ISnackbar? _snackbar { get; set; }
+    public ISnackbar? Snackbar { get; set; }
 
     private bool _showServerOverlay;
-    private string newServer = string.Empty;
+    private string _newServer = string.Empty;
 
     // ReSharper disable once NotAccessedField.Local
     MudForm? _form;
@@ -39,24 +39,24 @@ public partial class Login
     {
         await base.OnInitializedAsync();
 
-        if (await _localStorage!.ContainKeyAsync("serverList"))
+        if (await LocalStorage!.ContainKeyAsync("serverList"))
         {
             try
             {
-                string serverJson = await _localStorage.GetItemAsStringAsync("serverList") ?? throw new Exception();
+                string serverJson = await LocalStorage.GetItemAsStringAsync("serverList") ?? throw new Exception();
                 _serverList = JsonSerializer.Deserialize<List<LoginServer>>(serverJson)!;
             }
             catch (JsonException)
             {
-                await _localStorage.RemoveItemAsync("serverList");
+                await LocalStorage.RemoveItemAsync("serverList");
             }
         }
 
         SelectFirstServerFromList();
 
-        if (await _localStorage.ContainKeyAsync("email"))
+        if (await LocalStorage.ContainKeyAsync("email"))
         {
-            _model.Email = await _localStorage.GetItemAsStringAsync("email") ?? throw new Exception();
+            _model.Email = await LocalStorage.GetItemAsStringAsync("email") ?? throw new Exception();
         }
     }
 
@@ -84,13 +84,13 @@ public partial class Login
     {
         var newServerItem = new LoginServer
         {
-            Url = newServer,
+            Url = _newServer,
             LastUsed = DateTime.MinValue,
             Version = string.Empty
         };
 
         _serverList.Add(newServerItem);
-        newServer = string.Empty;
+        _newServer = string.Empty;
     }
 
     void SelectFirstServerFromList()
@@ -103,30 +103,30 @@ public partial class Login
 
     private async void OnSubmit()
     {
-        await _localStorage!.SetItemAsStringAsync("server", _model.Server);
+        await LocalStorage!.SetItemAsStringAsync("server", _model.Server);
 
-        var loginResponse = await _authenticationService!.LoginAsync(_model.Email, _model.Password); // TODO add _model.RememberMe
+        var loginResponse = await AuthenticationService!.LoginAsync(_model.Email, _model.Password); // TODO add _model.RememberMe
 
         if (loginResponse)
         {
             if (_model.RememberMe)
             {
-                await _localStorage.SetItemAsStringAsync("email", _model.Email);
-                await _localStorage.SetItemAsStringAsync("password", _model.Password);
+                await LocalStorage.SetItemAsStringAsync("email", _model.Email);
+                await LocalStorage.SetItemAsStringAsync("password", _model.Password);
             }
 
             string serverJson = JsonSerializer.Serialize(_serverList);
-            await _localStorage.SetItemAsStringAsync("serverList", serverJson);
+            await LocalStorage.SetItemAsStringAsync("serverList", serverJson);
 
-            _navigationManager!.NavigateTo("/");
+            NavigationManager!.NavigateTo("/");
             return;
         }
 
         _errorMessage = "Login fehlgeschlagen";
 
-        _snackbar!.Add(_errorMessage, Severity.Error);
+        Snackbar!.Add(_errorMessage, Severity.Error);
 
-        await _localStorage.RemoveItemAsync("server");
+        await LocalStorage.RemoveItemAsync("server");
 
         StateHasChanged();
     }

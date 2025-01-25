@@ -7,7 +7,7 @@ public class SalesChannel : BaseEntity, IBaseEntity
 {
     public SalesChannelType Type { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string URL { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public bool ImportProducts { get; set; }

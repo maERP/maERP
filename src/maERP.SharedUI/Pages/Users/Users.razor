@@ -11,13 +11,13 @@
     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Users/Add" />
 </MudStack>
 
-@if (users == null)
+@if (_users == null)
 {
     <p><em>Lade...</em></p>
 }
 else
 {
-    <MudDataGrid Items="@users" SortMode="SortMode.Single" Class="mb-8">
+    <MudDataGrid Items="@_users" SortMode="SortMode.Single" Class="mb-8">
         <Columns>
             <PropertyColumn Property="x => x.Email" Title="E-Mail" />
             <PropertyColumn Property="x => x.Firstname" Title="Vorname" />

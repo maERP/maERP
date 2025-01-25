@@ -6,9 +6,9 @@ namespace maERP.SharedUI.Contracts;
 
 public interface ITaxClassService
 {
-    Task<PaginatedResult<TaxClassVM>> GetTaxClasses(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
-    Task<TaxClassVM> GetTaxClassDetails(int id);
-    Task<Response<Guid>> CreateTaxClass(TaxClassVM taxClass);
-    Task<Response<Guid>> UpdateTaxClass(int id, TaxClassVM taxClass);
+    Task<PaginatedResult<TaxClassVm>> GetTaxClasses(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "");
+    Task<TaxClassVm> GetTaxClassDetails(int id);
+    Task<Response<Guid>> CreateTaxClass(TaxClassVm taxClass);
+    Task<Response<Guid>> UpdateTaxClass(int id, TaxClassVm taxClass);
     Task<Response<Guid>> DeleteTaxClass(int id);
 }

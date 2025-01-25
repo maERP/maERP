@@ -16,27 +16,27 @@ public class CustomerService : BaseHttpService, ICustomerService
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResult<CustomerVM>> GetCustomers(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<PaginatedResult<CustomerVm>> GetCustomers(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var customers = await _client.CustomersGETAsync(pageNumber, pageSize, searchString, orderBy);
-        return _mapper.Map<PaginatedResult<CustomerVM>>(customers);
+        var customers = await Client.CustomersGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<CustomerVm>>(customers);
     }
 
-    public async Task<CustomerVM> GetCustomerDetails(int id)
+    public async Task<CustomerVm> GetCustomerDetails(int id)
     {
         await AddBearerToken();
-        var customer = await _client.CustomersGET2Async(id);
-        return _mapper.Map<CustomerVM>(customer);
+        var customer = await Client.CustomersGET2Async(id);
+        return _mapper.Map<CustomerVm>(customer);
     }
 
-    public async Task<Response<Guid>> CreateCustomer(CustomerVM customer)
+    public async Task<Response<Guid>> CreateCustomer(CustomerVm customer)
     {
         try
         {
             await AddBearerToken();
             var customerCreateCommand = _mapper.Map<CustomerCreateCommand>(customer);
-            await _client.CustomersPOSTAsync(customerCreateCommand);
+            await Client.CustomersPOSTAsync(customerCreateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -48,13 +48,13 @@ public class CustomerService : BaseHttpService, ICustomerService
         }
     }
 
-    public async Task<Response<Guid>> UpdateCustomer(int id, CustomerVM customer)
+    public async Task<Response<Guid>> UpdateCustomer(int id, CustomerVm customer)
     {
         try
         {
             await AddBearerToken();
             var customerUpdateCommand = _mapper.Map<CustomerUpdateCommand>(customer);
-            await _client.CustomersPUTAsync(id, customerUpdateCommand);
+            await Client.CustomersPUTAsync(id, customerUpdateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -70,7 +70,7 @@ public class CustomerService : BaseHttpService, ICustomerService
         try
         {
             await AddBearerToken();
-            await _client.CustomersDELETEAsync(id);
+            await Client.CustomersDELETEAsync(id);
             return new Response<Guid>
             {
                 Success = true

@@ -7,15 +7,15 @@ namespace maERP.SharedUI.Pages.Users;
 public partial class Users
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IUserService _userService { get; set; }
+    public required IUserService UserService { get; set; }
 
-    private ICollection<UserVM>? users;
+    private ICollection<UserVm>? _users;
 
     protected override async Task OnInitializedAsync()
     {
-        users = await _userService.GetUsers();
+        _users = await UserService.GetUsers();
     }
 }

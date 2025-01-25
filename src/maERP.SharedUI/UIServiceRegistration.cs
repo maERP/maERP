@@ -11,9 +11,9 @@ using MudBlazor.Services;
 
 namespace maERP.SharedUI;
 
-public static class UIServicesRegistration
+public static class UiServicesRegistration
 {
-    public static IServiceCollection AddUIServices(this IServiceCollection services,
+    public static IServiceCollection AddUiServices(this IServiceCollection services,
         IConfiguration configuration)
     {
         services.AddBlazoredLocalStorage();
@@ -21,7 +21,7 @@ public static class UIServicesRegistration
         services.AddAuthorizationCore();
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddHttpClient<IClient, Client>(Client => Client.BaseAddress = new Uri("https://localhost:8443/"));
+        services.AddHttpClient<IClient, Client>(client => client.BaseAddress = new Uri("https://localhost:8443/"));
 
         services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();

@@ -10,16 +10,16 @@ namespace maERP.SharedUI.Pages.SalesChannels
     public partial class SalesChannelsEdit
     {
         [Inject]
-        public required NavigationManager _navigationManager { get; set; }
+        public required NavigationManager NavigationManager { get; set; }
 
         [Inject]
-        public required ISalesChannelService _salesChannelService { get; set; }
+        public required ISalesChannelService SalesChannelService { get; set; }
 
         [Inject]
-        public required IWarehouseService _warehouseService { get; set; }
+        public required IWarehouseService WarehouseService { get; set; }
 
         [Inject]
-        public required ISnackbar _snackbar { get; set; }
+        public required ISnackbar Snackbar { get; set; }
 
         [Parameter]
         public int salesChannelId { get; set; }
@@ -29,8 +29,8 @@ namespace maERP.SharedUI.Pages.SalesChannels
 
         protected string Title = "hinzufügen";
 
-        protected SalesChannelVM salesChannel = new();
-        protected List<WarehouseVM> warehouses = new();
+        protected SalesChannelVm SalesChannel = new();
+        protected List<WarehouseVm> Warehouses = new();
 
         /*
         protected override async Task OnParametersSetAsync()
@@ -50,32 +50,32 @@ namespace maERP.SharedUI.Pages.SalesChannels
 
             if (salesChannelId != 0)
             {
-                response = await _salesChannelService.UpdateSalesChannel(salesChannelId, salesChannel);
+                response = await SalesChannelService.UpdateSalesChannel(salesChannelId, SalesChannel);
             }
             else
             {
-                await _salesChannelService.CreateSalesChannel(salesChannel);
+                await SalesChannelService.CreateSalesChannel(SalesChannel);
             }
 
             if (response.Success)
             {
-                _snackbar.Add("Vertriebskanal gespeichert", Severity.Success);
+                Snackbar.Add("Vertriebskanal gespeichert", Severity.Success);
                 ReturnToList();
             }
             else
             {
-                _snackbar.Add("Fehler beim Speichern des Vertriebskanals", Severity.Error);
+                Snackbar.Add("Fehler beim Speichern des Vertriebskanals", Severity.Error);
 
                 foreach (var error in response.ValidationErrors)
                 {
-                    _snackbar.Add(error.ToString(), Severity.Error);
+                    Snackbar.Add(error.ToString(), Severity.Error);
                 }
             }
         }
 
         public void ReturnToList()
         {
-            _navigationManager.NavigateTo("/SalesChannels");
+            NavigationManager.NavigateTo("/SalesChannels");
         }
     }
 }

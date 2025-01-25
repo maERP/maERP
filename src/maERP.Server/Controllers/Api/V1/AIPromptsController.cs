@@ -16,7 +16,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class AiPromptsController(IMediator _mediator) : ControllerBase
+public class AiPromptsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<AiPromptsController>
     [HttpGet]
@@ -27,7 +27,7 @@ public class AiPromptsController(IMediator _mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var aIPrompts = await _mediator.Send(new AiPromptListQuery(pageNumber, pageSize, searchString, orderBy));
+        var aIPrompts = await mediator.Send(new AiPromptListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(aIPrompts);
     }
 
@@ -39,7 +39,7 @@ public class AiPromptsController(IMediator _mediator) : ControllerBase
     {
         try 
         {
-            var aiPrompt = await _mediator.Send(new AiPromptDetailQuery { Id = id });
+            var aiPrompt = await mediator.Send(new AiPromptDetailQuery { Id = id });
             return Ok(aiPrompt);
         }
         catch (NotFoundException)
@@ -54,7 +54,7 @@ public class AiPromptsController(IMediator _mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Create(AiPromptCreateCommand aIPromptCreateCommand)
     {
-        var response = await _mediator.Send(aIPromptCreateCommand);
+        var response = await mediator.Send(aIPromptCreateCommand);
         return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
@@ -67,7 +67,7 @@ public class AiPromptsController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult<AiPromptDetailResponse>> Update(int id, AiPromptUpdateCommand aIPromptUpdateCommand)
     {
         aIPromptUpdateCommand.Id = id;
-        await _mediator.Send(aIPromptUpdateCommand);
+        await mediator.Send(aIPromptUpdateCommand);
         return NoContent();
     }
 
@@ -80,7 +80,7 @@ public class AiPromptsController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult> Delete(int id)
     {
         var command = new AiPromptDeleteCommand { Id = id };
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 }

@@ -83,7 +83,7 @@ public class Shopware5OrderImportTask : IHostedService
                 try
                 {
                     var client = new HttpClient();
-                    string requestUrl = salesChannel.URL + $"/api/orders?start={requestStart}&limit={requestLimit}";
+                    string requestUrl = salesChannel.Url + $"/api/orders?start={requestStart}&limit={requestLimit}";
                     client.Timeout = TimeSpan.FromSeconds(Convert.ToDouble(1000000));
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -129,7 +129,7 @@ public class Shopware5OrderImportTask : IHostedService
                                 continue;
                             }
 
-                            string requestDetailUrl = salesChannel.URL + $"/api/orders/{remoteOrder.id}";
+                            string requestDetailUrl = salesChannel.Url + $"/api/orders/{remoteOrder.id}";
                             response = await client.GetAsync(requestDetailUrl).ConfigureAwait(false);
 
                             if (response.IsSuccessStatusCode)
@@ -204,7 +204,7 @@ public class Shopware5OrderImportTask : IHostedService
                                     salesChannelImportOrder.Items = remoteOrderDetail.details.Select(item => new SalesChannelImportOrderItem
                                     {
                                         Name = item.articleName,
-                                        SKU = item.articleNumber,
+                                        Sku = item.articleNumber,
                                         Quantity = (double)item.quantity,
                                         Price = item.price,
                                         TaxRate = item.taxRate,

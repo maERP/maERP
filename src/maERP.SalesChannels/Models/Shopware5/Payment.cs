@@ -6,7 +6,7 @@ public class Payment
     public string name { get; set; } = string.Empty;
     public string description { get; set; } = string.Empty;
     public string template { get; set; } = string.Empty;
-    public string _class { get; set; } = string.Empty;
+    public string Class { get; set; } = string.Empty;
     public string table { get; set; } = string.Empty;
     public bool hide { get; set; }
     public string additionalDescription { get; set; } = string.Empty;

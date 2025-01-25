@@ -13,6 +13,6 @@ public class CountryRepository : GenericRepository<Country>, ICountryRepository
     
     public async Task<Country?> GetCountryByString(string country)
     {
-        return await _context.Country.FirstOrDefaultAsync(c => c.Name == country || c.CountryCode == country);
+        return await Context.Country.FirstOrDefaultAsync(c => c.Name == country || c.CountryCode == country);
     }
 }

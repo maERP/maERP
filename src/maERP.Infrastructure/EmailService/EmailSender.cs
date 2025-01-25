@@ -8,21 +8,21 @@ namespace maERP.Infrastructure.EmailService;
 
 public class EmailSender : IEmailSender
 {
-    public EmailSettings _emailSettings { get; }
+    public EmailSettings EmailSettings { get; }
 
     public EmailSender(IOptions<EmailSettings> emailSettings)
     {
-        _emailSettings = emailSettings.Value;
+        EmailSettings = emailSettings.Value;
     }
 
     public async Task<bool> SendEmail(EmailMessage email)
     {
-        var client = new SendGridClient(_emailSettings.ApiKey);
+        var client = new SendGridClient(EmailSettings.ApiKey);
         var to = new EmailAddress(email.To);
         var from = new EmailAddress
         {
-            Email = _emailSettings.FromAddress,
-            Name = _emailSettings.FromName
+            Email = EmailSettings.FromAddress,
+            Name = EmailSettings.FromName
         };
 
         var message = MailHelper.CreateSingleEmail(from, to, email.Subject, email.Body, email.Body);

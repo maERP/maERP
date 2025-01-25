@@ -16,7 +16,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class WarehousesController(IMediator _mediator) : ControllerBase
+public class WarehousesController(IMediator mediator) : ControllerBase
 {
     // GET: api/<WarehousesController>
     [HttpGet]
@@ -27,7 +27,7 @@ public class WarehousesController(IMediator _mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var warehouses = await _mediator.Send(new WarehouseListQuery(pageNumber, pageSize, searchString, orderBy));
+        var warehouses = await mediator.Send(new WarehouseListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(warehouses);
     }
 
@@ -39,7 +39,7 @@ public class WarehousesController(IMediator _mediator) : ControllerBase
     {
         try 
         {
-            var warehouse = await _mediator.Send(new WarehouseDetailQuery { Id = id });
+            var warehouse = await mediator.Send(new WarehouseDetailQuery { Id = id });
             return Ok(warehouse);
         }
         catch (NotFoundException)
@@ -54,7 +54,7 @@ public class WarehousesController(IMediator _mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Create(WarehouseCreateCommand warehouseCreateCommand)
     {
-        var response = await _mediator.Send(warehouseCreateCommand);
+        var response = await mediator.Send(warehouseCreateCommand);
         return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
@@ -67,7 +67,7 @@ public class WarehousesController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult<WarehouseDetailResponse>> Update(int id, WarehouseUpdateCommand warehouseUpdateCommand)
     {
         warehouseUpdateCommand.Id = id;
-        await _mediator.Send(warehouseUpdateCommand);
+        await mediator.Send(warehouseUpdateCommand);
         return NoContent();
     }
 
@@ -80,7 +80,7 @@ public class WarehousesController(IMediator _mediator) : ControllerBase
     public async Task<ActionResult> Delete(int id)
     {
         var command = new WarehouseDeleteCommand { Id = id };
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 }

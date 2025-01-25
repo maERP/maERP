@@ -16,27 +16,27 @@ public class WarehouseService : BaseHttpService, IWarehouseService
         _mapper = mapper;
     }
 
-    public async Task<PaginatedResult<WarehouseVM>> GetWarehouses(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<PaginatedResult<WarehouseVm>> GetWarehouses(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         await AddBearerToken();
-        var warehouses = await _client.WarehousesGETAsync(pageNumber, pageSize, searchString, orderBy);
-        return _mapper.Map<PaginatedResult<WarehouseVM>>(warehouses);
+        var warehouses = await Client.WarehousesGETAsync(pageNumber, pageSize, searchString, orderBy);
+        return _mapper.Map<PaginatedResult<WarehouseVm>>(warehouses);
     }
 
-    public async Task<WarehouseVM> GetWarehouseDetails(int id)
+    public async Task<WarehouseVm> GetWarehouseDetails(int id)
     {
         await AddBearerToken();
-        var warehouse = await _client.WarehousesGET2Async(id);
-        return _mapper.Map<WarehouseVM>(warehouse);
+        var warehouse = await Client.WarehousesGET2Async(id);
+        return _mapper.Map<WarehouseVm>(warehouse);
     }
 
-    public async Task<Response<Guid>> CreateWarehouse(WarehouseVM warehouse)
+    public async Task<Response<Guid>> CreateWarehouse(WarehouseVm warehouse)
     {
         try
         {
             await AddBearerToken();
             var warehouseCreateCommand = _mapper.Map<WarehouseCreateCommand>(warehouse);
-            await _client.WarehousesPOSTAsync(warehouseCreateCommand);
+            await Client.WarehousesPOSTAsync(warehouseCreateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -48,13 +48,13 @@ public class WarehouseService : BaseHttpService, IWarehouseService
         }
     }
 
-    public async Task<Response<Guid>> UpdateWarehouse(int id, WarehouseVM warehouse)
+    public async Task<Response<Guid>> UpdateWarehouse(int id, WarehouseVm warehouse)
     {
         try
         {
             await AddBearerToken();
             var warehouseUpdateCommand = _mapper.Map<WarehouseUpdateCommand>(warehouse);
-            await _client.WarehousesPUTAsync(id, warehouseUpdateCommand);
+            await Client.WarehousesPUTAsync(id, warehouseUpdateCommand);
             return new Response<Guid>
             {
                 Success = true
@@ -70,7 +70,7 @@ public class WarehouseService : BaseHttpService, IWarehouseService
         try
         {
             await AddBearerToken();
-            await _client.WarehousesDELETEAsync(id);
+            await Client.WarehousesDELETEAsync(id);
             return new Response<Guid>
             {
                 Success = true

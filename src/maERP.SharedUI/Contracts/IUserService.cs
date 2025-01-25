@@ -5,9 +5,9 @@ namespace maERP.SharedUI.Contracts;
 
 public interface IUserService
 {
-    Task<List<UserVM>> GetUsers();
-    Task<UserVM> GetUserDetails(string id);
-    Task<Response<Guid>> CreateUser(UserVM user);
-    Task<Response<Guid>> UpdateUser(string id, UserVM user);
+    Task<List<UserVm>> GetUsers();
+    Task<UserVm> GetUserDetails(string id);
+    Task<Response<Guid>> CreateUser(UserVm user);
+    Task<Response<Guid>> UpdateUser(string id, UserVm user);
     Task<Response<Guid>> DeleteUser(string id);
 }

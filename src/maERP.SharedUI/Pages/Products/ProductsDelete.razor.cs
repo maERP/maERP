@@ -6,10 +6,10 @@ namespace maERP.SharedUI.Pages.Products;
 public partial class ProductsDelete
 {
     [Inject]
-    public required NavigationManager _navigationManager { get; set; }
+    public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IProductService _productService { get; set; }
+    public required IProductService ProductService { get; set; }
 
     [Parameter]
     public int productId { get; set; }
@@ -18,8 +18,8 @@ public partial class ProductsDelete
     {
         if (productId > 0)
         {
-            await _productService.DeleteProduct(productId);
-            _navigationManager.NavigateTo("/Products");
+            await ProductService.DeleteProduct(productId);
+            NavigationManager.NavigateTo("/Products");
         }
     }
 }

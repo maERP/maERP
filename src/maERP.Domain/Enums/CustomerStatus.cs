@@ -4,5 +4,5 @@ public enum CustomerStatus
 {
     Active = 1,
     Inactive = 2,
-    NoDOI = 3,
+    NoDoi = 3,
 }
