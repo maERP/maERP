@@ -1,7 +1,5 @@
 #nullable disable
 
-namespace maERP.Server;
-
 using maERP.Application;
 using maERP.Ai;
 using maERP.Application.Contracts.Persistence;
@@ -25,190 +23,184 @@ using OpenTelemetry.Trace;
 using Serilog;
 using OpenTelemetry.Exporter;
 
-public static class Program
-{
-    public static void Main(string[] args)
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
+builder.Logging.AddOpenTelemetry(logging => {
+    logging.AddOtlpExporter(options =>
     {
-        const string serviceName = "maERP.Server";
+        options.Endpoint = new Uri("http://maerp.de:4317");
+        options.Protocol = OtlpExportProtocol.Grpc;
+    });
+});
 
-        var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
 
-        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-        builder.Services.AddProblemDetails();
+builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection("ConnectionStrings"));
 
-        builder.Logging.AddOpenTelemetry(logging => {
-            // The rest of your setup code goes here
-            logging.AddOtlpExporter(options =>
-            {
-                options.Endpoint = new Uri("http://maerp.de:4317");
-                options.Protocol = OtlpExportProtocol.Grpc;
-            });
+builder.Host.UseSerilog(
+    (context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
+);
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.AllowAnyOrigin();
+            policy.AllowAnyHeader();
+            policy.AllowAnyMethod();
         });
+});
 
-        builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
+builder.Services.AddSwaggerServices();
+builder.Services.AddApiVersioningServices(builder.Configuration);
+builder.Services.AddOpenTelemetryServices(builder.Configuration, "maERP.Server");
 
-        builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.AddControllersWithViews();
+builder.Services.AddControllers().AddJsonOptions(opts =>
+    opts.JsonSerializerOptions.PropertyNamingPolicy = null); // JsonNamingPolicy.CamelCase);
 
-        builder.Host.UseSerilog(
-            (context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
-        );
+builder.Services.AddResponseCaching(options =>
+{
+    options.MaximumBodySize = 1024; // 1 MB
+    options.UseCaseSensitivePaths = true;
+});
 
-        builder.Services.AddCors(options =>
-        {
-            options.AddDefaultPolicy(
-                policy =>
-                {
-                    policy.AllowAnyOrigin();
-                    policy.AllowAnyHeader();
-                    policy.AllowAnyMethod();
-                });
-        });
+builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
 
-        builder.Services.AddSwaggerServices();
-        builder.Services.AddApiVersioningServices(builder.Configuration);
-        builder.Services.AddOpenTelemetryServices(builder.Configuration, serviceName);
+// IOptions<DatabaseOptions> dbOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<DatabaseOptions>>();
+// builder.Services.AddPersistenceServices(dbOptions);
+var serviceScopeFactory = builder.Services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>();
 
-        builder.Services.AddControllersWithViews();
-        builder.Services.AddControllers().AddJsonOptions(opts =>
-            opts.JsonSerializerOptions.PropertyNamingPolicy = null); // JsonNamingPolicy.CamelCase);
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddPersistenceServices(serviceScopeFactory);    
+}
 
-        builder.Services.AddResponseCaching(options =>
-        {
-            options.MaximumBodySize = 1024; // 1 MB
-            options.UseCaseSensitivePaths = true;
-        });
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddIdentityServices(builder.Configuration);
 
-        builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
+// Add health checks
+builder.Services.AddHealthChecks()
+    // .AddDbContextCheck<ApplicationDbContext>("Database")
+    .AddCheck("Self", () => HealthCheckResult.Healthy("Service is running."));
 
-        // IOptions<DatabaseOptions> dbOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<DatabaseOptions>>();
-        // builder.Services.AddPersistenceServices(dbOptions);
-        var serviceScopeFactory = builder.Services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>();
+builder.Services.AddAiServices();
 
-        if (!builder.Environment.IsEnvironment("Testing"))
-        {
-            builder.Services.AddPersistenceServices(serviceScopeFactory);    
-        }
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddSalesChannelServices();
+}
 
-        builder.Services.AddApplicationServices();
-        builder.Services.AddInfrastructureServices(builder.Configuration);
-        builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
+builder.Services.AddScoped<IAiModelRepository, AiModelRepository>();
+builder.Services.AddScoped<IAiPromptRepository, AiPromptRepository>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductSalesChannelRepository, ProductSalesChannelRepository>();
+builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-        // Add health checks
-        builder.Services.AddHealthChecks()
-            // .AddDbContextCheck<ApplicationDbContext>("Database")
-            .AddCheck("Self", () => HealthCheckResult.Healthy("Service is running."));
+var app = builder.Build();
 
-        builder.Services.AddAiServices();
+// app.UseExceptionHandler();
+app.UseMiddleware<ExceptionMiddleware>();
 
-        if (!builder.Environment.IsEnvironment("Testing"))
-        {
-            builder.Services.AddSalesChannelServices();
-        }
+app.UseHttpsRedirection();
+app.UseCors();
+app.UseStaticFiles();
+app.UseRouting();
 
-        builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
-        builder.Services.AddScoped<IAiModelRepository, AiModelRepository>();
-        builder.Services.AddScoped<IAiPromptRepository, AiPromptRepository>();
-        builder.Services.AddScoped<ICountryRepository, CountryRepository>();
-        builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-        builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-        builder.Services.AddScoped<IProductRepository, ProductRepository>();
-        builder.Services.AddScoped<IProductSalesChannelRepository, ProductSalesChannelRepository>();
-        builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
-        builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
-        builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Web}/{action=Index}/{id?}");
 
-        var app = builder.Build();
+if(app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
+{
+    app.MapControllers().AllowAnonymous();
+}    
 
-        // app.UseExceptionHandler();
-        app.UseMiddleware<ExceptionMiddleware>();
+if (app.Environment.IsDevelopment())
+{
+    //app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
+    });
+}
+else
+{
+    app.UseResponseCaching();
 
-        app.UseHttpsRedirection();
-        app.UseCors();
-        app.UseStaticFiles();
-        app.UseRouting();
-
-        app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Web}/{action=Index}/{id?}");
-
-        if(app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
-        {
-            app.MapControllers().AllowAnonymous();
-        }    
-
-        if (app.Environment.IsDevelopment())
-        {
-            //app.UseDeveloperExceptionPage();
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
+    app.Use(async (context, next) =>
+    {
+        context.Response.GetTypedHeaders().CacheControl =
+            new CacheControlHeaderValue
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
-            });
-        }
-        else
+                Public = true,
+                MaxAge = TimeSpan.FromSeconds(10)
+            };
+
+        context.Response.Headers[HeaderNames.Vary] =
+            new[] { "Accept-Encoding" };
+
+        await next();
+    });
+
+    app.UseExceptionHandler("/Home/Error");
+    app.UseSerilogRequestLogging();
+
+    app.MapControllers();    
+}
+
+app.UseAuthentication(); // who are you?
+app.UseAuthorization(); // what are you allowed to do?
+
+// Add health check endpoint
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        var result = new
         {
-            app.UseResponseCaching();
-
-            app.Use(async (context, next) =>
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(e => new
             {
-                context.Response.GetTypedHeaders().CacheControl =
-                    new CacheControlHeaderValue
-                    {
-                        Public = true,
-                        MaxAge = TimeSpan.FromSeconds(10)
-                    };
+                name = e.Key,
+                status = e.Value.Status.ToString(),
+                description = e.Value.Description
+            })
+        };
+        await context.Response.WriteAsJsonAsync(result);
+    }
+});
 
-                context.Response.Headers[HeaderNames.Vary] =
-                    new[] { "Accept-Encoding" };
-
-                await next();
-            });
-
-            app.UseExceptionHandler("/Home/Error");
-            app.UseSerilogRequestLogging();
-
-            app.MapControllers();    
-        }
-
-        app.UseAuthentication(); // who are you?
-        app.UseAuthorization(); // what are you allowed to do?
-
-        // Add health check endpoint
-        app.MapHealthChecks("/health", new HealthCheckOptions
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
         {
-            ResponseWriter = async (context, report) =>
-            {
-                context.Response.ContentType = "application/json";
-                var result = new
-                {
-                    status = report.Status.ToString(),
-                    checks = report.Entries.Select(e => new
-                    {
-                        name = e.Key,
-                        status = e.Value.Status.ToString(),
-                        description = e.Value.Description
-                    })
-                };
-                await context.Response.WriteAsJsonAsync(result);
-            }
-        });
-
-        if (!builder.Environment.IsEnvironment("Testing"))
-        {
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                
-                var context = services.GetRequiredService<ApplicationDbContext>();
-                if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
-                {
-                    context.Database.Migrate();
-                }
-            }
+            context.Database.Migrate();
         }
-
-        app.Run();
     }
 }
+
+app.Run();
+
+// Make the implicit Program class public so test projects can access it
+public partial class Program { }
