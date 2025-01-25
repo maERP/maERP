@@ -18,8 +18,6 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Net.Http.Headers;
 using OpenTelemetry.Logs;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Trace;
 using Serilog;
 using OpenTelemetry.Exporter;
 
@@ -73,7 +71,9 @@ builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(Dat
 
 // IOptions<DatabaseOptions> dbOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<DatabaseOptions>>();
 // builder.Services.AddPersistenceServices(dbOptions);
-var serviceScopeFactory = builder.Services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>();
+#pragma warning disable ASP0000
+var serviceScopeFactory = builder.Services.BuildServiceProvider().GetService<IServiceScopeFactory>();
+#pragma warning restore ASP0000
 
 if (!builder.Environment.IsEnvironment("Testing"))
 {
