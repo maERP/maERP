@@ -19,7 +19,7 @@ COPY ["src/maERP.Infrastructure/maERP.Infrastructure.csproj", "maERP.Infrastruct
 COPY ["src/maERP.Persistence/maERP.Persistence.csproj", "maERP.Persistence/"]
 COPY ["src/maERP.SalesChannels/maERP.SalesChannels.csproj", "maERP.SalesChannels/"]
 RUN dotnet restore "maERP.Server/maERP.Server.csproj"
-COPY . .
+COPY src/ .
 WORKDIR "/src/maERP.Server"
 RUN dotnet build "maERP.Server.csproj" -c Release -o /app/build
 
