@@ -32,16 +32,22 @@ jobs:
       with:
         dotnet-version: '9.x'  # Matches your .NET 9 version
 
+    - name: Install .NET MAUI Workloads
+      run: |
+        dotnet workload restore
+        dotnet workload install maui-tizen
+        dotnet workload install wasi-experimental
+
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         queries: security-and-quality
 
     - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
+      uses: github/codeql-action/autobuild@v3
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"

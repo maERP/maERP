@@ -56,6 +56,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 		global.json = global.json
 		launchSettings.json = launchSettings.json
 		LICENSE.txt = LICENSE.txt
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
 		.github\workflows\maerp-server-publish.yml = .github\workflows\maerp-server-publish.yml
 		.github\workflows\maerp-server-release.yml = .github\workflows\maerp-server-release.yml
 		.github\workflows\maerp-server-test.yml = .github\workflows\maerp-server-test.yml
