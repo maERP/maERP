@@ -30,13 +30,14 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '9.x'  # Matches your .NET 9 version
+        dotnet-version: '9.x'
 
-    - name: Install .NET MAUI Workloads
-      run: |
-        dotnet workload restore
-        dotnet workload install maui-tizen
-        dotnet workload install wasi-experimental
+    - name: Search workloads
+      run: dotnet workload search
+    - name: Restore workloads
+      run: dotnet workload install maui maui-android maui-ios maui-maccatalyst maui-windows android maui-tizen wasi-experimental --source https://api.nuget.org/v3/index.json
+    - name: List workloads
+      run: dotnet workload list
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
