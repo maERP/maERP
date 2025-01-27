@@ -7,12 +7,12 @@ on:
     branches: [ "main" ]
   schedule:
     - cron: '30 1 * * 0'  # Runs at 01:30 UTC every Sunday
-
+env:
+  maerp_sln : "maERP.sln"
 jobs:
   analyze:
     name: Analyze
     runs-on: windows-2022
-    timeout-minutes: 360
     permissions:
       actions: read
       contents: read
@@ -25,28 +25,42 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/checkout@v4
       with:
-        dotnet-version: '9.x'
-
-    - name: Search workloads
-      run: dotnet workload search
-    - name: Restore workloads
-      run: dotnet workload install maui maui-android maui-ios maui-maccatalyst maui-windows android maui-tizen wasi-experimental --source https://api.nuget.org/v3/index.json
-    - name: List workloads
-      run: dotnet workload list
+        fetch-depth: 0
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
-        languages: ${{ matrix.language }}
-        queries: security-and-quality
+        config-file: ./.github/codeql/codeql-config.yml
+        languages: csharp
+        
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: src/global.json
+      
+    - name: Setup NuGet.exe for use with actions
+      uses: NuGet/setup-nuget@v2
+      
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v2
+      
+    - name: search workloads
+      run: dotnet workload search
+    - name: restore workloads
+      run: dotnet workload install maui maui-android maui-ios maui-maccatalyst maui-windows android maui-tizen wasi-experimental --source https://api.nuget.org/v3/index.json
+    - name: list workloads
+      run: dotnet workload list
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+    - name: Restore nuget packages
+      run:  msbuild ${{env.maerp_sln}}  -t:restore
+
+    - name: Build app for release
+      run: msbuild ${{env.maerp_sln}}  /t:Build 
+
+    #- name: Autobuild
+    #  uses: github/codeql-action/autobuild@v3
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

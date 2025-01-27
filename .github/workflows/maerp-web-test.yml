@@ -22,12 +22,10 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.x
-          cache: true
-          cache-dependency-path: "**/packages.lock.json"
 
       - name: Restore maERP.Web.Tests
         run: dotnet restore src/maERP.Web.Tests --locked-mode
       - name: Build maERP.Web.Tests
-        run: dotnet build src/maERP.Web.Tests --no-restore
+        run: dotnet build src/maERP.Web.Tests
       - name: Test maERP.Web.Tests
         run: dotnet test src/maERP.Web.Tests --no-build --verbosity normal

@@ -27,7 +27,6 @@
 		<PackageLicenseUrl>https://github.com/maERP/maERP/blob/main/LICENSE.txt</PackageLicenseUrl>
 		<NeutralLanguage>de</NeutralLanguage>
 		<BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
-		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
 	</PropertyGroup>
