@@ -38,7 +38,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        global-json-file: src/global.json
+        global-json-file: global.json
       
     - name: Setup NuGet.exe for use with actions
       uses: NuGet/setup-nuget@v2
