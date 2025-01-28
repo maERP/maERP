@@ -85,9 +85,9 @@
       },
       "MudBlazor": {
         "type": "Direct",
-        "requested": "[8.0.0, )",
-        "resolved": "8.0.0",
-        "contentHash": "itY10dugofdvLYnJ1VZSzUIiKVqNvnTz4eEMYlHUdrOfsk9xShj7k1EW5H6ssMmkbQzShlLBHlUt+VPFGoEJGw==",
+        "requested": "[8.1.0, )",
+        "resolved": "8.1.0",
+        "contentHash": "dihLpDD7R2295u21puv+zLy72NiwGU6ASPOTg6GGye5D4g4cAczi4vPioKQfsgvdq+VsMHE3Cpm4KT3A+6LcVQ==",
         "dependencies": {
           "Microsoft.AspNetCore.Components": "9.0.1",
           "Microsoft.AspNetCore.Components.Web": "9.0.1",
@@ -1542,7 +1542,7 @@
           "Microsoft.Extensions.Configuration": "[9.0.1, )",
           "Microsoft.Extensions.DependencyInjection": "[9.0.1, )",
           "Microsoft.Extensions.Http": "[9.0.1, )",
-          "MudBlazor": "[8.0.0, )",
+          "MudBlazor": "[8.1.0, )",
           "System.IdentityModel.Tokens.Jwt": "[8.3.1, )",
           "maERP.Domain": "[1.0.0, )"
         }
@@ -1628,9 +1628,9 @@
       },
       "MudBlazor": {
         "type": "Direct",
-        "requested": "[8.0.0, )",
-        "resolved": "8.0.0",
-        "contentHash": "itY10dugofdvLYnJ1VZSzUIiKVqNvnTz4eEMYlHUdrOfsk9xShj7k1EW5H6ssMmkbQzShlLBHlUt+VPFGoEJGw==",
+        "requested": "[8.1.0, )",
+        "resolved": "8.1.0",
+        "contentHash": "dihLpDD7R2295u21puv+zLy72NiwGU6ASPOTg6GGye5D4g4cAczi4vPioKQfsgvdq+VsMHE3Cpm4KT3A+6LcVQ==",
         "dependencies": {
           "Microsoft.AspNetCore.Components": "9.0.1",
           "Microsoft.AspNetCore.Components.Web": "9.0.1",
@@ -2118,7 +2118,7 @@
           "Microsoft.Extensions.Configuration": "[9.0.1, )",
           "Microsoft.Extensions.DependencyInjection": "[9.0.1, )",
           "Microsoft.Extensions.Http": "[9.0.1, )",
-          "MudBlazor": "[8.0.0, )",
+          "MudBlazor": "[8.1.0, )",
           "System.IdentityModel.Tokens.Jwt": "[8.3.1, )",
           "maERP.Domain": "[1.0.0, )"
         }
@@ -2204,9 +2204,9 @@
       },
       "MudBlazor": {
         "type": "Direct",
-        "requested": "[8.0.0, )",
-        "resolved": "8.0.0",
-        "contentHash": "itY10dugofdvLYnJ1VZSzUIiKVqNvnTz4eEMYlHUdrOfsk9xShj7k1EW5H6ssMmkbQzShlLBHlUt+VPFGoEJGw==",
+        "requested": "[8.1.0, )",
+        "resolved": "8.1.0",
+        "contentHash": "dihLpDD7R2295u21puv+zLy72NiwGU6ASPOTg6GGye5D4g4cAczi4vPioKQfsgvdq+VsMHE3Cpm4KT3A+6LcVQ==",
         "dependencies": {
           "Microsoft.AspNetCore.Components": "9.0.1",
           "Microsoft.AspNetCore.Components.Web": "9.0.1",
@@ -2694,7 +2694,7 @@
           "Microsoft.Extensions.Configuration": "[9.0.1, )",
           "Microsoft.Extensions.DependencyInjection": "[9.0.1, )",
           "Microsoft.Extensions.Http": "[9.0.1, )",
-          "MudBlazor": "[8.0.0, )",
+          "MudBlazor": "[8.1.0, )",
           "System.IdentityModel.Tokens.Jwt": "[8.3.1, )",
           "maERP.Domain": "[1.0.0, )"
         }

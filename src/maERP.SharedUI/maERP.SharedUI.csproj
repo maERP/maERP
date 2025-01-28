@@ -11,7 +11,7 @@
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5" />
 		<PackageReference Include="FluentValidation" Version="11.11.0" />
- 		<PackageReference Include="MudBlazor" Version="8.0.0" />
+ 		<PackageReference Include="MudBlazor" Version="8.1.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.1" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
