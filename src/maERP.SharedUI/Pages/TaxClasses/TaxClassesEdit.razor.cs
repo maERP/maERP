@@ -1,5 +1,5 @@
+using maERP.Domain.Dtos.TaxClass;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.TaxClass;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,7 +11,7 @@ public partial class TaxClassesEdit
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ITaxClassService TaxClassService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     [Inject]
     public required ISnackbar Snackbar { get; set; }
@@ -24,14 +24,14 @@ public partial class TaxClassesEdit
 
     protected string Title = "hinzufügen";
 
-    protected TaxClassVm TaxClass = new();
+    protected TaxClassDetailDto TaxClass = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (taxClassId != 0)
         {
             Title = "Bearbeiten";
-            TaxClass = await TaxClassService.GetTaxClassDetails(taxClassId);
+            TaxClass = await HttpService.GetAsync<TaxClassDetailDto>($"/api/v1/TaxClasses/{taxClassId}") ?? new TaxClassDetailDto();
         }
     }
 
@@ -39,11 +39,11 @@ public partial class TaxClassesEdit
     {
         if (taxClassId != 0)
         {
-            await TaxClassService.UpdateTaxClass(taxClassId, TaxClass);
+            await HttpService.PutAsync<TaxClassDetailDto, TaxClassDetailDto>("/api/v1/TaxClasses/{taxClassId}", TaxClass);
         }
         else
         {
-            await TaxClassService.CreateTaxClass(TaxClass);
+            await HttpService.PutAsync<TaxClassDetailDto, TaxClassDetailDto>("/api/v1/TaxClasses/", TaxClass);
         }
 
         Snackbar.Add("Steuerklasse gespeichert", Severity.Success);

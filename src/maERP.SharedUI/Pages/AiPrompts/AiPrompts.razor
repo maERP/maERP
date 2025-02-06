@@ -1,5 +1,5 @@
 ﻿@page "/AiPrompts"
-@using maERP.SharedUI.Models.AiPrompt
+@using maERP.Domain.Dtos.AiPrompt
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
@@ -12,7 +12,7 @@
     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/AiPrompts/Add" />
 </MudStack>
 
-<MudDataGrid T="AiPromptListVm" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
+<MudDataGrid T="AiPromptListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
     <ToolBarContent>
         @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
         <MudSpacer />
@@ -28,6 +28,6 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="AiPromptVm" />
+        <MudDataGridPager T="AiPromptDetailDto" />
     </PagerContent>
 </MudDataGrid>

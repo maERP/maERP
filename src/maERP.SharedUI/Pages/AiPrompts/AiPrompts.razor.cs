@@ -1,5 +1,6 @@
+using maERP.Domain.Dtos.AiPrompt;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.AiPrompt;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -8,19 +9,20 @@ namespace maERP.SharedUI.Pages.AiPrompts;
 public partial class AiPrompts
 {
     [Inject]
-    public required NavigationManager? navigationManager { get; set; }
+    public required NavigationManager? NavigationManager { get; set; }
 
     [Inject]
-    public required IAiPromptService AiPromptService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     private string _searchString = string.Empty;
+    private MudDataGrid<AiPromptListDto> _dataGrid = new();
 
-    private MudDataGrid<AiPromptListVm> _dataGrid = new();
-
-    private async Task<GridData<AiPromptListVm>> LoadGridData(GridState<AiPromptListVm> state)
+    private async Task<GridData<AiPromptListDto>> LoadGridData(GridState<AiPromptListDto> state)
     {
-        var apiResponse = await AiPromptService.GetAiPrompts(state.Page, state.PageSize, _searchString);
-        GridData<AiPromptListVm> data = new()
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<AiPromptListDto>>("/api/v1/AiPrompts") ??
+                          new PaginatedResult<AiPromptListDto>(new List<AiPromptListDto>());
+
+        GridData<AiPromptListDto> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

@@ -1,5 +1,5 @@
+using maERP.Domain.Dtos.User;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.User;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,7 +11,7 @@ public partial class UsersEdit
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IUserService UserService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     [Parameter]
     public string userId { get; set; } = "";
@@ -22,7 +22,7 @@ public partial class UsersEdit
     // ReSharper disable once NotAccessedField.Local
     protected string Title = "hinzufügen";
 
-    protected UserVm User = new();
+    protected UserDetailDto User = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -30,18 +30,18 @@ public partial class UsersEdit
         if (userId != null)
         {
             Title = "bearbeiten";
-            User = await UserService.GetUserDetails(userId);
+            User = await HttpService.GetAsync<UserDetailDto>("/api/v1/Users/{userId}") ?? new UserDetailDto();
         }
     }
 
     protected async Task Save()
     {
-        await UserService.UpdateUser(userId, User);
+        await HttpService.PutAsync<UserDetailDto, UserDetailDto>("/api/v1/Users/{userId}", User);
         ReturnToList();
     }
 
     public void ReturnToList()
     {
-        NavigationManager.NavigateTo("/users");
+        NavigationManager.NavigateTo("/Users");
     }
 }

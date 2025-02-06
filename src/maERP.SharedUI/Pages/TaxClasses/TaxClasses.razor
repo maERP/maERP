@@ -1,6 +1,6 @@
 ﻿@page "/TaxClasses"
+@using maERP.Domain.Dtos.TaxClass
 @using Microsoft.AspNetCore.Authorization
-@using maERP.SharedUI.Models.TaxClass
 
 @attribute [Authorize]
 
@@ -12,7 +12,7 @@
     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/TaxClasses/Add" />
 </MudStack>
 
-<MudDataGrid T="TaxClassVm" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
+<MudDataGrid T="TaxClassListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
     <ToolBarContent>
         @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
         <MudSpacer />
@@ -28,6 +28,6 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="TaxClassVm" />
+        <MudDataGridPager T="TaxClassDetailDto" />
     </PagerContent>
 </MudDataGrid>

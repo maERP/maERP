@@ -1,5 +1,6 @@
+using maERP.Domain.Dtos.Order;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.Order;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,16 +12,18 @@ public partial class Orders
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IOrderService OrderService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private readonly MudDataGrid<OrderListVm> _dataGrid = new();
+    private readonly MudDataGrid<OrderListDto> _dataGrid = new();
 
-    private async Task<GridData<OrderListVm>> LoadGridData(GridState<OrderListVm> state)
+    private async Task<GridData<OrderListDto>> LoadGridData(GridState<OrderListDto> state)
     {
-        var apiResponse = await OrderService.GetOrders(state.Page, state.PageSize, _searchString);
-        GridData<OrderListVm> data = new()
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<OrderListDto>>("/api/v1/Orders")
+                          ?? new PaginatedResult<OrderListDto>(new List<OrderListDto>());
+        
+        GridData<OrderListDto> data = new()
         {  
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

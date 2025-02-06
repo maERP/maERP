@@ -16,10 +16,10 @@ public partial class Login
     private ILocalStorageService? LocalStorage { get; set; }
 
     [Inject]
-    private IAuthenticationService? AuthenticationService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     [Inject]
-    public ISnackbar? Snackbar { get; set; }
+    public required ISnackbar Snackbar { get; set; }
 
     private bool _showServerOverlay;
     private string _newServer = string.Empty;
@@ -105,7 +105,7 @@ public partial class Login
     {
         await LocalStorage!.SetItemAsStringAsync("server", _model.Server);
 
-        var loginResponse = await AuthenticationService!.LoginAsync(_model.Email, _model.Password); // TODO add _model.RememberMe
+        var loginResponse = await HttpService.LoginAsync(_model.Email, _model.Password); // TODO: add _model.RememberMe
 
         if (loginResponse)
         {

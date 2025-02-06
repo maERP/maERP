@@ -10,11 +10,11 @@
     <MudItem xs="12" sm="6" md="4">
         <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
             <MudText Typo="Typo.h6">Datum</MudText>
-            <MudText>@Order.DateOrdered Uhr</MudText>
+            <MudText>@OrderDetail.DateOrdered Uhr</MudText>
             <MudText Typo="Typo.h6">Summe</MudText>
-            <MudText>@Order.Total.ToString("C")</MudText>
+            <MudText>@OrderDetail.Total.ToString("C")</MudText>
             <MudText Typo="Typo.h6">Status</MudText>
-            <MudText>@Order.Status</MudText>
+            <MudText>@OrderDetail.Status</MudText>
         </MudPaper>
     </MudItem>
 
@@ -35,13 +35,13 @@
         <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
             <MudText Typo="Typo.h6">Rechnungsadresse</MudText>
             <MudText>
-                @Order.InvoiceAddressFirstName @Order.InvoiceAddressLastName<br />
-                @if (Order.InvoiceAddressCompanyName.Length > 0)
+                @OrderDetail.InvoiceAddressFirstName @OrderDetail.InvoiceAddressLastName<br />
+                @if (OrderDetail.InvoiceAddressCompanyName.Length > 0)
                 {
-                    @Order.InvoiceAddressCompanyName<br />
+                    @OrderDetail.InvoiceAddressCompanyName<br />
                 }
-                @Order.InvoiceAddressStreet<br />
-                @Order.InvoiceAddressZip @Order.InvoiceAddressCity
+                @OrderDetail.InvoiceAddressStreet<br />
+                @OrderDetail.InvoiceAddressZip @OrderDetail.InvoiceAddressCity
             </MudText>
         </MudPaper>
     </MudItem>
@@ -50,13 +50,13 @@
         <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
             <MudText Typo="Typo.h6">Lieferaddresse</MudText>
             <MudText>
-                @Order.DeliveryAddressFirstName @Order.DeliveryAddressLastName<br />
-                @if(Order.DeliveryAddressCompanyName.Length > 0)
+                @OrderDetail.DeliveryAddressFirstName @OrderDetail.DeliveryAddressLastName<br />
+                @if(OrderDetail.DeliveryAddressCompanyName.Length > 0)
                 {
-                    @Order.DeliveryAddressCompanyName<br />
+                    @OrderDetail.DeliveryAddressCompanyName<br />
                 }
-                @Order.DeliveryAddressStreet<br />
-                @Order.DeliverAddressZip @Order.DeliveryAddressCity
+                @OrderDetail.DeliveryAddressStreet<br />
+                @OrderDetail.DeliverAddressZip @OrderDetail.DeliveryAddressCity
             </MudText>
         </MudPaper>
     </MudItem>
@@ -64,12 +64,12 @@
 
 <MudPaper Class="p-4 mt-4">
     <MudText Typo="Typo.h6">Artikel</MudText>
-    <MudDataGrid Items="@Order.OrderItems" SortMode="SortMode.Single">
+    <MudDataGrid Items="@OrderDetail.OrderItems" SortMode="SortMode.Single">
         <Columns>
             <PropertyColumn Property="x => x.Name" Title="Produkt" />
             <PropertyColumn Property="x => x.Quantity" Title="Menge" />
             <PropertyColumn Property="x => x.Price" Title="Preis" Format="C" />
-            <PropertyColumn Property="x => x.Quantity * x.Price" Title="Summe" Format="C" />
+            @*<PropertyColumn Property="x => x.Quantity * x.Price" Title="Summe" Format="C" />*@
         </Columns>
     </MudDataGrid>
 </MudPaper>

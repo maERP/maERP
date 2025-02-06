@@ -1,4 +1,4 @@
-﻿using maERP.Application.Dtos.ProductSalesChannel;
+﻿using maERP.Domain.Dtos.ProductSalesChannel;
 
 namespace maERP.Application.Features.Product.Queries.ProductDetail;
 

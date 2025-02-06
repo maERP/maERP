@@ -1,5 +1,5 @@
-﻿using maERP.Application.Dtos.ProductSalesChannel;
-using maERP.Application.Features.TaxClass.Queries.TaxClassList;
+﻿using maERP.Application.Features.TaxClass.Queries.TaxClassList;
+using maERP.Domain.Dtos.ProductSalesChannel;
 
 namespace maERP.Application.Features.Product.Commands.ProductUpdate;
 

@@ -1,4 +1,5 @@
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Products;
@@ -9,8 +10,8 @@ public partial class ProductsDelete
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IProductService ProductService { get; set; }
-
+    public required HttpService HttpService { get; set; }
+    
     [Parameter]
     public int productId { get; set; }
 
@@ -18,7 +19,7 @@ public partial class ProductsDelete
     {
         if (productId > 0)
         {
-            await ProductService.DeleteProduct(productId);
+            await HttpService.DeleteAsync("/api/v1/Products/" + productId);
             NavigationManager.NavigateTo("/Products");
         }
     }

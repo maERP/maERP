@@ -1,4 +1,4 @@
-﻿using maERP.Application.Dtos.CustomerAddress;
+﻿using maERP.Domain.Dtos.CustomerAddress;
 
 namespace maERP.Application.Features.Customer.Queries.CustomerDetail;
 

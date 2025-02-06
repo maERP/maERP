@@ -1,5 +1,5 @@
+using maERP.Domain.Dtos.Product;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.Product;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,7 +11,7 @@ public partial class ProductsEdit
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IProductService ProductService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     [Parameter]
     public int productId { get; set; }
@@ -20,13 +20,13 @@ public partial class ProductsEdit
 
     protected bool ProductAiHelperVisible;
 
-    protected ProductVm Product = new();
+    protected ProductDetailDto Product = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (productId != 0)
         {
-            Product = await ProductService.GetProductDetails(productId);
+            Product = await HttpService.GetAsync<ProductDetailDto>("/api/v1/Products/" + productId) ?? new ProductDetailDto();
         }
     }
 
@@ -34,11 +34,11 @@ public partial class ProductsEdit
     {
         if (productId != 0)
         {
-            await ProductService.UpdateProduct(productId, Product);
+            await HttpService.PutAsync<ProductDetailDto, ProductDetailDto>("/api/v1/Products/" + productId, Product);
         }
         else
         {
-            await ProductService.CreateProduct(Product);
+            await HttpService.PostAsync<ProductDetailDto, ProductDetailDto>("/api/v1/Products", Product);
         }
 
         Cancel();

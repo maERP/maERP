@@ -1,4 +1,5 @@
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Customers;
@@ -9,9 +10,8 @@ public partial class CustomersDelete
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ICustomerService CustomerService { get; set; }
-
-
+    public required HttpService HttpService { get; set; }
+    
     [Parameter]
     public int customerId { get; set; }
 
@@ -19,7 +19,7 @@ public partial class CustomersDelete
     {
         if (customerId > 0)
         {
-            await CustomerService.DeleteCustomer(customerId);
+            await HttpService.DeleteAsync("/api/v1/Customers/" + customerId);
             NavigationManager.NavigateTo("/Customers");
         }
     }

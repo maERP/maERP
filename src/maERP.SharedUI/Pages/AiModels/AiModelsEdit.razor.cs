@@ -1,5 +1,5 @@
+using maERP.Domain.Dtos.AiModel;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.AiModel;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,7 +11,7 @@ public partial class AiModelsEdit
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IAiModelService AiModelService { get; set; }
+    public required IHttpService httpService { get; set; }
 
     [Parameter]
     public int aiModelId { get; set; }
@@ -22,14 +22,14 @@ public partial class AiModelsEdit
     // ReSharper disable once NotAccessedField.Local
     protected string Title = "hinzufügen";
 
-    protected AiModelVm AiModel = new();
+    public AIModelDetailDto AiModelDetail = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (aiModelId != 0)
         {
             Title = "Bearbeiten";
-            AiModel = await AiModelService.GetAiModelDetails(aiModelId);
+            AiModelDetail = await httpService.GetAsync<AIModelDetailDto>("/api/v1/AiModels/" + aiModelId) ?? new AIModelDetailDto();
         }
     }
 
@@ -37,11 +37,14 @@ public partial class AiModelsEdit
     {
         if (aiModelId != 0)
         {
-            await AiModelService.UpdateAiModel(aiModelId, AiModel);
+            if (AiModelDetail != null)
+            {    
+               await httpService.PostAsync<AIModelDetailDto, AIModelDetailDto>("/api/v1/AiModels/" + aiModelId, AiModelDetail);
+            }
         }
         else
         {
-            await AiModelService.CreateAiModel(AiModel);
+            if (AiModelDetail != null) await httpService.PutAsync<AIModelDetailDto, AIModelDetailDto>("/api/v1/AiModels", AiModelDetail);
         }
 
         NavigateToList();

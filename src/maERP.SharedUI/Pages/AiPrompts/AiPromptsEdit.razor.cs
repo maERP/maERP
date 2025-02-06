@@ -1,5 +1,5 @@
+using maERP.Domain.Dtos.AiPrompt;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.AiPrompt;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,7 +11,7 @@ public partial class AiPromptsEdit
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IAiPromptService AiPromptService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     [Parameter]
     public int aiPromptId { get; set; }
@@ -22,14 +22,14 @@ public partial class AiPromptsEdit
     // ReSharper disable once NotAccessedField.Local
     protected string Title = "hinzufügen";
 
-    protected AiPromptVm AiPrompt = new();
+    protected AiPromptDetailDto AiPromptDetail = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (aiPromptId != 0)
         {
             Title = "Bearbeiten";
-            AiPrompt = await AiPromptService.GetAiPromptDetails(aiPromptId);
+            AiPromptDetail = await HttpService.GetAsync<AiPromptDetailDto>("/api/v1/AiPrompts/" + aiPromptId) ?? new AiPromptDetailDto();
         }
     }
 
@@ -37,11 +37,11 @@ public partial class AiPromptsEdit
     {
         if (aiPromptId != 0)
         {
-            await AiPromptService.UpdateAiPrompt(aiPromptId, AiPrompt);
+            await HttpService.PutAsync<AiPromptDetailDto, AiPromptDetailDto>( "/api/v1/AiPrompts/" + aiPromptId, AiPromptDetail);
         }
         else
         {
-            await AiPromptService.CreateAiPrompt(AiPrompt);
+            await HttpService.PostAsync<AiPromptDetailDto, AiPromptDetailDto>("/api/v1/AiPrompts", AiPromptDetail);
         }
 
         NavigateToList();

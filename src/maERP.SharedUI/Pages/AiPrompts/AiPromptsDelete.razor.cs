@@ -9,7 +9,7 @@ public partial class AiPromptsDelete
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IAiPromptService AiPromptService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     [Parameter]
     public int aiPromptId { get; set; }
@@ -18,7 +18,7 @@ public partial class AiPromptsDelete
     {
         if (aiPromptId > 0)
         {
-            await AiPromptService.DeleteAiPrompt(aiPromptId);
+            await HttpService.DeleteAsync("/api/v1/AiPrompts/" + aiPromptId);
             NavigationManager.NavigateTo("/AiPrompts");
         }
     }

@@ -1,5 +1,6 @@
+using maERP.Domain.Dtos.AiModel;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.AiModel;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,18 +12,18 @@ public partial class AiModels
     public required NavigationManager? navigationManager { get; set; }
 
     [Inject]
-    public required IAiModelService AiModelService { get; set; }
+    public required IHttpService httpService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<AiModelListVm> _dataGrid = new();
+    private MudDataGrid<AIModelListDto> _dataGrid = new();
 
-    private async Task<GridData<AiModelListVm>> LoadGridData(GridState<AiModelListVm> state)
+    private async Task<GridData<AIModelListDto>> LoadGridData(GridState<AIModelListDto> state)
     {
-        var apiResponse = await AiModelService.GetAiModels(state.Page, state.PageSize, _searchString);
-        GridData<AiModelListVm> data = new()
+        var apiResponse = await httpService.GetAsync<PaginatedResult<AIModelListDto>>("/api/v1/AiModels");
+        GridData<AIModelListDto> data = new()
         {
-            Items = apiResponse.Data,
+            Items = apiResponse!.Data,
             TotalItems = apiResponse.TotalCount
         };
 

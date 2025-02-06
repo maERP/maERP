@@ -6,10 +6,10 @@ namespace maERP.SharedUI.Pages.AiModels;
 public partial class AiModelsDelete
 {
     [Inject]
-    public required NavigationManager NavigationManager { get; set; }
+    public required NavigationManager navigationManager { get; set; }
 
     [Inject]
-    public required IAiModelService AiModelService { get; set; }
+    public required IHttpService httpService { get; set; }
 
     [Parameter]
     public int aiModelId { get; set; }
@@ -18,8 +18,8 @@ public partial class AiModelsDelete
     {
         if (aiModelId > 0)
         {
-            await AiModelService.DeleteAiModel(aiModelId);
-            NavigationManager.NavigateTo("/AiModels");
+            await httpService.DeleteAsync("/api/v1/AiModels/" + aiModelId);
+            navigationManager.NavigateTo("/AiModels");
         }
     }
 }

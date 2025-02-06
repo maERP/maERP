@@ -1,5 +1,5 @@
+using maERP.Domain.Dtos.User;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.User;
 using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Users;
@@ -10,18 +10,18 @@ public partial class UsersAdd
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IUserService UserService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     [Parameter]
     public string userId { get; set; } = "";
 
-    protected string Title = "hinzuf�gen";
+    protected string Title = "hinzufügen";
 
-    protected UserVm User = new();
+    protected UserDetailDto User = new();
 
     protected async Task Save()
     {
-        await UserService.CreateUser(User);
+        await HttpService.PostAsync<UserDetailDto, UserDetailDto>("/api/v1/users", User);
         ReturnToList();
     }
 

@@ -1,5 +1,5 @@
+using maERP.Domain.Dtos.Order;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.Order;
 using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Orders;
@@ -10,18 +10,19 @@ public partial class OrdersDetail
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IOrderService OrderService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     [Parameter]
     public int orderId { get; set; }
 
-    protected OrderVm Order = new();
+    protected OrderDetailDto OrderDetail = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (orderId != 0)
         {
-            Order = await OrderService.GetOrderDetails(orderId);
+            OrderDetail = await HttpService.GetAsync<OrderDetailDto>($"/api/v1/Orders/{orderId}")
+                          ?? new OrderDetailDto();
         }
     }
 }
