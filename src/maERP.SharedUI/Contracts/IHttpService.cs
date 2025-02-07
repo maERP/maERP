@@ -15,8 +15,9 @@ public interface IHttpService
     /// </summary>
     /// <param name="email">User's email address</param>
     /// <param name="password">User's password</param>
+    /// <param name="rememberMe">Remember me flag</param>
     /// <returns>True if authentication was successful, false otherwise</returns>
-    Task<bool> LoginAsync(string email, string password);
+    Task<bool> LoginAsync(string email, string password, bool rememberMe);
 
     /// <summary>
     /// Logs out the current user by clearing the authentication token

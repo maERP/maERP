@@ -1,8 +1,11 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using Blazored.LocalStorage;
 using Microsoft.Extensions.Logging;
 using maERP.Domain.Dtos.Auth;
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Providers;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace maERP.SharedUI.Services;
 
@@ -15,10 +18,15 @@ public class HttpService : IHttpService
     private readonly ILogger<HttpService> _logger;
     private readonly JsonSerializerOptions _jsonOptions;
     private string? _authToken;
+    private readonly AuthenticationStateProvider _authenticataionStateProvider;
+    private readonly ILocalStorageService _localStorageService;
 
     public bool IsAuthenticated => !string.IsNullOrEmpty(_authToken);
 
-    public HttpService(HttpClient httpClient, ILogger<HttpService> logger)
+    public HttpService(HttpClient httpClient,
+        ILogger<HttpService> logger,
+        AuthenticationStateProvider authenticataionStateProvider,
+        ILocalStorageService localStorageService)
     {
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -27,12 +35,16 @@ public class HttpService : IHttpService
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
+        
+        _authenticataionStateProvider = authenticataionStateProvider;
+        _localStorageService = localStorageService;
+
     }
 
     /// <summary>
     /// Authenticates the user with the API using credentials
     /// </summary>
-    public async Task<bool> LoginAsync(string email, string password)
+    public async Task<bool> LoginAsync(string email, string password, bool rememberMe)
     {
         try
         {
@@ -44,16 +56,19 @@ public class HttpService : IHttpService
                 Password = password
             };
 
-            var response = await _httpClient.PostAsJsonAsync("api/v1/auth/login", loginRequest, _jsonOptions);
+            var response = await _httpClient.PostAsJsonAsync("/api/v1/Auth/login", loginRequest, _jsonOptions);
             response.EnsureSuccessStatusCode();
             
             var authResponse = await response.Content.ReadFromJsonAsync<LoginResponseDto>(_jsonOptions);
-            if (authResponse?.AccessToken != null)
+            if (authResponse?.Token != null)
             {
-                _authToken = authResponse.AccessToken;
+                _authToken = authResponse.Token;
                 _httpClient.DefaultRequestHeaders.Authorization = 
                     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authToken);
                 _logger.LogInformation("Login successful for user {Email}", email);
+
+                await _localStorageService.SetItemAsync("authToken", authResponse.Token);
+                await ((ApiAuthenticationStateProvider)_authenticataionStateProvider).LoggedIn();
                 return true;
             }
 
@@ -66,12 +81,16 @@ public class HttpService : IHttpService
             throw;
         }
     }
+    
 
     /// <summary>
     /// Logs out the current user by clearing the authentication token
     /// </summary>
-    public void Logout()
+    public async void Logout()
     {
+        await _localStorageService.RemoveItemAsync("authToken");
+        await ((ApiAuthenticationStateProvider) _authenticataionStateProvider).LoggedOut();
+
         _authToken = null;
         _httpClient.DefaultRequestHeaders.Authorization = null;
         _logger.LogInformation("User logged out");

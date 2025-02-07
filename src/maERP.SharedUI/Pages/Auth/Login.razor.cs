@@ -1,8 +1,10 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Blazored.LocalStorage;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models;
+using maERP.SharedUI.Providers;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 
 namespace maERP.SharedUI.Pages.Auth;
@@ -20,6 +22,9 @@ public partial class Login
 
     [Inject]
     public required ISnackbar Snackbar { get; set; }
+
+    [Inject]
+    public required ApiAuthenticationStateProvider ApiAuthenticationStateProvider { get; set; }
 
     private bool _showServerOverlay;
     private string _newServer = string.Empty;
@@ -105,7 +110,7 @@ public partial class Login
     {
         await LocalStorage!.SetItemAsStringAsync("server", _model.Server);
 
-        var loginResponse = await HttpService.LoginAsync(_model.Email, _model.Password); // TODO: add _model.RememberMe
+        var loginResponse = await HttpService.LoginAsync(_model.Email, _model.Password, _model.RememberMe);
 
         if (loginResponse)
         {
