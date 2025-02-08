@@ -14,7 +14,7 @@ public partial class StatisticOrder
 
     protected override async Task OnInitializedAsync()
     {
-        _statisticOrder = await HttpService.GetAsync<StatisticOrderDto>("/api/v1/StatisticOrder") ??
+        _statisticOrder = await HttpService.GetAsync<StatisticOrderDto>("/api/v1/Statistic/OrderStatistic") ??
                          new StatisticOrderDto();
     }
 }

@@ -13,7 +13,7 @@ public partial class StatisticProduct
 
     protected override async Task OnInitializedAsync()
     {
-        _statisticProduct = await HttpService.GetAsync<StatisticProductDto>("/api/v1/StatisticProduct") ??
+        _statisticProduct = await HttpService.GetAsync<StatisticProductDto>("/api/v1/Statistic/ProductStatistic") ??
                            new StatisticProductDto();
     }
 }
