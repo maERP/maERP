@@ -17,11 +17,8 @@ public class HttpService : IHttpService
     private readonly HttpClient _httpClient;
     private readonly ILogger<HttpService> _logger;
     private readonly JsonSerializerOptions _jsonOptions;
-    private string? _authToken;
     private readonly AuthenticationStateProvider _authenticataionStateProvider;
     private readonly ILocalStorageService _localStorageService;
-
-    public bool IsAuthenticated => !string.IsNullOrEmpty(_authToken);
 
     public HttpService(HttpClient httpClient,
         ILogger<HttpService> logger,
@@ -62,9 +59,8 @@ public class HttpService : IHttpService
             var authResponse = await response.Content.ReadFromJsonAsync<LoginResponseDto>(_jsonOptions);
             if (authResponse?.Token != null)
             {
-                _authToken = authResponse.Token;
                 _httpClient.DefaultRequestHeaders.Authorization = 
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authToken);
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authResponse.Token);
                 _logger.LogInformation("Login successful for user {Email}", email);
 
                 await _localStorageService.SetItemAsync("authToken", authResponse.Token);
@@ -91,7 +87,6 @@ public class HttpService : IHttpService
         await _localStorageService.RemoveItemAsync("authToken");
         await ((ApiAuthenticationStateProvider) _authenticataionStateProvider).LoggedOut();
 
-        _authToken = null;
         _httpClient.DefaultRequestHeaders.Authorization = null;
         _logger.LogInformation("User logged out");
         // TODO: implement killing session on server side
@@ -100,9 +95,11 @@ public class HttpService : IHttpService
     /// <summary>
     /// Ensures the user is authenticated before making a request
     /// </summary>
-    private void EnsureAuthenticated()
+    private async void EnsureAuthenticated()
     {
-        if (!IsAuthenticated)
+        string authToken = await _localStorageService.GetItemAsStringAsync("authToken") ?? string.Empty;
+
+        if (!string.IsNullOrEmpty(authToken))
         {
             _logger.LogError("Attempted to make authenticated request without being logged in");
             throw new UnauthorizedAccessException("User is not authenticated. Please login first.");

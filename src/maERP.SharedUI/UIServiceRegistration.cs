@@ -23,6 +23,7 @@ public static class UiServicesRegistration
         services.AddHttpClient<IHttpService, HttpService>(client => client.BaseAddress = new Uri("https://localhost:8443/"));
 
         services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+        services.AddScoped<ApiAuthenticationStateProvider>();
 
         return services;
     }

@@ -6,11 +6,6 @@ namespace maERP.SharedUI.Contracts;
 public interface IHttpService
 {
     /// <summary>
-    /// Gets whether the service is currently authenticated
-    /// </summary>
-    bool IsAuthenticated { get; }
-
-    /// <summary>
     /// Authenticates the user with the API using credentials
     /// </summary>
     /// <param name="email">User's email address</param>
