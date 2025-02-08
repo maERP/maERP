@@ -99,7 +99,7 @@ public class HttpService : IHttpService
     {
         string authToken = await _localStorageService.GetItemAsStringAsync("authToken") ?? string.Empty;
 
-        if (!string.IsNullOrEmpty(authToken))
+        if (string.IsNullOrEmpty(authToken))
         {
             _logger.LogError("Attempted to make authenticated request without being logged in");
             throw new UnauthorizedAccessException("User is not authenticated. Please login first.");
