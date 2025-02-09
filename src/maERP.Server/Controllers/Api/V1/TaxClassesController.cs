@@ -5,6 +5,7 @@ using maERP.Application.Features.TaxClass.Commands.TaxClassDelete;
 using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 using maERP.Application.Features.TaxClass.Queries.TaxClassList;
+using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +28,7 @@ public class TaxClassesController : ControllerBase
 
     // GET: api/<TaxClassesController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<TaxClassListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<TaxClassListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -42,7 +43,7 @@ public class TaxClassesController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TaxClassDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<TaxClassDetailDto>> GetDetails(int id)
     {
         try 
         {

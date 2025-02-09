@@ -1,9 +1,10 @@
-﻿using maERP.Domain.Wrapper;
+﻿using maERP.Domain.Dtos.Order;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Order.Queries.OrderList;
 
-public class OrderListQuery : IRequest<PaginatedResult<OrderListResponse>>
+public class OrderListQuery : IRequest<PaginatedResult<OrderListDto>>
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }

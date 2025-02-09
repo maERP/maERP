@@ -18,14 +18,14 @@ public partial class AiModelsDetail
 
     protected string Title = "AI Model";
 
-    protected AIModelDetailDto? aiModel = new();
+    protected AiModelDetailDto? aiModel = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (aiModelId != 0)
         {
             Title = "Bearbeiten";
-            aiModel = await httpService.GetAsync<AIModelDetailDto>("/api/v1/AiModels/" + aiModelId);
+            aiModel = await httpService.GetAsync<AiModelDetailDto>("/api/v1/AiModels/" + aiModelId);
         }
         else Title = "nicht gefunden";
     }

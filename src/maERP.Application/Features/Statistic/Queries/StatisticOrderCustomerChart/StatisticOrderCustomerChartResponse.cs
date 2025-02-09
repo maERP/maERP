@@ -11,3 +11,5 @@ public class OrderCustomerChartDto
     public int OrdersNew { get; set; }
     public int CustomersNew { get; set; }
 }
+
+// TODO: remove this classes and use the ones in maERP.Domain.Dtos

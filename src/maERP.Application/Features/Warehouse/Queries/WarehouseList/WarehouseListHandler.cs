@@ -5,13 +5,14 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
+using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Queries.WarehouseList;
 
 // ReSharper disable once UnusedType.Global
-public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, PaginatedResult<WarehouseListResponse>>
+public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, PaginatedResult<WarehouseListDto>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<WarehouseListHandler> _logger;
@@ -25,7 +26,7 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
         _logger = logger;
         _warehouseRepository = warehouseRepository; 
     }
-    public async Task<PaginatedResult<WarehouseListResponse>> Handle(WarehouseListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<WarehouseListDto>> Handle(WarehouseListQuery request, CancellationToken cancellationToken)
     {
         var warehouseFilterSpec = new WarehouseFilterSpecification(request.SearchString);
         
@@ -35,7 +36,7 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
         {
             return await _warehouseRepository.Entities
                .Specify(warehouseFilterSpec)
-               .ProjectTo<WarehouseListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<WarehouseListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
         else
@@ -45,7 +46,7 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
             return await _warehouseRepository.Entities
                .Specify(warehouseFilterSpec)
                .OrderBy(ordering)
-               .ProjectTo<WarehouseListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<WarehouseListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }

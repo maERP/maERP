@@ -1,6 +1,6 @@
 ﻿namespace maERP.Domain.Dtos.AiModel;
 
-public class AIModelListDto
+public class AiModelListDto
 {
     public int Id { get; set; }
     public int AiModelType { get; set; }

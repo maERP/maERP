@@ -5,12 +5,13 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
+using maERP.Domain.Dtos.Order;
 using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Order.Queries.OrderList;
 
-public class OrderListHandler : IRequestHandler<OrderListQuery, PaginatedResult<OrderListResponse>>
+public class OrderListHandler : IRequestHandler<OrderListQuery, PaginatedResult<OrderListDto>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<OrderListHandler> _logger;
@@ -25,7 +26,7 @@ public class OrderListHandler : IRequestHandler<OrderListQuery, PaginatedResult<
         _orderRepository = orderRepository; 
     }
 
-    public async Task<PaginatedResult<OrderListResponse>> Handle(OrderListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<OrderListDto>> Handle(OrderListQuery request, CancellationToken cancellationToken)
     {
         var orderFilterSpec = new OrderFilterSpecification(request.SearchString);
         
@@ -35,7 +36,7 @@ public class OrderListHandler : IRequestHandler<OrderListQuery, PaginatedResult<
         {
             return await _orderRepository.Entities
                .Specify(orderFilterSpec)
-               .ProjectTo<OrderListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<OrderListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
         else
@@ -45,7 +46,7 @@ public class OrderListHandler : IRequestHandler<OrderListQuery, PaginatedResult<
             return await _orderRepository.Entities
                .Specify(orderFilterSpec)
                .OrderBy(ordering)
-               .ProjectTo<OrderListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<OrderListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace maERP.Application.Features.User.Commands.UserUpdate;
 
-public class UserUpdateResponse
+public class UserUpdateDto
 {
     [Required]
     public string Firstname { get; set; } = string.Empty;

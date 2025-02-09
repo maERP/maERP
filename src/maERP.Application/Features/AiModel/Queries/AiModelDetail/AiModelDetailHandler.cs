@@ -2,11 +2,12 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
+using maERP.Domain.Dtos.AiModel;
 using MediatR;
 
 namespace maERP.Application.Features.AiModel.Queries.AiModelDetail;
 
-public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, AiModelDetailResponse>
+public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, AiModelDetailDto>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<AiModelDetailHandler> _logger;
@@ -20,7 +21,7 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, AiModelD
         _logger = logger;
         _aiModelRepository = aiModelRepository;
     }
-    public async Task<AiModelDetailResponse> Handle(AiModelDetailQuery request, CancellationToken cancellationToken)
+    public async Task<AiModelDetailDto> Handle(AiModelDetailQuery request, CancellationToken cancellationToken)
     {
         var aiModel = await _aiModelRepository.GetByIdAsync(request.Id, true);
 
@@ -29,7 +30,7 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, AiModelD
             throw new NotFoundException("NotFoundException", "aiModel not found.");
         }
 
-        var data = _mapper.Map<AiModelDetailResponse>(aiModel);
+        var data = _mapper.Map<AiModelDetailDto>(aiModel);
 
         _logger.LogInformation("AiModel retrieved successfully.");
         return data;

@@ -1,9 +1,10 @@
-﻿using maERP.Domain.Wrapper;
+﻿using maERP.Domain.Dtos.AiPrompt;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.AiPrompt.Queries.AiPromptList;
 
-public class AiPromptListQuery : IRequest<PaginatedResult<AiPromptListResponse>>
+public class AiPromptListQuery : IRequest<PaginatedResult<AiPromptListDto>>
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }

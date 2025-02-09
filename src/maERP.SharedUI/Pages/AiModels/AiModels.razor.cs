@@ -16,12 +16,12 @@ public partial class AiModels
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<AIModelListDto> _dataGrid = new();
+    private MudDataGrid<AiModelListDto> _dataGrid = new();
 
-    private async Task<GridData<AIModelListDto>> LoadGridData(GridState<AIModelListDto> state)
+    private async Task<GridData<AiModelListDto>> LoadGridData(GridState<AiModelListDto> state)
     {
-        var apiResponse = await httpService.GetAsync<PaginatedResult<AIModelListDto>>("/api/v1/AiModels");
-        GridData<AIModelListDto> data = new()
+        var apiResponse = await httpService.GetAsync<PaginatedResult<AiModelListDto>>("/api/v1/AiModels");
+        GridData<AiModelListDto> data = new()
         {
             Items = apiResponse!.Data,
             TotalItems = apiResponse.TotalCount

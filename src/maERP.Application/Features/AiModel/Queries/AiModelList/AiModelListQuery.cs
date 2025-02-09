@@ -1,9 +1,10 @@
-﻿using maERP.Domain.Wrapper;
+﻿using maERP.Domain.Dtos.AiModel;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.AiModel.Queries.AiModelList;
 
-public class AiModelListQuery : IRequest<PaginatedResult<AiModelListResponse>>
+public class AiModelListQuery : IRequest<PaginatedResult<AiModelListDto>>
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }

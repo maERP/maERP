@@ -2,7 +2,7 @@
 
 namespace maERP.Domain.Dtos.AiModel;
 
-public class AIModelDetailDto
+public class AiModelDetailDto
 {
     public int Id { get; set; }
     public AiModelType AiModelType { get; set; }

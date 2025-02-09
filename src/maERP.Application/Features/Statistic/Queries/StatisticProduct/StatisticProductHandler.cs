@@ -1,11 +1,12 @@
 ﻿using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Dtos.Statistic;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.Statistic.Queries.StatisticProduct;
 
-public class StatisticProductHandler : IRequestHandler<StatisticProductQuery, StatisticProductResponse>
+public class StatisticProductHandler : IRequestHandler<StatisticProductQuery, StatisticProductDto>
 {
     private readonly IAppLogger<StatisticProductHandler> _logger;
     private readonly IProductRepository _productRepository;
@@ -17,11 +18,11 @@ public class StatisticProductHandler : IRequestHandler<StatisticProductQuery, St
         _productRepository = productRepository;
     }
 
-    public async Task<StatisticProductResponse> Handle(StatisticProductQuery request, CancellationToken cancellationToken)
+    public async Task<StatisticProductDto> Handle(StatisticProductQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Handle StatisticProductQuery: {0}", request);
         
-        var response = new StatisticProductResponse();
+        var response = new StatisticProductDto();
 
         response.ProductTotal = await _productRepository.Entities.CountAsync();
 

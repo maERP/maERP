@@ -1,4 +1,6 @@
-﻿namespace maERP.Domain.Dtos.User;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace maERP.Domain.Dtos.User;
 
 public class UserDetailDto
 {
@@ -6,6 +8,7 @@ public class UserDetailDto
     public string Email { get; set; } = string.Empty;
     public string Firstname { get; set; } = string.Empty;
     public string Lastname { get; set; } = string.Empty;
+
     public string Password { get; set; } = string.Empty;
     public string PasswordConfirm { get; set; } = string.Empty;
 }

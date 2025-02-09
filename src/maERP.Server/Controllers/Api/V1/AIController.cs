@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using maERP.Application.Features.AiModel.Queries.AiModelList;
+using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +16,7 @@ public class AiController(IMediator mediator) : ControllerBase
 {
     // GET: api/<AiModelsController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<AiModelListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<AiModelListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {

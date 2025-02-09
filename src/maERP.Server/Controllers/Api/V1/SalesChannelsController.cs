@@ -5,6 +5,7 @@ using maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
+using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<SalesChannelsController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<SalesChannelListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<SalesChannelListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -35,7 +36,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<SalesChannelDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<SalesChannelDetailDto>> GetDetails(int id)
     {
         try 
         {
@@ -58,6 +59,8 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(GetAll), new { id = response });
     }
 
+    // TODO: fix this
+    /*
     // PUT: api/<SalesChannelsController>/5
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -70,6 +73,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
         await mediator.Send(salesChannelUpdateCommand);
         return NoContent();
     }
+    */
 
     // DELETE api/<SalesChannelController>/5
     [HttpDelete("{id}")]

@@ -1,9 +1,10 @@
-﻿using maERP.Domain.Wrapper;
+﻿using maERP.Domain.Dtos.TaxClass;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.TaxClass.Queries.TaxClassList;
 
-public class TaxClassListQuery : IRequest<PaginatedResult<TaxClassListResponse>>
+public class TaxClassListQuery : IRequest<PaginatedResult<TaxClassListDto>>
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }

@@ -2,11 +2,12 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
+using maERP.Domain.Dtos.Warehouse;
 using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Queries.WarehouseDetail;
 
-public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, WarehouseDetailResponse>
+public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, WarehouseDetailDto>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<WarehouseDetailHandler> _logger;
@@ -20,7 +21,7 @@ public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, Ware
         _logger = logger;
         _warehouseRepository = warehouseRepository;
     }
-    public async Task<WarehouseDetailResponse> Handle(WarehouseDetailQuery request, CancellationToken cancellationToken)
+    public async Task<WarehouseDetailDto> Handle(WarehouseDetailQuery request, CancellationToken cancellationToken)
     {
         var warehouse = await _warehouseRepository.GetByIdAsync(request.Id, true);
 
@@ -29,7 +30,7 @@ public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, Ware
             throw new NotFoundException("NotFoundException", "warehouse not found.");
         }
 
-        var data = _mapper.Map<WarehouseDetailResponse>(warehouse);
+        var data = _mapper.Map<WarehouseDetailDto>(warehouse);
 
         _logger.LogInformation("Warehous retrieved successfully.");
         return data;

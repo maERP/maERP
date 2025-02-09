@@ -5,6 +5,7 @@ using maERP.Application.Features.AiPrompt.Commands.AiPromptDelete;
 using maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
 using maERP.Application.Features.AiPrompt.Queries.AiPromptDetail;
 using maERP.Application.Features.AiPrompt.Queries.AiPromptList;
+using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<AiPromptsController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<AiPromptListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<AiPromptListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -35,7 +36,7 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AiPromptDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<AiPromptDetailDto>> GetDetails(int id)
     {
         try 
         {
@@ -64,7 +65,7 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<AiPromptDetailResponse>> Update(int id, AiPromptUpdateCommand aIPromptUpdateCommand)
+    public async Task<ActionResult<AiPromptDetailDto>> Update(int id, AiPromptUpdateCommand aIPromptUpdateCommand)
     {
         aIPromptUpdateCommand.Id = id;
         await mediator.Send(aIPromptUpdateCommand);

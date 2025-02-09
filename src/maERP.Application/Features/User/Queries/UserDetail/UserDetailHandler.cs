@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Dtos.User;
 using MediatR;
 
 namespace maERP.Application.Features.User.Queries.UserDetail;
 
-public class UserDetailHandler : IRequestHandler<UserDetailQuery, UserDetailResponse>
+public class UserDetailHandler : IRequestHandler<UserDetailQuery, UserDetailDto>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<UserDetailHandler> _logger;
@@ -20,13 +21,13 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, UserDetailResp
         _userRepository = userRepository;
     }
     
-    public async Task<UserDetailResponse> Handle(UserDetailQuery request, CancellationToken cancellationToken)
+    public async Task<UserDetailDto> Handle(UserDetailQuery request, CancellationToken cancellationToken)
     {
         // Query the database
         var user = await _userRepository.GetByIdAsync(request.Id);
 
         // Convert data objects to DTO objects
-        var data = _mapper.Map<UserDetailResponse>(user);
+        var data = _mapper.Map<UserDetailDto>(user);
 
         // Return list of DTO objects
         _logger.LogInformation("User retrieved successfully.");

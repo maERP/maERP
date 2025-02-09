@@ -5,6 +5,7 @@ using maERP.Application.Features.Order.Commands.OrderDelete;
 using maERP.Application.Features.Order.Commands.OrderUpdate;
 using maERP.Application.Features.Order.Queries.OrderDetail;
 using maERP.Application.Features.Order.Queries.OrderList;
+using maERP.Domain.Dtos.Order;
 using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<OrdersController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<OrderListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -35,7 +36,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<OrderDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<OrderDetailDto>> GetDetails(int id)
     {
         try 
         {

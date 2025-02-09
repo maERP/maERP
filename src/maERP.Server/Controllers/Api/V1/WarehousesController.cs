@@ -5,6 +5,7 @@ using maERP.Application.Features.Warehouse.Commands.WarehouseDelete;
 using maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
 using maERP.Application.Features.Warehouse.Queries.WarehouseDetail;
 using maERP.Application.Features.Warehouse.Queries.WarehouseList;
+using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ public class WarehousesController(IMediator mediator) : ControllerBase
 {
     // GET: api/<WarehousesController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<WarehouseListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<WarehouseListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -35,7 +36,7 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<WarehouseDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<WarehouseDetailDto>> GetDetails(int id)
     {
         try 
         {
@@ -64,7 +65,7 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<WarehouseDetailResponse>> Update(int id, WarehouseUpdateCommand warehouseUpdateCommand)
+    public async Task<ActionResult<WarehouseDetailDto>> Update(int id, WarehouseUpdateCommand warehouseUpdateCommand)
     {
         warehouseUpdateCommand.Id = id;
         await mediator.Send(warehouseUpdateCommand);

@@ -22,14 +22,14 @@ public partial class AiModelsEdit
     // ReSharper disable once NotAccessedField.Local
     protected string Title = "hinzufügen";
 
-    public AIModelDetailDto AiModelDetail = new();
+    public AiModelDetailDto AiModelDetail = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (aiModelId != 0)
         {
             Title = "Bearbeiten";
-            AiModelDetail = await httpService.GetAsync<AIModelDetailDto>("/api/v1/AiModels/" + aiModelId) ?? new AIModelDetailDto();
+            AiModelDetail = await httpService.GetAsync<AiModelDetailDto>("/api/v1/AiModels/" + aiModelId) ?? new AiModelDetailDto();
         }
     }
 
@@ -39,12 +39,12 @@ public partial class AiModelsEdit
         {
             if (AiModelDetail != null)
             {    
-               await httpService.PostAsync<AIModelDetailDto, AIModelDetailDto>("/api/v1/AiModels/" + aiModelId, AiModelDetail);
+               await httpService.PostAsync<AiModelDetailDto, AiModelDetailDto>("/api/v1/AiModels/" + aiModelId, AiModelDetail);
             }
         }
         else
         {
-            if (AiModelDetail != null) await httpService.PutAsync<AIModelDetailDto, AIModelDetailDto>("/api/v1/AiModels", AiModelDetail);
+            if (AiModelDetail != null) await httpService.PutAsync<AiModelDetailDto, AiModelDetailDto>("/api/v1/AiModels", AiModelDetail);
         }
 
         NavigateToList();

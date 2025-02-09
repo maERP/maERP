@@ -2,11 +2,12 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
+using maERP.Domain.Dtos.Product;
 using MediatR;
 
 namespace maERP.Application.Features.Product.Queries.ProductDetail;
 
-public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, ProductDetailResponse>
+public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, ProductDetailDto>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<ProductDetailHandler> _logger;
@@ -20,7 +21,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, ProductD
         _logger = logger;
         _productRepository = productRepository;
     }
-    public async Task<ProductDetailResponse> Handle(ProductDetailQuery request, CancellationToken cancellationToken)
+    public async Task<ProductDetailDto> Handle(ProductDetailQuery request, CancellationToken cancellationToken)
     {
         var product = await _productRepository.GetByIdAsync(request.Id, true);
 
@@ -29,7 +30,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, ProductD
             throw new NotFoundException("NotFoundException", "Product not found.");
         }
 
-        var data = _mapper.Map<ProductDetailResponse>(product);
+        var data = _mapper.Map<ProductDetailDto>(product);
 
         _logger.LogInformation("Product retrieved successfully.");
         return data;

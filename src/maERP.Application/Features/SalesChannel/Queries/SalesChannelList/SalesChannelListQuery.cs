@@ -1,9 +1,10 @@
-﻿using maERP.Domain.Wrapper;
+﻿using maERP.Domain.Dtos.SalesChannel;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 
-public class SalesChannelListQuery : IRequest<PaginatedResult<SalesChannelListResponse>>
+public class SalesChannelListQuery : IRequest<PaginatedResult<SalesChannelListDto>>
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
