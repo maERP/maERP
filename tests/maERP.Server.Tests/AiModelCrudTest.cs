@@ -4,6 +4,7 @@ using maERP.Application.Features.AiModel.Commands.AiModelCreate;
 using maERP.Application.Features.AiModel.Commands.AiModelUpdate;
 using maERP.Application.Features.AiModel.Queries.AiModelDetail;
 using maERP.Application.Features.AiModel.Queries.AiModelList;
+using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 
@@ -33,7 +34,7 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, aiModel);
-        AiModelDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<AiModelDetailResponse>();
+        AiModelDetailDto? resultContent = await result.Content.ReadFromJsonAsync<AiModelDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -54,7 +55,7 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
                 }
         });
 
-        var result = await httpClient.GetFromJsonAsync<PaginatedResult<AiModelListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<AiModelListDto>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(1, result.TotalCount);
@@ -73,7 +74,7 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
                 }
         });
 
-        AiModelDetailResponse? result = await httpClient.GetFromJsonAsync<AiModelDetailResponse>(url);
+        AiModelDetailDto? result = await httpClient.GetFromJsonAsync<AiModelDetailDto>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);

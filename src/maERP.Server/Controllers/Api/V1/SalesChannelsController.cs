@@ -58,9 +58,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
         var response = await mediator.Send(salesChannelCreateCommand);
         return CreatedAtAction(nameof(GetAll), new { id = response });
     }
-
-    // TODO: fix this
-    /*
+    
     // PUT: api/<SalesChannelsController>/5
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -73,7 +71,6 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
         await mediator.Send(salesChannelUpdateCommand);
         return NoContent();
     }
-    */
 
     // DELETE api/<SalesChannelController>/5
     [HttpDelete("{id}")]

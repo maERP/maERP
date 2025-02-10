@@ -4,6 +4,7 @@ using maERP.Application.Features.AiPrompt.Commands.AiPromptCreate;
 using maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
 using maERP.Application.Features.AiPrompt.Queries.AiPromptDetail;
 using maERP.Application.Features.AiPrompt.Queries.AiPromptList;
+using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 
@@ -33,7 +34,7 @@ public class AiPromptCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, aiPrompt);
-        AiPromptDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<AiPromptDetailResponse>();
+        AiPromptDetailDto? resultContent = await result.Content.ReadFromJsonAsync<AiPromptDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -55,7 +56,7 @@ public class AiPromptCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        var result = await httpClient.GetFromJsonAsync<PaginatedResult<AiPromptListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<AiPromptListDto>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(1, result.TotalCount);
@@ -75,7 +76,7 @@ public class AiPromptCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        AiPromptDetailResponse? result = await httpClient.GetFromJsonAsync<AiPromptDetailResponse>(url);
+        AiPromptDetailDto? result = await httpClient.GetFromJsonAsync<AiPromptDetailDto>(url);
 
         Assert.NotNull(result);
         Assert.True(result.PromptText.Length > 0);

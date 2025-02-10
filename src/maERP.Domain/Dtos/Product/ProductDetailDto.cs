@@ -4,6 +4,8 @@ namespace maERP.Domain.Dtos.Product;
 
 public class ProductDetailDto
 {
+    public int Id { get; set; }
+    
     [Required]
     [StringLength(255)]
     public string Sku { get; set; } = string.Empty;

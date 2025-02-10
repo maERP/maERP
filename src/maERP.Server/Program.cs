@@ -53,13 +53,21 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SchemaFilter<maERP.Server.Filters.EnumSchemaFilter>();
+});
+
 builder.Services.AddSwaggerServices();
 builder.Services.AddApiVersioningServices(builder.Configuration);
 builder.Services.AddOpenTelemetryServices(builder.Configuration, "maERP.Server");
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>
-    opts.JsonSerializerOptions.PropertyNamingPolicy = null); // JsonNamingPolicy.CamelCase);
+{
+    opts.JsonSerializerOptions.PropertyNamingPolicy = null; 
+    opts.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+}); // JsonNamingPolicy.CamelCase);
 
 builder.Services.AddResponseCaching(options =>
 {

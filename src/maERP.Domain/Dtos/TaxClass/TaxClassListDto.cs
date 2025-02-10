@@ -3,5 +3,5 @@
 public class TaxClassListDto
 {
     public int Id { get; set; }
-    public int TaxRate { get; set; }
+    public double TaxRate { get; set; }
 }

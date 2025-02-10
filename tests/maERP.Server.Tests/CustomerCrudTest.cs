@@ -4,6 +4,7 @@ using maERP.Application.Features.Customer.Commands.CustomerCreate;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
 using maERP.Application.Features.Customer.Queries.CustomerDetail;
 using maERP.Application.Features.Customer.Queries.CustomerList;
+using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 
@@ -34,7 +35,7 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, customer);
-        CustomerDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<CustomerDetailResponse>();
+        CustomerDetailDto? resultContent = await result.Content.ReadFromJsonAsync<CustomerDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -55,7 +56,7 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        var result = await httpClient.GetFromJsonAsync<PaginatedResult<CustomerListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<CustomerListDto>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(1, result.TotalCount);
@@ -75,7 +76,7 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        CustomerDetailResponse? result = await httpClient.GetFromJsonAsync<CustomerDetailResponse>(url);
+        CustomerDetailDto? result = await httpClient.GetFromJsonAsync<CustomerDetailDto>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Firstname.Length > 0);
