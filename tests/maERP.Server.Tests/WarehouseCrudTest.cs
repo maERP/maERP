@@ -4,6 +4,7 @@ using maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
 using maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
 using maERP.Application.Features.Warehouse.Queries.WarehouseDetail;
 using maERP.Application.Features.Warehouse.Queries.WarehouseList;
+using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 
@@ -32,7 +33,7 @@ public class WarehouseCrudTest : IClassFixture<MaErpWebApplicationFactory<Progra
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, warehouse);
-        WarehouseDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<WarehouseDetailResponse>();
+        WarehouseDetailDto? resultContent = await result.Content.ReadFromJsonAsync<WarehouseDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -52,7 +53,7 @@ public class WarehouseCrudTest : IClassFixture<MaErpWebApplicationFactory<Progra
                 }
         });
 
-        var result = await httpClient.GetFromJsonAsync<PaginatedResult<WarehouseListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<WarehouseListDto>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(2, result.TotalCount);
@@ -71,7 +72,7 @@ public class WarehouseCrudTest : IClassFixture<MaErpWebApplicationFactory<Progra
                 }
         });
 
-        WarehouseDetailResponse? result = await httpClient.GetFromJsonAsync<WarehouseDetailResponse>(url);
+        WarehouseDetailDto? result = await httpClient.GetFromJsonAsync<WarehouseDetailDto>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);

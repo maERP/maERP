@@ -1,9 +1,10 @@
-﻿using maERP.Domain.Wrapper;
+﻿using maERP.Domain.Dtos.Warehouse;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Queries.WarehouseList;
 
-public class WarehouseListQuery : IRequest<PaginatedResult<WarehouseListResponse>>
+public class WarehouseListQuery : IRequest<PaginatedResult<WarehouseListDto>>
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }

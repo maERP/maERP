@@ -1,6 +1,6 @@
 ﻿@page "/Customers"
+@using maERP.Domain.Dtos.Customer
 @using Microsoft.AspNetCore.Authorization
-@using maERP.SharedUI.Models.Customer
 
 @attribute [Authorize]
 
@@ -12,7 +12,7 @@
     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Customers/Add" />
 </MudStack>
 
-<MudDataGrid T="CustomerVm" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
+<MudDataGrid T="CustomerDetailDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
     <ToolBarContent>
         @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
         <MudSpacer />
@@ -31,6 +31,6 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="CustomerVm" />
+        <MudDataGridPager T="CustomerDetailDto" />
     </PagerContent>
 </MudDataGrid>

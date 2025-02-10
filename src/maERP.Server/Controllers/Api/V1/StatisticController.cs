@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using maERP.Application.Features.Statistic.Queries.StatisticOrder;
 using maERP.Application.Features.Statistic.Queries.StatisticProduct;
+using maERP.Domain.Dtos.Statistic;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ public class StatisticController(IMediator mediator) : ControllerBase
 {
     // GET: api/<StatisticController>
     [HttpGet("OrderStatistic")]
-    public async Task<ActionResult<StatisticOrderResponse>> OrderStatistic()
+    public async Task<ActionResult<StatisticOrderDto>> OrderStatistic()
     {
         var statistic = await mediator.Send(new StatisticOrderQuery());
         return Ok(statistic);
@@ -23,7 +24,7 @@ public class StatisticController(IMediator mediator) : ControllerBase
 
     // GET: api/<StatisticController>
     [HttpGet("ProductStatistic")]
-    public async Task<ActionResult<StatisticProductResponse>> ProductStatistic()
+    public async Task<ActionResult<StatisticProductDto>> ProductStatistic()
     {
         var statistic = await mediator.Send(new StatisticProductQuery());
         return Ok(statistic);

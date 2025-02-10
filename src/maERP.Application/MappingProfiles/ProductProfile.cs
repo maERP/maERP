@@ -4,6 +4,7 @@ using maERP.Application.Features.Product.Commands.ProductDelete;
 using maERP.Application.Features.Product.Commands.ProductUpdate;
 using maERP.Application.Features.Product.Queries.ProductDetail;
 using maERP.Application.Features.Product.Queries.ProductList;
+using maERP.Domain.Dtos.Product;
 using maERP.Domain.Entities;
 
 namespace maERP.Application.MappingProfiles;
@@ -12,10 +13,8 @@ public class ProductProfile : Profile
 {
     public ProductProfile()
     {
-        CreateMap<Product, ProductCreateResponse>();
-        CreateMap<Product, ProductDetailResponse>();
-        CreateMap<Product, ProductListResponse>();
-        CreateMap<Product, ProductUpdateResponse>();
+        CreateMap<Product, ProductDetailDto>();
+        CreateMap<Product, ProductListDto>();
 
         CreateMap<ProductCreateCommand, Product>();
         CreateMap<ProductDeleteCommand, Product>();

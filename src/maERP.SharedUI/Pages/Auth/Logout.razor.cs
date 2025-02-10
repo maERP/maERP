@@ -9,11 +9,12 @@ public partial class Logout
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IAuthenticationService AuthService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        await AuthService.LogoutAsync();
+        HttpService.Logout();
         NavigationManager.NavigateTo("/login");
+        await Task.CompletedTask;
     }
 }

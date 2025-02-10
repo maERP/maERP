@@ -1,9 +1,10 @@
-﻿using maERP.Domain.Wrapper;
+﻿using maERP.Domain.Dtos.Product;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Product.Queries.ProductList;
 
-public class ProductListQuery : IRequest<PaginatedResult<ProductListResponse>>
+public class ProductListQuery : IRequest<PaginatedResult<ProductListDto>>
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }

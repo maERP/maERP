@@ -5,12 +5,13 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
+using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Customer.Queries.CustomerList;
 
-public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedResult<CustomerListResponse>>
+public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedResult<CustomerListDto>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<CustomerListHandler> _logger;
@@ -24,7 +25,7 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
         _logger = logger;
         _customerRepository = customerRepository; 
     }
-    public async Task<PaginatedResult<CustomerListResponse>> Handle(CustomerListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<CustomerListDto>> Handle(CustomerListQuery request, CancellationToken cancellationToken)
     {
         var customerFilterSpec = new CustomerFilterSpecification(request.SearchString);
         
@@ -34,7 +35,7 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
         {
             return await _customerRepository.Entities
                .Specify(customerFilterSpec)
-               .ProjectTo<CustomerListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<CustomerListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
         else
@@ -42,10 +43,10 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
             var ordering = string.Join(",", request.OrderBy);
 
             return await _customerRepository.Entities
-               .Specify(customerFilterSpec)
-               .OrderBy(ordering)
-               .ProjectTo<CustomerListResponse>(_mapper.ConfigurationProvider)
-               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+                .Specify(customerFilterSpec)
+                .OrderBy(ordering)
+                .ProjectTo<CustomerListDto>(_mapper.ConfigurationProvider)
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }
 }

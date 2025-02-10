@@ -1,5 +1,5 @@
+using maERP.Domain.Dtos.Warehouse;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.Warehouse;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,7 +11,7 @@ public partial class WarehousesEdit
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IWarehouseService WarehouseService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     [Parameter]
     public int warehouseId { get; set; }
@@ -22,14 +22,14 @@ public partial class WarehousesEdit
     // ReSharper disable once NotAccessedField.Local
     protected string Title = "hinzufügen";
 
-    protected WarehouseVm Warehouse = new();
+    protected WarehouseDetailDto Warehouse = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (warehouseId != 0)
         {
             Title = "Bearbeiten";
-            Warehouse = await WarehouseService.GetWarehouseDetails(warehouseId);
+            Warehouse = await HttpService.GetAsync<WarehouseDetailDto>($"/api/v1/Warehouses/{warehouseId}") ?? new WarehouseDetailDto();
         }
     }
 
@@ -37,11 +37,11 @@ public partial class WarehousesEdit
     {
         if (warehouseId != 0)
         {
-            await WarehouseService.UpdateWarehouse(warehouseId, Warehouse);
+            await HttpService.PutAsync<WarehouseDetailDto, WarehouseDetailDto>($"/api/v1/Warehouses/{warehouseId}", Warehouse);
         }
         else
         {
-            await WarehouseService.CreateWarehouse(Warehouse);
+            await HttpService.PutAsync<WarehouseDetailDto, WarehouseDetailDto>("/api/v1/Warehouses/", Warehouse);
         }
 
         NavigateToList();

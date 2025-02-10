@@ -1,4 +1,5 @@
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.TaxClasses;
@@ -9,7 +10,7 @@ public partial class TaxClassesDelete
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ITaxClassService TaxClassService { get; set; }
+    public required HttpService HttpService { get; set; }
 
     [Parameter]
     public int taxClassId { get; set; }
@@ -17,9 +18,8 @@ public partial class TaxClassesDelete
     protected override async Task OnParametersSetAsync()
     {
         if (taxClassId > 0)
-        {
-            await TaxClassService.DeleteTaxClass(taxClassId);
+        
+            await HttpService.DeleteAsync("/api/v1/TaxClasses/" + taxClassId);
             NavigationManager.NavigateTo("/TaxClasses");
-        }
     }
 }

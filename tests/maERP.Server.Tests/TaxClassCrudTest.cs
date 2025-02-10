@@ -4,6 +4,7 @@ using maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 using maERP.Application.Features.TaxClass.Queries.TaxClassList;
+using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 
@@ -32,7 +33,7 @@ public class TaxClassCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, taxclass);
-        TaxClassDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<TaxClassDetailResponse>();
+        TaxClassDetailDto? resultContent = await result.Content.ReadFromJsonAsync<TaxClassDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -52,7 +53,7 @@ public class TaxClassCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        var result = await httpClient.GetFromJsonAsync<PaginatedResult<TaxClassListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<TaxClassListDto>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(4, result.TotalCount);
@@ -65,7 +66,7 @@ public class TaxClassCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests();
 
-        TaxClassDetailResponse? result = await httpClient.GetFromJsonAsync<TaxClassDetailResponse>(url);
+        TaxClassDetailDto? result = await httpClient.GetFromJsonAsync<TaxClassDetailDto>(url);
 
         Assert.NotNull(result);
         Assert.Equal(19, result.TaxRate);

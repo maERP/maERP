@@ -5,13 +5,14 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
+using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.AiModel.Queries.AiModelList;
 
 // ReSharper disable once UnusedType.Global
-public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedResult<AiModelListResponse>>
+public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedResult<AiModelListDto>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<AiModelListHandler> _logger;
@@ -25,7 +26,7 @@ public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedRes
         _logger = logger;
         _aiModelRepository = aiModelRepository; 
     }
-    public async Task<PaginatedResult<AiModelListResponse>> Handle(AiModelListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<AiModelListDto>> Handle(AiModelListQuery request, CancellationToken cancellationToken)
     {
         var aiModelFilterSpec = new AiModelFilterSpecification(request.SearchString);
         
@@ -35,7 +36,7 @@ public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedRes
         {
             return await _aiModelRepository.Entities
                .Specify(aiModelFilterSpec)
-               .ProjectTo<AiModelListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<AiModelListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
         else
@@ -45,7 +46,7 @@ public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedRes
             return await _aiModelRepository.Entities
                .Specify(aiModelFilterSpec)
                .OrderBy(ordering)
-               .ProjectTo<AiModelListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<AiModelListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }

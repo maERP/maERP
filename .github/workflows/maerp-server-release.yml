@@ -24,7 +24,7 @@ jobs:
       run: dotnet build src/maERP.Server/maERP.Server.csproj --configuration Release --no-restore
       
     - name: Test
-      run: dotnet test src/maERP.Server.Tests/maERP.Server.Tests.csproj --configuration Release --no-build
+      run: dotnet test tests/maERP.Server.Tests/maERP.Server.Tests.csproj --configuration Release --no-build
       
     - name: Publish
       run: dotnet publish src/maERP.Server/maERP.Server.csproj --configuration Release --no-build --output ./publish

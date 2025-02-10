@@ -5,12 +5,13 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
+using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 
-public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, PaginatedResult<SalesChannelListResponse>>
+public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, PaginatedResult<SalesChannelListDto>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<SalesChannelListHandler> _logger;
@@ -24,7 +25,7 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
         _logger = logger;
         _salesChannelRepository = salesChannelRepository; 
     }
-    public async Task<PaginatedResult<SalesChannelListResponse>> Handle(SalesChannelListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<SalesChannelListDto>> Handle(SalesChannelListQuery request, CancellationToken cancellationToken)
     {
         var salesChannelFilterSpec = new SalesChannelFilterSpecification(request.SearchString);
         
@@ -34,7 +35,7 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
         {
             return await _salesChannelRepository.Entities
                .Specify(salesChannelFilterSpec)
-               .ProjectTo<SalesChannelListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<SalesChannelListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
         else
@@ -44,7 +45,7 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
             return await _salesChannelRepository.Entities
                .Specify(salesChannelFilterSpec)
                .OrderBy(ordering)
-               .ProjectTo<SalesChannelListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<SalesChannelListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }

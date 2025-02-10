@@ -6,19 +6,19 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">AI Modell bearbeiten</MudText>
 
-<MudForm Model="@AiPrompt" @ref="@_form">
+<MudForm Model="@AiPromptDetail" @ref="@_form">
     <MudGrid>
         <MudItem xs="6">
-            <MudTextField @bind-Value="AiPrompt.Identifier"
-                          For="@(() => AiPrompt.Identifier)"
+            <MudTextField @bind-Value="AiPromptDetail.Identifier"
+                          For="@(() => AiPromptDetail.Identifier)"
                           Label="Identifier"
                           Required="true"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6"/>
 
-            <MudTextField @bind-Value="AiPrompt.PromptText"
-                          For="@(() => AiPrompt.PromptText)"
+            <MudTextField @bind-Value="AiPromptDetail.PromptText"
+                          For="@(() => AiPromptDetail.PromptText)"
                           Label="Prompt Text"
                           Required="true"
                           Variant="Variant.Text"

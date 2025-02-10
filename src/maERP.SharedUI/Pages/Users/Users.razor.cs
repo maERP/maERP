@@ -1,6 +1,8 @@
+using maERP.Domain.Dtos.User;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.User;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace maERP.SharedUI.Pages.Users;
 
@@ -10,12 +12,28 @@ public partial class Users
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IUserService UserService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
-    private ICollection<UserVm>? _users;
+    private string _searchString = string.Empty;
+    
+    private MudDataGrid<UserListDto> _dataGrid = new();
 
-    protected override async Task OnInitializedAsync()
+    private async Task<GridData<UserListDto>> LoadGridData(GridState<UserListDto> state)
     {
-        _users = await UserService.GetUsers();
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<UserListDto>>("/api/v1/Users")
+                          ?? new PaginatedResult<UserListDto>(new List<UserListDto>());
+            
+        GridData<UserListDto> data = new()
+        {
+            Items = apiResponse.Data,
+            TotalItems = apiResponse.TotalCount
+        };
+
+        return data;
+    }
+    
+    private async Task Search()
+    {
+        await _dataGrid.ReloadServerData();
     }
 }

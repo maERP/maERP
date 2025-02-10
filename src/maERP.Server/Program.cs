@@ -1,7 +1,7 @@
 #nullable disable
 
-using maERP.Application;
 using maERP.Ai;
+using maERP.Application;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
 using maERP.Infrastructure;
@@ -13,13 +13,13 @@ using maERP.SalesChannels;
 using maERP.Server;
 using maERP.Server.Middlewares;
 using maERP.Server.ServiceRegistrations;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Net.Http.Headers;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using Serilog;
-using OpenTelemetry.Exporter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -203,4 +203,7 @@ if (!builder.Environment.IsEnvironment("Testing"))
 app.Run();
 
 // Make the implicit Program class public so test projects can access it
-public partial class Program { }
+namespace maERP.Server
+{
+    public partial class Program { }
+}

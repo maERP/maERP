@@ -4,9 +4,10 @@ using maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
+using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Entities;
-using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
+using SalesChannelType = maERP.Domain.Enums.SalesChannelType;
 
 namespace maERP.Server.Tests;
 
@@ -37,7 +38,7 @@ public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Pro
         };
 
         HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, saleschannel);
-        SalesChannelDetailResponse? resultContent = await result.Content.ReadFromJsonAsync<SalesChannelDetailResponse>();
+        SalesChannelDetailDto? resultContent = await result.Content.ReadFromJsonAsync<SalesChannelDetailDto>();
 
         Assert.NotNull(resultContent);
         Assert.True(result.IsSuccessStatusCode);
@@ -57,7 +58,7 @@ public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Pro
                 }
         });
 
-        var result = await httpClient.GetFromJsonAsync<PaginatedResult<SalesChannelListResponse>>(url);
+        var result = await httpClient.GetFromJsonAsync<PaginatedResult<SalesChannelListDto>>(url);
 
         Assert.NotNull(result);
         Assert.Equal(2, result.TotalCount);
@@ -77,7 +78,7 @@ public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Pro
                 }
         });
 
-        SalesChannelDetailResponse? result = await httpClient.GetFromJsonAsync<SalesChannelDetailResponse>(url);
+        SalesChannelDetailDto? result = await httpClient.GetFromJsonAsync<SalesChannelDetailDto>(url);
 
         Assert.NotNull(result);
         Assert.True(result.Name.Length > 0);
@@ -110,7 +111,8 @@ public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Pro
 
         var saleschannel = new SalesChannelUpdateCommand
         {
-            Type = SalesChannelType.PointOfSale,
+            // TODO: fix this
+            //Type = SalesChannelType.PointOfSale,
             Name = "SalesChannel 5 updated",
             Username = string.Empty,
             Password = string.Empty,

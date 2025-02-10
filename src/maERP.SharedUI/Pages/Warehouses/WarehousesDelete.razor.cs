@@ -1,4 +1,5 @@
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Warehouses;
@@ -9,8 +10,8 @@ public partial class WarehousesDelete
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IWarehouseService WarehouseService { get; set; }
-
+    public required HttpService HttpService { get; set; }
+    
     [Parameter]
     public int warehouseId { get; set; }
 
@@ -18,7 +19,7 @@ public partial class WarehousesDelete
     {
         if (warehouseId > 0)
         {
-            await WarehouseService.DeleteWarehouse(warehouseId);
+            await HttpService.DeleteAsync("/api/v1/Warehouses/" + warehouseId);
             NavigationManager.NavigateTo("/Warehouses");
         }
     }

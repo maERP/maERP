@@ -1,5 +1,6 @@
+using maERP.Domain.Dtos.Product;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.Product;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,16 +12,18 @@ public partial class Products
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required IProductService ProductService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<ProductListVm> _dataGrid = new();
+    private MudDataGrid<ProductListDto> _dataGrid = new();
 
-    private async Task<GridData<ProductListVm>> LoadGridData(GridState<ProductListVm> state)
+    private async Task<GridData<ProductListDto>> LoadGridData(GridState<ProductListDto> state)
     {
-        var apiResponse = await ProductService.GetProducts(state.Page, state.PageSize, _searchString);
-        GridData<ProductListVm> data = new()
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<ProductListDto>>("/api/v1/Products")
+                          ?? new PaginatedResult<ProductListDto>(new List<ProductListDto>());
+                
+        GridData<ProductListDto> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

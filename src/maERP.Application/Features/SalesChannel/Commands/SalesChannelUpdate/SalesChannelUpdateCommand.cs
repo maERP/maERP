@@ -5,8 +5,9 @@ namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 
 public class SalesChannelUpdateCommand : IRequest<int>
 {
-    public int Id { get; set; }     
-    public SalesChannelType Type { get; set; }
+    public int Id { get; set; }
+    // TODO: fix this
+    // public SalesChannelType Type { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;

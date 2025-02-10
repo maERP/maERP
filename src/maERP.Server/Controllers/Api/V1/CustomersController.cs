@@ -5,6 +5,7 @@ using maERP.Application.Features.Customer.Commands.CustomerDelete;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
 using maERP.Application.Features.Customer.Queries.CustomerDetail;
 using maERP.Application.Features.Customer.Queries.CustomerList;
+using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<CustomersController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<CustomerListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<CustomerListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -35,7 +36,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<CustomerDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<CustomerDetailDto>> GetDetails(int id)
     {
         try 
         {
@@ -52,7 +53,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<CustomerCreateResponse>> Create(CustomerCreateCommand customerCreateCommand)
+    public async Task<ActionResult<CustomerDetailDto>> Create(CustomerCreateCommand customerCreateCommand)
     {
         var response = await mediator.Send(customerCreateCommand);
         return CreatedAtAction(nameof(GetAll), new { id = response });
@@ -64,7 +65,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<CustomerUpdateResponse>> Update(int id, CustomerUpdateCommand customerUpdateCommand)
+    public async Task<ActionResult<CustomerDetailDto>> Update(int id, CustomerUpdateCommand customerUpdateCommand)
     {
         customerUpdateCommand.Id = id;
         await mediator.Send(customerUpdateCommand);

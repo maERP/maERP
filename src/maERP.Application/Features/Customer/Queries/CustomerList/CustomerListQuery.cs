@@ -1,9 +1,10 @@
 ﻿using maERP.Domain.Wrapper;
+using maERP.Domain.Dtos.Customer;
 using MediatR;
 
 namespace maERP.Application.Features.Customer.Queries.CustomerList;
 
-public class CustomerListQuery : IRequest<PaginatedResult<CustomerListResponse>>
+public class CustomerListQuery : IRequest<PaginatedResult<CustomerListDto>>
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }

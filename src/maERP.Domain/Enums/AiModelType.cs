@@ -3,10 +3,10 @@ namespace maERP.Domain.Enums;
 public enum AiModelType
 {
     None = 0,
-    VLlm = 1,
+    Ollama = 100,
+    VLlm = 200,
     // ReSharper disable once InconsistentNaming
-    OLLaMa = 2,
-    LmStudio = 3,
-    ChatGpt4O = 100,
-    Claude35 = 200,
+    LmStudio = 300,
+    ChatGpt4O = 400,
+    Claude35 = 500,
 }

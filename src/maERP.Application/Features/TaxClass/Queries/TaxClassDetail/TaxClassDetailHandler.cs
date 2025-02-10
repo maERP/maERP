@@ -2,11 +2,12 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
+using maERP.Domain.Dtos.TaxClass;
 using MediatR;
 
 namespace maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 
-public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, TaxClassDetailResponse>
+public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, TaxClassDetailDto>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<TaxClassDetailHandler> _logger;
@@ -20,7 +21,7 @@ public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, TaxCla
         _logger = logger;
         _taxClassRepository = taxClassRepository;
     }
-    public async Task<TaxClassDetailResponse> Handle(TaxClassDetailQuery request, CancellationToken cancellationToken)
+    public async Task<TaxClassDetailDto> Handle(TaxClassDetailQuery request, CancellationToken cancellationToken)
     {
         var taxClass = await _taxClassRepository.GetByIdAsync(request.Id, true);
 
@@ -29,7 +30,7 @@ public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, TaxCla
             throw new NotFoundException("NotFoundException", "TaxClass not found.");
         }
 
-        var data = _mapper.Map<TaxClassDetailResponse>(taxClass);
+        var data = _mapper.Map<TaxClassDetailDto>(taxClass);
 
         _logger.LogInformation("TaxClass retrieved successfully.");
         return data;

@@ -5,6 +5,7 @@ using maERP.Application.Features.AiModel.Commands.AiModelDelete;
 using maERP.Application.Features.AiModel.Commands.AiModelUpdate;
 using maERP.Application.Features.AiModel.Queries.AiModelDetail;
 using maERP.Application.Features.AiModel.Queries.AiModelList;
+using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ public class AiModelsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<AiModelsController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<AiModelListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<AiModelListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -35,7 +36,7 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AiModelDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<AiModelDetailDto>> GetDetails(int id)
     {
         try 
         {
@@ -64,7 +65,7 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<AiModelDetailResponse>> Update(int id, AiModelUpdateCommand aiModelUpdateCommand)
+    public async Task<ActionResult<AiModelDetailDto>> Update(int id, AiModelUpdateCommand aiModelUpdateCommand)
     {
         aiModelUpdateCommand.Id = id;
         await mediator.Send(aiModelUpdateCommand);

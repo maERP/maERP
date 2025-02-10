@@ -1,7 +1,6 @@
+using maERP.Domain.Dtos.SalesChannel;
+using maERP.Domain.Dtos.Warehouse;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.SalesChannel;
-using maERP.SharedUI.Models.Warehouse;
-using maERP.SharedUI.Services.Base;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -13,10 +12,7 @@ namespace maERP.SharedUI.Pages.SalesChannels
         public required NavigationManager NavigationManager { get; set; }
 
         [Inject]
-        public required ISalesChannelService SalesChannelService { get; set; }
-
-        [Inject]
-        public required IWarehouseService WarehouseService { get; set; }
+        public required IHttpService HttpService { get; set; }
 
         [Inject]
         public required ISnackbar Snackbar { get; set; }
@@ -29,8 +25,8 @@ namespace maERP.SharedUI.Pages.SalesChannels
 
         protected string Title = "hinzufügen";
 
-        protected SalesChannelVm SalesChannel = new();
-        protected List<WarehouseVm> Warehouses = new();
+        protected SalesChannelDetailDto SalesChannel = new();
+        protected List<WarehouseListDto> Warehouses = new();
 
         /*
         protected override async Task OnParametersSetAsync()
@@ -46,30 +42,13 @@ namespace maERP.SharedUI.Pages.SalesChannels
 
         protected async Task Save()
         {
-            Response<Guid> response = new();
-
             if (salesChannelId != 0)
             {
-                response = await SalesChannelService.UpdateSalesChannel(salesChannelId, SalesChannel);
+                await HttpService.PutAsync<SalesChannelDetailDto, SalesChannelDetailDto>("/api/v1/SalesChannels", SalesChannel);
             }
             else
             {
-                await SalesChannelService.CreateSalesChannel(SalesChannel);
-            }
-
-            if (response.Success)
-            {
-                Snackbar.Add("Vertriebskanal gespeichert", Severity.Success);
-                ReturnToList();
-            }
-            else
-            {
-                Snackbar.Add("Fehler beim Speichern des Vertriebskanals", Severity.Error);
-
-                foreach (var error in response.ValidationErrors)
-                {
-                    Snackbar.Add(error.ToString(), Severity.Error);
-                }
+                await HttpService.PostAsync<SalesChannelDetailDto, SalesChannelDetailDto>("/api/v1/SalesChannels", SalesChannel);
             }
         }
 

@@ -5,13 +5,14 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
+using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.AiPrompt.Queries.AiPromptList;
 
 // ReSharper disable once UnusedType.Global
-public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedResult<AiPromptListResponse>>
+public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedResult<AiPromptListDto>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<AiPromptListHandler> _logger;
@@ -25,7 +26,7 @@ public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedR
         _logger = logger;
         _aiPromptRepository = aiPromptRepository; 
     }
-    public async Task<PaginatedResult<AiPromptListResponse>> Handle(AiPromptListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<AiPromptListDto>> Handle(AiPromptListQuery request, CancellationToken cancellationToken)
     {
         var aiPromptFilterSpec = new AiPromptFilterSpecification(request.SearchString);
         
@@ -35,7 +36,7 @@ public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedR
         {
             return await _aiPromptRepository.Entities
                .Specify(aiPromptFilterSpec)
-               .ProjectTo<AiPromptListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<AiPromptListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
         else
@@ -45,7 +46,7 @@ public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedR
             return await _aiPromptRepository.Entities
                .Specify(aiPromptFilterSpec)
                .OrderBy(ordering)
-               .ProjectTo<AiPromptListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<AiPromptListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }

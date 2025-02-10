@@ -4,6 +4,7 @@ using maERP.Application.Features.User.Commands.UserDelete;
 using maERP.Application.Features.User.Commands.UserUpdate;
 using maERP.Application.Features.User.Queries.UserDetail;
 using maERP.Application.Features.User.Queries.UserList;
+using maERP.Domain.Dtos.User;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ public class UsersController(IMediator mediator) : ControllerBase
 {
     // GET: api/<UsersController>
     [HttpGet]
-    public async Task<ActionResult<List<UserListResponse>>> Get()
+    public async Task<ActionResult<List<UserListDto>>> Get()
     {
         var users = await mediator.Send(new UserListQuery());
         return Ok(users);
@@ -26,7 +27,7 @@ public class UsersController(IMediator mediator) : ControllerBase
 
     // GET api/<UsersController>/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserDetailResponse>> GetDetails(string id)
+    public async Task<ActionResult<UserDetailDto>> GetDetails(string id)
     {
         var user = await mediator.Send(new UserDetailQuery { Id = id });
         return Ok(user);

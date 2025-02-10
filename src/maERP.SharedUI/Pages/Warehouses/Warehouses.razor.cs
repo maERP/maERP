@@ -1,6 +1,8 @@
+using System.Net;
+using maERP.Domain.Dtos.Order;
+using maERP.Domain.Dtos.Warehouse;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.Order;
-using maERP.SharedUI.Models.Warehouse;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -12,16 +14,18 @@ public partial class Warehouses
     public required NavigationManager? navigationManager { get; set; }
 
     [Inject]
-    public required IWarehouseService WarehouseService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<OrderListVm> _dataGrid = new();
+    private MudDataGrid<WarehouseListDto> _dataGrid = new();
 
-    private async Task<GridData<WarehouseVm>> LoadGridData(GridState<WarehouseVm> state)
+    private async Task<GridData<WarehouseListDto>> LoadGridData(GridState<WarehouseListDto> state)
     {
-        var apiResponse = await WarehouseService.GetWarehouses(state.Page, state.PageSize, _searchString);
-        GridData<WarehouseVm> data = new()
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<WarehouseListDto>>("/api/v1/Warehouses")
+                          ?? new PaginatedResult<WarehouseListDto>(new List<WarehouseListDto>());
+        
+        GridData<WarehouseListDto> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

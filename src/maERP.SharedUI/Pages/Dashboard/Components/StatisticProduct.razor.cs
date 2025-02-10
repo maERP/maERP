@@ -1,5 +1,5 @@
+using maERP.Domain.Dtos.Statistic;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Services.Base;
 using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Dashboard.Components;
@@ -7,12 +7,13 @@ namespace maERP.SharedUI.Pages.Dashboard.Components;
 public partial class StatisticProduct
 {
     [Inject]
-    public required IStatisticService StatisticService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
-    private StatisticProductResponse? _statisticProduct;
+    private StatisticProductDto? _statisticProduct;
 
     protected override async Task OnInitializedAsync()
     {
-        _statisticProduct = await StatisticService.GetStatisticProductAsync();
+        _statisticProduct = await HttpService.GetAsync<StatisticProductDto>("/api/v1/Statistic/ProductStatistic") ??
+                           new StatisticProductDto();
     }
 }

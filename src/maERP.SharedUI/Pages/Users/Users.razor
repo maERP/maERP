@@ -1,4 +1,5 @@
 ﻿@page "/Users"
+@using maERP.Domain.Dtos.User
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
@@ -11,13 +12,18 @@
     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Users/Add" />
 </MudStack>
 
-@if (_users == null)
+@if (_dataGrid == null)
 {
     <p><em>Lade...</em></p>
 }
 else
 {
-    <MudDataGrid Items="@_users" SortMode="SortMode.Single" Class="mb-8">
+    <MudDataGrid T="UserListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
+        <ToolBarContent>
+            @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
+            <MudSpacer />
+            <MudTextField @bind-Value="_searchString" TextChanged="this.Search" Placeholder="Suche" Adornment="Adornment.Start" Immediate="true" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
         <Columns>
             <PropertyColumn Property="x => x.Email" Title="E-Mail" />
             <PropertyColumn Property="x => x.Firstname" Title="Vorname" />

@@ -5,6 +5,7 @@ using maERP.Application.Features.Product.Commands.ProductDelete;
 using maERP.Application.Features.Product.Commands.ProductUpdate;
 using maERP.Application.Features.Product.Queries.ProductDetail;
 using maERP.Application.Features.Product.Queries.ProductList;
+using maERP.Domain.Dtos.Product;
 using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
 {
     // GET: api/<ProductsController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<ProductListResponse>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<ProductListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -35,7 +36,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ProductDetailResponse>> GetDetails(int id)
+    public async Task<ActionResult<ProductDetailDto>> GetDetails(int id)
     {
         try 
         {

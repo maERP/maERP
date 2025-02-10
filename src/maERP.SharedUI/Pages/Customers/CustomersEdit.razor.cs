@@ -1,5 +1,5 @@
+using maERP.Domain.Dtos.Customer;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.Customer;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,7 +11,7 @@ public partial class CustomersEdit
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ICustomerService CustomerService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     [Parameter]
     public int customerId { get; set; }
@@ -19,19 +19,19 @@ public partial class CustomersEdit
     // ReSharper disable once NotAccessedField.Local
     private MudForm? _form;
 
-    protected CustomerVm Customer = new();
+    protected CustomerDetailDto CustomerDetail = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (customerId != 0)
         {
-            Customer = await CustomerService.GetCustomerDetails(customerId);
+            CustomerDetail = await HttpService.GetAsync<CustomerDetailDto>("/api/v1/Customers/" + customerId) ?? new CustomerDetailDto();
         }
     }
 
     protected async Task Save()
     {
-        await CustomerService.UpdateCustomer(customerId, Customer);
+        await HttpService.PutAsync<CustomerDetailDto, CustomerDetailDto>("/api/v1/Customers/" + customerId, CustomerDetail);
 
         ReturnToList();
     }

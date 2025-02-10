@@ -5,12 +5,13 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
+using maERP.Domain.Dtos.Product;
 using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Product.Queries.ProductList;
 
-public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedResult<ProductListResponse>>
+public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedResult<ProductListDto>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<ProductListHandler> _logger;
@@ -24,7 +25,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
         _logger = logger;
         _productRepository = productRepository; 
     }
-    public async Task<PaginatedResult<ProductListResponse>> Handle(ProductListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<ProductListDto>> Handle(ProductListQuery request, CancellationToken cancellationToken)
     {
         var orderFilterSpec = new ProductFilterSpecification(request.SearchString);
         
@@ -34,7 +35,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
         {
             return await _productRepository.Entities
                .Specify(orderFilterSpec)
-               .ProjectTo<ProductListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<ProductListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
         else
@@ -44,7 +45,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
             return await _productRepository.Entities
                .Specify(orderFilterSpec)
                .OrderBy(ordering)
-               .ProjectTo<ProductListResponse>(_mapper.ConfigurationProvider)
+               .ProjectTo<ProductListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }

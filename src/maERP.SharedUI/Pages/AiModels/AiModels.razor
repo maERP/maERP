@@ -1,5 +1,5 @@
 ﻿@page "/AiModels"
-@using maERP.SharedUI.Models.AiModel
+@using maERP.Domain.Dtos.AiModel
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
@@ -12,7 +12,7 @@
     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/AiModels/Add" />
 </MudStack>
 
-<MudDataGrid T="AiModelListVm" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
+<MudDataGrid T="AiModelListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
     <ToolBarContent>
         @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
         <MudSpacer />
@@ -28,6 +28,6 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="AiModelVm" />
+        <MudDataGridPager T="AiModelDetailDto" />
     </PagerContent>
 </MudDataGrid>

@@ -1,6 +1,7 @@
+using maERP.Domain.Dtos.Order;
+using maERP.Domain.Dtos.TaxClass;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Models.Order;
-using maERP.SharedUI.Models.TaxClass;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -12,16 +13,18 @@ public partial class TaxClasses
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required ITaxClassService TaxClassService { get; set; }
+    public required IHttpService HttpService { get; set; }
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<OrderListVm> _dataGrid = new();
+    private MudDataGrid<TaxClassListDto> _dataGrid = new();
 
-    private async Task<GridData<TaxClassVm>> LoadGridData(GridState<TaxClassVm> state)
+    private async Task<GridData<TaxClassListDto>> LoadGridData(GridState<TaxClassListDto> state)
     {
-        var apiResponse = await TaxClassService.GetTaxClasses(state.Page, state.PageSize, _searchString);
-        GridData<TaxClassVm> data = new()
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<TaxClassListDto>>("/api/v1/TaxClasses")
+                          ?? new PaginatedResult<TaxClassListDto>(new List<TaxClassListDto>());
+            
+        GridData<TaxClassListDto> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount
