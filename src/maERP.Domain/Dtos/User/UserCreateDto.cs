@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace maERP.Application.Features.User.Commands.UserCreate;
+namespace maERP.Domain.Dtos.User;
 
 public class UserCreateDto
 {

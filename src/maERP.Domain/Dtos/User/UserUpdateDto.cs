@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace maERP.Application.Features.User.Commands.UserUpdate;
+namespace maERP.Domain.Dtos.User;
 
 public class UserUpdateDto
 {
