@@ -24,8 +24,8 @@ jobs:
           dotnet-version: 9.x
 
       - name: Restore maERP.Web.Tests
-        run: dotnet restore src/maERP.Web.Tests --locked-mode
+        run: dotnet restore tests/maERP.Web.Tests
       - name: Build maERP.Web.Tests
-        run: dotnet build src/maERP.Web.Tests
+        run: dotnet build tests/maERP.Web.Tests
       - name: Test maERP.Web.Tests
-        run: dotnet test src/maERP.Web.Tests --no-build --verbosity normal
+        run: dotnet test tests/maERP.Web.Tests --no-build --verbosity normal
