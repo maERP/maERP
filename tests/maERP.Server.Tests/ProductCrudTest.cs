@@ -1,8 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using maERP.Application.Features.Product.Commands.ProductCreate;
-using maERP.Application.Features.Product.Queries.ProductDetail;
-using maERP.Application.Features.Product.Queries.ProductList;
 using maERP.Application.Features.Product.Commands.ProductUpdate;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Entities;

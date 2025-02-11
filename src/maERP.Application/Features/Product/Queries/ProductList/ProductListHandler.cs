@@ -38,15 +38,13 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
                .ProjectTo<ProductListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
-        else
-        {
-            var ordering = string.Join(",", request.OrderBy);
 
-            return await _productRepository.Entities
-               .Specify(orderFilterSpec)
-               .OrderBy(ordering)
-               .ProjectTo<ProductListDto>(_mapper.ConfigurationProvider)
-               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-        }
+        var ordering = string.Join(",", request.OrderBy);
+
+        return await _productRepository.Entities
+            .Specify(orderFilterSpec)
+            .OrderBy(ordering)
+            .ProjectTo<ProductListDto>(_mapper.ConfigurationProvider)
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

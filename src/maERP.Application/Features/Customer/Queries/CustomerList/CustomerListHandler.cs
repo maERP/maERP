@@ -38,15 +38,13 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
                .ProjectTo<CustomerListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
-        else
-        {
-            var ordering = string.Join(",", request.OrderBy);
 
-            return await _customerRepository.Entities
-                .Specify(customerFilterSpec)
-                .OrderBy(ordering)
-                .ProjectTo<CustomerListDto>(_mapper.ConfigurationProvider)
-                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-        }
+        var ordering = string.Join(",", request.OrderBy);
+
+        return await _customerRepository.Entities
+            .Specify(customerFilterSpec)
+            .OrderBy(ordering)
+            .ProjectTo<CustomerListDto>(_mapper.ConfigurationProvider)
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

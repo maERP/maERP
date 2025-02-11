@@ -32,7 +32,7 @@ public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, int>
 
         // convert to domain entity object
         // var aIPromptToDelete = _mapper.Map<Domain.Entities.AiPrompt>(request);
-        var aIPromptToDelete = new Domain.Entities.AiPrompt()
+        var aIPromptToDelete = new Domain.Entities.AiPrompt
         {
             Id = request.Id
         };

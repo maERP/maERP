@@ -2,7 +2,6 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
-using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Entities;
@@ -16,17 +15,14 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<UserListHandler> _logger;
-    private readonly IUserRepository _userRepository;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public UserListHandler(IMapper mapper,
-        IAppLogger<UserListHandler> logger, 
-        IUserRepository userRepository,
+        IAppLogger<UserListHandler> logger,
         UserManager<ApplicationUser> userManager)
     {
         _mapper = mapper;
         _logger = logger;
-        _userRepository = userRepository;
         _userManager = userManager;
     }
     public async Task<PaginatedResult<UserListDto>> Handle(UserListQuery request, CancellationToken cancellationToken)
@@ -39,14 +35,12 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
                 .ProjectTo<UserListDto>(_mapper.ConfigurationProvider)
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
-        else
-        {
-            var ordering = string.Join(",", request.OrderBy);
 
-            return await _userManager.Users
-                .OrderBy(ordering)
-                .ProjectTo<UserListDto>(_mapper.ConfigurationProvider)
-                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-        }
+        var ordering = string.Join(",", request.OrderBy);
+
+        return await _userManager.Users
+            .OrderBy(ordering)
+            .ProjectTo<UserListDto>(_mapper.ConfigurationProvider)
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

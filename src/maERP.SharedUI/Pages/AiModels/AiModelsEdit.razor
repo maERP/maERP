@@ -10,7 +10,7 @@
 <MudForm Model="@AiModelDetail" @ref="@_form">
     <MudGrid>
         <MudItem xs="6">
-            <MudSelect T="AiModelType" Label="Typ" HelperText="Model-Typ" Placeholder="Typ auswählen" @bind-Value="@AiModelDetail!.AiModelType" Class="mt-6">
+            <MudSelect T="AiModelType" Label="Typ" HelperText="Model-Typ" Placeholder="Typ auswählen" @bind-Value="@AiModelDetail.AiModelType" Class="mt-6">
                 <MudSelectItem Value="AiModelType.ChatGpt4O">ChatGPT 4o</MudSelectItem>
                 <MudSelectItem Value="AiModelType.Claude35">Claude Opus 3.5</MudSelectItem>
             </MudSelect>

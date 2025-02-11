@@ -15,7 +15,7 @@ public partial class AiPrompts
     public required IHttpService HttpService { get; set; }
 
     private string _searchString = string.Empty;
-    private MudDataGrid<AiPromptListDto> _dataGrid = new();
+    private readonly MudDataGrid<AiPromptListDto> _dataGrid = new();
 
     private async Task<GridData<AiPromptListDto>> LoadGridData(GridState<AiPromptListDto> state)
     {

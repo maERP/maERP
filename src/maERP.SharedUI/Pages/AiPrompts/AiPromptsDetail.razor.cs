@@ -17,14 +17,14 @@ public partial class AiPromptsDetail
 
     protected string Title = "AI Model";
 
-    protected AiPromptDetailDto aiPromptDetail = new();
+    protected AiPromptDetailDto AiPromptDetail = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (aiPromptId != 0)
         {
             Title = "Bearbeiten";
-            aiPromptDetail = await HttpService.GetAsync<AiPromptDetailDto>("/api/v1/AiPrompts/" + aiPromptId) ?? new AiPromptDetailDto();
+            AiPromptDetail = await HttpService.GetAsync<AiPromptDetailDto>("/api/v1/AiPrompts/" + aiPromptId) ?? new AiPromptDetailDto();
         }
         else Title = "nicht gefunden";
     }

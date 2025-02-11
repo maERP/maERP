@@ -16,7 +16,7 @@ public partial class Products
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<ProductListDto> _dataGrid = new();
+    private readonly MudDataGrid<ProductListDto> _dataGrid = new();
 
     private async Task<GridData<ProductListDto>> LoadGridData(GridState<ProductListDto> state)
     {

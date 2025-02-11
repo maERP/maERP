@@ -2,8 +2,6 @@ using System.Net;
 using System.Net.Http.Json;
 using maERP.Application.Features.AiPrompt.Commands.AiPromptCreate;
 using maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
-using maERP.Application.Features.AiPrompt.Queries.AiPromptDetail;
-using maERP.Application.Features.AiPrompt.Queries.AiPromptList;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;

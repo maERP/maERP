@@ -1,8 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
-using maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
-using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Entities;

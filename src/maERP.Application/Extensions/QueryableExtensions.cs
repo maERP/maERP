@@ -10,7 +10,7 @@ public static class QueryableExtensions
 {
     public static async Task<PaginatedResult<T>> ToPaginatedListAsync<T>(this IQueryable<T> source, int pageNumber, int pageSize) where T : class
     {
-        if (source == null) throw new SourceNullException($"source is null - pagination is aborted");
+        if (source == null) throw new SourceNullException("source is null - pagination is aborted");
         pageNumber = pageNumber < 0 ? 0 : pageNumber;
         pageSize = pageSize == 0 ? 10 : pageSize;
         int count = await source.CountAsync();

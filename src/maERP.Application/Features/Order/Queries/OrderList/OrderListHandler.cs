@@ -39,15 +39,13 @@ public class OrderListHandler : IRequestHandler<OrderListQuery, PaginatedResult<
                .ProjectTo<OrderListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
-        else
-        {
-            var ordering = string.Join(",", request.OrderBy);
 
-            return await _orderRepository.Entities
-               .Specify(orderFilterSpec)
-               .OrderBy(ordering)
-               .ProjectTo<OrderListDto>(_mapper.ConfigurationProvider)
-               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-        }
+        var ordering = string.Join(",", request.OrderBy);
+
+        return await _orderRepository.Entities
+            .Specify(orderFilterSpec)
+            .OrderBy(ordering)
+            .ProjectTo<OrderListDto>(_mapper.ConfigurationProvider)
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

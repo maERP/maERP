@@ -32,7 +32,7 @@ public class AiPromptUpdateValidator : AbstractValidator<AiPromptUpdateCommand>
     
     private async Task<bool> IsUniqueAsync(AiPromptUpdateCommand command, CancellationToken cancellationToken)
     {
-        var aIPrompt = new Domain.Entities.AiPrompt()
+        var aIPrompt = new Domain.Entities.AiPrompt
         {
             Identifier = command.Identifier,
             PromptText = command.PromptText

@@ -22,7 +22,7 @@ public class AiModelCreateValidator : AbstractValidator<AiModelCreateCommand>
 
     private async Task<bool> IsUniqueAsync(AiModelCreateCommand command, CancellationToken cancellationToken)
     {
-        var aiModel = new Domain.Entities.AiModel()
+        var aiModel = new Domain.Entities.AiModel
         {
             Name = command.Name,
         };

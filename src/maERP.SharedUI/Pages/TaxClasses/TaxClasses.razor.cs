@@ -16,7 +16,7 @@ public partial class TaxClasses
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<TaxClassListDto> _dataGrid = new();
+    private readonly MudDataGrid<TaxClassListDto> _dataGrid = new();
 
     private async Task<GridData<TaxClassListDto>> LoadGridData(GridState<TaxClassListDto> state)
     {

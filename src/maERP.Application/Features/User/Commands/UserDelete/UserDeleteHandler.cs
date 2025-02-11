@@ -32,7 +32,7 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, string>
         }
 
         // Find user
-        var userToDelete = await _userManager.FindByIdAsync(request.Id.ToString());
+        var userToDelete = await _userManager.FindByIdAsync(request.Id);
         if (userToDelete == null)
         {
             throw new NotFoundException($"User with ID {request.Id} not found.", request.Id);

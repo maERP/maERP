@@ -1,5 +1,6 @@
 ﻿namespace maERP.Client;
 
+// ReSharper disable once RedundantExtendsListEntry
 public partial class App : Application
 {
     /// <summary>

@@ -1,9 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using maERP.Application.Features.Order.Commands.OrderCreate;
 using maERP.Application.Features.Order.Commands.OrderUpdate;
-using maERP.Application.Features.Order.Queries.OrderDetail;
-using maERP.Application.Features.Order.Queries.OrderList;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;

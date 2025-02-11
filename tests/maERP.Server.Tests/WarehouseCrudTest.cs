@@ -2,8 +2,6 @@ using System.Net;
 using System.Net.Http.Json;
 using maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
 using maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
-using maERP.Application.Features.Warehouse.Queries.WarehouseDetail;
-using maERP.Application.Features.Warehouse.Queries.WarehouseList;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;

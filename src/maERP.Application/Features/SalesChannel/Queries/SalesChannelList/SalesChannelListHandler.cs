@@ -38,15 +38,13 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
                .ProjectTo<SalesChannelListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
-        else
-        {
-            var ordering = string.Join(",", request.OrderBy);
 
-            return await _salesChannelRepository.Entities
-               .Specify(salesChannelFilterSpec)
-               .OrderBy(ordering)
-               .ProjectTo<SalesChannelListDto>(_mapper.ConfigurationProvider)
-               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-        }
+        var ordering = string.Join(",", request.OrderBy);
+
+        return await _salesChannelRepository.Entities
+            .Specify(salesChannelFilterSpec)
+            .OrderBy(ordering)
+            .ProjectTo<SalesChannelListDto>(_mapper.ConfigurationProvider)
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

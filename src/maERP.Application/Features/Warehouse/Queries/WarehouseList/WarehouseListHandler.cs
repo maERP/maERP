@@ -39,15 +39,13 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
                .ProjectTo<WarehouseListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
-        else
-        {
-            var ordering = string.Join(",", request.OrderBy);
 
-            return await _warehouseRepository.Entities
-               .Specify(warehouseFilterSpec)
-               .OrderBy(ordering)
-               .ProjectTo<WarehouseListDto>(_mapper.ConfigurationProvider)
-               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-        }
+        var ordering = string.Join(",", request.OrderBy);
+
+        return await _warehouseRepository.Entities
+            .Specify(warehouseFilterSpec)
+            .OrderBy(ordering)
+            .ProjectTo<WarehouseListDto>(_mapper.ConfigurationProvider)
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

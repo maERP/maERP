@@ -32,7 +32,7 @@ public partial class Login
     MudForm? _form;
     // ReSharper disable once RedundantDefaultMemberInitializer
     bool _success = false;
-    bool _loading = false;
+    readonly bool _loading = false;
 
     private List<LoginServer> _serverList = new();
     private readonly LoginFormModel _model = new();
@@ -128,7 +128,7 @@ public partial class Login
 
         _errorMessage = "Login fehlgeschlagen";
 
-        Snackbar!.Add(_errorMessage, Severity.Error);
+        Snackbar.Add(_errorMessage, Severity.Error);
 
         await LocalStorage.RemoveItemAsync("server");
 

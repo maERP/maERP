@@ -16,7 +16,7 @@ public partial class SalesChannels
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<SalesChannelListDto> _dataGrid = new();
+    private readonly MudDataGrid<SalesChannelListDto> _dataGrid = new();
 
     private async Task<GridData<SalesChannelListDto>> LoadGridData(GridState<SalesChannelListDto> state)
     {

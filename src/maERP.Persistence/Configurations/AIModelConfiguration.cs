@@ -10,7 +10,7 @@ public class AiModelConfiguration : IEntityTypeConfiguration<AiModel>
     public void Configure(EntityTypeBuilder<AiModel> modelBuilder)
     {
         modelBuilder.HasData(
-            new AiModel()
+            new AiModel
             {
                 Id = 1,
                 AiModelType = AiModelType.ChatGpt4O,

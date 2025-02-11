@@ -39,15 +39,13 @@ public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedR
                .ProjectTo<AiPromptListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
-        else
-        {
-            var ordering = string.Join(",", request.OrderBy);
 
-            return await _aiPromptRepository.Entities
-               .Specify(aiPromptFilterSpec)
-               .OrderBy(ordering)
-               .ProjectTo<AiPromptListDto>(_mapper.ConfigurationProvider)
-               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-        }
+        var ordering = string.Join(",", request.OrderBy);
+
+        return await _aiPromptRepository.Entities
+            .Specify(aiPromptFilterSpec)
+            .OrderBy(ordering)
+            .ProjectTo<AiPromptListDto>(_mapper.ConfigurationProvider)
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

@@ -5,7 +5,7 @@ namespace maERP.Ai.Services;
 
 public class ClaudeService : AiService, IClaudeService
 {
-    private Anthropic _api;
+    private readonly Anthropic _api;
     private IMessages _chat;
 
     public ClaudeService()

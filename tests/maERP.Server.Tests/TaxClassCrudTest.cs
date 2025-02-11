@@ -2,8 +2,6 @@ using System.Net;
 using System.Net.Http.Json;
 using maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
-using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
-using maERP.Application.Features.TaxClass.Queries.TaxClassList;
 using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;

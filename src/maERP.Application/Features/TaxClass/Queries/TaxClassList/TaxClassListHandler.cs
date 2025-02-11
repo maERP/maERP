@@ -38,15 +38,13 @@ public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, PaginatedR
                .ProjectTo<TaxClassListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
-        else
-        {
-            var ordering = string.Join(",", request.OrderBy);
 
-            return await _taxClassRepository.Entities
-                .Specify(taxClassFilterSpec)
-                .OrderBy(ordering)
-                .ProjectTo<TaxClassListDto>(_mapper.ConfigurationProvider)
-                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-        }
+        var ordering = string.Join(",", request.OrderBy);
+
+        return await _taxClassRepository.Entities
+            .Specify(taxClassFilterSpec)
+            .OrderBy(ordering)
+            .ProjectTo<TaxClassListDto>(_mapper.ConfigurationProvider)
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

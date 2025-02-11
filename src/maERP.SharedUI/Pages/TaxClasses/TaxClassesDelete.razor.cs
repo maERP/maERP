@@ -17,8 +17,10 @@ public partial class TaxClassesDelete
     protected override async Task OnParametersSetAsync()
     {
         if (taxClassId > 0)
-        
+        {
             await HttpService.DeleteAsync("/api/v1/TaxClasses/" + taxClassId);
-            NavigationManager.NavigateTo("/TaxClasses");
+        }
+        
+        NavigationManager.NavigateTo("/TaxClasses");
     }
 }

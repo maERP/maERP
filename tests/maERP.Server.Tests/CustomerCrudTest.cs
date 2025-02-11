@@ -2,8 +2,6 @@ using System.Net;
 using System.Net.Http.Json;
 using maERP.Application.Features.Customer.Commands.CustomerCreate;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
-using maERP.Application.Features.Customer.Queries.CustomerDetail;
-using maERP.Application.Features.Customer.Queries.CustomerList;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;

@@ -39,15 +39,13 @@ public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedRes
                .ProjectTo<AiModelListDto>(_mapper.ConfigurationProvider)
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
-        else
-        {
-            var ordering = string.Join(",", request.OrderBy);
 
-            return await _aiModelRepository.Entities
-               .Specify(aiModelFilterSpec)
-               .OrderBy(ordering)
-               .ProjectTo<AiModelListDto>(_mapper.ConfigurationProvider)
-               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-        }
+        var ordering = string.Join(",", request.OrderBy);
+
+        return await _aiModelRepository.Entities
+            .Specify(aiModelFilterSpec)
+            .OrderBy(ordering)
+            .ProjectTo<AiModelListDto>(_mapper.ConfigurationProvider)
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

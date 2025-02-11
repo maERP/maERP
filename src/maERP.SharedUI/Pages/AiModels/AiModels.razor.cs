@@ -16,7 +16,7 @@ public partial class AiModels
 
     private string _searchString = string.Empty;
 
-    private MudDataGrid<AiModelListDto> _dataGrid = new();
+    private readonly MudDataGrid<AiModelListDto> _dataGrid = new();
 
     private async Task<GridData<AiModelListDto>> LoadGridData(GridState<AiModelListDto> state)
     {

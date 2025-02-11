@@ -22,7 +22,7 @@ public class WarehouseCreateValidator : AbstractValidator<WarehouseCreateCommand
 
     private async Task<bool> IsUniqueAsync(WarehouseCreateCommand command, CancellationToken cancellationToken)
     {
-        var warehouse = new Domain.Entities.Warehouse()
+        var warehouse = new Domain.Entities.Warehouse
         {
             Name = command.Name,
         };

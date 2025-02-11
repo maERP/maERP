@@ -9,7 +9,7 @@ public class SettingConfiguration : IEntityTypeConfiguration<Setting>
     public void Configure(EntityTypeBuilder<Setting> modelBuilder)
     {
         modelBuilder.HasData(
-            new Setting()
+            new Setting
             {
                 Key = "server_hostname",
                 Value = "https://localhost:8443"

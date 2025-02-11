@@ -37,6 +37,6 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, string>
         // await _userRepository.UpdateAsync(userToUpdate);
 
         // return record id
-        return userToUpdate.Id.ToString();
+        return userToUpdate.Id;
     }
 }

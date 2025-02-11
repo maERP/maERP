@@ -32,7 +32,7 @@ public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, int>
 
         // convert to domain entity object
         // var aiModelToDelete = _mapper.Map<Domain.Entities.AiModel>(request);
-        var aiModelToDelete = new Domain.Entities.AiModel()
+        var aiModelToDelete = new Domain.Entities.AiModel
         {
             Id = request.Id
         };

@@ -22,7 +22,7 @@ public class AiPromptCreateValidator : AbstractValidator<AiPromptCreateCommand>
 
     private async Task<bool> IsUniqueAsync(AiPromptCreateCommand command, CancellationToken cancellationToken)
     {
-        var aiPrompt = new Domain.Entities.AiPrompt()
+        var aiPrompt = new Domain.Entities.AiPrompt
         {
             Identifier = command.Identifier,
             PromptText = command.PromptText

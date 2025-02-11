@@ -32,7 +32,7 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, in
 
         // convert to domain entity object
         // var warehouseToDelete = _mapper.Map<Domain.Entities.Warehouse>(request);
-        var warehouseToDelete = new Domain.Entities.Warehouse()
+        var warehouseToDelete = new Domain.Entities.Warehouse
         {
             Id = request.Id
         };

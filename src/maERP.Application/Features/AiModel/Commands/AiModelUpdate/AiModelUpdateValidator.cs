@@ -32,7 +32,7 @@ public class AiModelUpdateValidator : AbstractValidator<AiModelUpdateCommand>
     
     private async Task<bool> IsUniqueAsync(AiModelUpdateCommand command, CancellationToken cancellationToken)
     {
-        var aiModel = new Domain.Entities.AiModel()
+        var aiModel = new Domain.Entities.AiModel
         {
             Name = command.Name,
         };
