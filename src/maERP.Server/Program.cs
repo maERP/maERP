@@ -112,8 +112,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
-// app.UseExceptionHandler();
-app.UseMiddleware<ExceptionMiddleware>();
+
 
 app.UseHttpsRedirection();
 app.UseCors();
@@ -131,7 +130,7 @@ if(app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 
 if (app.Environment.IsDevelopment())
 {
-    //app.UseDeveloperExceptionPage();
+    // app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -157,6 +156,7 @@ else
         await next();
     });
 
+    app.UseMiddleware<ExceptionMiddleware>();
     app.UseExceptionHandler("/Home/Error");
     app.UseSerilogRequestLogging();
 

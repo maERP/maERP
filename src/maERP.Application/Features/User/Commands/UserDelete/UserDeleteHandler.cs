@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Application.Features.User.Commands.UserDelete;
 
-public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Unit>
+public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, string>
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IAppLogger<UserDeleteHandler> _logger;
@@ -19,7 +19,7 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Unit>
         _logger = logger;
     }
 
-    public async Task<Unit> Handle(UserDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(UserDeleteCommand request, CancellationToken cancellationToken)
     {
         // Validate incoming data
         var validator = new UserDeleteValidator();
@@ -32,7 +32,7 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Unit>
         }
 
         // Find user
-        var userToDelete = await _userManager.FindByIdAsync(request.Id);
+        var userToDelete = await _userManager.FindByIdAsync(request.Id.ToString());
         if (userToDelete == null)
         {
             throw new NotFoundException($"User with ID {request.Id} not found.", request.Id);
@@ -47,6 +47,7 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Unit>
         }
 
         _logger.LogInformation("User {0} deleted successfully", request.Id);
-        return Unit.Value;
+
+        return userToDelete.Id;
     }
 }

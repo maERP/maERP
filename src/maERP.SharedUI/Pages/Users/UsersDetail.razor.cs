@@ -21,6 +21,6 @@ public partial class UsersDetail
 
     protected override async Task OnParametersSetAsync()
     {
-        User = await HttpService.GetAsync<UserDetailDto>($"/api/v1/users/{userId}") ?? new UserDetailDto();
+        User = await HttpService.GetAsync<UserDetailDto>($"/api/v1/Users/{userId}") ?? new UserDetailDto();
     }
 }

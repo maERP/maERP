@@ -1,10 +1,12 @@
 using Asp.Versioning;
+using maERP.Application.Exceptions;
 using maERP.Application.Features.User.Commands.UserCreate;
 using maERP.Application.Features.User.Commands.UserDelete;
 using maERP.Application.Features.User.Commands.UserUpdate;
 using maERP.Application.Features.User.Queries.UserDetail;
 using maERP.Application.Features.User.Queries.UserList;
 using maERP.Domain.Dtos.User;
+using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,44 +17,65 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class UsersController(IMediator mediator) : ControllerBase
+public class UsersController : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UsersController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     // GET: api/<UsersController>
     [HttpGet]
-    public async Task<ActionResult<List<UserListDto>>> Get()
+    public async Task<ActionResult<PaginatedResult<UserListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
-        var users = await mediator.Send(new UserListQuery());
+        if (string.IsNullOrEmpty(orderBy))
+        {
+            orderBy = "DateCreated Descending";
+        }
+
+        var users = await _mediator.Send(new UserListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(users);
     }
 
-    // GET api/<UsersController>/5
+    // GET api/UsersController>/5
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserDetailDto>> GetDetails(string id)
     {
-        var user = await mediator.Send(new UserDetailQuery { Id = id });
-        return Ok(user);
+        try 
+        {
+            var user = await _mediator.Send(new UserDetailQuery { Id = id });
+            return Ok(user);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     // POST api/<UsersController>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<int>> Create(UserCreateCommand userCreateCommand)
+    public async Task<ActionResult<string>> Create(UserCreateCommand userCreateCommand)
     {
-        var response = await mediator.Send(userCreateCommand);
-        return CreatedAtAction(nameof(Get), new { id = response });
+        var response = await _mediator.Send(userCreateCommand);
+        return CreatedAtAction(nameof(GetDetails), new { id = response });
     }
 
-    // PUT: api/<UsersController>/5
+    // PUT api/<UsersController>/5
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, UserUpdateCommand userUpdateCommand)
+    public async Task<ActionResult> Update(string id, UserUpdateCommand userUpdateCommand)
     {
         userUpdateCommand.Id = id;
-        await mediator.Send(userUpdateCommand);
+        await _mediator.Send(userUpdateCommand);
         return NoContent();
     }
 
@@ -63,7 +86,8 @@ public class UsersController(IMediator mediator) : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(string id)
     {
-        await mediator.Send(new UserDeleteCommand(id));
+        var command = new UserDeleteCommand { Id = id };
+        await _mediator.Send(command);
         return NoContent();
     }
 }

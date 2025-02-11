@@ -8,7 +8,7 @@ public class UserUpdateValidator : AbstractValidator<UserUpdateCommand>
     {
         RuleFor(p => p.Id)
             .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
+            .NotEmpty().WithMessage("{PropertyName} is required.");
 
         RuleFor(p => p.Email)
             .NotNull().WithMessage("{PropertyName} is required.")

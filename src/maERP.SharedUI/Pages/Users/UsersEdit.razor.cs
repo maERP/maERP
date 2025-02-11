@@ -30,13 +30,13 @@ public partial class UsersEdit
         if (userId != null)
         {
             Title = "bearbeiten";
-            User = await HttpService.GetAsync<UserDetailDto>("/api/v1/Users/{userId}") ?? new UserDetailDto();
+            User = await HttpService.GetAsync<UserDetailDto>($"/api/v1/Users/{userId}") ?? new UserDetailDto();
         }
     }
 
     protected async Task Save()
     {
-        await HttpService.PutAsync<UserDetailDto, UserDetailDto>("/api/v1/Users/{userId}", User);
+        await HttpService.PutAsync<UserDetailDto, UserDetailDto>($"/api/v1/Users/{userId}", User);
         ReturnToList();
     }
 

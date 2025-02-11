@@ -4,6 +4,6 @@ namespace maERP.Application.Contracts.Persistence;
 
 public interface IUserService
 {
-    Task<List<User>> GetUsers();
-    Task<User> GetUser(string userId);
+    Task<List<ApplicationUser>> GetUsers();
+    Task<ApplicationUser> GetUser(string userId);
 }

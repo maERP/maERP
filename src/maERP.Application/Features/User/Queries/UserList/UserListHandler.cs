@@ -1,36 +1,54 @@
-﻿using AutoMapper;
+﻿using System.Linq.Dynamic.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Extensions;
+using maERP.Application.Features.User.Queries.UserList;
+using maERP.Application.Specifications;
 using maERP.Domain.Dtos.User;
+using maERP.Domain.Entities;
+using maERP.Domain.Wrapper;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Application.Features.User.Queries.UserList;
 
-public class UserListHandler : IRequestHandler<UserListQuery, List<UserListDto>>
+public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<UserListDto>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<UserListHandler> _logger;
     private readonly IUserRepository _userRepository;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public UserListHandler(IMapper mapper,
         IAppLogger<UserListHandler> logger, 
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        UserManager<ApplicationUser> userManager)
     {
         _mapper = mapper;
         _logger = logger;
-        _userRepository = userRepository; 
+        _userRepository = userRepository;
+        _userManager = userManager;
     }
-
-    public async Task<List<UserListDto>> Handle(UserListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<UserListDto>> Handle(UserListQuery request, CancellationToken cancellationToken)
     {
-        // Query the database
-        var useres = await _userRepository.GetAllAsync();
+        _logger.LogInformation("Handle UserListQuery: {0}", request);
 
-        // Convert data objects to DTO objects
-        var data = _mapper.Map<List<UserListDto>>(useres);
+        if (request.OrderBy.Any() != true)
+        {
+            return await _userManager.Users
+                .ProjectTo<UserListDto>(_mapper.ConfigurationProvider)
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        }
+        else
+        {
+            var ordering = string.Join(",", request.OrderBy);
 
-        // Return list of DTO objects
-        _logger.LogInformation("All Useres are retrieved successfully.");
-        return data;
+            return await _userManager.Users
+                .OrderBy(ordering)
+                .ProjectTo<UserListDto>(_mapper.ConfigurationProvider)
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        }
     }
 }
