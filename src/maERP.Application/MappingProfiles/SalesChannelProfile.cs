@@ -2,8 +2,6 @@
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
-using maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
-using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Entities;
 

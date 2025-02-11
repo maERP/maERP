@@ -1,6 +1,4 @@
-﻿using maERP.Domain.Dtos.CustomerAddress;
-
-namespace maERP.Domain.Dtos.Customer;
+﻿namespace maERP.Domain.Dtos.Customer;
 
 public class CustomerListDto
 {

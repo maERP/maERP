@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace maERP.Domain.Dtos.User;
+﻿namespace maERP.Domain.Dtos.User;
 
 public class UserDetailDto
 {

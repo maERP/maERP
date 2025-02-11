@@ -1,5 +1,3 @@
-using maERP.Domain.Dtos.Order;
-using maERP.Domain.Dtos.ProductSalesChannel;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;

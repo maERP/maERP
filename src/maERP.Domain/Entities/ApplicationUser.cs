@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using maERP.Domain.Entities.Common;
 using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Domain.Entities;

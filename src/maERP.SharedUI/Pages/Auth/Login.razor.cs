@@ -4,7 +4,6 @@ using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models;
 using maERP.SharedUI.Providers;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 
 namespace maERP.SharedUI.Pages.Auth;

@@ -4,8 +4,6 @@ using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
-using maERP.Application.Features.User.Queries.UserList;
-using maERP.Application.Specifications;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;

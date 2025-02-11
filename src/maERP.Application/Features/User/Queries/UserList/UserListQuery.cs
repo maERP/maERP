@@ -1,5 +1,4 @@
-﻿using maERP.Domain.Dtos.TaxClass;
-using maERP.Domain.Dtos.User;
+﻿using maERP.Domain.Dtos.User;
 using maERP.Domain.Wrapper;
 using MediatR;
 

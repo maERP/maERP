@@ -1,5 +1,5 @@
-﻿using maERP.Application.Extensions;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using maERP.Application.Extensions;
 using maERP.Domain.Entities.Common;
 
 namespace maERP.Application.Specifications.Base;

@@ -1,5 +1,5 @@
-﻿using maERP.Domain.Wrapper;
-using maERP.Domain.Dtos.Customer;
+﻿using maERP.Domain.Dtos.Customer;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Customer.Queries.CustomerList;

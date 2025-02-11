@@ -4,7 +4,6 @@ using maERP.Domain.Enums;
 using maERP.SalesChannels.Contracts;
 using maERP.SalesChannels.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace maERP.SalesChannels.Repositories;
 

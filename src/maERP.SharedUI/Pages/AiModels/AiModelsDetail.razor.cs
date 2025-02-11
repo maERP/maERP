@@ -1,5 +1,4 @@
 using maERP.Domain.Dtos.AiModel;
-using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using Microsoft.AspNetCore.Components;
 

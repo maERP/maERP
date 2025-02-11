@@ -7,7 +7,6 @@ using maERP.SalesChannels.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using WooCommerceNET;
 using WooCommerceNET.WooCommerce.v3;
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Exceptions;
+using maERP.Domain.Entities;
 using MediatR;
 
 namespace maERP.Application.Features.User.Commands.UserUpdate;
@@ -30,7 +31,7 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, string>
         }
 
         // convert to domain entity object
-        var userToUpdate = _mapper.Map<Domain.Entities.ApplicationUser>(request);
+        var userToUpdate = _mapper.Map<ApplicationUser>(request);
         
         // TODO  add to database
         // await _userRepository.UpdateAsync(userToUpdate);

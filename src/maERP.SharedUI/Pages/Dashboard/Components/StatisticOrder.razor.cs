@@ -1,6 +1,5 @@
 using maERP.Domain.Dtos.Statistic;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Dashboard.Components;

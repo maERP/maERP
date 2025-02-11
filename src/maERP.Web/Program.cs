@@ -1,8 +1,8 @@
+using System.Globalization;
 using maERP.SharedUI;
 using maERP.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using System.Globalization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

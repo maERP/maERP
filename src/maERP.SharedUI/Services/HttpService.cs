@@ -1,11 +1,12 @@
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Blazored.LocalStorage;
-using Microsoft.Extensions.Logging;
 using maERP.Domain.Dtos.Auth;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Providers;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace maERP.SharedUI.Services;
 
@@ -60,7 +61,7 @@ public class HttpService : IHttpService
             if (authResponse?.Token != null)
             {
                 _httpClient.DefaultRequestHeaders.Authorization = 
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authResponse.Token);
+                    new AuthenticationHeaderValue("Bearer", authResponse.Token);
                 _logger.LogInformation("Login successful for user {Email}", email);
 
                 await _localStorageService.SetItemAsync("authToken", authResponse.Token);

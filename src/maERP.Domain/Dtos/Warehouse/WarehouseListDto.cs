@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace maERP.Domain.Dtos.Warehouse;
+﻿namespace maERP.Domain.Dtos.Warehouse;
 
 public class WarehouseListDto
 {

@@ -1,6 +1,5 @@
 ﻿using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 namespace maERP.Server.ServiceRegistrations;

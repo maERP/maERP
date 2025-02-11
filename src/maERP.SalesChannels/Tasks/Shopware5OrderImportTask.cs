@@ -5,13 +5,12 @@ using System.Text;
 using System.Text.Json;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Enums;
+using maERP.SalesChannels.Contracts;
+using maERP.SalesChannels.Models;
 using maERP.SalesChannels.Models.Shopware5;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using maERP.SalesChannels.Models;
-using maERP.SalesChannels.Contracts;
-using Microsoft.IdentityModel.Tokens;
 
 namespace maERP.SalesChannels.Tasks;
 
