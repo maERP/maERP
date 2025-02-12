@@ -11,7 +11,7 @@
 		<ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.1" />
