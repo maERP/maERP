@@ -2,8 +2,26 @@ name: Release maERP.Server
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [ main ]
+    paths:
+      - '.github/workflows/**'
+      - 'src/maERP.Server/**'
+      - 'src/maERP.Core/**'
+      - 'src/maERP.Domain/**'
+      - 'src/maERP.Application/**'
+      - 'src/maERP.Ai/**'
+      - 'src/maERP.Analytics/**'
+      - 'src/maERP.Identity/**'
+      - 'src/maERP.Infrastructure/**'
+      - 'src/maERP.Persistence/**'
+      - 'src/maERP.SalesChannels/**'
+      - 'src/maERP.Persistence/**'
+      - 'src/maERP.Persistence.MySQL/**'
+      - 'src/maERP.Persistence.MSSQL/**'
+      - 'src/maERP.Persistence.PostgreSQL/**'
+      - 'src/maERP.Application.Persistence.IntegrationTests/**'
+      - 'src/maERP.Application.UnitTests/**'
+      - 'src/maERP.Server.Tests/**'
 
 jobs:
   build:

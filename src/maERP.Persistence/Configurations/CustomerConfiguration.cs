@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Entities;
+using maERP.Domain.Entities;
 using maERP.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -22,7 +22,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                 VatNumber = "DE123456789",
                 CustomerStatus = CustomerStatus.Active,
                 Note = "This is a note",
-                DateEnrollment = DateTime.UtcNow,
+                // DateEnrollment = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 CustomerAddresses = new List<CustomerAddress>
                 {
                     new CustomerAddress

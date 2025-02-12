@@ -51,13 +51,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		.windsurfrules = .windsurfrules
+		.github\codeql\codeql-config.yml = .github\codeql\codeql-config.yml
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		CONTRIBUTING.md = CONTRIBUTING.md
 		global.json = global.json
 		launchSettings.json = launchSettings.json
 		LICENSE.txt = LICENSE.txt
-		.github\workflows\codeql.yml = .github\workflows\codeql.yml
-		.github\codeql\codeql-config.yml = .github\codeql\codeql-config.yml
 		.github\workflows\maerp-server-publish.yml = .github\workflows\maerp-server-publish.yml
 		.github\workflows\maerp-server-release.yml = .github\workflows\maerp-server-release.yml
 		.github\workflows\maerp-server-test.yml = .github\workflows\maerp-server-test.yml
@@ -66,9 +66,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 		maERP.sln.startup.json = maERP.sln.startup.json
 		README.md = README.md
 		SECURITY.md = SECURITY.md
+		.github\copilot-instructions.md = .github\copilot-instructions.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Web.Tests", "tests\maERP.Web.Tests\maERP.Web.Tests.csproj", "{1DE23237-025E-4B6A-BE03-FA2B072B0E13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Persistence.MySQL", "src\maERP.Persistence.MySQL\maERP.Persistence.MySQL.csproj", "{719B8FA2-AA5F-464F-B48C-20F8DCF54141}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Persistence.PostgreSQL", "src\maERP.Persistence.PostgreSQL\maERP.Persistence.PostgreSQL.csproj", "{A7E83633-A6CF-4E9D-B0CB-686199CAA599}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Persistence.MSSQL", "src\maERP.Persistence.MSSQL\maERP.Persistence.MSSQL.csproj", "{DEBA43D7-38E8-4A63-A144-B81622CA93FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -279,6 +286,42 @@ Global
 		{1DE23237-025E-4B6A-BE03-FA2B072B0E13}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1DE23237-025E-4B6A-BE03-FA2B072B0E13}.Release|x64.ActiveCfg = Release|Any CPU
 		{1DE23237-025E-4B6A-BE03-FA2B072B0E13}.Release|x64.Build.0 = Release|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.Debug|x64.Build.0 = Debug|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.GPU|Any CPU.ActiveCfg = Debug|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.GPU|Any CPU.Build.0 = Debug|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.GPU|x64.ActiveCfg = Debug|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.GPU|x64.Build.0 = Debug|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.Release|Any CPU.Build.0 = Release|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.Release|x64.ActiveCfg = Release|Any CPU
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141}.Release|x64.Build.0 = Release|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.Debug|x64.Build.0 = Debug|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.GPU|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.GPU|Any CPU.Build.0 = Debug|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.GPU|x64.ActiveCfg = Debug|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.GPU|x64.Build.0 = Debug|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.Release|x64.ActiveCfg = Release|Any CPU
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599}.Release|x64.Build.0 = Release|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.Debug|x64.Build.0 = Debug|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.GPU|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.GPU|Any CPU.Build.0 = Debug|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.GPU|x64.ActiveCfg = Debug|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.GPU|x64.Build.0 = Debug|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.Release|x64.ActiveCfg = Release|Any CPU
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -303,6 +346,9 @@ Global
 		{C0115F35-5F06-4572-9913-38D70ABEA217} = {2CF95470-D0C1-426C-AE7A-48B53B1B87DC}
 		{1295F0D8-8CBB-4C37-A863-9F9A5EA6A547} = {2CF95470-D0C1-426C-AE7A-48B53B1B87DC}
 		{1DE23237-025E-4B6A-BE03-FA2B072B0E13} = {2CF95470-D0C1-426C-AE7A-48B53B1B87DC}
+		{719B8FA2-AA5F-464F-B48C-20F8DCF54141} = {A11A0D5B-739D-43D0-BFAA-EAF21B3B075D}
+		{A7E83633-A6CF-4E9D-B0CB-686199CAA599} = {A11A0D5B-739D-43D0-BFAA-EAF21B3B075D}
+		{DEBA43D7-38E8-4A63-A144-B81622CA93FE} = {A11A0D5B-739D-43D0-BFAA-EAF21B3B075D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {61F7FB11-1E47-470C-91E2-47F8143E1572}

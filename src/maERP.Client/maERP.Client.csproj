@@ -86,12 +86,12 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
-		<PackageReference Include="Microsoft.Maui.Core" Version="9.0.30" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Maui.Core" Version="9.0.40" />
 		<PackageReference Include="MudBlazor" Version="8.2.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.30" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.30" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="9.0.30" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.40" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.40" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="9.0.40" />
 		<ProjectReference Include="..\maERP.SharedUI\maERP.SharedUI.csproj" />
 	</ItemGroup>
 </Project>

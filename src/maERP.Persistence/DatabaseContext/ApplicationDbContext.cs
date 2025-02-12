@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Entities;
+using maERP.Domain.Entities;
 using maERP.Domain.Entities.Common;
 using maERP.Identity.Configurations;
 using maERP.Persistence.Configurations;

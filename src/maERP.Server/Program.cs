@@ -16,6 +16,7 @@ using maERP.Server.ServiceRegistrations;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
@@ -35,8 +36,6 @@ builder.Logging.AddOpenTelemetry(logging => {
 });
 
 builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
-
-builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection("ConnectionStrings"));
 
 builder.Host.UseSerilog(
     (context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
@@ -66,8 +65,6 @@ builder.Services.AddResponseCaching(options =>
     options.MaximumBodySize = 1024; // 1 MB
     options.UseCaseSensitivePaths = true;
 });
-
-builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
 
 // IOptions<DatabaseOptions> dbOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<DatabaseOptions>>();
 // builder.Services.AddPersistenceServices(dbOptions);
@@ -112,7 +109,19 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
-
+// Apply database migrations
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var dbOptions = scope.ServiceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+    
+    if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
+    {
+        app.Logger.LogInformation("Applying pending migrations for {Provider} database", dbOptions.Provider);
+        context.Database.Migrate();
+        app.Logger.LogInformation("Migrations applied successfully");
+    }
+}
 
 app.UseHttpsRedirection();
 app.UseCors();
@@ -185,20 +194,6 @@ app.MapHealthChecks("/health", new HealthCheckOptions
         await context.Response.WriteAsJsonAsync(result);
     }
 });
-
-if (!builder.Environment.IsEnvironment("Testing"))
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
-        {
-            context.Database.Migrate();
-        }
-    }
-}
 
 app.Run();
 

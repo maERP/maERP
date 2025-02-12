@@ -17,6 +17,9 @@ COPY ["src/maERP.Analytics/maERP.Analytics.csproj", "maERP.Analytics/"]
 COPY ["src/maERP.Identity/maERP.Identity.csproj", "maERP.Identity/"]
 COPY ["src/maERP.Infrastructure/maERP.Infrastructure.csproj", "maERP.Infrastructure/"]
 COPY ["src/maERP.Persistence/maERP.Persistence.csproj", "maERP.Persistence/"]
+COPY ["src/maERP.Persistence.MySQL/maERP.Persistence.MySQL.csproj", "maERP.Persistence.MySQL/"]
+COPY ["src/maERP.Persistence.MSSQL/maERP.Persistence.MSSQL.csproj", "maERP.Persistence.MSSQL/"]
+COPY ["src/maERP.Persistence.PostgreSQL/maERP.Persistence.PostgreSQL.csproj", "maERP.Persistence.PostgreSQL/"]
 COPY ["src/maERP.SalesChannels/maERP.SalesChannels.csproj", "maERP.SalesChannels/"]
 RUN dotnet restore "maERP.Server/maERP.Server.csproj"
 COPY src/ .
