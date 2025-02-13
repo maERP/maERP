@@ -12,7 +12,6 @@ WORKDIR /src
 COPY ["src/maERP.Server/maERP.Server.csproj", "maERP.Server/"]
 COPY ["src/maERP.Application/maERP.Application.csproj", "maERP.Application/"]
 COPY ["src/maERP.Domain/maERP.Domain.csproj", "maERP.Domain/"]
-COPY ["src/maERP.Ai/maERP.Ai.csproj", "maERP.Ai/"]
 COPY ["src/maERP.Analytics/maERP.Analytics.csproj", "maERP.Analytics/"]
 COPY ["src/maERP.Identity/maERP.Identity.csproj", "maERP.Identity/"]
 COPY ["src/maERP.Infrastructure/maERP.Infrastructure.csproj", "maERP.Infrastructure/"]

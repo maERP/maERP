@@ -1,6 +1,5 @@
 #nullable disable
 
-using maERP.Ai;
 using maERP.Application;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
@@ -85,8 +84,6 @@ builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddHealthChecks()
     // .AddDbContextCheck<ApplicationDbContext>("Database")
     .AddCheck("Self", () => HealthCheckResult.Healthy("Service is running."));
-
-builder.Services.AddAiServices();
 
 if (!builder.Environment.IsEnvironment("Testing"))
 {

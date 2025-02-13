@@ -69,7 +69,6 @@
 		<PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="../maERP.Ai/maERP.Ai.csproj" />
 		<ProjectReference Include="../maERP.Analytics/maERP.Analytics.csproj" />
 		<ProjectReference Include="../maERP.Application/maERP.Application.csproj" />
 		<ProjectReference Include="../maERP.Infrastructure/maERP.Infrastructure.csproj" />

@@ -35,7 +35,6 @@ The project is structured as follows:
 ```
 maERP/
 ├── src/
-    ├── maERP.AI/                      # AI Services
     ├── maERP.Analytics/               # Analytics Services
     ├── maERP.Application/             # Application Layer, DTOs, MappingProfiles
     ├── maERP.Client/                  # Multi-Platform Client
