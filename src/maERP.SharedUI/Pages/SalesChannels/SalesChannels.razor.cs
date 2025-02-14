@@ -16,13 +16,20 @@ public partial class SalesChannels
 
     private string _searchString = string.Empty;
 
-    private readonly MudDataGrid<SalesChannelListDto> _dataGrid = new();
+    private MudDataGrid<SalesChannelListDto> _dataGrid = new();
 
     private async Task<GridData<SalesChannelListDto>> LoadGridData(GridState<SalesChannelListDto> state)
     {
-        var apiResponse = await HttpService.GetAsync<PaginatedResult<SalesChannelListDto>>("/api/v1/SalesChannels")
-                      ?? new PaginatedResult<SalesChannelListDto>(new List<SalesChannelListDto>());
-            
+        var pageSize = state.PageSize;
+        var pageNumber = state.Page;
+        var orderBy = state.SortDefinitions.Count > 0
+            ? string.Join(",", state.SortDefinitions.Select(s => $"{s.SortBy} {(s.Descending ? "Descending" : "Ascending")}"))
+            : "DateCreated Descending";
+
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<SalesChannelListDto>>(
+            $"/api/v1/SalesChannels?pageNumber={pageNumber}&pageSize={pageSize}&searchString={_searchString}&orderBy={orderBy}")
+            ?? new PaginatedResult<SalesChannelListDto>(new List<SalesChannelListDto>());
+
         GridData<SalesChannelListDto> data = new()
         {
             Items = apiResponse.Data,

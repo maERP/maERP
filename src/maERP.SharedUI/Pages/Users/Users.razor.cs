@@ -1,4 +1,5 @@
 using maERP.Domain.Dtos.User;
+using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using Microsoft.AspNetCore.Components;
@@ -16,13 +17,20 @@ public partial class Users
 
     private string _searchString = string.Empty;
     
-    private readonly MudDataGrid<UserListDto> _dataGrid = new();
+    private MudDataGrid<UserListDto> _dataGrid = new();
 
     private async Task<GridData<UserListDto>> LoadGridData(GridState<UserListDto> state)
     {
-        var apiResponse = await HttpService.GetAsync<PaginatedResult<UserListDto>>("/api/v1/Users")
-                          ?? new PaginatedResult<UserListDto>(new List<UserListDto>());
-            
+        var pageSize = state.PageSize;
+        var pageNumber = state.Page;
+        var orderBy = state.SortDefinitions.Count > 0
+            ? string.Join(",", state.SortDefinitions.Select(s => $"{s.SortBy} {(s.Descending ? "Descending" : "Ascending")}"))
+            : "DateCreated Descending";
+
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<UserListDto>>(
+            $"/api/v1/Users?pageNumber={pageNumber}&pageSize={pageSize}&searchString={_searchString}&orderBy={orderBy}")
+            ?? new PaginatedResult<UserListDto>(new List<UserListDto>());
+
         GridData<UserListDto> data = new()
         {
             Items = apiResponse.Data,

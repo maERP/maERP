@@ -13,7 +13,7 @@ namespace maERP.Application.Specifications
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = t => (t.TaxRate.ToString(CultureInfo.InvariantCulture).Contains(searchString));
+                Criteria = t => (t.TaxRate.ToString().Contains(searchString));
             }
             else
             {

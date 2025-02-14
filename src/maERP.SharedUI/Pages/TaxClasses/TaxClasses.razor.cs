@@ -16,13 +16,20 @@ public partial class TaxClasses
 
     private string _searchString = string.Empty;
 
-    private readonly MudDataGrid<TaxClassListDto> _dataGrid = new();
+    private MudDataGrid<TaxClassListDto> _dataGrid = new();
 
     private async Task<GridData<TaxClassListDto>> LoadGridData(GridState<TaxClassListDto> state)
     {
-        var apiResponse = await HttpService.GetAsync<PaginatedResult<TaxClassListDto>>("/api/v1/TaxClasses")
-                          ?? new PaginatedResult<TaxClassListDto>(new List<TaxClassListDto>());
-            
+        var pageSize = state.PageSize;
+        var pageNumber = state.Page;
+        var orderBy = state.SortDefinitions.Count > 0
+            ? string.Join(",", state.SortDefinitions.Select(s => $"{s.SortBy} {(s.Descending ? "Descending" : "Ascending")}"))
+            : "DateCreated Descending";
+
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<TaxClassListDto>>(
+            $"/api/v1/TaxClasses?pageNumber={pageNumber}&pageSize={pageSize}&searchString={_searchString}&orderBy={orderBy}")
+            ?? new PaginatedResult<TaxClassListDto>(new List<TaxClassListDto>());
+
         GridData<TaxClassListDto> data = new()
         {
             Items = apiResponse.Data,

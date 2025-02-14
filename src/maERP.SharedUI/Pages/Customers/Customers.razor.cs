@@ -16,15 +16,22 @@ public partial class Customers
 
     private string _searchString = string.Empty;
 
-    private readonly MudDataGrid<CustomerDetailDto> _dataGrid = new();
+    private  MudDataGrid<CustomerListDto> _dataGrid = new();
 
-    private async Task<GridData<CustomerDetailDto>> LoadGridData(GridState<CustomerDetailDto> state)
+    private async Task<GridData<CustomerListDto>> LoadGridData(GridState<CustomerListDto> state)
     {
-        // TODO: change to CustomerDetailDto
-        var apiResponse = await HttpService.GetAsync<PaginatedResult<CustomerDetailDto>>("/api/v1/Customers")
-                          ?? new PaginatedResult<CustomerDetailDto>(new List<CustomerDetailDto>());
-        
-        GridData<CustomerDetailDto> data = new()
+        // TODO: change to CustomerListDto
+        var pageSize = state.PageSize;
+        var pageNumber = state.Page;
+        var orderBy = state.SortDefinitions.Count > 0
+            ? string.Join(",", state.SortDefinitions.Select(s => $"{s.SortBy} {(s.Descending ? "Descending" : "Ascending")}"))
+            : "DateCreated Descending";
+
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<CustomerListDto>>(
+            $"/api/v1/Customers?pageNumber={pageNumber}&pageSize={pageSize}&searchString={_searchString}&orderBy={orderBy}")
+            ?? new PaginatedResult<CustomerListDto>(new List<CustomerListDto>());
+
+        GridData<CustomerListDto> data = new()
         {
             Items = apiResponse.Data,
             TotalItems = apiResponse.TotalCount

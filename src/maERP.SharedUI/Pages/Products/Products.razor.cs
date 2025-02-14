@@ -16,13 +16,20 @@ public partial class Products
 
     private string _searchString = string.Empty;
 
-    private readonly MudDataGrid<ProductListDto> _dataGrid = new();
+    private MudDataGrid<ProductListDto> _dataGrid = new();
 
     private async Task<GridData<ProductListDto>> LoadGridData(GridState<ProductListDto> state)
     {
-        var apiResponse = await HttpService.GetAsync<PaginatedResult<ProductListDto>>("/api/v1/Products")
-                          ?? new PaginatedResult<ProductListDto>(new List<ProductListDto>());
-                
+        var pageSize = state.PageSize;
+        var pageNumber = state.Page;
+        var orderBy = state.SortDefinitions.Count > 0
+            ? string.Join(",", state.SortDefinitions.Select(s => $"{s.SortBy} {(s.Descending ? "Descending" : "Ascending")}"))
+            : "DateCreated Descending";
+
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<ProductListDto>>(
+            $"/api/v1/Products?pageNumber={pageNumber}&pageSize={pageSize}&searchString={_searchString}&orderBy={orderBy}")
+            ?? new PaginatedResult<ProductListDto>(new List<ProductListDto>());
+
         GridData<ProductListDto> data = new()
         {
             Items = apiResponse.Data,

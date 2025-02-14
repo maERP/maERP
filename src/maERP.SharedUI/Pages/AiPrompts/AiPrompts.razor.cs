@@ -15,12 +15,19 @@ public partial class AiPrompts
     public required IHttpService HttpService { get; set; }
 
     private string _searchString = string.Empty;
-    private readonly MudDataGrid<AiPromptListDto> _dataGrid = new();
+    private MudDataGrid<AiPromptListDto> _dataGrid = new();
 
     private async Task<GridData<AiPromptListDto>> LoadGridData(GridState<AiPromptListDto> state)
     {
-        var apiResponse = await HttpService.GetAsync<PaginatedResult<AiPromptListDto>>("/api/v1/AiPrompts") ??
-                          new PaginatedResult<AiPromptListDto>(new List<AiPromptListDto>());
+        var pageSize = state.PageSize;
+        var pageNumber = state.Page;
+        var orderBy = state.SortDefinitions.Count > 0
+            ? string.Join(",", state.SortDefinitions.Select(s => $"{s.SortBy} {(s.Descending ? "Descending" : "Ascending")}"))
+            : "DateCreated Descending";
+
+        var apiResponse = await HttpService.GetAsync<PaginatedResult<AiPromptListDto>>(
+            $"/api/v1/AiPrompts?pageNumber={pageNumber}&pageSize={pageSize}&searchString={_searchString}&orderBy={orderBy}")
+            ?? new PaginatedResult<AiPromptListDto>(new List<AiPromptListDto>());
 
         GridData<AiPromptListDto> data = new()
         {

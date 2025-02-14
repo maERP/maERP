@@ -18,7 +18,7 @@
 }
 else
 {
-    <MudDataGrid T="UserListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
+    <MudDataGrid T="UserListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData" @ref="_dataGrid" Hover="true">
         <ToolBarContent>
             @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
             <MudSpacer />
@@ -35,5 +35,8 @@ else
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
+        <PagerContent>
+            <MudDataGridPager T="UserListDto" />
+        </PagerContent>
     </MudDataGrid>
 }
