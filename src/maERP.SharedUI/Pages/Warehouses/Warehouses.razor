@@ -1,4 +1,4 @@
-﻿@page "/Warehouses"
+@page "/Warehouses"
 @using maERP.Domain.Dtos.Warehouse
 @using Microsoft.AspNetCore.Authorization
 
@@ -12,7 +12,7 @@
     <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Warehouses/Add" />
 </MudStack>
 
-<MudDataGrid T="WarehouseListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData">
+<MudDataGrid T="WarehouseListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData" @ref="_dataGrid" Hover="true">
     <ToolBarContent>
         @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
         <MudSpacer />
@@ -28,6 +28,6 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="WarehouseDetailDto" />
+        <MudDataGridPager T="WarehouseListDto" />
     </PagerContent>
 </MudDataGrid>
