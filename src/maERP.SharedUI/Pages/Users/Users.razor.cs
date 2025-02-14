@@ -1,5 +1,4 @@
 using maERP.Domain.Dtos.User;
-using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using Microsoft.AspNetCore.Components;

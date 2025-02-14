@@ -1,8 +1,6 @@
 using maERP.Domain.Dtos.AiModel;
-using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
-using maERP.SharedUI.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 

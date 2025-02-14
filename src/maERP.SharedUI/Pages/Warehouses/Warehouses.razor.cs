@@ -3,7 +3,6 @@ using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System.Timers;
 
 namespace maERP.SharedUI.Pages.Warehouses;
 
@@ -16,7 +15,7 @@ public partial class Warehouses
     public required IHttpService HttpService { get; set; }
 
     private string _searchString = string.Empty;
-    public MudDataGrid<WarehouseListDto> _dataGrid = new();
+    public MudDataGrid<WarehouseListDto> DataGrid = new();
 
     protected override void OnInitialized()
     {
@@ -47,9 +46,6 @@ public partial class Warehouses
     {
         _searchString = searchString;
 
-        if (_dataGrid is not null)
-        { 
-            await _dataGrid!.ReloadServerData();
-        }
+        await DataGrid.ReloadServerData();
     }
 }
