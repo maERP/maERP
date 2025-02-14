@@ -37,14 +37,11 @@ public partial class AiModelsEdit
     {
         if (aiModelId != 0)
         {
-            if (AiModelDetail != null)
-            {    
-               await httpService.PostAsync<AiModelDetailDto, AiModelDetailDto>("/api/v1/AiModels/" + aiModelId, AiModelDetail);
-            }
+            await httpService.PostAsync<AiModelDetailDto, AiModelDetailDto>("/api/v1/AiModels/" + aiModelId, AiModelDetail);
         }
         else
         {
-            if (AiModelDetail != null) await httpService.PutAsync<AiModelDetailDto, AiModelDetailDto>("/api/v1/AiModels", AiModelDetail);
+            await httpService.PutAsync<AiModelDetailDto, AiModelDetailDto>("/api/v1/AiModels", AiModelDetail);
         }
 
         NavigateToList();

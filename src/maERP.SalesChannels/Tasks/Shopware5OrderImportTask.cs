@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using System.Globalization;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -150,7 +151,7 @@ public class Shopware5OrderImportTask : IHostedService
                                     {
                                         remoteOrderDetail.customer = new Customer
                                         {
-                                            firstLogin = DateTime.MinValue.ToString()
+                                            firstLogin = DateTime.MinValue.ToString(CultureInfo.CurrentCulture)
                                         };
                                     }
 
