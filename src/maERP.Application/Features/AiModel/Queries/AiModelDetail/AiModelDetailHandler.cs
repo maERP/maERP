@@ -21,6 +21,7 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, AiModelD
         _logger = logger;
         _aiModelRepository = aiModelRepository;
     }
+    
     public async Task<AiModelDetailDto> Handle(AiModelDetailQuery request, CancellationToken cancellationToken)
     {
         var aiModel = await _aiModelRepository.GetByIdAsync(request.Id, true);

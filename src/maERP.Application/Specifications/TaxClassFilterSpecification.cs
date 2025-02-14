@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using maERP.Application.Specifications.Base;
+﻿using maERP.Application.Specifications.Base;
 using maERP.Domain.Entities;
 
 namespace maERP.Application.Specifications
@@ -13,6 +12,7 @@ namespace maERP.Application.Specifications
         {
             if (!string.IsNullOrEmpty(searchString))
             {
+                // ReSharper disable once SpecifyACultureInStringConversionExplicitly
                 Criteria = t => (t.TaxRate.ToString().Contains(searchString));
             }
             else
