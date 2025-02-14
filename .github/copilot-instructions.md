@@ -1,6 +1,6 @@
 # Project Description
 
-maERP is an ERP system for managing customers, orders, products, warehouses and suppliers. Most of the code is written in C# and .NET, following the .NET development rules and clean code principles (onion architecture). Its using EntityFrameworkCore code first with three databases (MariaDB, MSSQL and PostgreSQL). The project folder consists of several sub-projects:
+maERP is an ERP system for managing customers, orders, products, warehouses and suppliers. Most of the code is written in C# and .NET, following the .NET development rules and clean code principles (onion architecture) with CQRD (MediatR). Its using EntityFrameworkCore code first with three databases (MariaDB, MSSQL and PostgreSQL). The project folder consists of several sub-projects:
 
 ## Project maERP.Server
 
@@ -26,6 +26,7 @@ This project contains the front-end pages developed in Blazor and used by maERP.
 - .NET Blazor
 - .NET Blazor WebAssembly
 - .NET MAUI Hybrid
+- CQRS with MediatR
 - Mudblazor as UI framework
 - MySQL, MSSQL and PostgreSQL as database
 
@@ -35,6 +36,7 @@ The project is structured as follows:
 ```
 maERP/
 ├── src/
+    ├── maERP.AI/                      # AI Services
     ├── maERP.Analytics/               # Analytics Services
     ├── maERP.Application/             # Application Layer, DTOs, MappingProfiles
     ├── maERP.Client/                  # Multi-Platform Client
