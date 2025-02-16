@@ -39,11 +39,11 @@ public partial class TaxClassesEdit
     {
         if (taxClassId != 0)
         {
-            await HttpService.PutAsync<TaxClassDetailDto, TaxClassDetailDto>("/api/v1/TaxClasses/{taxClassId}", TaxClass);
+            await HttpService.PutAsJsonAsync<TaxClassDetailDto>("/api/v1/TaxClasses/{taxClassId}", TaxClass);
         }
         else
         {
-            await HttpService.PutAsync<TaxClassDetailDto, TaxClassDetailDto>("/api/v1/TaxClasses/", TaxClass);
+            await HttpService.PostAsJsonAsync<TaxClassDetailDto>("/api/v1/TaxClasses/", TaxClass);
         }
 
         Snackbar.Add("Steuerklasse gespeichert", Severity.Success);

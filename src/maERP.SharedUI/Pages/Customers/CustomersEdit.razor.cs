@@ -31,7 +31,7 @@ public partial class CustomersEdit
 
     protected async Task Save()
     {
-        await HttpService.PutAsync<CustomerDetailDto, CustomerDetailDto>("/api/v1/Customers/" + customerId, CustomerDetail);
+        await HttpService.PutAsJsonAsync<CustomerDetailDto>("/api/v1/Customers/" + customerId, CustomerDetail);
 
         ReturnToList();
     }

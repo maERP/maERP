@@ -34,11 +34,11 @@ public partial class ProductsEdit
     {
         if (productId != 0)
         {
-            await HttpService.PutAsync<ProductDetailDto, ProductDetailDto>("/api/v1/Products/" + productId, Product);
+            await HttpService.PutAsJsonAsync<ProductDetailDto>("/api/v1/Products/" + productId, Product);
         }
         else
         {
-            await HttpService.PostAsync<ProductDetailDto, ProductDetailDto>("/api/v1/Products", Product);
+            await HttpService.PostAsJsonAsync<ProductDetailDto>("/api/v1/Products", Product);
         }
 
         Cancel();

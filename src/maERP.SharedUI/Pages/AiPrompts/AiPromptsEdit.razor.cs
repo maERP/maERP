@@ -37,11 +37,11 @@ public partial class AiPromptsEdit
     {
         if (aiPromptId != 0)
         {
-            await HttpService.PutAsync<AiPromptDetailDto, AiPromptDetailDto>( "/api/v1/AiPrompts/" + aiPromptId, AiPromptDetail);
+            await HttpService.PutAsJsonAsync<AiPromptDetailDto>( "/api/v1/AiPrompts/" + aiPromptId, AiPromptDetail);
         }
         else
         {
-            await HttpService.PostAsync<AiPromptDetailDto, AiPromptDetailDto>("/api/v1/AiPrompts", AiPromptDetail);
+            await HttpService.PostAsJsonAsync<AiPromptDetailDto>("/api/v1/AiPrompts", AiPromptDetail);
         }
 
         NavigateToList();

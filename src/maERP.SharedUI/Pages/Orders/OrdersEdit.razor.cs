@@ -37,11 +37,11 @@ public partial class OrdersEdit
     {
         if (orderId != 0)
         {
-            await HttpService.PutAsync<OrderEditDto, OrderEditDto>($"/api/v1/Orders/{orderId}", Order);
+            await HttpService.PutAsJsonAsync<OrderEditDto>($"/api/v1/Orders/{orderId}", Order);
         }
         else
         {
-            await HttpService.PutAsync<OrderEditDto, OrderEditDto>("/api/v1/Orders/", Order);
+            await HttpService.PostAsJsonAsync<OrderEditDto>("/api/v1/Orders/", Order);
         }
         
         StateHasChanged();

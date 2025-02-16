@@ -160,6 +160,31 @@ public class HttpService : IHttpService
     }
 
     /// <summary>
+    /// Sends a POST request to the specified URI with the given content serialized as JSON
+    /// </summary>
+    public async Task<HttpResponseMessage> PostAsJsonAsync<TRequest>(string uri, TRequest content, bool requiresAuth = true)
+    {
+        try
+        {
+            if (requiresAuth)
+            {
+                EnsureAuthenticated();
+            }
+
+            _logger.LogInformation("Sending POST request to {Uri}", uri);
+            var response = await _httpClient.PostAsJsonAsync(uri, content, _jsonOptions);
+            _logger.LogInformation("POST request to {Uri} completed with status code {StatusCode}", uri, response.StatusCode);
+            
+            return response;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "POST request to {Uri} failed", uri);
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Sends a PUT request to the specified URI with the given content and returns the deserialized response.
     /// </summary>
     public async Task<TResponse?> PutAsync<TRequest, TResponse>(string uri, TRequest content, bool requiresAuth = true)
@@ -181,6 +206,31 @@ public class HttpService : IHttpService
         catch (JsonException ex)
         {
             _logger.LogError(ex, "JSON serialization/deserialization failed for PUT {Uri}", uri);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Sends a PUT request to the specified URI with the given content serialized as JSON
+    /// </summary>
+    public async Task<HttpResponseMessage> PutAsJsonAsync<TRequest>(string uri, TRequest content, bool requiresAuth = true)
+    {
+        try
+        {
+            if (requiresAuth)
+            {
+                EnsureAuthenticated();
+            }
+
+            _logger.LogInformation("Sending PUT request to {Uri}", uri);
+            var response = await _httpClient.PutAsJsonAsync(uri, content, _jsonOptions);
+            _logger.LogInformation("PUT request to {Uri} completed with status code {StatusCode}", uri, response.StatusCode);
+            
+            return response;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "PUT request to {Uri} failed", uri);
             throw;
         }
     }

@@ -37,11 +37,11 @@ public partial class WarehousesEdit
     {
         if (warehouseId != 0)
         {
-            await HttpService.PutAsync<WarehouseDetailDto, WarehouseDetailDto>($"/api/v1/Warehouses/{warehouseId}", Warehouse);
+            await HttpService.PutAsJsonAsync<WarehouseDetailDto>($"/api/v1/Warehouses/{warehouseId}", Warehouse);
         }
         else
         {
-            await HttpService.PutAsync<WarehouseDetailDto, WarehouseDetailDto>("/api/v1/Warehouses/", Warehouse);
+            await HttpService.PostAsJsonAsync<WarehouseDetailDto>("/api/v1/Warehouses/", Warehouse);
         }
 
         NavigateToList();

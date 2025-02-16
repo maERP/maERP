@@ -50,11 +50,30 @@ public interface IHttpService
     /// <returns>The deserialized response</returns>
     Task<TResponse?> PutAsync<TRequest, TResponse>(string uri, TRequest content, bool requiresAuth = true);
 
-
     /// <summary>
     /// Sends a DELETE request to the specified URI
     /// </summary>
     /// <param name="uri">The URI to send the request to</param>
     /// <param name="requiresAuth">Whether the request requires authentication</param>
     Task DeleteAsync(string uri, bool requiresAuth = true);
+
+    /// <summary>
+    /// Sends a POST request to the specified URI with the given content serialized as JSON
+    /// </summary>
+    /// <typeparam name="TRequest">Type of the request content</typeparam>
+    /// <param name="uri">The URI to send the request to</param>
+    /// <param name="content">The content to send with the request</param>
+    /// <param name="requiresAuth">Whether the request requires authentication</param>
+    /// <returns>The HttpResponseMessage</returns>
+    Task<HttpResponseMessage> PostAsJsonAsync<TRequest>(string uri, TRequest content, bool requiresAuth = true);
+
+    /// <summary>
+    /// Sends a PUT request to the specified URI with the given content serialized as JSON
+    /// </summary>
+    /// <typeparam name="TRequest">Type of the request content</typeparam>
+    /// <param name="uri">The URI to send the request to</param>
+    /// <param name="content">The content to send with the request</param>
+    /// <param name="requiresAuth">Whether the request requires authentication</param>
+    /// <returns>The HttpResponseMessage</returns>
+    Task<HttpResponseMessage> PutAsJsonAsync<TRequest>(string uri, TRequest content, bool requiresAuth = true);
 }
