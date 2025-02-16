@@ -1,0 +1,29 @@
+﻿@page "/Orders/Add"
+@page "/Orders/{orderId:int}/Edit"
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<MudText Typo="Typo.h4" Class="mb-8">Bestellung bearbeiten</MudText>
+
+<MudForm Model="@Order" @ref="@_form">
+    <MudGrid>
+        <MudItem xs="6">
+
+            <MudTextField @bind-Value="Order.Id"
+                          For="@(() => Order.Id)"
+                          Label="Lagername"
+                          Required="true"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Class="mt-6" />
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       ButtonType="ButtonType.Button"
+                       OnClick="@(Save)"
+                       Class="mt-6">Speichern</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>

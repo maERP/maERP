@@ -9,7 +9,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddUiServices(builder.Configuration);
+builder.Services.AddUiServices();
 
 CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("de-DE");
 CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("de-DE");

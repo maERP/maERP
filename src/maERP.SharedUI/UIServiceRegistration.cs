@@ -12,8 +12,7 @@ namespace maERP.SharedUI;
 
 public static class UiServicesRegistration
 {
-    public static IServiceCollection AddUiServices(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddUiServices(this IServiceCollection services)
     {
         services.AddBlazoredLocalStorage();
         services.AddMudServices();
