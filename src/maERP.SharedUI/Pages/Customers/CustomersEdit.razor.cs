@@ -25,13 +25,13 @@ public partial class CustomersEdit
     {
         if (customerId != 0)
         {
-            CustomerDetail = await HttpService.GetAsync<CustomerDetailDto>("/api/v1/Customers/" + customerId) ?? new CustomerDetailDto();
+            CustomerDetail = await HttpService.GetAsync<CustomerDetailDto>($"/api/v1/Customers/{customerId}") ?? new CustomerDetailDto();
         }
     }
 
     protected async Task Save()
     {
-        await HttpService.PutAsJsonAsync<CustomerDetailDto>("/api/v1/Customers/" + customerId, CustomerDetail);
+        await HttpService.PutAsJsonAsync<CustomerDetailDto>($"/api/v1/Customers/{customerId}", CustomerDetail);
 
         ReturnToList();
     }

@@ -11,11 +11,11 @@
     <MudGrid>
         <MudItem xs="6">
 
-            <MudSelect T="SalesChannelType" Label="Typ" HelperText="Vertriebskanal-Typ" Placeholder="Typ auswählen" @bind-Value="@SalesChannel.Type" Class="mt-6">
-                <MudSelectItem Value="SalesChannelType.PointOfSale">Shopware 5</MudSelectItem>
-                <MudSelectItem Value="SalesChannelType.Shopware5">Shopware 5</MudSelectItem>
-                <MudSelectItem Value="SalesChannelType.Shopware6">Shopware 6</MudSelectItem>
-                <MudSelectItem Value="SalesChannelType.WooCommerce">WooCommerce</MudSelectItem>
+            <MudSelect T="SalesChannelTypeDto" Label="Typ" HelperText="Vertriebskanal-Typ" Placeholder="Typ auswählen" @bind-Value="@SalesChannel.TypeDto" Class="mt-6">
+                <MudSelectItem Value="SalesChannelTypeDto.PointOfSale">Shopware 5</MudSelectItem>
+                <MudSelectItem Value="SalesChannelTypeDto.Shopware5">Shopware 5</MudSelectItem>
+                <MudSelectItem Value="SalesChannelTypeDto.Shopware6">Shopware 6</MudSelectItem>
+                <MudSelectItem Value="SalesChannelTypeDto.WooCommerce">WooCommerce</MudSelectItem>
             </MudSelect>
 
             <MudTextField @bind-Value="SalesChannel.Name"

@@ -26,7 +26,7 @@ public partial class ProductsEdit
     {
         if (productId != 0)
         {
-            Product = await HttpService.GetAsync<ProductDetailDto>("/api/v1/Products/" + productId) ?? new ProductDetailDto();
+            Product = await HttpService.GetAsync<ProductDetailDto>($"/api/v1/Products/{productId}") ?? new ProductDetailDto();
         }
     }
 
@@ -34,7 +34,7 @@ public partial class ProductsEdit
     {
         if (productId != 0)
         {
-            await HttpService.PutAsJsonAsync<ProductDetailDto>("/api/v1/Products/" + productId, Product);
+            await HttpService.PutAsJsonAsync<ProductDetailDto>($"/api/v1/Products/{productId}" + productId, Product);
         }
         else
         {

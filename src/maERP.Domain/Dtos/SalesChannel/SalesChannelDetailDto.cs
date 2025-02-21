@@ -5,7 +5,7 @@ namespace maERP.Domain.Dtos.SalesChannel;
 public class SalesChannelDetailDto
 {
     public int Id { get; set; }
-    public SalesChannelType Type { get; set; }
+    public SalesChannelTypeDto TypeDto { get; set; }
     public string Name { get; set; } = string.Empty;
 
     public string Url { get; set; } = string.Empty;

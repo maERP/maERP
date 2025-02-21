@@ -44,7 +44,7 @@ namespace maERP.SharedUI.Pages.SalesChannels
         {
             if (salesChannelId != 0)
             {
-                await HttpService.PutAsJsonAsync<SalesChannelDetailDto>("/api/v1/SalesChannels", SalesChannel);
+                await HttpService.PutAsJsonAsync<SalesChannelDetailDto>($"/api/v1/SalesChannels/{salesChannelId}", SalesChannel);
             }
             else
             {

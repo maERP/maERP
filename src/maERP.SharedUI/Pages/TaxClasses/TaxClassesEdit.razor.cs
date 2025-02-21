@@ -39,7 +39,7 @@ public partial class TaxClassesEdit
     {
         if (taxClassId != 0)
         {
-            await HttpService.PutAsJsonAsync<TaxClassDetailDto>("/api/v1/TaxClasses/{taxClassId}", TaxClass);
+            await HttpService.PutAsJsonAsync<TaxClassDetailDto>($"/api/v1/TaxClasses/{taxClassId}", TaxClass);
         }
         else
         {

@@ -2,20 +2,17 @@
 
 namespace maERP.Domain.Dtos.SalesChannel;
 
-public enum SalesChannelType
+public enum SalesChannelTypeDto
 {
-    [Description("Kein Typ")]
-    NoType,
-    
     [Description("Kasse")]
-    PointOfSale,
+    PointOfSale = 1,
 
     [Description("Shopware 5")]
-    Shopware5,
+    Shopware5 = 10,
 
     [Description("Shopware 6")]
-    Shopware6,
+    Shopware6 = 11,
 
     [Description("WooCommerce")]
-    WooCommerce
+    WooCommerce = 20
 }

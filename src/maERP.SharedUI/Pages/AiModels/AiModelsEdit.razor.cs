@@ -29,7 +29,7 @@ public partial class AiModelsEdit
         if (aiModelId != 0)
         {
             Title = "Bearbeiten";
-            AiModelDetail = await httpService.GetAsync<AiModelDetailDto>("/api/v1/AiModels/" + aiModelId) ?? new AiModelDetailDto();
+            AiModelDetail = await httpService.GetAsync<AiModelDetailDto>($"/api/v1/AiModels/{aiModelId}") ?? new AiModelDetailDto();
         }
     }
 
@@ -37,7 +37,7 @@ public partial class AiModelsEdit
     {
         if (aiModelId != 0)
         {
-            await httpService.PostAsJsonAsync<AiModelDetailDto>("/api/v1/AiModels/" + aiModelId, AiModelDetail);
+            await httpService.PostAsJsonAsync<AiModelDetailDto>($"/api/v1/AiModels/{aiModelId}", AiModelDetail);
         }
         else
         {

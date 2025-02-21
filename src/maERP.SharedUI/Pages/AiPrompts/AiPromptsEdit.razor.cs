@@ -29,7 +29,7 @@ public partial class AiPromptsEdit
         if (aiPromptId != 0)
         {
             Title = "Bearbeiten";
-            AiPromptDetail = await HttpService.GetAsync<AiPromptDetailDto>("/api/v1/AiPrompts/" + aiPromptId) ?? new AiPromptDetailDto();
+            AiPromptDetail = await HttpService.GetAsync<AiPromptDetailDto>($"/api/v1/AiPrompts/{aiPromptId}") ?? new AiPromptDetailDto();
         }
     }
 
@@ -37,7 +37,7 @@ public partial class AiPromptsEdit
     {
         if (aiPromptId != 0)
         {
-            await HttpService.PutAsJsonAsync<AiPromptDetailDto>( "/api/v1/AiPrompts/" + aiPromptId, AiPromptDetail);
+            await HttpService.PutAsJsonAsync<AiPromptDetailDto>( $"/api/v1/AiPrompts/{aiPromptId}", AiPromptDetail);
         }
         else
         {
