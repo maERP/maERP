@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using maERP.Application.Exceptions;
 using maERP.Application.Features.AiPrompt.Commands.AiPromptCreate;
 using maERP.Application.Features.AiPrompt.Commands.AiPromptDelete;
 using maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
@@ -28,8 +27,8 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var aIPrompts = await mediator.Send(new AiPromptListQuery(pageNumber, pageSize, searchString, orderBy));
-        return Ok(aIPrompts);
+        var response = await mediator.Send(new AiPromptListQuery(pageNumber, pageSize, searchString, orderBy));
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // GET api/<AiPromptsController>/5
@@ -38,15 +37,8 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AiPromptDetailDto>> GetDetails(int id)
     {
-        try 
-        {
-            var aiPrompt = await mediator.Send(new AiPromptDetailQuery { Id = id });
-            return Ok(aiPrompt);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound();
-        }
+        var response = await mediator.Send(new AiPromptDetailQuery { Id = id });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // POST api/<AiPromptsController>
@@ -56,7 +48,7 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> Create(AiPromptCreateCommand aIPromptCreateCommand)
     {
         var response = await mediator.Send(aIPromptCreateCommand);
-        return CreatedAtAction(nameof(GetDetails), new { id = response });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // PUT api/<AiPromptsController>/5
@@ -68,8 +60,8 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<AiPromptDetailDto>> Update(int id, AiPromptUpdateCommand aIPromptUpdateCommand)
     {
         aIPromptUpdateCommand.Id = id;
-        await mediator.Send(aIPromptUpdateCommand);
-        return NoContent();
+        var response = await mediator.Send(aIPromptUpdateCommand);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE api/<AiPromptsController>/5

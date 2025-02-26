@@ -1,8 +1,9 @@
-﻿using MediatR;
+using maERP.Domain.Wrapper;
+using MediatR;
 
 namespace maERP.Application.Features.Product.Commands.ProductCreate;
 
-public class ProductCreateCommand : IRequest<int>
+public class ProductCreateCommand : IRequest<Result<int>>
 {
     public string Sku { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;

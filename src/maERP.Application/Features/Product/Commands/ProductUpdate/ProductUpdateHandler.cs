@@ -1,12 +1,12 @@
-﻿using AutoMapper;
+using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Exceptions;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.Product.Commands.ProductUpdate;
 
-public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, int>
+public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result<int>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<ProductUpdateHandler> _logger;
@@ -17,30 +17,57 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, int>
         IAppLogger<ProductUpdateHandler> logger,
         IProductRepository productRepository)
     {
-        _mapper = mapper;
-        _logger = logger;
-        _productRepository = productRepository;
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
 
-    public async Task<int> Handle(ProductUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(ProductUpdateCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Updating product with ID: {Id}", request.Id);
+        
+        var result = new Result<int>();
+        
         // Validate incoming data
         var validator = new ProductUpdateValidator(_productRepository);
-        var validationResult = await validator.ValidateAsync(request);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        if(validationResult.Errors.Any())
+        if (!validationResult.IsValid)
         {
-            _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(ProductUpdateCommand), request.Id);
-            throw new ValidationException("Invalid Product", validationResult);
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.BadRequest;
+            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+            
+            _logger.LogWarning("Validation errors in update request for {0}: {1}", 
+                nameof(ProductUpdateCommand), 
+                string.Join(", ", result.Messages));
+                
+            return result;
         }
 
-        // convert to domain entity object
-        var productToUpdate = _mapper.Map<Domain.Entities.Product>(request);
+        try
+        {
+            // Map to domain entity
+            var productToUpdate = _mapper.Map<Domain.Entities.Product>(request);
+            
+            // Update in database
+            await _productRepository.UpdateAsync(productToUpdate);
+            
+            result.Succeeded = true;
+            result.StatusCode = ResultStatusCode.Ok;
+            result.Data = productToUpdate.Id;
+            
+            _logger.LogInformation("Successfully updated product with ID: {Id}", productToUpdate.Id);
+        }
+        catch (Exception ex)
+        {
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.InternalServerError;
+            result.Messages.Add($"An error occurred while updating the product: {ex.Message}");
+            
+            _logger.LogError("Error updating product: {Message}", ex.Message);
+        }
 
-        // add to database
-        await _productRepository.UpdateAsync(productToUpdate);
-
-        // return record id
-        return productToUpdate.Id;
+        return result;
     }
 }

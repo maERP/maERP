@@ -5,7 +5,6 @@ using maERP.Domain.Dtos.Order;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 
-
 namespace maERP.Server.Tests;
 
 [Collection("Sequential")]
@@ -32,12 +31,12 @@ public class OrderCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>>
             Status = 1
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, order);
-        OrderDetailDto? resultContent = await result.Content.ReadFromJsonAsync<OrderDetailDto>();
-
-        Assert.NotNull(resultContent);
-        Assert.True(result.IsSuccessStatusCode);
-        // Assert.True(resultContent != null && resultContent.CustomerId == 1);
+        var httpResponseMessage = await httpClient.PostAsJsonAsync(url, order);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+        
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
     }
 
     [Theory]
@@ -72,10 +71,11 @@ public class OrderCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>>
                 }
         });
 
-        OrderDetailDto? result = await httpClient.GetFromJsonAsync<OrderDetailDto>(url);
-
+        var result = await httpClient.GetFromJsonAsync<Result<OrderDetailDto>>(url);
+        
         Assert.NotNull(result);
-        Assert.True(result.RemoteOrderId.Length > 0);
+        Assert.True(result.Succeeded);
+        Assert.True(result.Data.RemoteOrderId.Length > 0);
     }
 
     [Theory]
@@ -97,9 +97,14 @@ public class OrderCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>>
             RemoteOrderId = "444-updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, order);
+        var httpResponseMessage = await httpClient.PutAsJsonAsync(url, order);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
 
-        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.True(result.StatusCode == ResultStatusCode.Ok);
+        Assert.IsType<int>(result.Data);
     }
 
     [Theory]

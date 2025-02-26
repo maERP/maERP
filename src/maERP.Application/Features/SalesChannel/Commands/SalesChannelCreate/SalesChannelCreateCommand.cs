@@ -1,8 +1,9 @@
-﻿using MediatR;
+using maERP.Domain.Wrapper;
+using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 
-public class SalesChannelCreateCommand : IRequest<int>
+public class SalesChannelCreateCommand : IRequest<Result<int>>
 {
     public int Type { get; set; }
     public string Name { get; set; } = string.Empty;

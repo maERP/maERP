@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using maERP.Application.Exceptions;
 using maERP.Application.Features.AiModel.Commands.AiModelCreate;
 using maERP.Application.Features.AiModel.Commands.AiModelDelete;
 using maERP.Application.Features.AiModel.Commands.AiModelUpdate;
@@ -28,8 +27,8 @@ public class AiModelsController(IMediator mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var aiModels = await mediator.Send(new AiModelListQuery(pageNumber, pageSize, searchString, orderBy));
-        return Ok(aiModels);
+        var response = await mediator.Send(new AiModelListQuery(pageNumber, pageSize, searchString, orderBy));
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // GET api/<AiModelsController>/5
@@ -38,15 +37,8 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AiModelDetailDto>> GetDetails(int id)
     {
-        try 
-        {
-            var aiModel = await mediator.Send(new AiModelDetailQuery { Id = id });
-            return Ok(aiModel);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound();
-        }
+        var response = await mediator.Send(new AiModelDetailQuery { Id = id });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // POST api/<AiModelsController>
@@ -56,7 +48,7 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> Create(AiModelCreateCommand aiModelCreateCommand)
     {
         var response = await mediator.Send(aiModelCreateCommand);
-        return CreatedAtAction(nameof(GetDetails), new { id = response });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // PUT api/<AiModelsController>/5
@@ -68,8 +60,8 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<AiModelDetailDto>> Update(int id, AiModelUpdateCommand aiModelUpdateCommand)
     {
         aiModelUpdateCommand.Id = id;
-        await mediator.Send(aiModelUpdateCommand);
-        return NoContent();
+        var response = await mediator.Send(aiModelUpdateCommand);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE api/<AiModelsController>/5

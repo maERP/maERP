@@ -4,6 +4,7 @@ using maERP.Application.Features.AiModel.Commands.AiModelCreate;
 using maERP.Application.Features.AiModel.Commands.AiModelUpdate;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Entities;
+using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 
 namespace maERP.Server.Tests;
@@ -27,16 +28,19 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
         await _webApplicationFactory.InitializeDbForTests();
         var aiModel = new AiModelCreateCommand
         {
-            AiModelType = 0,
-            Name = "AiModel 1"
+            AiModelType = AiModelType.None,
+            Name = "AiModel 1",
+            ApiKey = "1234567890",
+            ApiUsername = "username",
+            ApiPassword = "password"
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, aiModel);
-        AiModelDetailDto? resultContent = await result.Content.ReadFromJsonAsync<AiModelDetailDto>();
-
-        Assert.NotNull(resultContent);
-        Assert.True(result.IsSuccessStatusCode);
-        Assert.True(resultContent != null && resultContent.Id != default);
+        var httpResponseMessage = await httpClient.PostAsJsonAsync(url, aiModel);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+        
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
     }
 
     [Theory]
@@ -48,7 +52,7 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
             new List<AiModel> {
                 new() {
                     Id = 2,
-                    AiModelType = 0,
+                    AiModelType = AiModelType.None,
                     Name = "AiModel 2"
                 }
         });
@@ -63,7 +67,7 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
     [InlineData("/api/v1/AiModels/3")]
     public async Task GetDetail(string url)
     {
-        HttpClient httpClient = _webApplicationFactory.CreateClient();
+        var httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
             new List<AiModel> {
                 new() {
@@ -72,10 +76,11 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
                 }
         });
 
-        AiModelDetailDto? result = await httpClient.GetFromJsonAsync<AiModelDetailDto>(url);
-
+        var result = await httpClient.GetFromJsonAsync<Result<AiModelDetailDto>>(url);
+        
         Assert.NotNull(result);
-        Assert.True(result.Name.Length > 0);
+        Assert.True(result.Succeeded);
+        Assert.True(result.Data.Name.Length > 0);
     }
 
     [Theory]
@@ -97,16 +102,21 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
             Name = "AiModel 3 updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, aiModel);
+        var httpResponseMessage = await httpClient.PutAsJsonAsync(url, aiModel);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
 
-        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.True(result.StatusCode == ResultStatusCode.Ok);
+        Assert.IsType<int>(result.Data);
     }
 
     [Theory]
     [InlineData("/api/v1/AiModels/5")]
     public async Task Delete(string url)
     {
-        HttpClient httpClient = _webApplicationFactory.CreateClient();
+        var httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests(
             new List<AiModel> {
                 new() {
@@ -115,7 +125,7 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
                 }
         });
 
-        HttpResponseMessage result = await httpClient.DeleteAsync(url);
+        var result = await httpClient.DeleteAsync(url);
 
         Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
     }

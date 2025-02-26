@@ -1,4 +1,4 @@
-﻿using System.Linq.Dynamic.Core;
+using System.Linq.Dynamic.Core;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;

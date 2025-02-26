@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using maERP.Application.Exceptions;
 using maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 using maERP.Application.Features.TaxClass.Commands.TaxClassDelete;
 using maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
@@ -35,8 +34,8 @@ public class TaxClassesController : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var taxClasses = await _mediator.Send(new TaxClassListQuery(pageNumber, pageSize, searchString, orderBy));
-        return Ok(taxClasses);
+        var response = await _mediator.Send(new TaxClassListQuery(pageNumber, pageSize, searchString, orderBy));
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // GET api/TaxClassesController>/5
@@ -45,15 +44,8 @@ public class TaxClassesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TaxClassDetailDto>> GetDetails(int id)
     {
-        try 
-        {
-            var taxClass = await _mediator.Send(new TaxClassDetailQuery { Id = id });
-            return Ok(taxClass);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound();
-        }
+        var response = await _mediator.Send(new TaxClassDetailQuery { Id = id });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // POST api/<TaxClassesController>
@@ -63,7 +55,7 @@ public class TaxClassesController : ControllerBase
     public async Task<ActionResult<int>> Create(TaxClassCreateCommand taxClassCreateCommand)
     {
         var response = await _mediator.Send(taxClassCreateCommand);
-        return CreatedAtAction(nameof(GetDetails), new { id = response });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // PUT api/<TaxClassesController>/5
@@ -75,8 +67,8 @@ public class TaxClassesController : ControllerBase
     public async Task<ActionResult> Update(int id, TaxClassUpdateCommand taxClassUpdateCommand)
     {
         taxClassUpdateCommand.Id = id;
-        await _mediator.Send(taxClassUpdateCommand);
-        return NoContent();
+        var response = await _mediator.Send(taxClassUpdateCommand);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE api/<TaxClassesController>/5

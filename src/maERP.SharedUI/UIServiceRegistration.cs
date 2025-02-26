@@ -4,7 +4,6 @@ using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Providers;
 using maERP.SharedUI.Services;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 

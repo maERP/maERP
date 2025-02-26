@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using maERP.Application.Exceptions;
 using maERP.Application.Features.Order.Commands.OrderCreate;
 using maERP.Application.Features.Order.Commands.OrderDelete;
 using maERP.Application.Features.Order.Commands.OrderUpdate;
@@ -38,15 +37,8 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<OrderDetailDto>> GetDetails(int id)
     {
-        try 
-        {
-            var order = await mediator.Send(new OrderDetailQuery { Id = id });
-            return Ok(order);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound();
-        }
+        var response = await mediator.Send(new OrderDetailQuery { Id = id });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // POST api/<OrdersController>
@@ -56,7 +48,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<int>> Create(OrderCreateCommand orderCreateCommand)
     {
         var response = await mediator.Send(orderCreateCommand);
-        return CreatedAtAction(nameof(GetDetails), new { id = response });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // PUT: api/<OrdersController>/5
@@ -68,8 +60,8 @@ public class OrdersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> Update(int id, OrderUpdateCommand orderUpdateCommand)
     {
         orderUpdateCommand.Id = id;
-        await mediator.Send(orderUpdateCommand);
-        return NoContent();
+        var response =await mediator.Send(orderUpdateCommand);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE api/<OrderController>/5

@@ -1,6 +1,5 @@
 using FluentValidation;
 using maERP.Application.Contracts.Persistence;
-using maERP.Domain.Enums;
 
 namespace maERP.Application.Features.AiModel.Commands.AiModelCreate;
 
@@ -20,8 +19,7 @@ public class AiModelCreateValidator : AbstractValidator<AiModelCreateCommand>
             
         // AiModelType validation
         RuleFor(p => p.AiModelType)
-            .IsInEnum().WithMessage("{PropertyName} must be a valid model type.")
-            .NotEqual((int)AiModelType.None).WithMessage("{PropertyName} cannot be 'None'.");
+            .IsInEnum().WithMessage("{PropertyName} must be a valid model type.");
             
         // API credentials validation - at least one authentication method must be provided
         RuleFor(p => p)

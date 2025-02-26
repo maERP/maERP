@@ -1,8 +1,9 @@
-﻿using MediatR;
+using maERP.Domain.Wrapper;
+using MediatR;
 
 namespace maERP.Application.Features.AiModel.Commands.AiModelUpdate;
 
-public class AiModelUpdateCommand : IRequest<int>
+public class AiModelUpdateCommand : IRequest<Result<int>>
 {
     public int Id { get; set; }
     public int AiModelType { get; set; }

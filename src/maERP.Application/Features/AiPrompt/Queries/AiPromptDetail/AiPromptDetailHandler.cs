@@ -1,13 +1,13 @@
-﻿using AutoMapper;
+using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Exceptions;
 using maERP.Domain.Dtos.AiPrompt;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.AiPrompt.Queries.AiPromptDetail;
 
-public class AiPromptDetailHandler : IRequestHandler<AiPromptDetailQuery, AiPromptDetailDto>
+public class AiPromptDetailHandler : IRequestHandler<AiPromptDetailQuery, Result<AiPromptDetailDto>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<AiPromptDetailHandler> _logger;
@@ -17,22 +17,48 @@ public class AiPromptDetailHandler : IRequestHandler<AiPromptDetailQuery, AiProm
         IAppLogger<AiPromptDetailHandler> logger,
         IAiPromptRepository aiPromptRepository)
     {
-        _mapper = mapper;
-        _logger = logger;
-        _aiPromptRepository = aiPromptRepository;
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _aiPromptRepository = aiPromptRepository ?? throw new ArgumentNullException(nameof(aiPromptRepository));
     }
-    public async Task<AiPromptDetailDto> Handle(AiPromptDetailQuery request, CancellationToken cancellationToken)
+    
+    public async Task<Result<AiPromptDetailDto>> Handle(AiPromptDetailQuery request, CancellationToken cancellationToken)
     {
-        var aiPrompt = await _aiPromptRepository.GetByIdAsync(request.Id, true);
-
-        if (aiPrompt == null)
+        _logger.LogInformation("Retrieving AI prompt details for ID: {Id}", request.Id);
+        
+        var result = new Result<AiPromptDetailDto>();
+        
+        try
         {
-            throw new NotFoundException("NotFoundException", "aiPrompt not found.");
+            var aiPrompt = await _aiPromptRepository.GetByIdAsync(request.Id, true);
+
+            if (aiPrompt == null)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add($"AI prompt with ID {request.Id} not found");
+                
+                _logger.LogWarning("AI prompt with ID {Id} not found", request.Id);
+                return result;
+            }
+
+            var data = _mapper.Map<AiPromptDetailDto>(aiPrompt);
+
+            result.Succeeded = true;
+            result.StatusCode = ResultStatusCode.Ok;
+            result.Data = data;
+            
+            _logger.LogInformation("AI prompt with ID {Id} retrieved successfully", request.Id);
         }
-
-        var data = _mapper.Map<AiPromptDetailDto>(aiPrompt);
-
-        _logger.LogInformation("AiPrompt retrieved successfully.");
-        return data;
+        catch (Exception ex)
+        {
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.InternalServerError;
+            result.Messages.Add($"An error occurred while retrieving the AI prompt: {ex.Message}");
+            
+            _logger.LogError("Error retrieving AI prompt: {Message}", ex.Message);
+        }
+        
+        return result;
     }
 }

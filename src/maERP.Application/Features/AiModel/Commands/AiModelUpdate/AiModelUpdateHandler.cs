@@ -1,12 +1,12 @@
-﻿using AutoMapper;
+using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Exceptions;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.AiModel.Commands.AiModelUpdate;
 
-public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, int>
+public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result<int>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<AiModelUpdateHandler> _logger;
@@ -17,27 +17,57 @@ public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, int>
         IAppLogger<AiModelUpdateHandler> logger,
         IAiModelRepository aiModelRepository)
     {
-        _mapper = mapper;
-        _logger = logger;
-        _aiModelRepository = aiModelRepository;
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _aiModelRepository = aiModelRepository ?? throw new ArgumentNullException(nameof(aiModelRepository));
     }
 
-    public async Task<int> Handle(AiModelUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(AiModelUpdateCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Updating AI model with ID: {Id} and name: {Name}", request.Id, request.Name);
+        
+        var result = new Result<int>();
+        
         // Validate incoming data
         var validator = new AiModelUpdateValidator(_aiModelRepository);
-        var validationResult = await validator.ValidateAsync(request);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        if(validationResult.Errors.Any())
+        if (!validationResult.IsValid)
         {
-            _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(AiModelUpdateCommand), request.Name);
-            throw new ValidationException("Invalid AiModel", validationResult);
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.BadRequest;
+            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+            
+            _logger.LogWarning("Validation errors in update request for {0}: {1}", 
+                nameof(AiModelUpdateCommand), 
+                string.Join(", ", result.Messages));
+                
+            return result;
         }
-        
-        var aiModelToUpdate = _mapper.Map<Domain.Entities.AiModel>(request);
-        
-        await _aiModelRepository.UpdateAsync(aiModelToUpdate);
 
-        return aiModelToUpdate.Id;
+        try
+        {
+            // Map to domain entity
+            var aiModelToUpdate = _mapper.Map<Domain.Entities.AiModel>(request);
+            
+            // Update in database
+            await _aiModelRepository.UpdateAsync(aiModelToUpdate);
+            
+            result.Succeeded = true;
+            result.StatusCode = ResultStatusCode.Ok;
+            result.Data = aiModelToUpdate.Id;
+            
+            _logger.LogInformation("Successfully updated AI model with ID: {Id}", aiModelToUpdate.Id);
+        }
+        catch (Exception ex)
+        {
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.InternalServerError;
+            result.Messages.Add($"An error occurred while updating the AI model: {ex.Message}");
+            
+            _logger.LogError("Error updating AI model: {Message}", ex.Message);
+        }
+
+        return result;
     }
 }

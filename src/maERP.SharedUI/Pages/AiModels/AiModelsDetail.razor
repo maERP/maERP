@@ -1,6 +1,32 @@
-﻿@page "/AiModels/{aiModelId:int}"
+@page "/AiModels/{aiModelId:int}"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components
 
 @attribute [Authorize]
 
-<h1>AI Modell</h1>
+<h1>@Title</h1>
+
+@if (IsLoading)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    <MudText>Loading...</MudText>
+}
+else if (!AiModelResult.Succeeded)
+{
+    <MudAlert Severity="Severity.Error" Class="my-2">
+        @ErrorMessage
+    </MudAlert>
+}
+else if (AiModel != null)
+{
+    <MudCard>
+        <MudCardContent>
+            <MudText Typo="Typo.h6">ID: @AiModel.Id</MudText>
+            <MudText Typo="Typo.body1">Name: @AiModel.Name</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" link="@($"/AiModels/edit/{AiModel.Id}")">Edit</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" link="/AiModels">Back to List</MudButton>
+        </MudCardActions>
+    </MudCard>
+}

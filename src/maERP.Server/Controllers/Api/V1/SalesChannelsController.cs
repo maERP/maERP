@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using maERP.Application.Exceptions;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 using maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
@@ -28,8 +27,8 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var salesChannels = await mediator.Send(new SalesChannelListQuery(pageNumber, pageSize, searchString, orderBy));
-        return Ok(salesChannels);
+        var response = await mediator.Send(new SalesChannelListQuery(pageNumber, pageSize, searchString, orderBy));
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // GET api/<SalesChannelsController>/5
@@ -38,15 +37,8 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SalesChannelDetailDto>> GetDetails(int id)
     {
-        try 
-        {
-            var salesChannel = await mediator.Send(new SalesChannelDetailQuery { Id = id });
-            return Ok(salesChannel);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound();
-        }
+        var response = await mediator.Send(new SalesChannelDetailQuery { Id = id }); 
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // POST api/<SalesChannelsController>
@@ -56,7 +48,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<int>> Create(SalesChannelCreateCommand salesChannelCreateCommand)
     {
         var response = await mediator.Send(salesChannelCreateCommand);
-        return CreatedAtAction(nameof(GetAll), new { id = response });
+        return StatusCode((int)response.StatusCode, response);
     }
     
     // PUT: api/<SalesChannelsController>/5
@@ -68,8 +60,8 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> Update(int id, SalesChannelUpdateCommand salesChannelUpdateCommand)
     {
         salesChannelUpdateCommand.Id = id;
-        await mediator.Send(salesChannelUpdateCommand);
-        return NoContent();
+        var response = await mediator.Send(salesChannelUpdateCommand);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE api/<SalesChannelController>/5

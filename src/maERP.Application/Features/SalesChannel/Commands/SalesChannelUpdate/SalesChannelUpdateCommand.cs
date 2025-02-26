@@ -1,8 +1,9 @@
-﻿using MediatR;
+using maERP.Domain.Wrapper;
+using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 
-public class SalesChannelUpdateCommand : IRequest<int>
+public class SalesChannelUpdateCommand : IRequest<Result<int>>
 {
     public int Id { get; set; }
     // TODO: fix this

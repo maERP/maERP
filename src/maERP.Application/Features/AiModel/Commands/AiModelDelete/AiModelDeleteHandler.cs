@@ -1,11 +1,11 @@
-﻿using maERP.Application.Contracts.Logging;
+using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Exceptions;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.AiModel.Commands.AiModelDelete;
 
-public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, int>
+public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, Result<int>>
 {
     private readonly IAppLogger<AiModelDeleteHandler> _logger;
     private readonly IAiModelRepository _aiModelRepository;
@@ -14,31 +14,59 @@ public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, int>
         IAppLogger<AiModelDeleteHandler> logger,
         IAiModelRepository aiModelRepository)
     {
-        _logger = logger;
-        _aiModelRepository = aiModelRepository;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _aiModelRepository = aiModelRepository ?? throw new ArgumentNullException(nameof(aiModelRepository));
     }
 
-    public async Task<int> Handle(AiModelDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(AiModelDeleteCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Deleting AI model with ID: {Id}", request.Id);
+        
+        var result = new Result<int>();
+        
         // Validate incoming data
         var validator = new AiModelDeleteValidator(_aiModelRepository);
-        var validationResult = await validator.ValidateAsync(request);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        if(validationResult.Errors.Any())
+        if (!validationResult.IsValid)
         {
-            _logger.LogWarning("Validation errors in delete request for {0} - {1}", nameof(AiModelDeleteCommand), request.Id);
-            throw new ValidationException("Invalid AiModel", validationResult);
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.BadRequest;
+            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+            
+            _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
+                nameof(AiModelDeleteCommand), 
+                string.Join(", ", result.Messages));
+                
+            return result;
         }
 
-        // convert to domain entity object
-        // var aiModelToDelete = _mapper.Map<Domain.Entities.AiModel>(request);
-        var aiModelToDelete = new Domain.Entities.AiModel
+        try
         {
-            Id = request.Id
-        };
-        
-        await _aiModelRepository.DeleteAsync(aiModelToDelete);
-        
-        return aiModelToDelete.Id;
+            // Create entity to delete
+            var aiModelToDelete = new Domain.Entities.AiModel
+            {
+                Id = request.Id
+            };
+            
+            // Delete from database
+            await _aiModelRepository.DeleteAsync(aiModelToDelete);
+            
+            result.Succeeded = true;
+            result.StatusCode = ResultStatusCode.Ok;
+            result.Data = aiModelToDelete.Id;
+            
+            _logger.LogInformation("Successfully deleted AI model with ID: {Id}", aiModelToDelete.Id);
+        }
+        catch (Exception ex)
+        {
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.InternalServerError;
+            result.Messages.Add($"An error occurred while deleting the AI model: {ex.Message}");
+            
+            _logger.LogError("Error deleting AI model: {Message}", ex.Message);
+        }
+
+        return result;
     }
 }

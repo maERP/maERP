@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using AutoMapper;
+﻿using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Enums;
@@ -66,12 +65,12 @@ public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result
             var aiModelToCreate = _mapper.Map<Domain.Entities.AiModel>(request);
             
             // Ensure correct enum mapping
-            aiModelToCreate.AiModelType = (AiModelType)request.AiModelType;
+            aiModelToCreate.AiModelType = request.AiModelType;
             
             await _aiModelRepository.CreateAsync(aiModelToCreate);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.Created;
             result.Data = aiModelToCreate.Id;
             
             _logger.LogInformation("Successfully created AI model with ID: {Id}", aiModelToCreate.Id);

@@ -2,23 +2,6 @@
 
 maERP is an ERP system for managing customers, orders, products, warehouses and suppliers. Most of the code is written in C# and .NET, following the .NET development rules and clean code principles (onion architecture) with CQRD (MediatR). Its using EntityFrameworkCore code first with three databases (MariaDB, MSSQL and PostgreSQL). The project folder consists of several sub-projects:
 
-## Project maERP.Server
-
-The headless ERP system with a REST API and database connection.
-
-## Project maERP.Web
-
-The web client for the maERP.Server headless system
-
-## Project maERP.client 
-
-A multi-platform client developed in .NET MAUI for Windows, Android, iOS and Mac-Catalyst.
-
-## Project maERP.SharedUI
-
-This project contains the front-end pages developed in Blazor and used by maERP.Web and maERP.Client. 
-
-
 # Technology Stack
 
 - .NET 9
@@ -26,9 +9,14 @@ This project contains the front-end pages developed in Blazor and used by maERP.
 - .NET Blazor
 - .NET Blazor WebAssembly
 - .NET MAUI Hybrid
-- CQRS with MediatR
 - Mudblazor as UI framework
 - MySQL, MSSQL and PostgreSQL as database
+
+# Design Patterns
+
+- Clean Code / Onion Architecture
+- CQRS with MediatR
+- Result Wrapper Pattern
 
 # Project Structure
 
@@ -40,7 +28,7 @@ maERP/
     ├── maERP.Analytics/               # Analytics Services
     ├── maERP.Application/             # Application Layer, DTOs, MappingProfiles
     ├── maERP.Client/                  # Multi-Platform Client
-    └── maERP.Domain/                  # Entities, Enums, Wrappers
+    └── maERP.Domain/                  # Entities, Enums, Result-Wrappers
     ├── maERP.Identity/                # Services, Roles, Users, Permissions 
     ├── maERP.Infrastructure/          # Infrastructure Layer
     ├── maERP.Persistence/             # DB Context (ApplicationDbContext)
@@ -56,6 +44,22 @@ maERP/
     ├── maERP.Persistence.Tests/       # DB Context Tests
     ├── maERP.Server.Tests/            # REST API Tests
 ```
+
+## Project maERP.Server
+
+The headless ERP system with a REST API and database connection.
+
+## Project maERP.Web
+
+The web client for the maERP.Server headless system
+
+## Project maERP.client 
+
+A multi-platform client developed in .NET MAUI for Windows, Android, iOS and Mac-Catalyst.
+
+## Project maERP.SharedUI
+
+This project contains the front-end pages developed in Blazor and used by maERP.Web and maERP.Client. 
 
 # .NET Development Rules
 
@@ -119,21 +123,8 @@ You are a senior .NET backend developer and an expert in C#, ASP.NET Core, Blazo
 - Implement Content Security Policy
 - Follow Chrome extension security best practices
 
-## Git Usage
-Commit Message Prefixes:
-- "fix:" for bug fixes
-- "feat:" for new features
-- "perf:" for performance improvements
-- "docs:" for documentation changes
-- "style:" for formatting changes
-- "refactor:" for code refactoring
-- "test:" for adding missing tests
-- "chore:" for maintenance tasks
-
 ## API Documentation
 - Use Swagger/OpenAPI for API documentation (as per installed Swashbuckle.AspNetCore package).
 - Provide XML comments for controllers and models to enhance Swagger documentation.
 
 Follow the official Microsoft documentation and ASP.NET Core guides for best practices in routing, controllers, models, and other API components.
-
-Every time you choose to apply a rule(s), explicitly state the rule(s) in the output. You can abbreviate the rule description to a single word or phrase.

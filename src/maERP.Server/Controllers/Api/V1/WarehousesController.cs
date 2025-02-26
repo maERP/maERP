@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using maERP.Application.Exceptions;
 using maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
 using maERP.Application.Features.Warehouse.Commands.WarehouseDelete;
 using maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
@@ -28,8 +27,8 @@ public class WarehousesController(IMediator mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var warehouses = await mediator.Send(new WarehouseListQuery(pageNumber, pageSize, searchString, orderBy));
-        return Ok(warehouses);
+        var response = await mediator.Send(new WarehouseListQuery(pageNumber, pageSize, searchString, orderBy));
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // GET api/<WarehousesController>/5
@@ -37,16 +36,9 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<WarehouseDetailDto>> GetDetails(int id)
-    {
-        try 
-        {
-            var warehouse = await mediator.Send(new WarehouseDetailQuery { Id = id });
-            return Ok(warehouse);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound();
-        }
+    { 
+        var response = await mediator.Send(new WarehouseDetailQuery { Id = id });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // POST api/<WarehousesController>
@@ -56,7 +48,7 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> Create(WarehouseCreateCommand warehouseCreateCommand)
     {
         var response = await mediator.Send(warehouseCreateCommand);
-        return CreatedAtAction(nameof(GetDetails), new { id = response });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // PUT api/<WarehousesController>/5
@@ -68,8 +60,8 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<WarehouseDetailDto>> Update(int id, WarehouseUpdateCommand warehouseUpdateCommand)
     {
         warehouseUpdateCommand.Id = id;
-        await mediator.Send(warehouseUpdateCommand);
-        return NoContent();
+        var response = await mediator.Send(warehouseUpdateCommand);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE api/<WarehousesController>/5

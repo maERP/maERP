@@ -31,12 +31,12 @@ public class AiPromptCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
             PromptText = "Prompt Text 1"
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, aiPrompt);
-        AiPromptDetailDto? resultContent = await result.Content.ReadFromJsonAsync<AiPromptDetailDto>();
-
-        Assert.NotNull(resultContent);
-        Assert.True(result.IsSuccessStatusCode);
-        Assert.True(resultContent != null && resultContent.Id != default);
+        var httpResponseMessage = await httpClient.PostAsJsonAsync(url, aiPrompt);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+        
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
     }
 
     [Theory]
@@ -74,10 +74,11 @@ public class AiPromptCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        AiPromptDetailDto? result = await httpClient.GetFromJsonAsync<AiPromptDetailDto>(url);
-
+        var result = await httpClient.GetFromJsonAsync<Result<AiPromptDetailDto>>(url);
+        
         Assert.NotNull(result);
-        Assert.True(result.PromptText.Length > 0);
+        Assert.True(result.Succeeded);
+        Assert.True(result.Data.PromptText.Length > 0);
     }
 
     [Theory]
@@ -99,9 +100,14 @@ public class AiPromptCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
             Identifier = "prompt_test_4_updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, aiPrompt);
+        var httpResponseMessage = await httpClient.PutAsJsonAsync(url, aiPrompt);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
 
-        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.True(result.StatusCode == ResultStatusCode.Ok);
+        Assert.IsType<int>(result.Data);
     }
 
     [Theory]

@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace maERP.Domain.Enums;
 
 public enum SalesChannelType

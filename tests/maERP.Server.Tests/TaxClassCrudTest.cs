@@ -30,12 +30,12 @@ public class TaxClassCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
             TaxRate = 20
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, taxclass);
-        TaxClassDetailDto? resultContent = await result.Content.ReadFromJsonAsync<TaxClassDetailDto>();
-
-        Assert.NotNull(resultContent);
-        Assert.True(result.IsSuccessStatusCode);
-        Assert.True(resultContent != null && resultContent.Id != default);
+        var httpResponseMessage = await httpClient.PostAsJsonAsync(url, taxclass);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+        
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
     }
 
     [Theory]
@@ -64,10 +64,11 @@ public class TaxClassCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests();
 
-        TaxClassDetailDto? result = await httpClient.GetFromJsonAsync<TaxClassDetailDto>(url);
-
+        var result = await httpClient.GetFromJsonAsync<Result<TaxClassDetailDto>>(url);
+        
         Assert.NotNull(result);
-        Assert.Equal(19, result.TaxRate);
+        Assert.True(result.Succeeded);
+        Assert.Equal(19, result.Data.TaxRate);
     }
 
     [Theory]
@@ -89,9 +90,14 @@ public class TaxClassCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
             TaxRate = 24
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, taxclass);
-
-        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+        var httpResponseMessage = await httpClient.PutAsJsonAsync(url, taxclass);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+        
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.True(result.StatusCode == ResultStatusCode.Ok);
+        Assert.IsType<int>(result.Data);
     }
 
     [Theory]

@@ -6,7 +6,6 @@ using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 
-
 namespace maERP.Server.Tests;
 
 [Collection("Sequential")]
@@ -32,12 +31,13 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
             Lastname = "Customer Lastname",
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, customer);
-        CustomerDetailDto? resultContent = await result.Content.ReadFromJsonAsync<CustomerDetailDto>();
+        HttpResponseMessage response = await httpClient.PostAsJsonAsync(url, customer);
+        var result = await response.Content.ReadFromJsonAsync<Result<int>>();
 
-        Assert.NotNull(resultContent);
-        Assert.True(result.IsSuccessStatusCode);
-        Assert.True(resultContent != null && resultContent.Id != default);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.Equal(ResultStatusCode.Created, result.StatusCode);
+        Assert.IsType<int>(result.Data);
     }
 
     [Theory]
@@ -57,7 +57,10 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         var result = await httpClient.GetFromJsonAsync<PaginatedResult<CustomerListDto>>(url);
 
         Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.Equal(ResultStatusCode.Ok, result.StatusCode);
         Assert.Equal(1, result.TotalCount);
+        Assert.NotNull(result.Data);
     }
 
     [Theory]
@@ -74,10 +77,14 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        CustomerDetailDto? result = await httpClient.GetFromJsonAsync<CustomerDetailDto>(url);
+        var response = await httpClient.GetAsync(url);
+        var result = await response.Content.ReadFromJsonAsync<Result<CustomerDetailDto>>();
 
         Assert.NotNull(result);
-        Assert.True(result.Firstname.Length > 0);
+        Assert.True(result.Succeeded);
+        Assert.Equal(ResultStatusCode.Ok, result.StatusCode);
+        Assert.NotNull(result.Data);
+        Assert.True(result.Data.Firstname.Length > 0);
     }
 
     [Theory]
@@ -101,9 +108,14 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
             Lastname = "Customer 4 Lastname updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, customer);
-
-        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+        var httpResponseMessage = await httpClient.PutAsJsonAsync(url, customer);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+        
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.Equal(ResultStatusCode.Ok, result.StatusCode);
+        Assert.IsType<int>(result.Data);
     }
 
     [Theory]
@@ -120,9 +132,9 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        HttpResponseMessage result = await httpClient.DeleteAsync(url);
-
-        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+        var response = await httpClient.DeleteAsync(url);
+        
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 
     [Theory]
@@ -132,8 +144,16 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         HttpClient httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests();
 
-        HttpResponseMessage result = await httpClient.GetAsync(url);
+        HttpResponseMessage response = await httpClient.GetAsync(url);
+        
+        // We should still get OK status code from the API
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        // But the Result wrapper should indicate NotFound status
+        var result = await response.Content.ReadFromJsonAsync<Result>();
+        Assert.NotNull(result);
+        Assert.False(result.Succeeded);
+        Assert.Equal(ResultStatusCode.NotFound, result.StatusCode);
+        Assert.NotEmpty(result.Messages);
     }
 }

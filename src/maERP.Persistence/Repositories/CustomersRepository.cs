@@ -1,5 +1,4 @@
 ﻿using maERP.Application.Contracts.Persistence;
-using maERP.Application.Exceptions;
 using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +12,13 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
 
     }
     
-    public async Task<Customer> GetCustomerWithDetails(int id)
+    public async Task<Customer?> GetCustomerWithDetails(int id)
     {
         return await Context.Customer
             .Where(x => x.Id == id)
             .Include(x => x.CustomerAddresses)
             .Include(x => x.Orders)
-            .FirstOrDefaultAsync() ?? throw new NotFoundException("User not found", "User not found");
+            .FirstOrDefaultAsync() ?? null;
     }
     
     public async Task<Customer?> GetCustomerByEmailAsync(string email)

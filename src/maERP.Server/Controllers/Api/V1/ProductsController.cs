@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using maERP.Application.Exceptions;
 using maERP.Application.Features.Product.Commands.ProductCreate;
 using maERP.Application.Features.Product.Commands.ProductDelete;
 using maERP.Application.Features.Product.Commands.ProductUpdate;
@@ -28,8 +27,8 @@ public class ProductsController(IMediator mediator) : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var products = await mediator.Send(new ProductListQuery(pageNumber, pageSize, searchString, orderBy));
-        return Ok(products);
+        var response = await mediator.Send(new ProductListQuery(pageNumber, pageSize, searchString, orderBy));
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // GET api/<ProductsController>/5
@@ -38,15 +37,8 @@ public class ProductsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductDetailDto>> GetDetails(int id)
     {
-        try 
-        {
-            var product = await mediator.Send(new ProductDetailQuery { Id = id });
-            return Ok(product);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound();
-        }
+        var response = await mediator.Send(new ProductDetailQuery { Id = id });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // POST api/<ProductsController>
@@ -56,7 +48,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<int>> Create(ProductCreateCommand productCreateCommand)
     {
         var response = await mediator.Send(productCreateCommand);
-        return CreatedAtAction(nameof(GetAll), new { id = response });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // PUT: api/<ProductsController>/5
@@ -68,8 +60,8 @@ public class ProductsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> Update(int id, ProductUpdateCommand productUpdateCommand)
     {
         productUpdateCommand.Id = id;
-        await mediator.Send(productUpdateCommand);
-        return NoContent();
+        var response = await mediator.Send(productUpdateCommand);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE api/<ProductController>/5

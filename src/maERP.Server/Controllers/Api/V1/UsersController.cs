@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using maERP.Application.Exceptions;
 using maERP.Application.Features.User.Commands.UserCreate;
 using maERP.Application.Features.User.Commands.UserDelete;
 using maERP.Application.Features.User.Commands.UserUpdate;
@@ -35,8 +34,8 @@ public class UsersController : ControllerBase
             orderBy = "DateCreated Descending";
         }
 
-        var users = await _mediator.Send(new UserListQuery(pageNumber, pageSize, searchString, orderBy));
-        return Ok(users);
+        var response = await _mediator.Send(new UserListQuery(pageNumber, pageSize, searchString, orderBy));
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // GET api/UsersController>/5
@@ -45,15 +44,8 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserDetailDto>> GetDetails(string id)
     {
-        try 
-        {
-            var user = await _mediator.Send(new UserDetailQuery { Id = id });
-            return Ok(user);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound();
-        }
+        var response = await _mediator.Send(new UserDetailQuery { Id = id });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // POST api/<UsersController>
@@ -63,7 +55,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<string>> Create(UserCreateCommand userCreateCommand)
     {
         var response = await _mediator.Send(userCreateCommand);
-        return CreatedAtAction(nameof(GetDetails), new { id = response });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // PUT api/<UsersController>/5
@@ -75,8 +67,8 @@ public class UsersController : ControllerBase
     public async Task<ActionResult> Update(string id, UserUpdateCommand userUpdateCommand)
     {
         userUpdateCommand.Id = id;
-        await _mediator.Send(userUpdateCommand);
-        return NoContent();
+        var response = await _mediator.Send(userUpdateCommand);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE api/<UsersController>/5

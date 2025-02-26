@@ -1,12 +1,12 @@
-﻿using AutoMapper;
+using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
-using maERP.Application.Exceptions;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 
-public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, int>
+public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Result<int>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<TaxClassCreateHandler> _logger;
@@ -16,26 +16,57 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, int>
         IAppLogger<TaxClassCreateHandler> logger,
         ITaxClassRepository taxClassRepository)
     {
-        _mapper = mapper;
-        _logger = logger;
-        _taxClassRepository = taxClassRepository;
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
 
-    public async Task<int> Handle(TaxClassCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(TaxClassCreateCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Creating new tax class with tax rate: {TaxRate}", request.TaxRate);
+        
+        var result = new Result<int>();
+        
+        // Validate incoming data
         var validator = new TaxClassCreateValidator(_taxClassRepository);
-        var validationResult = await validator.ValidateAsync(request);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        if(validationResult.Errors.Any())
+        if (!validationResult.IsValid)
         {
-            _logger.LogWarning("Validation errors in create request for {0} - {1}", nameof(TaxClassCreateCommand), request.TaxRate);
-            throw new ValidationException("Invalid TaxClass", validationResult);
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.BadRequest;
+            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+            
+            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
+                nameof(TaxClassCreateCommand), 
+                string.Join(", ", result.Messages));
+                
+            return result;
         }
 
-        var taxClassToCreate = _mapper.Map<Domain.Entities.TaxClass>(request);
+        try
+        {
+            // Map and create entity
+            var taxClassToCreate = _mapper.Map<Domain.Entities.TaxClass>(request);
+            
+            // add to database
+            await _taxClassRepository.CreateAsync(taxClassToCreate);
 
-        await _taxClassRepository.CreateAsync(taxClassToCreate);
+            result.Succeeded = true;
+            result.StatusCode = ResultStatusCode.Ok;
+            result.Data = taxClassToCreate.Id;
+            
+            _logger.LogInformation("Successfully created tax class with ID: {Id}", taxClassToCreate.Id);
+        }
+        catch (Exception ex)
+        {
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.InternalServerError;
+            result.Messages.Add($"An error occurred while creating the tax class: {ex.Message}");
+            
+            _logger.LogError("Error creating tax class: {Message}", ex.Message);
+        }
 
-        return taxClassToCreate.Id;
+        return result;
     }
 }

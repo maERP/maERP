@@ -1,8 +1,9 @@
-﻿using MediatR;
+using maERP.Domain.Wrapper;
+using MediatR;
 
 namespace maERP.Application.Features.Order.Commands.OrderUpdate;
 
-public class OrderUpdateCommand : IRequest<int>
+public class OrderUpdateCommand : IRequest<Result<int>>
 {
     public int Id { get; set; }
     public int SalesChannelId { get; set; }

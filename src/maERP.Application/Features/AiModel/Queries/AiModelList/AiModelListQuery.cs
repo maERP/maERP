@@ -1,4 +1,4 @@
-﻿using maERP.Domain.Dtos.AiModel;
+using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Wrapper;
 using MediatR;
 

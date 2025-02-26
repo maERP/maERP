@@ -1,12 +1,12 @@
-﻿using AutoMapper;
+using AutoMapper;
 using maERP.Application.Contracts.Logging;
-using maERP.Application.Exceptions;
 using maERP.Domain.Entities;
+using maERP.Domain.Wrapper;
 using MediatR;
 
 namespace maERP.Application.Features.User.Commands.UserUpdate;
 
-public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, string>
+public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<string>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<UserUpdateHandler> _logger;
@@ -14,29 +14,56 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, string>
     public UserUpdateHandler(IMapper mapper,
         IAppLogger<UserUpdateHandler> logger)
     {
-        _mapper = mapper;
-        _logger = logger;
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<string> Handle(UserUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(UserUpdateCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Updating user with ID: {Id}", request.Id);
+        
+        var result = new Result<string>();
+        
         // Validate incoming data
         var validator = new UserUpdateValidator();
-        var validationResult = await validator.ValidateAsync(request);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        if(validationResult.Errors.Any())
+        if (!validationResult.IsValid)
         {
-            _logger.LogWarning("Validation errors in update request for {0} - {1}", nameof(UserUpdateCommand), request.Id);
-            throw new ValidationException("Invalid User", validationResult);
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.BadRequest;
+            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+            
+            _logger.LogWarning("Validation errors in update request for {0}: {1}", 
+                nameof(UserUpdateCommand), 
+                string.Join(", ", result.Messages));
+                
+            return result;
         }
 
-        // convert to domain entity object
-        var userToUpdate = _mapper.Map<ApplicationUser>(request);
-        
-        // TODO  add to database
-        // await _userRepository.UpdateAsync(userToUpdate);
+        try
+        {
+            // Map to domain entity
+            var userToUpdate = _mapper.Map<ApplicationUser>(request);
+            
+            // TODO: add to database
+            // await _userRepository.UpdateAsync(userToUpdate);
+            
+            result.Succeeded = true;
+            result.StatusCode = ResultStatusCode.Ok;
+            result.Data = userToUpdate.Id;
+            
+            _logger.LogInformation("Successfully updated user with ID: {Id}", userToUpdate.Id);
+        }
+        catch (Exception ex)
+        {
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.InternalServerError;
+            result.Messages.Add($"An error occurred while updating the user: {ex.Message}");
+            
+            _logger.LogError("Error updating user: {Message}", ex.Message);
+        }
 
-        // return record id
-        return userToUpdate.Id;
+        return result;
     }
 }

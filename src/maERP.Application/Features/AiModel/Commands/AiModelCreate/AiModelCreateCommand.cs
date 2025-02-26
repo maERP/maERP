@@ -13,7 +13,7 @@ public class AiModelCreateCommand : IRequest<Result<int>>
     /// <summary>
     /// The type of AI model (from AiModelType enum)
     /// </summary>
-    public int AiModelType { get; set; } = (int)Domain.Enums.AiModelType.None;
+    public AiModelType AiModelType { get; set; } = AiModelType.None;
     
     /// <summary>
     /// The name of the AI model (required, max 50 characters)

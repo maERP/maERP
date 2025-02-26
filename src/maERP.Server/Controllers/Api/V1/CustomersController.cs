@@ -1,5 +1,4 @@
 using Asp.Versioning;
-using maERP.Application.Exceptions;
 using maERP.Application.Features.Customer.Commands.CustomerCreate;
 using maERP.Application.Features.Customer.Commands.CustomerDelete;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
@@ -28,8 +27,8 @@ public class CustomersController(IMediator mediator) : ControllerBase
             orderBy = "DateEnrollment Descending";
         }
 
-        var customers = await mediator.Send(new CustomerListQuery(pageNumber, pageSize, searchString, orderBy));
-        return Ok(customers);
+        var response = await mediator.Send(new CustomerListQuery(pageNumber, pageSize, searchString, orderBy));
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // GET api/<CustomersController>/5
@@ -38,15 +37,8 @@ public class CustomersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CustomerDetailDto>> GetDetails(int id)
     {
-        try 
-        {
-            var customer = await mediator.Send(new CustomerDetailQuery { Id = id });
-            return Ok(customer);
-        }
-        catch (NotFoundException)
-        {
-            return NotFound();
-        }
+        var response = await mediator.Send(new CustomerDetailQuery { Id = id });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // POST api/<CustomersController>
@@ -56,7 +48,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<CustomerDetailDto>> Create(CustomerCreateCommand customerCreateCommand)
     {
         var response = await mediator.Send(customerCreateCommand);
-        return CreatedAtAction(nameof(GetAll), new { id = response });
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // PUT: api/<CustomersController>/5
@@ -68,8 +60,8 @@ public class CustomersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<CustomerDetailDto>> Update(int id, CustomerUpdateCommand customerUpdateCommand)
     {
         customerUpdateCommand.Id = id;
-        await mediator.Send(customerUpdateCommand);
-        return NoContent();
+        var response = await mediator.Send(customerUpdateCommand);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE api/<CustomerController>/5

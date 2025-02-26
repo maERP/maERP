@@ -30,12 +30,12 @@ public class WarehouseCrudTest : IClassFixture<MaErpWebApplicationFactory<Progra
             Name = "Warehouse 1"
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, warehouse);
-        WarehouseDetailDto? resultContent = await result.Content.ReadFromJsonAsync<WarehouseDetailDto>();
-
-        Assert.NotNull(resultContent);
-        Assert.True(result.IsSuccessStatusCode);
-        Assert.True(resultContent != null && resultContent.Id != default);
+        var httpResponseMessage = await httpClient.PostAsJsonAsync(url, warehouse);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+        
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
     }
 
     [Theory]
@@ -70,10 +70,11 @@ public class WarehouseCrudTest : IClassFixture<MaErpWebApplicationFactory<Progra
                 }
         });
 
-        WarehouseDetailDto? result = await httpClient.GetFromJsonAsync<WarehouseDetailDto>(url);
-
+        var result = await httpClient.GetFromJsonAsync<Result<WarehouseDetailDto>>(url);
+        
         Assert.NotNull(result);
-        Assert.True(result.Name.Length > 0);
+        Assert.True(result.Succeeded);
+        Assert.True(result.Data.Name.Length > 0);
     }
 
     [Theory]
@@ -95,9 +96,14 @@ public class WarehouseCrudTest : IClassFixture<MaErpWebApplicationFactory<Progra
             Name = "Warehouse 3 updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, warehouse);
-
-        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+        var httpResponseMessage = await httpClient.PutAsJsonAsync(url, warehouse);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+        
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.True(result.StatusCode == ResultStatusCode.Ok);
+        Assert.IsType<int>(result.Data);
     }
 
     [Theory]

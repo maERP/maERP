@@ -35,12 +35,12 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
             Msrp = 20
         };
 
-        HttpResponseMessage result = await httpClient.PostAsJsonAsync(url, product);
-        ProductDetailDto? resultContent = await result.Content.ReadFromJsonAsync<ProductDetailDto>();
-
-        Assert.NotNull(resultContent);
-        Assert.True(result.IsSuccessStatusCode);
-        Assert.True(resultContent != null && resultContent.Id != default);
+        var httpResponseMessage = await httpClient.PostAsJsonAsync(url, product);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+        
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
     }
 
     [Theory]
@@ -59,7 +59,10 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
         var result = await httpClient.GetFromJsonAsync<PaginatedResult<ProductListDto>>(url);
 
         Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.Equal(ResultStatusCode.Ok, result.StatusCode);
         Assert.Equal(1, result.TotalCount);
+        Assert.NotNull(result.Data);
     }
 
     [Theory]
@@ -75,10 +78,14 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
                 }
         });
 
-        ProductDetailDto? result = await httpClient.GetFromJsonAsync<ProductDetailDto>(url);
+        var response = await httpClient.GetAsync(url);
+        var result = await response.Content.ReadFromJsonAsync<Result<ProductDetailDto>>();
 
         Assert.NotNull(result);
-        Assert.True(result.Name.Length > 0);
+        Assert.True(result.Succeeded);
+        Assert.Equal(ResultStatusCode.Ok, result.StatusCode);
+        Assert.NotNull(result.Data);
+        Assert.True(result.Data.Name.Length > 0);
     }
 
     [Theory]
@@ -100,9 +107,14 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
             Name = "Product 3 updated",
         };
 
-        HttpResponseMessage result = await httpClient.PutAsJsonAsync(url, product);
-
-        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+        var httpResponseMessage = await httpClient.PutAsJsonAsync(url, product);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+        
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.Equal(ResultStatusCode.Ok, result.StatusCode);
+        Assert.IsType<int>(result.Data);
     }
 
     [Theory]
@@ -119,20 +131,25 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
                 }
         });
 
-        HttpResponseMessage result = await httpClient.DeleteAsync(url);
-
-        Assert.Equal(HttpStatusCode.NoContent, result.StatusCode);
+        var response = await httpClient.DeleteAsync(url);
+        
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 
     [Theory]
     [InlineData("/api/v1/Products/999999")]
     public async Task NotExist(string url)
     {
-        HttpClient httpClient = _webApplicationFactory.CreateClient();
+        var httpClient = _webApplicationFactory.CreateClient();
         await _webApplicationFactory.InitializeDbForTests();
 
-        HttpResponseMessage result = await httpClient.GetAsync(url);
-
-        Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+        var response = await httpClient.GetAsync(url);
+        var result = await response.Content.ReadFromJsonAsync<Result>();
+        
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.NotNull(result);
+        Assert.False(result.Succeeded);
+        Assert.Equal(ResultStatusCode.NotFound, result.StatusCode);
+        Assert.NotEmpty(result.Messages);
     }
 }
