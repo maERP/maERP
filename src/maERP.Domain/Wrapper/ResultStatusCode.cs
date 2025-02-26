@@ -3,5 +3,7 @@
 public enum ResultStatusCode
 {
     Ok,
-    NotFound
+    NotFound,
+    BadRequest,
+    InternalServerError,
 }
