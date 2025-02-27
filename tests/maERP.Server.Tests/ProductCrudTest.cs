@@ -104,7 +104,7 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
 
         var product = new ProductUpdateCommand
         {
-            Name = "Product 3 updated",
+            Name = "Product 4 updated",
         };
 
         var httpResponseMessage = await httpClient.PutAsJsonAsync(url, product);

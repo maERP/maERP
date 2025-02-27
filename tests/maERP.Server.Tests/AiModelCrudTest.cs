@@ -53,7 +53,8 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
                 new() {
                     Id = 2,
                     AiModelType = AiModelType.None,
-                    Name = "AiModel 2"
+                    Name = "AiModel 2",
+                    ApiKey = "1234567890",
                 }
         });
 
@@ -72,7 +73,10 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
             new List<AiModel> {
                 new() {
                     Id = 3,
-                    Name = "AiModel 3"
+                    Name = "AiModel 3",
+                    AiModelType = AiModelType.Claude35,
+                    ApiUsername = "AI Model Username",
+                    ApiPassword = "AI Model Password"
                 }
         });
 
@@ -93,13 +97,16 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
             new List<AiModel> {
                 new() {
                     Id = 4,
-                    Name = "AiModel 4"
+                    AiModelType = AiModelType.ChatGpt4O,
+                    Name = "AiModel 4",
+                    ApiKey = "1234567890",
                 }
         });
 
         var aiModel = new AiModelUpdateCommand
         {
             Name = "AiModel 3 updated",
+            ApiKey = "123456789111",
         };
 
         var httpResponseMessage = await httpClient.PutAsJsonAsync(url, aiModel);

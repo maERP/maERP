@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Warehouses;
 
-public partial class WarehousesDetail
+public partial class WarehouseDetail
 {
     [Inject]
     public required NavigationManager NavigationManager { get; set; }

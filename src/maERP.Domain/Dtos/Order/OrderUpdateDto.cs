@@ -1,9 +1,10 @@
 ﻿using maERP.Domain.Entities;
 using maERP.Domain.Enums;
+using maERP.Domain.Interfaces;
 
 namespace maERP.Domain.Dtos.Order;
 
-public class OrderEditDto
+public class OrderUpdateDto : IOrderInputModel
 {
     public int Id { get; set; }
     public int SalesChannelId { get; set; }
@@ -14,9 +15,12 @@ public class OrderEditDto
     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
     public string PaymentMethod { get; set; } = string.Empty;
-    public string PaymentStatus { get; set; } = string.Empty;
+    public PaymentStatus PaymentStatus { get; set; }
     public string PaymentProvider { get; set; } = string.Empty;
     public string PaymentTransactionId { get; set; } = string.Empty;
+    
+    public string CustomerNote { get; set; } = string.Empty;
+    public string InternalNote { get; set; } = string.Empty;
 
     public string ShippingMethod { get; set; } = string.Empty;
     public string ShippingStatus { get; set; } = string.Empty;

@@ -2,12 +2,13 @@ using System.Net.Http.Json;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace maERP.SharedUI.Pages.AiModels;
 
-public partial class AiModelsAdd
+public partial class AiModelsCreate
 {
     [Inject]
     public required NavigationManager NavigationManager { get; set; }
@@ -17,15 +18,29 @@ public partial class AiModelsAdd
 
     [Inject]
     public required IHttpService HttpService { get; set; }
-
-    // ReSharper disable once NotAccessedField.Local
-    MudForm? _form;
-
-    public AiModelDetailDto AiModelDetail = new();
+    
+    [Inject]
+    public required AiModelCreateValidator Validator { get; set; }
+    
+    public MudForm? _form;
+    public AiModelCreateDto AiModelCreate = new();
+    
+    protected async Task OnValidSubmit()
+    {
+        if (_form is not null)
+        {
+            await _form.Validate();
+            
+            if (_form.IsValid)
+            {
+                await Save();
+            }
+        }
+    }
 
     protected async Task Save()
     {
-        var httpResponseMessage = await HttpService.PostAsJsonAsync<AiModelDetailDto>("/api/v1/AiModels", AiModelDetail);
+        var httpResponseMessage = await HttpService.PostAsJsonAsync<AiModelCreateDto>("/api/v1/AiModels", AiModelCreate);
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
         
         if (result != null)
@@ -39,7 +54,7 @@ public partial class AiModelsAdd
             {
                 foreach (var errorMessage in result.Messages)
                 {
-                    Snackbar.Add(errorMessage, Severity.Error);
+                    Snackbar.Add("SERVER: " + errorMessage, Severity.Error);
                 }
             }
         }

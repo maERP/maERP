@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Warehouses;
 
-public partial class WarehousesDelete
+public partial class WarehouseDelete
 {
     [Inject]
     public required NavigationManager NavigationManager { get; set; }
