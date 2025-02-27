@@ -7,7 +7,6 @@
             <option name="type" value="immediately" />
           </ConditionSnapshot>
         </option>
-        <option name="disableDebugging" value="true" />
         <option name="executable">
           <ExecutableSnapshot>
             <option name="id" value="runConfig:.NET Launch Settings Profile.maERP.Server: https" />
@@ -17,10 +16,12 @@
       <ExecutableRowSnapshot>
         <option name="condition">
           <ConditionSnapshot>
-            <option name="type" value="immediately" />
+            <attributes>
+              <entry key="port" value="8443" />
+            </attributes>
+            <option name="type" value="waitPortOpened" />
           </ConditionSnapshot>
         </option>
-        <option name="disableDebugging" value="true" />
         <option name="executable">
           <ExecutableSnapshot>
             <option name="id" value="runConfig:.NET Launch Settings Profile.maERP.Web: https" />
