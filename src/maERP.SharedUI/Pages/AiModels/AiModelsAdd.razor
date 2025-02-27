@@ -1,10 +1,10 @@
-@page "/AiModels/{aiModelId:int}/Edit"
+@page "/AiModels/Add"
 @using maERP.Domain.Enums
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">AI Modell bearbeiten</MudText>
+<MudText Typo="Typo.h4" Class="mb-8">AI Modell hinzufügen</MudText>
 
 <MudForm Model="@AiModelDetail" @ref="@_form">
     <MudGrid>

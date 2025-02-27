@@ -7,7 +7,7 @@ using MudBlazor;
 
 namespace maERP.SharedUI.Pages.AiModels;
 
-public partial class AiModelsEdit
+public partial class AiModelsAdd
 {
     [Inject]
     public required NavigationManager NavigationManager { get; set; }
@@ -18,47 +18,22 @@ public partial class AiModelsEdit
     [Inject]
     public required IHttpService HttpService { get; set; }
 
-
-    [Parameter]
-    public int aiModelId { get; set; }
-
     // ReSharper disable once NotAccessedField.Local
     MudForm? _form;
 
-    // ReSharper disable once NotAccessedField.Local
-    protected string Title = "Bearbeiten";
-
     public AiModelDetailDto AiModelDetail = new();
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (aiModelId != 0)
-        {
-            var result = await HttpService.GetAsync<Result<AiModelDetailDto>>($"/api/v1/AiModels/{aiModelId}");
-            
-            if (result != null && result.Succeeded)
-            {
-                AiModelDetail = result.Data;
-            }
-            else
-            {
-                // Handle error case
-                AiModelDetail = new AiModelDetailDto();
-            }
-        }
-    }
 
     protected async Task Save()
     {
-        var httpResponseMessage = await HttpService.PutAsJsonAsync<AiModelDetailDto>($"/api/v1/AiModels/{aiModelId}", AiModelDetail);
+        var httpResponseMessage = await HttpService.PostAsJsonAsync<AiModelDetailDto>("/api/v1/AiModels", AiModelDetail);
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
-
+        
         if (result != null)
         {
             if (result.Succeeded)
             {
-                NavigateToList();
                 Snackbar.Add("AI Model gespeichert", Severity.Success);
+                NavigateToList();
             }
             else
             {
