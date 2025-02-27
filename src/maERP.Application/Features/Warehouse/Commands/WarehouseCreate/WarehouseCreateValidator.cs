@@ -1,20 +1,16 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
 
-public class WarehouseCreateValidator : AbstractValidator<WarehouseCreateCommand>
+public class WarehouseCreateValidator : WarehouseBaseValidator<WarehouseCreateCommand>
 {
     private readonly IWarehouseRepository _warehouseRepository;
     
     public WarehouseCreateValidator(IWarehouseRepository warehouseRepository)
     {
         _warehouseRepository = warehouseRepository;
-        
-        RuleFor(p => p.Name)
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull()
-            .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
 
         RuleFor(q => q)
             .MustAsync(IsUniqueAsync).WithMessage("Warehouse with the same name already exists.");

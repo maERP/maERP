@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using maERP.Application.Features.Order.Commands.OrderUpdate;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Entities;
+using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 
 namespace maERP.Server.Tests;
@@ -28,7 +29,7 @@ public class OrderCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>>
         {
             SalesChannelId = 1,
             CustomerId = 1,
-            Status = 1
+            Status = OrderStatus.Completed
         };
 
         var httpResponseMessage = await httpClient.PostAsJsonAsync(url, order);

@@ -1,20 +1,16 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 
-public class TaxClassCreateValidator : AbstractValidator<TaxClassCreateCommand>
+public class TaxClassCreateValidator : TaxClassBaseValidator<TaxClassCreateCommand>
 {
     private readonly ITaxClassRepository _taxClassRepository;
 
     public TaxClassCreateValidator(ITaxClassRepository taxClassRepository)
     {
         _taxClassRepository = taxClassRepository;
-
-        RuleFor(p => p.TaxRate)
-            .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
 
         RuleFor(q => q)
             .MustAsync(IsUniqueAsync).WithMessage("TaxClass with the same tax rate already exists.");

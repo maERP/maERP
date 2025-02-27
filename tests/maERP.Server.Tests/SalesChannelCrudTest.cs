@@ -28,7 +28,7 @@ public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Pro
         await _webApplicationFactory.InitializeDbForTests();
         var saleschannel = new SalesChannelCreateCommand
         {
-            Type = 1,
+            SalesChannelType = SalesChannelType.Shopware5,
             Name = "SalesChannel 2",
             Url = string.Empty,
             Username = string.Empty,

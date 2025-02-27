@@ -1,5 +1,8 @@
-﻿namespace maERP.Domain.Dtos.ShippingProvider;
+﻿using maERP.Domain.Interfaces;
 
-public class ShippingProviderUpdateDto
+namespace maERP.Domain.Dtos.ShippingProvider;
+
+public class ShippingProviderUpdateDto : IShippingProviderInputModel
 {
+    public string Name { get; set; } = string.Empty;
 }

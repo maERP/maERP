@@ -95,7 +95,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
                 lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, lambda.Parameters);
             }
 
-            if (await Context.Set<T>().AnyAsync(lambda))
+            if (!string.IsNullOrEmpty(value?.ToString()) && await Context.Set<T>().AnyAsync(lambda))
             {
                 return false;
             }

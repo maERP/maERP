@@ -1,7 +1,12 @@
-﻿namespace maERP.Domain.Dtos.ProductSalesChannel;
+﻿using maERP.Domain.Interfaces;
 
-public class ProductSalesChannelCreateDto
+namespace maERP.Domain.Dtos.ProductSalesChannel;
+
+public class ProductSalesChannelCreateDto : IProductSalesChannelInputModel
 {
+    public int ProductId { get; set; }
+    public int SalesChannelId { get; set; }
+    
     public int RemoteProductId { get; set; }
 
     public decimal Price { get; set; }

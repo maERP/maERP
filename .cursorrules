@@ -11,6 +11,7 @@ maERP is an ERP system for managing customers, orders, products, warehouses and 
 - .NET MAUI Hybrid
 - Mudblazor as UI framework
 - MySQL, MSSQL and PostgreSQL as database
+- FluentValidation both for server and client side validation
 
 # Design Patterns
 
@@ -28,7 +29,7 @@ maERP/
     ├── maERP.Analytics/               # Analytics Services
     ├── maERP.Application/             # Application Layer, DTOs, MappingProfiles
     ├── maERP.Client/                  # Multi-Platform Client
-    └── maERP.Domain/                  # Entities, Enums, Result-Wrappers
+    └── maERP.Domain/                  # Entities, Enums, Result-Wrappers, Validators
     ├── maERP.Identity/                # Services, Roles, Users, Permissions 
     ├── maERP.Infrastructure/          # Infrastructure Layer
     ├── maERP.Persistence/             # DB Context (ApplicationDbContext)

@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 
-public class SalesChanneLCreateValidator : AbstractValidator<SalesChannelCreateCommand>
+public class SalesChanneLCreateValidator : SalesChannelBaseValidator<SalesChannelCreateCommand>
 {
     private readonly ISalesChannelRepository _salesChannelRepository;
 

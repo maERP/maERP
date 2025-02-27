@@ -1,0 +1,27 @@
+@page "/Warehouses/{warehouseId:int}/Edit"
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<MudText Typo="Typo.h4" Class="mb-8">Lager bearbeiten</MudText>
+
+<MudForm Model="@Warehouse" @ref="@_form" Validation="@(Validator.ValidateValue)" ValidationDelay="0">
+    <MudGrid>
+        <MudItem xs="6">
+            <MudTextField @bind-Value="Warehouse.Name"
+                          For="@(() => Warehouse.Name)"
+                          Label="Lagername"
+                          Required="true"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Class="mt-6" />
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       ButtonType="ButtonType.Button"
+                       OnClick="@(OnValidSubmit)"
+                       Class="mt-6">Speichern</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>

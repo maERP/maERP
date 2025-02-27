@@ -1,6 +1,8 @@
-﻿namespace maERP.Domain.Dtos.CustomerAddress;
+﻿using maERP.Domain.Interfaces;
 
-public class CustomerAddressCreateDto
+namespace maERP.Domain.Dtos.CustomerAddress;
+
+public class CustomerAddressCreateDto : ICustomerAddressInputModel
 {
     public string Firstname { get; set; } = string.Empty;
     public string Lastname { get; set; } = string.Empty;

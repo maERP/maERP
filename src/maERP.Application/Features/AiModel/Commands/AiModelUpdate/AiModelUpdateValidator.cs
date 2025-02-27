@@ -1,24 +1,16 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.AiModel.Commands.AiModelUpdate;
 
-public class AiModelUpdateValidator : AbstractValidator<AiModelUpdateCommand>
+public class AiModelUpdateValidator : AiModelBaseValidator<AiModelUpdateCommand>
 {
     private readonly IAiModelRepository _aiModelRepository;
     
     public AiModelUpdateValidator(IAiModelRepository aiModelRepository)
     {
         _aiModelRepository = aiModelRepository;
-        
-        RuleFor(p => p.Id)
-            .NotNull().WithMessage("{PropertyName} must not be null.")
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-        
-        RuleFor(p => p.Name)
-            .NotNull()
-            .MinimumLength(3).WithMessage("{PropertyName} must be longer than 3.")
-            .MaximumLength(255).WithMessage("{PropertyName} too long");
 
         RuleFor(w => w)
             .MustAsync(AiModelExists).WithMessage("AiModel not found")

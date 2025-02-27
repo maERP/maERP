@@ -6,7 +6,7 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">Steuersatz bearbeiten</MudText>
 
-<MudForm Model="@TaxClass" @ref="@_form">
+<MudForm Model="@TaxClass" @ref="@_form" Validation="@(Validator.ValidateValue)" ValidationDelay="0">
     <MudGrid>
         <MudItem xs="6">
             <MudTextField @bind-Value="TaxClass.TaxRate"

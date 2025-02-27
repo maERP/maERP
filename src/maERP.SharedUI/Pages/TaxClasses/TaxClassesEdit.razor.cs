@@ -1,5 +1,6 @@
 using maERP.Domain.Dtos.TaxClass;
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -12,15 +13,17 @@ public partial class TaxClassesEdit
 
     [Inject]
     public required IHttpService HttpService { get; set; }
+    
+    [Inject]
+    public required TaxClassUpdateValidator Validator { get; set; }
 
     [Inject]
     public required ISnackbar Snackbar { get; set; }
 
     [Parameter]
     public int taxClassId { get; set; }
-
-    // ReSharper disable once NotAccessedField.Local
-    private MudForm _form = new();
+    
+    public MudForm _form = new();
 
     protected string Title = "hinzufügen";
 
@@ -32,6 +35,19 @@ public partial class TaxClassesEdit
         {
             Title = "Bearbeiten";
             TaxClass = await HttpService.GetAsync<TaxClassDetailDto>($"/api/v1/TaxClasses/{taxClassId}") ?? new TaxClassDetailDto();
+        }
+    }
+    
+    protected async Task OnValidSubmit()
+    {
+        if (_form is not null)
+        {
+            await _form.Validate();
+            
+            if (_form.IsValid)
+            {
+                await Save();
+            }
         }
     }
 

@@ -1,23 +1,20 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 
-public class SalesChannelUpdateValidator : AbstractValidator<SalesChannelUpdateCommand>
+public class SalesChannelUpdateValidator : SalesChannelBaseValidator<SalesChannelUpdateCommand>
 {
     private readonly ISalesChannelRepository _salesChannelRepository;
 
     public SalesChannelUpdateValidator(ISalesChannelRepository salesChannelRepository)
     {
         _salesChannelRepository = salesChannelRepository;
-
+        
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-
-        RuleFor(p => p.Name)
-            .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.");
 
         RuleFor(s => s)
             .MustAsync(IsUnique).WithMessage("Sales Channel is not unique.");

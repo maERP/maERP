@@ -1,24 +1,16 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
 
-public class AiPromptUpdateValidator : AbstractValidator<AiPromptUpdateCommand>
+public class AiPromptUpdateValidator : AiPromptBaseValidator<AiPromptUpdateCommand>
 {
     private readonly IAiPromptRepository _aIPromptRepository;
     
     public AiPromptUpdateValidator(IAiPromptRepository aIPromptRepository)
     {
         _aIPromptRepository = aIPromptRepository;
-        
-        RuleFor(p => p.Id)
-            .NotNull().WithMessage("{PropertyName} must not be null.")
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-        
-        RuleFor(p => p.Identifier)
-            .NotNull()
-            .MinimumLength(3).WithMessage("{PropertyName} must be longer than 3.")
-            .MaximumLength(255).WithMessage("{PropertyName} too long");
 
         RuleFor(w => w)
             .MustAsync(AiPromptExists).WithMessage("AiPrompt not found")

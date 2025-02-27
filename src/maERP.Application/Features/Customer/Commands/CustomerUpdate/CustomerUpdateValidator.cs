@@ -1,20 +1,17 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Customer.Commands.CustomerUpdate;
 
-public class CustomerUpdateValidator : AbstractValidator<CustomerUpdateCommand>
+public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateCommand>
 {
     private readonly ICustomerRepository _customerRepository;
 
     public CustomerUpdateValidator(ICustomerRepository customerRepository)
     {
         _customerRepository = customerRepository;
-
-        RuleFor(p => p.Id)
-            .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-
+        
         RuleFor(c => c)
             .MustAsync(CustomerExists).WithMessage("Customer not found");
     }

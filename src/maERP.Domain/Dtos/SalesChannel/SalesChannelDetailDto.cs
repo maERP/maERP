@@ -1,11 +1,12 @@
 ﻿using maERP.Domain.Dtos.Warehouse;
+using maERP.Domain.Enums;
 
 namespace maERP.Domain.Dtos.SalesChannel;
 
 public class SalesChannelDetailDto
 {
     public int Id { get; set; }
-    public SalesChannelTypeDto TypeDto { get; set; }
+    public SalesChannelType SalesChannelType { get; set; }
     public string Name { get; set; } = string.Empty;
 
     public string Url { get; set; } = string.Empty;

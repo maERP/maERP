@@ -2,4 +2,5 @@
 
 public class ShippingProviderListDto
 {
+    public string Name { get; set; } = string.Empty;
 }

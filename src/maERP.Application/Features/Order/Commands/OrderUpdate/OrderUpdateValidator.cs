@@ -1,16 +1,18 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Order.Commands.OrderUpdate;
 
-public class OrderUpdateValidator : AbstractValidator<OrderUpdateCommand>
+public class OrderUpdateValidator : OrderBaseValidator<OrderUpdateCommand>
 {
     private readonly IOrderRepository _orderRepository;
 
     public OrderUpdateValidator(IOrderRepository orderRepository)
     {
         _orderRepository = orderRepository;
-
+        
+        
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");

@@ -22,14 +22,14 @@ public partial class OrdersEdit
     // ReSharper disable once NotAccessedField.Local
     protected string Title = "hinzufügen";
 
-    protected OrderEditDto Order = new();
+    protected OrderUpdateDto Order = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (orderId != 0)
         {
             Title = "Bearbeiten";
-            Order = await HttpService.GetAsync<OrderEditDto>($"/api/v1/Orders/{orderId}") ?? new OrderEditDto();
+            Order = await HttpService.GetAsync<OrderUpdateDto>($"/api/v1/Orders/{orderId}") ?? new OrderUpdateDto();
         }
     }
 
@@ -37,11 +37,11 @@ public partial class OrdersEdit
     {
         if (orderId != 0)
         {
-            await HttpService.PutAsJsonAsync<OrderEditDto>($"/api/v1/Orders/{orderId}", Order);
+            await HttpService.PutAsJsonAsync<OrderUpdateDto>($"/api/v1/Orders/{orderId}", Order);
         }
         else
         {
-            await HttpService.PostAsJsonAsync<OrderEditDto>("/api/v1/Orders/", Order);
+            await HttpService.PostAsJsonAsync<OrderUpdateDto>("/api/v1/Orders/", Order);
         }
         
         StateHasChanged();

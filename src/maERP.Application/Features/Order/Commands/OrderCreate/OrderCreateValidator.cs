@@ -1,9 +1,9 @@
-﻿using FluentValidation;
-using maERP.Application.Contracts.Persistence;
+﻿using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Order.Commands.OrderCreate;
 
-public class OrderCreateValidator : AbstractValidator<OrderCreateCommand>
+public class OrderCreateValidator : OrderBaseValidator<OrderCreateCommand>
 {
     private readonly IOrderRepository _orderRepository;
 

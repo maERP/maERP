@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Product.Commands.ProductUpdate;
 
-public class ProductUpdateValidator : AbstractValidator<ProductUpdateCommand>
+public class ProductUpdateValidator : ProductBaseValidator<ProductUpdateCommand>
 {
     private readonly IProductRepository _productRepository;
 

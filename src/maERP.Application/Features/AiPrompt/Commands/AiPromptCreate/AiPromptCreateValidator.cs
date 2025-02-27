@@ -1,20 +1,16 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.AiPrompt.Commands.AiPromptCreate;
 
-public class AiPromptCreateValidator : AbstractValidator<AiPromptCreateCommand>
+public class AiPromptCreateValidator : AiPromptBaseValidator<AiPromptCreateCommand>
 {
     private readonly IAiPromptRepository _aIPromptRepository;
     
     public AiPromptCreateValidator(IAiPromptRepository aiPromptRepository)
     {
         _aIPromptRepository = aiPromptRepository;
-        
-        RuleFor(p => p.Identifier)
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull()
-            .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
 
         RuleFor(q => q)
             .MustAsync(IsUniqueAsync).WithMessage("AiPrompt with the same name already exists.");
