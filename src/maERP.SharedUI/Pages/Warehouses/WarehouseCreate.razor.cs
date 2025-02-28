@@ -8,7 +8,7 @@ using MudBlazor;
 
 namespace maERP.SharedUI.Pages.Warehouses;
 
-public partial class WarehouseCreate
+public partial class SalesChannelCreate
 {
     [Inject]
     public required NavigationManager NavigationManager { get; set; }

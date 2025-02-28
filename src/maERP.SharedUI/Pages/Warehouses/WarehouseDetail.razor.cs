@@ -29,4 +29,14 @@ public partial class WarehouseDetail
         }
         else Title = "nicht gefunden";
     }
+    
+    protected void NavigateToList()
+    {
+        NavigationManager.NavigateTo("/Warehouses");
+    }
+    
+    protected void NavigateToEdit()
+    {
+        NavigationManager.NavigateTo($"/Warehouses/Edit/{warehouseId}");
+    }
 }

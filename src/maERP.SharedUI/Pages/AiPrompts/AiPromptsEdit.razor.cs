@@ -1,5 +1,9 @@
+using System.Net.Http.Json;
+using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Dtos.AiPrompt;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -9,42 +13,67 @@ public partial class AiPromptsEdit
 {
     [Inject]
     public required NavigationManager NavigationManager { get; set; }
+    
+    [Inject]
+    public required ISnackbar Snackbar { get; set; }
 
     [Inject]
     public required IHttpService HttpService { get; set; }
 
+    [Inject]
+    public required AiPromptUpdateValidator Validator { get; set; }
+
     [Parameter]
     public int aiPromptId { get; set; }
+    
+    public MudForm? _form;
+    
+    protected string Title = "Bearbeiten";
 
-    // ReSharper disable once NotAccessedField.Local
-    MudForm? _form;
-
-    // ReSharper disable once NotAccessedField.Local
-    protected string Title = "hinzufügen";
-
-    protected AiPromptDetailDto AiPromptDetail = new();
+    public AiPromptUpdateDto AiPrompt = new();
 
     protected override async Task OnParametersSetAsync()
     {
         if (aiPromptId != 0)
         {
-            Title = "Bearbeiten";
-            AiPromptDetail = await HttpService.GetAsync<AiPromptDetailDto>($"/api/v1/AiPrompts/{aiPromptId}") ?? new AiPromptDetailDto();
+            var result = await HttpService.GetAsync<Result<AiPromptUpdateDto>>($"/api/v1/AiPrompts/{aiPromptId}");
+            
+            if (result != null && result.Succeeded)
+            {
+                AiPrompt = result.Data;
+            }
+            else
+            {
+                // Handle error case
+                AiPrompt = new();
+            }
         }
     }
 
     protected async Task Save()
     {
-        if (aiPromptId != 0)
+        var httpResponseMessage = await HttpService.PutAsJsonAsync<AiPromptUpdateDto>($"/api/v1/AiModels/{aiPromptId}", AiPrompt);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
+
+        if (result != null)
         {
-            await HttpService.PutAsJsonAsync<AiPromptDetailDto>( $"/api/v1/AiPrompts/{aiPromptId}", AiPromptDetail);
+            if (result.Succeeded)
+            {
+                NavigateToList();
+                Snackbar.Add("AI AiPrompt gespeichert", Severity.Success);
+            }
+            else
+            {
+                foreach (var errorMessage in result.Messages)
+                {
+                    Snackbar.Add(errorMessage, Severity.Error);
+                }
+            }
         }
         else
         {
-            await HttpService.PostAsJsonAsync<AiPromptDetailDto>("/api/v1/AiPrompts", AiPromptDetail);
+            Snackbar.Add("AI AiPrompt konnte nicht gespeichert werden", Severity.Error);
         }
-
-        NavigateToList();
     }
 
     public void NavigateToList()

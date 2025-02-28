@@ -1,6 +1,7 @@
-﻿@page "/Warehouses/{warehouseId:int}"
+@page "/Warehouses/{warehouseId:int}"
 @using Microsoft.AspNetCore.Authorization
+@using MudBlazor
 
 @attribute [Authorize]
 
-<h1>Lager</h1>
+<MudText Typo="Typo.h4" Class="mb-8">@Title</MudText>

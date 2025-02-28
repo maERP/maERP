@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
@@ -6,9 +7,9 @@ using maERP.SharedUI.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace maERP.SharedUI.Pages.Warehouses;
+namespace maERP.SharedUI.Pages.SalesChannels;
 
-public partial class WarehouseEdit
+public partial class SalesChannelCreate
 {
     [Inject]
     public required NavigationManager NavigationManager { get; set; }
@@ -18,35 +19,20 @@ public partial class WarehouseEdit
 
     [Inject]
     public required IHttpService HttpService { get; set; }
-
+    
     [Inject]
-    public required WarehouseUpdateValidator Validator { get; set; }
-
-    [Parameter]
-    public int warehouseId { get; set; }
+    public required SalesChannelCreateValidator Validator { get; set; }
     
-    public MudForm? _form;
+    private MudForm? _form;
     
-    protected string Title = "Bearbeiten";
-
-    public WarehouseUpdateDto Warehouse = new();
-
+    public SalesChannelCreateDto SalesChannel = new();
+    public List<WarehouseListDto> Warehouses = new();
+    
     protected override async Task OnParametersSetAsync()
     {
-        if (warehouseId != 0)
-        {
-            var result = await HttpService.GetAsync<Result<WarehouseUpdateDto>>($"/api/v1/Warehouses/{warehouseId}");
-            
-            if (result != null && result.Succeeded)
-            {
-                Warehouse = result.Data;
-            }
-            else
-            {
-                // Handle error case
-                Warehouse = new();
-            }
-        }
+        var result = await HttpService.GetAsync<PaginatedResult<WarehouseListDto>>("/api/v1/Warehouses") ??
+                     throw new Exception();
+        Warehouses = result.Data;
     }
     
     protected async Task OnValidSubmit()
@@ -64,15 +50,15 @@ public partial class WarehouseEdit
 
     protected async Task Save()
     {
-        var httpResponseMessage = await HttpService.PutAsJsonAsync<WarehouseUpdateDto>($"/api/v1/Warehouses/{warehouseId}", Warehouse);
+        var httpResponseMessage = await HttpService.PostAsJsonAsync<SalesChannelCreateDto>("/api/v1/SalesChannels", SalesChannel);
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
-
+        
         if (result != null)
         {
             if (result.Succeeded)
             {
+                Snackbar.Add("Vertriebskanal gespeichert", Severity.Success);
                 NavigateToList();
-                Snackbar.Add("Lager gespeichert", Severity.Success);
             }
             else
             {
@@ -84,13 +70,13 @@ public partial class WarehouseEdit
         }
         else
         {
-            Snackbar.Add("Lager konnte nicht gespeichert werden", Severity.Error);
+            Snackbar.Add("Vertriebskanal konnte nicht gespeichert werden", Severity.Error);
         }
     }
 
     public void NavigateToList()
     {
         StateHasChanged();
-        NavigationManager.NavigateTo("/Warehouses");
+        NavigationManager.NavigateTo("/SalesChannels");
     }
 }
