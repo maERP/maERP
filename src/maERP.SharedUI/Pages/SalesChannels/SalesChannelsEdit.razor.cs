@@ -1,60 +1,84 @@
+using System.Net.Http.Json;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Dtos.Warehouse;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace maERP.SharedUI.Pages.SalesChannels
+namespace maERP.SharedUI.Pages.SalesChannels;
+
+public partial class SalesChannelsEdit
 {
-    public partial class SalesChannelsEdit
+    [Inject]
+    public required NavigationManager NavigationManager { get; set; }
+    
+    [Inject]
+    public required ISnackbar Snackbar { get; set; }
+
+    [Inject]
+    public required IHttpService HttpService { get; set; }
+
+    [Inject]
+    public required SalesChannelUpdateValidator Validator { get; set; }
+
+    [Parameter]
+    public int salesChannelId { get; set; }
+    
+    public MudForm? _form;
+    
+    protected string Title = "Bearbeiten";
+
+    public SalesChannelUpdateDto SalesChannel = new();
+    public List<WarehouseListDto> Warehouses = new();
+
+    protected override async Task OnParametersSetAsync()
     {
-        [Inject]
-        public required NavigationManager NavigationManager { get; set; }
-
-        [Inject]
-        public required IHttpService HttpService { get; set; }
-
-        [Inject]
-        public required ISnackbar Snackbar { get; set; }
-
-        [Parameter]
-        public int salesChannelId { get; set; }
-
-        // ReSharper disable once NotAccessedField.Local
-        private MudForm _form = new();
-
-        protected string Title = "hinzufügen";
-
-        protected SalesChannelDetailDto SalesChannel = new();
-        protected List<WarehouseListDto> Warehouses = new();
-
-        /*
-        protected override async Task OnParametersSetAsync()
+        if (salesChannelId != 0)
         {
-            warehouses = await _warehouseService.GetWarehouses();
-
-            if (salesChannelId > 0)
+            var result = await HttpService.GetAsync<Result<SalesChannelUpdateDto>>($"/api/v1/SalesChannels/{salesChannelId}");
+            
+            if (result != null && result.Succeeded)
             {
-                salesChannel = await _salesChannelService.GetSalesChannelDetails(salesChannelId);
+                SalesChannel = result.Data;
             }
-        }
-        */
 
-        protected async Task Save()
+            var warehouseResult = await HttpService.GetAsync<PaginatedResult<WarehouseListDto>>("/api/v1/Warehouses") ??
+                         throw new Exception();
+            Warehouses = warehouseResult.Data;
+        }
+    }
+
+    protected async Task Save()
+    {
+        var httpResponseMessage = await HttpService.PutAsJsonAsync<SalesChannelUpdateDto>($"/api/v1/SalesChannels/{salesChannelId}", SalesChannel);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
+
+        if (result != null)
         {
-            if (salesChannelId != 0)
+            if (result.Succeeded)
             {
-                await HttpService.PutAsJsonAsync<SalesChannelDetailDto>($"/api/v1/SalesChannels/{salesChannelId}", SalesChannel);
+                NavigateToList();
+                Snackbar.Add("Vertriebskanal gespeichert", Severity.Success);
             }
             else
             {
-                await HttpService.PostAsJsonAsync<SalesChannelDetailDto>("/api/v1/SalesChannels", SalesChannel);
+                foreach (var errorMessage in result.Messages)
+                {
+                    Snackbar.Add(errorMessage, Severity.Error);
+                }
             }
         }
-
-        public void ReturnToList()
+        else
         {
-            NavigationManager.NavigateTo("/SalesChannels");
+            Snackbar.Add("Vertriebskanal konnte nicht gespeichert werden", Severity.Error);
         }
+    }
+
+    public void NavigateToList()
+    {
+        StateHasChanged();
+        NavigationManager.NavigateTo("/SalesChannels");
     }
 }

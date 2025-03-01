@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
@@ -60,7 +59,7 @@ public partial class AiPromptsEdit
             if (result.Succeeded)
             {
                 NavigateToList();
-                Snackbar.Add("AI AiPrompt gespeichert", Severity.Success);
+                Snackbar.Add("AI Prompt gespeichert", Severity.Success);
             }
             else
             {
@@ -72,7 +71,7 @@ public partial class AiPromptsEdit
         }
         else
         {
-            Snackbar.Add("AI AiPrompt konnte nicht gespeichert werden", Severity.Error);
+            Snackbar.Add("AI Prompt konnte nicht gespeichert werden", Severity.Error);
         }
     }
 

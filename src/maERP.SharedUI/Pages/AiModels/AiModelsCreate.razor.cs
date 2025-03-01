@@ -8,7 +8,7 @@ using MudBlazor;
 
 namespace maERP.SharedUI.Pages.AiModels;
 
-public partial class AiPromptCreate
+public partial class AiModelsCreate
 {
     [Inject]
     public required NavigationManager NavigationManager { get; set; }

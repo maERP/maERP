@@ -5,7 +5,7 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">AI Modell bearbeiten</MudText>
 
-<MudForm Model="@AiPrompt" @ref="@_form">
+<MudForm Model="@AiPrompt" @ref="@_form"  Validation="@(Validator.ValidateValue)" ValidationDelay="0">
     <MudGrid>
         <MudItem xs="6">
             <MudTextField @bind-Value="AiPrompt.Identifier"

@@ -6,7 +6,7 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">Vertriebskanal bearbeiten</MudText>
 
-<MudForm Model="@SalesChannel" @ref="@_form">
+<MudForm Model="@SalesChannel" @ref="@_form" Validation="@(Validator.ValidateValue)" ValidationDelay="0">
     <MudGrid>
         <MudItem xs="6">
 
