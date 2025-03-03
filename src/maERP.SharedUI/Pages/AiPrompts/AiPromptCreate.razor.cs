@@ -25,6 +25,14 @@ public partial class AiPromptCreate
     
     public MudForm? _form;
     public AiPromptCreateDto AiPrompt = new();
+    public List<AiModelListDto> AiModels = new();
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await HttpService.GetAsync<PaginatedResult<AiModelListDto>>("/api/v1/AiModels") ??
+                     throw new Exception();
+        AiModels = result.Data;
+    }
     
     protected async Task OnValidSubmit()
     {

@@ -18,8 +18,12 @@ public class AiPromptCreateValidator : AiPromptBaseValidator<AiPromptCreateComma
 
     private async Task<bool> IsUniqueAsync(AiPromptCreateCommand command, CancellationToken cancellationToken)
     {
+        // var aiModelContext = _aIPromptRepository.GetContext<Domain.Entities.AiModel>();
+        
         var aiPrompt = new Domain.Entities.AiPrompt
         {
+            // AiModel = aiModelContext.FirstOrDefault(x => x.Id == command.AiModel.Id) ?? null!,
+            AiModelId = command.AiModelId,
             Identifier = command.Identifier,
             PromptText = command.PromptText
         };

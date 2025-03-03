@@ -82,6 +82,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
             var equalityExpression = Expression.Equal(propertyExpression, constant);
             var lambda = Expression.Lambda<Func<T, bool>>(equalityExpression, parameter);
         
+            if (value != null && value.GetType().IsClass)
+            {
+                continue;
+            }
+            
             // Exclude entity with provided id
             if (id.HasValue)
             {
@@ -94,7 +99,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
                 var combinedExpression = Expression.AndAlso(lambda.Body, idLambda.Body);
                 lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, lambda.Parameters);
             }
-
+            
             if (!string.IsNullOrEmpty(value?.ToString()) && await Context.Set<T>().AnyAsync(lambda))
             {
                 return false;

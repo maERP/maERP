@@ -3,11 +3,18 @@
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">AI Modell bearbeiten</MudText>
+<MudText Typo="Typo.h4" Class="mb-8">AI Prompt bearbeiten</MudText>
 
 <MudForm Model="@AiPrompt" @ref="@_form"  Validation="@(Validator.ValidateValue)" ValidationDelay="0">
     <MudGrid>
         <MudItem xs="6">
+            <MudSelect T="int" Label="Modell" HelperText="Modell" Placeholder="Modell auswählen" @bind-Value="@AiPrompt.AiModelId" Class="mt-6">
+                @foreach (var aiModel in AiModels)
+                {
+                    <MudSelectItem Value="@aiModel.Id">@aiModel.Name</MudSelectItem>
+                }
+            </MudSelect>
+            
             <MudTextField @bind-Value="AiPrompt.Identifier"
                           For="@(() => AiPrompt.Identifier)"
                           Label="Identifier"

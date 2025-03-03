@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
@@ -30,9 +31,14 @@ public partial class AiPromptsEdit
     protected string Title = "Bearbeiten";
 
     public AiPromptUpdateDto AiPrompt = new();
+    public List<AiModelListDto> AiModels = new();
 
     protected override async Task OnParametersSetAsync()
     {
+        var result2 = await HttpService.GetAsync<PaginatedResult<AiModelListDto>>("/api/v1/AiModels") ??
+                      throw new Exception();
+        AiModels = result2.Data;
+        
         if (aiPromptId != 0)
         {
             var result = await HttpService.GetAsync<Result<AiPromptUpdateDto>>($"/api/v1/AiPrompts/{aiPromptId}");
@@ -40,18 +46,16 @@ public partial class AiPromptsEdit
             if (result != null && result.Succeeded)
             {
                 AiPrompt = result.Data;
-            }
-            else
-            {
-                // Handle error case
-                AiPrompt = new();
+                
             }
         }
+        
+        StateHasChanged();
     }
 
     protected async Task Save()
     {
-        var httpResponseMessage = await HttpService.PutAsJsonAsync<AiPromptUpdateDto>($"/api/v1/AiModels/{aiPromptId}", AiPrompt);
+        var httpResponseMessage = await HttpService.PutAsJsonAsync<AiPromptUpdateDto>($"/api/v1/AiPrompts/{aiPromptId}", AiPrompt);
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
 
         if (result != null)

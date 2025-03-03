@@ -26,6 +26,7 @@ public class AiPromptUpdateValidator : AiPromptBaseValidator<AiPromptUpdateComma
     {
         var aIPrompt = new Domain.Entities.AiPrompt
         {
+            AiModelId = command.AiModelId,
             Identifier = command.Identifier,
             PromptText = command.PromptText
         };

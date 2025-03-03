@@ -1,10 +1,10 @@
-using maERP.Domain.Enums;
+using maERP.Domain.Dtos.AiModel;
 
 namespace maERP.Domain.Interfaces;
 
 public interface IAiPromptInputModel
 {
     string Identifier { get; }
-    AiModelType AiModelType { get; }
+    int AiModelId { get; }
     string PromptText { get; }
 }

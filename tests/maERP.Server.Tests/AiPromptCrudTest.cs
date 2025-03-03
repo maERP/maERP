@@ -48,7 +48,7 @@ public class AiPromptCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
             new List<AiPrompt> {
                 new() {
                     Id = 2,
-                    AiModelType = 0,
+                    AiModelId = 1,
                     Identifier = "prompt_test_2",
                     PromptText = "Prompt Text 2"
                 }

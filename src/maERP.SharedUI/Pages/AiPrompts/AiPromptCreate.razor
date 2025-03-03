@@ -1,17 +1,18 @@
 @page "/AiPrompts/Create"
-@using maERP.Domain.Enums
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">AI Modell hinzufügen</MudText>
+<MudText Typo="Typo.h4" Class="mb-8">AI Prompt hinzufügen</MudText>
 
 <MudForm Model="@AiPrompt" @ref="@_form" Validation="@(Validator.ValidateValue)" ValidationDelay="0">
     <MudGrid>
         <MudItem xs="6">
-            <MudSelect T="AiModelType" Label="Typ" HelperText="Model-Typ" Placeholder="Typ auswählen" @bind-Value="@AiPrompt.AiModelType" Class="mt-6">
-                <MudSelectItem Value="AiModelType.ChatGpt4O">ChatGPT 4o</MudSelectItem>
-                <MudSelectItem Value="AiModelType.Claude35">Claude Opus 3.5</MudSelectItem>
+            <MudSelect Label="Typ" HelperText="Modell" Placeholder="Modell auswählen" @bind-Value="@AiPrompt.AiModelId" Class="mt-6">
+                @foreach (var aiModel in AiModels)
+                {
+                    <MudSelectItem Value="@aiModel.Id">@aiModel.Name</MudSelectItem>
+                }
             </MudSelect>
             
             <MudTextField @bind-Value="AiPrompt.Identifier"
