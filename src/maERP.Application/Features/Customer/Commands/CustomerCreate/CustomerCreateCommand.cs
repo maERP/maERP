@@ -4,6 +4,6 @@ using MediatR;
 
 namespace maERP.Application.Features.Customer.Commands.CustomerCreate;
 
-public class CustomerCreateCommand : CustomerCreateDto, IRequest<Result<int>>
+public class CustomerCreateCommand : CustomerInputDto, IRequest<Result<int>>
 {
 }

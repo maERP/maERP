@@ -1,17 +1,21 @@
-﻿@page "/AiPrompts/{aiPromptId:int}/Edit"
+﻿@page "/AiPrompts/Create"
+@page "/AiPrompts/{aiPromptId:int}/Edit"
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">AI Prompt bearbeiten</MudText>
+<PageTitle>@Title</PageTitle>
 
-<MudForm Model="@AiPrompt" @ref="@_form"  Validation="@(Validator.ValidateValue)" ValidationDelay="0">
+<MudText Typo="Typo.h4" Class="mb-8">@Title</MudText>
+
+<MudForm Model="@AiPrompt" @ref="@Form"  Validation="@(Validator.ValidateValue)" ValidationDelay="0">
     <MudGrid>
         <MudItem xs="6">
             <MudSelect T="int" Label="Modell" HelperText="Modell" Placeholder="Modell auswählen" @bind-Value="@AiPrompt.AiModelId" Class="mt-6">
+                <MudSelectItem T="int" Value="0">Bitte wählen</MudSelectItem>
                 @foreach (var aiModel in AiModels)
                 {
-                    <MudSelectItem Value="@aiModel.Id">@aiModel.Name</MudSelectItem>
+                    <MudSelectItem T="int" Value="@aiModel.Id">@aiModel.Name</MudSelectItem>
                 }
             </MudSelect>
             
@@ -35,7 +39,7 @@
                        Color="Color.Primary"
                        Size="Size.Large"
                        ButtonType="ButtonType.Button"
-                       OnClick="@(Save)"
+                       OnClick="@(OnValidSubmit)"
                        Class="mt-6">Speichern</MudButton>
         </MudItem>
     </MudGrid>

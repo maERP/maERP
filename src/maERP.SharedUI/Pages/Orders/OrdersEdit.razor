@@ -1,11 +1,14 @@
-﻿@page "/Orders/{orderId:int}/Edit"
+﻿@page "/Orders/Create"
+@page "/Orders/{orderId:int}/Edit"
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">Bestellung bearbeiten</MudText>
+<PageTitle>@Title</PageTitle>
 
-<MudForm Model="@Order" @ref="@_form">
+<MudText Typo="Typo.h4" Class="mb-8">@Title</MudText>
+
+<MudForm Model="@Order" @ref="@Form">
     <MudGrid>
         <MudItem xs="6">
 
@@ -21,7 +24,7 @@
                        Color="Color.Primary"
                        Size="Size.Large"
                        ButtonType="ButtonType.Button"
-                       OnClick="@(Save)"
+                       OnClick="@(OnValidSubmit)"
                        Class="mt-6">Speichern</MudButton>
         </MudItem>
     </MudGrid>

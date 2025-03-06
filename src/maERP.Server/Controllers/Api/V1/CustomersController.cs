@@ -57,10 +57,10 @@ public class CustomersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<CustomerDetailDto>> Update(int id, CustomerUpdateCommand customerUpdateCommand)
+    public async Task<ActionResult<CustomerDetailDto>> Update(int id, CustomerInputCommand customerInputCommand)
     {
-        customerUpdateCommand.Id = id;
-        var response = await mediator.Send(customerUpdateCommand);
+        customerInputCommand.Id = id;
+        var response = await mediator.Send(customerInputCommand);
         return StatusCode((int)response.StatusCode, response);
     }
 

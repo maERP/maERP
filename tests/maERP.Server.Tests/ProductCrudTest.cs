@@ -102,7 +102,7 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
                 }
         });
 
-        var product = new ProductUpdateCommand
+        var product = new ProductInputCommand
         {
             Name = "Product 4 updated",
         };

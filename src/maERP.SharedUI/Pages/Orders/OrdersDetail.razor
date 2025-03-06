@@ -1,7 +1,6 @@
 @page "/Orders/{orderId:int}"
 @using maERP.Domain.Dtos.Order
 @using Microsoft.AspNetCore.Authorization
-@using maERP.Domain.Entities
 
 @attribute [Authorize]
 
@@ -155,7 +154,7 @@
                     <TemplateColumn Title="Summe">
                         <CellTemplate>
                             @{
-                                var item = context.Item as OrderItem;
+                                var item = context.Item;
                                 @((Convert.ToDecimal(item.Quantity) * item.Price).ToString("C"))
                             }
                         </CellTemplate>

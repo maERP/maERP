@@ -57,10 +57,10 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<AiPromptDetailDto>> Update(int id, AiPromptUpdateCommand aIPromptUpdateCommand)
+    public async Task<ActionResult<AiPromptDetailDto>> Update(int id, AiPromptInputCommand aIPromptInputCommand)
     {
-        aIPromptUpdateCommand.Id = id;
-        var response = await mediator.Send(aIPromptUpdateCommand);
+        aIPromptInputCommand.Id = id;
+        var response = await mediator.Send(aIPromptInputCommand);
         return StatusCode((int)response.StatusCode, response);
     }
 

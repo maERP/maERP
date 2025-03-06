@@ -36,7 +36,7 @@ public partial class UsersEdit
 
     protected async Task Save()
     {
-        await HttpService.PutAsJsonAsync<UserDetailDto>($"/api/v1/Users/{userId}", User);
+        await HttpService.PutAsJsonAsync($"/api/v1/Users/{userId}", User);
         ReturnToList();
     }
 

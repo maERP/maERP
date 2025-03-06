@@ -1,24 +1,27 @@
-﻿@page "/Customers/{customerId:int}/Edit"
+﻿@page "/Customers/Create"
+@page "/Customers/{customerId:int}/Edit"
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">Kunde bearbeiten</MudText>
+<PageTitle>@Title</PageTitle>
 
-<MudForm Model="@CustomerDetail" @ref="@_form">
+<MudText Typo="Typo.h4" Class="mb-8">@Title</MudText>
+
+<MudForm Model="@Customer" @ref="@Form">
     <MudGrid>
         <MudItem xs="6">
 
-            <MudTextField @bind-Value="CustomerDetail.Firstname"
-                          For="@(() => CustomerDetail.Firstname)"
+            <MudTextField @bind-Value="Customer.Firstname"
+                          For="@(() => Customer.Firstname)"
                           Label="Vorname"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6">
             </MudTextField>
 
-            <MudTextField @bind-Value="CustomerDetail.Lastname"
-                          For="@(() => CustomerDetail.Lastname)"
+            <MudTextField @bind-Value="Customer.Lastname"
+                          For="@(() => Customer.Lastname)"
                           Label="Nachname"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
@@ -29,7 +32,7 @@
                        Color="Color.Primary"
                        Size="Size.Large"
                        ButtonType="ButtonType.Button"
-                       OnClick="@(Save)"
+                       OnClick="@(OnValidSubmit)"
                        Class="mt-6">Speichern</MudButton>
         </MudItem>
     </MudGrid>

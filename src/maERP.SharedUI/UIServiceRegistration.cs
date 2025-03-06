@@ -24,22 +24,14 @@ public static class UiServicesRegistration
         services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
         services.AddScoped<ApiAuthenticationStateProvider>();
 
-        services.AddScoped<AiModelCreateValidator>();
-        services.AddScoped<AiModelUpdateValidator>();
-        services.AddScoped<AiPromptCreateValidator>();
-        services.AddScoped<AiPromptUpdateValidator>();
-        services.AddScoped<CustomerCreateValidator>();
-        services.AddScoped<CustomerUpdateValidator>();
-        services.AddScoped<OrderCreateValidator>();
-        services.AddScoped<OrderUpdateValidator>();
-        services.AddScoped<ProductCreateValidator>();
-        services.AddScoped<ProductUpdateValidator>();
-        services.AddScoped<SalesChannelCreateValidator>();
-        services.AddScoped<SalesChannelUpdateValidator>();
-        services.AddScoped<TaxClassCreateValidator>();
-        services.AddScoped<TaxClassUpdateValidator>();
-        services.AddScoped<WarehouseCreateValidator>();
-        services.AddScoped<WarehouseUpdateValidator>();
+        services.AddScoped<AiModelsInputValidator>();
+        services.AddScoped<AiPromptInputValidator>();
+        services.AddScoped<CustomerInputValidator>();
+        services.AddScoped<OrderInputValidator>();
+        services.AddScoped<ProductInputValidator>();
+        services.AddScoped<SalesChannelInputValidator>();
+        services.AddScoped<TaxClassInputValidator>();
+        services.AddScoped<WarehouseInputValidator>();
         
         return services;
     }

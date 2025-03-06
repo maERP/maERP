@@ -1,4 +1,4 @@
-﻿@page "/TaxClasses"
+@page "/TaxClasses"
 @using maERP.Domain.Dtos.TaxClass
 @using Microsoft.AspNetCore.Authorization
 
@@ -14,7 +14,6 @@
 
 <MudDataGrid T="TaxClassListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData" @ref="_dataGrid" Hover="true">
     <ToolBarContent>
-        @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
         <MudSpacer />
         <MudTextField @bind-Value="_searchString" TextChanged="Search" Placeholder="Suche" Adornment="Adornment.Start" Immediate="true" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
@@ -22,8 +21,8 @@
         <PropertyColumn Property="x => x.TaxRate" Title="Steuersatz in %" />
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
-                <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/TaxClasses/{context.Item.Id.ToString()}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/TaxClasses/{context.Item.Id.ToString()}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/TaxClasses/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/TaxClasses/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
             </CellTemplate>
         </TemplateColumn>
     </Columns>

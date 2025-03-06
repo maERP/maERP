@@ -16,6 +16,6 @@ public class CustomerProfile : Profile
 
         CreateMap<CustomerCreateCommand, Customer>();
         CreateMap<CustomerDeleteCommand, Customer>();
-        CreateMap<CustomerUpdateCommand, Customer>();
+        CreateMap<CustomerInputCommand, Customer>();
     }
 }

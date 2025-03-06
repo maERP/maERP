@@ -57,10 +57,10 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, OrderUpdateCommand orderUpdateCommand)
+    public async Task<ActionResult> Update(int id, OrderInputCommand orderInputCommand)
     {
-        orderUpdateCommand.Id = id;
-        var response =await mediator.Send(orderUpdateCommand);
+        orderInputCommand.Id = id;
+        var response =await mediator.Send(orderInputCommand);
         return StatusCode((int)response.StatusCode, response);
     }
 

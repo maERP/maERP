@@ -6,7 +6,7 @@ using MediatR;
 
 namespace maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
 
-public class AiPromptUpdateHandler : IRequestHandler<AiPromptUpdateCommand, Result<int>>
+public class AiPromptUpdateHandler : IRequestHandler<AiPromptInputCommand, Result<int>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<AiPromptUpdateHandler> _logger;
@@ -22,7 +22,7 @@ public class AiPromptUpdateHandler : IRequestHandler<AiPromptUpdateCommand, Resu
         _aIPromptRepository = aIPromptRepository ?? throw new ArgumentNullException(nameof(aIPromptRepository));
     }
 
-    public async Task<Result<int>> Handle(AiPromptUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(AiPromptInputCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating AI prompt with ID: {Id} and identifier: {Identifier}", request.Id, request.Identifier);
         
@@ -39,7 +39,7 @@ public class AiPromptUpdateHandler : IRequestHandler<AiPromptUpdateCommand, Resu
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
             
             _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(AiPromptUpdateCommand), 
+                nameof(AiPromptInputCommand), 
                 string.Join(", ", result.Messages));
                 
             return result;

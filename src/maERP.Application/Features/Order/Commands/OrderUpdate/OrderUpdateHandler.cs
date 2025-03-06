@@ -6,7 +6,7 @@ using MediatR;
 
 namespace maERP.Application.Features.Order.Commands.OrderUpdate;
 
-public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int>>
+public class OrderUpdateHandler : IRequestHandler<OrderInputCommand, Result<int>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<OrderUpdateHandler> _logger;
@@ -22,7 +22,7 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
     }
 
-    public async Task<Result<int>> Handle(OrderUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(OrderInputCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating order with ID: {Id}", request.Id);
         
@@ -39,7 +39,7 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
             
             _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(OrderUpdateCommand), 
+                nameof(OrderInputCommand), 
                 string.Join(", ", result.Messages));
                 
             return result;

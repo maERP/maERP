@@ -21,7 +21,7 @@ public partial class UsersAdd
 
     protected async Task Save()
     {
-        await HttpService.PostAsJsonAsync<UserDetailDto>("/api/v1/users", User);
+        await HttpService.PostAsJsonAsync("/api/v1/users", User);
         ReturnToList();
     }
 

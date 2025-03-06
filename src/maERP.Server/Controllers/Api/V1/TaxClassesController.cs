@@ -64,10 +64,10 @@ public class TaxClassesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, TaxClassUpdateCommand taxClassUpdateCommand)
+    public async Task<ActionResult> Update(int id, TaxClassInputCommand taxClassInputCommand)
     {
-        taxClassUpdateCommand.Id = id;
-        var response = await _mediator.Send(taxClassUpdateCommand);
+        taxClassInputCommand.Id = id;
+        var response = await _mediator.Send(taxClassInputCommand);
         return StatusCode((int)response.StatusCode, response);
     }
 

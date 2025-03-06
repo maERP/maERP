@@ -103,7 +103,7 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
                 }
         });
 
-        var aiModel = new AiModelUpdateCommand
+        var aiModel = new AiModelInputCommand
         {
             Name = "AiModel 3 updated",
             ApiKey = "123456789111",

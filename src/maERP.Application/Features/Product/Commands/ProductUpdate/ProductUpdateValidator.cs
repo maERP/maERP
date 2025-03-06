@@ -4,7 +4,7 @@ using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Product.Commands.ProductUpdate;
 
-public class ProductUpdateValidator : ProductBaseValidator<ProductUpdateCommand>
+public class ProductUpdateValidator : ProductBaseValidator<ProductInputCommand>
 {
     private readonly IProductRepository _productRepository;
 
@@ -24,7 +24,7 @@ public class ProductUpdateValidator : ProductBaseValidator<ProductUpdateCommand>
             .MustAsync(ProductExists).WithMessage("Product does not exist.");
     }
     
-    private async Task<bool> ProductExists(ProductUpdateCommand command, CancellationToken cancellationToken)
+    private async Task<bool> ProductExists(ProductInputCommand command, CancellationToken cancellationToken)
     {
         return await _productRepository.GetByIdAsync(command.Id, true) != null;
     }

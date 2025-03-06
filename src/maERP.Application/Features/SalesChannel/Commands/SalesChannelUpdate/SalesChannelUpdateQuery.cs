@@ -6,7 +6,7 @@ using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 
-public class SalesChannelUpdateQuery : IRequestHandler<SalesChannelUpdateCommand, Result<int>>
+public class SalesChannelUpdateQuery : IRequestHandler<SalesChannelInputCommand, Result<int>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<SalesChannelUpdateQuery> _logger;
@@ -22,7 +22,7 @@ public class SalesChannelUpdateQuery : IRequestHandler<SalesChannelUpdateCommand
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
     }
 
-    public async Task<Result<int>> Handle(SalesChannelUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(SalesChannelInputCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating sales channel with ID: {Id} and name: {Name}", request.Id, request.Name);
         
@@ -39,7 +39,7 @@ public class SalesChannelUpdateQuery : IRequestHandler<SalesChannelUpdateCommand
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
             
             _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(SalesChannelUpdateCommand), 
+                nameof(SalesChannelInputCommand), 
                 string.Join(", ", result.Messages));
                 
             return result;

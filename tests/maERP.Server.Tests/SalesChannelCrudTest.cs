@@ -108,7 +108,7 @@ public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Pro
                 }
         });
 
-        var saleschannel = new SalesChannelUpdateCommand
+        var saleschannel = new SalesChannelInputCommand
         {
             // TODO: fix this
             //Type = SalesChannelType.PointOfSale,

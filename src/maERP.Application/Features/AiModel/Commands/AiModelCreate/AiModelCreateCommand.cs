@@ -4,6 +4,6 @@ using MediatR;
 
 namespace maERP.Application.Features.AiModel.Commands.AiModelCreate;
 
-public class AiModelCreateCommand : AiModelCreateDto, IRequest<Result<int>>
+public class AiModelCreateCommand : AiModelInputDto, IRequest<Result<int>>
 {
 }

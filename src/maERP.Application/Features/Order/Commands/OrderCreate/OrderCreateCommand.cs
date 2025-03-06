@@ -4,6 +4,6 @@ using MediatR;
 
 namespace maERP.Application.Features.Order.Commands.OrderCreate;
 
-public class OrderCreateCommand : OrderCreateDto, IRequest<Result<int>>
+public class OrderCreateCommand : OrderInputDto, IRequest<Result<int>>
 {
 }

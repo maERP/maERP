@@ -4,6 +4,6 @@ using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 
-public class SalesChannelCreateCommand : SalesChannelCreateDto, IRequest<Result<int>>
+public class SalesChannelCreateCommand : SalesChannelInputDto, IRequest<Result<int>>
 {
 }

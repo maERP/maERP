@@ -1,11 +1,9 @@
-﻿using maERP.Domain.Dtos.AiModel;
-
-namespace maERP.Domain.Dtos.AiPrompt;
+﻿namespace maERP.Domain.Dtos.AiPrompt;
 
 public class AiPromptDetailDto
 {
     public int Id { get; set; }
-    public AiModelListDto AiModel { get; set; } = null!;
+    public int AiModelId { get; set; } 
     public string Identifier { get; set; } = string.Empty;
     public string PromptText { get; set; } = string.Empty;
 }

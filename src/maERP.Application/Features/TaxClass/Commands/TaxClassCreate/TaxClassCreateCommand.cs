@@ -4,6 +4,6 @@ using MediatR;
 
 namespace maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 
-public class TaxClassCreateCommand : TaxClassCreateDto, IRequest<Result<int>>
+public class TaxClassCreateCommand : TaxClassInputDto, IRequest<Result<int>>
 {
 }

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 
-public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Result<int>>
+public class TaxClassUpdateHandler : IRequestHandler<TaxClassInputCommand, Result<int>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<TaxClassUpdateHandler> _logger;
@@ -22,7 +22,7 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Resu
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
 
-    public async Task<Result<int>> Handle(TaxClassUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(TaxClassInputCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating tax class with ID: {Id}", request.Id);
         
@@ -39,7 +39,7 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Resu
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
             
             _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(TaxClassUpdateCommand), 
+                nameof(TaxClassInputCommand), 
                 string.Join(", ", result.Messages));
                 
             return result;

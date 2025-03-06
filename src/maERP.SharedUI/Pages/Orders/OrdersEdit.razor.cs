@@ -1,5 +1,8 @@
+using System.Net.Http.Json;
 using maERP.Domain.Dtos.Order;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
+using maERP.SharedUI.Validators;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -9,41 +12,97 @@ public partial class OrdersEdit
 {
     [Inject]
     public required NavigationManager NavigationManager { get; set; }
+    
+    [Inject]
+    public required ISnackbar Snackbar { get; set; }
 
     [Inject]
     public required IHttpService HttpService { get; set; }
 
+    [Inject]
+    public required OrderInputValidator Validator { get; set; }
+
     [Parameter]
     public int orderId { get; set; }
+    
+    public MudForm? Form;
 
-    // ReSharper disable once NotAccessedField.Local
-    MudForm? _form;
+    protected string Title = string.Empty;
 
-    // ReSharper disable once NotAccessedField.Local
-    protected string Title = "hinzufügen";
+    public OrderInputDto Order = new();
 
-    protected OrderUpdateDto Order = new();
-
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        if (orderId != 0)
+        if (orderId == 0)
         {
-            Title = "Bearbeiten";
-            Order = await HttpService.GetAsync<OrderUpdateDto>($"/api/v1/Orders/{orderId}") ?? new OrderUpdateDto();
+            Title = "Bestellung hinzufügen";
         }
+        else
+        {
+            Title = "Bestellung bearbeiten";
+            
+            var result = await HttpService.GetAsync<Result<OrderInputDto>>($"/api/v1/Orders/{orderId}");
+            
+            if (result != null && result.Succeeded)
+            {
+                Order = result.Data;
+            }
+        }
+        
+        StateHasChanged();
     }
 
     protected async Task Save()
     {
-        if (orderId != 0)
+        HttpResponseMessage httpResponseMessage;
+
+        if (orderId == 0)
         {
-            await HttpService.PutAsJsonAsync<OrderUpdateDto>($"/api/v1/Orders/{orderId}", Order);
+            httpResponseMessage = await HttpService.PostAsJsonAsync("/api/v1/Orders", Order);
         }
         else
         {
-            await HttpService.PostAsJsonAsync<OrderUpdateDto>("/api/v1/Orders/", Order);
+            httpResponseMessage = await HttpService.PutAsJsonAsync($"/api/v1/Orders/{orderId}", Order);
         }
+
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
         
+        if (result != null)
+        {
+            if (result.Succeeded)
+            {
+                Snackbar.Add("Bestellung gespeichert", Severity.Success);
+                NavigateToList();
+            }
+            else
+            {
+                foreach (var errorMessage in result.Messages)
+                {
+                    Snackbar.Add("SERVER: " + errorMessage, Severity.Error);
+                }
+            }
+        }
+        else
+        {
+            Snackbar.Add("Bestellung konnte nicht gespeichert werden", Severity.Error);
+        }
+    }
+
+    protected async Task OnValidSubmit()
+    {
+        if (Form is not null)
+        {
+            await Form.Validate();
+            
+            if (Form.IsValid)
+            {
+                await Save();
+            }
+        }
+    }
+    
+    public void NavigateToList()
+    {
         StateHasChanged();
         NavigationManager.NavigateTo("/Orders");
     }

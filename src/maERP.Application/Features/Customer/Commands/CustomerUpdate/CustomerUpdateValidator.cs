@@ -4,7 +4,7 @@ using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Customer.Commands.CustomerUpdate;
 
-public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateCommand>
+public class CustomerUpdateValidator : CustomerBaseValidator<CustomerInputCommand>
 {
     private readonly ICustomerRepository _customerRepository;
 
@@ -16,7 +16,7 @@ public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateComma
             .MustAsync(CustomerExists).WithMessage("Customer not found");
     }
     
-    private async Task<bool> CustomerExists(CustomerUpdateCommand command, CancellationToken cancellationToken)
+    private async Task<bool> CustomerExists(CustomerInputCommand command, CancellationToken cancellationToken)
     {
         return await _customerRepository.ExistsAsync(command.Id);
     }

@@ -21,52 +21,69 @@ public partial class SalesChannelsEdit
     public required IHttpService HttpService { get; set; }
 
     [Inject]
-    public required SalesChannelUpdateValidator Validator { get; set; }
+    public required SalesChannelInputValidator Validator { get; set; }
 
     [Parameter]
     public int salesChannelId { get; set; }
     
-    public MudForm? _form;
-    
-    protected string Title = "Bearbeiten";
+    public MudForm? Form;
 
-    public SalesChannelUpdateDto SalesChannel = new();
+    protected string Title = string.Empty;
+
+    public SalesChannelInputDto SalesChannel = new();
     public List<WarehouseListDto> Warehouses = new();
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        if (salesChannelId != 0)
+        var warehouseResult = await HttpService.GetAsync<PaginatedResult<WarehouseListDto>>("/api/v1/Warehouses") ?? throw new Exception();
+        Warehouses = warehouseResult.Data;
+        
+        if (salesChannelId == 0)
         {
-            var result = await HttpService.GetAsync<Result<SalesChannelUpdateDto>>($"/api/v1/SalesChannels/{salesChannelId}");
+            Title = "Vertriebskanal hinzufügen";
+        }
+        else
+        {
+            Title = "Vertriebskanal bearbeiten";
+            
+            var result = await HttpService.GetAsync<Result<SalesChannelInputDto>>($"/api/v1/SalesChannels/{salesChannelId}");
             
             if (result != null && result.Succeeded)
             {
                 SalesChannel = result.Data;
             }
-
-            var warehouseResult = await HttpService.GetAsync<PaginatedResult<WarehouseListDto>>("/api/v1/Warehouses") ??
-                         throw new Exception();
-            Warehouses = warehouseResult.Data;
         }
+        
+        StateHasChanged();
     }
 
     protected async Task Save()
     {
-        var httpResponseMessage = await HttpService.PutAsJsonAsync<SalesChannelUpdateDto>($"/api/v1/SalesChannels/{salesChannelId}", SalesChannel);
-        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
+        HttpResponseMessage httpResponseMessage;
 
+        if (salesChannelId == 0)
+        {
+            httpResponseMessage = await HttpService.PostAsJsonAsync("/api/v1/SalesChannels", SalesChannel);
+        }
+        else
+        {
+            httpResponseMessage = await HttpService.PutAsJsonAsync($"/api/v1/SalesChannels/{salesChannelId}", SalesChannel);
+        }
+
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
+        
         if (result != null)
         {
             if (result.Succeeded)
             {
-                NavigateToList();
                 Snackbar.Add("Vertriebskanal gespeichert", Severity.Success);
+                NavigateToList();
             }
             else
             {
                 foreach (var errorMessage in result.Messages)
                 {
-                    Snackbar.Add(errorMessage, Severity.Error);
+                    Snackbar.Add("SERVER: " + errorMessage, Severity.Error);
                 }
             }
         }
@@ -76,6 +93,19 @@ public partial class SalesChannelsEdit
         }
     }
 
+    protected async Task OnValidSubmit()
+    {
+        if (Form is not null)
+        {
+            await Form.Validate();
+            
+            if (Form.IsValid)
+            {
+                await Save();
+            }
+        }
+    }
+    
     public void NavigateToList()
     {
         StateHasChanged();

@@ -20,52 +20,65 @@ public partial class AiModelsEdit
     public required IHttpService HttpService { get; set; }
 
     [Inject]
-    public required AiModelUpdateValidator Validator { get; set; }
+    public required AiModelsInputValidator Validator { get; set; }
 
     [Parameter]
     public int aiModelId { get; set; }
     
-    public MudForm? _form;
-    
-    protected string Title = "Bearbeiten";
+    public MudForm? Form;
 
-    public AiModelUpdateDto AiModelDetail = new();
+    protected string Title = string.Empty;
 
-    protected override async Task OnParametersSetAsync()
+    public AiModelInputDto AiModel = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        if (aiModelId != 0)
+        if (aiModelId == 0)
         {
-            var result = await HttpService.GetAsync<Result<AiModelUpdateDto>>($"/api/v1/AiModels/{aiModelId}");
+            Title = "AI Model hinzufügen";
+        }
+        else
+        {
+            Title = "AI Model bearbeiten";
+            
+            var result = await HttpService.GetAsync<Result<AiModelInputDto>>($"/api/v1/AiModels/{aiModelId}");
             
             if (result != null && result.Succeeded)
             {
-                AiModelDetail = result.Data;
-            }
-            else
-            {
-                // Handle error case
-                AiModelDetail = new();
+                AiModel = result.Data;
             }
         }
+        
+        StateHasChanged();
     }
 
     protected async Task Save()
     {
-        var httpResponseMessage = await HttpService.PutAsJsonAsync<AiModelUpdateDto>($"/api/v1/AiModels/{aiModelId}", AiModelDetail);
-        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
+        HttpResponseMessage httpResponseMessage;
 
+        if (aiModelId == 0)
+        {
+            httpResponseMessage = await HttpService.PostAsJsonAsync("/api/v1/AiModels", AiModel);
+        }
+        else
+        {
+            httpResponseMessage = await HttpService.PutAsJsonAsync($"/api/v1/AiModels/{aiModelId}", AiModel);
+        }
+
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
+        
         if (result != null)
         {
             if (result.Succeeded)
             {
-                NavigateToList();
                 Snackbar.Add("AI Model gespeichert", Severity.Success);
+                NavigateToList();
             }
             else
             {
                 foreach (var errorMessage in result.Messages)
                 {
-                    Snackbar.Add(errorMessage, Severity.Error);
+                    Snackbar.Add("SERVER: " + errorMessage, Severity.Error);
                 }
             }
         }
@@ -75,6 +88,19 @@ public partial class AiModelsEdit
         }
     }
 
+    protected async Task OnValidSubmit()
+    {
+        if (Form is not null)
+        {
+            await Form.Validate();
+            
+            if (Form.IsValid)
+            {
+                await Save();
+            }
+        }
+    }
+    
     public void NavigateToList()
     {
         StateHasChanged();

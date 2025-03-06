@@ -57,10 +57,10 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<AiModelDetailDto>> Update(int id, AiModelUpdateCommand aiModelUpdateCommand)
+    public async Task<ActionResult<AiModelDetailDto>> Update(int id, AiModelInputCommand aiModelInputCommand)
     {
-        aiModelUpdateCommand.Id = id;
-        var response = await mediator.Send(aiModelUpdateCommand);
+        aiModelInputCommand.Id = id;
+        var response = await mediator.Send(aiModelInputCommand);
         return StatusCode((int)response.StatusCode, response);
     }
 

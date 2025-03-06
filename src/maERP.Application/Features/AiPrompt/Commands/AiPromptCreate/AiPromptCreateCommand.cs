@@ -4,6 +4,6 @@ using MediatR;
 
 namespace maERP.Application.Features.AiPrompt.Commands.AiPromptCreate;
 
-public class AiPromptCreateCommand : AiPromptCreateDto, IRequest<Result<int>>
+public class AiPromptCreateCommand : AiPromptInputDto, IRequest<Result<int>>
 {
 }

@@ -1,83 +1,80 @@
-﻿@page "/Products/{productId:int}/Edit"
+﻿@page "/Products/Create"
+@page "/Products/{productId:int}/Edit"
 @using maERP.SharedUI.Pages.Products.Components
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-@* ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract *@
-@if (Product == null)
-{
-    <p><em>Lade...</em></p>
-}
-else
-{
-    <MudText Typo="Typo.h4" Class="mb-8">Produkt bearbeiten</MudText>
+<PageTitle>@Title</PageTitle>
 
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenProductAiHelper">AI Assist</MudButton>
-    
-    <MudOverlay @bind-Visible="ProductAiHelperVisible" DarkBackground="true" AutoClose="false" Class="pt-8 white">
-        <ProductAiHelper />
-    </MudOverlay>
-    
-    <MudForm Model="@Product" @ref="@Form">
-        <MudGrid>
-            <MudItem xs="6">
-                <MudTextField @bind-Value="Product.Name"
-                              For="@(() => Product.Name)"
-                              Label="Name"
-                              Variant="Variant.Text"
-                              InputType="InputType.Text"
-                              Required="true"
-                              Class="mt-6" />
+<MudText Typo="Typo.h4" Class="mb-8">@Title</MudText>
 
-                <MudTextField @bind-Value="Product.Sku"
-                              For="@(() => Product.Sku)"
-                              Label="SKU"
-                              Variant="Variant.Text"
-                              InputType="InputType.Text"
-                              Required="true"
-                              Class="mt-6" />
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenProductAiHelper">AI Assist</MudButton>
 
-                <MudTextField @bind-Value="Product.Ean"
-                              For="@(() => Product.Ean)"
-                              Label="EAN"
-                              Variant="Variant.Text"
-                              InputType="InputType.Text"
-                              Required="false"
-                              Class="mt-6" />
+<MudOverlay @bind-Visible="ProductAiHelperVisible" DarkBackground="true" AutoClose="false" Class="pt-8 white">
+    <ProductAiHelper/>
+</MudOverlay>
 
-                <MudTextField @bind-Value="Product.Price"
-                              For="@(() => Product.Price)"
-                              Label="Preis in EUR"
-                              Variant="Variant.Text"
-                              InputType="InputType.Text"
-                              Required="false"
-                              Class="mt-6" />
+<MudForm Model="@Product" @ref="@Form">
+    <MudGrid>
+        <MudItem xs="6">
+            <MudTextField @bind-Value="Product.Name"
+                          For="@(() => Product.Name)"
+                          Label="Name"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Required="true"
+                          Class="mt-6"/>
 
-                <MudTextField @bind-Value="Product.Msrp"
-                              For="@(() => Product.Msrp)"
-                              Label="UVP in EUR"
-                              Variant="Variant.Text"
-                              InputType="InputType.Text"
-                              Required="false"
-                              Class="mt-6" />
+            <MudTextField @bind-Value="Product.Sku"
+                          For="@(() => Product.Sku)"
+                          Label="SKU"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Required="true"
+                          Class="mt-6"/>
 
-                <MudTextField @bind-Value="Product.Description"
-                              For="@(() => Product.Description)"
-                              Label="Beschreibung"
-                              Variant="Variant.Text"
-                              InputType="InputType.Text"
-                              Required="false"
-                              Class="mt-6" />
+            <MudTextField @bind-Value="Product.Ean"
+                          For="@(() => Product.Ean)"
+                          Label="EAN"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Required="false"
+                          Class="mt-6"/>
 
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Size="Size.Large"
-                           ButtonType="ButtonType.Button"
-                           OnClick="@(Save)"
-                           Class="mt-6">Speichern</MudButton>
-            </MudItem>
-        </MudGrid>
-    </MudForm>
+            <MudTextField @bind-Value="Product.Price"
+                          For="@(() => Product.Price)"
+                          Label="Preis in EUR"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Required="false"
+                          Class="mt-6"/>
+
+            <MudTextField @bind-Value="Product.Msrp"
+                          For="@(() => Product.Msrp)"
+                          Label="UVP in EUR"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Required="false"
+                          Class="mt-6"/>
+
+            <MudTextField @bind-Value="Product.Description"
+                          For="@(() => Product.Description)"
+                          Label="Beschreibung"
+                          Variant="Variant.Text"
+                          InputType="InputType.Text"
+                          Required="false"
+                          Class="mt-6"/>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       ButtonType="ButtonType.Button"
+                       OnClick="@(OnValidSubmit)"
+                       Class="mt-6">Speichern
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudForm>
 }
 

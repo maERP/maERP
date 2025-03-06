@@ -91,7 +91,7 @@ public class WarehouseCrudTest : IClassFixture<MaErpWebApplicationFactory<Progra
                 }
         });
 
-        var warehouse = new WarehouseUpdateCommand
+        var warehouse = new WarehouseInputCommand
         {
             Name = "Warehouse 3 updated",
         };
