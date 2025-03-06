@@ -4,6 +4,6 @@ using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 
-public class SalesChannelInputCommand : SalesChannelInputDto, IRequest<Result<int>>
+public class SalesChannelUpdateCommand : SalesChannelInputDto, IRequest<Result<int>>
 {
 }

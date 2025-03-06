@@ -16,6 +16,6 @@ public class OrderProfile : Profile
 
         CreateMap<OrderCreateCommand, Order>();
         CreateMap<DeleteOrderCommand, Order>();
-        CreateMap<OrderInputCommand, Order>();
+        CreateMap<OrderUpdateCommand, Order>();
     }
 }

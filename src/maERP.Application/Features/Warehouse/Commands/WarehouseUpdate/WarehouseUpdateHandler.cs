@@ -6,7 +6,7 @@ using MediatR;
 
 namespace maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
 
-public class WarehouseUpdateHandler : IRequestHandler<WarehouseInputCommand, Result<int>>
+public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, Result<int>>
 {
     private readonly IMapper _mapper;
     private readonly IAppLogger<WarehouseUpdateHandler> _logger;
@@ -22,7 +22,7 @@ public class WarehouseUpdateHandler : IRequestHandler<WarehouseInputCommand, Res
         _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
     }
 
-    public async Task<Result<int>> Handle(WarehouseInputCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(WarehouseUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating warehouse with ID: {Id}, Name: {Name}", request.Id, request.Name);
         
@@ -39,7 +39,7 @@ public class WarehouseUpdateHandler : IRequestHandler<WarehouseInputCommand, Res
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
             
             _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(WarehouseInputCommand), 
+                nameof(WarehouseUpdateCommand), 
                 string.Join(", ", result.Messages));
                 
             return result;

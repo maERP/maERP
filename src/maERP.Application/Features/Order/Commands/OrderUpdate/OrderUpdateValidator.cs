@@ -4,7 +4,7 @@ using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Order.Commands.OrderUpdate;
 
-public class OrderUpdateValidator : OrderBaseValidator<OrderInputCommand>
+public class OrderUpdateValidator : OrderBaseValidator<OrderUpdateCommand>
 {
     private readonly IOrderRepository _orderRepository;
 
@@ -25,7 +25,7 @@ public class OrderUpdateValidator : OrderBaseValidator<OrderInputCommand>
             .MustAsync(OrderExists).WithMessage("Order not found");
     }
     
-    private async Task<bool> OrderExists(OrderInputCommand command, CancellationToken cancellationToken)
+    private async Task<bool> OrderExists(OrderUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _orderRepository.ExistsAsync(command.Id);
     }

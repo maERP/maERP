@@ -4,7 +4,7 @@ using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 
-public class SalesChannelUpdateValidator : SalesChannelBaseValidator<SalesChannelInputCommand>
+public class SalesChannelUpdateValidator : SalesChannelBaseValidator<SalesChannelUpdateCommand>
 {
     private readonly ISalesChannelRepository _salesChannelRepository;
 
@@ -20,7 +20,7 @@ public class SalesChannelUpdateValidator : SalesChannelBaseValidator<SalesChanne
             .MustAsync(IsUnique).WithMessage("Sales Channel is not unique.");
     }
     
-    private async Task<bool> IsUnique(SalesChannelInputCommand command, CancellationToken cancellationToken)
+    private async Task<bool> IsUnique(SalesChannelUpdateCommand command, CancellationToken cancellationToken)
     {
         var salesChannel = new Domain.Entities.SalesChannel
         {

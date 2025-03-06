@@ -16,6 +16,6 @@ public class AiPromptProfile : Profile
 
         CreateMap<AiPromptCreateCommand, AiPrompt>();
         CreateMap<AiPromptDeleteCommand, AiPrompt>();
-        CreateMap<AiPromptInputCommand, AiPrompt>();
+        CreateMap<AiPromptUpdateCommand, AiPrompt>();
     }
 }

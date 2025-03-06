@@ -91,9 +91,9 @@ public class WarehouseCrudTest : IClassFixture<MaErpWebApplicationFactory<Progra
                 }
         });
 
-        var warehouse = new WarehouseInputCommand
+        var warehouse = new WarehouseUpdateCommand
         {
-            Name = "Warehouse 3 updated",
+            Name = "Warehouse 4 updated",
         };
 
         var httpResponseMessage = await httpClient.PutAsJsonAsync(url, warehouse);

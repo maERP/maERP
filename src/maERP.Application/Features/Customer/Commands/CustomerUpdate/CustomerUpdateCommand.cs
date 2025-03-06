@@ -4,6 +4,6 @@ using MediatR;
 
 namespace maERP.Application.Features.Customer.Commands.CustomerUpdate;
 
-public class CustomerInputCommand : CustomerInputDto, IRequest<Result<int>>
+public class CustomerUpdateCommand : CustomerInputDto, IRequest<Result<int>>
 {
 }

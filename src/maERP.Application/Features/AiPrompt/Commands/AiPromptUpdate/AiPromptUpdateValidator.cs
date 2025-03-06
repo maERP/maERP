@@ -4,7 +4,7 @@ using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
 
-public class AiPromptUpdateValidator : AiPromptBaseValidator<AiPromptInputCommand>
+public class AiPromptUpdateValidator : AiPromptBaseValidator<AiPromptUpdateCommand>
 {
     private readonly IAiPromptRepository _aIPromptRepository;
     
@@ -17,12 +17,12 @@ public class AiPromptUpdateValidator : AiPromptBaseValidator<AiPromptInputComman
             .MustAsync(IsUniqueAsync).WithMessage("AiPrompt with the same name already exists.");
     }
     
-    private async Task<bool> AiPromptExists(AiPromptInputCommand command, CancellationToken cancellationToken)
+    private async Task<bool> AiPromptExists(AiPromptUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _aIPromptRepository.GetByIdAsync(command.Id, true) != null;
     }
     
-    private async Task<bool> IsUniqueAsync(AiPromptInputCommand command, CancellationToken cancellationToken)
+    private async Task<bool> IsUniqueAsync(AiPromptUpdateCommand command, CancellationToken cancellationToken)
     {
         var aIPrompt = new Domain.Entities.AiPrompt
         {

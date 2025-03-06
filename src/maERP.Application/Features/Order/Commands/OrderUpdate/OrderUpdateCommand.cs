@@ -4,6 +4,6 @@ using MediatR;
 
 namespace maERP.Application.Features.Order.Commands.OrderUpdate;
 
-public class OrderInputCommand : OrderInputDto, IRequest<Result<int>>
+public class OrderUpdateCommand : OrderInputDto, IRequest<Result<int>>
 {
 }

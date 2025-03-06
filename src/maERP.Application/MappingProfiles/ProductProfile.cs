@@ -16,6 +16,6 @@ public class ProductProfile : Profile
 
         CreateMap<ProductCreateCommand, Product>();
         CreateMap<ProductDeleteCommand, Product>();
-        CreateMap<ProductInputCommand, Product>();
+        CreateMap<ProductUpdateCommand, Product>();
     }
 }

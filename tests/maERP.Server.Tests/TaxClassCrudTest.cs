@@ -85,7 +85,7 @@ public class TaxClassCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        var taxclass = new TaxClassInputCommand
+        var taxclass = new TaxClassUpdateCommand
         {
             TaxRate = 24
         };

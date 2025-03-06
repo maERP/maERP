@@ -16,6 +16,6 @@ public class AiModelProfile : Profile
 
         CreateMap<AiModelCreateCommand, AiModel>();
         CreateMap<AiModelDeleteCommand, AiModel>();
-        CreateMap<AiModelInputCommand, AiModel>();
+        CreateMap<AiModelUpdateCommand, AiModel>();
     }
 }

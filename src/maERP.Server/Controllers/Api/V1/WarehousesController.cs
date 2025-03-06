@@ -57,10 +57,10 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<WarehouseDetailDto>> Update(int id, WarehouseInputCommand warehouseInputCommand)
+    public async Task<ActionResult<WarehouseDetailDto>> Update(int id, WarehouseUpdateCommand warehouseUpdateCommand)
     {
-        warehouseInputCommand.Id = id;
-        var response = await mediator.Send(warehouseInputCommand);
+        warehouseUpdateCommand.Id = id;
+        var response = await mediator.Send(warehouseUpdateCommand);
         return StatusCode((int)response.StatusCode, response);
     }
 

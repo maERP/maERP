@@ -16,6 +16,6 @@ public class TaxClassProfile : Profile
         
         CreateMap<TaxClassCreateCommand, TaxClass>();
         CreateMap<TaxClassDeleteCommand, TaxClass>();
-        CreateMap<TaxClassInputCommand, TaxClass>();
+        CreateMap<TaxClassUpdateCommand, TaxClass>();
     }
 }

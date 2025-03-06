@@ -4,7 +4,7 @@ using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
 
-public class WarehouseUpdateValidator : WarehouseBaseValidator<WarehouseInputCommand>
+public class WarehouseUpdateValidator : WarehouseBaseValidator<WarehouseUpdateCommand>
 {
     private readonly IWarehouseRepository _warehouseRepository;
     
@@ -21,12 +21,12 @@ public class WarehouseUpdateValidator : WarehouseBaseValidator<WarehouseInputCom
             .MustAsync(IsUniqueAsync).WithMessage("Warehouse with the same name already exists.");
     }
     
-    private async Task<bool> WarehouseExists(WarehouseInputCommand command, CancellationToken cancellationToken)
+    private async Task<bool> WarehouseExists(WarehouseUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _warehouseRepository.GetByIdAsync(command.Id, true) != null;
     }
     
-    private async Task<bool> IsUniqueAsync(WarehouseInputCommand command, CancellationToken cancellationToken)
+    private async Task<bool> IsUniqueAsync(WarehouseUpdateCommand command, CancellationToken cancellationToken)
     {
         var warehouse = new Domain.Entities.Warehouse
         {

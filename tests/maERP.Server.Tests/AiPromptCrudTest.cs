@@ -95,7 +95,7 @@ public class AiPromptCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        var aiPrompt = new AiPromptInputCommand
+        var aiPrompt = new AiPromptUpdateCommand
         {
             Identifier = "prompt_test_4_updated",
         };

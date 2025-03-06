@@ -102,9 +102,15 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
                 }
         });
 
-        var product = new ProductInputCommand
+        var product = new ProductUpdateCommand
         {
+            Id = 4,
             Name = "Product 4 updated",
+            Ean = "1234567890123",
+            Asin = "12345",
+            Price = 10,
+            Msrp = 20,
+            Sku = "SKU-004"
         };
 
         var httpResponseMessage = await httpClient.PutAsJsonAsync(url, product);

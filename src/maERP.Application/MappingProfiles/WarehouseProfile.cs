@@ -16,6 +16,6 @@ public class WarehouseProfile : Profile
 
         CreateMap<WarehouseCreateCommand, Warehouse>();
         CreateMap<WarehouseDeleteCommand, Warehouse>();
-        CreateMap<WarehouseInputCommand, Warehouse>();
+        CreateMap<WarehouseUpdateCommand, Warehouse>();
     }
 }

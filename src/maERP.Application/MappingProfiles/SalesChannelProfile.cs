@@ -16,6 +16,6 @@ public class SalesChannelProfile : Profile
         
         CreateMap<SalesChannelCreateCommand, SalesChannel>();
         CreateMap<SalesChanneLDeleteCommand, SalesChannel>();
-        CreateMap<SalesChannelInputCommand, SalesChannel>();
+        CreateMap<SalesChannelUpdateCommand, SalesChannel>();
     }
 }

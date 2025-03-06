@@ -25,7 +25,7 @@ public class OrderCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>>
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
-        var order = new OrderInputCommand
+        var order = new OrderUpdateCommand
         {
             SalesChannelId = 1,
             CustomerId = 1,
@@ -93,7 +93,7 @@ public class OrderCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>>
                 }
         });
 
-        var order = new OrderInputCommand
+        var order = new OrderUpdateCommand
         {
             RemoteOrderId = "444-updated",
         };

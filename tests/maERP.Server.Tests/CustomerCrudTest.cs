@@ -102,7 +102,7 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
                 }
         });
 
-        var customer = new CustomerInputCommand
+        var customer = new CustomerUpdateCommand
         {
             Firstname = "Customer 4 Firstname updated",
             Lastname = "Customer 4 Lastname updated",

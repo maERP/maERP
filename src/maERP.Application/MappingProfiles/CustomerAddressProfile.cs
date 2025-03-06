@@ -18,6 +18,6 @@ public class CustomerAddressProfile : Profile
 
         CreateMap<CustomerCreateCommand, CustomerAddress>();
         CreateMap<CustomerDeleteCommand, CustomerAddress>();
-        CreateMap<CustomerInputCommand, CustomerAddress>();
+        CreateMap<CustomerUpdateCommand, CustomerAddress>();
     }
 }
