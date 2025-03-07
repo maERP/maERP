@@ -1,4 +1,6 @@
 using maERP.Domain.Dtos.Order;
+using maERP.Domain.Entities;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using Microsoft.AspNetCore.Components;
 
@@ -15,14 +17,26 @@ public partial class OrdersDetail
     [Parameter]
     public int orderId { get; set; }
 
-    protected OrderDetailDto OrderDetail = new();
+    protected string Title = string.Empty;
 
-    protected override async Task OnParametersSetAsync()
+    protected OrderDetailDto Order = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        if (orderId != 0)
+        if (orderId == 0)
         {
-            OrderDetail = await HttpService.GetAsync<OrderDetailDto>($"/api/v1/Orders/{orderId}")
-                          ?? new OrderDetailDto();
+            Title = "Bestellung nicht gefunden";
+        }
+        else
+        {
+            Title = $"Bestellung {orderId}";
+
+            var result = await HttpService.GetAsync<Result<OrderDetailDto>>($"/api/v1/Orders/{orderId}");
+
+            if (result != null && result.Succeeded)
+            {
+                Order = result.Data;
+            }
         }
     }
 }
