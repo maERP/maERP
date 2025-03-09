@@ -148,4 +148,92 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
 
         Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
     }
+
+    [Theory]
+    [InlineData("/api/v1/AiModels")]
+    public async Task Create_InvalidName_ShouldReturnBadRequest(string url)
+    {
+        HttpClient httpClient = _webApplicationFactory.CreateClient();
+
+        await _webApplicationFactory.InitializeDbForTests();
+        var aiModel = new AiModelCreateCommand
+        {
+            AiModelType = AiModelType.None,
+            Name = "", // Invalid name (empty)
+            ApiKey = "1234567890",
+            ApiUsername = "username",
+            ApiPassword = "password"
+        };
+
+        var httpResponseMessage = await httpClient.PostAsJsonAsync(url, aiModel);
+
+        Assert.Equal(HttpStatusCode.BadRequest, httpResponseMessage.StatusCode);
+    }
+
+    [Theory]
+    [InlineData("/api/v1/AiModels")]
+    public async Task Create_InvalidApiKey_ShouldReturnBadRequest(string url)
+    {
+        HttpClient httpClient = _webApplicationFactory.CreateClient();
+
+        await _webApplicationFactory.InitializeDbForTests();
+        var aiModel = new AiModelCreateCommand
+        {
+            AiModelType = AiModelType.None,
+            Name = "AiModel 1",
+            ApiKey = "123", // Invalid API key (too short)
+            ApiUsername = "username",
+            ApiPassword = "password"
+        };
+
+        var httpResponseMessage = await httpClient.PostAsJsonAsync(url, aiModel);
+
+        Assert.Equal(HttpStatusCode.BadRequest, httpResponseMessage.StatusCode);
+    }
+
+    [Theory]
+    [InlineData("/api/v1/AiModels")]
+    public async Task Create_MissingApiCredentials_ShouldReturnBadRequest(string url)
+    {
+        HttpClient httpClient = _webApplicationFactory.CreateClient();
+
+        await _webApplicationFactory.InitializeDbForTests();
+        var aiModel = new AiModelCreateCommand
+        {
+            AiModelType = AiModelType.None,
+            Name = "AiModel 1",
+            ApiKey = "", // Missing API key
+            ApiUsername = "", // Missing username
+            ApiPassword = "" // Missing password
+        };
+
+        var httpResponseMessage = await httpClient.PostAsJsonAsync(url, aiModel);
+
+        Assert.Equal(HttpStatusCode.BadRequest, httpResponseMessage.StatusCode);
+    }
+
+    [Theory]
+    [InlineData("/api/v1/AiModels")]
+    public async Task Create_ValidModel_ShouldReturnSuccess(string url)
+    {
+        HttpClient httpClient = _webApplicationFactory.CreateClient();
+
+        await _webApplicationFactory.InitializeDbForTests();
+        var aiModel = new AiModelCreateCommand
+        {
+            AiModelType = AiModelType.None,
+            Name = "Valid AiModel",
+            ApiKey = "1234567890",
+            ApiUsername = "username",
+            ApiPassword = "password"
+        };
+
+        var httpResponseMessage = await httpClient.PostAsJsonAsync(url, aiModel);
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
+
+        Assert.True(httpResponseMessage.IsSuccessStatusCode);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+    }
+
 }
