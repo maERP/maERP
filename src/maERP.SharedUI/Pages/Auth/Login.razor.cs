@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Diagnostics;
 using Blazored.LocalStorage;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Models;
@@ -29,10 +30,9 @@ public partial class Login
     private string _newServer = string.Empty;
 
     // ReSharper disable once NotAccessedField.Local
-    MudForm? _form;
-    // ReSharper disable once RedundantDefaultMemberInitializer
-    bool _success = false;
-    readonly bool _loading = false;
+    private MudForm? _form;
+    private bool _success;
+    private readonly bool _isLoading = false;
 
     private List<LoginServer> _serverList = new();
     private readonly LoginFormModel _model = new();
@@ -58,9 +58,19 @@ public partial class Login
 
         SelectFirstServerFromList();
 
-        if (await LocalStorage.ContainKeyAsync("email"))
+        // Check if debugger is attached (running from IDE)
+        if (Debugger.IsAttached)
+        {
+            // Auto-populate admin login when in debug mode
+            _model.Email = "admin@localhost.com";
+            _model.Password = "P@ssword1";
+            _model.Server = "https://localhost:8443";
+            _model.RememberMe = true;
+        }
+        else if (await LocalStorage.ContainKeyAsync("email"))
         {
             _model.Email = await LocalStorage.GetItemAsStringAsync("email") ?? throw new Exception();
+            _model.RememberMe = await LocalStorage.GetItemAsync<bool>("remember_me");
         }
     }
 
