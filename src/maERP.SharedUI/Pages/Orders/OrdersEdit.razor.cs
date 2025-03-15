@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using maERP.Domain.Dtos.Order;
+using maERP.Domain.Dtos.Product;
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
@@ -38,6 +39,10 @@ public partial class OrdersEdit
         OrderItems = new List<OrderItem>()
     };
 
+    // Product search properties
+    public ProductListDto? SelectedProduct { get; set; }
+    public int ProductQuantity { get; set; } = 1;
+    
     protected override async Task OnInitializedAsync()
     {
         if (orderId == 0)
@@ -128,5 +133,58 @@ public partial class OrdersEdit
     public void NavigateToList()
     {
         NavigationManager.NavigateTo("/Orders");
+    }
+
+    // Product search functionality
+    private async Task<IEnumerable<ProductListDto>>? SearchProducts(string? searchText, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 2)
+            return new List<ProductListDto>();
+
+        var response = await HttpService.GetAsync<Result<List<ProductListDto>>>($"/api/v1/Products?searchTerm={Uri.EscapeDataString(searchText)}");
+        
+        if (response != null && response.Succeeded)
+        {
+            return response.Data;
+        }
+        
+        return new List<ProductListDto>();
+    }
+
+    private void AddProductToOrder()
+    {
+        if (SelectedProduct == null || ProductQuantity <= 0)
+            return;
+
+        // Check if the product is already in the order
+        var existingItem = Order.OrderItems.FirstOrDefault(i => i.Name == SelectedProduct.Name && i.ProductId == SelectedProduct.Id);
+        
+        if (existingItem != null)
+        {
+            // Update quantity if the product already exists in the order
+            existingItem.Quantity += ProductQuantity;
+        }
+        else
+        {
+            // Add a new order item
+            var newItem = new OrderItem
+            {
+                ProductId = SelectedProduct.Id,
+                Name = SelectedProduct.Name,
+                Price = SelectedProduct.Price,
+                Quantity = ProductQuantity
+            };
+            
+            Order.OrderItems.Add(newItem);
+        }
+        
+        // Reset selection
+        SelectedProduct = null;
+        ProductQuantity = 1;
+        
+        // Recalculate totals
+        CalculateTotals();
+        
+        StateHasChanged();
     }
 }

@@ -1,6 +1,7 @@
 @page "/Orders/Create"
 @page "/Orders/{orderId:int}/Edit"
 @using maERP.Domain.Dtos.Order
+@using maERP.Domain.Dtos.Product
 @using maERP.Domain.Entities
 @using maERP.Domain.Enums
 @using Microsoft.AspNetCore.Authorization
@@ -133,7 +134,50 @@
         <MudItem xs="12">
             <MudPaper Elevation="2" Class="pa-4">
                 <MudText Typo="Typo.h6" Class="mb-2">Artikel</MudText>
-                <MudDataGrid T="OrderItem" Items="@Order.OrderItems" EditMode="DataGridEditMode.Cell" ReadOnly="false">
+
+                <!-- Product Search -->
+                <MudGrid Class="mb-4">
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.subtitle1" Class="mb-2">Produkt hinzufügen</MudText>
+                        <MudGrid>
+                            <MudItem xs="12" md="6">
+                                <MudAutocomplete T="ProductListDto"
+                                               Label="Produktsuche"
+                                               @bind-Value="SelectedProduct"
+                                               SearchFunc="@SearchProducts"
+                                               ResetValueOnEmptyText="true"
+                                               CoerceText="true"
+                                               AdornmentIcon="@Icons.Material.Filled.Search"
+                                               AdornmentColor="Color.Primary"
+                                               Variant="Variant.Outlined"
+                                               ToStringFunc="@(p => p == null ? "" : $"{p.Sku} - {p.Name}")">
+                                    <ItemTemplate Context="product">
+                                        <MudText Typo="Typo.body1">@product.Sku - @product.Name</MudText>
+                                        <MudText Typo="Typo.caption">Preis: @product.Price.ToString("C")</MudText>
+                                    </ItemTemplate>
+                                </MudAutocomplete>
+                            </MudItem>
+                            <MudItem xs="12" md="2">
+                                <MudNumericField @bind-Value="ProductQuantity" 
+                                               Label="Menge" 
+                                               Min="1" 
+                                               Variant="Variant.Outlined" 
+                                               Class="mt-1" />
+                            </MudItem>
+                            <MudItem xs="12" md="2">
+                                <MudButton Variant="Variant.Filled" 
+                                         Color="Color.Primary" 
+                                         OnClick="AddProductToOrder" 
+                                         Class="mt-4"
+                                         Disabled="@(SelectedProduct == null)">
+                                    Hinzufügen
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                </MudGrid>
+
+                <MudDataGrid T="OrderItem" Items="@Order.OrderItems" EditMode="DataGridEditMode.Form" ReadOnly="true">
                     <Columns>
                         <PropertyColumn Property="x => x.Name" Title="Produkt" />
                         <PropertyColumn Property="x => x.Quantity" Title="Menge" />
@@ -157,25 +201,25 @@
                             <MudListItem T="OrderInputDto">
                                 <div class="d-flex justify-space-between">
                                     <MudText><strong>Zwischensumme:</strong></MudText>
-                                    <MudNumericField @bind-Value="Order.Subtotal" Format="C" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Euro" />
+                                    <MudText>@Order.Subtotal.ToString("C")</MudText>
                                 </div>
                             </MudListItem>
                             <MudListItem T="OrderInputDto">
                                 <div class="d-flex justify-space-between">
                                     <MudText><strong>Versandkosten:</strong></MudText>
-                                    <MudNumericField @bind-Value="Order.ShippingCost" Format="C" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Euro" />
+                                    <MudText>@Order.ShippingCost.ToString("C")</MudText>
                                 </div>
                             </MudListItem>
                             <MudListItem T="OrderInputDto">
                                 <div class="d-flex justify-space-between">
                                     <MudText><strong>MwSt.:</strong></MudText>
-                                    <MudNumericField @bind-Value="Order.TotalTax" Format="C" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Euro" />
+                                    <MudText>@Order.TotalTax.ToString("C")</MudText>
                                 </div>
                             </MudListItem>
                             <MudListItem T="OrderInputDto">
                                 <div class="d-flex justify-space-between">
                                     <MudText Typo="Typo.h6">Gesamtsumme:</MudText>
-                                    <MudNumericField @bind-Value="Order.Total" Format="C" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Euro" Disabled="true" />
+                                    <MudText>@Order.Total.ToString("C")</MudText>
                                 </div>
                             </MudListItem>
                         </MudList>
@@ -194,12 +238,18 @@
 
         <!-- Buttons -->
         <MudItem xs="12" Class="d-flex justify-center mt-4">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" 
-                       OnClick="@OnValidSubmit" Class="mx-2">
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Primary" 
+                       Size="Size.Large" 
+                       OnClick="@OnValidSubmit" 
+                       Class="mx-2">
                 Speichern
             </MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Size="Size.Large" 
-                       OnClick="@NavigateToList" Class="mx-2">
+            <MudButton Variant="Variant.Outlined" 
+                       Color="Color.Secondary" 
+                       Size="Size.Large" 
+                       OnClick="@NavigateToList" 
+                       Class="mx-2">
                 Abbrechen
             </MudButton>
         </MudItem>
