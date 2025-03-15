@@ -1,5 +1,7 @@
 using System.Net.Http.Json;
 using maERP.Domain.Dtos.Order;
+using maERP.Domain.Entities;
+using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Validators;
@@ -29,7 +31,12 @@ public partial class OrdersEdit
 
     protected string Title = string.Empty;
 
-    public OrderInputDto Order = new();
+    public OrderInputDto Order { get; set; } = new()
+    {
+        DateOrdered = DateTime.Now,
+        PaymentStatus = PaymentStatus.Unknown,
+        OrderItems = new List<OrderItem>()
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,13 +46,18 @@ public partial class OrdersEdit
         }
         else
         {
-            Title = "Bestellung bearbeiten";
+            Title = $"Bestellung {orderId} bearbeiten";
             
             var result = await HttpService.GetAsync<Result<OrderInputDto>>($"/api/v1/Orders/{orderId}");
             
             if (result != null && result.Succeeded)
             {
                 Order = result.Data;
+            }
+            else
+            {
+                Snackbar.Add("Bestellung konnte nicht geladen werden", Severity.Error);
+                NavigateToList();
             }
         }
         
@@ -55,6 +67,9 @@ public partial class OrdersEdit
     protected async Task Save()
     {
         HttpResponseMessage httpResponseMessage;
+
+        // Calculate totals before saving
+        CalculateTotals();
 
         if (orderId == 0)
         {
@@ -88,6 +103,15 @@ public partial class OrdersEdit
         }
     }
 
+    protected void CalculateTotals()
+    {
+        // Calculate subtotal from order items
+        Order.Subtotal = Order.OrderItems.Sum(item => item.Price * (decimal)item.Quantity);
+        
+        // Calculate total
+        Order.Total = Order.Subtotal + Order.ShippingCost + Order.TotalTax;
+    }
+
     protected async Task OnValidSubmit()
     {
         if (Form is not null)
@@ -103,7 +127,6 @@ public partial class OrdersEdit
     
     public void NavigateToList()
     {
-        StateHasChanged();
         NavigationManager.NavigateTo("/Orders");
     }
 }

@@ -14,7 +14,7 @@ public class OrderDetailDto
     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
     public string PaymentMethod { get; set; } = string.Empty;
-    public string PaymentStatus { get; set; } = string.Empty;
+    public PaymentStatus PaymentStatus { get; set; }
     public string PaymentProvider { get; set; } = string.Empty;
     public string PaymentTransactionId { get; set; } = string.Empty;
 
