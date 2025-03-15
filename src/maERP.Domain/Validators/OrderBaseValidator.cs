@@ -87,9 +87,9 @@ public class OrderBaseValidator<T> : AbstractValidator<T> where T : IOrderInputM
             .WithMessage("Die Gesamtsumme entspricht nicht der Summe aus Zwischensumme, Versandkosten und Mehrwertsteuer.");
 
         // Shipping information validation
-        RuleFor(x => x.ShippingMethod)
-            .NotEmpty().When(x => x.Status == OrderStatus.Processing || x.Status == OrderStatus.ReadyForDelivery || x.Status == OrderStatus.PartiallyDelivered)
-            .WithMessage("Eine Versandmethode ist erforderlich, wenn die Bestellung in Bearbeitung ist oder versandt wurde.");
+        //RuleFor(x => x.ShippingMethod)
+        //    .NotEmpty().When(x => x.Status == OrderStatus.Processing || x.Status == OrderStatus.ReadyForDelivery || x.Status == OrderStatus.PartiallyDelivered)
+        //    .WithMessage("Eine Versandmethode ist erforderlich, wenn die Bestellung in Bearbeitung ist oder versandt wurde.");
     }
 
     private bool DeliveryAddressDiffersFromInvoice(T model)

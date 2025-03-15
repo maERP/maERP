@@ -29,7 +29,22 @@ public class OrderCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>>
         {
             SalesChannelId = 1,
             CustomerId = 1,
-            Status = OrderStatus.Completed
+            Status = OrderStatus.Completed,
+            PaymentStatus = PaymentStatus.CompletelyPaid,
+            PaymentMethod = "to implement",
+            DateOrdered = DateTime.UtcNow,
+            DeliveryAddressFirstName = "John",
+            DeliveryAddressLastName = "Doe",
+            DeliveryAddressStreet = "Postplatz 1",
+            DeliverAddressZip = "01067",
+            DeliveryAddressCity = "Dresden",
+            DeliveryAddressCountry = "DE",
+            InvoiceAddressFirstName = "John",
+            InvoiceAddressLastName = "Doe",
+            InvoiceAddressStreet = "Postplatz 1",
+            InvoiceAddressZip = "01067",
+            InvoiceAddressCity = "Dresden",
+            InvoiceAddressCountry = "DE"
         };
 
         var httpResponseMessage = await httpClient.PostAsJsonAsync(url, order);
@@ -89,13 +104,49 @@ public class OrderCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>>
             new List<Order> {
                 new() {
                     Id = 4,
-                    RemoteOrderId = "444"
+                    RemoteOrderId = "444",
+                    SalesChannelId = 1,
+                    CustomerId = 1,
+                    Status = OrderStatus.Completed,
+                    PaymentStatus = PaymentStatus.CompletelyPaid,
+                    PaymentMethod = "to implement",
+                    DateOrdered = DateTime.UtcNow,
+                    DeliveryAddressFirstName = "John",
+                    DeliveryAddressLastName = "Doe",
+                    DeliveryAddressStreet = "Postplatz 1",
+                    DeliverAddressZip = "01067",
+                    DeliveryAddressCity = "Dresden",
+                    DeliveryAddressCountry = "DE",
+                    InvoiceAddressFirstName = "John",
+                    InvoiceAddressLastName = "Doe",
+                    InvoiceAddressStreet = "Postplatz 1",
+                    InvoiceAddressZip = "01067",
+                    InvoiceAddressCity = "Dresden",
+                    InvoiceAddressCountry = "DE"
                 }
         });
 
         var order = new OrderUpdateCommand
         {
             RemoteOrderId = "444-updated",
+            SalesChannelId = 1,
+            CustomerId = 1,
+            Status = OrderStatus.Completed,
+            PaymentStatus = PaymentStatus.CompletelyPaid,
+            PaymentMethod = "to implement",
+            DateOrdered = DateTime.UtcNow,
+            DeliveryAddressFirstName = "John",
+            DeliveryAddressLastName = "Doe",
+            DeliveryAddressStreet = "Postplatz 1",
+            DeliverAddressZip = "01067",
+            DeliveryAddressCity = "Dresden",
+            DeliveryAddressCountry = "DE",
+            InvoiceAddressFirstName = "John",
+            InvoiceAddressLastName = "Doe",
+            InvoiceAddressStreet = "Postplatz 1",
+            InvoiceAddressZip = "01067",
+            InvoiceAddressCity = "Dresden",
+            InvoiceAddressCountry = "DE"
         };
 
         var httpResponseMessage = await httpClient.PutAsJsonAsync(url, order);
