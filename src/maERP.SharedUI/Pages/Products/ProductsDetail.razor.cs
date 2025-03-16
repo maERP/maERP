@@ -1,5 +1,6 @@
 using maERP.Domain.Dtos.Product;
-using maERP.SharedUI.Services;
+using maERP.Domain.Wrapper;
+using maERP.SharedUI.Contracts;
 using Microsoft.AspNetCore.Components;
 
 namespace maERP.SharedUI.Pages.Products;
@@ -10,7 +11,7 @@ public partial class ProductsDetail
     public required NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public required HttpService HttpService { get; set; }
+    public required IHttpService HttpService { get; set; }
     
     [Parameter]
     public int productId { get; set; }
@@ -19,11 +20,22 @@ public partial class ProductsDetail
 
     protected ProductDetailDto Product = new();
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        if (productId != 0)
+        if (productId == 0)
         {
-            Product = await HttpService.GetAsync<ProductDetailDto>("/api/v1/Products/" + productId) ?? new ProductDetailDto();
+            Title = "Produkt nicht gefunden";
+        }
+        else
+        {
+            Title = $"Produkt {productId}";
+
+            var result = await HttpService.GetAsync<Result<ProductDetailDto>>($"/api/v1/Products/{productId}");
+
+            if (result != null && result.Succeeded)
+            {
+                Product = result.Data;
+            }
         }
     }
 }

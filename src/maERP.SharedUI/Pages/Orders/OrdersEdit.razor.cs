@@ -1,4 +1,6 @@
 using System.Net.Http.Json;
+using maERP.Domain.Dtos.Customer;
+using maERP.Domain.Dtos.CustomerAddress;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Entities;
@@ -42,6 +44,10 @@ public partial class OrdersEdit
     // Product search properties
     public ProductListDto? SelectedProduct { get; set; }
     public int ProductQuantity { get; set; } = 1;
+    
+    // Customer search properties
+    public CustomerListDto? SelectedCustomer { get; set; }
+    public CustomerDetailDto? SelectedCustomerDetail { get; set; }
     
     protected override async Task OnInitializedAsync()
     {
@@ -185,6 +191,84 @@ public partial class OrdersEdit
         // Recalculate totals
         CalculateTotals();
         
+        StateHasChanged();
+    }
+    
+    // Customer search functionality
+    private async Task<IEnumerable<CustomerListDto>>? SearchCustomers(string? searchText, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 2)
+            return new List<CustomerListDto>();
+
+        var response = await HttpService.GetAsync<Result<List<CustomerListDto>>>($"/api/v1/Customers?searchTerm={Uri.EscapeDataString(searchText)}");
+        
+        if (response != null && response.Succeeded)
+        {
+            return response.Data;
+        }
+        
+        return new List<CustomerListDto>();
+    }
+    
+    private async Task ApplyCustomerAddresses()
+    {
+        if (SelectedCustomer == null)
+            return;
+            
+        // Fetch detailed customer information including addresses
+        var response = await HttpService.GetAsync<Result<CustomerDetailDto>>($"/api/v1/Customers/{SelectedCustomer.Id}");
+        
+        if (response == null || !response.Succeeded)
+        {
+            Snackbar.Add("Kundenadresse konnte nicht geladen werden", Severity.Error);
+            return;
+        }
+        
+        SelectedCustomerDetail = response.Data;
+        
+        if (SelectedCustomerDetail == null || !SelectedCustomerDetail.CustomerAddresses.Any())
+        {
+            Snackbar.Add("Keine Adressen für diesen Kunden vorhanden", Severity.Warning);
+            return;
+        }
+        
+        // Set customer ID in the order
+        Order.CustomerId = SelectedCustomerDetail.Id;
+        
+        // Find default addresses
+        var defaultInvoiceAddress = SelectedCustomerDetail.CustomerAddresses.FirstOrDefault(a => a.DefaultInvoiceAddress);
+        var defaultDeliveryAddress = SelectedCustomerDetail.CustomerAddresses.FirstOrDefault(a => a.DefaultDeliveryAddress);
+        
+        // If no default addresses are found, use the first address for both
+        if (defaultInvoiceAddress == null && SelectedCustomerDetail.CustomerAddresses.Any())
+            defaultInvoiceAddress = SelectedCustomerDetail.CustomerAddresses.First();
+            
+        if (defaultDeliveryAddress == null && SelectedCustomerDetail.CustomerAddresses.Any())
+            defaultDeliveryAddress = SelectedCustomerDetail.CustomerAddresses.First();
+        
+        // Apply invoice address
+        if (defaultInvoiceAddress != null)
+        {
+            Order.InvoiceAddressFirstName = defaultInvoiceAddress.Firstname;
+            Order.InvoiceAddressLastName = defaultInvoiceAddress.Lastname;
+            Order.InvoiceAddressCompanyName = defaultInvoiceAddress.CompanyName;
+            Order.InvoiceAddressStreet = $"{defaultInvoiceAddress.Street} {defaultInvoiceAddress.HouseNr}".Trim();
+            Order.InvoiceAddressZip = defaultInvoiceAddress.Zip;
+            Order.InvoiceAddressCity = defaultInvoiceAddress.City;
+        }
+        
+        // Apply delivery address
+        if (defaultDeliveryAddress != null)
+        {
+            Order.DeliveryAddressFirstName = defaultDeliveryAddress.Firstname;
+            Order.DeliveryAddressLastName = defaultDeliveryAddress.Lastname;
+            Order.DeliveryAddressCompanyName = defaultDeliveryAddress.CompanyName;
+            Order.DeliveryAddressStreet = $"{defaultDeliveryAddress.Street} {defaultDeliveryAddress.HouseNr}".Trim();
+            Order.DeliverAddressZip = defaultDeliveryAddress.Zip;
+            Order.DeliveryAddressCity = defaultDeliveryAddress.City;
+        }
+        
+        Snackbar.Add("Adressen wurden übernommen", Severity.Success);
         StateHasChanged();
     }
 }

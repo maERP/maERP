@@ -1,6 +1,134 @@
-﻿@page "/Products/{productId:int}"
+@page "/Products/{productId:int}"
+@using maERP.Domain.Dtos.Product
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">Produktdetails</MudText>
+<PageTitle>@Title</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">@Title</MudText>
+
+<MudGrid>
+    <!-- Basic Product Information -->
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Allgemeine Informationen</MudText>
+            <MudList T="ProductDetailDto" Dense="true">
+                <MudListItem>
+                    <MudText><strong>Produkt-ID:</strong> @Product.Id</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>SKU:</strong> @Product.Sku</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Name:</strong> @Product.Name</MudText>
+                </MudListItem>
+                @if (!string.IsNullOrEmpty(Product.NameOptimized))
+                {
+                    <MudListItem>
+                        <MudText><strong>Optimierter Name:</strong> @Product.NameOptimized</MudText>
+                    </MudListItem>
+                }
+                <MudListItem>
+                    <MudText><strong>Optimierte Version verwenden:</strong> @(Product.UseOptimized ? "Ja" : "Nein")</MudText>
+                </MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Product Identifiers -->
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Produktkennungen</MudText>
+            <MudList T="ProductDetailDto" Dense="true">
+                @if (!string.IsNullOrEmpty(Product.Ean))
+                {
+                    <MudListItem>
+                        <MudText><strong>EAN:</strong> @Product.Ean</MudText>
+                    </MudListItem>
+                }
+                @if (!string.IsNullOrEmpty(Product.Asin))
+                {
+                    <MudListItem>
+                        <MudText><strong>ASIN:</strong> @Product.Asin</MudText>
+                    </MudListItem>
+                }
+                <MudListItem>
+                    <MudText><strong>Steuerklasse:</strong> @Product.TaxClassId</MudText>
+                </MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Pricing Information -->
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Preisinformationen</MudText>
+            <MudList T="ProductDetailDto" Dense="true">
+                <MudListItem>
+                    <MudText><strong>Preis:</strong> @Product.Price.ToString("C")</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>UVP:</strong> @Product.Msrp.ToString("C")</MudText>
+                </MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Dimensions and Weight -->
+    <MudItem xs="12" sm="6" md="6">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Abmessungen und Gewicht</MudText>
+            <MudList T="ProductDetailDto" Dense="true">
+                <MudListItem>
+                    <MudText><strong>Gewicht:</strong> @Product.Weight.ToString("F2") kg</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Breite:</strong> @Product.Width.ToString("F2") cm</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Höhe:</strong> @Product.Height.ToString("F2") cm</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Tiefe:</strong> @Product.Depth.ToString("F2") cm</MudText>
+                </MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Sales Channels and Stock -->
+    <MudItem xs="12" sm="6" md="6">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Vertriebskanäle und Bestand</MudText>
+            <MudList T="ProductDetailDto" Dense="true">
+                <MudListItem>
+                    <MudText><strong>Anzahl Vertriebskanäle:</strong> @Product.ProductSalesChannel.Count</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Lagerstandorte:</strong> @Product.ProductStocks.Count</MudText>
+                </MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Description -->
+    <MudItem xs="12">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Beschreibung</MudText>
+            @if (!string.IsNullOrEmpty(Product.Description))
+            {
+                <MudText>@((MarkupString)Product.Description)</MudText>
+            }
+            else
+            {
+                <MudText>Keine Beschreibung verfügbar.</MudText>
+            }
+            
+            @if (!string.IsNullOrEmpty(Product.DescriptionOptimized))
+            {
+                <MudText Typo="Typo.h6" Class="mb-2 mt-4">Optimierte Beschreibung</MudText>
+                <MudText>@((MarkupString)Product.DescriptionOptimized)</MudText>
+            }
+        </MudPaper>
+    </MudItem>
+</MudGrid>

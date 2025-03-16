@@ -2,6 +2,7 @@
 @page "/Orders/{orderId:int}/Edit"
 @using maERP.Domain.Dtos.Order
 @using maERP.Domain.Dtos.Product
+@using maERP.Domain.Dtos.Customer
 @using maERP.Domain.Entities
 @using maERP.Domain.Enums
 @using Microsoft.AspNetCore.Authorization
@@ -13,245 +14,318 @@
 <MudText Typo="Typo.h4" Class="mb-4">@Title</MudText>
 
 <MudForm Model="@Order" @ref="@Form">
-    <MudGrid>
-        <!-- Basic Order Information -->
-        <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4">
-                <MudText Typo="Typo.h6" Class="mb-2">Allgemeine Informationen</MudText>
-                <MudTextField @bind-Value="Order.RemoteOrderId" Label="Shop-Bestell-ID" Variant="Variant.Outlined" Class="mb-2" />
-                <MudDatePicker Date="@Order.DateOrdered" DateChanged="@((DateTime? dt) => Order.DateOrdered = dt ?? DateTime.Now)" Label="Datum" Variant="Variant.Outlined" Class="mb-2" />
-                <MudSelect @bind-Value="Order.Status" Label="Status" Variant="Variant.Outlined" Class="mb-2">
-                    <MudSelectItem Value="@(OrderStatus.Pending)">Neu</MudSelectItem>
-                    <MudSelectItem Value="@(OrderStatus.Processing)">In Bearbeitung</MudSelectItem>
-                    <MudSelectItem Value="@(OrderStatus.ReadyForDelivery)">Versandbereit</MudSelectItem>
-                    <MudSelectItem Value="@(OrderStatus.PartiallyDelivered)">Teilweise geliefert</MudSelectItem>
-                    <MudSelectItem Value="@(OrderStatus.Completed)">Abgeschlossen</MudSelectItem>
-                    <MudSelectItem Value="@(OrderStatus.Cancelled)">Storniert</MudSelectItem>
-                    <MudSelectItem Value="@(OrderStatus.Returned)">Zurückgesendet</MudSelectItem>
-                    <MudSelectItem Value="@(OrderStatus.Refunded)">Erstattet</MudSelectItem>
-                    <MudSelectItem Value="@(OrderStatus.OnHold)">Angehalten</MudSelectItem>
-                </MudSelect>
-                <MudNumericField @bind-Value="Order.CustomerId" Label="Kunden-ID" Variant="Variant.Outlined" Class="mb-2" />
-                <MudNumericField @bind-Value="Order.SalesChannelId" Label="Shop-ID" Variant="Variant.Outlined" Class="mb-2" />
-            </MudPaper>
-        </MudItem>
+    <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+        <!-- Tab Bestellung -->
+        <MudTabPanel Text="Bestellung" Icon="@Icons.Material.Filled.ShoppingCart">
+            <MudGrid>
+            
+            
+                <!-- Basic Order Information -->
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="2" Class="pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-2">Allgemeine Informationen</MudText>
+                        <!-- Customer Search -->
+                        <MudAutocomplete T="CustomerListDto"
+                                         Label="Kundensuche"
+                                         @bind-Value="SelectedCustomer"
+                                         SearchFunc="@SearchCustomers"
+                                         ResetValueOnEmptyText="true"
+                                         CoerceText="true"
+                                         AdornmentIcon="@Icons.Material.Filled.Search"
+                                         AdornmentColor="Color.Primary"
+                                         Variant="Variant.Outlined"
+                                         ToStringFunc="@(c => c == null ? "" : $"{c.Id} - {c.FullName}")"
+                                         Class="mb-2">
+                            <ItemTemplate Context="customer">
+                                <div class="d-flex align-center">
+                                    <MudText>@customer.Id - @customer.FullName</MudText>
+                                </div>
+                            </ItemTemplate>
+                        </MudAutocomplete>
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   OnClick="@ApplyCustomerAddresses"
+                                   Disabled="@(SelectedCustomer == null || SelectedCustomerDetail == null)"
+                                   Class="mb-3">
+                            Adressen übernehmen
+                        </MudButton>
+                        <MudTextField @bind-Value="Order.RemoteOrderId" Label="Shop-Bestell-ID"
+                                      Variant="Variant.Outlined" Class="mb-2"/>
+                        <MudDatePicker Date="@Order.DateOrdered"
+                                       DateChanged="@((DateTime? dt) => Order.DateOrdered = dt ?? DateTime.Now)"
+                                       Label="Datum" Variant="Variant.Outlined" Class="mb-2"/>
+                        <MudSelect @bind-Value="Order.Status" Label="Status" Variant="Variant.Outlined" Class="mb-2">
+                            <MudSelectItem Value="@(OrderStatus.Pending)">Neu</MudSelectItem>
+                            <MudSelectItem Value="@(OrderStatus.Processing)">In Bearbeitung</MudSelectItem>
+                            <MudSelectItem Value="@(OrderStatus.ReadyForDelivery)">Versandbereit</MudSelectItem>
+                            <MudSelectItem Value="@(OrderStatus.PartiallyDelivered)">Teilweise geliefert</MudSelectItem>
+                            <MudSelectItem Value="@(OrderStatus.Completed)">Abgeschlossen</MudSelectItem>
+                            <MudSelectItem Value="@(OrderStatus.Cancelled)">Storniert</MudSelectItem>
+                            <MudSelectItem Value="@(OrderStatus.Returned)">Zurückgesendet</MudSelectItem>
+                            <MudSelectItem Value="@(OrderStatus.Refunded)">Erstattet</MudSelectItem>
+                            <MudSelectItem Value="@(OrderStatus.OnHold)">Angehalten</MudSelectItem>
+                        </MudSelect>
+                        <MudNumericField @bind-Value="Order.CustomerId" Label="Kunden-ID" Variant="Variant.Outlined"
+                                         Class="mb-2"/>
+                        <MudNumericField @bind-Value="Order.SalesChannelId" Label="Shop-ID" Variant="Variant.Outlined"
+                                         Class="mb-2"/>
+                    </MudPaper>
+                </MudItem>
 
-        <!-- Payment Information -->
-        <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4">
-                <MudText Typo="Typo.h6" Class="mb-2">Zahlungsinformationen</MudText>
-                <MudTextField @bind-Value="Order.PaymentMethod" Label="Zahlungsart" Variant="Variant.Outlined" Class="mb-2" />
-                <MudSelect @bind-Value="Order.PaymentStatus" Label="Zahlungsstatus" Variant="Variant.Outlined" Class="mb-2">
-                    <MudSelectItem Value="@(PaymentStatus.Unknown)">Unbekannt</MudSelectItem>
-                    <MudSelectItem Value="@(PaymentStatus.Invoiced)">In Rechnung gestellt</MudSelectItem>
-                    <MudSelectItem Value="@(PaymentStatus.PartiallyPaid)">Teilweise bezahlt</MudSelectItem>
-                    <MudSelectItem Value="@(PaymentStatus.CompletelyPaid)">Vollständig bezahlt</MudSelectItem>
-                    <MudSelectItem Value="@(PaymentStatus.FirstReminder)">Erste Mahnung</MudSelectItem>
-                    <MudSelectItem Value="@(PaymentStatus.SecondReminder)">Zweite Mahnung</MudSelectItem>
-                    <MudSelectItem Value="@(PaymentStatus.ThirdReminder)">Dritte Mahnung</MudSelectItem>
-                    <MudSelectItem Value="@(PaymentStatus.Encashment)">Inkasso</MudSelectItem>
-                </MudSelect>
-                <MudTextField @bind-Value="Order.PaymentProvider" Label="Zahlungsanbieter" Variant="Variant.Outlined" Class="mb-2" />
-                <MudTextField @bind-Value="Order.PaymentTransactionId" Label="Transaktions-ID" Variant="Variant.Outlined" Class="mb-2" />
-            </MudPaper>
-        </MudItem>
+                <!-- Payment Information -->
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="2" Class="pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-2">Zahlungsinformationen</MudText>
+                        <MudTextField @bind-Value="Order.PaymentMethod" Label="Zahlungsart" Variant="Variant.Outlined"
+                                      Class="mb-2"/>
+                        <MudSelect @bind-Value="Order.PaymentStatus" Label="Zahlungsstatus" Variant="Variant.Outlined"
+                                   Class="mb-2">
+                            <MudSelectItem Value="@(PaymentStatus.Unknown)">Unbekannt</MudSelectItem>
+                            <MudSelectItem Value="@(PaymentStatus.Invoiced)">In Rechnung gestellt</MudSelectItem>
+                            <MudSelectItem Value="@(PaymentStatus.PartiallyPaid)">Teilweise bezahlt</MudSelectItem>
+                            <MudSelectItem Value="@(PaymentStatus.CompletelyPaid)">Vollständig bezahlt</MudSelectItem>
+                            <MudSelectItem Value="@(PaymentStatus.FirstReminder)">Erste Mahnung</MudSelectItem>
+                            <MudSelectItem Value="@(PaymentStatus.SecondReminder)">Zweite Mahnung</MudSelectItem>
+                            <MudSelectItem Value="@(PaymentStatus.ThirdReminder)">Dritte Mahnung</MudSelectItem>
+                            <MudSelectItem Value="@(PaymentStatus.Encashment)">Inkasso</MudSelectItem>
+                        </MudSelect>
+                        <MudTextField @bind-Value="Order.PaymentProvider" Label="Zahlungsanbieter"
+                                      Variant="Variant.Outlined" Class="mb-2"/>
+                        <MudTextField @bind-Value="Order.PaymentTransactionId" Label="Transaktions-ID"
+                                      Variant="Variant.Outlined" Class="mb-2"/>
+                    </MudPaper>
+                </MudItem>
 
-        <!-- Shipping Information -->
-        <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4">
-                <MudText Typo="Typo.h6" Class="mb-2">Versandinformationen</MudText>
-                <MudTextField @bind-Value="Order.ShippingMethod" Label="Versandart" Variant="Variant.Outlined" Class="mb-2" />
-                <MudSelect @bind-Value="Order.ShippingStatus" Label="Versandstatus" Variant="Variant.Outlined" Class="mb-2">
-                    <MudSelectItem Value="@("Nicht versandt")">Nicht versandt</MudSelectItem>
-                    <MudSelectItem Value="@("Teilweise versandt")">Teilweise versandt</MudSelectItem>
-                    <MudSelectItem Value="@("Versandt")">Versandt</MudSelectItem>
-                    <MudSelectItem Value="@("Geliefert")">Geliefert</MudSelectItem>
-                </MudSelect>
-                <MudTextField @bind-Value="Order.ShippingProvider" Label="Versandanbieter" Variant="Variant.Outlined" Class="mb-2" />
-                <MudTextField @bind-Value="Order.ShippingTrackingId" Label="Tracking-ID" Variant="Variant.Outlined" Class="mb-2" />
-            </MudPaper>
-        </MudItem>
+                <!-- Shipping Information -->
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Elevation="2" Class="pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-2">Versandinformationen</MudText>
+                        <MudTextField @bind-Value="Order.ShippingMethod" Label="Versandart" Variant="Variant.Outlined"
+                                      Class="mb-2"/>
+                        <MudSelect @bind-Value="Order.ShippingStatus" Label="Versandstatus" Variant="Variant.Outlined"
+                                   Class="mb-2">
+                            <MudSelectItem Value="@("Nicht versandt")">Nicht versandt</MudSelectItem>
+                            <MudSelectItem Value="@("Teilweise versandt")">Teilweise versandt</MudSelectItem>
+                            <MudSelectItem Value="@("Versandt")">Versandt</MudSelectItem>
+                            <MudSelectItem Value="@("Geliefert")">Geliefert</MudSelectItem>
+                        </MudSelect>
+                        <MudTextField @bind-Value="Order.ShippingProvider" Label="Versandanbieter"
+                                      Variant="Variant.Outlined" Class="mb-2"/>
+                        <MudTextField @bind-Value="Order.ShippingTrackingId" Label="Tracking-ID"
+                                      Variant="Variant.Outlined" Class="mb-2"/>
+                    </MudPaper>
+                </MudItem>
 
-        <!-- Invoice Address -->
-        <MudItem xs="12" sm="6" md="6">
-            <MudPaper Elevation="2" Class="pa-4">
-                <MudText Typo="Typo.h6" Class="mb-2">Rechnungsadresse</MudText>
+                <!-- Notes -->
+                <MudItem xs="12">
+                    <MudPaper Elevation="2" Class="pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-2">Notizen</MudText>
+                        <MudTextField @bind-Value="Order.Note" Lines="4" Variant="Variant.Outlined"/>
+                    </MudPaper>
+                </MudItem>
+
+            </MudGrid>
+        </MudTabPanel>
+            <MudTabPanel Text="Anschrift" Icon="@Icons.Material.Filled.ShoppingCart">
                 <MudGrid>
-                    <MudItem xs="6">
-                        <MudTextField @bind-Value="Order.InvoiceAddressFirstName" Label="Vorname" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                    <MudItem xs="6">
-                        <MudTextField @bind-Value="Order.InvoiceAddressLastName" Label="Nachname" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField @bind-Value="Order.InvoiceAddressCompanyName" Label="Firma" Variant="Variant.Outlined" Class="mb-2" />
-                        <MudTextField @bind-Value="Order.InvoiceAddressStreet" Label="Straße" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                    <MudItem xs="4">
-                        <MudTextField @bind-Value="Order.InvoiceAddressZip" Label="PLZ" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                    <MudItem xs="8">
-                        <MudTextField @bind-Value="Order.InvoiceAddressCity" Label="Stadt" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField @bind-Value="Order.InvoiceAddressCountry" Label="Land" Variant="Variant.Outlined" Class="mb-2" />
-                        <MudTextField @bind-Value="Order.InvoiceAddressPhone" Label="Telefon" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                </MudGrid>
-            </MudPaper>
-        </MudItem>
-
-        <!-- Delivery Address -->
-        <MudItem xs="12" sm="6" md="6">
-            <MudPaper Elevation="2" Class="pa-4">
-                <MudText Typo="Typo.h6" Class="mb-2">Lieferadresse</MudText>
-                <MudGrid>
-                    <MudItem xs="6">
-                        <MudTextField @bind-Value="Order.DeliveryAddressFirstName" Label="Vorname" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                    <MudItem xs="6">
-                        <MudTextField @bind-Value="Order.DeliveryAddressLastName" Label="Nachname" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField @bind-Value="Order.DeliveryAddressCompanyName" Label="Firma" Variant="Variant.Outlined" Class="mb-2" />
-                        <MudTextField @bind-Value="Order.DeliveryAddressStreet" Label="Straße" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                    <MudItem xs="4">
-                        <MudTextField @bind-Value="Order.DeliverAddressZip" Label="PLZ" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                    <MudItem xs="8">
-                        <MudTextField @bind-Value="Order.DeliveryAddressCity" Label="Stadt" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudTextField @bind-Value="Order.DeliveryAddressCountry" Label="Land" Variant="Variant.Outlined" Class="mb-2" />
-                        <MudTextField @bind-Value="Order.DeliveryAddressPhone" Label="Telefon" Variant="Variant.Outlined" Class="mb-2" />
-                    </MudItem>
-                </MudGrid>
-            </MudPaper>
-        </MudItem>
-
-        <!-- Order Items -->
-        <MudItem xs="12">
-            <MudPaper Elevation="2" Class="pa-4">
-                <MudText Typo="Typo.h6" Class="mb-2">Artikel</MudText>
-
-                <!-- Product Search -->
-                <MudGrid Class="mb-4">
-                    <MudItem xs="12">
-                        <MudText Typo="Typo.subtitle1" Class="mb-2">Produkt hinzufügen</MudText>
+                <!-- Invoice Address -->
+                <MudItem xs="12" sm="6" md="6">
+                    <MudPaper Elevation="2" Class="pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-2">Rechnungsadresse</MudText>
                         <MudGrid>
-                            <MudItem xs="12" md="6">
-                                <MudAutocomplete T="ProductListDto"
-                                               Label="Produktsuche"
-                                               @bind-Value="SelectedProduct"
-                                               SearchFunc="@SearchProducts"
-                                               ResetValueOnEmptyText="true"
-                                               CoerceText="true"
-                                               AdornmentIcon="@Icons.Material.Filled.Search"
-                                               AdornmentColor="Color.Primary"
-                                               Variant="Variant.Outlined"
-                                               ToStringFunc="@(p => p == null ? "" : $"{p.Sku} - {p.Name}")">
-                                    <ItemTemplate Context="product">
-                                        <MudText Typo="Typo.body1">@product.Sku - @product.Name</MudText>
-                                        <MudText Typo="Typo.caption">Preis: @product.Price.ToString("C")</MudText>
-                                    </ItemTemplate>
-                                </MudAutocomplete>
+                            <MudItem xs="6">
+                                <MudTextField @bind-Value="Order.InvoiceAddressFirstName" Label="Vorname"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
                             </MudItem>
-                            <MudItem xs="12" md="2">
-                                <MudNumericField @bind-Value="ProductQuantity" 
-                                               Label="Menge" 
-                                               Min="1" 
-                                               Variant="Variant.Outlined" 
-                                               Class="mt-1" />
+                            <MudItem xs="6">
+                                <MudTextField @bind-Value="Order.InvoiceAddressLastName" Label="Nachname"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
                             </MudItem>
-                            <MudItem xs="12" md="2">
-                                <MudButton Variant="Variant.Filled" 
-                                         Color="Color.Primary" 
-                                         OnClick="AddProductToOrder" 
-                                         Class="mt-4"
-                                         Disabled="@(SelectedProduct == null)">
-                                    Hinzufügen
-                                </MudButton>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="Order.InvoiceAddressCompanyName" Label="Firma"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                                <MudTextField @bind-Value="Order.InvoiceAddressStreet" Label="Straße"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                            </MudItem>
+                            <MudItem xs="4">
+                                <MudTextField @bind-Value="Order.InvoiceAddressZip" Label="PLZ"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                            </MudItem>
+                            <MudItem xs="8">
+                                <MudTextField @bind-Value="Order.InvoiceAddressCity" Label="Stadt"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="Order.InvoiceAddressCountry" Label="Land"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                                <MudTextField @bind-Value="Order.InvoiceAddressPhone" Label="Telefon"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
                             </MudItem>
                         </MudGrid>
-                    </MudItem>
-                </MudGrid>
+                    </MudPaper>
+                </MudItem>
 
-                <MudDataGrid T="OrderItem" Items="@Order.OrderItems" EditMode="DataGridEditMode.Form" ReadOnly="true">
-                    <Columns>
-                        <PropertyColumn Property="x => x.Name" Title="Produkt" />
-                        <PropertyColumn Property="x => x.Quantity" Title="Menge" />
-                        <PropertyColumn Property="x => x.Price" Title="Einzelpreis" Format="C" />
-                        <TemplateColumn Title="Summe">
-                            <CellTemplate>
-                                @{
-                                    var item = context.Item;
-                                    @((Convert.ToDecimal(item.Quantity) * item.Price).ToString("C"))
-                                }
-                            </CellTemplate>
-                        </TemplateColumn>
-                    </Columns>
-                </MudDataGrid>
-
-                <!-- Order Totals -->
-                <MudDivider Class="my-4"/>
-                <MudGrid>
-                    <MudItem xs="12" md="6" Class="ml-auto">
-                        <MudList T="OrderInputDto" Dense="true" Class="ml-auto" Style="max-width: 300px; margin-left: auto;">
-                            <MudListItem T="OrderInputDto">
-                                <div class="d-flex justify-space-between">
-                                    <MudText><strong>Zwischensumme:</strong></MudText>
-                                    <MudText>@Order.Subtotal.ToString("C")</MudText>
-                                </div>
-                            </MudListItem>
-                            <MudListItem T="OrderInputDto">
-                                <div class="d-flex justify-space-between">
-                                    <MudText><strong>Versandkosten:</strong></MudText>
-                                    <MudText>@Order.ShippingCost.ToString("C")</MudText>
-                                </div>
-                            </MudListItem>
-                            <MudListItem T="OrderInputDto">
-                                <div class="d-flex justify-space-between">
-                                    <MudText><strong>MwSt.:</strong></MudText>
-                                    <MudText>@Order.TotalTax.ToString("C")</MudText>
-                                </div>
-                            </MudListItem>
-                            <MudListItem T="OrderInputDto">
-                                <div class="d-flex justify-space-between">
-                                    <MudText Typo="Typo.h6">Gesamtsumme:</MudText>
-                                    <MudText>@Order.Total.ToString("C")</MudText>
-                                </div>
-                            </MudListItem>
-                        </MudList>
-                    </MudItem>
-                </MudGrid>
-            </MudPaper>
-        </MudItem>
-
-        <!-- Notes -->
-        <MudItem xs="12">
-            <MudPaper Elevation="2" Class="pa-4">
-                <MudText Typo="Typo.h6" Class="mb-2">Notizen</MudText>
-                <MudTextField @bind-Value="Order.Note" Lines="4" Variant="Variant.Outlined" />
-            </MudPaper>
-        </MudItem>
-
-        <!-- Buttons -->
-        <MudItem xs="12" Class="d-flex justify-center mt-4">
-            <MudButton Variant="Variant.Filled" 
-                       Color="Color.Primary" 
-                       Size="Size.Large" 
-                       OnClick="@OnValidSubmit" 
-                       Class="mx-2">
-                Speichern
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" 
-                       Color="Color.Secondary" 
-                       Size="Size.Large" 
-                       OnClick="@NavigateToList" 
-                       Class="mx-2">
-                Abbrechen
-            </MudButton>
-        </MudItem>
+                <!-- Delivery Address -->
+                <MudItem xs="12" sm="6" md="6">
+                    <MudPaper Elevation="2" Class="pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-2">Lieferadresse</MudText>
+                        <MudGrid>
+                            <MudItem xs="6">
+                                <MudTextField @bind-Value="Order.DeliveryAddressFirstName" Label="Vorname"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                            </MudItem>
+                            <MudItem xs="6">
+                                <MudTextField @bind-Value="Order.DeliveryAddressLastName" Label="Nachname"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="Order.DeliveryAddressCompanyName" Label="Firma"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                                <MudTextField @bind-Value="Order.DeliveryAddressStreet" Label="Straße"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                            </MudItem>
+                            <MudItem xs="4">
+                                <MudTextField @bind-Value="Order.DeliverAddressZip" Label="PLZ"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                            </MudItem>
+                            <MudItem xs="8">
+                                <MudTextField @bind-Value="Order.DeliveryAddressCity" Label="Stadt"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                            </MudItem>
+                            <MudItem xs="12">
+                                <MudTextField @bind-Value="Order.DeliveryAddressCountry" Label="Land"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                                <MudTextField @bind-Value="Order.DeliveryAddressPhone" Label="Telefon"
+                                              Variant="Variant.Outlined" Class="mb-2"/>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
     </MudGrid>
+            </MudTabPanel>
+            <MudTabPanel Text="Artikel" Icon="@Icons.Material.Filled.ShoppingCart">
+                <MudGrid>
+                <!-- Order Items -->
+                <MudItem xs="12">
+                    <MudPaper Elevation="2" Class="pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-2">Artikel</MudText>
+
+                        <!-- Product Search -->
+                        <MudGrid Class="mb-4">
+                            <MudItem xs="12">
+                                <MudText Typo="Typo.subtitle1" Class="mb-2">Produkt hinzufügen</MudText>
+                                <MudGrid>
+                                    <MudItem xs="12" md="6">
+                                        <MudAutocomplete T="ProductListDto"
+                                                         Label="Produktsuche"
+                                                         @bind-Value="SelectedProduct"
+                                                         SearchFunc="@SearchProducts"
+                                                         ResetValueOnEmptyText="true"
+                                                         CoerceText="true"
+                                                         AdornmentIcon="@Icons.Material.Filled.Search"
+                                                         AdornmentColor="Color.Primary"
+                                                         Variant="Variant.Outlined"
+                                                         ToStringFunc="@(p => p == null ? "" : $"{p.Sku} - {p.Name}")">
+                                            <ItemTemplate Context="product">
+                                                <MudText Typo="Typo.body1">@product.Sku - @product.Name</MudText>
+                                                <MudText Typo="Typo.caption">
+                                                    Preis: @product.Price.ToString("C")</MudText>
+                                            </ItemTemplate>
+                                        </MudAutocomplete>
+                                    </MudItem>
+                                    <MudItem xs="12" md="2">
+                                        <MudNumericField @bind-Value="ProductQuantity"
+                                                         Label="Menge"
+                                                         Min="1"
+                                                         Variant="Variant.Outlined"
+                                                         Class="mt-1"/>
+                                    </MudItem>
+                                    <MudItem xs="12" md="2">
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="Color.Primary"
+                                                   OnClick="AddProductToOrder"
+                                                   Class="mt-4"
+                                                   Disabled="@(SelectedProduct == null)">
+                                            Hinzufügen
+                                        </MudButton>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudItem>
+                        </MudGrid>
+
+                        <MudDataGrid T="OrderItem" Items="@Order.OrderItems" EditMode="DataGridEditMode.Form"
+                                     ReadOnly="true">
+                            <Columns>
+                                <PropertyColumn Property="x => x.Name" Title="Produkt"/>
+                                <PropertyColumn Property="x => x.Quantity" Title="Menge"/>
+                                <PropertyColumn Property="x => x.Price" Title="Einzelpreis" Format="C"/>
+                                <TemplateColumn Title="Summe">
+                                    <CellTemplate>
+                                        @{
+                                            var item = context.Item;
+                                            @((Convert.ToDecimal(item.Quantity) * item.Price).ToString("C"))
+                                        }
+                                    </CellTemplate>
+                                </TemplateColumn>
+                            </Columns>
+                        </MudDataGrid>
+
+                        <!-- Order Totals -->
+                        <MudDivider Class="my-4"/>
+                        <MudGrid>
+                            <MudItem xs="12" md="6" Class="ml-auto">
+                                <MudList T="OrderInputDto" Dense="true" Class="ml-auto"
+                                         Style="max-width: 300px; margin-left: auto;">
+                                    <MudListItem T="OrderInputDto">
+                                        <div class="d-flex justify-space-between">
+                                            <MudText><strong>Zwischensumme:</strong></MudText>
+                                            <MudText>@Order.Subtotal.ToString("C")</MudText>
+                                        </div>
+                                    </MudListItem>
+                                    <MudListItem T="OrderInputDto">
+                                        <div class="d-flex justify-space-between">
+                                            <MudText><strong>Versandkosten:</strong></MudText>
+                                            <MudText>@Order.ShippingCost.ToString("C")</MudText>
+                                        </div>
+                                    </MudListItem>
+                                    <MudListItem T="OrderInputDto">
+                                        <div class="d-flex justify-space-between">
+                                            <MudText><strong>MwSt.:</strong></MudText>
+                                            <MudText>@Order.TotalTax.ToString("C")</MudText>
+                                        </div>
+                                    </MudListItem>
+                                    <MudListItem T="OrderInputDto">
+                                        <div class="d-flex justify-space-between">
+                                            <MudText Typo="Typo.h6">Gesamtsumme:</MudText>
+                                            <MudText>@Order.Total.ToString("C")</MudText>
+                                        </div>
+                                    </MudListItem>
+                                </MudList>
+                            </MudItem>
+                        </MudGrid>
+                    </MudPaper>
+                </MudItem>
+
+                <!-- Buttons -->
+                <MudItem xs="12" Class="d-flex justify-center mt-4">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               OnClick="@OnValidSubmit"
+                               Class="mx-2">
+                        Speichern
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Secondary"
+                               Size="Size.Large"
+                               OnClick="@NavigateToList"
+                               Class="mx-2">
+                        Abbrechen
+                    </MudButton>
+                </MudItem>
+</MudGrid>
+            </MudTabPanel>
+        </MudTabs>
+    
+
 </MudForm>
