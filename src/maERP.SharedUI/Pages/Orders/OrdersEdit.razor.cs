@@ -1,6 +1,5 @@
 using System.Net.Http.Json;
 using maERP.Domain.Dtos.Customer;
-using maERP.Domain.Dtos.CustomerAddress;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Entities;
