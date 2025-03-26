@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Blazored.LocalStorage;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Providers;
@@ -19,7 +19,19 @@ public static class UiServicesRegistration
         services.AddAuthorizationCore();
 
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddHttpClient<IHttpService, HttpService>(client => client.BaseAddress = new Uri("https://localhost:8443/"));
+        
+        // Register ServerUrlProvider as singleton - this is safe and doesn't depend on scoped services
+        services.AddSingleton<ServerUrlProvider>();
+        
+        // Register the ServerUrlService as scoped
+        services.AddScoped<IServerUrlService, ServerUrlService>();
+        
+        // Use ServerUrlProvider to configure the HttpClient
+        services.AddHttpClient<IHttpService, HttpService>((sp, client) => 
+        {
+            var urlProvider = sp.GetRequiredService<ServerUrlProvider>();
+            client.BaseAddress = urlProvider.ServerUrl;
+        });
 
         services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
         services.AddScoped<ApiAuthenticationStateProvider>();
