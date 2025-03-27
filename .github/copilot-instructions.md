@@ -54,13 +54,13 @@ The headless ERP system with a REST API and database connection.
 
 The web client for the maERP.Server headless system
 
-## Project maERP.client
+## Project maERP.client 
 
 A multi-platform client developed in .NET MAUI for Windows, Android, iOS and Mac-Catalyst.
 
 ## Project maERP.SharedUI
 
-This project contains the front-end pages developed in Blazor and used by maERP.Web and maERP.Client.
+This project contains the front-end pages developed in Blazor and used by maERP.Web and maERP.Client. 
 
 # .NET Development Rules
 

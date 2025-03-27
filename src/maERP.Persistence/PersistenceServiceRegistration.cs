@@ -11,14 +11,13 @@ namespace maERP.Persistence;
 
 public static class PersistenceServiceRegistration
 {
-    public static IServiceCollection AddPersistenceServices(this IServiceCollection services, IServiceScopeFactory serviceScopeFactory)
+    public static IServiceCollection AddPersistenceServices(this IServiceCollection services)
     {
-        var scope = serviceScopeFactory.CreateScope();
-        var dbOptions = scope.ServiceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-        var connectionString = dbOptions.GetConnectionString();
-
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
         {
+            var dbOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+            var connectionString = dbOptions.GetConnectionString();
+            
             options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 
             switch (dbOptions.Provider.ToUpperInvariant())

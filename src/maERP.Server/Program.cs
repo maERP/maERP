@@ -65,15 +65,9 @@ builder.Services.AddResponseCaching(options =>
     options.UseCaseSensitivePaths = true;
 });
 
-// IOptions<DatabaseOptions> dbOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<DatabaseOptions>>();
-// builder.Services.AddPersistenceServices(dbOptions);
-#pragma warning disable ASP0000
-var serviceScopeFactory = builder.Services.BuildServiceProvider().GetService<IServiceScopeFactory>();
-#pragma warning restore ASP0000
-
 if (!builder.Environment.IsEnvironment("Testing"))
 {
-    builder.Services.AddPersistenceServices(serviceScopeFactory);    
+    builder.Services.AddPersistenceServices();    
 }
 
 builder.Services.AddApplicationServices();
@@ -136,7 +130,6 @@ if(app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 
 if (app.Environment.IsDevelopment())
 {
-    // app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -162,10 +155,7 @@ else
         await next();
     });
 
-    app.UseMiddleware<ExceptionMiddleware>();
-    app.UseExceptionHandler("/Home/Error");
     app.UseSerilogRequestLogging();
-
     app.MapControllers();    
 }
 
