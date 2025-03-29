@@ -15,7 +15,26 @@ public class ServerUrlProvider
     public ServerUrlProvider(ILogger<ServerUrlProvider> logger)
     {
         _logger = logger;
-        _serverUrl = new Uri(_defaultServerUrl);
+        
+        // Versuche, die Server-URL aus der Umgebungsvariable zu lesen
+        var envServerUrl = Environment.GetEnvironmentVariable("MAERP_SERVER_BASE_URL");
+        if (!string.IsNullOrEmpty(envServerUrl))
+        {
+            try
+            {
+                _serverUrl = new Uri(envServerUrl);
+                _logger.LogInformation("Server URL aus Umgebungsvariable gesetzt: {Url}", _serverUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Fehler beim Setzen der Server-URL aus Umgebungsvariable: {Url}", envServerUrl);
+                _serverUrl = new Uri(_defaultServerUrl);
+            }
+        }
+        else
+        {
+            _serverUrl = new Uri(_defaultServerUrl);
+        }
     }
 
     /// <summary>

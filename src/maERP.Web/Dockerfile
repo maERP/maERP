@@ -17,8 +17,20 @@ WORKDIR "/src/maERP.Web"
 RUN dotnet build "maERP.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
+# Setze Umgebungsvariable für die Server-URL während des Builds
+ARG MAERP_SERVER_BASE_URL="https://api.maerp.de"
+ENV MAERP_SERVER_BASE_URL=${MAERP_SERVER_BASE_URL}
 RUN dotnet publish "maERP.Web.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM nginx:alpine AS final
 WORKDIR /usr/share/nginx/html
 COPY --from=publish /app/publish/wwwroot .
+# Kopiere eine angepasste nginx.conf, die die Umgebungsvariable ins Frontend übergibt
+COPY src/maERP.Web/nginx.conf /etc/nginx/conf.d/default.conf
+# Kopiere ein Startup-Skript, das die Umgebungsvariable in eine JavaScript-Datei injiziert
+COPY src/maERP.Web/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+# Setze die Umgebungsvariable auch im NGINX-Container
+ENV MAERP_SERVER_BASE_URL=${MAERP_SERVER_BASE_URL}
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
