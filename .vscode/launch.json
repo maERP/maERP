@@ -20,5 +20,32 @@
                 "/Views": "${workspaceFolder}/Views"
             }
         },
-    ]
+        {
+            "name": "maERP.Server (netcoredbg)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "maERP.Server-build",
+            "program": "${workspaceFolder}/src/maERP.Server/bin/Debug/net8.0/maERP.Server.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "internalConsoleOptions": "openOnSessionStart",
+            "pipeTransport": {
+                "pipeProgram": "${command:platformCommand}",
+                "pipeArgs": "${command:platformPipeArgs}",
+                "debuggerPath": "${env:NETCOREDBG_PATH}/netcoredbg${command:platformExtension}"
+            }
+        }
+    ],
+    "compounds": [],
+    "version": "0.2.0"
 }
