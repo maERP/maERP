@@ -60,6 +60,14 @@ public class HttpService : IHttpService
             };
 
             var response = await _httpClient.PostAsJsonAsync("/api/v1/Auth/login", loginRequest, _jsonOptions);
+            
+            if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                var errorMessages = await response.Content.ReadFromJsonAsync<List<string>>(_jsonOptions);
+                _logger.LogWarning("Login failed for user {Email} - {Error}", email, string.Join(", ", errorMessages ?? new List<string>()));
+                return false;
+            }
+            
             response.EnsureSuccessStatusCode();
             
             var authResponse = await response.Content.ReadFromJsonAsync<LoginResponseDto>(_jsonOptions);

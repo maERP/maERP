@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Models.Identity;
+using maERP.Domain.Wrapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,12 +16,26 @@ public class AuthController(IAuthService authenticationService) : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login(AuthRequest request)
     {
-        return Ok(await authenticationService.Login(request));
+        var result = await authenticationService.Login(request);
+        
+        if (!result.Succeeded)
+        {
+            return StatusCode((int)result.StatusCode, result.Messages);
+        }
+        
+        return Ok(result.Data);
     }
 
     [HttpPost("register")]
     public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
     {
-        return Ok(await authenticationService.Register(request));
+        var result = await authenticationService.Register(request);
+        
+        if (!result.Succeeded)
+        {
+            return StatusCode((int)result.StatusCode, result.Messages);
+        }
+        
+        return Ok(result.Data);
     }
 }

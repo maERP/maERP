@@ -2,9 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using maERP.Application.Contracts.Identity;
-using maERP.Application.Exceptions;
 using maERP.Application.Models.Identity;
 using maERP.Domain.Entities;
+using maERP.Domain.Wrapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -27,20 +27,20 @@ public class AuthService : IAuthService
         _signInManager = signInManager;
     }
     
-    public async Task<AuthResponse> Login(AuthRequest request)
+    public async Task<Result<AuthResponse>> Login(AuthRequest request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
 
         if (user == null)
         {
-            throw new NotFoundException($"User with {request.Email} not found.", request.Email);
+            return Result<AuthResponse>.Fail(ResultStatusCode.Unauthorized, "Ungültige Anmeldedaten.");
         }
         
         var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
         if (!result.Succeeded)
         {
-            throw new NotFoundException($"Credentials for {request.Email} aren't valid.", request.Email);
+            return Result<AuthResponse>.Fail(ResultStatusCode.Unauthorized, "Ungültige Anmeldedaten.");
         }
 
         var jwtSecurityToken = await GenerateToken(user);
@@ -53,10 +53,10 @@ public class AuthService : IAuthService
             UserName = user.Email!
         };
 
-        return response;
+        return Result<AuthResponse>.Success(response);
     }
     
-    public async Task<RegistrationResponse> Register(RegistrationRequest request)
+    public async Task<Result<RegistrationResponse>> Register(RegistrationRequest request)
     {
         var user = new ApplicationUser
         {
@@ -72,7 +72,7 @@ public class AuthService : IAuthService
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, "Employee");
-            return new RegistrationResponse { UserId = user.Id };
+            return Result<RegistrationResponse>.Success(new RegistrationResponse { UserId = user.Id });
         }
 
         var stringBuilder = new StringBuilder();
@@ -81,7 +81,7 @@ public class AuthService : IAuthService
             stringBuilder.AppendFormat("{0}\n", err.Description);
         }
 
-        throw new Exception($"User registration failed. {stringBuilder}");
+        return Result<RegistrationResponse>.Fail(ResultStatusCode.BadRequest, $"Registrierung fehlgeschlagen. {stringBuilder}");
     }
     
     private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user)

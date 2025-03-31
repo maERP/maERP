@@ -177,8 +177,7 @@ public partial class Login
             return;
         }
 
-        _errorMessage = "Login fehlgeschlagen";
-
+        _errorMessage = "Ungültige Anmeldedaten";
         Snackbar.Add(_errorMessage, Severity.Error);
 
         await LocalStorage.RemoveItemAsync("server");
