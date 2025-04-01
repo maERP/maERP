@@ -50,8 +50,8 @@ public class HttpService : IHttpService
         {
             _logger.LogInformation("Attempting login for user {Email}", email);
             
-            // Update HttpClient BaseAddress to use the current server URL from ServerUrlProvider
-            _httpClient.BaseAddress = _serverUrlProvider.ServerUrl;
+            // Anstatt die BaseAddress zu ändern, verwenden wir die vollständige URL
+            var serverUrl = _serverUrlProvider.ServerUrl;
             
             var loginRequest = new LoginDto
             {
@@ -59,7 +59,9 @@ public class HttpService : IHttpService
                 Password = password
             };
 
-            var response = await _httpClient.PostAsJsonAsync("/api/v1/Auth/login", loginRequest, _jsonOptions);
+            // Vollständige URL für die Anfrage verwenden
+            var fullUrl = new Uri(serverUrl, "/api/v1/Auth/login");
+            var response = await _httpClient.PostAsJsonAsync(fullUrl, loginRequest, _jsonOptions);
             
             if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
@@ -121,16 +123,12 @@ public class HttpService : IHttpService
     }
 
     /// <summary>
-    /// Ensures the HttpClient is using the correct server URL
+    /// Gets the full URL for a request by combining the server URL with the provided URI
     /// </summary>
-    private void EnsureCorrectServerUrl()
+    private Uri GetFullUrl(string uri)
     {
-        var currentServerUrl = _serverUrlProvider.ServerUrl;
-        if (_httpClient.BaseAddress != currentServerUrl)
-        {
-            _httpClient.BaseAddress = currentServerUrl;
-            _logger.LogInformation("Updated HttpClient BaseAddress to {Url}", currentServerUrl);
-        }
+        var serverUrl = _serverUrlProvider.ServerUrl;
+        return new Uri(serverUrl, uri);
     }
 
     /// <summary>
@@ -139,12 +137,12 @@ public class HttpService : IHttpService
     public async Task<T?> GetAsync<T>(string uri, bool requiresAuth = true)
     {
         if (requiresAuth) EnsureAuthenticated();
-        EnsureCorrectServerUrl();
         
         try
         {
             _logger.LogInformation("Making GET request to {Uri}", uri);
-            var response = await _httpClient.GetAsync(uri);
+            var fullUrl = GetFullUrl(uri);
+            var response = await _httpClient.GetAsync(fullUrl);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<T>(_jsonOptions);
         }
@@ -166,12 +164,12 @@ public class HttpService : IHttpService
     public async Task<TResponse?> PostAsync<TRequest, TResponse>(string uri, TRequest content, bool requiresAuth = true)
     {
         if (requiresAuth) EnsureAuthenticated();
-        EnsureCorrectServerUrl();
 
         try
         {
             _logger.LogInformation("Making POST request to {Uri}", uri);
-            var response = await _httpClient.PostAsJsonAsync(uri, content, _jsonOptions);
+            var fullUrl = GetFullUrl(uri);
+            var response = await _httpClient.PostAsJsonAsync(fullUrl, content, _jsonOptions);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<TResponse>(_jsonOptions);
         }
@@ -198,10 +196,10 @@ public class HttpService : IHttpService
             {
                 EnsureAuthenticated();
             }
-            EnsureCorrectServerUrl();
 
             _logger.LogInformation("Sending POST request to {Uri}", uri);
-            var response = await _httpClient.PostAsJsonAsync(uri, content, _jsonOptions);
+            var fullUrl = GetFullUrl(uri);
+            var response = await _httpClient.PostAsJsonAsync(fullUrl, content, _jsonOptions);
             _logger.LogInformation("POST request to {Uri} completed with status code {StatusCode}", uri, response.StatusCode);
             
             return response;
@@ -219,12 +217,12 @@ public class HttpService : IHttpService
     public async Task<TResponse?> PutAsync<TRequest, TResponse>(string uri, TRequest content, bool requiresAuth = true)
     {
         if (requiresAuth) EnsureAuthenticated();
-        EnsureCorrectServerUrl();
 
         try
         {
             _logger.LogInformation("Making PUT request to {Uri}", uri);
-            var response = await _httpClient.PutAsJsonAsync(uri, content, _jsonOptions);
+            var fullUrl = GetFullUrl(uri);
+            var response = await _httpClient.PutAsJsonAsync(fullUrl, content, _jsonOptions);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<TResponse>(_jsonOptions);
         }
@@ -252,10 +250,9 @@ public class HttpService : IHttpService
                 EnsureAuthenticated();
             }
 
-            EnsureCorrectServerUrl();
-
             _logger.LogInformation("Sending PUT request to {Uri}", uri);
-            var response = await _httpClient.PutAsJsonAsync(uri, content, _jsonOptions);
+            var fullUrl = GetFullUrl(uri);
+            var response = await _httpClient.PutAsJsonAsync(fullUrl, content, _jsonOptions);
             _logger.LogInformation("PUT request to {Uri} completed with status code {StatusCode}", uri, response.StatusCode);
             
             return response;
@@ -274,12 +271,11 @@ public class HttpService : IHttpService
     {
         if (requiresAuth) EnsureAuthenticated();
 
-        EnsureCorrectServerUrl();
-
         try
         {
             _logger.LogInformation("Making DELETE request to {Uri}", uri);
-            var response = await _httpClient.DeleteAsync(uri);
+            var fullUrl = GetFullUrl(uri);
+            var response = await _httpClient.DeleteAsync(fullUrl);
             response.EnsureSuccessStatusCode();
         }
         catch (HttpRequestException ex)
@@ -294,9 +290,8 @@ public class HttpService : IHttpService
     /// </summary>
     public async Task<T?> UpdateAsync<T>(string url, T data)
     {
-        EnsureCorrectServerUrl();
-
-        var response = await _httpClient.PutAsJsonAsync(url, data);
+        var fullUrl = GetFullUrl(url);
+        var response = await _httpClient.PutAsJsonAsync(fullUrl, data);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }
