@@ -2,6 +2,7 @@ using Asp.Versioning;
 using maERP.Application.Features.Order.Commands.OrderCreate;
 using maERP.Application.Features.Order.Commands.OrderDelete;
 using maERP.Application.Features.Order.Commands.OrderUpdate;
+using maERP.Application.Features.Order.Queries.OrderCustomerList;
 using maERP.Application.Features.Order.Queries.OrderDetail;
 using maERP.Application.Features.Order.Queries.OrderList;
 using maERP.Domain.Dtos.Order;
@@ -28,6 +29,19 @@ public class OrdersController(IMediator mediator) : ControllerBase
         }
 
         var orders = await mediator.Send(new OrderListQuery(pageNumber, pageSize, searchString, orderBy));
+        return Ok(orders);
+    }
+
+    // GET: api/<OrdersController>/customer/{customerId}
+    [HttpGet("customer/{customerId}")]
+    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetByCustomer(int customerId, int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    {
+        if (string.IsNullOrEmpty(orderBy))
+        {
+            orderBy = "DateOrdered Descending";
+        }
+
+        var orders = await mediator.Send(new OrderCustomerListQuery(customerId, pageNumber, pageSize, searchString, orderBy));
         return Ok(orders);
     }
 

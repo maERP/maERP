@@ -1,0 +1,28 @@
+using maERP.Domain.Dtos.Order;
+using maERP.Domain.Wrapper;
+using MediatR;
+
+namespace maERP.Application.Features.Order.Queries.OrderCustomerList;
+
+public class OrderCustomerListQuery : IRequest<PaginatedResult<OrderListDto>>
+{
+    public int CustomerId { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+    public string SearchString { get; set; }
+    public string[] OrderBy { get; set; }
+
+    public OrderCustomerListQuery(int customerId, int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    {
+        CustomerId = customerId;
+        PageNumber = pageNumber;
+        PageSize = pageSize;
+        SearchString = searchString;
+
+        if (!string.IsNullOrWhiteSpace(orderBy))
+        {
+            OrderBy = orderBy.Split(',');
+        }
+        else OrderBy = new string[] { };
+    }
+} 

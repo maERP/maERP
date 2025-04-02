@@ -1,52 +1,199 @@
 ﻿@page "/Customers/{customerId:int}"
+@using maERP.Domain.Dtos.Order
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
-<PageTitle>Kundendetails</PageTitle>
+<PageTitle>Kundendetails - @_customerDetail.FullName</PageTitle>
 
 <MudStack Row="true" Class="mb-8">
-    <MudText Typo="Typo.h4">Kundendetails</MudText>
+    <MudText Typo="Typo.h4">Kundendetails - @_customerDetail.FullName</MudText>
     <MudSpacer />
     <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/Customers/{customerId}/edit")" />
 </MudStack>
 
 <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
     <MudTabPanel Text="Kunde">
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudPaper Class="pa-4" Elevation="0">
+                    <MudText Typo="Typo.subtitle1" Class="mb-4 font-weight-bold">Kundendaten</MudText>
+                    
+                    <MudStack Spacing="2">
+                        <div>
+                            <MudText Typo="Typo.caption">Kundennummer</MudText>
+                            <MudText Typo="Typo.body1">@_customerDetail.Id</MudText>
+                        </div>
 
-        <MudTextField @bind-Value="CustomerDetail.Firstname"
-                      For="@(() => CustomerDetail.Firstname)"
-                      Label="Vorname"
-                      Required="true"
-                      Variant="Variant.Text"
-                      InputType="InputType.Text"
-                      Class="mt-6"
-                      Disabled="true">
-        </MudTextField>
+                        <div class="mt-3">
+                            <MudText Typo="Typo.caption">Vorname</MudText>
+                            <MudText Typo="Typo.body1">@_customerDetail.Firstname</MudText>
+                        </div>
 
-        <MudTextField @bind-Value="CustomerDetail.Lastname"
-                      For="@(() => CustomerDetail.Lastname)"
-                      Label="Nachname"
-                      Required="true"
-                      Variant="Variant.Text"
-                      InputType="InputType.Text"
-                      Class="mt-6"
-                      Disabled="true">
-        </MudTextField>
+                        <div class="mt-3">
+                            <MudText Typo="Typo.caption">Nachname</MudText>
+                            <MudText Typo="Typo.body1">@_customerDetail.Lastname</MudText>
+                        </div>
 
+                        <div class="mt-3">
+                            <MudText Typo="Typo.caption">Firma</MudText>
+                            <MudText Typo="Typo.body1">@(_customerDetail.CompanyName ?? "-")</MudText>
+                        </div>
+
+                        <div class="mt-3">
+                            <MudText Typo="Typo.caption">Status</MudText>
+                            <MudText Typo="Typo.body1">@(@_customerDetail.CustomerStatus.ToString() ?? "-")</MudText>
+                        </div>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+            
+            <MudItem xs="12" sm="6">
+                <MudPaper Class="pa-4" Elevation="0">
+                    <MudText Typo="Typo.subtitle1" Class="mb-4 font-weight-bold">Kontaktdaten</MudText>
+                    
+                    <MudStack Spacing="2">
+                        <div>
+                            <MudText Typo="Typo.caption">E-Mail</MudText>
+                            <MudText Typo="Typo.body1">
+                                @if (!string.IsNullOrEmpty(_customerDetail.Email))
+                                {
+                                    <MudLink Href="@_customerDetail.Email">@_customerDetail.Email</MudLink>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </MudText>
+                        </div>
+
+                        <div class="mt-3">
+                            <MudText Typo="Typo.caption">Telefon</MudText>
+                            <MudText Typo="Typo.body1">
+                                @if (!string.IsNullOrEmpty(_customerDetail.Phone))
+                                {
+                                    <MudLink Href="@_customerDetail.Phone">@_customerDetail.Phone</MudLink>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </MudText>
+                        </div>
+
+                        <div class="mt-3">
+                            <MudText Typo="Typo.caption">Website</MudText>
+                            <MudText Typo="Typo.body1">
+                                @if (!string.IsNullOrEmpty(_customerDetail.Website))
+                                {
+                                    <MudLink Href="@((_customerDetail.Website.StartsWith("http") ? "" : "https://") + _customerDetail.Website)" Target="_blank">
+                                        @_customerDetail.Website
+                                    </MudLink>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </MudText>
+                        </div>
+
+                        <div class="mt-3">
+                            <MudText Typo="Typo.caption">USt-IdNr.</MudText>
+                            <MudText Typo="Typo.body1">@(_customerDetail.VatNumber ?? "-")</MudText>
+                        </div>
+
+                        <div class="mt-3">
+                            <MudText Typo="Typo.caption">Anmeldedatum</MudText>
+                            <MudText Typo="Typo.body1">@_customerDetail.DateEnrollment.ToString("dd.MM.yyyy")</MudText>
+                        </div>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+
+            @if (!string.IsNullOrEmpty(_customerDetail.Note))
+            {
+                <MudItem xs="12">
+                    <MudPaper Class="pa-4 mt-4" Elevation="0">
+                        <MudText Typo="Typo.subtitle1" Class="mb-2 font-weight-bold">Notizen</MudText>
+                        <MudText Typo="Typo.body2">@_customerDetail.Note</MudText>
+                    </MudPaper>
+                </MudItem>
+            }
+        </MudGrid>
     </MudTabPanel>
+    
     <MudTabPanel Text="Adressen">
-
-        <MudDataGrid Items="@CustomerDetail.CustomerAddresses" SortMode="SortMode.Single" Class="mb-8">
-            <Columns>
-                <PropertyColumn Property="x => x.DefaultDeliveryAddress" Title="Std. Liefer" />
-                <PropertyColumn Property="x => x.DefaultInvoiceAddress" Title="Std. Rechnung" />
-                @*<PropertyColumn Property="x => x.FullAddress" Title="Adresse" />*@
-            </Columns>
-        </MudDataGrid>
-        
+        @if (_customerDetail.CustomerAddresses.Any())
+        {
+            <MudDataGrid Items="@_customerDetail.CustomerAddresses" 
+                        SortMode="SortMode.Single" 
+                        Filterable="true" 
+                        Class="mb-8">
+                <Columns>
+                    <PropertyColumn Property="x => x.Id" Title="ID" />
+                    <TemplateColumn Title="Standard">
+                        <CellTemplate>
+                            @{
+                                var address = context.Item;
+                                if (address.DefaultDeliveryAddress && address.DefaultInvoiceAddress)
+                                {
+                                    <MudChip Color="Color.Success">Liefer- und Rechnungsadresse</MudChip>
+                                }
+                                else if (address.DefaultDeliveryAddress)
+                                {
+                                    <MudChip Color="Color.Info">Lieferadresse</MudChip>
+                                }
+                                else if (address.DefaultInvoiceAddress)
+                                {
+                                    <MudChip Color="Color.Warning">Rechnungsadresse</MudChip>
+                                }
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <PropertyColumn Property="x => x.CompanyName" Title="Firma" />
+                    <PropertyColumn Property="x => x.Firstname" Title="Vorname" />
+                    <PropertyColumn Property="x => x.Lastname" Title="Nachname" />
+                    <TemplateColumn Title="Anschrift">
+                        <CellTemplate>
+                            @{
+                                var address = context.Item;
+                                <span>@address.Street @address.HouseNr, @address.Zip @address.City</span>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Info" Class="mt-3">Diesem Kunden sind keine Adressen zugeordnet.</MudAlert>
+        }
     </MudTabPanel>
+    
     <MudTabPanel Text="Bestellungen">
-        <MudText>Content Three</MudText>
+        <MudDataGrid T="OrderListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData" @ref="_customerOrderListGrid" Hover="true">
+            <ToolBarContent>
+                @*<MudText Typo="Typo.h6">Periodic Elements</MudText>*@
+                <MudSpacer />
+                <MudTextField @bind-Value="_customerOrderSearchString" TextChanged="SearchOrders" Placeholder="Suche" Adornment="Adornment.Start" Immediate="true" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <Columns>
+                <PropertyColumn Property="x => x.Id" Title="Bestellnr." />
+                <PropertyColumn Property="x => x.DateOrdered" Title="Datum" />
+                <PropertyColumn Property="x => x.FullName" Title="Kunde" />
+                <PropertyColumn Property="x => x.Total" Title="Summe" Format="C" />
+                <PropertyColumn Property="x => x.Status" Title="Status" />
+                <PropertyColumn Property="x => x.PaymentStatus" Title="Zahlstatus" />
+                <TemplateColumn CellClass="d-flex justify-end">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/Orders/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/Orders/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <PagerContent>
+                <MudDataGridPager T="OrderListDto" />
+            </PagerContent>
+        </MudDataGrid>
     </MudTabPanel>
 </MudTabs>
