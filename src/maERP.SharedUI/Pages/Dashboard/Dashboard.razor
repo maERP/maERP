@@ -29,7 +29,21 @@
     </MudItem>
     <MudItem xs="12" sm="6">
         <MudPaper Elevation="2" Class="pa-4" Style="height: 100%">
-            <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" ChartOptions="@Options" />
+            @if (_isLoading)
+            {
+                <div class="d-flex align-center justify-center" style="height: 350px;">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="my-2">@_errorMessage</MudAlert>
+                <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" ChartOptions="@Options" />
+            }
+            else
+            {
+                <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px" ChartOptions="@Options" />
+            }
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="6" md="4">
