@@ -1,6 +1,4 @@
 ﻿using System.Linq.Dynamic.Core;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -14,15 +12,13 @@ namespace maERP.Application.Features.AiPrompt.Queries.AiPromptList;
 // ReSharper disable once UnusedType.Global
 public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedResult<AiPromptListDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<AiPromptListHandler> _logger;
     private readonly IAiPromptRepository _aiPromptRepository;
 
-    public AiPromptListHandler(IMapper mapper,
+    public AiPromptListHandler(
         IAppLogger<AiPromptListHandler> logger, 
         IAiPromptRepository aiPromptRepository)
     {
-        _mapper = mapper;
         _logger = logger;
         _aiPromptRepository = aiPromptRepository; 
     }
@@ -36,7 +32,14 @@ public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedR
         {
             return await _aiPromptRepository.Entities
                .Specify(aiPromptFilterSpec)
-               .ProjectTo<AiPromptListDto>(_mapper.ConfigurationProvider)
+               .Select(a => new AiPromptListDto
+               {
+                   Id = a.Id,
+                   Identifier = a.Identifier,
+                   PromptText = a.PromptText,
+                   DateCreated = a.DateCreated,
+                   DateModified = a.DateModified
+               })
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
@@ -45,7 +48,14 @@ public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedR
         return await _aiPromptRepository.Entities
             .Specify(aiPromptFilterSpec)
             .OrderBy(ordering)
-            .ProjectTo<AiPromptListDto>(_mapper.ConfigurationProvider)
+            .Select(a => new AiPromptListDto
+            {
+                Id = a.Id,
+                Identifier = a.Identifier,
+                PromptText = a.PromptText,
+                DateCreated = a.DateCreated,
+                DateModified = a.DateModified
+            })
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

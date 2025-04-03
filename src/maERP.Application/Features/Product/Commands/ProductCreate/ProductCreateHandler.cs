@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,15 +7,13 @@ namespace maERP.Application.Features.Product.Commands.ProductCreate;
 
 public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<ProductCreateHandler> _logger;
     private readonly IProductRepository _productRepository;
 
-    public ProductCreateHandler(IMapper mapper,
+    public ProductCreateHandler(
         IAppLogger<ProductCreateHandler> logger,
         IProductRepository productRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
@@ -46,8 +43,25 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
 
         try
         {
-            // Map and create entity
-            var productToCreate = _mapper.Map<Domain.Entities.Product>(request);
+            // Manuelles Mapping statt AutoMapper
+            var productToCreate = new Domain.Entities.Product
+            {
+                Sku = request.Sku,
+                Name = request.Name,
+                NameOptimized = request.NameOptimized,
+                Ean = request.Ean,
+                Asin = request.Asin,
+                Description = request.Description,
+                DescriptionOptimized = request.DescriptionOptimized,
+                UseOptimized = request.UseOptimized,
+                Price = request.Price,
+                Msrp = request.Msrp,
+                Weight = request.Weight,
+                Width = request.Width,
+                Height = request.Height,
+                Depth = request.Depth,
+                TaxClassId = request.TaxClassId
+            };
             
             // add to database
             await _productRepository.CreateAsync(productToCreate);

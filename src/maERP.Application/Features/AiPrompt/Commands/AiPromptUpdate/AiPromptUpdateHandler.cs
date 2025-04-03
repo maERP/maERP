@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,16 +7,14 @@ namespace maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
 
 public class AiPromptUpdateHandler : IRequestHandler<AiPromptUpdateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<AiPromptUpdateHandler> _logger;
     private readonly IAiPromptRepository _aIPromptRepository;
 
 
-    public AiPromptUpdateHandler(IMapper mapper,
+    public AiPromptUpdateHandler(
         IAppLogger<AiPromptUpdateHandler> logger,
         IAiPromptRepository aIPromptRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _aIPromptRepository = aIPromptRepository ?? throw new ArgumentNullException(nameof(aIPromptRepository));
     }
@@ -47,8 +44,14 @@ public class AiPromptUpdateHandler : IRequestHandler<AiPromptUpdateCommand, Resu
 
         try
         {
-            // Map to domain entity
-            var aIPromptToUpdate = _mapper.Map<Domain.Entities.AiPrompt>(request);
+            // Manuelles Mapping statt AutoMapper
+            var aIPromptToUpdate = new Domain.Entities.AiPrompt
+            {
+                Id = request.Id,
+                AiModelId = request.AiModelId,
+                Identifier = request.Identifier,
+                PromptText = request.PromptText
+            };
             
             // Update in database
             await _aIPromptRepository.UpdateAsync(aIPromptToUpdate);

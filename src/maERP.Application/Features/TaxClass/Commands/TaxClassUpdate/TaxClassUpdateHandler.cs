@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,16 +7,14 @@ namespace maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 
 public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<TaxClassUpdateHandler> _logger;
     private readonly ITaxClassRepository _taxClassRepository;
 
 
-    public TaxClassUpdateHandler(IMapper mapper,
+    public TaxClassUpdateHandler(
         IAppLogger<TaxClassUpdateHandler> logger,
         ITaxClassRepository taxClassRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
@@ -47,8 +44,12 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Resu
 
         try
         {
-            // Map to domain entity
-            var taxClassToUpdate = _mapper.Map<Domain.Entities.TaxClass>(request);
+            // Manually map to domain entity
+            var taxClassToUpdate = new Domain.Entities.TaxClass
+            {
+                Id = request.Id,
+                TaxRate = request.TaxRate
+            };
             
             // Update in database
             await _taxClassRepository.UpdateAsync(taxClassToUpdate);

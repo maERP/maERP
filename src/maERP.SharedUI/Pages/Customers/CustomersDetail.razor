@@ -37,12 +37,12 @@
 
                         <div class="mt-3">
                             <MudText Typo="Typo.caption">Firma</MudText>
-                            <MudText Typo="Typo.body1">@(_customerDetail.CompanyName ?? "-")</MudText>
+                            <MudText Typo="Typo.body1">@_customerDetail.CompanyName</MudText>
                         </div>
 
                         <div class="mt-3">
                             <MudText Typo="Typo.caption">Status</MudText>
-                            <MudText Typo="Typo.body1">@(@_customerDetail.CustomerStatus.ToString() ?? "-")</MudText>
+                            <MudText Typo="Typo.body1">@(@_customerDetail.CustomerStatus.ToString())</MudText>
                         </div>
                     </MudStack>
                 </MudPaper>
@@ -99,7 +99,7 @@
 
                         <div class="mt-3">
                             <MudText Typo="Typo.caption">USt-IdNr.</MudText>
-                            <MudText Typo="Typo.body1">@(_customerDetail.VatNumber ?? "-")</MudText>
+                            <MudText Typo="Typo.body1">@_customerDetail.VatNumber</MudText>
                         </div>
 
                         <div class="mt-3">

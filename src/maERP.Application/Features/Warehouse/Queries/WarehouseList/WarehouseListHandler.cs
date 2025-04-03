@@ -1,6 +1,4 @@
 ﻿using System.Linq.Dynamic.Core;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -14,15 +12,13 @@ namespace maERP.Application.Features.Warehouse.Queries.WarehouseList;
 // ReSharper disable once UnusedType.Global
 public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, PaginatedResult<WarehouseListDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<WarehouseListHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
 
-    public WarehouseListHandler(IMapper mapper,
+    public WarehouseListHandler(
         IAppLogger<WarehouseListHandler> logger, 
         IWarehouseRepository warehouseRepository)
     {
-        _mapper = mapper;
         _logger = logger;
         _warehouseRepository = warehouseRepository; 
     }
@@ -36,7 +32,11 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
         {
             return await _warehouseRepository.Entities
                .Specify(warehouseFilterSpec)
-               .ProjectTo<WarehouseListDto>(_mapper.ConfigurationProvider)
+               .Select(w => new WarehouseListDto
+               {
+                   Id = w.Id,
+                   Name = w.Name
+               })
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
@@ -45,7 +45,11 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
         return await _warehouseRepository.Entities
             .Specify(warehouseFilterSpec)
             .OrderBy(ordering)
-            .ProjectTo<WarehouseListDto>(_mapper.ConfigurationProvider)
+            .Select(w => new WarehouseListDto
+            {
+                Id = w.Id,
+                Name = w.Name
+            })
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

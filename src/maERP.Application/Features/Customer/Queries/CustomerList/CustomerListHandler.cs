@@ -1,6 +1,4 @@
 ﻿using System.Linq.Dynamic.Core;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -13,15 +11,13 @@ namespace maERP.Application.Features.Customer.Queries.CustomerList;
 
 public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedResult<CustomerListDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<CustomerListHandler> _logger;
     private readonly ICustomerRepository _customerRepository;
 
-    public CustomerListHandler(IMapper mapper,
+    public CustomerListHandler(
         IAppLogger<CustomerListHandler> logger, 
         ICustomerRepository customerRepository)
     {
-        _mapper = mapper;
         _logger = logger;
         _customerRepository = customerRepository; 
     }
@@ -35,7 +31,13 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
         {
             return await _customerRepository.Entities
                .Specify(customerFilterSpec)
-               .ProjectTo<CustomerListDto>(_mapper.ConfigurationProvider)
+               .Select(c => new CustomerListDto
+               {
+                   Id = c.Id,
+                   Firstname = c.Firstname,
+                   Lastname = c.Lastname,
+                   DateEnrollment = c.DateEnrollment
+               })
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
@@ -44,7 +46,13 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
         return await _customerRepository.Entities
             .Specify(customerFilterSpec)
             .OrderBy(ordering)
-            .ProjectTo<CustomerListDto>(_mapper.ConfigurationProvider)
+            .Select(c => new CustomerListDto
+            {
+                Id = c.Id,
+                Firstname = c.Firstname,
+                Lastname = c.Lastname,
+                DateEnrollment = c.DateEnrollment
+            })
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System.Linq.Dynamic.Core;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -13,18 +11,17 @@ namespace maERP.Application.Features.TaxClass.Queries.TaxClassList;
 
 public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, PaginatedResult<TaxClassListDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<TaxClassListHandler> _logger;
     private readonly ITaxClassRepository _taxClassRepository;
 
-    public TaxClassListHandler(IMapper mapper,
+    public TaxClassListHandler(
         IAppLogger<TaxClassListHandler> logger, 
         ITaxClassRepository taxClassRepository)
     {
-        _mapper = mapper;
         _logger = logger;
         _taxClassRepository = taxClassRepository; 
     }
+    
     public async Task<PaginatedResult<TaxClassListDto>> Handle(TaxClassListQuery request, CancellationToken cancellationToken)
     {
         var taxClassFilterSpec = new TaxClassFilterSpecification(request.SearchString);
@@ -35,7 +32,11 @@ public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, PaginatedR
         {
             return await _taxClassRepository.Entities
                .Specify(taxClassFilterSpec)
-               .ProjectTo<TaxClassListDto>(_mapper.ConfigurationProvider)
+               .Select(t => new TaxClassListDto
+               {
+                   Id = t.Id,
+                   TaxRate = t.TaxRate
+               })
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
@@ -44,7 +45,11 @@ public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, PaginatedR
         return await _taxClassRepository.Entities
             .Specify(taxClassFilterSpec)
             .OrderBy(ordering)
-            .ProjectTo<TaxClassListDto>(_mapper.ConfigurationProvider)
+            .Select(t => new TaxClassListDto
+            {
+                Id = t.Id,
+                TaxRate = t.TaxRate
+            })
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

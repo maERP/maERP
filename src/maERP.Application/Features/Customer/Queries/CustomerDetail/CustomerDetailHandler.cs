@@ -1,7 +1,7 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Customer;
+using maERP.Domain.Dtos.CustomerAddress;
 using maERP.Domain.Wrapper;
 using MediatR;
 
@@ -9,15 +9,13 @@ namespace maERP.Application.Features.Customer.Queries.CustomerDetail;
 
 public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result<CustomerDetailDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<CustomerDetailHandler> _logger;
     private readonly ICustomerRepository _customerRepository;
 
-    public CustomerDetailHandler(IMapper mapper,
+    public CustomerDetailHandler(
         IAppLogger<CustomerDetailHandler> logger,
         ICustomerRepository customerRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
@@ -42,7 +40,34 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
                 return result;
             }
 
-            var data = _mapper.Map<CustomerDetailDto>(customer);
+            // Manuelles Mapping statt AutoMapper
+            var data = new CustomerDetailDto
+            {
+                Id = customer.Id,
+                Firstname = customer.Firstname,
+                Lastname = customer.Lastname,
+                CompanyName = customer.CompanyName,
+                Email = customer.Email,
+                Phone = customer.Phone,
+                Website = customer.Website,
+                VatNumber = customer.VatNumber,
+                Note = customer.Note,
+                CustomerStatus = customer.CustomerStatus,
+                DateEnrollment = customer.DateEnrollment,
+                CustomerAddresses = customer.CustomerAddresses?.Select(ca => new CustomerAddressListDto
+                {
+                    Id = ca.Id,
+                    Firstname = ca.Firstname,
+                    Lastname = ca.Lastname,
+                    CompanyName = ca.CompanyName,
+                    Street = ca.Street,
+                    HouseNr = ca.HouseNr,
+                    Zip = ca.Zip,
+                    City = ca.City,
+                    DefaultDeliveryAddress = ca.DefaultDeliveryAddress,
+                    DefaultInvoiceAddress = ca.DefaultInvoiceAddress
+                }).ToList() ?? new List<CustomerAddressListDto>()
+            };
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;

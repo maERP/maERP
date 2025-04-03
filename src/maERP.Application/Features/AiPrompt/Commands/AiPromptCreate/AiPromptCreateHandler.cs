@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,15 +7,13 @@ namespace maERP.Application.Features.AiPrompt.Commands.AiPromptCreate;
 
 public class AiPromptCreateHandler : IRequestHandler<AiPromptCreateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<AiPromptCreateHandler> _logger;
     private readonly IAiPromptRepository _aIPromptRepository;
 
-    public AiPromptCreateHandler(IMapper mapper,
+    public AiPromptCreateHandler(
         IAppLogger<AiPromptCreateHandler> logger,
         IAiPromptRepository aIPromptRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _aIPromptRepository = aIPromptRepository ?? throw new ArgumentNullException(nameof(aIPromptRepository));
     }
@@ -46,8 +43,13 @@ public class AiPromptCreateHandler : IRequestHandler<AiPromptCreateCommand, Resu
 
         try
         {
-            // Map and create entity
-            var aIPromptToCreate = _mapper.Map<Domain.Entities.AiPrompt>(request);
+            // Manuelles Mapping statt AutoMapper
+            var aIPromptToCreate = new Domain.Entities.AiPrompt
+            {
+                AiModelId = request.AiModelId,
+                Identifier = request.Identifier,
+                PromptText = request.PromptText
+            };
             
             // add to database
             await _aIPromptRepository.CreateAsync(aIPromptToCreate);

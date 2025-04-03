@@ -18,18 +18,10 @@ public partial class AiModelsDetail
 
     protected string Title = "AI Model";
 
-    protected AiModelDetailDto? AiModel = new();
-    
-    protected Result<AiModelDetailDto> AiModelResult = new();
-    
-    protected bool IsLoading = true;
-    protected string? ErrorMessage;
+    protected AiModelDetailDto AiModel = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        IsLoading = true;
-        ErrorMessage = null;
-        
         if (aiModelId != 0)
         {
             var result = await httpService.GetAsync<Result<AiModelDetailDto>>($"/api/v1/AiModels/{aiModelId}");
@@ -40,16 +32,12 @@ public partial class AiModelsDetail
             }
             else if(result != null && result.StatusCode == ResultStatusCode.NotFound)
             {
-                ErrorMessage = $"AI Model with ID {aiModelId} not found";
-                Title = "nicht gefunden"; 
+                Title = "nicht gefunden";
             }
         }
         else 
         {
             Title = "nicht gefunden";
-            ErrorMessage = "Invalid AI Model ID";
         }
-        
-        IsLoading = false;
     }
 }

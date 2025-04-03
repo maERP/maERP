@@ -3,4 +3,24 @@
 
 @attribute [Authorize]
 
-<h1>AI Prompt</h1>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">AI Prompt - @AiPromptDetail.Identifier</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/AiPrompts/{aiPromptId}/edit")" />
+</MudStack>
+
+<MudCard>
+    <MudCardContent>
+        <MudText Typo="Typo.h6">ID: @AiPromptDetail.Id</MudText>
+        <MudText Typo="Typo.body1">Identifier: @AiPromptDetail.Identifier</MudText>
+        <MudText Typo="Typo.body1">AI Model ID: @AiPromptDetail.AiModelId</MudText>
+        <MudDivider Class="my-4" />
+        <MudText Typo="Typo.h6">Prompt Text:</MudText>
+        <MudPaper Class="pa-4 mt-2" Elevation="0" Outlined="true">
+            <MudText>@AiPromptDetail.PromptText</MudText>
+        </MudPaper>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Href="/AiPrompts">Zurück zur Liste</MudButton>
+    </MudCardActions>
+</MudCard>

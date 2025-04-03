@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.SalesChannel;
@@ -9,15 +8,13 @@ namespace maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
 
 public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery, Result<SalesChannelDetailDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<SalesChannelDetailHandler> _logger;
     private readonly ISalesChannelRepository _salesChannelRepository;
 
-    public SalesChannelDetailHandler(IMapper mapper,
+    public SalesChannelDetailHandler(
         IAppLogger<SalesChannelDetailHandler> logger,
         ISalesChannelRepository salesChannelRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
     }
@@ -42,7 +39,7 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
                 return result;
             }
 
-            var data = _mapper.Map<SalesChannelDetailDto>(salesChannel);
+            var data = MapToDetailDto(salesChannel);
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
@@ -60,5 +57,25 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
         }
         
         return result;
+    }
+    
+    private SalesChannelDetailDto MapToDetailDto(Domain.Entities.SalesChannel entity)
+    {
+        return new SalesChannelDetailDto
+        {
+            Id = entity.Id,
+            SalesChannelType = entity.Type,
+            Name = entity.Name,
+            Url = entity.Url,
+            Username = entity.Username,
+            Password = entity.Password,
+            ImportProducts = entity.ImportProducts,
+            ImportCustomers = entity.ImportCustomers,
+            ImportOrders = entity.ImportOrders,
+            ExportProducts = entity.ExportProducts,
+            ExportCustomers = entity.ExportCustomers,
+            ExportOrders = entity.ExportOrders,
+            WarehouseId = entity.WarehouseId
+        };
     }
 }

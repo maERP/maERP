@@ -10,7 +10,6 @@ using maERP.Persistence.DatabaseContext;
 using maERP.Persistence.Repositories;
 using maERP.SalesChannels;
 using maERP.Server;
-using maERP.Server.Middlewares;
 using maERP.Server.ServiceRegistrations;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;

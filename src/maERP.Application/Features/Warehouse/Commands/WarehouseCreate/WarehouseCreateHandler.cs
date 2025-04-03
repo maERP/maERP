@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,15 +7,13 @@ namespace maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
 
 public class WarehouseCreateHandler : IRequestHandler<WarehouseCreateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<WarehouseCreateHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
 
-    public WarehouseCreateHandler(IMapper mapper,
+    public WarehouseCreateHandler(
         IAppLogger<WarehouseCreateHandler> logger,
         IWarehouseRepository warehouseRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
     }
@@ -46,8 +43,11 @@ public class WarehouseCreateHandler : IRequestHandler<WarehouseCreateCommand, Re
 
         try
         {
-            // convert to domain entity object
-            var warehouseToCreate = _mapper.Map<Domain.Entities.Warehouse>(request);
+            // Manuelles Mapping zur Domain-Entität
+            var warehouseToCreate = new Domain.Entities.Warehouse
+            {
+                Name = request.Name
+            };
             
             // add to database
             await _warehouseRepository.CreateAsync(warehouseToCreate);

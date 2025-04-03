@@ -1,7 +1,6 @@
 using Asp.Versioning;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Models.Identity;
-using maERP.Domain.Wrapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

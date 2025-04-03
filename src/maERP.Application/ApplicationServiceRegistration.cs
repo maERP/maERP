@@ -11,8 +11,6 @@ public static class ApplicationServiceRegistration
             options.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
 
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
         return services;
     }
 }

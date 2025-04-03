@@ -85,7 +85,7 @@ public partial class Login
         
         // If server URL is already loaded, use it in the form
         var serverUrl = ServerUrlProvider.ServerUrl;
-        if (serverUrl != null && !string.IsNullOrEmpty(serverUrl.ToString()))
+        if (!string.IsNullOrEmpty(serverUrl.ToString()))
         {
             _model.Server = serverUrl.ToString();
         }

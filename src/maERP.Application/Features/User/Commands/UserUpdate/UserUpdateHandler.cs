@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
@@ -8,13 +7,11 @@ namespace maERP.Application.Features.User.Commands.UserUpdate;
 
 public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<string>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<UserUpdateHandler> _logger;
     
-    public UserUpdateHandler(IMapper mapper,
+    public UserUpdateHandler(
         IAppLogger<UserUpdateHandler> logger)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -43,8 +40,14 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
 
         try
         {
-            // Map to domain entity
-            var userToUpdate = _mapper.Map<ApplicationUser>(request);
+            // Manuelles Mapping statt AutoMapper
+            var userToUpdate = new ApplicationUser
+            {
+                Id = request.Id,
+                UserName = request.Email,
+                Email = request.Email,
+                DateModified = DateTime.UtcNow
+            };
             
             // TODO: add to database
             // await _userRepository.UpdateAsync(userToUpdate);

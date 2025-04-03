@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Product;
@@ -9,15 +8,13 @@ namespace maERP.Application.Features.Product.Queries.ProductDetail;
 
 public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<ProductDetailDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<ProductDetailHandler> _logger;
     private readonly IProductRepository _productRepository;
 
-    public ProductDetailHandler(IMapper mapper,
+    public ProductDetailHandler(
         IAppLogger<ProductDetailHandler> logger,
         IProductRepository productRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
@@ -42,7 +39,28 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
                 return result;
             }
 
-            var data = _mapper.Map<ProductDetailDto>(product);
+            // Manuelles Mapping statt AutoMapper
+            var data = new ProductDetailDto
+            {
+                Id = product.Id,
+                Sku = product.Sku,
+                Name = product.Name,
+                NameOptimized = product.NameOptimized,
+                Ean = product.Ean,
+                Asin = product.Asin,
+                Description = product.Description,
+                DescriptionOptimized = product.DescriptionOptimized,
+                UseOptimized = product.UseOptimized,
+                Price = product.Price,
+                Msrp = product.Msrp,
+                Weight = product.Weight,
+                Width = product.Width,
+                Height = product.Height,
+                Depth = product.Depth,
+                TaxClassId = product.TaxClassId,
+                ProductSalesChannel = product.ProductSalesChannels?.Select(psc => psc.Id).ToList() ?? new List<int>(),
+                ProductStocks = product.ProductStocks.Select(ps => ps.Id).ToList()
+            };
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;

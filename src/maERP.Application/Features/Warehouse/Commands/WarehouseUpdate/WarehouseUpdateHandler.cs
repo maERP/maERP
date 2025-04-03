@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,16 +7,14 @@ namespace maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
 
 public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<WarehouseUpdateHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
 
 
-    public WarehouseUpdateHandler(IMapper mapper,
+    public WarehouseUpdateHandler(
         IAppLogger<WarehouseUpdateHandler> logger,
         IWarehouseRepository warehouseRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
     }
@@ -47,8 +44,12 @@ public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, Re
 
         try
         {
-            // Map to domain entity
-            var warehouseToUpdate = _mapper.Map<Domain.Entities.Warehouse>(request);
+            // Manuelles Mapping zur Domain-Entität
+            var warehouseToUpdate = new Domain.Entities.Warehouse
+            {
+                Id = request.Id,
+                Name = request.Name
+            };
             
             // Update in database
             await _warehouseRepository.UpdateAsync(warehouseToUpdate);

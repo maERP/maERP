@@ -29,7 +29,7 @@ maERP/
     ├── maERP.Analytics/               # Analytics Services
     ├── maERP.Application/             # Application Layer, DTOs, MappingProfiles
     ├── maERP.Client/                  # Multi-Platform Client
-    └── maERP.Domain/                  # Entities, Enums, Result-Wrappers, Validators
+    ├── maERP.Domain/                  # Entities, Enums, Result-Wrappers, Validators
     ├── maERP.Identity/                # Services, Roles, Users, Permissions 
     ├── maERP.Infrastructure/          # Infrastructure Layer
     ├── maERP.Persistence/             # DB Context (ApplicationDbContext)
@@ -40,10 +40,10 @@ maERP/
     ├── maERP.Server/                  # Headless ERP System with REST API, Controllers
     ├── maERP.Shared/                  # Common classes
     ├── maERP.SharedUI/                # Blazor Pages for Web and Client
-    ├── maERP.Web/                     # WASM Web Client
-├── tests/
+    └── maERP.Web/                     # WASM Web Client
+└── tests/
     ├── maERP.Persistence.Tests/       # DB Context Tests
-    ├── maERP.Server.Tests/            # REST API Tests
+    └── maERP.Server.Tests/            # REST API Tests
 ```
 
 ## Project maERP.Server
@@ -106,7 +106,7 @@ You are a senior .NET backend developer and an expert in C#, ASP.NET Core, Blazo
 ## Key Conventions
 - Use Dependency Injection for loose coupling and testability.
 - Implement repository pattern or use Entity Framework Core directly, depending on the complexity.
-- Use AutoMapper for object-to-object mapping if needed.
+- Don't use AutoMapper for object-to-object mapping. Do manuall mapping if needed. Replace existing AutoMapper-Mappings with manual mappings and without helper-classes.
 - Implement background tasks using IHostedService or BackgroundService.
 
 ## Testing
@@ -127,5 +127,6 @@ You are a senior .NET backend developer and an expert in C#, ASP.NET Core, Blazo
 ## API Documentation
 - Use Swagger/OpenAPI for API documentation (as per installed Swashbuckle.AspNetCore package).
 - Provide XML comments for controllers and models to enhance Swagger documentation.
+- Write code comments in english.
 
 Follow the official Microsoft documentation and ASP.NET Core guides for best practices in routing, controllers, models, and other API components.

@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,16 +7,13 @@ namespace maERP.Application.Features.Product.Commands.ProductUpdate;
 
 public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<ProductUpdateHandler> _logger;
     private readonly IProductRepository _productRepository;
 
-
-    public ProductUpdateHandler(IMapper mapper,
+    public ProductUpdateHandler(
         IAppLogger<ProductUpdateHandler> logger,
         IProductRepository productRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
@@ -47,8 +43,26 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
 
         try
         {
-            // Map to domain entity
-            var productToUpdate = _mapper.Map<Domain.Entities.Product>(request);
+            // Manuelles Mapping statt AutoMapper
+            var productToUpdate = new Domain.Entities.Product
+            {
+                Id = request.Id,
+                Sku = request.Sku,
+                Name = request.Name,
+                NameOptimized = request.NameOptimized,
+                Ean = request.Ean,
+                Asin = request.Asin,
+                Description = request.Description,
+                DescriptionOptimized = request.DescriptionOptimized,
+                UseOptimized = request.UseOptimized,
+                Price = request.Price,
+                Msrp = request.Msrp,
+                Weight = request.Weight,
+                Width = request.Width,
+                Height = request.Height,
+                Depth = request.Depth,
+                TaxClassId = request.TaxClassId
+            };
             
             // Update in database
             await _productRepository.UpdateAsync(productToUpdate);

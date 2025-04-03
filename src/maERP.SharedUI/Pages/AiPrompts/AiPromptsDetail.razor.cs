@@ -1,4 +1,5 @@
 using maERP.Domain.Dtos.AiPrompt;
+using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using Microsoft.AspNetCore.Components;
 
@@ -15,7 +16,7 @@ public partial class AiPromptsDetail
     [Parameter]
     public int aiPromptId { get; set; }
 
-    protected string Title = "AI Model";
+    protected string Title = "AI Prompt";
 
     protected AiPromptDetailDto AiPromptDetail = new();
 
@@ -23,9 +24,20 @@ public partial class AiPromptsDetail
     {
         if (aiPromptId != 0)
         {
-            Title = "Bearbeiten";
-            AiPromptDetail = await HttpService.GetAsync<AiPromptDetailDto>("/api/v1/AiPrompts/" + aiPromptId) ?? new AiPromptDetailDto();
+            var result = await HttpService.GetAsync<Result<AiPromptDetailDto>>($"/api/v1/AiPrompts/{aiPromptId}");
+            
+            if (result != null && result.Succeeded)
+            {
+                AiPromptDetail = result.Data;
+            }
+            else if(result != null && result.StatusCode == ResultStatusCode.NotFound)
+            {
+                Title = "nicht gefunden";
+            }
         }
-        else Title = "nicht gefunden";
+        else 
+        {
+            Title = "nicht gefunden";
+        }
     }
 }

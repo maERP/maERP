@@ -3,7 +3,6 @@ using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System.Globalization;
 
 namespace maERP.SharedUI.Pages.Dashboard;
 
@@ -43,7 +42,7 @@ public partial class Dashboard
                 var orderStatistics = result.Data;
                 
                 // Verwende die typisierte DailyStatistics-Liste
-                if (orderStatistics.DailyStatistics != null && orderStatistics.DailyStatistics.Any())
+                if (orderStatistics.DailyStatistics.Any())
                 {
                     // Sortiere die Daten nach Datum
                     var orderedDailyStats = orderStatistics.DailyStatistics.OrderBy(x => x.Date).ToList();

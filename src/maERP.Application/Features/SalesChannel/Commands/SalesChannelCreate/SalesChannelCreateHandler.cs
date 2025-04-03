@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,15 +7,13 @@ namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 
 public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<SalesChannelCreateHandler> _logger;
     private readonly ISalesChannelRepository _salesChannelRepository;
 
-    public SalesChannelCreateHandler(IMapper mapper,
+    public SalesChannelCreateHandler(
         IAppLogger<SalesChannelCreateHandler> logger,
         ISalesChannelRepository salesChannelRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
     }
@@ -46,8 +43,8 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
 
         try
         {
-            // Map and create entity
-            var salesChannelToCreate = _mapper.Map<Domain.Entities.SalesChannel>(request);
+            // Map und create entity
+            var salesChannelToCreate = MapToEntity(request);
             
             // add to database
             await _salesChannelRepository.CreateAsync(salesChannelToCreate);
@@ -68,5 +65,24 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
         }
 
         return result;
+    }
+    
+    private Domain.Entities.SalesChannel MapToEntity(SalesChannelCreateCommand command)
+    {
+        return new Domain.Entities.SalesChannel
+        {
+            Type = command.SalesChannelType,
+            Name = command.Name,
+            Url = command.Url,
+            Username = command.Username,
+            Password = command.Password,
+            ImportProducts = command.ImportProducts,
+            ImportCustomers = command.ImportCustomers,
+            ImportOrders = command.ImportOrders,
+            ExportProducts = command.ExportProducts,
+            ExportCustomers = command.ExportCustomers,
+            ExportOrders = command.ExportOrders,
+            WarehouseId = command.WarehouseId
+        };
     }
 }

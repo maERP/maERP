@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using maERP.Domain.Dtos.Product;
+using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Validators;
@@ -33,8 +34,17 @@ public partial class ProductsEdit
 
     public bool ProductAiHelperVisible;
 
+    public List<TaxClassListDto> TaxClasses { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
+        // Steuerklassen laden
+        var taxClassResult = await HttpService.GetAsync<Result<List<TaxClassListDto>>>($"/api/v1/TaxClasses");
+        if (taxClassResult != null && taxClassResult.Succeeded)
+        {
+            TaxClasses = taxClassResult.Data;
+        }
+        
         if (productId == 0)
         {
             Title = "Produkt hinzufügen";

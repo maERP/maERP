@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.User;
@@ -9,15 +8,13 @@ namespace maERP.Application.Features.User.Queries.UserDetail;
 
 public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDetailDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<UserDetailHandler> _logger;
     private readonly IUserRepository _userRepository;
 
-    public UserDetailHandler(IMapper mapper,
+    public UserDetailHandler(
         IAppLogger<UserDetailHandler> logger,
         IUserRepository userRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
@@ -43,8 +40,14 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                 return result;
             }
 
-            // Convert data objects to DTO objects
-            var data = _mapper.Map<UserDetailDto>(user);
+            // Manuelles Mapping statt AutoMapper
+            var data = new UserDetailDto
+            {
+                Id = user.Id,
+                Email = user.Email ?? string.Empty,
+                Firstname = user.Firstname,
+                Lastname = user.Lastname
+            };
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;

@@ -1,6 +1,4 @@
 using System.Linq.Dynamic.Core;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
@@ -13,15 +11,13 @@ namespace maERP.Application.Features.Order.Queries.OrderCustomerList;
 
 public class OrderCustomerListHandler : IRequestHandler<OrderCustomerListQuery, PaginatedResult<OrderListDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<OrderCustomerListHandler> _logger;
     private readonly IOrderRepository _orderRepository;
 
-    public OrderCustomerListHandler(IMapper mapper,
+    public OrderCustomerListHandler(
         IAppLogger<OrderCustomerListHandler> logger, 
         IOrderRepository orderRepository)
     {
-        _mapper = mapper;
         _logger = logger;
         _orderRepository = orderRepository; 
     }
@@ -36,7 +32,17 @@ public class OrderCustomerListHandler : IRequestHandler<OrderCustomerListQuery, 
         {
             return await _orderRepository.Entities
                .Specify(orderFilterSpec)
-               .ProjectTo<OrderListDto>(_mapper.ConfigurationProvider)
+               .Select(o => new OrderListDto
+               {
+                   Id = o.Id,
+                   CustomerId = o.CustomerId,
+                   InvoiceAddressFirstName = o.InvoiceAddressFirstName,
+                   InvoiceAddressLastName = o.InvoiceAddressLastName,
+                   Total = o.Total,
+                   Status = o.Status.ToString(),
+                   PaymentStatus = o.PaymentStatus.ToString(),
+                   DateOrdered = o.DateOrdered
+               })
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
@@ -45,7 +51,17 @@ public class OrderCustomerListHandler : IRequestHandler<OrderCustomerListQuery, 
         return await _orderRepository.Entities
             .Specify(orderFilterSpec)
             .OrderBy(ordering)
-            .ProjectTo<OrderListDto>(_mapper.ConfigurationProvider)
+            .Select(o => new OrderListDto
+            {
+                Id = o.Id,
+                CustomerId = o.CustomerId,
+                InvoiceAddressFirstName = o.InvoiceAddressFirstName,
+                InvoiceAddressLastName = o.InvoiceAddressLastName,
+                Total = o.Total,
+                Status = o.Status.ToString(),
+                PaymentStatus = o.PaymentStatus.ToString(),
+                DateOrdered = o.DateOrdered
+            })
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 } 

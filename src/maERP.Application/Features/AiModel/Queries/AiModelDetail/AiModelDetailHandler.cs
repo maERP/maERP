@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.AiModel;
@@ -9,15 +8,13 @@ namespace maERP.Application.Features.AiModel.Queries.AiModelDetail;
 
 public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, Result<AiModelDetailDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<AiModelDetailHandler> _logger;
     private readonly IAiModelRepository _aiModelRepository;
 
-    public AiModelDetailHandler(IMapper mapper,
+    public AiModelDetailHandler(
         IAppLogger<AiModelDetailHandler> logger,
         IAiModelRepository aiModelRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _aiModelRepository = aiModelRepository ?? throw new ArgumentNullException(nameof(aiModelRepository));
     }
@@ -42,7 +39,16 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, Result<A
                 return result;
             }
 
-            var data = _mapper.Map<AiModelDetailDto>(aiModel);
+            // Manuelle Mapping statt AutoMapper
+            var data = new AiModelDetailDto
+            {
+                Id = aiModel.Id,
+                AiModelType = aiModel.AiModelType,
+                Name = aiModel.Name,
+                ApiUsername = aiModel.ApiUsername,
+                ApiPassword = aiModel.ApiPassword,
+                ApiKey = aiModel.ApiKey
+            };
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;

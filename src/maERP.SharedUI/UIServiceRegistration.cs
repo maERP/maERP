@@ -1,4 +1,3 @@
-using System.Reflection;
 using Blazored.LocalStorage;
 using maERP.SharedUI.Contracts;
 using maERP.SharedUI.Providers;
@@ -17,8 +16,6 @@ public static class UiServicesRegistration
         services.AddBlazoredLocalStorage();
         services.AddMudServices();
         services.AddAuthorizationCore();
-
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
         
         // Register ServerUrlProvider as singleton - this is safe and doesn't depend on scoped services
         services.AddSingleton<ServerUrlProvider>();

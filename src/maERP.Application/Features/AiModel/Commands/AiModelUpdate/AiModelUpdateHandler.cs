@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,16 +7,14 @@ namespace maERP.Application.Features.AiModel.Commands.AiModelUpdate;
 
 public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<AiModelUpdateHandler> _logger;
     private readonly IAiModelRepository _aiModelRepository;
 
 
-    public AiModelUpdateHandler(IMapper mapper,
+    public AiModelUpdateHandler(
         IAppLogger<AiModelUpdateHandler> logger,
         IAiModelRepository aiModelRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _aiModelRepository = aiModelRepository ?? throw new ArgumentNullException(nameof(aiModelRepository));
     }
@@ -47,8 +44,16 @@ public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result
 
         try
         {
-            // Map to domain entity
-            var aiModelToUpdate = _mapper.Map<Domain.Entities.AiModel>(request);
+            // Direktes manuelles Mapping ohne Helper-Klasse
+            var aiModelToUpdate = new Domain.Entities.AiModel
+            {
+                Id = request.Id,
+                Name = request.Name,
+                AiModelType = request.AiModelType,
+                ApiUsername = request.ApiUsername,
+                ApiPassword = request.ApiPassword,
+                ApiKey = request.ApiKey
+            };
             
             // Update in database
             await _aiModelRepository.UpdateAsync(aiModelToUpdate);

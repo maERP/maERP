@@ -1,5 +1,3 @@
-@using maERP.Domain.Dtos.CustomerAddress
-
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
@@ -7,7 +5,7 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm @ref="form" Model="@Address">
+        <MudForm @ref="_form" Model="@Address">
             <MudGrid>
                 <MudItem xs="6">
                     <MudTextField @bind-Value="Address.Firstname"
@@ -86,30 +84,3 @@
         <MudButton Color="Color.Primary" OnClick="Submit" Variant="Variant.Filled">Speichern</MudButton>
     </DialogActions>
 </MudDialog>
-
-@code {
-    private MudForm? form;
-    
-    [CascadingParameter] 
-    IMudDialogInstance MudDialog { get; set; } = null!;
-    
-    [Parameter] 
-    public CustomerAddressListDto Address { get; set; } = new();
-    
-    [Parameter]
-    public bool IsNew { get; set; }
-    
-    private void Submit()
-    {
-        // Bei neuen Adressen eine temporäre negative ID vergeben
-        if (IsNew)
-        {
-            // Tempöräre ID generieren (negativ, damit sie sich nicht mit existierenden IDs überschneiden)
-            Address.Id = new Random().Next(-1000, -1);
-        }
-        
-        MudDialog.Close(DialogResult.Ok(Address));
-    }
-    
-    private void Cancel() => MudDialog.Cancel();
-} 

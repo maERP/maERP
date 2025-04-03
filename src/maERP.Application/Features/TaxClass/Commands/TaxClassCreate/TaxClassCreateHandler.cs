@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,15 +7,13 @@ namespace maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 
 public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<TaxClassCreateHandler> _logger;
     private readonly ITaxClassRepository _taxClassRepository;
 
-    public TaxClassCreateHandler(IMapper mapper,
+    public TaxClassCreateHandler(
         IAppLogger<TaxClassCreateHandler> logger,
         ITaxClassRepository taxClassRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
@@ -46,8 +43,11 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
 
         try
         {
-            // Map and create entity
-            var taxClassToCreate = _mapper.Map<Domain.Entities.TaxClass>(request);
+            // Manually map to entity
+            var taxClassToCreate = new Domain.Entities.TaxClass
+            {
+                TaxRate = request.TaxRate
+            };
             
             // add to database
             await _taxClassRepository.CreateAsync(taxClassToCreate);

@@ -3,4 +3,19 @@
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">@Title</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Lager - @Warehouse.Name</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/Warehouses/{warehouseId}/Edit")" />
+</MudStack>
+
+<MudCard>
+    <MudCardContent>
+        <MudText Typo="Typo.h6">ID: @Warehouse.Id</MudText>
+        <MudText Typo="Typo.body1">Name: @Warehouse.Name</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateToEdit">Bearbeiten</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="NavigateToList">Zurück zur Liste</MudButton>
+    </MudCardActions>
+</MudCard>

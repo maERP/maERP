@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Entities;
@@ -9,15 +8,13 @@ namespace maERP.Application.Features.User.Commands.UserCreate;
 
 public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<string>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<UserCreateHandler> _logger;
     private readonly IUserRepository _userRepository;
 
-    public UserCreateHandler(IMapper mapper,
+    public UserCreateHandler(
         IAppLogger<UserCreateHandler> logger,
         IUserRepository userRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
@@ -47,8 +44,14 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
 
         try
         {
-            // convert to domain entity object
-            var userToCreate = _mapper.Map<ApplicationUser>(request);
+            // Manuelles Mapping statt AutoMapper
+            var userToCreate = new ApplicationUser
+            {
+                UserName = request.Email,
+                Email = request.Email,
+                DateCreated = DateTime.UtcNow,
+                DateModified = DateTime.UtcNow
+            };
             
             // add to database
             await _userRepository.CreateAsync(userToCreate, request.Password);

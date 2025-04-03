@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.AiPrompt;
@@ -9,15 +8,13 @@ namespace maERP.Application.Features.AiPrompt.Queries.AiPromptDetail;
 
 public class AiPromptDetailHandler : IRequestHandler<AiPromptDetailQuery, Result<AiPromptDetailDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<AiPromptDetailHandler> _logger;
     private readonly IAiPromptRepository _aiPromptRepository;
 
-    public AiPromptDetailHandler(IMapper mapper,
+    public AiPromptDetailHandler(
         IAppLogger<AiPromptDetailHandler> logger,
         IAiPromptRepository aiPromptRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _aiPromptRepository = aiPromptRepository ?? throw new ArgumentNullException(nameof(aiPromptRepository));
     }
@@ -42,7 +39,14 @@ public class AiPromptDetailHandler : IRequestHandler<AiPromptDetailQuery, Result
                 return result;
             }
 
-            var data = _mapper.Map<AiPromptDetailDto>(aiPrompt);
+            // Manuelles Mapping statt AutoMapper
+            var data = new AiPromptDetailDto
+            {
+                Id = aiPrompt.Id,
+                AiModelId = aiPrompt.AiModelId,
+                Identifier = aiPrompt.Identifier,
+                PromptText = aiPrompt.PromptText
+            };
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;

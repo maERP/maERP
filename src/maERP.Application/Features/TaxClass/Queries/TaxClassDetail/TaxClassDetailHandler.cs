@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.TaxClass;
@@ -9,15 +8,13 @@ namespace maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 
 public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, Result<TaxClassDetailDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<TaxClassDetailHandler> _logger;
     private readonly ITaxClassRepository _taxClassRepository;
 
-    public TaxClassDetailHandler(IMapper mapper,
+    public TaxClassDetailHandler(
         IAppLogger<TaxClassDetailHandler> logger,
         ITaxClassRepository taxClassRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
@@ -42,7 +39,12 @@ public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, Result
                 return result;
             }
 
-            var data = _mapper.Map<TaxClassDetailDto>(taxClass);
+            // Manual mapping
+            var data = new TaxClassDetailDto
+            {
+                Id = taxClass.Id,
+                TaxRate = taxClass.TaxRate
+            };
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;

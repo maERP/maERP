@@ -141,7 +141,7 @@ public partial class OrdersEdit
     }
 
     // Product search functionality
-    private async Task<IEnumerable<ProductListDto>>? SearchProducts(string? searchText, CancellationToken cancellationToken)
+    private async Task<IEnumerable<ProductListDto>> SearchProducts(string? searchText, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 2)
             return new List<ProductListDto>();
@@ -194,7 +194,7 @@ public partial class OrdersEdit
     }
     
     // Customer search functionality
-    private async Task<IEnumerable<CustomerListDto>>? SearchCustomers(string? searchText, CancellationToken cancellationToken)
+    private async Task<IEnumerable<CustomerListDto>> SearchCustomers(string? searchText, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 2)
             return new List<CustomerListDto>();

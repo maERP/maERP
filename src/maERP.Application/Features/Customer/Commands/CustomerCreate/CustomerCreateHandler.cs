@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
@@ -8,15 +7,13 @@ namespace maERP.Application.Features.Customer.Commands.CustomerCreate;
 
 public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<CustomerCreateHandler> _logger;
     private readonly ICustomerRepository _customerRepository;
 
-    public CustomerCreateHandler(IMapper mapper,
+    public CustomerCreateHandler(
         IAppLogger<CustomerCreateHandler> logger,
         ICustomerRepository customerRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
@@ -47,8 +44,21 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
 
         try
         {
-            // Map and create entity
-            var customerToCreate = _mapper.Map<Domain.Entities.Customer>(request);
+            // Manuelles Mapping statt AutoMapper
+            var customerToCreate = new Domain.Entities.Customer
+            {
+                Firstname = request.Firstname,
+                Lastname = request.Lastname,
+                CompanyName = request.CompanyName,
+                Email = request.Email,
+                Phone = request.Phone,
+                Website = request.Website,
+                VatNumber = request.VatNumber,
+                Note = request.Note,
+                CustomerStatus = request.CustomerStatus,
+                DateEnrollment = request.DateEnrollment
+                // CustomerAddresses würde eine zusätzliche Mapping-Logik erfordern
+            };
             
             // add to database
             await _customerRepository.CreateAsync(customerToCreate);

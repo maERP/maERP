@@ -1,4 +1,3 @@
-using AutoMapper;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Order;
@@ -9,15 +8,13 @@ namespace maERP.Application.Features.Order.Queries.OrderDetail;
 
 public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<OrderDetailDto>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<OrderDetailHandler> _logger;
     private readonly IOrderRepository _orderRepository;
 
-    public OrderDetailHandler(IMapper mapper,
+    public OrderDetailHandler(
         IAppLogger<OrderDetailHandler> logger,
         IOrderRepository orderRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
     }
@@ -42,7 +39,45 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 return result;
             }
 
-            var data = _mapper.Map<OrderDetailDto>(order);
+            var data = new OrderDetailDto
+            {
+                Id = order.Id,
+                SalesChannelId = order.SalesChannelId,
+                RemoteOrderId = order.RemoteOrderId,
+                CustomerId = order.CustomerId,
+                Status = order.Status,
+                OrderItems = order.OrderItems.ToList(),
+                PaymentMethod = order.PaymentMethod,
+                PaymentStatus = order.PaymentStatus,
+                PaymentProvider = order.PaymentProvider,
+                PaymentTransactionId = order.PaymentTransactionId,
+                ShippingMethod = string.Empty,
+                ShippingStatus = string.Empty,
+                ShippingProvider = string.Empty,
+                ShippingTrackingId = string.Empty,
+                Subtotal = order.Subtotal,
+                ShippingCost = order.ShippingCost,
+                TotalTax = order.TotalTax,
+                Total = order.Total,
+                Note = order.CustomerNote,
+                DeliveryAddressFirstName = order.DeliveryAddressFirstName,
+                DeliveryAddressLastName = order.DeliveryAddressLastName,
+                DeliveryAddressCompanyName = order.DeliveryAddressCompanyName,
+                DeliveryAddressPhone = order.DeliveryAddressPhone,
+                DeliveryAddressStreet = order.DeliveryAddressStreet,
+                DeliveryAddressCity = order.DeliveryAddressCity,
+                DeliverAddressZip = order.DeliverAddressZip,
+                DeliveryAddressCountry = order.DeliveryAddressCountry,
+                InvoiceAddressFirstName = order.InvoiceAddressFirstName,
+                InvoiceAddressLastName = order.InvoiceAddressLastName,
+                InvoiceAddressCompanyName = order.InvoiceAddressCompanyName,
+                InvoiceAddressPhone = order.InvoiceAddressPhone,
+                InvoiceAddressStreet = order.InvoiceAddressStreet,
+                InvoiceAddressCity = order.InvoiceAddressCity,
+                InvoiceAddressZip = order.InvoiceAddressZip,
+                InvoiceAddressCountry = order.InvoiceAddressCountry,
+                DateOrdered = order.DateOrdered
+            };
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;

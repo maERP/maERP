@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using maERP.Application.Contracts.Logging;
+﻿using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
@@ -10,16 +9,13 @@ namespace maERP.Application.Features.AiModel.Commands.AiModelCreate;
 
 public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result<int>>
 {
-    private readonly IMapper _mapper;
     private readonly IAppLogger<AiModelCreateHandler> _logger;
     private readonly IAiModelRepository _aiModelRepository;
 
     public AiModelCreateHandler(
-        IMapper mapper,
         IAppLogger<AiModelCreateHandler> logger,
         IAiModelRepository aiModelRepository)
     {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _aiModelRepository = aiModelRepository ?? throw new ArgumentNullException(nameof(aiModelRepository));
     }
@@ -61,11 +57,15 @@ public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result
 
         try
         {
-            // Map and create entity
-            var aiModelToCreate = _mapper.Map<Domain.Entities.AiModel>(request);
-            
-            // Ensure correct enum mapping
-            aiModelToCreate.AiModelType = request.AiModelType;
+            // Direktes manuelles Mapping ohne Helper-Klasse
+            var aiModelToCreate = new Domain.Entities.AiModel
+            {
+                Name = request.Name,
+                AiModelType = request.AiModelType,
+                ApiUsername = request.ApiUsername,
+                ApiPassword = request.ApiPassword,
+                ApiKey = request.ApiKey
+            };
             
             await _aiModelRepository.CreateAsync(aiModelToCreate);
 

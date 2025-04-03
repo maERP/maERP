@@ -2,8 +2,6 @@ using Blazored.LocalStorage;
 using maERP.SharedUI.Contracts;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
-using System;
-using System.Threading.Tasks;
 
 namespace maERP.SharedUI.Services;
 
