@@ -5,11 +5,28 @@ using MediatR;
 
 namespace maERP.Application.Features.Product.Commands.ProductCreate;
 
+/// <summary>
+/// Handler for processing product creation commands.
+/// Implements IRequestHandler from MediatR to handle ProductCreateCommand requests
+/// and return the ID of the newly created product wrapped in a Result.
+/// </summary>
 public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result<int>>
 {
+    /// <summary>
+    /// Logger for recording handler operations
+    /// </summary>
     private readonly IAppLogger<ProductCreateHandler> _logger;
+    
+    /// <summary>
+    /// Repository for product data operations
+    /// </summary>
     private readonly IProductRepository _productRepository;
 
+    /// <summary>
+    /// Constructor that initializes the handler with required dependencies
+    /// </summary>
+    /// <param name="logger">Logger for recording operations</param>
+    /// <param name="productRepository">Repository for product data access</param>
     public ProductCreateHandler(
         IAppLogger<ProductCreateHandler> logger,
         IProductRepository productRepository)
@@ -18,6 +35,12 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
 
+    /// <summary>
+    /// Handles the product creation request
+    /// </summary>
+    /// <param name="request">The product creation command with product details</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing the ID of the newly created product if successful</returns>
     public async Task<Result<int>> Handle(ProductCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new product with SKU: {Sku}, Name: {Name}", request.Sku, request.Name);
@@ -28,6 +51,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
         var validator = new ProductCreateValidator(_productRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
+        // If validation fails, return a bad request result with validation error messages
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
@@ -43,7 +67,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
 
         try
         {
-            // Manuelles Mapping statt AutoMapper
+            // Manual mapping instead of using AutoMapper
             var productToCreate = new Domain.Entities.Product
             {
                 Sku = request.Sku,
@@ -63,9 +87,10 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
                 TaxClassId = request.TaxClassId
             };
             
-            // add to database
+            // Add the new product to the database
             await _productRepository.CreateAsync(productToCreate);
 
+            // Set successful result with the new product ID
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = productToCreate.Id;
@@ -74,6 +99,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
         }
         catch (Exception ex)
         {
+            // Handle any exceptions during product creation
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the product: {ex.Message}");

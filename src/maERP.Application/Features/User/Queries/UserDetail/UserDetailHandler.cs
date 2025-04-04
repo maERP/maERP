@@ -6,11 +6,28 @@ using MediatR;
 
 namespace maERP.Application.Features.User.Queries.UserDetail;
 
+/// <summary>
+/// Handler for processing user detail queries.
+/// Implements IRequestHandler from MediatR to handle UserDetailQuery requests
+/// and return detailed user information wrapped in a Result.
+/// </summary>
 public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDetailDto>>
 {
+    /// <summary>
+    /// Logger for recording handler operations
+    /// </summary>
     private readonly IAppLogger<UserDetailHandler> _logger;
+    
+    /// <summary>
+    /// Repository for user data operations
+    /// </summary>
     private readonly IUserRepository _userRepository;
 
+    /// <summary>
+    /// Constructor that initializes the handler with required dependencies
+    /// </summary>
+    /// <param name="logger">Logger for recording operations</param>
+    /// <param name="userRepository">Repository for user data access</param>
     public UserDetailHandler(
         IAppLogger<UserDetailHandler> logger,
         IUserRepository userRepository)
@@ -19,6 +36,12 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
     
+    /// <summary>
+    /// Handles the user detail query request
+    /// </summary>
+    /// <param name="request">The query containing the user ID</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing detailed user information if successful</returns>
     public async Task<Result<UserDetailDto>> Handle(UserDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving user details for ID: {Id}", request.Id);
@@ -27,9 +50,10 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
         
         try
         {
-            // Query the database
+            // Retrieve user from the repository by ID
             var user = await _userRepository.GetByIdAsync(request.Id);
 
+            // If user not found, return a not found result
             if (user == null)
             {
                 result.Succeeded = false;
@@ -40,7 +64,7 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                 return result;
             }
 
-            // Manuelles Mapping statt AutoMapper
+            // Manual mapping from entity to DTO (instead of using AutoMapper)
             var data = new UserDetailDto
             {
                 Id = user.Id,
@@ -49,6 +73,7 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                 Lastname = user.Lastname
             };
 
+            // Set successful result with the user details
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
@@ -57,6 +82,7 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
         }
         catch (Exception ex)
         {
+            // Handle any exceptions during user retrieval
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the user: {ex.Message}");

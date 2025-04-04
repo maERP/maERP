@@ -6,11 +6,28 @@ using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
 
+/// <summary>
+/// Handler for processing sales channel detail queries.
+/// Implements IRequestHandler from MediatR to handle SalesChannelDetailQuery requests
+/// and return detailed sales channel information wrapped in a Result.
+/// </summary>
 public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery, Result<SalesChannelDetailDto>>
 {
+    /// <summary>
+    /// Logger for recording handler operations
+    /// </summary>
     private readonly IAppLogger<SalesChannelDetailHandler> _logger;
+    
+    /// <summary>
+    /// Repository for sales channel data operations
+    /// </summary>
     private readonly ISalesChannelRepository _salesChannelRepository;
 
+    /// <summary>
+    /// Constructor that initializes the handler with required dependencies
+    /// </summary>
+    /// <param name="logger">Logger for recording operations</param>
+    /// <param name="salesChannelRepository">Repository for sales channel data access</param>
     public SalesChannelDetailHandler(
         IAppLogger<SalesChannelDetailHandler> logger,
         ISalesChannelRepository salesChannelRepository)
@@ -19,6 +36,12 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
     }
     
+    /// <summary>
+    /// Handles the sales channel detail query request
+    /// </summary>
+    /// <param name="request">The query containing the sales channel ID</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing detailed sales channel information if successful</returns>
     public async Task<Result<SalesChannelDetailDto>> Handle(SalesChannelDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving sales channel details for ID: {Id}", request.Id);
@@ -27,8 +50,10 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
         
         try
         {
+            // Retrieve sales channel with all related details from the repository
             var salesChannel = await _salesChannelRepository.GetByIdAsync(request.Id, true);
 
+            // If sales channel not found, return a not found result
             if (salesChannel == null)
             {
                 result.Succeeded = false;
@@ -39,8 +64,10 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
                 return result;
             }
 
+            // Map entity to DTO using the mapping method
             var data = MapToDetailDto(salesChannel);
 
+            // Set successful result with the sales channel details
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
@@ -49,6 +76,7 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
         }
         catch (Exception ex)
         {
+            // Handle any exceptions during sales channel retrieval
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the sales channel: {ex.Message}");
@@ -59,6 +87,11 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
         return result;
     }
     
+    /// <summary>
+    /// Maps a sales channel entity to a detail DTO
+    /// </summary>
+    /// <param name="entity">The sales channel entity to map</param>
+    /// <returns>A sales channel detail DTO with properties from the entity</returns>
     private SalesChannelDetailDto MapToDetailDto(Domain.Entities.SalesChannel entity)
     {
         return new SalesChannelDetailDto

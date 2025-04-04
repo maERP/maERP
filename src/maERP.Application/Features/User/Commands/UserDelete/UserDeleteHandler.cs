@@ -6,11 +6,28 @@ using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Application.Features.User.Commands.UserDelete;
 
+/// <summary>
+/// Handler for processing user deletion commands.
+/// Implements IRequestHandler from MediatR to handle UserDeleteCommand requests
+/// and return the ID of the deleted user wrapped in a Result.
+/// </summary>
 public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<string>>
 {
+    /// <summary>
+    /// ASP.NET Identity UserManager for user data operations
+    /// </summary>
     private readonly UserManager<ApplicationUser> _userManager;
+    
+    /// <summary>
+    /// Logger for recording handler operations
+    /// </summary>
     private readonly IAppLogger<UserDeleteHandler> _logger;
     
+    /// <summary>
+    /// Constructor that initializes the handler with required dependencies
+    /// </summary>
+    /// <param name="userManager">ASP.NET Identity UserManager for user data access</param>
+    /// <param name="logger">Logger for recording operations</param>
     public UserDeleteHandler(
         UserManager<ApplicationUser> userManager,
         IAppLogger<UserDeleteHandler> logger)
@@ -19,16 +36,23 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
+    /// <summary>
+    /// Handles the user deletion command request
+    /// </summary>
+    /// <param name="request">The command containing the user ID to delete</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing the ID of the deleted user if successful</returns>
     public async Task<Result<string>> Handle(UserDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting user with ID: {Id}", request.Id);
         
         var result = new Result<string>();
         
-        // Validate incoming data
+        // Validate incoming data using FluentValidation
         var validator = new UserDeleteValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
+        // If validation fails, return a bad request result with validation errors
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
@@ -44,8 +68,10 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
 
         try
         {
-            // Find user
+            // Find the user to delete by ID
             var userToDelete = await _userManager.FindByIdAsync(request.Id);
+            
+            // If user not found, return a not found result
             if (userToDelete == null)
             {
                 result.Succeeded = false;
@@ -56,8 +82,10 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
                 return result;
             }
 
-            // Delete user
+            // Delete the user using ASP.NET Identity UserManager
             var deleteResult = await _userManager.DeleteAsync(userToDelete);
+            
+            // If deletion fails, return an error result with the error descriptions
             if (!deleteResult.Succeeded)
             {
                 result.Succeeded = false;
@@ -71,6 +99,7 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
                 return result;
             }
 
+            // Set successful result with the deleted user's ID
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = userToDelete.Id;
@@ -79,6 +108,7 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
         }
         catch (Exception ex)
         {
+            // Handle any exceptions during user deletion
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while deleting the user: {ex.Message}");

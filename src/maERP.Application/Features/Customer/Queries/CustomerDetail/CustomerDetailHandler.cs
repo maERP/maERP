@@ -7,11 +7,28 @@ using MediatR;
 
 namespace maERP.Application.Features.Customer.Queries.CustomerDetail;
 
+/// <summary>
+/// Handler for processing customer detail queries.
+/// Implements IRequestHandler from MediatR to handle CustomerDetailQuery requests
+/// and return detailed customer information wrapped in a Result.
+/// </summary>
 public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result<CustomerDetailDto>>
 {
+    /// <summary>
+    /// Logger for recording handler operations
+    /// </summary>
     private readonly IAppLogger<CustomerDetailHandler> _logger;
+    
+    /// <summary>
+    /// Repository for customer data operations
+    /// </summary>
     private readonly ICustomerRepository _customerRepository;
 
+    /// <summary>
+    /// Constructor that initializes the handler with required dependencies
+    /// </summary>
+    /// <param name="logger">Logger for recording operations</param>
+    /// <param name="customerRepository">Repository for customer data access</param>
     public CustomerDetailHandler(
         IAppLogger<CustomerDetailHandler> logger,
         ICustomerRepository customerRepository)
@@ -20,6 +37,12 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
     
+    /// <summary>
+    /// Handles the customer detail query request
+    /// </summary>
+    /// <param name="request">The query containing the customer ID</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing detailed customer information if successful</returns>
     public async Task<Result<CustomerDetailDto>> Handle(CustomerDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving customer details for ID: {Id}", request.Id);
@@ -28,8 +51,10 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
         
         try
         {
+            // Retrieve customer with all related details from the repository
             var customer = await _customerRepository.GetCustomerWithDetails(request.Id);
 
+            // If customer not found, return a not found result
             if (customer == null)
             {
                 result.Succeeded = false;
@@ -40,7 +65,7 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
                 return result;
             }
 
-            // Manuelles Mapping statt AutoMapper
+            // Manual mapping instead of using AutoMapper
             var data = new CustomerDetailDto
             {
                 Id = customer.Id,
@@ -54,6 +79,7 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
                 Note = customer.Note,
                 CustomerStatus = customer.CustomerStatus,
                 DateEnrollment = customer.DateEnrollment,
+                // Map customer addresses if they exist, otherwise return an empty list
                 CustomerAddresses = customer.CustomerAddresses?.Select(ca => new CustomerAddressListDto
                 {
                     Id = ca.Id,
@@ -69,6 +95,7 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
                 }).ToList() ?? new List<CustomerAddressListDto>()
             };
 
+            // Set successful result with the customer details
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
@@ -77,6 +104,7 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
         }
         catch (Exception ex)
         {
+            // Handle any exceptions during customer retrieval
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the customer: {ex.Message}");

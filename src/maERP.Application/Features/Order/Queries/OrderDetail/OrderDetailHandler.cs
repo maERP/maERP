@@ -6,11 +6,28 @@ using MediatR;
 
 namespace maERP.Application.Features.Order.Queries.OrderDetail;
 
+/// <summary>
+/// Handler for processing order detail queries.
+/// Implements IRequestHandler from MediatR to handle OrderDetailQuery requests
+/// and return detailed order information wrapped in a Result.
+/// </summary>
 public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<OrderDetailDto>>
 {
+    /// <summary>
+    /// Logger for recording handler operations
+    /// </summary>
     private readonly IAppLogger<OrderDetailHandler> _logger;
+    
+    /// <summary>
+    /// Repository for order data operations
+    /// </summary>
     private readonly IOrderRepository _orderRepository;
 
+    /// <summary>
+    /// Constructor that initializes the handler with required dependencies
+    /// </summary>
+    /// <param name="logger">Logger for recording operations</param>
+    /// <param name="orderRepository">Repository for order data access</param>
     public OrderDetailHandler(
         IAppLogger<OrderDetailHandler> logger,
         IOrderRepository orderRepository)
@@ -19,6 +36,12 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
     }
     
+    /// <summary>
+    /// Handles the order detail query request
+    /// </summary>
+    /// <param name="request">The query containing the order ID</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing detailed order information if successful</returns>
     public async Task<Result<OrderDetailDto>> Handle(OrderDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving order details for ID: {Id}", request.Id);
@@ -27,8 +50,10 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
         
         try
         {
+            // Retrieve order with all related details from the repository
             var order = await _orderRepository.GetWithDetailsAsync(request.Id);
 
+            // If order not found, return a not found result
             if (order == null)
             {
                 result.Succeeded = false;
@@ -39,6 +64,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 return result;
             }
 
+            // Manual mapping from entity to DTO
             var data = new OrderDetailDto
             {
                 Id = order.Id,
@@ -51,6 +77,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 PaymentStatus = order.PaymentStatus,
                 PaymentProvider = order.PaymentProvider,
                 PaymentTransactionId = order.PaymentTransactionId,
+                // Shipping fields not available in the entity, using empty values
                 ShippingMethod = string.Empty,
                 ShippingStatus = string.Empty,
                 ShippingProvider = string.Empty,
@@ -60,6 +87,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 TotalTax = order.TotalTax,
                 Total = order.Total,
                 Note = order.CustomerNote,
+                // Delivery address details
                 DeliveryAddressFirstName = order.DeliveryAddressFirstName,
                 DeliveryAddressLastName = order.DeliveryAddressLastName,
                 DeliveryAddressCompanyName = order.DeliveryAddressCompanyName,
@@ -68,6 +96,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 DeliveryAddressCity = order.DeliveryAddressCity,
                 DeliverAddressZip = order.DeliverAddressZip,
                 DeliveryAddressCountry = order.DeliveryAddressCountry,
+                // Invoice address details
                 InvoiceAddressFirstName = order.InvoiceAddressFirstName,
                 InvoiceAddressLastName = order.InvoiceAddressLastName,
                 InvoiceAddressCompanyName = order.InvoiceAddressCompanyName,
@@ -79,6 +108,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 DateOrdered = order.DateOrdered
             };
 
+            // Set successful result with the order details
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
@@ -87,6 +117,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
         }
         catch (Exception ex)
         {
+            // Handle any exceptions during order retrieval
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the order: {ex.Message}");

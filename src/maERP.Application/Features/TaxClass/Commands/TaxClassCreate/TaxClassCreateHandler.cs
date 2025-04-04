@@ -5,11 +5,28 @@ using MediatR;
 
 namespace maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 
+/// <summary>
+/// Handler for processing tax class creation commands.
+/// Implements IRequestHandler from MediatR to handle TaxClassCreateCommand requests
+/// and return the ID of the newly created tax class wrapped in a Result.
+/// </summary>
 public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Result<int>>
 {
+    /// <summary>
+    /// Logger for recording handler operations
+    /// </summary>
     private readonly IAppLogger<TaxClassCreateHandler> _logger;
+    
+    /// <summary>
+    /// Repository for tax class data operations
+    /// </summary>
     private readonly ITaxClassRepository _taxClassRepository;
 
+    /// <summary>
+    /// Constructor that initializes the handler with required dependencies
+    /// </summary>
+    /// <param name="logger">Logger for recording operations</param>
+    /// <param name="taxClassRepository">Repository for tax class data access</param>
     public TaxClassCreateHandler(
         IAppLogger<TaxClassCreateHandler> logger,
         ITaxClassRepository taxClassRepository)
@@ -18,6 +35,12 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
 
+    /// <summary>
+    /// Handles the tax class creation request
+    /// </summary>
+    /// <param name="request">The tax class creation command with tax class details</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing the ID of the newly created tax class if successful</returns>
     public async Task<Result<int>> Handle(TaxClassCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new tax class with tax rate: {TaxRate}", request.TaxRate);
@@ -28,6 +51,7 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
         var validator = new TaxClassCreateValidator(_taxClassRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
+        // If validation fails, return a bad request result with validation error messages
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
@@ -43,15 +67,16 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
 
         try
         {
-            // Manually map to entity
+            // Manual mapping to domain entity
             var taxClassToCreate = new Domain.Entities.TaxClass
             {
                 TaxRate = request.TaxRate
             };
             
-            // add to database
+            // Add the new tax class to the database
             await _taxClassRepository.CreateAsync(taxClassToCreate);
 
+            // Set successful result with the new tax class ID
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = taxClassToCreate.Id;
@@ -60,6 +85,7 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
         }
         catch (Exception ex)
         {
+            // Handle any exceptions during tax class creation
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the tax class: {ex.Message}");

@@ -5,11 +5,28 @@ using MediatR;
 
 namespace maERP.Application.Features.Order.Commands.OrderCreate;
 
+/// <summary>
+/// Handler for processing order creation commands.
+/// Implements IRequestHandler from MediatR to handle OrderCreateCommand requests
+/// and return the ID of the newly created order wrapped in a Result.
+/// </summary>
 public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int>>
 {
+    /// <summary>
+    /// Logger for recording handler operations
+    /// </summary>
     private readonly IAppLogger<OrderCreateHandler> _logger;
+    
+    /// <summary>
+    /// Repository for order data operations
+    /// </summary>
     private readonly IOrderRepository _orderRepository;
 
+    /// <summary>
+    /// Constructor that initializes the handler with required dependencies
+    /// </summary>
+    /// <param name="logger">Logger for recording operations</param>
+    /// <param name="orderRepository">Repository for order data access</param>
     public OrderCreateHandler(
         IAppLogger<OrderCreateHandler> logger,
         IOrderRepository orderRepository)
@@ -18,6 +35,12 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
     }
 
+    /// <summary>
+    /// Handles the order creation request
+    /// </summary>
+    /// <param name="request">The order creation command with order details</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing the ID of the newly created order if successful</returns>
     public async Task<Result<int>> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new order with ID: {Id}", request.Id);
@@ -28,6 +51,7 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
         var validator = new OrderCreateValidator(_orderRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
+        // If validation fails, return a bad request result with validation error messages
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
@@ -43,7 +67,7 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
 
         try
         {
-            // Manuelles Mapping statt AutoMapper
+            // Manual mapping instead of using AutoMapper
             var orderToCreate = new Domain.Entities.Order
             {
                 SalesChannelId = request.SalesChannelId,
@@ -77,12 +101,13 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
                 InvoiceAddressZip = request.InvoiceAddressZip,
                 InvoiceAddressCountry = request.InvoiceAddressCountry,
                 DateOrdered = request.DateOrdered
-                // OrderItems müssten separat gemappt werden
+                // OrderItems would need to be mapped separately
             };
             
-            // add to database
+            // Add the new order to the database
             await _orderRepository.CreateAsync(orderToCreate);
 
+            // Set successful result with the new order ID
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = orderToCreate.Id;
@@ -91,6 +116,7 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
         }
         catch (Exception ex)
         {
+            // Handle any exceptions during order creation
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the order: {ex.Message}");

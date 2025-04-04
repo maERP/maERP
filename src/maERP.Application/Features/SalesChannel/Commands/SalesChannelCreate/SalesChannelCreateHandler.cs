@@ -5,11 +5,28 @@ using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 
+/// <summary>
+/// Handler for processing sales channel creation commands.
+/// Implements IRequestHandler from MediatR to handle SalesChannelCreateCommand requests
+/// and return the ID of the newly created sales channel wrapped in a Result.
+/// </summary>
 public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateCommand, Result<int>>
 {
+    /// <summary>
+    /// Logger for recording handler operations
+    /// </summary>
     private readonly IAppLogger<SalesChannelCreateHandler> _logger;
+    
+    /// <summary>
+    /// Repository for sales channel data operations
+    /// </summary>
     private readonly ISalesChannelRepository _salesChannelRepository;
 
+    /// <summary>
+    /// Constructor that initializes the handler with required dependencies
+    /// </summary>
+    /// <param name="logger">Logger for recording operations</param>
+    /// <param name="salesChannelRepository">Repository for sales channel data access</param>
     public SalesChannelCreateHandler(
         IAppLogger<SalesChannelCreateHandler> logger,
         ISalesChannelRepository salesChannelRepository)
@@ -18,6 +35,12 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
     }
 
+    /// <summary>
+    /// Handles the sales channel creation request
+    /// </summary>
+    /// <param name="request">The sales channel creation command with sales channel details</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing the ID of the newly created sales channel if successful</returns>
     public async Task<Result<int>> Handle(SalesChannelCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new sales channel with name: {Name}", request.Name);
@@ -28,6 +51,7 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
         var validator = new SalesChanneLCreateValidator(_salesChannelRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
+        // If validation fails, return a bad request result with validation error messages
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
@@ -43,12 +67,13 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
 
         try
         {
-            // Map und create entity
+            // Map request to domain entity
             var salesChannelToCreate = MapToEntity(request);
             
-            // add to database
+            // Add the new sales channel to the database
             await _salesChannelRepository.CreateAsync(salesChannelToCreate);
 
+            // Set successful result with the new sales channel ID
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = salesChannelToCreate.Id;
@@ -57,6 +82,7 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
         }
         catch (Exception ex)
         {
+            // Handle any exceptions during sales channel creation
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the sales channel: {ex.Message}");
@@ -67,6 +93,11 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
         return result;
     }
     
+    /// <summary>
+    /// Maps a sales channel command to a domain entity
+    /// </summary>
+    /// <param name="command">The sales channel creation command</param>
+    /// <returns>A new sales channel entity with properties from the command</returns>
     private Domain.Entities.SalesChannel MapToEntity(SalesChannelCreateCommand command)
     {
         return new Domain.Entities.SalesChannel

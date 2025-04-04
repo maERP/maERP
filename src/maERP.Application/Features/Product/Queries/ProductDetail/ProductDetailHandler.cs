@@ -6,11 +6,28 @@ using MediatR;
 
 namespace maERP.Application.Features.Product.Queries.ProductDetail;
 
+/// <summary>
+/// Handler for processing product detail queries.
+/// Implements IRequestHandler from MediatR to handle ProductDetailQuery requests
+/// and return detailed product information wrapped in a Result.
+/// </summary>
 public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<ProductDetailDto>>
 {
+    /// <summary>
+    /// Logger for recording handler operations
+    /// </summary>
     private readonly IAppLogger<ProductDetailHandler> _logger;
+    
+    /// <summary>
+    /// Repository for product data operations
+    /// </summary>
     private readonly IProductRepository _productRepository;
 
+    /// <summary>
+    /// Constructor that initializes the handler with required dependencies
+    /// </summary>
+    /// <param name="logger">Logger for recording operations</param>
+    /// <param name="productRepository">Repository for product data access</param>
     public ProductDetailHandler(
         IAppLogger<ProductDetailHandler> logger,
         IProductRepository productRepository)
@@ -19,6 +36,12 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
     
+    /// <summary>
+    /// Handles the product detail query request
+    /// </summary>
+    /// <param name="request">The query containing the product ID</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Result containing detailed product information if successful</returns>
     public async Task<Result<ProductDetailDto>> Handle(ProductDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving product details for ID: {Id}", request.Id);
@@ -27,8 +50,10 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
         
         try
         {
+            // Retrieve product with all related details from the repository
             var product = await _productRepository.GetByIdAsync(request.Id, true);
 
+            // If product not found, return a not found result
             if (product == null)
             {
                 result.Succeeded = false;
@@ -39,7 +64,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
                 return result;
             }
 
-            // Manuelles Mapping statt AutoMapper
+            // Manual mapping instead of using AutoMapper
             var data = new ProductDetailDto
             {
                 Id = product.Id,
@@ -58,10 +83,12 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
                 Height = product.Height,
                 Depth = product.Depth,
                 TaxClassId = product.TaxClassId,
+                // Map related sales channels and stocks
                 ProductSalesChannel = product.ProductSalesChannels?.Select(psc => psc.Id).ToList() ?? new List<int>(),
                 ProductStocks = product.ProductStocks.Select(ps => ps.Id).ToList()
             };
 
+            // Set successful result with the product details
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
@@ -70,6 +97,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
         }
         catch (Exception ex)
         {
+            // Handle any exceptions during product retrieval
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the product: {ex.Message}");
