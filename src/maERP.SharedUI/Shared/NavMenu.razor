@@ -1,6 +1,9 @@
 ﻿<MudNavMenu>
             <MudNavLink Href="/Dashboard" Match="NavLinkMatch.All">Dashboard</MudNavLink>
-            <MudNavLink Href="/Orders" Match="NavLinkMatch.Prefix">Bestellungen</MudNavLink>
+            <MudNavGroup Title="Bestellungen" Expanded="true">
+                <MudNavLink Href="/Orders" Match="NavLinkMatch.All">Alle Bestellungen</MudNavLink>
+                <MudNavLink Href="/Orders/ReadyForDelivery" Match="NavLinkMatch.All">Bereit zur Lieferung</MudNavLink>
+            </MudNavGroup>
             <MudNavLink Href="/Customers" Match="NavLinkMatch.Prefix">Kunden</MudNavLink>
             <MudNavLink Href="/Products" Match="NavLinkMatch.Prefix">Produkte</MudNavLink>
             

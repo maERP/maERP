@@ -3,4 +3,43 @@
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">@SalesChannel.Name</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">@SalesChannelDetail.Name</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/SalesChannels/{salesChannelId}/edit")" />
+</MudStack>
+
+<MudCard>
+    <MudCardContent>
+        <MudText Typo="Typo.h6">ID: @SalesChannelDetail.Id</MudText>
+        <MudText Typo="Typo.body1">Typ: @SalesChannelDetail.SalesChannelType</MudText>
+        <MudText Typo="Typo.body1">Name: @SalesChannelDetail.Name</MudText>
+        <MudDivider Class="my-4" />
+        
+        <MudText Typo="Typo.h6">Verbindungsdaten:</MudText>
+        <MudText Typo="Typo.body1">URL: @SalesChannelDetail.Url</MudText>
+        <MudText Typo="Typo.body1">Benutzername: @SalesChannelDetail.Username</MudText>
+        <MudText Typo="Typo.body1">Passwort: ********</MudText>
+        <MudDivider Class="my-4" />
+        
+        <MudText Typo="Typo.h6">Synchronisierungsoptionen:</MudText>
+        <MudGrid>
+            <MudItem xs="6">
+                <MudText Typo="Typo.body1">Produkte importieren: @(SalesChannelDetail.ImportProducts ? "Ja" : "Nein")</MudText>
+                <MudText Typo="Typo.body1">Produkte exportieren: @(SalesChannelDetail.ExportProducts ? "Ja" : "Nein")</MudText>
+                <MudText Typo="Typo.body1">Kunden importieren: @(SalesChannelDetail.ImportCustomers ? "Ja" : "Nein")</MudText>
+            </MudItem>
+            <MudItem xs="6">
+                <MudText Typo="Typo.body1">Kunden exportieren: @(SalesChannelDetail.ExportCustomers ? "Ja" : "Nein")</MudText>
+                <MudText Typo="Typo.body1">Aufträge importieren: @(SalesChannelDetail.ImportOrders ? "Ja" : "Nein")</MudText>
+                <MudText Typo="Typo.body1">Aufträge exportieren: @(SalesChannelDetail.ExportOrders ? "Ja" : "Nein")</MudText>
+            </MudItem>
+        </MudGrid>
+        <MudDivider Class="my-4" />
+        
+        <MudText Typo="Typo.body1">Lager-ID: @SalesChannelDetail.WarehouseId</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Href="/SalesChannels">Zurück zur Liste</MudButton>
+    </MudCardActions>
+</MudCard>

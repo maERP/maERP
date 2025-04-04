@@ -23,6 +23,5 @@ public class SalesChannelInputDto : ISalesChannelInputModel
     public bool ExportOrders { get; set; }
 
     public int WarehouseId { get; set; }
-    public WarehouseDetailDto? Warehouse { get; set; }
 }
 

@@ -3,4 +3,20 @@
 
 @attribute [Authorize]
 
-<h1>@User.Email</h1>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Benutzer - @User.Email</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/Users/{userId}/edit")" />
+</MudStack>
+
+<MudCard>
+    <MudCardContent>
+        <MudText Typo="Typo.h6">ID: @User.Id</MudText>
+        <MudText Typo="Typo.body1">E-Mail: @User.Email</MudText>
+        <MudText Typo="Typo.body1">Vorname: @User.Firstname</MudText>
+        <MudText Typo="Typo.body1">Nachname: @User.Lastname</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Href="/Users">Zurück zur Liste</MudButton>
+    </MudCardActions>
+</MudCard>

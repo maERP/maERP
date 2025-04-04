@@ -20,5 +20,5 @@ public class SalesChannel : BaseEntity, IBaseEntity
     public bool InitialProductExportCompleted { get; set; }
 
     // public Warehouse Warehouse { get; set; } = new();
-    public int WarehouseId { get; set; } = new();
+    public int WarehouseId { get; set; }
 }
