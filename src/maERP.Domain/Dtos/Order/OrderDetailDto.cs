@@ -12,6 +12,7 @@ public class OrderDetailDto
 
     public OrderStatus Status { get; set; }
     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public List<OrderHistoryDto> OrderHistory { get; set; } = new List<OrderHistoryDto>();
 
     public string PaymentMethod { get; set; } = string.Empty;
     public PaymentStatus PaymentStatus { get; set; }

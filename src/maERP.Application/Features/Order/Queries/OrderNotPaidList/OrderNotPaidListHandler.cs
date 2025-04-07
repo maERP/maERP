@@ -7,29 +7,54 @@ using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 using MediatR;
 
-namespace maERP.Application.Features.Order.Queries.OrderReadyForDeliveryList;
+namespace maERP.Application.Features.Order.Queries.OrderNotPaidList;
 
-public class OrderReadyForDeliveryListHandler : IRequestHandler<OrderReadyForDeliveryListQuery, PaginatedResult<OrderListDto>>
+public class OrderNotPaidListHandler : IRequestHandler<OrderNotPaidListQuery, PaginatedResult<OrderListDto>>
 {
-    private readonly IAppLogger<OrderReadyForDeliveryListHandler> _logger;
+    private readonly IAppLogger<OrderNotPaidListHandler> _logger;
     private readonly IOrderRepository _orderRepository;
 
-    public OrderReadyForDeliveryListHandler(
-        IAppLogger<OrderReadyForDeliveryListHandler> logger, 
+    public OrderNotPaidListHandler(
+        IAppLogger<OrderNotPaidListHandler> logger, 
         IOrderRepository orderRepository)
     {
         _logger = logger;
         _orderRepository = orderRepository; 
     }
 
-    public async Task<PaginatedResult<OrderListDto>> Handle(OrderReadyForDeliveryListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<OrderListDto>> Handle(OrderNotPaidListQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Handle OrderReadyForDeliveryListQuery: {0}", request);
+        _logger.LogInformation("Handle OrderNotPaidListQuery: {0}", request);
+
+        // Filtern der Bestellungen, die nicht bezahlt und nicht versendet sind
+        // Nicht bezahlt: PaymentStatus ist nicht CompletelyPaid
+        // Nicht versendet: Status ist nicht PartiallyDelivered, Completed, Returned oder Refunded
+        var notPaidStatuses = new[] {
+            PaymentStatus.Unknown,
+            PaymentStatus.Invoiced,
+            PaymentStatus.PartiallyPaid,
+            PaymentStatus.FirstReminder,
+            PaymentStatus.SecondReminder,
+            PaymentStatus.ThirdReminder,
+            PaymentStatus.Encashment,
+            PaymentStatus.Reserved,
+            PaymentStatus.Delayed,
+            PaymentStatus.ReviewNecessary,
+            PaymentStatus.NoCreditApproved,
+            PaymentStatus.CreditPreliminarilyAccepted
+        };
+
+        var shippableStatuses = new[] {
+            OrderStatus.Pending,
+            OrderStatus.Processing,
+            OrderStatus.ReadyForDelivery,
+            OrderStatus.OnHold
+        };
 
         if (request.OrderBy.Any() != true)
         {
             return await _orderRepository.Entities
-               .Where(o => o.Status == OrderStatus.ReadyForDelivery && o.PaymentStatus == PaymentStatus.CompletelyPaid)
+               .Where(o => notPaidStatuses.Contains(o.PaymentStatus) && shippableStatuses.Contains(o.Status))
                .Select(o => new OrderListDto
                {
                    Id = o.Id,
@@ -47,7 +72,7 @@ public class OrderReadyForDeliveryListHandler : IRequestHandler<OrderReadyForDel
         var ordering = string.Join(",", request.OrderBy);
 
         return await _orderRepository.Entities
-            .Where(o => o.Status == OrderStatus.ReadyForDelivery && o.PaymentStatus == PaymentStatus.CompletelyPaid)
+            .Where(o => notPaidStatuses.Contains(o.PaymentStatus) && shippableStatuses.Contains(o.Status))
             .OrderBy(ordering)
             .Select(o => new OrderListDto
             {

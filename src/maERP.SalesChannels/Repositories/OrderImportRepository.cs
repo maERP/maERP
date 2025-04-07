@@ -259,7 +259,12 @@ public class OrderImportRepository : IOrderImportRepository
 
             if(existingOrder.Status != importOrder.Status)
             {
-                existingOrder.Status = importOrder.Status;
+                await _orderRepository.UpdateOrderStatusAsync(
+                    existingOrder.Id, 
+                    importOrder.Status, 
+                    "Shopware5Import", 
+                    $"Status automatisch aktualisiert beim Import aus Shopware 5. Remote-Order-ID: {importOrder.RemoteOrderId}");
+                
                 somethingChanged = true;
                 _logger.LogInformation("Order {0}: Status updated, new status is {1}", importOrder.RemoteOrderId, importOrder.Status);
             }

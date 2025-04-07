@@ -64,6 +64,9 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 return result;
             }
 
+            // Bestellhistorie abrufen
+            var orderHistory = await _orderRepository.GetOrderHistoryAsync(request.Id);
+
             // Manual mapping from entity to DTO
             var data = new OrderDetailDto
             {
@@ -73,6 +76,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 CustomerId = order.CustomerId,
                 Status = order.Status,
                 OrderItems = order.OrderItems.ToList(),
+                OrderHistory = MapOrderHistoryToDto(orderHistory),
                 PaymentMethod = order.PaymentMethod,
                 PaymentStatus = order.PaymentStatus,
                 PaymentProvider = order.PaymentProvider,
@@ -126,5 +130,26 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
         }
         
         return result;
+    }
+
+    /// <summary>
+    /// Konvertiert OrderHistory-Entities in OrderHistoryDto-Objekte
+    /// </summary>
+    /// <param name="orderHistories">Liste von OrderHistory-Entities</param>
+    /// <returns>Liste von OrderHistoryDto-Objekten</returns>
+    private List<OrderHistoryDto> MapOrderHistoryToDto(List<Domain.Entities.OrderHistory> orderHistories)
+    {
+        return orderHistories.Select(history => new OrderHistoryDto
+        {
+            Id = history.Id,
+            OrderId = history.OrderId,
+            Timestamp = history.Timestamp,
+            Action = history.FieldName,
+            PreviousStatus = history.OldStatus,
+            NewStatus = history.NewStatus,
+            Description = history.Comment,
+            CreatedBy = history.Username,
+            IsSystemGenerated = string.IsNullOrEmpty(history.Username)
+        }).ToList();
     }
 }

@@ -31,6 +31,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<CustomerAddress> CustomerAddress { get; set; } = null!;
     public DbSet<CustomerSalesChannel> CustomerSalesChannel { get; set; } = null!;
     public DbSet<Order> Order { get; set; } = null!;
+    public DbSet<OrderHistory> OrderHistory { get; set; } = null!;
     public DbSet<OrderItem> OrderItem { get; set; } = null!;
     public DbSet<OrderItemSerialNumber> OrderItemSerialNumber { get; set; } = null!;
     public DbSet<Product> Product { get; set; } = null!;

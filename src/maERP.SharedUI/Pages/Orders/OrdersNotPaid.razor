@@ -1,0 +1,35 @@
+@page "/Orders/NotPaid"
+@using maERP.Domain.Dtos.Order
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<PageTitle>Nicht bezahlte Bestellungen</PageTitle>
+
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Nicht bezahlte Bestellungen</MudText>
+    <MudSpacer />
+</MudStack>
+
+<MudDataGrid T="OrderListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData" @ref="_dataGrid" Hover="true">
+    <ToolBarContent>
+        <MudSpacer />
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="Bestellnr." />
+        <PropertyColumn Property="x => x.DateOrdered" Title="Datum" />
+        <PropertyColumn Property="x => x.FullName" Title="Kunde" />
+        <PropertyColumn Property="x => x.Total" Title="Summe" Format="C" />
+        <PropertyColumn Property="x => x.Status" Title="Status" />
+        <PropertyColumn Property="x => x.PaymentStatus" Title="Zahlstatus" />
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/Orders/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/Orders/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="OrderListDto" />
+    </PagerContent>
+</MudDataGrid> 

@@ -48,4 +48,6 @@ public class Order : BaseEntity, IBaseEntity
     public string InvoiceAddressCountry { get; set; } = string.Empty;
 
     public DateTime DateOrdered { get; set; }
+    
+    public ICollection<OrderHistory> OrderHistories { get; set; } = new List<OrderHistory>();
 }

@@ -5,6 +5,7 @@ using maERP.Application.Features.Order.Commands.OrderUpdate;
 using maERP.Application.Features.Order.Queries.OrderCustomerList;
 using maERP.Application.Features.Order.Queries.OrderDetail;
 using maERP.Application.Features.Order.Queries.OrderList;
+using maERP.Application.Features.Order.Queries.OrderNotPaidList;
 using maERP.Application.Features.Order.Queries.OrderReadyForDeliveryList;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Wrapper;
@@ -56,6 +57,19 @@ public class OrdersController(IMediator mediator) : ControllerBase
         }
 
         var orders = await mediator.Send(new OrderReadyForDeliveryListQuery(pageNumber, pageSize, orderBy));
+        return Ok(orders);
+    }
+
+    // GET: api/<OrdersController>/notpaid
+    [HttpGet("notpaid")]
+    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetNotPaid(int pageNumber = 0, int pageSize = 10, string orderBy = "")
+    {
+        if (string.IsNullOrEmpty(orderBy))
+        {
+            orderBy = "DateOrdered Descending";
+        }
+
+        var orders = await mediator.Send(new OrderNotPaidListQuery(pageNumber, pageSize, orderBy));
         return Ok(orders);
     }
 
