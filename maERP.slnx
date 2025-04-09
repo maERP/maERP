@@ -1,0 +1,108 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="GPU" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Projektmappenelemente/">
+    <File Path=".cursorrules" />
+    <File Path=".dockerignore" />
+    <File Path=".editorconfig" />
+    <File Path=".github/codeql/codeql-config.yml" />
+    <File Path=".github/copilot-instructions.md" />
+    <File Path=".github/workflows/codeql.yml" />
+    <File Path=".github/workflows/maerp-server-publish.yml" />
+    <File Path=".github/workflows/maerp-server-test.yml" />
+    <File Path=".github/workflows/maerp-web-publish.yml" />
+    <File Path=".github/workflows/maerp-web-test.yml" />
+    <File Path=".gitignore" />
+    <File Path=".windsurfrules" />
+    <File Path="CODE_OF_CONDUCT.md" />
+    <File Path="CONTRIBUTING.md" />
+    <File Path="global.json" />
+    <File Path="launchSettings.json" />
+    <File Path="LICENSE.txt" />
+    <File Path="maERP.sln.startup.json" />
+    <File Path="README.md" />
+    <File Path="SECURITY.md" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Core/">
+    <Project Path="src/maERP.Application/maERP.Application.csproj">
+      <BuildType Solution="GPU|*" Project="Release" />
+    </Project>
+    <Project Path="src/maERP.Domain/maERP.Domain.csproj">
+      <BuildType Solution="GPU|*" Project="Release" />
+    </Project>
+  </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="src/maERP.Analytics/maERP.Analytics.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+    <Project Path="src/maERP.Identity/maERP.Identity.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+    <Project Path="src/maERP.Infrastructure/maERP.Infrastructure.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+    <Project Path="src/maERP.Persistence.MSSQL/maERP.Persistence.MSSQL.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+    <Project Path="src/maERP.Persistence.MySQL/maERP.Persistence.MySQL.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+    <Project Path="src/maERP.Persistence.PostgreSQL/maERP.Persistence.PostgreSQL.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+    <Project Path="src/maERP.Persistence/maERP.Persistence.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+    <Project Path="src/maERP.SalesChannels/maERP.SalesChannels.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/src/Server/">
+    <Project Path="src/maERP.Server/maERP.Server.csproj">
+      <BuildType Solution="GPU|Any CPU" Project="Release" />
+      <BuildType Solution="GPU|x64" Project="Debug" />
+      <Platform Solution="*|x64" Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/src/UI/">
+    <Project Path="src/maERP.Client/maERP.Client.csproj">
+      <BuildType Solution="GPU|*" Project="Release" />
+      <Deploy />
+    </Project>
+    <Project Path="src/maERP.SharedUI/maERP.SharedUI.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+    <Project Path="src/maERP.Web/maERP.Web.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Deploy Solution="Debug|Any CPU" />
+    </Project>
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/maERP.Persistence.Tests/maERP.Persistence.Tests.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+    <Project Path="tests/maERP.Server.Tests/maERP.Server.Tests.csproj">
+      <BuildType Solution="GPU|*" Project="Release" />
+    </Project>
+    <Project Path="tests/maERP.Web.Tests/maERP.Web.Tests.csproj">
+      <BuildType Solution="GPU|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Project Path="docker-compose.dcproj">
+    <BuildType Solution="GPU|*" Project="Release" />
+    <Platform Project="AnyCPU" />
+    <Build />
+  </Project>
+  <Properties Name="MonoDevelopProperties">
+    <Property Name="$0.DotNetNamingPolicy" Value="$1" />
+    <Property Name="$0.TextStylePolicy" Value="$5" />
+    <Property Name="$1.DirectoryNamespaceAssociation" Value="PrefixedHierarchical" />
+    <Property Name="Policies" Value="$0" />
+  </Properties>
+</Solution>
