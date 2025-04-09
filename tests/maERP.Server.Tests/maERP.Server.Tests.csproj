@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -9,7 +9,7 @@
 		<WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904;NU1608</WarningsNotAsErrors>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.3" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
 		<PackageReference Include="xunit" Version="2.9.3" />
