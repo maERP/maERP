@@ -11,11 +11,11 @@
 		<PackageReference Include="Blazored.LocalStorage" Version="4.5" />
 		<PackageReference Include="FluentValidation" Version="11.11.0" />
  		<PackageReference Include="MudBlazor" Version="8.5.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.8.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="Pages\AiModels\AiModels.razor" />
