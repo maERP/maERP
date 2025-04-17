@@ -4,6 +4,7 @@ using maERP.Application;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
 using maERP.Infrastructure;
+using maERP.PDF;
 using maERP.Persistence;
 using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
@@ -66,22 +67,19 @@ builder.Services.AddResponseCaching(options =>
 
 if (!builder.Environment.IsEnvironment("Testing"))
 {
-    builder.Services.AddPersistenceServices();    
+    builder.Services.AddPersistenceServices();
+    builder.Services.AddSalesChannelServices();
 }
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddPdfServices();
 
 // Add health checks
 builder.Services.AddHealthChecks()
     // .AddDbContextCheck<ApplicationDbContext>("Database")
     .AddCheck("Self", () => HealthCheckResult.Healthy("Service is running."));
-
-if (!builder.Environment.IsEnvironment("Testing"))
-{
-    builder.Services.AddSalesChannelServices();
-}
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
@@ -90,6 +88,7 @@ builder.Services.AddScoped<IAiPromptRepository, AiPromptRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductSalesChannelRepository, ProductSalesChannelRepository>();
 builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();

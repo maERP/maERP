@@ -72,9 +72,10 @@
 		<ProjectReference Include="../maERP.Application/maERP.Application.csproj" />
 		<ProjectReference Include="../maERP.Infrastructure/maERP.Infrastructure.csproj" />
 		<ProjectReference Include="../maERP.Persistence/maERP.Persistence.csproj" />
+		<ProjectReference Include="../maERP.Persistence.MSSQL/maERP.Persistence.MSSQL.csproj" />
+		<ProjectReference Include="../maERP.Persistence.MySQL/maERP.Persistence.MySQL.csproj" />
+		<ProjectReference Include="../maERP.Persistence.PostgreSQL/maERP.Persistence.PostgreSQL.csproj" />
+		<ProjectReference Include="../maERP.PDF/maERP.PDF.csproj" />
 		<ProjectReference Include="../maERP.SalesChannels/maERP.SalesChannels.csproj" />
-		<ProjectReference Include="..\maERP.Persistence.MSSQL\maERP.Persistence.MSSQL.csproj" />
-		<ProjectReference Include="..\maERP.Persistence.MySQL\maERP.Persistence.MySQL.csproj" />
-		<ProjectReference Include="..\maERP.Persistence.PostgreSQL\maERP.Persistence.PostgreSQL.csproj" />
 	</ItemGroup>
 </Project>

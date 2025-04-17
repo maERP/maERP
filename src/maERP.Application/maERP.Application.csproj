@@ -17,4 +17,12 @@
 	<ItemGroup>
 		<ProjectReference Include="..\maERP.Domain\maERP.Domain.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Features\Invoice\Commands\" />
+	  <Folder Include="Features\Invoice\Commands\InvoiceCreate\" />
+	  <Folder Include="Features\Invoice\Commands\InvoiceUpdate\" />
+	  <Folder Include="Features\Invoice\Queries\" />
+	  <Folder Include="Features\Invoice\Queries\InvoiceDetail\" />
+	  <Folder Include="Features\Invoice\Queries\InvoiceList\" />
+	</ItemGroup>
 </Project>
