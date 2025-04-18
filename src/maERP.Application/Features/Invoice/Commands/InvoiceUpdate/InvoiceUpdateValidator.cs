@@ -9,7 +9,7 @@ namespace maERP.Application.Features.Invoice.Commands.InvoiceUpdate;
 /// Extends InvoiceBaseValidator to inherit common validation rules for invoice data
 /// and adds specific validation for invoice update operations.
 /// </summary>
-public class InvoiceUpdateValidator : InvoiceBaseValidator<InvoiceInputCommand>
+public class InvoiceUpdateValidator : InvoiceBaseValidator<InvoiceUpdateCommand>
 {
     private readonly IInvoiceRepository _invoiceRepository;
 
@@ -43,7 +43,7 @@ public class InvoiceUpdateValidator : InvoiceBaseValidator<InvoiceInputCommand>
     /// <param name="command">The invoice update command to validate</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>True if the invoice exists, false otherwise</returns>
-    private async Task<bool> InvoiceExists(InvoiceInputCommand command, CancellationToken cancellationToken)
+    private async Task<bool> InvoiceExists(InvoiceUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _invoiceRepository.ExistsAsync(command.Id);
     }
@@ -54,7 +54,7 @@ public class InvoiceUpdateValidator : InvoiceBaseValidator<InvoiceInputCommand>
     /// <param name="command">The invoice update command to validate</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>True if the invoice number is unique or unchanged, false otherwise</returns>
-    private async Task<bool> InvoiceNumberIsUniqueOrUnchanged(InvoiceInputCommand command, CancellationToken cancellationToken)
+    private async Task<bool> InvoiceNumberIsUniqueOrUnchanged(InvoiceUpdateCommand command, CancellationToken cancellationToken)
     {
         var existingInvoices = await _invoiceRepository.GetAllAsync();
         var currentInvoice = await _invoiceRepository.GetByIdAsync(command.Id);

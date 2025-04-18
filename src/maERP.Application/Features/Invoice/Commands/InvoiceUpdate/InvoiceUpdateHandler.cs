@@ -10,7 +10,7 @@ namespace maERP.Application.Features.Invoice.Commands.InvoiceUpdate;
 /// Implements IRequestHandler from MediatR to handle InvoiceUpdateCommand requests
 /// and return the ID of the updated invoice wrapped in a Result.
 /// </summary>
-public class InvoiceUpdateHandler : IRequestHandler<InvoiceInputCommand, Result<int>>
+public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result<int>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,7 +41,7 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceInputCommand, Result<
     /// <param name="request">The invoice update command with invoice details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the updated invoice if successful</returns>
-    public async Task<Result<int>> Handle(InvoiceInputCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(InvoiceUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating invoice with ID: {Id}", request.Id);
         
@@ -59,7 +59,7 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceInputCommand, Result<
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
             
             _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(InvoiceInputCommand), 
+                nameof(InvoiceUpdateCommand), 
                 string.Join(", ", result.Messages));
                 
             return result;

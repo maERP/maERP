@@ -7,7 +7,7 @@ namespace maERP.Application.Features.Invoice.Commands.InvoiceDelete;
 /// Validator for invoice deletion commands.
 /// Validates that the invoice ID is valid and that the invoice exists.
 /// </summary>
-public class DeleteInvoiceValidator : AbstractValidator<DeleteInvoiceCommand>
+public class InvoiceDeleteValidator : AbstractValidator<InvoiceDeleteCommand>
 {
     private readonly IInvoiceRepository _invoiceRepository;
 
@@ -15,7 +15,7 @@ public class DeleteInvoiceValidator : AbstractValidator<DeleteInvoiceCommand>
     /// Constructor that initializes the validator with required dependencies
     /// </summary>
     /// <param name="invoiceRepository">Repository for invoice data access</param>
-    public DeleteInvoiceValidator(IInvoiceRepository invoiceRepository)
+    public InvoiceDeleteValidator(IInvoiceRepository invoiceRepository)
     {
         _invoiceRepository = invoiceRepository;
 
@@ -33,7 +33,7 @@ public class DeleteInvoiceValidator : AbstractValidator<DeleteInvoiceCommand>
     /// <param name="command">The invoice delete command to validate</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>True if the invoice exists, false otherwise</returns>
-    private async Task<bool> InvoiceExists(DeleteInvoiceCommand command, CancellationToken cancellationToken)
+    private async Task<bool> InvoiceExists(InvoiceDeleteCommand command, CancellationToken cancellationToken)
     {
         return await _invoiceRepository.ExistsAsync(command.Id);
     }

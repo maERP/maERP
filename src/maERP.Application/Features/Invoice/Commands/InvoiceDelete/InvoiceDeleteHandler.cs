@@ -10,12 +10,12 @@ namespace maERP.Application.Features.Invoice.Commands.InvoiceDelete;
 /// Implements IRequestHandler from MediatR to handle DeleteInvoiceCommand requests
 /// and return the ID of the deleted invoice wrapped in a Result.
 /// </summary>
-public class DeleteInvoiceHandler : IRequestHandler<DeleteInvoiceCommand, Result<int>>
+public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result<int>>
 {
     /// <summary>
     /// Logger for recording handler operations
     /// </summary>
-    private readonly IAppLogger<DeleteInvoiceHandler> _logger;
+    private readonly IAppLogger<InvoiceDeleteHandler> _logger;
     
     /// <summary>
     /// Repository for invoice data operations
@@ -27,8 +27,8 @@ public class DeleteInvoiceHandler : IRequestHandler<DeleteInvoiceCommand, Result
     /// </summary>
     /// <param name="logger">Logger for recording operations</param>
     /// <param name="invoiceRepository">Repository for invoice data access</param>
-    public DeleteInvoiceHandler(
-        IAppLogger<DeleteInvoiceHandler> logger,
+    public InvoiceDeleteHandler(
+        IAppLogger<InvoiceDeleteHandler> logger,
         IInvoiceRepository invoiceRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -41,14 +41,14 @@ public class DeleteInvoiceHandler : IRequestHandler<DeleteInvoiceCommand, Result
     /// <param name="request">The invoice deletion command with invoice ID</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the deleted invoice if successful</returns>
-    public async Task<Result<int>> Handle(DeleteInvoiceCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(InvoiceDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting invoice with ID: {Id}", request.Id);
         
         var result = new Result<int>();
         
         // Validate incoming data
-        var validator = new DeleteInvoiceValidator(_invoiceRepository);
+        var validator = new InvoiceDeleteValidator(_invoiceRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         // If validation fails, return a bad request result with validation error messages
@@ -59,7 +59,7 @@ public class DeleteInvoiceHandler : IRequestHandler<DeleteInvoiceCommand, Result
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
             
             _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
-                nameof(DeleteInvoiceCommand), 
+                nameof(InvoiceDeleteCommand), 
                 string.Join(", ", result.Messages));
                 
             return result;
