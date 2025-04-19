@@ -1,0 +1,37 @@
+@page "/Settings"
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<PageTitle>Systemeinstellungen</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-8">Systemeinstellungen</MudText>
+
+@if (Settings == null)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudForm Model="@Settings" @ref="@Form" ValidationDelay="0">
+        <MudGrid>
+            @foreach (var setting in Settings)
+            {
+                <MudItem xs="6">
+                    <MudTextField @bind-Value="setting.Value"
+                                Label="@setting.Key"
+                                Variant="Variant.Text"
+                                Required="true"
+                                Class="mt-6" />
+                </MudItem>
+            }
+        </MudGrid>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Size="Size.Large"
+                   ButtonType="ButtonType.Button"
+                   OnClick="@(Save)"
+                   Class="mt-6">Speichern</MudButton>
+    </MudForm>
+}

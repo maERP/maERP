@@ -4,7 +4,6 @@ using maERP.Application;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
 using maERP.Infrastructure;
-using maERP.PDF;
 using maERP.Persistence;
 using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
@@ -74,7 +73,6 @@ if (!builder.Environment.IsEnvironment("Testing"))
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
-builder.Services.AddPdfServices();
 
 // Add health checks
 builder.Services.AddHealthChecks()
