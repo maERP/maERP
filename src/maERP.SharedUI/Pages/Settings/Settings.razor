@@ -7,15 +7,15 @@
 
 <MudText Typo="Typo.h4" Class="mb-8">Systemeinstellungen</MudText>
 
-@if (Settings == null)
+@if (_settings == null)
 {
     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
 }
 else
 {
-    <MudForm Model="@Settings" @ref="@Form" ValidationDelay="0">
+    <MudForm Model="@_settings" @ref="@Form" ValidationDelay="0">
         <MudGrid>
-            @foreach (var setting in Settings)
+            @foreach (var setting in _settings)
             {
                 <MudItem xs="6">
                     <MudTextField @bind-Value="setting.Value"

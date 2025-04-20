@@ -1,7 +1,9 @@
 using Asp.Versioning;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,14 +13,19 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class SettingsController(ISettingsRepository settingsRepository) : ControllerBase
+public class SettingsController(IMediator mediator, ISettingsRepository settingsRepository) : ControllerBase
 {
     // GET: api/v1/Settings
     [HttpGet]
-    public async Task<ActionResult<Result<List<Setting>>>> GetAll()
+    public async Task<ActionResult<Result<List<Setting>>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
-        var settings = await settingsRepository.GetAllAsync();
-        return Ok(await Result<List<Setting>>.SuccessAsync(settings));
+        if (string.IsNullOrEmpty(orderBy))
+        {
+            orderBy = "DateCreated Descending";
+        }
+
+        var response = await mediator.Send(new SalesChannelListQuery(pageNumber, pageSize, searchString, orderBy));
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // GET api/v1/Settings/key

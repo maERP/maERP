@@ -10,7 +10,7 @@ using maERP.Domain.Entities;
 
 namespace maERP.Infrastructure.PDF;
 
-public class PdfInvoice : IPdfInvoice
+public class PdfInvoice
 {
     private readonly string _companyName;
     private readonly string _companyAddress;
@@ -39,7 +39,7 @@ public class PdfInvoice : IPdfInvoice
         string companyBankName, 
         string companyIban, 
         string companyBic,
-        string logoPath = null)
+        string logoPath)
     {
         _companyName = companyName;
         _companyAddress = companyAddress;
@@ -62,7 +62,7 @@ public class PdfInvoice : IPdfInvoice
     /// <param name="invoice">The invoice entity to generate PDF for</param>
     /// <param name="outputPath">Optional path to save the PDF file. If null, returns the PDF as a byte array</param>
     /// <returns>Byte array containing the PDF if outputPath is null, otherwise returns null after saving to file</returns>
-    public byte[] GenerateInvoice(Invoice invoice, string outputPath = null)
+    public byte[]? GenerateInvoice(Invoice invoice, string? outputPath = null)
     {
         if (invoice == null)
             throw new ArgumentNullException(nameof(invoice));
@@ -90,41 +90,7 @@ public class PdfInvoice : IPdfInvoice
         return null;
     }
 
-    /// <summary>
-    /// Generates a PDF invoice asynchronously from the given Invoice entity
-    /// </summary>
-    /// <param name="invoice">The invoice entity to generate PDF for</param>
-    /// <param name="outputPath">Optional path to save the PDF file. If null, returns the PDF as a byte array</param>
-    /// <returns>Byte array containing the PDF if outputPath is null, otherwise returns null after saving to file</returns>
-    public async Task<byte[]> GenerateInvoiceAsync(Invoice invoice, string outputPath = null)
-    {
-        if (invoice == null)
-            throw new ArgumentNullException(nameof(invoice));
-
-        var document = Document.Create(container =>
-        {
-            container.Page(page =>
-            {
-                page.Size(PageSizes.A4);
-                page.Margin(50);
-                page.DefaultTextStyle(x => x.FontSize(10));
-
-                page.Header().Element(container => ComposeHeader(container, invoice));
-                page.Content().Element(container => ComposeContent(container, invoice));
-                page.Footer().Element(container => ComposeFooter(container, invoice));
-            });
-        });
-
-        if (string.IsNullOrEmpty(outputPath))
-        {
-            return await document.GeneratePdfAsync();
-        }
-        
-        await document.GeneratePdfAsync(outputPath);
-        return null;
-    }
-
-    private static void ComposeHeader(IContainer container, Invoice invoice)
+    private void ComposeHeader(IContainer container, Invoice invoice)
     {
         container.Row(row =>
         {
@@ -157,15 +123,15 @@ public class PdfInvoice : IPdfInvoice
 
                 if (invoice.OrderId.HasValue)
                 {
-                    column.Item().AlignRight().Text($"Bestellnummer: {invoice.Order?.OrderNumber ?? "N/A"}");
+                    column.Item().AlignRight().Text($"Bestellnummer: {invoice.Order?.Id.ToString() ?? "N/A"}");
                 }
 
-                column.Item().AlignRight().Text($"Kundennummer: {invoice.Customer?.CustomerNumber ?? "N/A"}");
+                column.Item().AlignRight().Text($"Kundennummer: {invoice.Order?.CustomerId.ToString() ?? "N/A"}");
             });
         });
     }
 
-    private static void ComposeContent(IContainer container, Invoice invoice)
+    private void ComposeContent(IContainer container, Invoice invoice)
     {
         container.PaddingVertical(20).Column(column =>
         {
@@ -327,7 +293,7 @@ public class PdfInvoice : IPdfInvoice
         });
     }
 
-    private static void ComposeFooter(IContainer container, Invoice invoice)
+    private void ComposeFooter(IContainer container, Invoice invoice)
     {
         container.Column(column =>
         {

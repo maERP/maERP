@@ -1,3 +1,4 @@
+using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
@@ -19,15 +20,15 @@ public partial class Settings
 
     public MudForm? Form;
 
-    public List<Setting>? Settings { get; set; }
+    private List<SettingListDto>? _settings { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await HttpService.GetAsync<Result<List<Setting>>>("/api/v1/Settings");
+        var result = await HttpService.GetAsync<Result<List<SettingListDto>>>("/api/v1/Settings");
         
         if (result != null && result.Succeeded)
         {
-            Settings = result.Data;
+            _settings = result.Data;
         }
         else
         {
@@ -37,16 +38,16 @@ public partial class Settings
 
     private async Task Save()
     {
-        if (Settings == null || !Settings.Any()) return;
+        if (_settings == null || !_settings.Any()) return;
 
         if (Form != null)
         {
             await Form.Validate();
             if (Form.IsValid)
             {
-                var result = await HttpService.PutAsync<Result<List<Setting>>>("/api/v1/Settings", Settings);
+                var result = await HttpService.PutAsJsonAsync("/api/v1/Settings", _settings);
 
-                if (result != null && result.Succeeded)
+                if (result != null && result.IsSuccessStatusCode)
                 {
                     Snackbar.Add("Einstellungen erfolgreich gespeichert", Severity.Success);
                     NavigationManager.NavigateTo("/Settings", true);

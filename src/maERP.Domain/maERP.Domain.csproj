@@ -11,4 +11,7 @@
 		<PackageReference Include="FluentValidation" Version="11.11.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.4" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Dtos\Setting\" />
+	</ItemGroup>
 </Project>
