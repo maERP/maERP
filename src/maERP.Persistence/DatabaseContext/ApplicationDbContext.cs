@@ -22,6 +22,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new WarehouseConfiguration());
         modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
         modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
+
+        // Seed Settings
+        modelBuilder.SeedSettings();
     }
 
     public DbSet<AiModel> AiModel { get; set; } = null!;
