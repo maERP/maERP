@@ -1,0 +1,31 @@
+@page "/Settings/{Id:int}"
+@using maERP.Domain.Dtos.Settings
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<PageTitle>Systemeinstellung Details</PageTitle>
+
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Systemeinstellung Details</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/Settings/{Id}/Edit")" />
+</MudStack>
+
+@if (_setting == null)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudGrid>
+        <MudItem xs="12" sm="6">
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.body1"><strong>Name:</strong> @_setting.Key</MudText>
+                    <MudText Typo="Typo.body1" Class="mt-3"><strong>Wert:</strong> @_setting.Value</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+}

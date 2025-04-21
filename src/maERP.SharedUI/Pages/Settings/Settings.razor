@@ -1,37 +1,33 @@
 @page "/Settings"
+@using maERP.Domain.Dtos.Settings
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
 
 <PageTitle>Systemeinstellungen</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-8">Systemeinstellungen</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Systemeinstellungen</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Settings/Create" />
+</MudStack>
 
-@if (_settings == null)
-{
-    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-}
-else
-{
-    <MudForm Model="@_settings" @ref="@Form" ValidationDelay="0">
-        <MudGrid>
-            @foreach (var setting in _settings)
-            {
-                <MudItem xs="6">
-                    <MudTextField @bind-Value="setting.Value"
-                                Label="@setting.Key"
-                                Variant="Variant.Text"
-                                Required="true"
-                                Class="mt-6" />
-                </MudItem>
-            }
-        </MudGrid>
-
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   Size="Size.Large"
-                   ButtonType="ButtonType.Button"
-                   OnClick="@(Save)"
-                   Class="mt-6">Speichern</MudButton>
-    </MudForm>
-}
+<MudDataGrid T="SettingListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData" @ref="DataGrid" Hover="true">
+    <ToolBarContent>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" TextChanged="Search" Placeholder="Suche" Adornment="Adornment.Start" Immediate="true" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Key" Title="Name" />
+        <PropertyColumn Property="x => x.Value" Title="Wert" />
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/Settings/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/Settings/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="SettingListDto" />
+    </PagerContent>
+</MudDataGrid>
