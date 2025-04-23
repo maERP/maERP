@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using maERP.Domain.Dtos.Settings;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
@@ -41,33 +42,39 @@ public partial class SettingsEdit
         }
     }
 
-    private async Task Save()
+    protected async Task Save()
     {
-        if (Form != null)
-        {
-            await Form.Validate();
-            if (Form.IsValid)
-            {
-                Result<int>? result;
-                if (Id == 0)
-                {
-                    result = await HttpService.PostAsync<Result<int>>("/api/v1/Settings", _setting);
-                }
-                else
-                {
-                    result = await HttpService.PutAsync<Result<int>>($"/api/v1/Settings/{Id}", _setting);
-                }
+        HttpResponseMessage httpResponseMessage;
 
-                if (result != null && result.Succeeded)
+        if (Id == 0)
+        {
+            httpResponseMessage = await HttpService.PostAsJsonAsync("/api/v1/Warehouses", _setting);
+        }
+        else
+        {
+            httpResponseMessage = await HttpService.PutAsJsonAsync($"/api/v1/Warehouses/{Id}", _setting);
+        }
+
+        var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
+        
+        if (result != null)
+        {
+            if (result.Succeeded)
+            {
+                Snackbar.Add("Lager gespeichert", Severity.Success);
+                NavigationManager.NavigateTo("/Settings");
+            }
+            else
+            {
+                foreach (var errorMessage in result.Messages)
                 {
-                    Snackbar.Add("Einstellung erfolgreich gespeichert", Severity.Success);
-                    NavigationManager.NavigateTo("/Settings");
-                }
-                else
-                {
-                    Snackbar.Add("Fehler beim Speichern der Einstellung", Severity.Error);
+                    Snackbar.Add("SERVER: " + errorMessage, Severity.Error);
                 }
             }
+        }
+        else
+        {
+            Snackbar.Add("Lager konnte nicht gespeichert werden", Severity.Error);
         }
     }
 }
