@@ -15,7 +15,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.8.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.9.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="Pages\AiModels\AiModels.razor" />

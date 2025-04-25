@@ -12,7 +12,7 @@
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
 		<PackageReference Include="MediatR" Version="12.5.0" />
 		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3" />
-		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0.2" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.2" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\maERP.Domain\maERP.Domain.csproj" />
