@@ -48,7 +48,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.60" />
 		<PackageReference Include="System.Net.Http.Json" Version="9.0.4" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.4" />
-		<PackageReference Include="MudBlazor" Version="8.5.1" />
+		<PackageReference Include="MudBlazor" Version="8.6.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
