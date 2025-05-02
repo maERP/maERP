@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using maERP.Domain.Interfaces;
 
 namespace maERP.Domain.Dtos.Setting;
 
-public class SettingInputDto
+public class SettingInputDto : ISettingInputModel
 {
     public int Id { get; set; }
 

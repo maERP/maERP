@@ -18,7 +18,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Route("/api/v{version:apiVersion}/[controller]")]
 public class AiPromptsController(IMediator mediator) : ControllerBase
 {
-    // GET: api/<AiPromptsController>
+    // GET: api/v1/<AiPromptsController>
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<AiPromptListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
@@ -31,7 +31,7 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // GET api/<AiPromptsController>/5
+    // GET: api/v1/<AiPromptsController>/5
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,7 +41,7 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // POST api/<AiPromptsController>
+    // POST: api/v1/<AiPromptsController>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -51,7 +51,7 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // PUT api/<AiPromptsController>/5
+    // PUT: api/v1/<AiPromptsController>/5
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -64,7 +64,7 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // DELETE api/<AiPromptsController>/5
+    // DELETE: api/v1/<AiPromptsController>/5
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

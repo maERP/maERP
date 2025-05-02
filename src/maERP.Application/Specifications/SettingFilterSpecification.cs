@@ -4,15 +4,15 @@ using maERP.Domain.Entities;
 namespace maERP.Application.Specifications
 {
     /// <summary>
-    /// Specification for filtering ai prompts
+    /// Specification for filtering settings
     /// </summary>
-    public class AiPromptFilterSpecification : FilterSpecification<AiPrompt>
+    public class SettingFilterSpecification : FilterSpecification<Setting>
     {
-        public AiPromptFilterSpecification(string searchString)
+        public SettingFilterSpecification(string searchString)
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = w => (w.Identifier.Contains(searchString));
+                Criteria = w => (w.Key.Contains(searchString));
             }
             else
             {
@@ -20,7 +20,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public AiPromptFilterSpecification(int id)
+        public SettingFilterSpecification(int id)
         {
             Criteria = o => o.Id == id;
         }

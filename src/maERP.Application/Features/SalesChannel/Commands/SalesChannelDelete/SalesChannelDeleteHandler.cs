@@ -5,7 +5,7 @@ using MediatR;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 
-public class SalesChannelDeleteHandler : IRequestHandler<SalesChanneLDeleteCommand, Result<int>>
+public class SalesChannelDeleteHandler : IRequestHandler<SalesChannelDeleteCommand, Result<int>>
 {
     private readonly IAppLogger<SalesChannelDeleteHandler> _logger;
     private readonly ISalesChannelRepository _salesChannelRepository;
@@ -19,7 +19,7 @@ public class SalesChannelDeleteHandler : IRequestHandler<SalesChanneLDeleteComma
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
     }
 
-    public async Task<Result<int>> Handle(SalesChanneLDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(SalesChannelDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting sales channel with ID: {Id}", request.Id);
         
@@ -36,7 +36,7 @@ public class SalesChannelDeleteHandler : IRequestHandler<SalesChanneLDeleteComma
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
             
             _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
-                nameof(SalesChanneLDeleteCommand), 
+                nameof(SalesChannelDeleteCommand), 
                 string.Join(", ", result.Messages));
                 
             return result;

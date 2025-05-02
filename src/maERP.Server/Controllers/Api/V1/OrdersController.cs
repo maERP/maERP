@@ -21,7 +21,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Route("/api/v{version:apiVersion}/[controller]")]
 public class OrdersController(IMediator mediator) : ControllerBase
 {
-    // GET: api/<OrdersController>
+    // GET: api/v1/<OrdersController>
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
@@ -34,7 +34,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return Ok(orders);
     }
 
-    // GET: api/<OrdersController>/customer/{customerId}
+    // GET: api/v1/<OrdersController>/customer/{customerId}
     [HttpGet("customer/{customerId}")]
     public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetByCustomer(int customerId, int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
@@ -47,7 +47,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return Ok(orders);
     }
 
-    // GET: api/<OrdersController>/readyfordelivery
+    // GET: api/v1/<OrdersController>/readyfordelivery
     [HttpGet("readyfordelivery")]
     public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetReadyForDelivery(int pageNumber = 0, int pageSize = 10, string orderBy = "")
     {
@@ -60,7 +60,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return Ok(orders);
     }
 
-    // GET: api/<OrdersController>/notpaid
+    // GET: api/v1/<OrdersController>/notpaid
     [HttpGet("notpaid")]
     public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetNotPaid(int pageNumber = 0, int pageSize = 10, string orderBy = "")
     {
@@ -73,7 +73,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return Ok(orders);
     }
 
-    // GET api/<OrdersController>/5
+    // GET: api/v1/<OrdersController>/5
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -83,7 +83,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // POST api/<OrdersController>
+    // POST: api/v1/<OrdersController>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -93,7 +93,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // PUT: api/<OrdersController>/5
+    // PUT: api/v1/<OrdersController>/5
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -106,7 +106,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // DELETE api/<OrderController>/5
+    // DELETE: api/v1/<OrderController>/5
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

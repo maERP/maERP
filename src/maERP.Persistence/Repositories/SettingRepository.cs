@@ -4,9 +4,9 @@ using maERP.Persistence.DatabaseContext;
 
 namespace maERP.Persistence.Repositories;
 
-public class SettingsRepository : GenericRepository<Setting>, ISettingsRepository
+public class SettingRepository : GenericRepository<Setting>, ISettingRepository
 {
-    public SettingsRepository(ApplicationDbContext context) : base(context)
+    public SettingRepository(ApplicationDbContext context) : base(context)
     {
     }
 }

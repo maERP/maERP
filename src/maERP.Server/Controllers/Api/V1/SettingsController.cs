@@ -1,7 +1,10 @@
 using Asp.Versioning;
-using maERP.Application.Contracts.Persistence;
-using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
-using maERP.Domain.Entities;
+using maERP.Application.Features.Setting.Commands.SettingCreate;
+using maERP.Application.Features.Setting.Commands.SettingDelete;
+using maERP.Application.Features.Setting.Commands.SettingUpdate;
+using maERP.Application.Features.Setting.Queries.SettingDetail;
+using maERP.Application.Features.Setting.Queries.SettingList;
+using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,64 +16,64 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class SettingsController(IMediator mediator, ISettingsRepository settingsRepository) : ControllerBase
+public class SettingsController(IMediator mediator) : ControllerBase
 {
-    // GET: api/v1/Settings
+    // GET: api/v1/<SettingsController>
     [HttpGet]
-    public async Task<ActionResult<Result<List<Setting>>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<SettingListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
             orderBy = "DateCreated Descending";
         }
 
-        var response = await mediator.Send(new SalesChannelListQuery(pageNumber, pageSize, searchString, orderBy));
+        var response = await mediator.Send(new SettingListQuery(pageNumber, pageSize, searchString, orderBy));
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // GET api/v1/Settings/key
-    [HttpGet("{key}")]
+    // GET: api/v1/<SettingsController>/5
+    [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Result<Setting>>> GetByKey(string key)
-    {
-        var settings = await settingsRepository.GetAllAsync();
-        var setting = settings.FirstOrDefault(s => s.Key == key);
-        
-        if (setting == null)
-            return NotFound(await Result<Setting>.FailAsync("Setting not found"));
-            
-        return Ok(await Result<Setting>.SuccessAsync(setting));
+    public async Task<ActionResult<SettingDetailDto>> GetDetails(int id)
+    { 
+        var response = await mediator.Send(new SettingDetailQuery { Id = id });
+        return StatusCode((int)response.StatusCode, response);
     }
 
-    // PUT api/v1/Settings
-    [HttpPut]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    // POST: api/v1/<SettingsController>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Result<List<Setting>>>> UpdateSettings([FromBody] List<Setting> settings)
+    public async Task<ActionResult> Create(SettingCreateCommand settingCreateCommand)
     {
-        if (!settings.Any())
-            return BadRequest(await Result<List<Setting>>.FailAsync("No settings provided"));
+        var response = await mediator.Send(settingCreateCommand);
+        return StatusCode((int)response.StatusCode, response);
+    }
 
-        var existingSettings = await settingsRepository.GetAllAsync();
-        var updatedSettings = new List<Setting>();
+    // PUT: api/v1/<SettingsController>/5
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult<SettingDetailDto>> Update(int id, SettingUpdateCommand settingUpdateCommand)
+    {
+        settingUpdateCommand.Id = id;
+        var response = await mediator.Send(settingUpdateCommand);
+        return StatusCode((int)response.StatusCode, response);
+    }
 
-        foreach (var setting in settings)
-        {
-            var existingSetting = existingSettings.FirstOrDefault(s => s.Key == setting.Key);
-            if (existingSetting != null)
-            {
-                existingSetting.Value = setting.Value;
-                await settingsRepository.UpdateAsync(existingSetting);
-                updatedSettings.Add(existingSetting);
-            }
-            else
-            {
-                await settingsRepository.CreateAsync(setting);
-                updatedSettings.Add(setting);
-            }
-        }
-
-        return Ok(await Result<List<Setting>>.SuccessAsync(updatedSettings));
+    // DELETE: api/v1/<SettingsController>/5
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var command = new SettingDeleteCommand { Id = id };
+        await mediator.Send(command);
+        return NoContent();
     }
 }

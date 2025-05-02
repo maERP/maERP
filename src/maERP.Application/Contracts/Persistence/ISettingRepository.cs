@@ -2,6 +2,6 @@
 
 namespace maERP.Application.Contracts.Persistence;
 
-public interface ISettingsRepository : IGenericRepository<Setting>
+public interface ISettingRepository : IGenericRepository<Setting>
 {
 }

@@ -14,9 +14,9 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class StatisticController(IMediator mediator) : ControllerBase
+public class StatisticsController(IMediator mediator) : ControllerBase
 {
-    // GET: api/<StatisticController>
+    // GET: api/v1/<StatisticsController>
     [HttpGet("OrderStatistic")]
     public async Task<ActionResult<Result<StatisticOrderDto>>> OrderStatistic()
     {
@@ -28,7 +28,7 @@ public class StatisticController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
-    // GET: api/<StatisticController>
+    // GET: api/v1/<StatisticsController>
     [HttpGet("ProductStatistic")]
     public async Task<ActionResult<Result<StatisticProductDto>>> ProductStatistic()
     {
@@ -40,7 +40,7 @@ public class StatisticController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
     
-    // GET: api/<StatisticController>
+    // GET: api/v1/<StatisticsController>
     [HttpGet("OrderCustomerChart")]
     public async Task<ActionResult<Result<StatisticOrderCustomerChartResponse>>> OrderCustomerChart()
     {

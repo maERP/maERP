@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using maERP.Domain.Dtos.Settings;
+using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
 using maERP.SharedUI.Contracts;
 using Microsoft.AspNetCore.Components;

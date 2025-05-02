@@ -35,7 +35,7 @@ public partial class Dashboard
             _isLoading = true;
             
             // Verwende das konkrete DTO statt dynamischen Typ
-            var result = await HttpService.GetAsync<Result<StatisticOrderDto>>("/api/v1/Statistic/OrderStatistic");
+            var result = await HttpService.GetAsync<Result<StatisticOrderDto>>("/api/v1/Statistics/OrderStatistic");
             
             if (result != null && result.Succeeded)
             {

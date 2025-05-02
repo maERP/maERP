@@ -3,7 +3,7 @@ using maERP.Application.Contracts.Persistence;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 
-public class SalesChannelDeleteValidator : AbstractValidator<SalesChanneLDeleteCommand>
+public class SalesChannelDeleteValidator : AbstractValidator<SalesChannelDeleteCommand>
 {
     private readonly ISalesChannelRepository _salesChannelRepository;
 
@@ -19,7 +19,7 @@ public class SalesChannelDeleteValidator : AbstractValidator<SalesChanneLDeleteC
             .MustAsync(SalesChannelExists).WithMessage("SalesChannel not found.");
     }
     
-    private async Task<bool> SalesChannelExists(SalesChanneLDeleteCommand command, CancellationToken cancellationToken)
+    private async Task<bool> SalesChannelExists(SalesChannelDeleteCommand command, CancellationToken cancellationToken)
     {
         return await _salesChannelRepository.ExistsAsync(command.Id);
     }

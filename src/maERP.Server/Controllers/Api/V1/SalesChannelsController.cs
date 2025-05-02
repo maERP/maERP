@@ -18,7 +18,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Route("/api/v{version:apiVersion}/[controller]")]
 public class SalesChannelsController(IMediator mediator) : ControllerBase
 {
-    // GET: api/<SalesChannelsController>
+    // GET: api/v1/<SalesChannelsController>
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<SalesChannelListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
@@ -31,7 +31,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // GET api/<SalesChannelsController>/5
+    // GET: api/v1/<SalesChannelsController>/5
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,7 +41,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // POST api/<SalesChannelsController>
+    // POST: api/v1/<SalesChannelsController>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -51,7 +51,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
     
-    // PUT: api/<SalesChannelsController>/5
+    // PUT: api/v1/<SalesChannelsController>/5
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -64,14 +64,14 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // DELETE api/<SalesChannelController>/5
+    // DELETE: api/v1/<SalesChannelController>/5
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(int id)
     {
-        var command = new SalesChanneLDeleteCommand { Id = id };
+        var command = new SalesChannelDeleteCommand { Id = id };
         await mediator.Send(command);
         return NoContent();
     }

@@ -25,7 +25,7 @@ public class UsersController : ControllerBase
         _mediator = mediator;
     }
 
-    // GET: api/<UsersController>
+    // GET: api/v1/<UsersController>
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<UserListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
@@ -48,7 +48,7 @@ public class UsersController : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // POST api/<UsersController>
+    // POST: api/v1/<UsersController>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -58,7 +58,7 @@ public class UsersController : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // PUT api/<UsersController>/5
+    // PUT: api/v1/<UsersController>/5
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -71,7 +71,7 @@ public class UsersController : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // DELETE api/<UsersController>/5
+    // DELETE: api/v1/<UsersController>/5
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

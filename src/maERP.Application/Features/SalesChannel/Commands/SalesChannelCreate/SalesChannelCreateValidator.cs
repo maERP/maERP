@@ -9,7 +9,7 @@ namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 /// Extends SalesChannelBaseValidator to inherit common validation rules for sales channel data
 /// and adds specific validation for sales channel creation operations.
 /// </summary>
-public class SalesChanneLCreateValidator : SalesChannelBaseValidator<SalesChannelCreateCommand>
+public class SalesChannelCreateValidator : SalesChannelBaseValidator<SalesChannelCreateCommand>
 {
     /// <summary>
     /// Repository for sales channel data operations
@@ -20,7 +20,7 @@ public class SalesChanneLCreateValidator : SalesChannelBaseValidator<SalesChanne
     /// Constructor that initializes the validator with required dependencies
     /// </summary>
     /// <param name="salesChannelRepository">Repository for sales channel data access</param>
-    public SalesChanneLCreateValidator(ISalesChannelRepository salesChannelRepository)
+    public SalesChannelCreateValidator(ISalesChannelRepository salesChannelRepository)
     {
         _salesChannelRepository = salesChannelRepository;
         

@@ -80,7 +80,7 @@ builder.Services.AddHealthChecks()
     .AddCheck("Self", () => HealthCheckResult.Healthy("Service is running."));
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
+builder.Services.AddScoped<ISettingRepository, SettingRepository>();
 builder.Services.AddScoped<IAiModelRepository, AiModelRepository>();
 builder.Services.AddScoped<IAiPromptRepository, AiPromptRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();

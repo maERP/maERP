@@ -4,7 +4,7 @@ using maERP.Domain.Entities;
 namespace maERP.Application.Specifications
 {
     /// <summary>
-    /// Specification for filtering orders
+    /// Specification for filtering warehouses
     /// </summary>
     public class WarehouseFilterSpecification : FilterSpecification<Warehouse>
     {

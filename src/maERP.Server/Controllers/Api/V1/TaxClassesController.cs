@@ -25,7 +25,7 @@ public class TaxClassesController : ControllerBase
         _mediator = mediator;
     }
 
-    // GET: api/<TaxClassesController>
+    // GET: api/v1/<TaxClassesController>
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<TaxClassListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
@@ -48,7 +48,7 @@ public class TaxClassesController : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // POST api/<TaxClassesController>
+    // POST: api/v1/<TaxClassesController>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -58,7 +58,7 @@ public class TaxClassesController : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // PUT api/<TaxClassesController>/5
+    // PUT: api/v1/<TaxClassesController>/5
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -71,7 +71,7 @@ public class TaxClassesController : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // DELETE api/<TaxClassesController>/5
+    // DELETE: api/v1/<TaxClassesController>/5
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

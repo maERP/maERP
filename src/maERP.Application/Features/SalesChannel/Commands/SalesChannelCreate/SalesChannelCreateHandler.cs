@@ -48,7 +48,7 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
         var result = new Result<int>();
         
         // Validate incoming data
-        var validator = new SalesChanneLCreateValidator(_salesChannelRepository);
+        var validator = new SalesChannelCreateValidator(_salesChannelRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         // If validation fails, return a bad request result with validation error messages
