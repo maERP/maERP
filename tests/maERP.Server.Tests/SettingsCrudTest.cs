@@ -57,7 +57,7 @@ public class SettingsCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
 
         Assert.NotNull(result);
         Assert.Equal(1, result.TotalCount);
-    }'Ä+´'
+    }
 
     [Theory]
     [InlineData("/api/v1/Settings/3")]
