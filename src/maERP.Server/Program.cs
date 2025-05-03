@@ -18,7 +18,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
-using Serilog;
+using Serilog; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -94,6 +94,9 @@ builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+// Register SettingsInitializer service
+builder.Services.AddTransient<SettingsInitializer>();
+
 var app = builder.Build();
 
 // Apply database migrations
@@ -108,6 +111,12 @@ using (var scope = app.Services.CreateScope())
         context.Database.Migrate();
         app.Logger.LogInformation("Migrations applied successfully");
     }
+
+    // Initialize settings
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<SettingsInitializer>>();
+    var settingsInitializer = scope.ServiceProvider.GetRequiredService<SettingsInitializer>();
+    await settingsInitializer.EnsureRequiredSettingsExistAsync();
+    app.Logger.LogInformation("Settings initialization completed");
 }
 
 app.UseHttpsRedirection();
