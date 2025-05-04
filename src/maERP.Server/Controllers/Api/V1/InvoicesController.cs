@@ -4,6 +4,7 @@ using maERP.Application.Features.Invoice.Commands.InvoiceDelete;
 using maERP.Application.Features.Invoice.Commands.InvoiceUpdate;
 using maERP.Application.Features.Invoice.Queries.InvoiceDetail;
 using maERP.Application.Features.Invoice.Queries.InvoiceList;
+using maERP.Application.Features.Invoice.Queries.InvoicePdf;
 using maERP.Domain.Dtos.Invoice;
 using maERP.Domain.Wrapper;
 using MediatR;
@@ -39,6 +40,22 @@ public class InvoicesController(IMediator mediator) : ControllerBase
     {
         var response = await mediator.Send(new InvoiceDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
+    }
+
+    // GET: api/v1/<InvoiceController>/5/pdf
+    [HttpGet("{id}/pdf")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetPdf(int id)
+    {
+        var response = await mediator.Send(new InvoicePdfQuery { Id = id });
+        
+        if (!response.Succeeded)
+        {
+            return StatusCode((int)response.StatusCode, response);
+        }
+        
+        return File(response.Data, "application/pdf", $"Rechnung_{id}.pdf");
     }
 
     // POST: api/v1/<InvoiceController>

@@ -1,5 +1,8 @@
+using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Domain.Entities;
+using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 using MediatR;
 
@@ -9,14 +12,20 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
 {
     private readonly IAppLogger<OrderUpdateHandler> _logger;
     private readonly IOrderRepository _orderRepository;
+    private readonly IInvoiceRepository _invoiceRepository;
+    private readonly IPdfService _pdfService;
 
 
     public OrderUpdateHandler(
         IAppLogger<OrderUpdateHandler> logger,
-        IOrderRepository orderRepository)
+        IOrderRepository orderRepository,
+        IInvoiceRepository invoiceRepository,
+        IPdfService pdfService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+        _invoiceRepository = invoiceRepository ?? throw new ArgumentNullException(nameof(invoiceRepository));
+        _pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
     }
 
     public async Task<Result<int>> Handle(OrderUpdateCommand request, CancellationToken cancellationToken)
@@ -84,6 +93,28 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
             
             // Update in database
             await _orderRepository.UpdateAsync(orderToUpdate);
+            
+            // Prüfen, ob eine Rechnung erstellt werden kann
+            bool canCreateInvoice = await _orderRepository.CanCreateInvoice(orderToUpdate.Id);
+            
+            if (canCreateInvoice)
+            {
+                try
+                {
+                    // Bestellung mit Details laden
+                    var orderWithDetails = await _orderRepository.GetWithDetailsAsync(orderToUpdate.Id);
+                    
+                    if (orderWithDetails != null)
+                    {
+                        // Rechnung erstellen mit der ausgelagerten Methode
+                        await _invoiceRepository.CreateInvoiceFromOrderAsync(orderWithDetails);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error creating invoice for order ID {Id}: {Message}", orderToUpdate.Id, ex.Message);
+                }
+            }
             
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;

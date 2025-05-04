@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using maERP.Application.Contracts.Infrastructure;
+using maERP.Application.Contracts.Persistence;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -10,50 +12,54 @@ using maERP.Domain.Entities;
 
 namespace maERP.Infrastructure.PDF;
 
-public class PdfInvoice
+public class PdfService : IPdfService
 {
-    private readonly string _companyName;
-    private readonly string _companyAddress;
-    private readonly string _companyZipCity;
-    private readonly string _companyCountry;
-    private readonly string _companyPhone;
-    private readonly string _companyEmail;
-    private readonly string _companyWebsite;
-    private readonly string _companyTaxId;
-    private readonly string _companyVatId;
-    private readonly string _companyBankName;
-    private readonly string _companyIban;
-    private readonly string _companyBic;
-    private readonly string _logoPath;
+    private readonly ISettingRepository _settingRepository;
+    private string _companyName = string.Empty;
+    private string _companyAddress = string.Empty;
+    private string _companyZipCity = string.Empty;
+    private string _companyCountry = string.Empty;
+    private string _companyPhone = string.Empty;
+    private string _companyEmail = string.Empty;
+    private string _companyWebsite = string.Empty;
+    private string _companyTaxId = string.Empty;
+    private string _companyVatId = string.Empty;
+    private string _companyBankName = string.Empty;
+    private string _companyIban = string.Empty;
+    private string _companyBic = string.Empty;
+    private string _logoPath = string.Empty;
 
-    public PdfInvoice(
-        string companyName, 
-        string companyAddress, 
-        string companyZipCity, 
-        string companyCountry, 
-        string companyPhone, 
-        string companyEmail, 
-        string companyWebsite, 
-        string companyTaxId, 
-        string companyVatId, 
-        string companyBankName, 
-        string companyIban, 
-        string companyBic,
-        string logoPath)
+    public PdfService(ISettingRepository settingRepository)
     {
-        _companyName = companyName;
-        _companyAddress = companyAddress;
-        _companyZipCity = companyZipCity;
-        _companyCountry = companyCountry;
-        _companyPhone = companyPhone;
-        _companyEmail = companyEmail;
-        _companyWebsite = companyWebsite;
-        _companyTaxId = companyTaxId;
-        _companyVatId = companyVatId;
-        _companyBankName = companyBankName;
-        _companyIban = companyIban;
-        _companyBic = companyBic;
-        _logoPath = logoPath;
+        _settingRepository = settingRepository;
+        LoadCompanySettings();
+    }
+
+    private void LoadCompanySettings()
+    {
+        var settings = _settingRepository.GetAllAsync().Result;
+        
+        if (settings != null)
+        {
+            _companyName = GetSettingValue(settings, "Company.Name");
+            _companyAddress = GetSettingValue(settings, "Company.Address");
+            _companyZipCity = GetSettingValue(settings, "Company.ZipCity");
+            _companyCountry = GetSettingValue(settings, "Company.Country");
+            _companyPhone = GetSettingValue(settings, "Company.Phone");
+            _companyEmail = GetSettingValue(settings, "Company.Email");
+            _companyWebsite = GetSettingValue(settings, "Company.Website");
+            _companyTaxId = GetSettingValue(settings, "Company.TaxId");
+            _companyVatId = GetSettingValue(settings, "Company.VatId");
+            _companyBankName = GetSettingValue(settings, "Company.BankName");
+            _companyIban = GetSettingValue(settings, "Company.Iban");
+            _companyBic = GetSettingValue(settings, "Company.Bic");
+            _logoPath = GetSettingValue(settings, "Company.LogoPath");
+        }
+    }
+
+    private string GetSettingValue(IEnumerable<Setting> settings, string key)
+    {
+        return settings.FirstOrDefault(s => s.Key == key)?.Value ?? string.Empty;
     }
 
     /// <summary>

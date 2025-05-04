@@ -1,6 +1,7 @@
 #nullable disable
 
 using maERP.Application;
+using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
 using maERP.Infrastructure;

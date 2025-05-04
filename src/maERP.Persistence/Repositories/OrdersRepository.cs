@@ -1,4 +1,4 @@
-﻿using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
 using maERP.Persistence.DatabaseContext;
@@ -80,5 +80,19 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Where(oh => oh.OrderId == orderId)
             .OrderByDescending(oh => oh.Timestamp)
             .ToListAsync();
+    }
+
+    public async Task<bool> CanCreateInvoice(int orderId)
+    {
+        var order = await Context.Order
+            .Where(o => o.Id == orderId)
+            .FirstOrDefaultAsync();
+            
+        if (order == null)
+        {
+            return false;
+        }
+        
+        return order.PaymentStatus == PaymentStatus.CompletelyPaid;
     }
 }
