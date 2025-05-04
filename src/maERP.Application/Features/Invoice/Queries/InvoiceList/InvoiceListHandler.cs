@@ -62,9 +62,6 @@ public class InvoiceListHandler : IRequestHandler<InvoiceListQuery, PaginatedRes
                    InvoiceNumber = i.InvoiceNumber,
                    InvoiceDate = i.InvoiceDate,
                    CustomerId = i.CustomerId,
-                   CustomerName = (customers.FirstOrDefault(c => c.Id == i.CustomerId) != null) ? 
-                       $"{customers.First(c => c.Id == i.CustomerId).Firstname} {customers.First(c => c.Id == i.CustomerId).Lastname}" : 
-                       string.Empty,
                    OrderId = i.OrderId,
                    OrderNumber = i.OrderId.HasValue ? i.OrderId.Value.ToString() : string.Empty,
                    Total = i.Total,
@@ -87,9 +84,6 @@ public class InvoiceListHandler : IRequestHandler<InvoiceListQuery, PaginatedRes
                 InvoiceNumber = i.InvoiceNumber,
                 InvoiceDate = i.InvoiceDate,
                 CustomerId = i.CustomerId,
-                CustomerName = (customers.FirstOrDefault(c => c.Id == i.CustomerId) != null) ? 
-                    $"{customers.First(c => c.Id == i.CustomerId).Firstname} {customers.First(c => c.Id == i.CustomerId).Lastname}" : 
-                    string.Empty,
                 OrderId = i.OrderId,
                 OrderNumber = i.OrderId.HasValue ? i.OrderId.Value.ToString() : string.Empty,
                 Total = i.Total,

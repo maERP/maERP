@@ -30,6 +30,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Customer> Customer { get; set; } = null!;
     public DbSet<CustomerAddress> CustomerAddress { get; set; } = null!;
     public DbSet<CustomerSalesChannel> CustomerSalesChannel { get; set; } = null!;
+    public DbSet<Invoice> Invoice { get; set; } = null!;
+    public DbSet<InvoiceItem> InvoiceItem { get; set; } = null!;
     public DbSet<Order> Order { get; set; } = null!;
     public DbSet<OrderHistory> OrderHistory { get; set; } = null!;
     public DbSet<OrderItem> OrderItem { get; set; } = null!;

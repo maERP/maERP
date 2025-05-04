@@ -1,14 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
 using maERP.Domain.Entities;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using MigraDoc.DocumentObjectModel;
+using MigraDoc.DocumentObjectModel.Tables;
+using MigraDoc.Rendering;
+using System.Globalization;
+using System.IO;
+using PdfSharp.Fonts;
 
 namespace maERP.Infrastructure.PDF;
 
@@ -31,6 +31,12 @@ public class PdfService : IPdfService
 
     public PdfService(ISettingRepository settingRepository)
     {
+        // Den PDFsharp FontResolver initialisieren, falls er noch nicht gesetzt ist
+        if (GlobalFontSettings.FontResolver == null)
+        {
+            GlobalFontSettings.FontResolver = new StandardFontResolver();
+        }
+        
         _settingRepository = settingRepository;
         LoadCompanySettings();
     }
@@ -73,270 +79,393 @@ public class PdfService : IPdfService
         if (invoice == null)
             throw new ArgumentNullException(nameof(invoice));
 
-        var document = Document.Create(container =>
+        // MigraDoc Dokumentobjekt erstellen
+        var document = CreateInvoiceDocument(invoice);
+
+        // Rendern des Dokuments zu PDF
+        var pdfRenderer = new PdfDocumentRenderer
         {
-            container.Page(page =>
-            {
-                page.Size(PageSizes.A4);
-                page.Margin(50);
-                page.DefaultTextStyle(x => x.FontSize(10));
+            Document = document,
+            PdfDocument = new PdfDocument()
+        };
 
-                page.Header().Element(container => ComposeHeader(container, invoice));
-                page.Content().Element(container => ComposeContent(container, invoice));
-                page.Footer().Element(container => ComposeFooter(container, invoice));
-            });
-        });
+        pdfRenderer.RenderDocument();
 
+        // PDF speichern oder als Byte-Array zurückgeben
         if (string.IsNullOrEmpty(outputPath))
         {
-            return document.GeneratePdf();
+            using var stream = new MemoryStream();
+            pdfRenderer.PdfDocument.Save(stream, false);
+            return stream.ToArray();
         }
         
-        document.GeneratePdf(outputPath);
+        pdfRenderer.PdfDocument.Save(outputPath);
         return null;
     }
 
-    private void ComposeHeader(IContainer container, Invoice invoice)
+    private Document CreateInvoiceDocument(Invoice invoice)
     {
-        container.Row(row =>
+        // Sicherstellen, dass die richtige Kodierung für deutsche Zeichen verwendet wird
+        Document document = new Document();
+        
+        // Stil für den gesamten Text definieren
+        var style = document.Styles["Normal"];
+        style!.Font.Name = "Helvetica"; // Standard-PDF-Schriftart verwenden
+        style.Font.Size = 10;
+
+        // Titel-Stil definieren
+        var titleStyle = document.Styles.AddStyle("Title", "Normal");
+        titleStyle.Font.Bold = true;
+        titleStyle.Font.Size = 16;
+
+        // Überschrift-Stil definieren
+        var headingStyle = document.Styles.AddStyle("Heading", "Normal");
+        headingStyle.Font.Bold = true;
+        headingStyle.Font.Size = 12;
+
+        // Unterüberschrift-Stil definieren
+        var subheadingStyle = document.Styles.AddStyle("Subheading", "Normal");
+        subheadingStyle.Font.Bold = true;
+
+        // Tabellen-Header-Stil definieren
+        var tableHeaderStyle = document.Styles.AddStyle("TableHeader", "Normal");
+        tableHeaderStyle.Font.Bold = true;
+        tableHeaderStyle.ParagraphFormat.Alignment = ParagraphAlignment.Center;
+
+        // Abschnitt erstellen
+        var section = document.AddSection();
+        
+        // PageSetup für den Abschnitt setzen
+        section.PageSetup.PageFormat = PageFormat.A4;
+        section.PageSetup.TopMargin = Unit.FromCentimeter(2);
+        section.PageSetup.LeftMargin = Unit.FromCentimeter(2);
+        section.PageSetup.RightMargin = Unit.FromCentimeter(2);
+        section.PageSetup.BottomMargin = Unit.FromCentimeter(2);
+        
+        // Header mit Logo und Firmeninfos
+        CreateHeader(section, invoice);
+        
+        // Rechnungsadresse und ggf. Lieferadresse
+        CreateAddresses(section, invoice);
+        
+        // Artikeltabelle
+        CreateItemsTable(section, invoice);
+        
+        // Zusammenfassung
+        CreateSummary(section, invoice);
+        
+        // Zahlungsinfos
+        CreatePaymentInfo(section, invoice);
+        
+        // Anmerkungen
+        if (!string.IsNullOrEmpty(invoice.Notes))
         {
-            // Logo and company info
-            row.RelativeItem().Column(column =>
-            {
-                if (!string.IsNullOrEmpty(_logoPath) && File.Exists(_logoPath))
-                {
-                    column.Item().Height(50).Image(_logoPath);
-                }
-                else
-                {
-                    column.Item().Text(_companyName).FontSize(16).Bold();
-                }
+            CreateNotes(section, invoice);
+        }
+        
+        // Footer
+        CreateFooter(section);
 
-                column.Item().Text(_companyAddress);
-                column.Item().Text(_companyZipCity);
-                column.Item().Text(_companyCountry);
-                column.Item().Text($"Tel: {_companyPhone}");
-                column.Item().Text($"E-Mail: {_companyEmail}");
-                column.Item().Text($"Web: {_companyWebsite}");
-            });
-
-            // Invoice information
-            row.RelativeItem().Column(column =>
-            {
-                column.Item().AlignRight().Text("RECHNUNG").FontSize(16).Bold();
-                column.Item().AlignRight().Text($"Rechnungsnummer: {invoice.InvoiceNumber}");
-                column.Item().AlignRight().Text($"Rechnungsdatum: {invoice.InvoiceDate:dd.MM.yyyy}");
-
-                if (invoice.OrderId.HasValue)
-                {
-                    column.Item().AlignRight().Text($"Bestellnummer: {invoice.Order?.Id.ToString() ?? "N/A"}");
-                }
-
-                column.Item().AlignRight().Text($"Kundennummer: {invoice.Order?.CustomerId.ToString() ?? "N/A"}");
-            });
-        });
+        return document;
     }
 
-    private void ComposeContent(IContainer container, Invoice invoice)
+    private void CreateHeader(Section section, Invoice invoice)
     {
-        container.PaddingVertical(20).Column(column =>
+        var table = section.AddTable();
+        table.Borders.Visible = false;
+        table.AddColumn(Unit.FromCentimeter(10));
+        table.AddColumn(Unit.FromCentimeter(7));
+
+        var row = table.AddRow();
+
+        // Linke Spalte: Logo und Firmeninfos
+        var cell = row.Cells[0];
+        var paragraph = cell.AddParagraph();
+        
+        if (!string.IsNullOrEmpty(_logoPath) && File.Exists(_logoPath))
         {
-            // Billing address
-            column.Item().PaddingBottom(10).Column(addressColumn =>
-            {
-                addressColumn.Item().Text("Rechnungsadresse:").Bold();
-                
-                var recipientName = !string.IsNullOrEmpty(invoice.InvoiceAddressCompanyName) 
-                    ? invoice.InvoiceAddressCompanyName 
-                    : $"{invoice.InvoiceAddressFirstName} {invoice.InvoiceAddressLastName}";
+            var logo = paragraph.AddImage(_logoPath);
+            logo.Height = Unit.FromCentimeter(2);
+        }
+        else
+        {
+            paragraph.AddFormattedText(_companyName, TextFormat.Bold);
+        }
 
-                addressColumn.Item().Text(recipientName);
-                addressColumn.Item().Text(invoice.InvoiceAddressStreet);
-                addressColumn.Item().Text($"{invoice.InvoiceAddressZip} {invoice.InvoiceAddressCity}");
-                addressColumn.Item().Text(invoice.InvoiceAddressCountry);
-                
-                if (!string.IsNullOrEmpty(invoice.InvoiceAddressPhone))
-                {
-                    addressColumn.Item().Text($"Tel: {invoice.InvoiceAddressPhone}");
-                }
-            });
+        paragraph = cell.AddParagraph(_companyAddress);
+        paragraph = cell.AddParagraph(_companyZipCity);
+        paragraph = cell.AddParagraph(_companyCountry);
+        paragraph = cell.AddParagraph($"Tel: {_companyPhone}");
+        paragraph = cell.AddParagraph($"E-Mail: {_companyEmail}");
+        paragraph = cell.AddParagraph($"Web: {_companyWebsite}");
 
-            // If delivery address is different, show it
-            if (!string.IsNullOrEmpty(invoice.DeliveryAddressStreet) && 
-                (invoice.DeliveryAddressStreet != invoice.InvoiceAddressStreet ||
-                 invoice.DeliveryAddressZip != invoice.InvoiceAddressZip ||
-                 invoice.DeliveryAddressCity != invoice.InvoiceAddressCity))
-            {
-                column.Item().PaddingBottom(10).Column(addressColumn =>
-                {
-                    addressColumn.Item().Text("Lieferadresse:").Bold();
-                    
-                    var recipientName = !string.IsNullOrEmpty(invoice.DeliveryAddressCompanyName) 
-                        ? invoice.DeliveryAddressCompanyName 
-                        : $"{invoice.DeliveryAddressFirstName} {invoice.DeliveryAddressLastName}";
+        // Rechte Spalte: Rechnungsinformationen
+        cell = row.Cells[1];
+        paragraph = cell.AddParagraph("RECHNUNG");
+        paragraph.Format.Alignment = ParagraphAlignment.Right;
+        paragraph.Format.Font.Bold = true;
+        paragraph.Format.Font.Size = 16;
 
-                    addressColumn.Item().Text(recipientName);
-                    addressColumn.Item().Text(invoice.DeliveryAddressStreet);
-                    addressColumn.Item().Text($"{invoice.DeliveryAddressZip} {invoice.DeliveryAddressCity}");
-                    addressColumn.Item().Text(invoice.DeliveryAddressCountry);
-                    
-                    if (!string.IsNullOrEmpty(invoice.DeliveryAddressPhone))
-                    {
-                        addressColumn.Item().Text($"Tel: {invoice.DeliveryAddressPhone}");
-                    }
-                });
-            }
+        paragraph = cell.AddParagraph($"Rechnungsnummer: {invoice.InvoiceNumber}");
+        paragraph.Format.Alignment = ParagraphAlignment.Right;
+        
+        paragraph = cell.AddParagraph($"Rechnungsdatum: {invoice.InvoiceDate:dd.MM.yyyy}");
+        paragraph.Format.Alignment = ParagraphAlignment.Right;
 
-            // Items table
-            column.Item().Table(table =>
-            {
-                // Define columns
-                table.ColumnsDefinition(columns =>
-                {
-                    columns.RelativeColumn(3); // Description
-                    columns.RelativeColumn(1); // Quantity
-                    columns.RelativeColumn(1); // Unit
-                    columns.RelativeColumn(1); // Price
-                    columns.RelativeColumn(1); // Tax Rate
-                    columns.RelativeColumn(1); // Total
-                });
+        if (invoice.OrderId.HasValue)
+        {
+            paragraph = cell.AddParagraph($"Bestellnummer: {invoice.Order?.Id.ToString() ?? "N/A"}");
+            paragraph.Format.Alignment = ParagraphAlignment.Right;
+        }
 
-                // Add header row
-                table.Header(header =>
-                {
-                    header.Cell().Background(Colors.Grey.Lighten3).Padding(5).Text("Artikel").Bold();
-                    header.Cell().Background(Colors.Grey.Lighten3).Padding(5).Text("Menge").Bold();
-                    header.Cell().Background(Colors.Grey.Lighten3).Padding(5).Text("Einheit").Bold();
-                    header.Cell().Background(Colors.Grey.Lighten3).Padding(5).Text("Einzelpreis").Bold();
-                    header.Cell().Background(Colors.Grey.Lighten3).Padding(5).Text("MwSt.").Bold();
-                    header.Cell().Background(Colors.Grey.Lighten3).Padding(5).Text("Gesamt").Bold();
-                });
+        paragraph = cell.AddParagraph($"Kundennummer: {invoice.Order?.CustomerId.ToString() ?? "N/A"}");
+        paragraph.Format.Alignment = ParagraphAlignment.Right;
 
-                // Add items
-                foreach (var item in invoice.InvoiceItems)
-                {
-                    table.Cell().Padding(5).Column(column =>
-                    {
-                        column.Item().Text(item.Name).Bold();
-                        if (!string.IsNullOrEmpty(item.Description))
-                        {
-                            column.Item().Text(item.Description);
-                        }
-                        if (!string.IsNullOrEmpty(item.SKU))
-                        {
-                            column.Item().Text($"Art.-Nr.: {item.SKU}");
-                        }
-                    });
-                    
-                    table.Cell().Padding(5).Text(item.Quantity.ToString("0.##"));
-                    table.Cell().Padding(5).Text(item.Unit);
-                    table.Cell().Padding(5).Text($"{item.UnitPrice:0.00} €");
-                    table.Cell().Padding(5).Text($"{item.TaxRate:0.#}%");
-                    table.Cell().Padding(5).Text($"{item.TotalPrice:0.00} €");
-                }
-            });
-
-            // Summary
-            column.Item().PaddingTop(10).AlignRight().Column(summary =>
-            {
-                summary.Item().Text($"Zwischensumme (netto): {invoice.Subtotal:0.00} €");
-                
-                // Group items by tax rate and display tax amounts separately
-                var taxGroups = invoice.InvoiceItems
-                    .GroupBy(item => item.TaxRate)
-                    .Select(group => new
-                    {
-                        TaxRate = group.Key,
-                        TaxAmount = group.Sum(item => item.TaxAmount)
-                    });
-
-                foreach (var taxGroup in taxGroups.OrderBy(g => g.TaxRate))
-                {
-                    summary.Item().Text($"MwSt. ({taxGroup.TaxRate:0.#}%): {taxGroup.TaxAmount:0.00} €");
-                }
-
-                if (invoice.ShippingCost > 0)
-                {
-                    summary.Item().Text($"Versandkosten: {invoice.ShippingCost:0.00} €");
-                }
-                
-                summary.Item().BorderTop(1).BorderColor(Colors.Black).PaddingTop(5)
-                    .Text($"Gesamtbetrag: {invoice.Total:0.00} €").FontSize(12).Bold();
-            });
-
-            // Payment information
-            column.Item().PaddingTop(20).Column(payment =>
-            {
-                payment.Item().Text("Zahlungsinformationen:").Bold();
-                payment.Item().Text($"Zahlungsmethode: {invoice.PaymentMethod}");
-                
-                if (!string.IsNullOrEmpty(invoice.PaymentTransactionId))
-                {
-                    payment.Item().Text($"Transaktions-ID: {invoice.PaymentTransactionId}");
-                }
-                
-                payment.Item().Text($"Zahlungsstatus: {invoice.PaymentStatus}");
-                
-                // Bank details
-                payment.Item().PaddingTop(5).Column(bank =>
-                {
-                    bank.Item().Text("Bankverbindung:").Bold();
-                    bank.Item().Text($"Bank: {_companyBankName}");
-                    bank.Item().Text($"IBAN: {_companyIban}");
-                    bank.Item().Text($"BIC: {_companyBic}");
-                });
-            });
-
-            // Notes
-            if (!string.IsNullOrEmpty(invoice.Notes))
-            {
-                column.Item().PaddingTop(10).Column(notes =>
-                {
-                    notes.Item().Text("Anmerkungen:").Bold();
-                    notes.Item().Text(invoice.Notes);
-                });
-            }
-        });
+        // Abstand nach Header
+        section.AddParagraph().Format.SpaceAfter = Unit.FromCentimeter(0.5);
     }
 
-    private void ComposeFooter(IContainer container, Invoice invoice)
+    private void CreateAddresses(Section section, Invoice invoice)
     {
-        container.Column(column =>
+        var table = section.AddTable();
+        table.Borders.Visible = false;
+        table.AddColumn(Unit.FromCentimeter(8.5));
+        table.AddColumn(Unit.FromCentimeter(8.5));
+        var row = table.AddRow();
+
+        // Rechnungsadresse
+        var cell = row.Cells[0];
+        var paragraph = cell.AddParagraph("Rechnungsadresse:");
+        paragraph.Format.Font.Bold = true;
+        
+        var recipientName = !string.IsNullOrEmpty(invoice.InvoiceAddressCompanyName) 
+            ? invoice.InvoiceAddressCompanyName 
+            : $"{invoice.InvoiceAddressFirstName} {invoice.InvoiceAddressLastName}";
+
+        cell.AddParagraph(recipientName);
+        cell.AddParagraph(invoice.InvoiceAddressStreet);
+        cell.AddParagraph($"{invoice.InvoiceAddressZip} {invoice.InvoiceAddressCity}");
+        cell.AddParagraph(invoice.InvoiceAddressCountry);
+        
+        if (!string.IsNullOrEmpty(invoice.InvoiceAddressPhone))
         {
-            // Company legal information
-            column.Item().BorderTop(1).BorderColor(Colors.Grey.Medium).PaddingTop(5)
-                .Row(row =>
-                {
-                    row.RelativeItem().Column(c =>
-                    {
-                        c.Item().Text(_companyName);
-                        c.Item().Text($"USt-IdNr.: {_companyVatId}");
-                        c.Item().Text($"Steuernummer: {_companyTaxId}");
-                    });
+            cell.AddParagraph($"Tel: {invoice.InvoiceAddressPhone}");
+        }
 
-                    row.RelativeItem().Column(c =>
-                    {
-                        c.Item().Text(_companyBankName);
-                        c.Item().Text($"IBAN: {_companyIban}");
-                        c.Item().Text($"BIC: {_companyBic}");
-                    });
+        // Lieferadresse (wenn unterschiedlich)
+        if (!string.IsNullOrEmpty(invoice.DeliveryAddressStreet) && 
+            (invoice.DeliveryAddressStreet != invoice.InvoiceAddressStreet ||
+             invoice.DeliveryAddressZip != invoice.InvoiceAddressZip ||
+             invoice.DeliveryAddressCity != invoice.InvoiceAddressCity))
+        {
+            cell = row.Cells[1];
+            paragraph = cell.AddParagraph("Lieferadresse:");
+            paragraph.Format.Font.Bold = true;
+            
+            recipientName = !string.IsNullOrEmpty(invoice.DeliveryAddressCompanyName) 
+                ? invoice.DeliveryAddressCompanyName 
+                : $"{invoice.DeliveryAddressFirstName} {invoice.DeliveryAddressLastName}";
 
-                    row.RelativeItem().Column(c =>
-                    {
-                        c.Item().Text(_companyPhone);
-                        c.Item().Text(_companyEmail);
-                        c.Item().Text(_companyWebsite);
-                    });
-                });
-
-            // Page number
-            column.Item().AlignCenter().Text(text =>
+            cell.AddParagraph(recipientName);
+            cell.AddParagraph(invoice.DeliveryAddressStreet);
+            cell.AddParagraph($"{invoice.DeliveryAddressZip} {invoice.DeliveryAddressCity}");
+            cell.AddParagraph(invoice.DeliveryAddressCountry);
+            
+            if (!string.IsNullOrEmpty(invoice.DeliveryAddressPhone))
             {
-                text.Span("Seite ");
-                text.CurrentPageNumber();
-                text.Span(" von ");
-                text.TotalPages();
+                cell.AddParagraph($"Tel: {invoice.DeliveryAddressPhone}");
+            }
+        }
+
+        // Abstand nach Adressen
+        section.AddParagraph().Format.SpaceAfter = Unit.FromCentimeter(0.5);
+    }
+
+    private void CreateItemsTable(Section section, Invoice invoice)
+    {
+        var table = section.AddTable();
+        table.Borders.Width = 0.5;
+        
+        // Spalten definieren
+        table.AddColumn(Unit.FromCentimeter(7)); // Beschreibung
+        table.AddColumn(Unit.FromCentimeter(2)); // Menge
+        table.AddColumn(Unit.FromCentimeter(2)); // Einheit
+        table.AddColumn(Unit.FromCentimeter(2)); // Preis
+        table.AddColumn(Unit.FromCentimeter(2)); // MwSt
+        table.AddColumn(Unit.FromCentimeter(2)); // Gesamt
+
+        // Header-Zeile
+        var headerRow = table.AddRow();
+        headerRow.HeadingFormat = true;
+        headerRow.Format.Font.Bold = true;
+        headerRow.Shading.Color = new Color(230, 230, 230);
+        
+        headerRow.Cells[0].AddParagraph("Artikel");
+        headerRow.Cells[1].AddParagraph("Menge");
+        headerRow.Cells[2].AddParagraph("Einheit");
+        headerRow.Cells[3].AddParagraph("Einzelpreis");
+        headerRow.Cells[4].AddParagraph("MwSt.");
+        headerRow.Cells[5].AddParagraph("Gesamt");
+
+        // Artikel-Zeilen
+        foreach (var item in invoice.InvoiceItems)
+        {
+            var row = table.AddRow();
+            
+            // Artikel-Beschreibung
+            var cell = row.Cells[0];
+            var paragraph = cell.AddParagraph(item.Name);
+            paragraph.Format.Font.Bold = true;
+            
+            if (!string.IsNullOrEmpty(item.Description))
+            {
+                cell.AddParagraph(item.Description);
+            }
+            
+            if (!string.IsNullOrEmpty(item.SKU))
+            {
+                cell.AddParagraph($"Art.-Nr.: {item.SKU}");
+            }
+            
+            // Menge
+            row.Cells[1].AddParagraph(item.Quantity.ToString("0.##", CultureInfo.InvariantCulture));
+            
+            // Einheit
+            row.Cells[2].AddParagraph(item.Unit);
+            
+            // Einzelpreis
+            row.Cells[3].AddParagraph($"{item.UnitPrice:0.00} €");
+            
+            // MwSt.
+            row.Cells[4].AddParagraph($"{item.TaxRate:0.#}%");
+            
+            // Gesamtpreis
+            row.Cells[5].AddParagraph($"{item.TotalPrice:0.00} €");
+        }
+
+        // Abstand nach Tabelle
+        section.AddParagraph().Format.SpaceAfter = Unit.FromCentimeter(0.5);
+    }
+
+    private void CreateSummary(Section section, Invoice invoice)
+    {
+        var table = section.AddTable();
+        table.Borders.Visible = false;
+        table.AddColumn(Unit.FromCentimeter(12));
+        table.AddColumn(Unit.FromCentimeter(5));
+        var row = table.AddRow();
+
+        // Leere linke Zelle
+        row.Cells[0].AddParagraph();
+
+        // Rechte Zelle: Zusammenfassung
+        var cell = row.Cells[1];
+        var paragraph = cell.AddParagraph($"Zwischensumme (netto): {invoice.Subtotal:0.00} €");
+        
+        // MwSt. nach Sätzen gruppieren
+        var taxGroups = invoice.InvoiceItems
+            .GroupBy(item => item.TaxRate)
+            .Select(group => new
+            {
+                TaxRate = group.Key,
+                TaxAmount = group.Sum(item => item.TaxAmount)
             });
-        });
+
+        foreach (var taxGroup in taxGroups.OrderBy(g => g.TaxRate))
+        {
+            cell.AddParagraph($"MwSt. ({taxGroup.TaxRate:0.#}%): {taxGroup.TaxAmount:0.00} €");
+        }
+
+        // Versandkosten
+        if (invoice.ShippingCost > 0)
+        {
+            cell.AddParagraph($"Versandkosten: {invoice.ShippingCost:0.00} €");
+        }
+        
+        // Gesamtbetrag
+        paragraph = cell.AddParagraph($"Gesamtbetrag: {invoice.Total:0.00} €");
+        paragraph.Format.Font.Bold = true;
+        paragraph.Format.Font.Size = 12;
+        paragraph.Format.Borders.Top.Width = 1;
+        paragraph.Format.Borders.Top.Color = Colors.Black;
+        paragraph.Format.SpaceBefore = 5;
+        
+        // Abstand nach Zusammenfassung
+        section.AddParagraph().Format.SpaceAfter = Unit.FromCentimeter(0.5);
+    }
+
+    private void CreatePaymentInfo(Section section, Invoice invoice)
+    {
+        var paragraph = section.AddParagraph("Zahlungsinformationen:");
+        paragraph.Format.Font.Bold = true;
+        paragraph.Format.SpaceBefore = Unit.FromCentimeter(0.5);
+        
+        section.AddParagraph($"Zahlungsmethode: {invoice.PaymentMethod}");
+        
+        if (!string.IsNullOrEmpty(invoice.PaymentTransactionId))
+        {
+            section.AddParagraph($"Transaktions-ID: {invoice.PaymentTransactionId}");
+        }
+        
+        section.AddParagraph($"Zahlungsstatus: {invoice.PaymentStatus}");
+        
+        // Bankverbindung
+        paragraph = section.AddParagraph("Bankverbindung:");
+        paragraph.Format.Font.Bold = true;
+        paragraph.Format.SpaceBefore = Unit.FromCentimeter(0.3);
+        
+        section.AddParagraph($"Bank: {_companyBankName}");
+        section.AddParagraph($"IBAN: {_companyIban}");
+        section.AddParagraph($"BIC: {_companyBic}");
+    }
+
+    private void CreateNotes(Section section, Invoice invoice)
+    {
+        var paragraph = section.AddParagraph("Anmerkungen:");
+        paragraph.Format.Font.Bold = true;
+        paragraph.Format.SpaceBefore = Unit.FromCentimeter(0.5);
+        
+        section.AddParagraph(invoice.Notes);
+    }
+
+    private void CreateFooter(Section section)
+    {
+        var paragraph = section.AddParagraph();
+        paragraph.Format.SpaceBefore = Unit.FromCentimeter(1);
+        paragraph.Format.Borders.Top.Width = 1;
+        paragraph.Format.Borders.Top.Color = new Color(180, 180, 180);
+        
+        var table = section.AddTable();
+        table.Borders.Visible = false;
+        table.AddColumn(Unit.FromCentimeter(5.5));
+        table.AddColumn(Unit.FromCentimeter(5.5));
+        table.AddColumn(Unit.FromCentimeter(6));
+        var row = table.AddRow();
+        
+        // Firmendaten
+        var cell = row.Cells[0];
+        cell.AddParagraph(_companyName);
+        cell.AddParagraph($"USt-IdNr.: {_companyVatId}");
+        cell.AddParagraph($"Steuernummer: {_companyTaxId}");
+        
+        // Bankdaten
+        cell = row.Cells[1];
+        cell.AddParagraph(_companyBankName);
+        cell.AddParagraph($"IBAN: {_companyIban}");
+        cell.AddParagraph($"BIC: {_companyBic}");
+        
+        // Kontaktdaten
+        cell = row.Cells[2];
+        cell.AddParagraph(_companyPhone);
+        cell.AddParagraph(_companyEmail);
+        cell.AddParagraph(_companyWebsite);
+        
+        // Seitenzahl
+        paragraph = section.AddParagraph("Seite ");
+        paragraph.Format.Alignment = ParagraphAlignment.Center;
+        paragraph.Format.SpaceBefore = 5;
+        paragraph.AddPageField();
+        paragraph.AddText(" von ");
+        paragraph.AddNumPagesField();
     }
 }

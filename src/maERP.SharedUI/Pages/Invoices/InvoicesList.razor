@@ -1,0 +1,38 @@
+@page "/Invoices"
+@using maERP.Domain.Dtos.Invoice
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<PageTitle>Rechnungen</PageTitle>
+
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">Rechnungen</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Invoices/Create" />
+</MudStack>
+
+<MudDataGrid T="InvoiceListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData" @ref="DataGrid" Hover="true">
+    <ToolBarContent>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" TextChanged="Search" Placeholder="Suche" Adornment="Adornment.Start" Immediate="true" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.InvoiceNumber" Title="Rechnungsnummer" />
+        <PropertyColumn Property="x => x.InvoiceDate" Title="Rechnungsdatum" Format="dd.MM.yyyy" />
+        <PropertyColumn Property="x => x.CustomerName" Title="Kunde" />
+        <PropertyColumn Property="x => x.OrderNumber" Title="Auftragsnummer" />
+        <PropertyColumn Property="x => x.Total" Title="Summe" Format="C" />
+        <PropertyColumn Property="x => x.PaymentStatus" Title="Zahlungsstatus" />
+        <PropertyColumn Property="x => x.InvoiceStatus" Title="Rechnungsstatus" />
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/Invoices/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/Invoices/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="InvoiceListDto" />
+    </PagerContent>
+</MudDataGrid>
