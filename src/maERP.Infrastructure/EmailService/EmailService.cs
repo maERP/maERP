@@ -1,4 +1,4 @@
-﻿using maERP.Application.Contracts.Email;
+﻿using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Models.Email;
 using Microsoft.Extensions.Options;
 using SendGrid;
@@ -6,11 +6,11 @@ using SendGrid.Helpers.Mail;
 
 namespace maERP.Infrastructure.EmailService;
 
-public class EmailSender : IEmailSender
+public class EmailService : IEmailService
 {
     public EmailSettings EmailSettings { get; }
 
-    public EmailSender(IOptions<EmailSettings> emailSettings)
+    public EmailService(IOptions<EmailSettings> emailSettings)
     {
         EmailSettings = emailSettings.Value;
     }

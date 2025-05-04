@@ -1,8 +1,8 @@
 ﻿using maERP.Application.Models.Email;
 
-namespace maERP.Application.Contracts.Email;
+namespace maERP.Application.Contracts.Infrastructure;
 
-public interface IEmailSender
+public interface IEmailService
 {
     Task<bool> SendEmail(EmailMessage email);
 }

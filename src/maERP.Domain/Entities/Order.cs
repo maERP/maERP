@@ -47,6 +47,10 @@ public class Order : BaseEntity, IBaseEntity
     public string InvoiceAddressZip { get; set; } = string.Empty;
     public string InvoiceAddressCountry { get; set; } = string.Empty;
 
+    public bool OrderConfirmationSent { get; set; }
+    public bool InvoiceSent { get; set; }
+    public bool ShippingInformationSent { get; set; }
+
     public DateTime DateOrdered { get; set; }
     
     public ICollection<OrderHistory> OrderHistories { get; set; } = new List<OrderHistory>();
