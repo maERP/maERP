@@ -1,0 +1,205 @@
+@page "/Invoices/{invoiceId:int}"
+@using maERP.Domain.Dtos.Invoice
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
+<PageTitle>@Title</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">@Title</MudText>
+
+<MudGrid>
+    <!-- Basic Invoice Information -->
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Allgemeine Informationen</MudText>
+            <MudList T="InvoiceDetailDto" Dense="true">
+                <MudListItem>
+                    <MudText><strong>Rechnungs-ID:</strong> @Invoice.Id</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Rechnungsnummer:</strong> @Invoice.InvoiceNumber</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Rechnungsdatum:</strong> @Invoice.InvoiceDate.ToString("g")</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Erstellt am:</strong> @Invoice.CreatedDate.ToString("g")</MudText>
+                </MudListItem>
+                @if (Invoice.LastModifiedDate.HasValue)
+                {
+                    <MudListItem>
+                        <MudText><strong>Zuletzt geändert:</strong> @Invoice.LastModifiedDate.Value.ToString("g")
+                        </MudText>
+                    </MudListItem>
+                }
+                <MudListItem>
+                    <MudText><strong>Kunden-ID:</strong> @Invoice.CustomerId</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Kundenname:</strong> @Invoice.CustomerName</MudText>
+                </MudListItem>
+                @if (Invoice.OrderId.HasValue)
+                {
+                    <MudListItem>
+                        <MudText><strong>Bestell-ID:</strong> @Invoice.OrderId</MudText>
+                    </MudListItem>
+                    <MudListItem>
+                        <MudText><strong>Bestellnummer:</strong> @Invoice.OrderNumber</MudText>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Payment Information -->
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Zahlungsinformationen</MudText>
+            <MudList T="InvoiceDetailDto" Dense="true">
+                <MudListItem>
+                    <MudText><strong>Zahlungsart:</strong> @Invoice.PaymentMethod</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Zahlungsstatus:</strong> @Invoice.PaymentStatus</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText><strong>Rechnungsstatus:</strong> @Invoice.InvoiceStatus</MudText>
+                </MudListItem>
+                @if (!string.IsNullOrEmpty(Invoice.PaymentTransactionId))
+                {
+                    <MudListItem>
+                        <MudText><strong>Transaktions-ID:</strong> @Invoice.PaymentTransactionId</MudText>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Invoice Address -->
+    <MudItem xs="12" sm="6" md="6">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Rechnungsadresse</MudText>
+            <MudList T="InvoiceDetailDto" Dense="true">
+                <MudListItem>
+                    <MudText>@Invoice.InvoiceAddressFirstName @Invoice.InvoiceAddressLastName</MudText>
+                </MudListItem>
+                @if (!string.IsNullOrEmpty(Invoice.InvoiceAddressCompanyName))
+                {
+                    <MudListItem>
+                        <MudText>@Invoice.InvoiceAddressCompanyName</MudText>
+                    </MudListItem>
+                }
+                <MudListItem>
+                    <MudText>@Invoice.InvoiceAddressStreet</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText>@Invoice.InvoiceAddressZip @Invoice.InvoiceAddressCity</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText>@Invoice.InvoiceAddressCountry</MudText>
+                </MudListItem>
+                @if (!string.IsNullOrEmpty(Invoice.InvoiceAddressPhone))
+                {
+                    <MudListItem>
+                        <MudText><strong>Telefon:</strong> @Invoice.InvoiceAddressPhone</MudText>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Delivery Address -->
+    <MudItem xs="12" sm="6" md="6">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Lieferadresse</MudText>
+            <MudList T="InvoiceDetailDto" Dense="true">
+                <MudListItem>
+                    <MudText>@Invoice.DeliveryAddressFirstName @Invoice.DeliveryAddressLastName</MudText>
+                </MudListItem>
+                @if (!string.IsNullOrEmpty(Invoice.DeliveryAddressCompanyName))
+                {
+                    <MudListItem>
+                        <MudText>@Invoice.DeliveryAddressCompanyName</MudText>
+                    </MudListItem>
+                }
+                <MudListItem>
+                    <MudText>@Invoice.DeliveryAddressStreet</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText>@Invoice.DeliveryAddressZip @Invoice.DeliveryAddressCity</MudText>
+                </MudListItem>
+                <MudListItem>
+                    <MudText>@Invoice.DeliveryAddressCountry</MudText>
+                </MudListItem>
+                @if (!string.IsNullOrEmpty(Invoice.DeliveryAddressPhone))
+                {
+                    <MudListItem>
+                        <MudText><strong>Telefon:</strong> @Invoice.DeliveryAddressPhone</MudText>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Invoice Items -->
+    <MudItem xs="12">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Rechnungspositionen</MudText>
+            <MudDataGrid Items="@Invoice.InvoiceItems" Dense="true" Hover="true" Striped="true">
+                <Columns>
+                    <PropertyColumn Property="x => x.Description" Title="Artikel"/>
+                    <PropertyColumn Property="x => x.Quantity" Title="Menge"/>
+                    <PropertyColumn Property="x => x.UnitPrice" Title="Einzelpreis" Format="C"/>
+                    <TemplateColumn Title="Summe">
+                        <CellTemplate>
+                            @{
+                                var item = context.Item;
+                                @((Convert.ToDecimal(item.Quantity) * item.UnitPrice).ToString("C"))
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+
+            <!-- Invoice Totals -->
+            <MudDivider Class="my-4"/>
+            <MudList T="InvoiceDetailDto" Dense="true" Class="ml-auto" Style="max-width: 300px; margin-left: auto;">
+                <MudListItem>
+                    <div class="d-flex justify-space-between">
+                        <MudText><strong>Zwischensumme:</strong></MudText>
+                        <MudText>@Invoice.Subtotal.ToString("C")</MudText>
+                    </div>
+                </MudListItem>
+                <MudListItem>
+                    <div class="d-flex justify-space-between">
+                        <MudText><strong>Versandkosten:</strong></MudText>
+                        <MudText>@Invoice.ShippingCost.ToString("C")</MudText>
+                    </div>
+                </MudListItem>
+                <MudListItem>
+                    <div class="d-flex justify-space-between">
+                        <MudText><strong>MwSt.:</strong></MudText>
+                        <MudText>@Invoice.TotalTax.ToString("C")</MudText>
+                    </div>
+                </MudListItem>
+                <MudListItem>
+                    <div class="d-flex justify-space-between">
+                        <MudText Typo="Typo.h6">Gesamtsumme:</MudText>
+                        <MudText Typo="Typo.h6">@Invoice.Total.ToString("C")</MudText>
+                    </div>
+                </MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudItem>
+
+    @if (!string.IsNullOrEmpty(Invoice.Notes))
+    {
+        <MudItem xs="12">
+            <MudPaper Elevation="2" Class="pa-4">
+                <MudText Typo="Typo.h6" Class="mb-2">Notizen</MudText>
+                <MudText>@Invoice.Notes</MudText>
+            </MudPaper>
+        </MudItem>
+    }
+</MudGrid>

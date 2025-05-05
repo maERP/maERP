@@ -93,6 +93,17 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             return false;
         }
         
-        return order.PaymentStatus == PaymentStatus.CompletelyPaid;
+        // Check if the payment status is completely paid
+        if (order.PaymentStatus != PaymentStatus.CompletelyPaid)
+        {
+            return false;
+        }
+        
+        // Check if an invoice already exists for this order
+        var invoiceExists = await Context.Invoice
+            .AnyAsync(i => i.OrderId == orderId);
+            
+        // Return false if invoice already exists
+        return !invoiceExists;
     }
 }

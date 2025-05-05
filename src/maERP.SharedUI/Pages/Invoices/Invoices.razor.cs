@@ -6,7 +6,7 @@ using MudBlazor;
 
 namespace maERP.SharedUI.Pages.Invoices;
 
-public partial class InvoicesList
+public partial class Invoices
 {
     [Inject]
     public required NavigationManager? navigationManager { get; set; }

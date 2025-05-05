@@ -28,7 +28,7 @@
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
                 <MudIconButton Icon="@Icons.Material.Outlined.FindInPage" Href="@($"/Invoices/{context.Item.Id}")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Outlined.Edit" Href="@($"/Invoices/{context.Item.Id}/Edit")" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Outlined.Download" Href="@($"https://localhost:8443/api/v1/Invoices/{context.Item.Id}/pdf")" Target="_blank" Size="@Size.Small" Color="@Color.Primary"></MudIconButton>
             </CellTemplate>
         </TemplateColumn>
     </Columns>
