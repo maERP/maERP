@@ -13,8 +13,8 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.4" />
-		<PackageReference Include="PDFsharp" Version="6.0.0" />
-		<PackageReference Include="PDFsharp-MigraDoc" Version="6.0.0" />
+		<PackageReference Include="PDFsharp" Version="6.1.1" />
+		<PackageReference Include="PDFsharp-MigraDoc" Version="6.1.1" />
 		<PackageReference Include="SendGrid" Version="9.29.3" />
 		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3" />
 	</ItemGroup>
