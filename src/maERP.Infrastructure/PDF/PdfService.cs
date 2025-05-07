@@ -9,6 +9,9 @@ using MigraDoc.Rendering;
 using System.Globalization;
 using System.IO;
 using PdfSharp.Fonts;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace maERP.Infrastructure.PDF;
 
@@ -36,6 +39,9 @@ public class PdfService : IPdfService
         {
             GlobalFontSettings.FontResolver = new StandardFontResolver();
         }
+        
+        // Explizit den FontCache aktivieren um Null-Referenzen zu verhindern
+        PdfSharp.Fonts.GlobalFontSettings.FontResolver = new StandardFontResolver();
         
         _settingRepository = settingRepository;
         LoadCompanySettings();
@@ -79,28 +85,48 @@ public class PdfService : IPdfService
         if (invoice == null)
             throw new ArgumentNullException(nameof(invoice));
 
-        // MigraDoc Dokumentobjekt erstellen
-        var document = CreateInvoiceDocument(invoice);
-
-        // Rendern des Dokuments zu PDF
-        var pdfRenderer = new PdfDocumentRenderer
+        try
         {
-            Document = document,
-            PdfDocument = new PdfDocument()
-        };
+            // Überprüfen, ob der FontResolver ordnungsgemäß initialisiert ist
+            if (GlobalFontSettings.FontResolver == null)
+            {
+                GlobalFontSettings.FontResolver = new StandardFontResolver();
+            }
 
-        pdfRenderer.RenderDocument();
+            // MigraDoc Dokumentobjekt erstellen
+            var document = CreateInvoiceDocument(invoice);
 
-        // PDF speichern oder als Byte-Array zurückgeben
-        if (string.IsNullOrEmpty(outputPath))
-        {
-            using var stream = new MemoryStream();
-            pdfRenderer.PdfDocument.Save(stream, false);
-            return stream.ToArray();
+            // PdfDocument vor der Übergabe explizit initialisieren
+            var pdfDoc = new PdfDocument();
+
+            // Rendern des Dokuments zu PDF
+            var pdfRenderer = new PdfDocumentRenderer
+            {
+                Document = document,
+                PdfDocument = pdfDoc
+            };
+
+            // Dokument rendern
+            pdfRenderer.RenderDocument();
+
+            // PDF speichern oder als Byte-Array zurückgeben
+            if (string.IsNullOrEmpty(outputPath))
+            {
+                using var stream = new MemoryStream();
+                pdfRenderer.PdfDocument.Save(stream, false);
+                return stream.ToArray();
+            }
+            
+            pdfRenderer.PdfDocument.Save(outputPath);
+            return null;
         }
-        
-        pdfRenderer.PdfDocument.Save(outputPath);
-        return null;
+        catch (Exception ex)
+        {
+            // Im Fehlerfall detaillierte Informationen loggen
+            System.Diagnostics.Debug.WriteLine($"PDF-Generierung fehlgeschlagen: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
+            throw; // Weitergeben der Exception für höhere Handler
+        }
     }
 
     private Document CreateInvoiceDocument(Invoice invoice)
@@ -171,12 +197,26 @@ public class PdfService : IPdfService
 
     private void CreateHeader(Section section, Invoice invoice)
     {
+        // Sicherstellen, dass section nicht null ist
+        if (section == null)
+            throw new ArgumentNullException(nameof(section));
+            
+        // Tabelle erstellen und konfigurieren
         var table = section.AddTable();
+        if (table == null)
+            throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
+            
+        table.Borders = table.Borders ?? new Borders();
         table.Borders.Visible = false;
-        table.AddColumn(Unit.FromCentimeter(10));
-        table.AddColumn(Unit.FromCentimeter(7));
+        
+        // Spalten hinzufügen
+        var column1 = table.AddColumn(Unit.FromCentimeter(10));
+        var column2 = table.AddColumn(Unit.FromCentimeter(7));
 
+        // Zeile erstellen
         var row = table.AddRow();
+        if (row == null || row.Cells.Count < 2)
+            throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
 
         // Linke Spalte: Logo und Firmeninfos
         var cell = row.Cells[0];
@@ -227,11 +267,22 @@ public class PdfService : IPdfService
 
     private void CreateAddresses(Section section, Invoice invoice)
     {
+        if (section == null)
+            throw new ArgumentNullException(nameof(section));
+            
         var table = section.AddTable();
+        if (table == null)
+            throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
+            
+        table.Borders = table.Borders ?? new Borders();
         table.Borders.Visible = false;
+        
         table.AddColumn(Unit.FromCentimeter(8.5));
         table.AddColumn(Unit.FromCentimeter(8.5));
+        
         var row = table.AddRow();
+        if (row == null || row.Cells.Count < 2)
+            throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
 
         // Rechnungsadresse
         var cell = row.Cells[0];
@@ -283,7 +334,14 @@ public class PdfService : IPdfService
 
     private void CreateItemsTable(Section section, Invoice invoice)
     {
+        if (section == null)
+            throw new ArgumentNullException(nameof(section));
+            
         var table = section.AddTable();
+        if (table == null)
+            throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
+            
+        table.Borders = table.Borders ?? new Borders();
         table.Borders.Width = 0.5;
         
         // Spalten definieren
@@ -296,6 +354,8 @@ public class PdfService : IPdfService
 
         // Header-Zeile
         var headerRow = table.AddRow();
+        if (headerRow == null || headerRow.Cells.Count < 6)
+            throw new InvalidOperationException("Header-Zeile konnte nicht korrekt erstellt werden");
         headerRow.HeadingFormat = true;
         headerRow.Format.Font.Bold = true;
         headerRow.Shading.Color = new Color(230, 230, 230);
@@ -349,11 +409,22 @@ public class PdfService : IPdfService
 
     private void CreateSummary(Section section, Invoice invoice)
     {
+        if (section == null)
+            throw new ArgumentNullException(nameof(section));
+            
         var table = section.AddTable();
+        if (table == null)
+            throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
+            
+        table.Borders = table.Borders ?? new Borders();
         table.Borders.Visible = false;
+        
         table.AddColumn(Unit.FromCentimeter(12));
         table.AddColumn(Unit.FromCentimeter(5));
+        
         var row = table.AddRow();
+        if (row == null || row.Cells.Count < 2)
+            throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
 
         // Leere linke Zelle
         row.Cells[0].AddParagraph();
@@ -430,17 +501,30 @@ public class PdfService : IPdfService
 
     private void CreateFooter(Section section)
     {
+        if (section == null)
+            throw new ArgumentNullException(nameof(section));
+            
         var paragraph = section.AddParagraph();
         paragraph.Format.SpaceBefore = Unit.FromCentimeter(1);
+        paragraph.Format.Borders = paragraph.Format.Borders ?? new Borders();
+        paragraph.Format.Borders.Top = paragraph.Format.Borders.Top ?? new Border();
         paragraph.Format.Borders.Top.Width = 1;
         paragraph.Format.Borders.Top.Color = new Color(180, 180, 180);
         
         var table = section.AddTable();
+        if (table == null)
+            throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
+            
+        table.Borders = table.Borders ?? new Borders();
         table.Borders.Visible = false;
+        
         table.AddColumn(Unit.FromCentimeter(5.5));
         table.AddColumn(Unit.FromCentimeter(5.5));
         table.AddColumn(Unit.FromCentimeter(6));
+        
         var row = table.AddRow();
+        if (row == null || row.Cells.Count < 3)
+            throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
         
         // Firmendaten
         var cell = row.Cells[0];
