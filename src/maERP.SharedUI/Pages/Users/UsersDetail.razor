@@ -3,20 +3,20 @@
 
 @attribute [Authorize]
 
+<PageTitle>@_title</PageTitle>
+
 <MudStack Row="true" Class="mb-8">
-    <MudText Typo="Typo.h4">Benutzer - @User.Email</MudText>
+    <MudText Typo="Typo.h4">@_title</MudText>
     <MudSpacer />
-    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/Users/{userId}/edit")" />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/Users/{UserId}/Edit")" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Primary" Href="@($"/Users/")" />
 </MudStack>
 
 <MudCard>
     <MudCardContent>
-        <MudText Typo="Typo.h6">ID: @User.Id</MudText>
-        <MudText Typo="Typo.body1">E-Mail: @User.Email</MudText>
-        <MudText Typo="Typo.body1">Vorname: @User.Firstname</MudText>
-        <MudText Typo="Typo.body1">Nachname: @User.Lastname</MudText>
+        <MudText Typo="Typo.h6">ID: @_userDetail.Id</MudText>
+        <MudText Typo="Typo.body1">E-Mail: @_userDetail.Email</MudText>
+        <MudText Typo="Typo.body1">Vorname: @_userDetail.Firstname</MudText>
+        <MudText Typo="Typo.body1">Nachname: @_userDetail.Lastname</MudText>
     </MudCardContent>
-    <MudCardActions>
-        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" Href="/Users">Zurück zur Liste</MudButton>
-    </MudCardActions>
 </MudCard>

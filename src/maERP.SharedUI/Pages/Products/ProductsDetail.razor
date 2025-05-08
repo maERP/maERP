@@ -4,9 +4,14 @@
 
 @attribute [Authorize]
 
-<PageTitle>@Title</PageTitle>
+<PageTitle>@_title</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-4">@Title</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">@_title</MudText>
+    <MudSpacer />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/Customers/{ProductId}/edit")" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Primary" Href="@($"/Customers/")" />
+</MudStack>
 
 <MudGrid>
     <!-- Basic Product Information -->
@@ -15,22 +20,22 @@
             <MudText Typo="Typo.h6" Class="mb-2">Allgemeine Informationen</MudText>
             <MudList T="ProductDetailDto" Dense="true">
                 <MudListItem>
-                    <MudText><strong>Produkt-ID:</strong> @Product.Id</MudText>
+                    <MudText><strong>Produkt-ID:</strong> @_productDetail.Id</MudText>
                 </MudListItem>
                 <MudListItem>
-                    <MudText><strong>SKU:</strong> @Product.Sku</MudText>
+                    <MudText><strong>SKU:</strong> @_productDetail.Sku</MudText>
                 </MudListItem>
                 <MudListItem>
-                    <MudText><strong>Name:</strong> @Product.Name</MudText>
+                    <MudText><strong>Name:</strong> @_productDetail.Name</MudText>
                 </MudListItem>
-                @if (!string.IsNullOrEmpty(Product.NameOptimized))
+                @if (!string.IsNullOrEmpty(_productDetail.NameOptimized))
                 {
                     <MudListItem>
-                        <MudText><strong>Optimierter Name:</strong> @Product.NameOptimized</MudText>
+                        <MudText><strong>Optimierter Name:</strong> @_productDetail.NameOptimized</MudText>
                     </MudListItem>
                 }
                 <MudListItem>
-                    <MudText><strong>Optimierte Version verwenden:</strong> @(Product.UseOptimized ? "Ja" : "Nein")</MudText>
+                    <MudText><strong>Optimierte Version verwenden:</strong> @(_productDetail.UseOptimized ? "Ja" : "Nein")</MudText>
                 </MudListItem>
             </MudList>
         </MudPaper>
@@ -41,20 +46,20 @@
         <MudPaper Elevation="2" Class="pa-4">
             <MudText Typo="Typo.h6" Class="mb-2">Produktkennungen</MudText>
             <MudList T="ProductDetailDto" Dense="true">
-                @if (!string.IsNullOrEmpty(Product.Ean))
+                @if (!string.IsNullOrEmpty(_productDetail.Ean))
                 {
                     <MudListItem>
-                        <MudText><strong>EAN:</strong> @Product.Ean</MudText>
+                        <MudText><strong>EAN:</strong> @_productDetail.Ean</MudText>
                     </MudListItem>
                 }
-                @if (!string.IsNullOrEmpty(Product.Asin))
+                @if (!string.IsNullOrEmpty(_productDetail.Asin))
                 {
                     <MudListItem>
-                        <MudText><strong>ASIN:</strong> @Product.Asin</MudText>
+                        <MudText><strong>ASIN:</strong> @_productDetail.Asin</MudText>
                     </MudListItem>
                 }
                 <MudListItem>
-                    <MudText><strong>Steuerklasse:</strong> @Product.TaxClassId</MudText>
+                    <MudText><strong>Steuerklasse:</strong> @_productDetail.TaxClassId</MudText>
                 </MudListItem>
             </MudList>
         </MudPaper>
@@ -66,10 +71,10 @@
             <MudText Typo="Typo.h6" Class="mb-2">Preisinformationen</MudText>
             <MudList T="ProductDetailDto" Dense="true">
                 <MudListItem>
-                    <MudText><strong>Preis:</strong> @Product.Price.ToString("C")</MudText>
+                    <MudText><strong>Preis:</strong> @_productDetail.Price.ToString("C")</MudText>
                 </MudListItem>
                 <MudListItem>
-                    <MudText><strong>UVP:</strong> @Product.Msrp.ToString("C")</MudText>
+                    <MudText><strong>UVP:</strong> @_productDetail.Msrp.ToString("C")</MudText>
                 </MudListItem>
             </MudList>
         </MudPaper>
@@ -81,16 +86,16 @@
             <MudText Typo="Typo.h6" Class="mb-2">Abmessungen und Gewicht</MudText>
             <MudList T="ProductDetailDto" Dense="true">
                 <MudListItem>
-                    <MudText><strong>Gewicht:</strong> @Product.Weight.ToString("F2") kg</MudText>
+                    <MudText><strong>Gewicht:</strong> @_productDetail.Weight.ToString("F2") kg</MudText>
                 </MudListItem>
                 <MudListItem>
-                    <MudText><strong>Breite:</strong> @Product.Width.ToString("F2") cm</MudText>
+                    <MudText><strong>Breite:</strong> @_productDetail.Width.ToString("F2") cm</MudText>
                 </MudListItem>
                 <MudListItem>
-                    <MudText><strong>Höhe:</strong> @Product.Height.ToString("F2") cm</MudText>
+                    <MudText><strong>Höhe:</strong> @_productDetail.Height.ToString("F2") cm</MudText>
                 </MudListItem>
                 <MudListItem>
-                    <MudText><strong>Tiefe:</strong> @Product.Depth.ToString("F2") cm</MudText>
+                    <MudText><strong>Tiefe:</strong> @_productDetail.Depth.ToString("F2") cm</MudText>
                 </MudListItem>
             </MudList>
         </MudPaper>
@@ -102,10 +107,10 @@
             <MudText Typo="Typo.h6" Class="mb-2">Vertriebskanäle und Bestand</MudText>
             <MudList T="ProductDetailDto" Dense="true">
                 <MudListItem>
-                    <MudText><strong>Anzahl Vertriebskanäle:</strong> @Product.ProductSalesChannel.Count</MudText>
+                    <MudText><strong>Anzahl Vertriebskanäle:</strong> @_productDetail.ProductSalesChannel.Count</MudText>
                 </MudListItem>
                 <MudListItem>
-                    <MudText><strong>Lagerstandorte:</strong> @Product.ProductStocks.Count</MudText>
+                    <MudText><strong>Lagerstandorte:</strong> @_productDetail.ProductStocks.Count</MudText>
                 </MudListItem>
             </MudList>
         </MudPaper>
@@ -115,19 +120,19 @@
     <MudItem xs="12">
         <MudPaper Elevation="2" Class="pa-4">
             <MudText Typo="Typo.h6" Class="mb-2">Beschreibung</MudText>
-            @if (!string.IsNullOrEmpty(Product.Description))
+            @if (!string.IsNullOrEmpty(_productDetail.Description))
             {
-                <MudText>@((MarkupString)Product.Description)</MudText>
+                <MudText>@((MarkupString)_productDetail.Description)</MudText>
             }
             else
             {
                 <MudText>Keine Beschreibung verfügbar.</MudText>
             }
             
-            @if (!string.IsNullOrEmpty(Product.DescriptionOptimized))
+            @if (!string.IsNullOrEmpty(_productDetail.DescriptionOptimized))
             {
                 <MudText Typo="Typo.h6" Class="mb-2 mt-4">Optimierte Beschreibung</MudText>
-                <MudText>@((MarkupString)Product.DescriptionOptimized)</MudText>
+                <MudText>@((MarkupString)_productDetail.DescriptionOptimized)</MudText>
             }
         </MudPaper>
     </MudItem>

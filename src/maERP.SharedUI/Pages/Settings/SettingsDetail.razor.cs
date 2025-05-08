@@ -14,19 +14,21 @@ public partial class SettingsDetail
     public required IHttpService HttpService { get; set; }
 
     [Parameter]
-    public int Id { get; set; }
+    public int SettingId { get; set; }
 
-    private SettingDetailDto? _setting;
+    private SettingDetailDto _settingDetail = new();
+    private string _title = "Einstellung";
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Id != 0)
+        if (SettingId != 0)
         {
-            var result = await HttpService.GetAsync<Result<SettingDetailDto>>($"/api/v1/Settings/{Id}");
+            var result = await HttpService.GetAsync<Result<SettingDetailDto>>($"/api/v1/Settings/{SettingId}");
             
             if (result != null && result.Succeeded)
             {
-                _setting = result.Data;
+                _title = $"Einstellung {_settingDetail.Key}";
+                _settingDetail = result.Data;
             }
         }
     }

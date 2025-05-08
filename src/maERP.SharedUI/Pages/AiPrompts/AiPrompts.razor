@@ -9,7 +9,7 @@
 <MudStack Row="true" Class="mb-8">
     <MudText Typo="Typo.h4">AI Prompts</MudText>
     <MudSpacer />
-    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/AiPrompts/Create" />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/AiPromptDetails/Create" />
 </MudStack>
 
 <MudDataGrid T="AiPromptListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData" @ref="_dataGrid" Hover="true">

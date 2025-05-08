@@ -34,13 +34,13 @@ public partial class UsersEdit
         }
     }
 
-    protected async Task Save()
+    protected async Task OnValidSubmit()
     {
         await HttpService.PutAsJsonAsync($"/api/v1/Users/{userId}", User);
-        ReturnToList();
+        NavigateToList();
     }
 
-    public void ReturnToList()
+    public void NavigateToList()
     {
         NavigationManager.NavigateTo("/Users");
     }

@@ -14,30 +14,31 @@ public partial class SalesChannelsDetail
     public required IHttpService HttpService { get; set; }
 
     [Parameter]
-    public int salesChannelId { get; set; }
+    public int SalesChannelId { get; set; }
 
-    protected string Title = "Vertriebskanaldetails";
+    private string _title = "Vertriebskanaldetails";
 
-    protected SalesChannelDetailDto SalesChannelDetail { get; set; } = new();
+    private SalesChannelDetailDto _salesChannelDetail { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        if (salesChannelId != 0)
+        if (SalesChannelId != 0)
         {
-            var result = await HttpService.GetAsync<Result<SalesChannelDetailDto>>($"/api/v1/SalesChannels/{salesChannelId}");
+            var result = await HttpService.GetAsync<Result<SalesChannelDetailDto>>($"/api/v1/SalesChannels/{SalesChannelId}");
             
             if (result != null && result.Succeeded)
             {
-                SalesChannelDetail = result.Data;
+                _title = $"Vertriebskanal - {_salesChannelDetail.Name}";
+                _salesChannelDetail = result.Data;
             }
             else if(result != null && result.StatusCode == ResultStatusCode.NotFound)
             {
-                Title = "nicht gefunden";
+                _title = "nicht gefunden";
             }
         }
         else 
         {
-            Title = "nicht gefunden";
+            _title = "nicht gefunden";
         }
     }
 }

@@ -14,27 +14,28 @@ public partial class OrdersDetail
     public required IHttpService HttpService { get; set; }
 
     [Parameter]
-    public int orderId { get; set; }
+    public int OrderId { get; set; }
 
-    protected string Title = string.Empty;
+    private string _title = string.Empty;
 
-    protected OrderDetailDto Order = new();
+    private OrderDetailDto _order = new();
 
     protected override async Task OnInitializedAsync()
     {
-        if (orderId == 0)
+        if (OrderId == 0)
         {
-            Title = "Bestellung nicht gefunden";
+            _title = "Bestellung nicht gefunden";
         }
         else
         {
-            Title = $"Bestellung {orderId}";
+            _title = $"Bestellung {OrderId}";
 
-            var result = await HttpService.GetAsync<Result<OrderDetailDto>>($"/api/v1/Orders/{orderId}");
+            var result = await HttpService.GetAsync<Result<OrderDetailDto>>($"/api/v1/Orders/{OrderId}");
 
             if (result != null && result.Succeeded)
             {
-                Order = result.Data;
+                _title = $"Bestellung {_order.Id}";
+                _order = result.Data;
             }
         }
     }

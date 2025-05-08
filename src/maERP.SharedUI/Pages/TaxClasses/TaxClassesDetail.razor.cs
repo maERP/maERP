@@ -13,20 +13,20 @@ public partial class TaxClassesDetail
     public required IHttpService HttpService { get; set; }
 
     [Parameter]
-    public int taxClassId { get; set; }
+    public int TaxClassId { get; set; }
 
-    protected string Title = "Steuers�tze";
+    private string _title = "Steuersätze";
 
-    protected TaxClassDetailDto TaxClass = new();
+    private TaxClassDetailDto _taxClassDetail = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        if (taxClassId != 0)
+        if (TaxClassId != 0)
         {
-            Title = "Bearbeiten";
-            TaxClass = await HttpService.GetAsync<TaxClassDetailDto>($"/api/v1/TaxClasses/{taxClassId}") ?? new TaxClassDetailDto();
+            _title = "Bearbeiten";
+            _taxClassDetail = await HttpService.GetAsync<TaxClassDetailDto>($"/api/v1/TaxClasses/{TaxClassId}") ?? new TaxClassDetailDto();
         }
-        else Title = "nicht gefunden";
+        else _title = "nicht gefunden";
 
         await Task.CompletedTask;
     }

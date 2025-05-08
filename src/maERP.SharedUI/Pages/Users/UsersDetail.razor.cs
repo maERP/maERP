@@ -13,14 +13,19 @@ public partial class UsersDetail
     public required IHttpService HttpService { get; set; }
 
     [Parameter]
-    public string userId { get; set; } = "";
+    public string UserId { get; set; } = "";
 
-    protected string Title = "Benutzerdetail";
+    private string _title = "Benutzerdetail";
 
-    protected UserDetailDto User = new();
+    private UserDetailDto _userDetail = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        User = await HttpService.GetAsync<UserDetailDto>($"/api/v1/Users/{userId}") ?? new UserDetailDto();
+        _userDetail = await HttpService.GetAsync<UserDetailDto>($"/api/v1/Users/{UserId}") ?? new UserDetailDto();
+        
+        if(!string.IsNullOrEmpty(_userDetail.Email))
+        {
+            _title = $"Benutzer {_userDetail.Email}";
+        }
     }
 }

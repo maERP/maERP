@@ -14,27 +14,28 @@ public partial class ProductsDetail
     public required IHttpService HttpService { get; set; }
     
     [Parameter]
-    public int productId { get; set; }
+    public int ProductId { get; set; }
 
-    protected string Title = "Produktdetail";
+    private string _title = "Produktdetail";
 
-    protected ProductDetailDto Product = new();
+    private ProductDetailDto _productDetail = new();
 
     protected override async Task OnInitializedAsync()
     {
-        if (productId == 0)
+        if (ProductId == 0)
         {
-            Title = "Produkt nicht gefunden";
+            _title = "Produkt nicht gefunden";
         }
         else
         {
-            Title = $"Produkt {productId}";
+            _title = $"Produkt {ProductId}";
 
-            var result = await HttpService.GetAsync<Result<ProductDetailDto>>($"/api/v1/Products/{productId}");
+            var result = await HttpService.GetAsync<Result<ProductDetailDto>>($"/api/v1/Products/{ProductId}");
 
             if (result != null && result.Succeeded)
             {
-                Product = result.Data;
+                _title = $"Produkt {_productDetail.Name}";
+                _productDetail = result.Data;
             }
         }
     }

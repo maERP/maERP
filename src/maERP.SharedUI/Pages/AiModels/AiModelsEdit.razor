@@ -5,56 +5,54 @@
 
 @attribute [Authorize]
 
-<PageTitle>@Title</PageTitle>
+<PageTitle>@_title</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-8">AI Modell bearbeiten</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">@_title</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Button" OnClick="@(OnValidSubmit)">Speichern</MudButton> 
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" ButtonType="ButtonType.Button" OnClick="@(NavigateToList)">Abbrechen</MudButton> 
+</MudStack>
 
-<MudForm Model="@AiModel" @ref="@Form" Validation="@(Validator.ValidateValue)" ValidationDelay="0">
+<MudForm Model="@_aiModel" @ref="@Form" Validation="@(Validator.ValidateValue)" ValidationDelay="0">
     <MudGrid>
         <MudItem xs="6">
-            <MudSelect T="AiModelType" Label="Typ" HelperText="Model-Typ" Placeholder="Typ auswählen" @bind-Value="@AiModel.AiModelType" Class="mt-6">
+            <MudSelect T="AiModelType" Label="Typ" HelperText="Model-Typ" Placeholder="Typ auswählen" @bind-Value="@_aiModel.AiModelType" Class="mt-6">
                 <MudSelectItem Value="AiModelType.ChatGpt4O">ChatGPT 4o</MudSelectItem>
                 <MudSelectItem Value="AiModelType.Claude35">Claude Opus 3.5</MudSelectItem>
             </MudSelect>
             
-            <MudTextField @bind-Value="AiModel.Name"
-                          For="@(() => AiModel.Name)"
+            <MudTextField @bind-Value="_aiModel.Name"
+                          For="@(() => _aiModel.Name)"
                           Label="Modellname"
                           Required="true"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6"/>
 
-            <MudTextField @bind-Value="AiModel.ApiUsername"
-                          For="@(() => AiModel.ApiUsername)"
+            <MudTextField @bind-Value="_aiModel.ApiUsername"
+                          For="@(() => _aiModel.ApiUsername)"
                           Label="API Username"
                           Required="true"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6"/>
 
-            <MudTextField @bind-Value="AiModel.ApiPassword"
-                          For="@(() => AiModel.ApiPassword)"
+            <MudTextField @bind-Value="_aiModel.ApiPassword"
+                          For="@(() => _aiModel.ApiPassword)"
                           Label="API Passwort"
                           Required="true"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6"/>
 
-            <MudTextField @bind-Value="AiModel.ApiKey"
-                          For="@(() => AiModel.ApiKey)"
+            <MudTextField @bind-Value="_aiModel.ApiKey"
+                          For="@(() => _aiModel.ApiKey)"
                           Label="API Key"
                           Required="true"
                           Variant="Variant.Text"
                           InputType="InputType.Text"
                           Class="mt-6"/>
-
-            <MudButton Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       Size="Size.Large"
-                       ButtonType="ButtonType.Button"
-                       OnClick="@(OnValidSubmit)"
-                       Class="mt-6">Speichern</MudButton>
         </MudItem>
     </MudGrid>
 </MudForm>

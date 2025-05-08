@@ -14,30 +14,31 @@ public partial class AiModelsDetail
     public required IHttpService httpService { get; set; }
 
     [Parameter]
-    public int aiModelId { get; set; }
+    public int AiModelId { get; set; }
 
-    protected string Title = "AI Model";
+    private string _title = "AI Model";
 
-    protected AiModelDetailDto AiModel = new();
+    private AiModelDetailDto _aiModelDetail = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        if (aiModelId != 0)
+        if (AiModelId != 0)
         {
-            var result = await httpService.GetAsync<Result<AiModelDetailDto>>($"/api/v1/AiModels/{aiModelId}");
+            var result = await httpService.GetAsync<Result<AiModelDetailDto>>($"/api/v1/AiModels/{AiModelId}");
             
             if (result != null && result.Succeeded)
             {
-                AiModel = result.Data;
+                _title = $"AI Model - {_aiModelDetail.Name}";
+                _aiModelDetail = result.Data;
             }
             else if(result != null && result.StatusCode == ResultStatusCode.NotFound)
             {
-                Title = "nicht gefunden";
+                _title = "nicht gefunden";
             }
         }
         else 
         {
-            Title = "nicht gefunden";
+            _title = "nicht gefunden";
         }
     }
 }

@@ -9,7 +9,7 @@
 <MudStack Row="true" Class="mb-8">
     <MudText Typo="Typo.h4">Rechnungen</MudText>
     <MudSpacer />
-    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/Invoices/Create" />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/InvoiceDetails/Create" />
 </MudStack>
 
 <MudDataGrid T="InvoiceListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData" @ref="DataGrid" Hover="true">

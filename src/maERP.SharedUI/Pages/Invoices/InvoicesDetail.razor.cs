@@ -15,27 +15,27 @@ public partial class InvoicesDetail : ComponentBase
     public required IHttpService HttpService { get; set; }
 
     [Parameter]
-    public int invoiceId { get; set; }
-
-    protected string Title = string.Empty;
-
-    protected InvoiceDetailDto Invoice = new();
+    public int InvoiceId { get; set; }
+    
+    private string _title = string.Empty;
+    private InvoiceDetailDto _invoiceDetail = new();
 
     protected override async Task OnInitializedAsync()
     {
-        if (invoiceId == 0)
+        if (InvoiceId == 0)
         {
-            Title = "Rechnung nicht gefunden";
+            _title = "Rechnung nicht gefunden";
         }
         else
         {
-            Title = $"Rechnung {invoiceId}";
+            _title = $"Rechnung {InvoiceId}";
 
-            var result = await HttpService.GetAsync<Result<InvoiceDetailDto>>($"/api/v1/Invoices/{invoiceId}");
+            var result = await HttpService.GetAsync<Result<InvoiceDetailDto>>($"/api/v1/Invoices/{InvoiceId}");
 
             if (result != null && result.Succeeded)
             {
-                Invoice = result.Data;
+                _title = $"Rechnung {_invoiceDetail.InvoiceNumber}";
+                _invoiceDetail = result.Data;
             }
         }
     }

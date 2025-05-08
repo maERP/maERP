@@ -14,30 +14,31 @@ public partial class AiPromptsDetail
     public required IHttpService HttpService { get; set; }
 
     [Parameter]
-    public int aiPromptId { get; set; }
+    public int AiPromptId { get; set; }
 
-    protected string Title = "AI Prompt";
+    private string _title = "AI Prompt";
 
-    protected AiPromptDetailDto AiPromptDetail = new();
+    private AiPromptDetailDto _aiPromptDetail = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        if (aiPromptId != 0)
+        if (AiPromptId != 0)
         {
-            var result = await HttpService.GetAsync<Result<AiPromptDetailDto>>($"/api/v1/AiPrompts/{aiPromptId}");
+            var result = await HttpService.GetAsync<Result<AiPromptDetailDto>>($"/api/v1/AiPrompts/{AiPromptId}");
             
             if (result != null && result.Succeeded)
             {
-                AiPromptDetail = result.Data;
+                _title = $"AI Prompt - {_aiPromptDetail.Identifier}";
+                _aiPromptDetail = result.Data;
             }
             else if(result != null && result.StatusCode == ResultStatusCode.NotFound)
             {
-                Title = "nicht gefunden";
+                _title = "nicht gefunden";
             }
         }
         else 
         {
-            Title = "nicht gefunden";
+            _title = "nicht gefunden";
         }
     }
 }

@@ -7,15 +7,12 @@
 <PageTitle>Systemeinstellung bearbeiten</PageTitle>
 
 <MudStack Row="true" Class="mb-8">
-    <MudText Typo="Typo.h4">Systemeinstellung bearbeiten</MudText>
+    <MudText Typo="Typo.h4">@Title</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Button" OnClick="@(OnValidSubmit)">Speichern</MudButton> 
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" ButtonType="ButtonType.Button" OnClick="@(NavigateToList)">Abbrechen</MudButton> 
 </MudStack>
 
-@if (_setting == null)
-{
-    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
-}
-else
-{
     <MudForm Model="@_setting" @ref="@Form" ValidationDelay="0">
         <MudGrid>
             <MudItem xs="12" sm="6">
@@ -31,16 +28,7 @@ else
                                     Required="true"
                                     Class="mt-3" />
                     </MudCardContent>
-                    <MudCardActions>
-                        <MudButton Variant="Variant.Filled"
-                                 Color="Color.Primary"
-                                 Size="Size.Large"
-                                 ButtonType="ButtonType.Button"
-                                 OnClick="@(Save)"
-                                 Class="ml-auto">Speichern</MudButton>
-                    </MudCardActions>
                 </MudCard>
             </MudItem>
         </MudGrid>
     </MudForm>
-}

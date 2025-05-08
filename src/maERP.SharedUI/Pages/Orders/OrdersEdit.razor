@@ -11,7 +11,12 @@
 
 <PageTitle>@Title</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-4">@Title</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">@Title</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Button" OnClick="@(OnValidSubmit)">Speichern</MudButton> 
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" ButtonType="ButtonType.Button" OnClick="@(NavigateToList)">Abbrechen</MudButton> 
+</MudStack>
 
 <MudForm Model="@Order" @ref="@Form">
     <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
@@ -133,7 +138,7 @@
                     </MudButton>
                 </MudItem>
 
-                <!-- Invoice Address -->
+                <!-- InvoiceDetail Address -->
                 <MudItem xs="12" sm="6" md="6">
                     <MudPaper Elevation="2" Class="pa-4">
                         <MudText Typo="Typo.h6" Class="mb-2">Rechnungsadresse</MudText>
@@ -313,22 +318,4 @@
             </MudGrid>
         </MudTabPanel>
     </MudTabs>
-    
-    <!-- Buttons -->
-    <MudItem xs="12" Class="d-flex justify-center mt-4">
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   Size="Size.Large"
-                   OnClick="@OnValidSubmit"
-                   Class="mx-2">
-            Speichern
-        </MudButton>
-        <MudButton Variant="Variant.Outlined"
-                   Color="Color.Secondary"
-                   Size="Size.Large"
-                   OnClick="@NavigateToList"
-                   Class="mx-2">
-            Abbrechen
-        </MudButton>
-    </MudItem>
 </MudForm>

@@ -7,7 +7,12 @@
 
 <PageTitle>@Title</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-8">@Title</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">@Title</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Button" OnClick="@(OnValidSubmit)">Speichern</MudButton> 
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" ButtonType="ButtonType.Button" OnClick="@(NavigateToList)">Abbrechen</MudButton> 
+</MudStack>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenProductAiHelper" Class="mb-4">AI Assist</MudButton>
 
@@ -171,27 +176,6 @@
                              Lines="5"
                              Required="false"
                              Class="mt-3"/>
-            </MudPaper>
-        </MudItem>
-        
-        <!-- Steuerelemente -->
-        <MudItem xs="12">
-            <MudPaper Elevation="0" Class="pa-4">
-                <MudButton Variant="Variant.Filled"
-                          Color="Color.Primary"
-                          Size="Size.Large"
-                          ButtonType="ButtonType.Button"
-                          OnClick="@(OnValidSubmit)"
-                          Class="mr-2">Speichern
-                </MudButton>
-                
-                <MudButton Variant="Variant.Outlined"
-                          Color="Color.Secondary"
-                          Size="Size.Large"
-                          ButtonType="ButtonType.Button"
-                          Href="@($"/Products/{Product.Id}")"
-                          Class="mr-2">Abbrechen
-                </MudButton>
             </MudPaper>
         </MudItem>
     </MudGrid>

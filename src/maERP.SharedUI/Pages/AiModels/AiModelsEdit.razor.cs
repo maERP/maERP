@@ -23,29 +23,29 @@ public partial class AiModelsEdit
     public required AiModelsInputValidator Validator { get; set; }
 
     [Parameter]
-    public int aiModelId { get; set; }
+    public int AiModelId { get; set; }
     
     public MudForm? Form;
 
-    protected string Title = string.Empty;
+    private string _title = string.Empty;
 
-    public AiModelInputDto AiModel = new();
+    private AiModelInputDto _aiModel = new();
 
     protected override async Task OnInitializedAsync()
     {
-        if (aiModelId == 0)
+        if (AiModelId == 0)
         {
-            Title = "AI Model hinzufügen";
+            _title = "AI Model hinzufügen";
         }
         else
         {
-            Title = "AI Model bearbeiten";
+            _title = "AI Model bearbeiten";
             
-            var result = await HttpService.GetAsync<Result<AiModelInputDto>>($"/api/v1/AiModels/{aiModelId}");
+            var result = await HttpService.GetAsync<Result<AiModelInputDto>>($"/api/v1/AiModels/{AiModelId}");
             
             if (result != null && result.Succeeded)
             {
-                AiModel = result.Data;
+                _aiModel = result.Data;
             }
         }
         
@@ -56,13 +56,13 @@ public partial class AiModelsEdit
     {
         HttpResponseMessage httpResponseMessage;
 
-        if (aiModelId == 0)
+        if (AiModelId == 0)
         {
-            httpResponseMessage = await HttpService.PostAsJsonAsync("/api/v1/AiModels", AiModel);
+            httpResponseMessage = await HttpService.PostAsJsonAsync("/api/v1/AiModels", _aiModel);
         }
         else
         {
-            httpResponseMessage = await HttpService.PutAsJsonAsync($"/api/v1/AiModels/{aiModelId}", AiModel);
+            httpResponseMessage = await HttpService.PutAsJsonAsync($"/api/v1/AiModels/{AiModelId}", _aiModel);
         }
 
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;

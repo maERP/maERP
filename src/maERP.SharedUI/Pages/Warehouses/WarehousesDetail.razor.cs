@@ -13,30 +13,19 @@ public partial class WarehousesDetail
     public required IHttpService HttpService { get; set; }
 
     [Parameter]
-    public int warehouseId { get; set; }
+    public int WarehouseId { get; set; }
 
-    protected string Title = "Lager";
-
-    protected WarehouseDetailDto Warehouse = new();
+    private string _title = "Lager";
+    private WarehouseDetailDto _warehouse = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        if (warehouseId != 0)
+        if (WarehouseId != 0)
         {
-            Title = "Bearbeiten";
-            Warehouse = await HttpService.GetAsync<WarehouseDetailDto>($"/api/v1/Warehouses/{warehouseId}")
+            _title = "Bearbeiten";
+            _warehouse = await HttpService.GetAsync<WarehouseDetailDto>($"/api/v1/Warehouses/{WarehouseId}")
                         ?? new WarehouseDetailDto();
         }
-        else Title = "nicht gefunden";
-    }
-    
-    protected void NavigateToList()
-    {
-        NavigationManager.NavigateTo("/Warehouses");
-    }
-    
-    protected void NavigateToEdit()
-    {
-        NavigationManager.NavigateTo($"/Warehouses/Edit/{warehouseId}");
+        else _title = "nicht gefunden";
     }
 }

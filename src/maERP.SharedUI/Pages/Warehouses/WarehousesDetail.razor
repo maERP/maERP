@@ -3,19 +3,18 @@
 
 @attribute [Authorize]
 
+<PageTitle>@_title</PageTitle>
+
 <MudStack Row="true" Class="mb-8">
-    <MudText Typo="Typo.h4">Lager - @Warehouse.Name</MudText>
+    <MudText Typo="Typo.h4">@_title</MudText>
     <MudSpacer />
-    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/Warehouses/{warehouseId}/Edit")" />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/Warehouses/{WarehouseId}/Edit")" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Primary" Href="@($"/Warehouses/")" />
 </MudStack>
 
 <MudCard>
     <MudCardContent>
-        <MudText Typo="Typo.h6">ID: @Warehouse.Id</MudText>
-        <MudText Typo="Typo.body1">Name: @Warehouse.Name</MudText>
+        <MudText Typo="Typo.h6">ID: @_warehouse.Id</MudText>
+        <MudText Typo="Typo.body1">Name: @_warehouse.Name</MudText>
     </MudCardContent>
-    <MudCardActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateToEdit">Bearbeiten</MudButton>
-        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="NavigateToList">Zurück zur Liste</MudButton>
-    </MudCardActions>
 </MudCard>

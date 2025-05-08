@@ -3,7 +3,14 @@
 
 @attribute [Authorize]
 
-<MudText Typo="Typo.h4" Class="mb-8">Benutzer bearbeiten</MudText>
+<PageTitle>@Title</PageTitle>
+
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">@Title</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Button" OnClick="@(OnValidSubmit)">Speichern</MudButton> 
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" ButtonType="ButtonType.Button" OnClick="@(NavigateToList)">Abbrechen</MudButton> 
+</MudStack>
 
 <MudForm Model="@User" @ref="@_form">
     <MudGrid>
@@ -48,13 +55,6 @@
                           InputType="InputType.Password"
                           Class="mt-6">
             </MudTextField>
-
-            <MudButton Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       Size="Size.Large"
-                       ButtonType="ButtonType.Button"
-                       OnClick="@(Save)"
-                       Class="mt-6">Speichern</MudButton>
         </MudItem>
     </MudGrid>
 </MudForm>

@@ -9,7 +9,7 @@
 <MudStack Row="true" Class="mb-8">
     <MudText Typo="Typo.h4">AI Modelle</MudText>
     <MudSpacer />
-    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/AiModels/Create" />
+    <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/AiModelDetails/Create" />
 </MudStack>
 
 <MudDataGrid T="AiModelListDto" SortMode="SortMode.Single" Class="mb-8" ServerData="LoadGridData" @ref="_dataGrid" Hover="true">

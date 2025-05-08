@@ -25,6 +25,8 @@ public partial class SettingsEdit
 
     private SettingInputDto _setting = new();
 
+    private String Title = "Einstellung bearbeiten";
+
     protected override async Task OnInitializedAsync()
     {
         if (Id == 0)
@@ -42,17 +44,17 @@ public partial class SettingsEdit
         }
     }
 
-    protected async Task Save()
+    protected async Task OnValidSubmit()
     {
         HttpResponseMessage httpResponseMessage;
 
         if (Id == 0)
         {
-            httpResponseMessage = await HttpService.PostAsJsonAsync("/api/v1/Warehouses", _setting);
+            httpResponseMessage = await HttpService.PostAsJsonAsync("/api/v1/Settings", _setting);
         }
         else
         {
-            httpResponseMessage = await HttpService.PutAsJsonAsync($"/api/v1/Warehouses/{Id}", _setting);
+            httpResponseMessage = await HttpService.PutAsJsonAsync($"/api/v1/Settings/{Id}", _setting);
         }
 
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>() ?? null;
@@ -61,7 +63,7 @@ public partial class SettingsEdit
         {
             if (result.Succeeded)
             {
-                Snackbar.Add("Lager gespeichert", Severity.Success);
+                Snackbar.Add("Einstellung gespeichert", Severity.Success);
                 NavigationManager.NavigateTo("/Settings");
             }
             else
@@ -74,7 +76,13 @@ public partial class SettingsEdit
         }
         else
         {
-            Snackbar.Add("Lager konnte nicht gespeichert werden", Severity.Error);
+            Snackbar.Add("Einstellung konnte nicht gespeichert werden", Severity.Error);
         }
+    }
+    
+    public void NavigateToList()
+    {
+        StateHasChanged();
+        NavigationManager.NavigateTo("/Settings");
     }
 }

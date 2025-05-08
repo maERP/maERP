@@ -20,7 +20,9 @@ public partial class CustomersDetail
     public required ISnackbar Snackbar { get; set; }
 
     [Parameter]
-    public int customerId { get; set; }
+    public int CustomerId { get; set; }
+
+    private string _title = "Kundendetails";
 
     private CustomerDetailDto _customerDetail = new();
     private MudDataGrid<OrderListDto> _customerOrderListGrid = new();
@@ -28,12 +30,13 @@ public partial class CustomersDetail
 
     protected override async Task OnParametersSetAsync()
     {
-        if (customerId != 0)
+        if (CustomerId != 0)
         {
-            var result = await HttpService.GetAsync<Result<CustomerDetailDto>>($"/api/v1/Customers/{customerId}");
+            var result = await HttpService.GetAsync<Result<CustomerDetailDto>>($"/api/v1/Customers/{CustomerId}");
             
             if (result != null && result.Succeeded)
             {
+                _title = $"Kunde - {_customerDetail.Firstname} {_customerDetail.Lastname}";
                 _customerDetail = result.Data;
             }
         }
@@ -48,7 +51,7 @@ public partial class CustomersDetail
             : "DateCreated Descending";
 
         var apiResponse = await HttpService.GetAsync<PaginatedResult<OrderListDto>>(
-                              $"/api/v1/Orders/customer/{customerId}?pageNumber={pageNumber}&pageSize={pageSize}&searchString={_customerOrderSearchString}&orderBy={orderBy}")
+                              $"/api/v1/Orders/customer/{CustomerId}?pageNumber={pageNumber}&pageSize={pageSize}&searchString={_customerOrderSearchString}&orderBy={orderBy}")
                           ?? new PaginatedResult<OrderListDto>(new List<OrderListDto>());
 
         GridData<OrderListDto> data = new()
@@ -67,7 +70,7 @@ public partial class CustomersDetail
 
     protected void NavEditCustomer()
     {
-        NavigationManager.NavigateTo($"/Customers/{customerId}/edit");
+        NavigationManager.NavigateTo($"/Customers/{CustomerId}/edit");
     }
 
     protected void NavToOrderDetails(int orderId)

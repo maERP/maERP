@@ -7,7 +7,12 @@
 
 <PageTitle>@Title</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-8">@Title</MudText>
+<MudStack Row="true" Class="mb-8">
+    <MudText Typo="Typo.h4">@Title</MudText>
+    <MudSpacer />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Button" OnClick="@(OnValidSubmit)">Speichern</MudButton> 
+    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" ButtonType="ButtonType.Button" OnClick="@(NavigateToList)">Abbrechen</MudButton> 
+</MudStack>
 
 <MudForm Model="@SalesChannel" @ref="@Form" Validation="@(Validator.ValidateValue)" ValidationDelay="0">
     <MudGrid>
@@ -80,14 +85,6 @@
                 <MudCheckBox @bind-Value="@SalesChannel.ImportOrders" Label="Importieren" />
                 <MudCheckBox @bind-Value="@SalesChannel.ExportOrders" Label="Exportieren" />
             </MudStack>
-
-            <MudButton Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       Size="Size.Large"
-                       ButtonType="ButtonType.Button"
-                       OnClick="@(OnValidSubmit)"
-                       Class="mt-6">Speichern</MudButton>
-
         </MudItem>
     </MudGrid>
 </MudForm>

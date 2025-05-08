@@ -4,18 +4,15 @@
 @attribute [Authorize]
 
 <MudStack Row="true" Class="mb-8">
-    <MudText Typo="Typo.h4">AI Model - @AiModel.Name</MudText>
+    <MudText Typo="Typo.h4">@_title</MudText>
     <MudSpacer />
-    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/AiModels/{aiModelId}/edit")" />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"/AiModels/{AiModelId}/edit")" />
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Primary" Href="@($"/AiModels/")" />
 </MudStack>
 
 <MudCard>
     <MudCardContent>
-        <MudText Typo="Typo.h6">ID: @AiModel.Id</MudText>
-        <MudText Typo="Typo.body1">Name: @AiModel.Name</MudText>
+        <MudText Typo="Typo.h6">ID: @_aiModelDetail.Id</MudText>
+        <MudText Typo="Typo.body1">Name: @_aiModelDetail.Name</MudText>
     </MudCardContent>
-    <MudCardActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" link="@($"/AiModels/edit/{AiModel.Id}")">Edit</MudButton>
-        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" link="/AiModels">Back to List</MudButton>
-    </MudCardActions>
 </MudCard>
