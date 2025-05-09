@@ -236,6 +236,18 @@ public class OrderImportRepository : IOrderImportRepository
                 }
             }
 
+            newOrder.OrderHistories = new List<OrderHistory>
+            {
+                new OrderHistory
+                {
+                    OrderId = newOrder.Id,
+                    NewStatus = newOrder.Status,
+                    Comment = $"Imported from {salesChannel.Name}",
+                    DateCreated = DateTime.UtcNow,
+                    Timestamp = DateTime.UtcNow
+                }
+            };
+
             await _orderRepository.CreateAsync(newOrder);
             _logger.LogInformation("Order {0}: created", importOrder.RemoteOrderId);
 

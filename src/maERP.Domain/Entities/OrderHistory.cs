@@ -18,10 +18,6 @@ public class OrderHistory : BaseEntity, IBaseEntity
     [Required]
     public OrderStatus NewStatus { get; set; }
     
-    public string FieldName { get; set; } = string.Empty;
-    public string OldValue { get; set; } = string.Empty;
-    public string NewValue { get; set; } = string.Empty;
-    
     public string Comment { get; set; } = string.Empty;
     
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;

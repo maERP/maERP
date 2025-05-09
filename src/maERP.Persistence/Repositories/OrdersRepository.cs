@@ -51,9 +51,6 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
                 Username = username,
                 OldStatus = oldStatus,
                 NewStatus = newStatus,
-                FieldName = "Status",
-                OldValue = oldStatus.ToString(),
-                NewValue = newStatus.ToString(),
                 Comment = comment,
                 Timestamp = DateTime.UtcNow
             };

@@ -28,13 +28,16 @@ public partial class OrdersDetail
         }
         else
         {
-            _title = $"Bestellung {OrderId}";
-
             var result = await HttpService.GetAsync<Result<OrderDetailDto>>($"/api/v1/Orders/{OrderId}");
 
             if (result != null && result.Succeeded)
             {
-                _title = $"Bestellung {_order.Id}";
+                var orderHistory =
+                    await HttpService.GetAsync<List<OrderHistoryDto>>($"/api/v1/Orders/{OrderId}/History") ??
+                    new List<OrderHistoryDto>();
+                _order.OrderHistory = orderHistory;
+                
+                _title = $"Bestellung {OrderId}";
                 _order = result.Data;
             }
         }
