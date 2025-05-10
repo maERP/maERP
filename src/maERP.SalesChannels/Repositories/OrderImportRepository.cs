@@ -240,11 +240,15 @@ public class OrderImportRepository : IOrderImportRepository
             {
                 new OrderHistory
                 {
+                    UserId = 0,
                     OrderId = newOrder.Id,
-                    NewStatus = newOrder.Status,
-                    Comment = $"Imported from {salesChannel.Name}",
+                    OrderStatusNew = newOrder.Status,
+                    PaymentStatusNew = newOrder.PaymentStatus,
+                    // TODO: implement ShippingStatus on import
+                    // ShippingStatusNew = newOrder.ShippingStatus,
+                    Description = $"Imported from {salesChannel.Name}",
                     DateCreated = DateTime.UtcNow,
-                    Timestamp = DateTime.UtcNow
+                    DateModified = DateTime.UtcNow
                 }
             };
 
@@ -271,15 +275,12 @@ public class OrderImportRepository : IOrderImportRepository
 
             if(existingOrder.Status != importOrder.Status)
             {
-                await _orderRepository.UpdateOrderStatusAsync(
-                    existingOrder.Id, 
-                    importOrder.Status, 
-                    "Shopware5Import", 
-                    $"Status automatisch aktualisiert beim Import aus Shopware 5. Remote-Order-ID: {importOrder.RemoteOrderId}");
-                
                 somethingChanged = true;
                 _logger.LogInformation("Order {0}: Status updated, new status is {1}", importOrder.RemoteOrderId, importOrder.Status);
             }
+            
+            // TODO: implement check for changed shipping status
+            // TODO: implement check for changed payment status
 
             if (somethingChanged)
             {

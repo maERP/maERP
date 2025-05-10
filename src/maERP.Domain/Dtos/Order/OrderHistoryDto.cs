@@ -5,16 +5,17 @@ namespace maERP.Domain.Dtos.Order;
 public class OrderHistoryDto
 {
     public int Id { get; set; }
+    public int UserId { get; set; }
     public int OrderId { get; set; }
-    public DateTime Timestamp { get; set; }
     public string Action { get; set; } = string.Empty;
-    public OrderStatus? PreviousStatus { get; set; }
-    public OrderStatus? NewStatus { get; set; }
-    public PaymentStatus? PreviousPaymentStatus { get; set; }
-    public PaymentStatus? NewPaymentStatus { get; set; }
-    public string? PreviousShippingStatus { get; set; }
-    public string? NewShippingStatus { get; set; }
+    public OrderStatus? OrderStatusOld { get; set; }
+    public OrderStatus? OrderStatusNew { get; set; }
+    public PaymentStatus? PaymentStatusOld { get; set; }
+    public PaymentStatus? PaymentStatusNew { get; set; }
+    public string? ShippingStatusOld { get; set; }
+    public string? ShippingStatusNew { get; set; }
     public string Description { get; set; } = string.Empty;
-    public string CreatedBy { get; set; } = string.Empty;
     public bool IsSystemGenerated { get; set; }
-} 
+    public DateTime DateCreated { get; set; }
+    public DateTime DateUpdated { get; set; }
+}

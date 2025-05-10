@@ -223,7 +223,7 @@
                 <MudDataGrid Items="@_order.OrderHistory" Dense="true" Hover="true" Striped="true" Bordered="true" 
                             SortMode="SortMode.Multiple" Filterable="true">
                     <Columns>
-                        <PropertyColumn Property="x => x.Timestamp" Title="Zeitpunkt" Format="g" />
+                        <PropertyColumn Property="x => x.DateCreated" Title="Zeitpunkt" Format="g" />
                         <PropertyColumn Property="x => x.Action" Title="Aktion" />
                         <TemplateColumn Title="Status">
                             <CellTemplate>
@@ -231,9 +231,9 @@
                                     var history = context.Item;
                                     <div>
                                         <MudText>
-                                            @(history.PreviousStatus != null ? $"{history.PreviousStatus}" : "")
-                                            @(history.PreviousStatus != null && history.NewStatus != null ? " → " : "")
-                                            @(history.NewStatus != null ? $"{history.NewStatus}" : "")
+                                            @(history.OrderStatusOld != null ? $"{history.OrderStatusNew}" : "")
+                                            @(history.OrderStatusOld != null && history.OrderStatusNew != null ? " → " : "")
+                                            @(history.OrderStatusNew != null ? $"{history.OrderStatusNew}" : "")
                                         </MudText>
                                     </div>
                                 }
@@ -244,7 +244,7 @@
                             <CellTemplate>
                                 @{
                                     var history = context.Item;
-                                    @(history.IsSystemGenerated ? "System" : history.CreatedBy)
+                                    @(history.IsSystemGenerated ? "System" : history.UserId.ToString())
                                 }
                             </CellTemplate>
                         </TemplateColumn>

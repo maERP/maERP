@@ -6,19 +6,14 @@ namespace maERP.Domain.Entities;
 
 public class OrderHistory : BaseEntity, IBaseEntity
 {
-    [Required]
+    public int UserId { get; set; }
     public int OrderId { get; set; }
-    public Order Order { get; set; } = null!;
-                     
-    public string Username { get; set; } = string.Empty;
-    
-    [Required]
-    public OrderStatus OldStatus { get; set; }
-    
-    [Required]
-    public OrderStatus NewStatus { get; set; }
-    
-    public string Comment { get; set; } = string.Empty;
-    
-    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+    public OrderStatus? OrderStatusOld { get; set; }
+    public OrderStatus? OrderStatusNew { get; set; }
+    public PaymentStatus? PaymentStatusOld { get; set; }
+    public PaymentStatus? PaymentStatusNew { get; set; }
+    public string? ShippingStatusOld { get; set; }
+    public string? ShippingStatusNew { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public bool IsSystemGenerated { get; set; }
 } 

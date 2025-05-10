@@ -142,14 +142,16 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
         return orderHistories.Select(history => new OrderHistoryDto
         {
             Id = history.Id,
+            UserId = history.UserId,
             OrderId = history.OrderId,
-            Timestamp = history.Timestamp,
-            Action = history.FieldName,
-            PreviousStatus = history.OldStatus,
-            NewStatus = history.NewStatus,
-            Description = history.Comment,
-            CreatedBy = history.Username,
-            IsSystemGenerated = string.IsNullOrEmpty(history.Username)
+            OrderStatusOld = history.OrderStatusOld,
+            OrderStatusNew = history.OrderStatusNew,
+            PaymentStatusOld = history.PaymentStatusOld,
+            PaymentStatusNew = history.PaymentStatusNew,
+            ShippingStatusOld = history.ShippingStatusOld,
+            ShippingStatusNew = history.ShippingStatusNew,
+            Description = history.Description,
+            IsSystemGenerated = history.UserId == 0
         }).ToList();
     }
 }
