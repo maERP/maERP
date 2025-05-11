@@ -9,13 +9,16 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Re
 {
     private readonly IAppLogger<WarehouseDeleteHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
+    private readonly ISalesChannelRepository _salesChannelRepository;
     
     public WarehouseDeleteHandler(
         IAppLogger<WarehouseDeleteHandler> logger,
-        IWarehouseRepository warehouseRepository)
+        IWarehouseRepository warehouseRepository,
+        ISalesChannelRepository salesChannelRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
+        _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
     }
 
     public async Task<Result<int>> Handle(WarehouseDeleteCommand request, CancellationToken cancellationToken)
@@ -25,7 +28,7 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Re
         var result = new Result<int>();
         
         // Validate incoming data
-        var validator = new WarehouseDeleteValidator(_warehouseRepository);
+        var validator = new WarehouseDeleteValidator(_warehouseRepository, _salesChannelRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
