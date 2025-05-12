@@ -278,9 +278,14 @@ public class OrderImportRepository : IOrderImportRepository
                 somethingChanged = true;
                 _logger.LogInformation("Order {0}: Status updated, new status is {1}", importOrder.RemoteOrderId, importOrder.Status);
             }
-            
+
+            if(existingOrder.PaymentStatus != importOrder.PaymentStatus)
+            {
+                somethingChanged = true;
+                _logger.LogInformation("Order {0}: PaymentStatus updated, new status is {1}", importOrder.RemoteOrderId, importOrder.PaymentStatus);
+            }
+ 
             // TODO: implement check for changed shipping status
-            // TODO: implement check for changed payment status
 
             if (somethingChanged)
             {

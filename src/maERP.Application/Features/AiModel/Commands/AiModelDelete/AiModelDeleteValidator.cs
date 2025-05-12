@@ -17,8 +17,6 @@ public class AiModelDeleteValidator : AbstractValidator<AiModelDeleteCommand>
 
         RuleFor(w => w)
             .MustAsync(AiModelExists).WithMessage("AiModel not found");
-        
-        // TODO: Implement check if warehouse is not used in a sales channel
     }
     
     private async Task<bool> AiModelExists(AiModelDeleteCommand command, CancellationToken cancellationToken)
