@@ -2,6 +2,7 @@
 using maERP.Application.Features.Statistic.Queries.StatisticOrder;
 using maERP.Application.Features.Statistic.Queries.StatisticOrderCustomerChart;
 using maERP.Application.Features.Statistic.Queries.StatisticProduct;
+using maERP.Application.Features.Statistic.Queries.StatisticSales;
 using maERP.Domain.Dtos.Statistic;
 using maERP.Domain.Wrapper;
 using MediatR;
@@ -45,6 +46,18 @@ public class StatisticsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<Result<StatisticOrderCustomerChartResponse>>> OrderCustomerChart()
     {
         var result = await mediator.Send(new StatisticOrderCustomerChartQuery());
+        
+        if (!result.Succeeded)
+            return StatusCode((int)result.StatusCode, result);
+            
+        return Ok(result);
+    }
+    
+    // GET: api/v1/<StatisticsController>
+    [HttpGet("SalesStatistic")]
+    public async Task<ActionResult<Result<StatisticSalesDto>>> SalesStatistic()
+    {
+        var result = await mediator.Send(new StatisticSalesQuery());
         
         if (!result.Succeeded)
             return StatusCode((int)result.StatusCode, result);
