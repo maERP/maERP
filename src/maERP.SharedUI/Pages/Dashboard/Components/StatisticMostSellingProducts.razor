@@ -1,5 +1,102 @@
-<h3>StatisticMostSellingProducts</h3>
-
-@code {
-    
+@if (_statisticMostSellingProducts != null)
+{
+    <MudPaper Elevation="2" Class="pa-4" Style="height: auto;">
+        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-3">
+            <MudTabPanel Text="Heute">
+                <MudTable Items="@_statisticMostSellingProducts.TopProductsToday" Dense="true" Hover="true">
+                    <HeaderContent>
+                        <MudTh>Produkt</MudTh>
+                        <MudTh>SKU</MudTh>
+                        <MudTh>Menge</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Produkt">@context.ProductName</MudTd>
+                        <MudTd DataLabel="SKU">@context.ProductSku</MudTd>
+                        <MudTd DataLabel="Menge">@context.TotalQuantity</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>Keine Verkäufe für diesen Zeitraum gefunden.</MudText>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+            
+            <MudTabPanel Text="Letzte 7 Tage">
+                <MudTable Items="@_statisticMostSellingProducts.TopProductsLastSevenDays" Dense="true" Hover="true">
+                    <HeaderContent>
+                        <MudTh>Produkt</MudTh>
+                        <MudTh>SKU</MudTh>
+                        <MudTh>Menge</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Produkt">@context.ProductName</MudTd>
+                        <MudTd DataLabel="SKU">@context.ProductSku</MudTd>
+                        <MudTd DataLabel="Menge">@context.TotalQuantity</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>Keine Verkäufe für diesen Zeitraum gefunden.</MudText>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+            
+            <MudTabPanel Text="Diesen Monat">
+                <MudTable Items="@_statisticMostSellingProducts.TopProductsThisMonth" Dense="true" Hover="true">
+                    <HeaderContent>
+                        <MudTh>Produkt</MudTh>
+                        <MudTh>SKU</MudTh>
+                        <MudTh>Menge</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Produkt">@context.ProductName</MudTd>
+                        <MudTd DataLabel="SKU">@context.ProductSku</MudTd>
+                        <MudTd DataLabel="Menge">@context.TotalQuantity</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>Keine Verkäufe für diesen Zeitraum gefunden.</MudText>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+            
+            <MudTabPanel Text="Dieses Jahr">
+                <MudTable Items="@_statisticMostSellingProducts.TopProductsThisYear" Dense="true" Hover="true">
+                    <HeaderContent>
+                        <MudTh>Produkt</MudTh>
+                        <MudTh>SKU</MudTh>
+                        <MudTh>Menge</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Produkt">@context.ProductName</MudTd>
+                        <MudTd DataLabel="SKU">@context.ProductSku</MudTd>
+                        <MudTd DataLabel="Menge">@context.TotalQuantity</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>Keine Verkäufe für diesen Zeitraum gefunden.</MudText>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+            
+            <MudTabPanel Text="Alle Zeiten">
+                <MudTable Items="@_statisticMostSellingProducts.TopProductsAllTime" Dense="true" Hover="true">
+                    <HeaderContent>
+                        <MudTh>Produkt</MudTh>
+                        <MudTh>SKU</MudTh>
+                        <MudTh>Menge</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Produkt">@context.ProductName</MudTd>
+                        <MudTd DataLabel="SKU">@context.ProductSku</MudTd>
+                        <MudTd DataLabel="Menge">@context.TotalQuantity</MudTd>
+                    </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>Keine Verkäufe für diesen Zeitraum gefunden.</MudText>
+                    </NoRecordsContent>
+                </MudTable>
+            </MudTabPanel>
+        </MudTabs>
+    </MudPaper>
+}
+else
+{
+    <MudPaper Elevation="2" Class="pa-4" Style="height: 350px;">
+        <MudSkeleton Width="100%" Height="320px" />
+    </MudPaper>
 }
