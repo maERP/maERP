@@ -110,8 +110,7 @@ public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Pro
 
         var saleschannel = new SalesChannelUpdateCommand
         {
-            // TODO: fix this
-            //Type = SalesChannelType.PointOfSale,
+            SalesChannelType = SalesChannelType.PointOfSale,
             Name = "SalesChannel 5 updated",
             Username = string.Empty,
             Password = string.Empty,

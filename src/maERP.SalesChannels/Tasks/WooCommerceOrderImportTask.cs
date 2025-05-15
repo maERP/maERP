@@ -130,7 +130,7 @@ public class WooCommerceOrderImportTask : IHostedService
                         }
                     };
 
-                    salesChannelImportOrder.Items = remoteOrder.line_items.Select(item => new SalesChannelImportOrderItem
+                    salesChannelImportOrder.OrderItems = remoteOrder.line_items.Select(item => new SalesChannelImportOrderItem
                     {
                         Name = item.name,
                         Sku = item.sku,

@@ -199,9 +199,9 @@ public class OrderImportRepository : IOrderImportRepository
                 DateOrdered = importOrder.DateOrdered.ToUniversalTime()
             };
 
-            if (importOrder.Items != null && importOrder.Items.Count > 0)
+            if (importOrder.OrderItems != null && importOrder.OrderItems.Count > 0)
             {
-                foreach (var item in importOrder.Items)
+                foreach (var item in importOrder.OrderItems)
                 {
                     if(String.IsNullOrEmpty(item.Sku))
                     {

@@ -201,7 +201,7 @@ public class Shopware5OrderImportTask : IHostedService
                                         }
                                     };
 
-                                    salesChannelImportOrder.Items = remoteOrderDetail.details.Select(item => new SalesChannelImportOrderItem
+                                    salesChannelImportOrder.OrderItems = remoteOrderDetail.details.Select(item => new SalesChannelImportOrderItem
                                     {
                                         Name = item.articleName,
                                         Sku = item.articleNumber,

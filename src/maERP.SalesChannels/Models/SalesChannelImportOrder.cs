@@ -13,25 +13,30 @@ public class SalesChannelImportOrder
 
     [Required]
     public OrderStatus Status { get; set; }
-    public OrderItem? OrderItems { get; set; }
-
+    
+    // Kundeninformationen
     public SalesChannelImportCustomer? Customer { get; set; }
     public SalesChannelImportCustomerAddress BillingAddress { get; set; } = new();
     public SalesChannelImportCustomerAddress ShippingAddress { get; set; } = new();
-    public ICollection<SalesChannelImportOrderItem>? Items { get; set; }
+    
+    // Bestellpositionen (durch OrderItems ersetzen, da es im Repository verwendet wird)
+    public ICollection<SalesChannelImportOrderItem> OrderItems { get; set; } = new List<SalesChannelImportOrderItem>();
 
+    // Zahlungsinformationen
     public PaymentStatus PaymentStatus { get; set; }
     public string PaymentMethod { get; set; } = string.Empty;
     public string PaymentProvider { get; set; } = string.Empty;
     public string PaymentTransactionId { get; set; } = string.Empty;
 
+    // Preisinformationen
     public decimal Subtotal { get; set; }
     public decimal ShippingCost { get; set; }
     public decimal TotalTax { get; set; }
     public decimal Total { get; set; }
 
-    public string Note { get; set; } = string.Empty;
+    public string CustomerNote { get; set; } = string.Empty;
 
+    // Legacy-Adressfelder (für Kompatibilität)
     public string DeliveryAddressFirstName { get; set; } = string.Empty;
     public string DeliveryAddressLastName { get; set; } = string.Empty;
     public string DeliveryAddressCompanyName { get; set; } = string.Empty;

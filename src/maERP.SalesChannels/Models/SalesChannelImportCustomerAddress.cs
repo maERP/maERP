@@ -12,6 +12,7 @@ public class SalesChannelImportCustomerAddress
     public string Zip { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
+    public string Phone { get; set; } = string.Empty;
     public int CountryId { get; set; }
     public Customer? Customer { get; set; }
     public int CustomerId { get; set; }
