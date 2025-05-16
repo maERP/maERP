@@ -97,7 +97,7 @@ public class CustomerImportRepository : ICustomerImportRepository
     private async Task ProcessAddress(Customer customer, SalesChannelImportCustomerAddress address)
     {
         // Land aus ISO-Code ermitteln
-        Country country = await _countryRepository.GetCountryByString(address.Country);
+        Country? country = await _countryRepository.GetCountryByString(address.Country);
         if (country == null)
         {
             _logger.LogWarning($"Land mit ISO-Code {address.Country} nicht gefunden");

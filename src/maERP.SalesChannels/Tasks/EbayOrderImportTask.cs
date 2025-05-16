@@ -35,7 +35,7 @@ public class EbayOrderImportTask : IHostedService
 
                 await MainLoop();
 
-                await Task.Delay(new TimeSpan(0, 0, 60)); // 60 second delay
+                await Task.Delay(new TimeSpan(0, 0, 60)); // 60 Sekunden Verzögerung
 
                 _logger.LogInformation("EbayOrderImportTask MainLoop finished");
             }
@@ -63,6 +63,13 @@ public class EbayOrderImportTask : IHostedService
         {
             if (salesChannel.Type != SalesChannelType.eBay || salesChannel.ImportOrders == false)
             {
+                continue;
+            }
+
+            // Prüfen, ob Produkt-Import abgeschlossen ist
+            if (salesChannel.ImportProducts && !salesChannel.InitialProductImportCompleted)
+            {
+                _logger.LogInformation($"Initial Product Import not completed for {salesChannel.Name} (ID: {salesChannel.Id})");
                 continue;
             }
 
@@ -101,15 +108,20 @@ public class EbayOrderImportTask : IHostedService
 
                         foreach (var remoteOrder in ordersResponse.LineItems)
                         {
+                            // Grundlegende Bestellinformationen
                             var importOrder = new SalesChannelImportOrder
                             {
                                 RemoteOrderId = remoteOrder.LineItemId,
+                                RemoteCustomerId = ordersResponse.Buyer?.Username ?? "",
                                 DateOrdered = ordersResponse.CreationDate,
-                                Total = remoteOrder.LineItemCost.Value,
-                                TotalTax = 0, // Steuerinformationen aus einem anderen API-Endpunkt ermitteln
+                                Subtotal = ordersResponse.PricingSummary?.Subtotal?.Value ?? 0m,
+                                Total = ordersResponse.PricingSummary?.Total?.Value ?? remoteOrder.LineItemCost.Value,
+                                TotalTax = ordersResponse.PricingSummary?.TotalTaxAmount?.Value ?? 0m,
+                                ShippingCost = CalculateShippingCost(ordersResponse),
                                 Status = MapOrderStatus(ordersResponse.OrderFulfillmentStatus),
                                 PaymentStatus = MapPaymentStatus(ordersResponse.OrderPaymentStatus),
                                 PaymentMethod = "eBay",
+                                PaymentProvider = "eBay",
                                 CustomerNote = "",
                                 OrderItems = new List<SalesChannelImportOrderItem>(),
                                 Customer = new SalesChannelImportCustomer()
@@ -117,7 +129,7 @@ public class EbayOrderImportTask : IHostedService
 
                             // Kundeninformationen extrahieren
                             var buyer = ordersResponse.Buyer;
-                            if (buyer != null)
+                            if (buyer != null && buyer.TaxAddress != null)
                             {
                                 importOrder.Customer = new SalesChannelImportCustomer
                                 {
@@ -125,39 +137,80 @@ public class EbayOrderImportTask : IHostedService
                                     RemoteCustomerId = buyer.Username ?? "",
                                     Firstname = buyer.TaxAddress?.FirstName ?? "",
                                     Lastname = buyer.TaxAddress?.LastName ?? "",
-                                    ShippingAddress = new SalesChannelImportCustomerAddress
-                                    {
-                                        Firstname = buyer.TaxAddress?.FirstName ?? "",
-                                        Lastname = buyer.TaxAddress?.LastName ?? "",
-                                        Street = buyer.TaxAddress?.AddressLine1 ?? "",
-                                        City = buyer.TaxAddress?.City ?? "",
-                                        Zip = buyer.TaxAddress?.PostalCode ?? "",
-                                        Country = buyer.TaxAddress?.CountryCode ?? "",
-                                        Phone = buyer.TaxAddress?.Phone ?? ""
-                                    },
-                                    BillingAddress = new SalesChannelImportCustomerAddress
-                                    {
-                                        Firstname = buyer.TaxAddress?.FirstName ?? "",
-                                        Lastname = buyer.TaxAddress?.LastName ?? "",
-                                        Street = buyer.TaxAddress?.AddressLine1 ?? "",
-                                        City = buyer.TaxAddress?.City ?? "",
-                                        Zip = buyer.TaxAddress?.PostalCode ?? "",
-                                        Country = buyer.TaxAddress?.CountryCode ?? "",
-                                        Phone = buyer.TaxAddress?.Phone ?? ""
-                                    }
+                                    Phone = buyer.TaxAddress?.Phone ?? "",
+                                    CustomerStatus = CustomerStatus.Active,
+                                    DateEnrollment = DateTime.UtcNow
                                 };
+
+                                // Rechnungsadresse
+                                if (buyer.TaxAddress != null)
+                                {
+                                    importOrder.Customer.BillingAddress = new SalesChannelImportCustomerAddress
+                                    {
+                                        Firstname = buyer.TaxAddress.FirstName ?? "",
+                                        Lastname = buyer.TaxAddress.LastName ?? "",
+                                        Street = buyer.TaxAddress.AddressLine1 ?? "",
+                                        City = buyer.TaxAddress.City ?? "",
+                                        Zip = buyer.TaxAddress.PostalCode ?? "",
+                                        Country = buyer.TaxAddress.CountryCode ?? ""
+                                    };
+
+                                    importOrder.BillingAddress = new SalesChannelImportCustomerAddress
+                                    {
+                                        Firstname = buyer.TaxAddress.FirstName ?? "",
+                                        Lastname = buyer.TaxAddress.LastName ?? "",
+                                        Street = buyer.TaxAddress.AddressLine1 ?? "",
+                                        City = buyer.TaxAddress.City ?? "",
+                                        Zip = buyer.TaxAddress.PostalCode ?? "",
+                                        Country = buyer.TaxAddress.CountryCode ?? ""
+                                    };
+                                }
+
+                                // Lieferadresse
+                                var shipTo = GetShippingAddress(ordersResponse);
+                                if (shipTo != null)
+                                {
+                                    importOrder.Customer.ShippingAddress = new SalesChannelImportCustomerAddress
+                                    {
+                                        Firstname = shipTo.FirstName ?? "",
+                                        Lastname = shipTo.LastName ?? "",
+                                        Street = shipTo.AddressLine1 ?? "",
+                                        City = shipTo.City ?? "",
+                                        Zip = shipTo.PostalCode ?? "",
+                                        Country = shipTo.CountryCode ?? ""
+                                    };
+
+                                    importOrder.ShippingAddress = new SalesChannelImportCustomerAddress
+                                    {
+                                        Firstname = shipTo.FirstName ?? "",
+                                        Lastname = shipTo.LastName ?? "",
+                                        Street = shipTo.AddressLine1 ?? "",
+                                        City = shipTo.City ?? "",
+                                        Zip = shipTo.PostalCode ?? "",
+                                        Country = shipTo.CountryCode ?? ""
+                                    };
+                                }
+                                else if (importOrder.Customer.BillingAddress != null)
+                                {
+                                    // Wenn keine Lieferadresse gefunden wurde, verwenden wir die Rechnungsadresse
+                                    importOrder.Customer.ShippingAddress = importOrder.Customer.BillingAddress;
+                                    importOrder.ShippingAddress = importOrder.BillingAddress;
+                                }
                             }
 
                             // Bestellpositionen hinzufügen
                             importOrder.OrderItems.Add(new SalesChannelImportOrderItem
                             {
-                                Name = remoteOrder.Title,
-                                Sku = remoteOrder.Sku,
+                                Name = remoteOrder.Title ?? "",
+                                Sku = remoteOrder.Sku ?? "",
                                 Quantity = remoteOrder.Quantity,
-                                Price = remoteOrder.LineItemCost.Value / remoteOrder.Quantity
+                                Price = remoteOrder.LineItemCost.Value / Math.Max(1, remoteOrder.Quantity),
+                                TaxRate = 19 // Standard-Steuersatz, sollte in einer echten Anwendung dynamisch ermittelt werden
                             });
 
+                            // Bestellung importieren oder aktualisieren
                             await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importOrder);
+                            _logger.LogInformation($"Order {importOrder.RemoteOrderId} imported or updated");
                         }
 
                         offset += limit;
@@ -180,6 +233,35 @@ public class EbayOrderImportTask : IHostedService
                 _logger.LogError($"Error in eBay order import: {ex.Message}\n{ex.StackTrace}");
             }
         }
+    }
+
+    private EbayAddress GetShippingAddress(EbayOrderResponse ordersResponse)
+    {
+        if (ordersResponse.FulfillmentStartInstructions != null && 
+            ordersResponse.FulfillmentStartInstructions.Length > 0 &&
+            ordersResponse.FulfillmentStartInstructions[0].ShippingStep != null)
+        {
+            return ordersResponse.FulfillmentStartInstructions[0].ShippingStep.ShipTo;
+        }
+        return null;
+    }
+
+    private decimal CalculateShippingCost(EbayOrderResponse ordersResponse)
+    {
+        // In einer echten Anwendung würde man hier die Versandkosten aus den eBay-Daten extrahieren
+        // Da die Versandkosten in der aktuellen API-Struktur nicht direkt verfügbar sind,
+        // berechnen wir sie als Differenz zwischen Gesamtpreis und Zwischensumme
+        if (ordersResponse.PricingSummary != null && 
+            ordersResponse.PricingSummary.Total != null &&
+            ordersResponse.PricingSummary.Subtotal != null)
+        {
+            decimal total = ordersResponse.PricingSummary.Total.Value;
+            decimal subtotal = ordersResponse.PricingSummary.Subtotal.Value;
+            decimal taxAmount = ordersResponse.PricingSummary.TotalTaxAmount?.Value ?? 0m;
+            
+            return Math.Max(0, total - subtotal - taxAmount);
+        }
+        return 0m;
     }
 
     private OrderStatus MapOrderStatus(string ebayStatus)
