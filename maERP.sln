@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 		.windsurfrules = .windsurfrules
 		.github\codeql\codeql-config.yml = .github\codeql\codeql-config.yml
 		.github\workflows\codeql.yml = .github\workflows\codeql.yml
+		CLAUDE.md = CLAUDE.md
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		CONTRIBUTING.md = CONTRIBUTING.md
 		.github\copilot-instructions.md = .github\copilot-instructions.md
