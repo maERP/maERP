@@ -1,0 +1,130 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:maERP.UI.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="maERP.UI.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+
+  <ScrollViewer>
+    <StackPanel Margin="24" Spacing="24">
+      
+      <!-- Header -->
+      <StackPanel Spacing="8">
+        <TextBlock Text="{Binding WelcomeMessage}" 
+                   FontSize="28" 
+                   FontWeight="Bold"/>
+        <TextBlock Text="{Binding CurrentDate, StringFormat='Heute ist {0:dddd, dd. MMMM yyyy}'}" 
+                   FontSize="14" 
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Dashboard Cards Grid -->
+      <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" Margin="0,16,0,0">
+        <Grid.Styles>
+          <Style Selector="Border.card">
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="BoxShadow" Value="0 2 8 0 #1F000000"/>
+          </Style>
+          <Style Selector="TextBlock.card-title">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+          </Style>
+          <Style Selector="TextBlock.card-value">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}"/>
+          </Style>
+        </Grid.Styles>
+        
+        <!-- Kunden Card -->
+        <Border Classes="card" Grid.Column="0" Grid.Row="0">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="Kunden"/>
+            <TextBlock Classes="card-value" Text="1,234"/>
+            <TextBlock Text="+12% diesen Monat" FontSize="12" Opacity="0.6"/>
+          </StackPanel>
+        </Border>
+        
+        <!-- Bestellungen Card -->
+        <Border Classes="card" Grid.Column="1" Grid.Row="0">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="Bestellungen"/>
+            <TextBlock Classes="card-value" Text="456"/>
+            <TextBlock Text="+8% diesen Monat" FontSize="12" Opacity="0.6"/>
+          </StackPanel>
+        </Border>
+        
+        <!-- Umsatz Card -->
+        <Border Classes="card" Grid.Column="2" Grid.Row="0">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="Umsatz"/>
+            <TextBlock Classes="card-value" Text="€89,432"/>
+            <TextBlock Text="+15% diesen Monat" FontSize="12" Opacity="0.6"/>
+          </StackPanel>
+        </Border>
+        
+        <!-- Produkte Card -->
+        <Border Classes="card" Grid.Column="0" Grid.Row="1">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="Produkte"/>
+            <TextBlock Classes="card-value" Text="2,789"/>
+            <TextBlock Text="687 auf Lager" FontSize="12" Opacity="0.6"/>
+          </StackPanel>
+        </Border>
+        
+        <!-- Rechnungen Card -->
+        <Border Classes="card" Grid.Column="1" Grid.Row="1">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="Offene Rechnungen"/>
+            <TextBlock Classes="card-value" Text="23"/>
+            <TextBlock Text="€12,456 Gesamtwert" FontSize="12" Opacity="0.6"/>
+          </StackPanel>
+        </Border>
+        
+        <!-- Lager Card -->
+        <Border Classes="card" Grid.Column="2" Grid.Row="1">
+          <StackPanel>
+            <TextBlock Classes="card-title" Text="Lagerbestände"/>
+            <TextBlock Classes="card-value" Text="95%"/>
+            <TextBlock Text="Ausreichend" FontSize="12" Foreground="Green"/>
+          </StackPanel>
+        </Border>
+        
+      </Grid>
+      
+      <!-- Quick Actions -->
+      <StackPanel Spacing="16">
+        <TextBlock Text="Schnellaktionen" FontSize="20" FontWeight="SemiBold"/>
+        <StackPanel Orientation="Horizontal" Spacing="12">
+          
+          <Button Content="Neue Bestellung" 
+                  Padding="16,8" 
+                  CornerRadius="6"
+                  Background="{DynamicResource SystemAccentColor}"
+                  Foreground="White"/>
+          
+          <Button Content="Kunde hinzufügen" 
+                  Padding="16,8" 
+                  CornerRadius="6"/>
+          
+          <Button Content="Rechnung erstellen" 
+                  Padding="16,8" 
+                  CornerRadius="6"/>
+          
+          <Button Content="Lager verwalten" 
+                  Padding="16,8" 
+                  CornerRadius="6"/>
+          
+        </StackPanel>
+      </StackPanel>
+      
+    </StackPanel>
+  </ScrollViewer>
+  
+</UserControl>

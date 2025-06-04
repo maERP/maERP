@@ -1,0 +1,167 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:maERP.UI.ViewModels"
+             xmlns:views="clr-namespace:maERP.UI.Views"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Views.MainView"
+             x:DataType="vm:MainViewModel">
+
+  <Grid>
+    <!-- Login View wenn nicht authentifiziert -->
+    <Panel IsVisible="{Binding !IsAuthenticated}">
+      <views:LoginView DataContext="{Binding LoginViewModel}"/>
+    </Panel>
+
+    <!-- Hauptanwendung mit Sidebar wenn authentifiziert -->
+    <Grid IsVisible="{Binding IsAuthenticated}" ColumnDefinitions="250,*">
+    
+    <!-- Sidebar -->
+    <Border Grid.Column="0" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,1,0">
+      
+      <StackPanel>
+        
+        <!-- Logo/Header -->
+        <Border Background="{DynamicResource SystemAccentColor}" 
+                Padding="20" 
+                Margin="0,0,0,8">
+          <StackPanel Spacing="4">
+            <TextBlock Text="maERP" 
+                       FontSize="20" 
+                       FontWeight="Bold" 
+                       Foreground="White"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Text="Enterprise Resource Planning" 
+                       FontSize="10" 
+                       Foreground="White" 
+                       Opacity="0.8"
+                       HorizontalAlignment="Center"/>
+          </StackPanel>
+        </Border>
+        
+        <!-- Navigation Menu -->
+        <StackPanel Margin="12,8">
+          
+          <!-- Dashboard -->
+          <Button Content="📊 Dashboard"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="Dashboard"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
+          <!-- Separators and future menu items -->
+          <Separator Margin="0,12" Opacity="0.3"/>
+          
+          <TextBlock Text="Verkauf" 
+                     FontSize="12" 
+                     FontWeight="SemiBold" 
+                     Opacity="0.6" 
+                     Margin="16,8,16,4"/>
+          
+          <Button Content="👥 Kunden"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="Customers"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
+          <Button Content="🛒 Bestellungen"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="Orders"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
+          <Button Content="🧾 Rechnungen"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="Invoices"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
+          <Separator Margin="0,12" Opacity="0.3"/>
+          
+          <TextBlock Text="Lager" 
+                     FontSize="12" 
+                     FontWeight="SemiBold" 
+                     Opacity="0.6" 
+                     Margin="16,8,16,4"/>
+          
+          <Button Content="📦 Produkte"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="Products"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
+          <Button Content="🏪 Lager"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="Warehouses"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
+        </StackPanel>
+        
+        <!-- Logout Button at bottom -->
+        <Border VerticalAlignment="Bottom" 
+                Margin="12,24,12,12">
+          <Button Content="🚪 Abmelden"
+                  Command="{Binding LogoutCommand}"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  CornerRadius="6"
+                  Background="Transparent"
+                  BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                  BorderThickness="1"/>
+        </Border>
+        
+      </StackPanel>
+      
+    </Border>
+    
+    <!-- Main Content Area -->
+    <Border Grid.Column="1" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+      <ContentControl Content="{Binding CurrentView}" />
+    </Border>
+    
+    </Grid>
+  </Grid>
+
+  <!-- Styles -->
+  <UserControl.Styles>
+    <Style Selector="Button.nav-button">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+    </Style>
+    <Style Selector="Button.nav-button:pointerover">
+      <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundListLowBrush}"/>
+    </Style>
+  </UserControl.Styles>
+
+</UserControl>

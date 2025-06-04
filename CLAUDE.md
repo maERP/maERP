@@ -4,29 +4,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-maERP is a client-server, cross-platform, open-source ERP system developed with .NET 9, MAUI and Entity Framework. It consists of three main projects:
+maERP is a C# client-server, cross-platform, open-source ERP system developed with .NET 9, Avalonia and Entity Framework. It follows the Clean Architecture with a clear separation of concerns. It consists of the projects:
 
-1. **maERP.Server** - Backend API server (headless, no frontend)
-2. **maERP.Web** - Web frontend connecting to maERP.Server
-3. **maERP.Client** - Native client apps (iOS, Android, Windows, macOS)
+1. **maERP.Domain** - Core domain entities and interfaces
+2. **maERP.Application** - Application logic, CQRS handlers
+3. **maERP.Infrastructure** - Cross-cutting concerns (email, logging, PDF generation)
+4. **maERP.Persistence** - Database access, repositories
+5. **maERP.Identity** - Authentication and authorization
+6. **maERP.SalesChannels** - Integrations with e-commerce platforms
+7. **maERP.Server** - Backend API server (headless, no frontend)
+8. **maERP.UI** - Shared UI components for use in Avalonia applications
+9. **maERP.UI.Desktop** - Avalonia Desktop Client
+10. **maERP.UI.Browser** - Avalonia WebAssembly Client
+11. **maERP.UI.iOS** - Aavalonia iOS App
+12. **maERP.UI.Android** - Avalonia Android App
 
 ## Architecture
-
-maERP follows Clean Architecture with a clear separation of concerns:
-
-- **Domain Layer** (`maERP.Domain`) - Core entities, DTOs, interfaces
-- **Application Layer** (`maERP.Application`) - Business logic, CQRS handlers using MediatR
-- **Infrastructure** (`maERP.Infrastructure`) - Cross-cutting concerns (email, logging, PDF)
-- **Persistence** (`maERP.Persistence`) - Database access, repositories
-- **Identity** (`maERP.Identity`) - Authentication/authorization
-- **SalesChannels** (`maERP.SalesChannels`) - Integrations with e-commerce platforms
-- **UI Layers** (`maERP.Web`, `maERP.Client`, `maERP.SharedUI`) - User interfaces
-
 
 The codebase implements:
 - CQRS pattern for separating commands and queries
 - Repository pattern for data access
 - JWT authentication
+- No Automapper, using manual mapping instead
+- Avalonia with CommunityToolkit.MVVM for cross-platform UI
+- UI projects not using direct database acces, using REST-API instead
 
 ## Development Commands
 
@@ -95,6 +96,7 @@ dotnet format
 
 ## Important Notes
 
+- All comments should be in English
 - The project uses dependency injection heavily throughout all layers
 - Database provider can be configured in appsettings.json or environment variables
 - Docker containerization is fully supported and recommended for deployment
@@ -108,4 +110,6 @@ dotnet format
 - The project uses FluentValidation for validation
 - The project uses Serilog for logging
 - The project uses GitHub Actions for CI/CD
-- The project don't use AutoMapper
+- maERP.UI is not executable. It is a shared library for maERP.Browser, maERP.Desktop, maERP.iOS and maERP.Android
+- Avalonia is used for cross-platform UI development
+- Avalonia is using CommunityToolkit.MVVM and CompiledBindings

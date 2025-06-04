@@ -26,19 +26,19 @@
       },
       "SolutionConfiguration": "Debug"
     },
-    "maERP.Server + Web": {
+    "maERP.Server + Browser": {
       "Projects": {
         "maERP.Server": {},
         "maERP.Web": {
-          "StartBrowserWithURL": "https://localhost:8444"
+          "StartBrowserWithURL": "https://localhost:8443"
         }
       },
       "SolutionConfiguration": "Debug"
     },
-    "maERP.Server + Client": {
+    "maERP.Server + Desktop": {
       "Projects": {
         "maERP.Server": {},
-        "maERP.Client": {}
+        "maERP.UI.Desktop": {}
       },
       "SolutionConfiguration": "Debug"
     }

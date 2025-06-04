@@ -1,0 +1,31 @@
+name: maERP.Browser Build and Test
+
+on:
+  push:
+    branches-ignore: [ main ]
+    paths:
+      - '.github/workflows/**'
+      - 'src/maERP.UI/**'
+      - 'src/maERP.UI.Browser**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/maERP.UI/**'
+      - 'src/maERP.UI.Browser/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.x
+
+      - name: Restore maERP.Web.Tests
+        run: dotnet restore tests/maERP.Web.Tests
+      - name: Build maERP.Web.Tests
+        run: dotnet build tests/maERP.Web.Tests
+      - name: Test maERP.Web.Tests
+        run: dotnet test tests/maERP.Web.Tests --no-build --verbosity normal

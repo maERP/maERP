@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Models.Identity;
+using maERP.Domain.Dtos.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,7 @@ namespace maERP.Server.Controllers.Api.V1;
 public class AuthController(IAuthService authenticationService) : ControllerBase
 {
     [HttpPost("login")]
-    public async Task<ActionResult<AuthResponse>> Login(AuthRequest request)
+    public async Task<ActionResult<LoginResponseDto>> Login(AuthRequest request)
     {
         var result = await authenticationService.Login(request);
         

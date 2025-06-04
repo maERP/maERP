@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="bunit.web" Version="1.39.5" />
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.0">
@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\maERP.Application\maERP.Application.csproj" />
-    <ProjectReference Include="..\..\src\maERP.Web\maERP.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
