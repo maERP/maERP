@@ -21,5 +21,32 @@
         <DataTemplate DataType="vm:OrderListViewModel">
             <views:OrderListView />
         </DataTemplate>
+        <DataTemplate DataType="vm:CustomerListViewModel">
+            <views:CustomerListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:InvoiceListViewModel">
+            <views:InvoiceListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:WarehouseListViewModel">
+            <views:WarehouseListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:ProductListViewModel">
+            <views:ProductListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:AiModelListViewModel">
+            <views:AiModelListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:AiPromptListViewModel">
+            <views:AiPromptListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:SalesChannelListViewModel">
+            <views:SalesChannelListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:TaxClassListViewModel">
+            <views:TaxClassListView />
+        </DataTemplate>
+        <DataTemplate DataType="vm:UserListViewModel">
+            <views:UserListView />
+        </DataTemplate>
     </Application.DataTemplates>
 </Application>

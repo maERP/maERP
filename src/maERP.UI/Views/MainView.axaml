@@ -124,6 +124,72 @@
                   Margin="0,2"
                   CornerRadius="6"/>
           
+          <Separator Margin="0,12" Opacity="0.3"/>
+          
+          <TextBlock Text="Vertrieb" 
+                     FontSize="12" 
+                     FontWeight="SemiBold" 
+                     Opacity="0.6" 
+                     Margin="16,8,16,4"/>
+          
+          <Button Content="🌐 Vertriebskanäle"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="SalesChannels"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
+          <Separator Margin="0,12" Opacity="0.3"/>
+          
+          <TextBlock Text="System" 
+                     FontSize="12" 
+                     FontWeight="SemiBold" 
+                     Opacity="0.6" 
+                     Margin="16,8,16,4"/>
+          
+          <Button Content="🤖 AI-Modelle"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="AiModels"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
+          <Button Content="💬 AI-Prompts"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="AiPrompts"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
+          <Button Content="💰 Steuerklassen"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="TaxClasses"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
+          <Button Content="👤 Benutzer"
+                  Command="{Binding NavigateToMenuItemCommand}"
+                  CommandParameter="Users"
+                  Classes="nav-button"
+                  HorizontalAlignment="Stretch"
+                  HorizontalContentAlignment="Left"
+                  Padding="16,12"
+                  Margin="0,2"
+                  CornerRadius="6"/>
+          
         </StackPanel>
         
         <!-- Logout Button at bottom -->
@@ -146,7 +212,55 @@
     
     <!-- Main Content Area -->
     <Border Grid.Column="1" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-      <ContentControl Content="{Binding CurrentView}" />
+      <ContentControl Content="{Binding CurrentView}">
+        <ContentControl.DataTemplates>
+          <DataTemplate DataType="vm:DashboardViewModel">
+            <views:DashboardView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:OrderListViewModel">
+            <views:OrderListView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:OrderDetailViewModel">
+            <views:OrderDetailView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:CustomerListViewModel">
+            <views:CustomerListView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:CustomerDetailViewModel">
+            <views:CustomerDetailView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:InvoiceListViewModel">
+            <views:InvoiceListView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:ProductListViewModel">
+            <views:ProductListView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:ProductDetailViewModel">
+            <views:ProductDetailView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:WarehouseListViewModel">
+            <views:WarehouseListView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:WarehouseDetailViewModel">
+            <views:WarehouseDetailView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:AiModelListViewModel">
+            <views:AiModelListView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:AiPromptListViewModel">
+            <views:AiPromptListView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:SalesChannelListViewModel">
+            <views:SalesChannelListView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:TaxClassListViewModel">
+            <views:TaxClassListView />
+          </DataTemplate>
+          <DataTemplate DataType="vm:UserListViewModel">
+            <views:UserListView />
+          </DataTemplate>
+        </ContentControl.DataTemplates>
+      </ContentControl>
     </Border>
     
     </Grid>

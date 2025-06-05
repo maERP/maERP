@@ -35,9 +35,23 @@ public partial class App : Application
         // Register ViewModels
         services.AddSingleton<MainViewModel>();
         services.AddTransient<LoginViewModel>();
+        
+        services.AddTransient<AiModelListViewModel>();
+        services.AddTransient<AiPromptListViewModel>();
+        services.AddTransient<CustomerListViewModel>();
+        services.AddTransient<CustomerDetailViewModel>();
         services.AddTransient<DashboardViewModel>();
+        services.AddTransient<InvoiceListViewModel>();
         services.AddTransient<OrderListViewModel>();
-
+        services.AddTransient<OrderDetailViewModel>();
+        services.AddTransient<ProductListViewModel>();
+        services.AddTransient<ProductDetailViewModel>();
+        services.AddTransient<SalesChannelListViewModel>();        
+        services.AddTransient<TaxClassListViewModel>();        
+        services.AddTransient<UserListViewModel>();        
+        services.AddTransient<WarehouseListViewModel>();
+        services.AddTransient<WarehouseDetailViewModel>();
+        
         _serviceProvider = services.BuildServiceProvider();
     }
 

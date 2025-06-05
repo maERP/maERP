@@ -138,6 +138,20 @@
                                 Width="120"
                                 CanUserSort="True"/>
             
+            <controls:DataGridTemplateColumn Header="Aktionen" 
+                                    Width="120"
+                                    CanUserSort="False">
+              <controls:DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <Button Content="Details" 
+                          Padding="8,4"
+                          Command="{Binding $parent[controls:DataGrid].((vm:OrderListViewModel)DataContext).ViewOrderDetailsCommand}"
+                          CommandParameter="{Binding}"
+                          HorizontalAlignment="Center"/>
+                </DataTemplate>
+              </controls:DataGridTemplateColumn.CellTemplate>
+            </controls:DataGridTemplateColumn>
+            
           </controls:DataGrid.Columns>
           
           <controls:DataGrid.Styles>
