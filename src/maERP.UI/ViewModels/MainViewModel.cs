@@ -1,13 +1,16 @@
+using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using maERP.UI.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace maERP.UI.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IAuthenticationService _authenticationService;
+    private readonly IServiceProvider _serviceProvider;
 
     [ObservableProperty]
     private bool isAuthenticated;
@@ -19,18 +22,17 @@ public partial class MainViewModel : ViewModelBase
     private string selectedMenuItem = "Dashboard";
 
     public LoginViewModel LoginViewModel { get; }
-    public DashboardViewModel DashboardViewModel { get; }
-    public OrderListViewModel OrderListViewModel { get; }
+    
+    private DashboardViewModel? _dashboardViewModel;
+    private OrderListViewModel? _orderListViewModel;
 
     public MainViewModel(IAuthenticationService authenticationService,
                         LoginViewModel loginViewModel,
-                        DashboardViewModel dashboardViewModel,
-                        OrderListViewModel orderListViewModel)
+                        IServiceProvider serviceProvider)
     {
         _authenticationService = authenticationService;
+        _serviceProvider = serviceProvider;
         LoginViewModel = loginViewModel;
-        DashboardViewModel = dashboardViewModel;
-        OrderListViewModel = orderListViewModel;
 
         LoginViewModel.OnLoginSuccessful += OnLoginSuccessful;
 
@@ -45,20 +47,20 @@ public partial class MainViewModel : ViewModelBase
         if (autoLoginSuccessful)
         {
             IsAuthenticated = true;
-            CurrentView = DashboardViewModel;
+            CurrentView = await GetDashboardViewModelAsync();
             SelectedMenuItem = "Dashboard";
         }
         else
         {
             IsAuthenticated = _authenticationService.IsAuthenticated;
-            CurrentView = IsAuthenticated ? DashboardViewModel : LoginViewModel;
+            CurrentView = IsAuthenticated ? await GetDashboardViewModelAsync() : LoginViewModel;
         }
     }
 
-    private void OnLoginSuccessful()
+    private async void OnLoginSuccessful()
     {
         IsAuthenticated = true;
-        CurrentView = DashboardViewModel;
+        CurrentView = await GetDashboardViewModelAsync();
         SelectedMenuItem = "Dashboard";
     }
 
@@ -72,7 +74,7 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void NavigateToMenuItem(string menuItem)
+    private async Task NavigateToMenuItem(string menuItem)
     {
         if (!IsAuthenticated) return;
 
@@ -80,9 +82,28 @@ public partial class MainViewModel : ViewModelBase
 
         CurrentView = menuItem switch
         {
-            "Dashboard" => DashboardViewModel,
-            "Orders" => OrderListViewModel,
-            _ => DashboardViewModel
+            "Dashboard" => await GetDashboardViewModelAsync(),
+            "Orders" => await GetOrderListViewModelAsync(),
+            _ => await GetDashboardViewModelAsync()
         };
+    }
+
+    private Task<DashboardViewModel> GetDashboardViewModelAsync()
+    {
+        if (_dashboardViewModel == null)
+        {
+            _dashboardViewModel = _serviceProvider.GetRequiredService<DashboardViewModel>();
+        }
+        return Task.FromResult(_dashboardViewModel);
+    }
+
+    private async Task<OrderListViewModel> GetOrderListViewModelAsync()
+    {
+        if (_orderListViewModel == null)
+        {
+            _orderListViewModel = _serviceProvider.GetRequiredService<OrderListViewModel>();
+            await _orderListViewModel.InitializeAsync();
+        }
+        return _orderListViewModel;
     }
 }

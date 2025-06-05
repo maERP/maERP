@@ -17,9 +17,11 @@ public partial class OrderListViewModel : ViewModelBase
     private ObservableCollection<OrderListDto> orders = new();
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShouldShowDataGrid))]
     private bool isLoading;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShouldShowDataGrid))]
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
@@ -37,10 +39,16 @@ public partial class OrderListViewModel : ViewModelBase
     [ObservableProperty]
     private OrderListDto? selectedOrder;
 
+    public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
+
     public OrderListViewModel(IHttpService httpService)
     {
         _httpService = httpService;
-        _ = LoadOrdersAsync();
+    }
+
+    public async Task InitializeAsync()
+    {
+        await LoadOrdersAsync();
     }
 
     [RelayCommand]
@@ -53,7 +61,13 @@ public partial class OrderListViewModel : ViewModelBase
         {
             var result = await _httpService.GetPaginatedAsync<OrderListDto>("orders", CurrentPage, PageSize, SearchText, "DateOrdered Descending");
 
-            if (result?.Succeeded == true && result.Data != null)
+            if (result == null)
+            {
+                ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
+                Orders.Clear();
+                System.Diagnostics.Debug.WriteLine("GetPaginatedAsync returned null - not authenticated or no server URL");
+            }
+            else if (result.Succeeded && result.Data != null)
             {
                 Orders.Clear();
                 foreach (var order in result.Data)
@@ -61,21 +75,25 @@ public partial class OrderListViewModel : ViewModelBase
                     Orders.Add(order);
                 }
                 TotalCount = result.TotalCount;
+                System.Diagnostics.Debug.WriteLine($"Loaded {Orders.Count} orders successfully");
             }
             else
             {
-                ErrorMessage = result?.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Bestellungen";
+                ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Bestellungen";
                 Orders.Clear();
+                System.Diagnostics.Debug.WriteLine($"Failed to load orders: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Bestellungen: {ex.Message}";
             Orders.Clear();
+            System.Diagnostics.Debug.WriteLine($"Exception loading orders: {ex}");
         }
         finally
         {
             IsLoading = false;
+            System.Diagnostics.Debug.WriteLine($"finally");
         }
     }
 

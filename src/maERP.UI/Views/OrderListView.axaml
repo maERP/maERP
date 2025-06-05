@@ -76,7 +76,7 @@
       </StackPanel>
       
       <!-- Error Message -->
-      <Border IsVisible="{Binding !!ErrorMessage}" 
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
@@ -94,7 +94,7 @@
       </Border>
       
       <!-- Orders DataGrid -->
-      <ScrollViewer IsVisible="{Binding !IsLoading}">
+      <ScrollViewer IsVisible="{Binding ShouldShowDataGrid}">
         <controls:DataGrid ItemsSource="{Binding Orders}"
                   SelectedItem="{Binding SelectedOrder}"
                   AutoGenerateColumns="False"

@@ -33,7 +33,7 @@ public partial class App : Application
         services.AddSingleton<ISettingsService, SettingsService>();
 
         // Register ViewModels
-        services.AddTransient<MainViewModel>();
+        services.AddSingleton<MainViewModel>();
         services.AddTransient<LoginViewModel>();
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<OrderListViewModel>();
