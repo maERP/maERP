@@ -37,16 +37,22 @@ public partial class App : Application
         services.AddTransient<LoginViewModel>();
         
         services.AddTransient<AiModelListViewModel>();
+        services.AddTransient<AiModelDetailViewModel>();
+        services.AddTransient<AiModelInputViewModel>();
         services.AddTransient<AiPromptListViewModel>();
+        services.AddTransient<AiPromptDetailViewModel>();
+        services.AddTransient<AiPromptInputViewModel>();
         services.AddTransient<CustomerListViewModel>();
         services.AddTransient<CustomerDetailViewModel>();
+        services.AddTransient<CustomerInputViewModel>();
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<InvoiceListViewModel>();
         services.AddTransient<OrderListViewModel>();
         services.AddTransient<OrderDetailViewModel>();
         services.AddTransient<ProductListViewModel>();
         services.AddTransient<ProductDetailViewModel>();
-        services.AddTransient<SalesChannelListViewModel>();        
+        services.AddTransient<SalesChannelListViewModel>();
+        services.AddTransient<SalesChannelDetailViewModel>();        
         services.AddTransient<TaxClassListViewModel>();        
         services.AddTransient<UserListViewModel>();        
         services.AddTransient<WarehouseListViewModel>();

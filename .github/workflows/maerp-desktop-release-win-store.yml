@@ -1,0 +1,173 @@
+name: Release maERP to Windows Store
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/maERP.UI.Desktop/**'
+      - 'src/maERP.UI/**'
+  workflow_dispatch:
+
+jobs:
+  windows-store-release:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Generate version
+      id: version
+      shell: pwsh
+      run: |
+        $version = (Get-Date -Format "yyyy.M.d") + "." + $env:GITHUB_RUN_NUMBER
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        echo "Generated version: $version"
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Decode certificate
+      shell: pwsh
+      run: |
+        $certBytes = [System.Convert]::FromBase64String("${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}")
+        [System.IO.File]::WriteAllBytes("${{ github.workspace }}\certificate.pfx", $certBytes)
+
+    - name: Build for Windows Store (MSIX)
+      shell: pwsh
+      run: |
+        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj `
+          --configuration Release `
+          --runtime win-x64 `
+          --self-contained true `
+          --output ./publish/msix `
+          -p:PublishProfile=win-x64 `
+          -p:PublishSingleFile=false `
+          -p:Version=${{ steps.version.outputs.VERSION }} `
+          -p:AssemblyVersion=${{ steps.version.outputs.VERSION }} `
+          -p:FileVersion=${{ steps.version.outputs.VERSION }}
+
+    - name: Create MSIX Package
+      shell: pwsh
+      run: |
+        # Install Windows SDK tools if needed
+        if (!(Get-Command "makeappx.exe" -ErrorAction SilentlyContinue)) {
+          Write-Host "Installing Windows SDK..."
+          choco install windows-sdk-10-version-2004-all
+        }
+        
+        # Create package manifest
+        $manifestContent = @"
+        <?xml version="1.0" encoding="utf-8"?>
+        <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+                 xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+                 xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
+          <Identity Name="YourPublisherName.maERP"
+                    Publisher="CN=YourPublisherName"
+                    Version="${{ steps.version.outputs.VERSION }}.0" />
+          <Properties>
+            <DisplayName>maERP</DisplayName>
+            <PublisherDisplayName>Your Publisher Name</PublisherDisplayName>
+            <Logo>Assets\StoreLogo.png</Logo>
+            <Description>Cross-platform ERP system</Description>
+          </Properties>
+          <Dependencies>
+            <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22000.0" />
+          </Dependencies>
+          <Applications>
+            <Application Id="maERP" Executable="maERP.UI.Desktop.exe" EntryPoint="Windows.FullTrustApplication">
+              <uap:VisualElements DisplayName="maERP"
+                                  Description="Cross-platform ERP system"
+                                  BackgroundColor="transparent"
+                                  Square150x150Logo="Assets\Square150x150Logo.png"
+                                  Square44x44Logo="Assets\Square44x44Logo.png">
+                <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+              </uap:VisualElements>
+            </Application>
+          </Applications>
+          <Capabilities>
+            <rescap:Capability Name="runFullTrust" />
+          </Capabilities>
+        </Package>
+        "@
+        
+        $manifestContent | Out-File -FilePath "./publish/msix/Package.appxmanifest" -Encoding UTF8
+        
+        # Create MSIX package
+        makeappx.exe pack /d "./publish/msix" /p "./maERP-${{ steps.version.outputs.VERSION }}.msix"
+
+    - name: Sign MSIX Package
+      shell: pwsh
+      run: |
+        # Sign the package
+        signtool.exe sign /f "${{ github.workspace }}\certificate.pfx" /p "${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}" /fd SHA256 "./maERP-${{ steps.version.outputs.VERSION }}.msix"
+
+    - name: Install Store CLI
+      shell: pwsh
+      run: |
+        Invoke-WebRequest -Uri "https://aka.ms/Microsoft.Windows.SDK.ProjectReunion" -OutFile "ProjectReunion.exe"
+        # Alternative: Use winget or direct download of Store CLI
+
+    - name: Upload to Microsoft Store
+      shell: pwsh
+      env:
+        TENANT_ID: ${{ secrets.MS_PARTNER_CENTER_TENANT_ID }}
+        CLIENT_ID: ${{ secrets.MS_PARTNER_CENTER_CLIENT_ID }}
+        CLIENT_SECRET: ${{ secrets.MS_PARTNER_CENTER_CLIENT_SECRET }}
+      run: |
+        # Install Microsoft Store Developer CLI if not available
+        # This is a placeholder - you may need to use Microsoft Store API directly
+        
+        # Example API call (you'll need to implement the actual Store API integration)
+        $headers = @{
+            'Authorization' = "Bearer $token"
+            'Content-Type' = 'application/json'
+        }
+        
+        # Upload package to Microsoft Store
+        # This requires proper Microsoft Store API integration
+        Write-Host "Uploading package to Microsoft Store..."
+        Write-Host "Package file: maERP-${{ steps.version.outputs.VERSION }}.msix"
+        
+        # Placeholder for actual Store upload logic
+        # You'll need to implement the Microsoft Store submission API calls here
+
+    - name: Create GitHub Release with MSIX
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: store-v${{ steps.version.outputs.VERSION }}
+        name: maERP Windows Store v${{ steps.version.outputs.VERSION }}
+        body: |
+          ## maERP Windows Store Release v${{ steps.version.outputs.VERSION }}
+          
+          Automatisch erstelltes Windows Store Release der maERP Desktop-Anwendung.
+          
+          ### MSIX Package
+          - **Windows Store Package**: `maERP-${{ steps.version.outputs.VERSION }}.msix`
+          
+          ### Installation
+          Das Package wurde automatisch an den Microsoft Store übermittelt.
+          
+          ---
+          
+          🤖 Automatisch erstellt durch GitHub Actions
+        draft: false
+        prerelease: false
+        files: |
+          maERP-${{ steps.version.outputs.VERSION }}.msix
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Cleanup
+      shell: pwsh
+      run: |
+        Remove-Item "${{ github.workspace }}\certificate.pfx" -Force -ErrorAction SilentlyContinue

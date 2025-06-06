@@ -107,7 +107,7 @@ public partial class OrderListViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         await LoadOrdersAsync();
     }

@@ -41,6 +41,8 @@ public partial class AiModelListViewModel : ViewModelBase
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
+    public Action<int>? NavigateToAiModelDetail { get; set; }
+
     public AiModelListViewModel(IHttpService httpService)
     {
         _httpService = httpService;
@@ -105,7 +107,7 @@ public partial class AiModelListViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         await LoadAiModelsAsync();
     }
@@ -134,6 +136,15 @@ public partial class AiModelListViewModel : ViewModelBase
     private void SelectAiModel(AiModelListDto? aiModel)
     {
         SelectedAiModel = aiModel;
+    }
+
+    [RelayCommand]
+    private void OpenAiModelDetails(AiModelListDto? aiModel)
+    {
+        if (aiModel == null || NavigateToAiModelDetail == null) return;
+        
+        SelectedAiModel = aiModel;
+        NavigateToAiModelDetail(aiModel.Id);
     }
 
     public bool CanGoNext => (CurrentPage + 1) * PageSize < TotalCount;

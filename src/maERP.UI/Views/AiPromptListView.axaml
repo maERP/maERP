@@ -17,7 +17,7 @@
             BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
             BorderThickness="0,0,0,1">
       
-      <Grid ColumnDefinitions="*,Auto,Auto">
+      <Grid ColumnDefinitions="*,Auto,Auto,Auto">
         
         <!-- Titel -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
@@ -49,8 +49,18 @@
           
         </StackPanel>
         
-        <!-- Refresh Button -->
+        <!-- Create Button -->
         <Button Grid.Column="2" 
+                Content="➕ Neu" 
+                Command="{Binding CreateAiPromptCommand}"
+                VerticalAlignment="Center"
+                Padding="12,6"
+                Classes="accent"
+                Margin="8,0"
+                ToolTip.Tip="Neuen AI-Prompt erstellen"/>
+        
+        <!-- Refresh Button -->
+        <Button Grid.Column="3" 
                 Content="🔄" 
                 Command="{Binding RefreshCommand}"
                 VerticalAlignment="Center"
@@ -104,7 +114,8 @@
                   GridLinesVisibility="Horizontal"
                   HeadersVisibility="Column"
                   IsReadOnly="True"
-                  SelectionMode="Single">
+                  SelectionMode="Single"
+                  DoubleTapped="DataGrid_DoubleTapped">
           
           <controls:DataGrid.Columns>
             
@@ -136,6 +147,9 @@
           </controls:DataGrid.Columns>
           
           <controls:DataGrid.Styles>
+            <Style Selector="DataGridRow">
+              <Setter Property="Cursor" Value="Hand"/>
+            </Style>
             <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
               <Setter Property="Fill" Value="{DynamicResource SystemControlBackgroundListLowBrush}"/>
             </Style>

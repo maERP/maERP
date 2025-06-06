@@ -41,6 +41,9 @@ public partial class AiPromptListViewModel : ViewModelBase
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
+    public Func<Task>? NavigateToCreateAiPrompt { get; set; }
+    public Func<int, Task>? NavigateToAiPromptDetail { get; set; }
+
     public AiPromptListViewModel(IHttpService httpService)
     {
         _httpService = httpService;
@@ -105,7 +108,7 @@ public partial class AiPromptListViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         await LoadAiPromptsAsync();
     }
@@ -134,6 +137,24 @@ public partial class AiPromptListViewModel : ViewModelBase
     private void SelectAiPrompt(AiPromptListDto? aiPrompt)
     {
         SelectedAiPrompt = aiPrompt;
+    }
+
+    [RelayCommand]
+    private async Task CreateAiPrompt()
+    {
+        if (NavigateToCreateAiPrompt != null)
+        {
+            await NavigateToCreateAiPrompt();
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenAiPromptDetail(AiPromptListDto? aiPrompt)
+    {
+        if (aiPrompt != null && NavigateToAiPromptDetail != null)
+        {
+            await NavigateToAiPromptDetail(aiPrompt.Id);
+        }
     }
 
     public bool CanGoNext => (CurrentPage + 1) * PageSize < TotalCount;

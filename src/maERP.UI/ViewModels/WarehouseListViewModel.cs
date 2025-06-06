@@ -107,7 +107,7 @@ public partial class WarehouseListViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         await LoadWarehousesAsync();
     }

@@ -18,8 +18,6 @@
             BorderThickness="0,0,0,1">
       
       <Grid ColumnDefinitions="*,Auto">
-        Erweitere das Projekt maERP.UI um eine Detailansicht für Bestellungen. Diese soll über die Bestellübersicht erreichbar sein. Nutze das OrderDetailDto. Denke intensiv darüber nach, wie man eine Detailansicht für Bestellungen auf Basis des        │
-        │   OrderDetailDto am sinnvollsten layoutet.
         <!-- Title and basic info -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
           <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">

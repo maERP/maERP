@@ -37,8 +37,12 @@ The codebase implements:
 # Build the entire solution
 dotnet build
 
-# Build specific project
+# Build maERP.Server project
 dotnet build src/maERP.Server/maERP.Server.csproj
+
+# Build maERP.UI.Browser project
+dotnet build src/maERP.UI.Browser/maERP.UI.Browser.csproj
+
 ```
 
 ### Running the Application
@@ -48,10 +52,10 @@ dotnet build src/maERP.Server/maERP.Server.csproj
 dotnet run --project src/maERP.Server/maERP.Server.csproj
 
 # Run the web frontend
-dotnet run --project src/maERP.Web/maERP.Web.csproj
+dotnet run --project src/maERP.UI.Browser/maERP.UI.Browser.csproj
 
 # Run the multi-platform client
-dotnet run --project src/maERP.Client/maERP.Client.csproj
+dotnet run --project src/maERP.UI.Desktop/maERP.UI.Desktop.csproj
 ```
 
 ### Testing
@@ -101,11 +105,9 @@ dotnet format
 - Database provider can be configured in appsettings.json or environment variables
 - Docker containerization is fully supported and recommended for deployment
 - Authentication is JWT-based
-- The UI is built with Blazor and shared components in maERP.SharedUI
-- The server is built with .NET 9 ASP.NET Core
-- The client is built with .NET 9 and MAU Hybrid UI
+- maERP.Server is built with .NET 9 ASP.NET Core
+- maERP.Server uses MediatR for CQRS pattern
 - The project uses Entity Framework Core for database access
-- The project uses MediatR for CQRS pattern
 - The project uses C# 10+ features when appropriate
 - The project uses FluentValidation for validation
 - The project uses Serilog for logging
@@ -113,3 +115,7 @@ dotnet format
 - maERP.UI is not executable. It is a shared library for maERP.Browser, maERP.Desktop, maERP.iOS and maERP.Android
 - Avalonia is used for cross-platform UI development
 - Avalonia is using CommunityToolkit.MVVM and CompiledBindings
+- ViewModels are registered in maERP.UI/app.xaml.cs
+- DTOs are defined in maERP.Domain an available as ListDto, DetailDto and InputDto
+- Repositories are defined in maERP.Persistence
+- Services are defined in maERP.Application

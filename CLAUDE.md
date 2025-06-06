@@ -37,8 +37,12 @@ The codebase implements:
 # Build the entire solution
 dotnet build
 
-# Build specific project
+# Build maERP.Server project
 dotnet build src/maERP.Server/maERP.Server.csproj
+
+# Build maERP.UI.Browser project
+dotnet build src/maERP.UI.Browser/maERP.UI.Browser.csproj
+
 ```
 
 ### Running the Application
@@ -48,10 +52,10 @@ dotnet build src/maERP.Server/maERP.Server.csproj
 dotnet run --project src/maERP.Server/maERP.Server.csproj
 
 # Run the web frontend
-dotnet run --project src/maERP.Web/maERP.Web.csproj
+dotnet run --project src/maERP.UI.Browser/maERP.UI.Browser.csproj
 
 # Run the multi-platform client
-dotnet run --project src/maERP.Client/maERP.Client.csproj
+dotnet run --project src/maERP.UI.Desktop/maERP.UI.Desktop.csproj
 ```
 
 ### Testing

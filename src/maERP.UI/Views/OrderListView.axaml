@@ -104,7 +104,8 @@
                   GridLinesVisibility="Horizontal"
                   HeadersVisibility="Column"
                   IsReadOnly="True"
-                  SelectionMode="Single">
+                  SelectionMode="Single"
+                  DoubleTapped="DataGrid_DoubleTapped">
           
           <controls:DataGrid.Columns>
             
@@ -138,23 +139,13 @@
                                 Width="120"
                                 CanUserSort="True"/>
             
-            <controls:DataGridTemplateColumn Header="Aktionen" 
-                                    Width="120"
-                                    CanUserSort="False">
-              <controls:DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                  <Button Content="Details" 
-                          Padding="8,4"
-                          Command="{Binding $parent[controls:DataGrid].((vm:OrderListViewModel)DataContext).ViewOrderDetailsCommand}"
-                          CommandParameter="{Binding}"
-                          HorizontalAlignment="Center"/>
-                </DataTemplate>
-              </controls:DataGridTemplateColumn.CellTemplate>
-            </controls:DataGridTemplateColumn>
             
           </controls:DataGrid.Columns>
           
           <controls:DataGrid.Styles>
+            <Style Selector="DataGridRow">
+              <Setter Property="Cursor" Value="Hand"/>
+            </Style>
             <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
               <Setter Property="Fill" Value="{DynamicResource SystemControlBackgroundListLowBrush}"/>
             </Style>

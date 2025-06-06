@@ -47,11 +47,15 @@
                     Orientation="Horizontal" 
                     Spacing="8" 
                     VerticalAlignment="Center">
-          <Button Content="← Zurück" 
-                  Command="{Binding GoBackCommand}"
-                  Padding="12,6"/>
+          <Button Content="✏️ Bearbeiten" 
+                  Command="{Binding EditCustomerCommand}"
+                  Padding="12,6"
+                  Classes="accent"/>
           <Button Content="🔄 Aktualisieren" 
                   Command="{Binding RefreshCommand}"
+                  Padding="12,6"/>
+          <Button Content="← Zurück" 
+                  Command="{Binding GoBackCommand}"
                   Padding="12,6"/>
         </StackPanel>
         
@@ -92,8 +96,7 @@
       </Border>
       
       <!-- Customer Details Content -->
-      <ScrollViewer IsVisible="{Binding ShouldShowContent}" Padding="24">
-        <StackPanel Spacing="24">
+      <StackPanel IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48" Spacing="24">
           
           <!-- Basic Customer Information Section -->
           <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
@@ -180,18 +183,39 @@
                            FontSize="16" 
                            FontWeight="SemiBold"/>
                 <StackPanel Spacing="6">
-                  <Button Content="📧 E-Mail senden" 
+                  <Button Command="{Binding SendEmailCommand}"
                           HorizontalAlignment="Left"
                           IsVisible="{Binding HasEmail}"
-                          Padding="12,6"/>
-                  <Button Content="📞 Anrufen" 
+                          Padding="12,6"
+                          Classes="accent"
+                          ToolTip.Tip="{Binding Customer.Email, StringFormat=E-Mail an \{0\} senden}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="📧" VerticalAlignment="Center"/>
+                      <TextBlock Text="E-Mail senden" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                  <Button Command="{Binding CallPhoneCommand}"
                           HorizontalAlignment="Left"
                           IsVisible="{Binding HasPhone}"
-                          Padding="12,6"/>
-                  <Button Content="🌐 Website öffnen" 
+                          Padding="12,6"
+                          Classes="accent"
+                          ToolTip.Tip="{Binding Customer.Phone, StringFormat=Anrufen: \{0\}}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="📞" VerticalAlignment="Center"/>
+                      <TextBlock Text="Anrufen" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                  <Button Command="{Binding OpenWebsiteCommand}"
                           HorizontalAlignment="Left"
                           IsVisible="{Binding HasWebsite}"
-                          Padding="12,6"/>
+                          Padding="12,6"
+                          Classes="accent"
+                          ToolTip.Tip="{Binding Customer.Website, StringFormat=Website öffnen: \{0\}}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="🌐" VerticalAlignment="Center"/>
+                      <TextBlock Text="Website öffnen" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
                 </StackPanel>
               </StackPanel>
               
@@ -344,8 +368,7 @@
             </StackPanel>
           </Border>
           
-        </StackPanel>
-      </ScrollViewer>
+      </StackPanel>
       
     </Grid>
     

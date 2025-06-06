@@ -105,7 +105,7 @@ public partial class InvoiceListViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         await LoadInvoicesAsync();
     }

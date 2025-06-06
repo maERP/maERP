@@ -1,0 +1,294 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:maERP.UI.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Views.AiPromptInputView"
+             x:DataType="vm:AiPromptInputViewModel">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    
+    <!-- Header -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,0,1">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Title -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="{Binding PageTitle}" 
+                     FontSize="24" 
+                     FontWeight="SemiBold"
+                     Margin="0,0,0,4"/>
+          <TextBlock Text="AI-Prompt bearbeiten oder erstellen" 
+                     FontSize="14" 
+                     Opacity="0.7"/>
+        </StackPanel>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="❌ Abbrechen" 
+                  Command="{Binding GoBackAction}"
+                  Padding="12,6"/>
+          <Button Content="💾 Speichern" 
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding !IsSaving}"
+                  Padding="12,6"
+                  Classes="accent"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="AI-Prompt wird geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Margin="16"
+              VerticalAlignment="Top">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- Form Content -->
+      <ScrollViewer IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48">
+        <StackPanel Spacing="24">
+          
+          <!-- Basic Information Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="🤖 Grundinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <!-- Form Fields Grid -->
+              <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="20" RowSpacing="16">
+                
+                <!-- First Row: AI Model, Identifier -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="AI-Modell *" FontWeight="SemiBold"/>
+                  <ComboBox ItemsSource="{Binding AvailableAiModels}"
+                            SelectedItem="{Binding SelectedAiModel}"
+                            HorizontalAlignment="Stretch"
+                            PlaceholderText="AI-Modell auswählen...">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="Identifier *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Identifier}" 
+                           Watermark="Eindeutiger Bezeichner eingeben..."/>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Prompt Text Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="📝 Prompt-Text" 
+                           FontSize="18" 
+                           FontWeight="SemiBold"/>
+                <TextBlock Text="*" 
+                           FontSize="18" 
+                           FontWeight="SemiBold"
+                           Foreground="Red"/>
+                <TextBlock Text="{Binding PromptText.Length, StringFormat=(\{0\} Zeichen)}" 
+                           FontSize="14" 
+                           Opacity="0.7"
+                           VerticalAlignment="Bottom"/>
+              </StackPanel>
+              
+              <!-- Prompt Text Field -->
+              <StackPanel Spacing="4">
+                <TextBlock Text="Hier können Sie den vollständigen Prompt-Text eingeben. Verwenden Sie Platzhalter und Anweisungen für das AI-Modell." 
+                           FontSize="12" 
+                           Opacity="0.7"/>
+                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        CornerRadius="4"
+                        Padding="12"
+                        MinHeight="300">
+                  <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                                VerticalScrollBarVisibility="Auto">
+                    <TextBox Text="{Binding PromptText}" 
+                             Watermark="Geben Sie hier Ihren Prompt-Text ein...&#x0a;&#x0a;Beispiel:&#x0a;Analysiere den folgenden Text und extrahiere die wichtigsten Informationen:&#x0a;&#x0a;{input_text}&#x0a;&#x0a;Gib eine strukturierte Antwort zurück."
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             FontFamily="Consolas,Monaco,Courier New,monospace"
+                             FontSize="13"
+                             LineHeight="20"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="0"/>
+                  </ScrollViewer>
+                </Border>
+                
+                <!-- Help Text -->
+                <StackPanel Spacing="4" Margin="0,8,0,0">
+                  <TextBlock Text="💡 Tipps für effektive Prompts:" 
+                             FontSize="14" 
+                             FontWeight="SemiBold"/>
+                  <TextBlock Text="• Verwenden Sie klare und spezifische Anweisungen" 
+                             FontSize="12" 
+                             Opacity="0.7"/>
+                  <TextBlock Text="• Nutzen Sie Platzhalter wie {input_text} für dynamische Inhalte" 
+                             FontSize="12" 
+                             Opacity="0.7"/>
+                  <TextBlock Text="• Geben Sie das gewünschte Ausgabeformat an" 
+                             FontSize="12" 
+                             Opacity="0.7"/>
+                  <TextBlock Text="• Testen Sie den Prompt mit verschiedenen Eingaben" 
+                             FontSize="12" 
+                             Opacity="0.7"/>
+                </StackPanel>
+              </StackPanel>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Quick Actions Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="⚡ Schnellaktionen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button Content="🧪 Prompt testen"
+                        HorizontalAlignment="Left"
+                        Padding="12,6"
+                        Classes="accent"
+                        IsEnabled="{Binding !IsSaving}"
+                        ToolTip.Tip="Testen Sie den Prompt mit dem ausgewählten AI-Modell">
+                  <Button.Command>
+                    <Binding Path="TestPromptCommand"/>
+                  </Button.Command>
+                </Button>
+                
+                <Button Content="📋 Vorlage laden"
+                        HorizontalAlignment="Left"
+                        Padding="12,6"
+                        IsEnabled="{Binding !IsSaving}"
+                        ToolTip.Tip="Laden Sie eine vorgefertigte Prompt-Vorlage">
+                  <Button.Command>
+                    <Binding Path="LoadTemplateCommand"/>
+                  </Button.Command>
+                </Button>
+                
+                <Button Content="🔄 Text formatieren"
+                        HorizontalAlignment="Left"
+                        Padding="12,6"
+                        IsEnabled="{Binding !IsSaving}"
+                        ToolTip.Tip="Automatische Formatierung des Prompt-Texts">
+                  <Button.Command>
+                    <Binding Path="FormatTextCommand"/>
+                  </Button.Command>
+                </Button>
+              </StackPanel>
+              
+            </StackPanel>
+          </Border>
+          
+        </StackPanel>
+      </ScrollViewer>
+      
+    </Grid>
+    
+    <!-- Footer with action buttons -->
+    <Border Grid.Row="2" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,12"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,1,0,0">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Save Status -->
+        <StackPanel Grid.Column="0" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <ProgressBar IsIndeterminate="{Binding IsSaving}" 
+                       IsVisible="{Binding IsSaving}"
+                       Width="20" Height="20"/>
+          <TextBlock Text="Status: Bereit zum Speichern" 
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     IsVisible="{Binding !IsSaving}"/>
+          <TextBlock Text="Status: Wird gespeichert..." 
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     IsVisible="{Binding IsSaving}"/>
+        </StackPanel>
+        
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8">
+          
+          <Button Content="❌ Abbrechen" 
+                  Command="{Binding CancelCommand}"
+                  Padding="16,8"/>
+          
+          <Button Content="💾 Speichern" 
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding !IsSaving}"
+                  Padding="16,8"
+                  Classes="accent"/>
+          
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+  </Grid>
+
+</UserControl>

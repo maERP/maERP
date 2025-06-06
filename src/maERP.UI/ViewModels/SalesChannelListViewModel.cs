@@ -41,6 +41,8 @@ public partial class SalesChannelListViewModel : ViewModelBase
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
+    public Func<int, Task>? NavigateToSalesChannelDetail { get; set; }
+
     public SalesChannelListViewModel(IHttpService httpService)
     {
         _httpService = httpService;
@@ -105,7 +107,7 @@ public partial class SalesChannelListViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task RefreshAsync()
+    public async Task RefreshAsync()
     {
         await LoadSalesChannelsAsync();
     }
@@ -134,6 +136,15 @@ public partial class SalesChannelListViewModel : ViewModelBase
     private void SelectSalesChannel(SalesChannelListDto? salesChannel)
     {
         SelectedSalesChannel = salesChannel;
+    }
+
+    [RelayCommand]
+    private async Task ViewSalesChannelDetails(SalesChannelListDto? salesChannel)
+    {
+        if (salesChannel == null || NavigateToSalesChannelDetail == null) return;
+        
+        SelectedSalesChannel = salesChannel;
+        await NavigateToSalesChannelDetail(salesChannel.Id);
     }
 
     public bool CanGoNext => (CurrentPage + 1) * PageSize < TotalCount;

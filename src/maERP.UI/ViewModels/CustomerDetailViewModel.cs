@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -31,6 +33,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && Customer != null;
 
     public Action? GoBackAction { get; set; }
+    public Func<int, Task>? NavigateToEditCustomer { get; set; }
 
     // Computed properties for better display
     public bool HasCompanyName => Customer != null && !string.IsNullOrEmpty(Customer.CompanyName);
@@ -152,5 +155,95 @@ public partial class CustomerDetailViewModel : ViewModelBase
     private void GoBack()
     {
         GoBackAction?.Invoke();
+    }
+
+    [RelayCommand]
+    private async Task EditCustomer()
+    {
+        if (Customer == null || NavigateToEditCustomer == null) return;
+        
+        await NavigateToEditCustomer(Customer.Id);
+    }
+
+    [RelayCommand]
+    private void SendEmail()
+    {
+        if (Customer == null || string.IsNullOrEmpty(Customer.Email)) return;
+
+        try
+        {
+            var emailUri = $"mailto:{Customer.Email}";
+            OpenUrl(emailUri);
+            System.Diagnostics.Debug.WriteLine($"Opening email client for: {Customer.Email}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to open email client: {ex.Message}");
+        }
+    }
+
+    [RelayCommand]
+    private void CallPhone()
+    {
+        if (Customer == null || string.IsNullOrEmpty(Customer.Phone)) return;
+
+        try
+        {
+            var phoneUri = $"tel:{Customer.Phone}";
+            OpenUrl(phoneUri);
+            System.Diagnostics.Debug.WriteLine($"Opening phone app for: {Customer.Phone}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to open phone app: {ex.Message}");
+        }
+    }
+
+    [RelayCommand]
+    private void OpenWebsite()
+    {
+        if (Customer == null || string.IsNullOrEmpty(Customer.Website)) return;
+
+        try
+        {
+            var website = Customer.Website;
+            if (!website.StartsWith("http://") && !website.StartsWith("https://"))
+            {
+                website = "https://" + website;
+            }
+            OpenUrl(website);
+            System.Diagnostics.Debug.WriteLine($"Opening website: {website}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to open website: {ex.Message}");
+        }
+    }
+
+    private static void OpenUrl(string url)
+    {
+        try
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Process.Start("open", url);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Process.Start("xdg-open", url);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to open URL {url}: {ex.Message}");
+        }
     }
 }
