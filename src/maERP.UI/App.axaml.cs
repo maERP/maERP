@@ -4,8 +4,18 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 
-using maERP.UI.ViewModels;
-using maERP.UI.Views;
+using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Views;
+using maERP.UI.Features.Authentication.ViewModels;
+using maERP.UI.Features.Dashboard.ViewModels;
+using maERP.UI.Features.Customers.ViewModels;
+using maERP.UI.Features.Products.ViewModels;
+using maERP.UI.Features.Orders.ViewModels;
+using maERP.UI.Features.Warehouses.ViewModels;
+using maERP.UI.Features.SalesChannels.ViewModels;
+using maERP.UI.Features.Invoices.ViewModels;
+using maERP.UI.Features.AI.ViewModels;
+using maERP.UI.Features.Administration.ViewModels;
 using maERP.UI.Services;
 
 namespace maERP.UI;

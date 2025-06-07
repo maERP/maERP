@@ -9,6 +9,7 @@ ENV MAERP_REMOTE_LOG_URL true
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
+COPY ["src/maERP.Domain/maERP.Domain.csproj", "maERP.Domain/"]
 COPY ["src/maERP.UI/maERP.UI.csproj", "maERP.UI/"]
 COPY ["src/maERP.UI.Browser/maERP.UI.Browser.csproj", "maERP.UI.Browser/"]
 RUN dotnet restore "maERP.UI.Browser/maERP.UI.Browser.csproj"

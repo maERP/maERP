@@ -1,0 +1,214 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Features.AI.Views.AiPromptDetailView">
+
+  <Grid RowDefinitions="Auto,*">
+    
+    <!-- Header with AI prompt info and actions -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,0,1">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Title and basic info -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
+            <TextBlock Text="{Binding AiPrompt.Id, StringFormat=🤖 AI-Prompt #{0}}" 
+                       FontSize="24" 
+                       FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding AiPrompt.Identifier}" 
+                       FontSize="24" 
+                       FontWeight="SemiBold"
+                       IsVisible="{Binding HasIdentifier}"/>
+            <Border Background="#E8F5E8" 
+                    CornerRadius="12" 
+                    Padding="8,4">
+              <TextBlock Text="Aktiv" 
+                         FontSize="12" 
+                         FontWeight="SemiBold"
+                         Foreground="#2E7D32"/>
+            </Border>
+          </StackPanel>
+          <TextBlock Text="{Binding AiPrompt.AiModelId, StringFormat=AI-Modell ID: \{0\}}" 
+                     FontSize="14" 
+                     Opacity="0.7"/>
+        </StackPanel>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="✏️ Bearbeiten" 
+                  Command="{Binding EditAiPromptCommand}"
+                  Padding="12,6"
+                  Classes="accent"/>
+          <Button IsEnabled="{Binding !IsDeleting}"
+                  Command="{Binding DeleteAiPromptCommand}"
+                  Padding="12,6"
+                  Background="#DC3545"
+                  Foreground="White"
+                  ToolTip.Tip="AI-Prompt löschen">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <ProgressBar IsIndeterminate="{Binding IsDeleting}" 
+                           IsVisible="{Binding IsDeleting}"
+                           Width="16" Height="16"/>
+              <TextBlock Text="🗑️ Löschen" IsVisible="{Binding !IsDeleting}"/>
+              <TextBlock Text="Wird gelöscht..." IsVisible="{Binding IsDeleting}"/>
+            </StackPanel>
+          </Button>
+          <Button Content="🔄 Aktualisieren" 
+                  Command="{Binding RefreshCommand}"
+                  Padding="12,6"/>
+          <Button Content="← Zurück" 
+                  Command="{Binding GoBackCommand}"
+                  Padding="12,6"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="AI-Prompt wird geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Margin="16"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+          <Button Content="Erneut versuchen" 
+                  Command="{Binding RefreshCommand}"
+                  HorizontalAlignment="Left"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- AI Prompt Details Content -->
+      <StackPanel IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48" Spacing="24">
+          
+          <!-- Basic AI Prompt Information Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="40" RowSpacing="12">
+              
+              <!-- Section Title -->
+              <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
+                         Text="🤖 Grundinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         Margin="0,0,0,16"/>
+              
+              <!-- Left Column -->
+              <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Prompt-ID:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding AiPrompt.Id}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="AI-Modell ID:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding AiPrompt.AiModelId}"/>
+                </StackPanel>
+              </StackPanel>
+              
+              <!-- Right Column -->
+              <StackPanel Grid.Row="1" Grid.Column="1" Spacing="8">
+                <StackPanel Orientation="Horizontal" IsVisible="{Binding HasIdentifier}">
+                  <TextBlock Text="Identifier:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding AiPrompt.Identifier}" TextWrapping="Wrap"/>
+                </StackPanel>
+              </StackPanel>
+              
+            </Grid>
+          </Border>
+          
+          <!-- Prompt Text Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20"
+                  IsVisible="{Binding HasPromptText}">
+            <StackPanel Spacing="12">
+              <TextBlock Text="📝 Prompt-Text" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                      CornerRadius="4"
+                      Padding="16"
+                      MinHeight="200">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                              VerticalScrollBarVisibility="Auto">
+                  <TextBlock Text="{Binding AiPrompt.PromptText}" 
+                             TextWrapping="Wrap"
+                             FontFamily="Consolas,Monaco,Courier New,monospace"
+                             FontSize="13"
+                             LineHeight="20"/>
+                </ScrollViewer>
+              </Border>
+            </StackPanel>
+          </Border>
+          
+          <!-- Quick Actions Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              <TextBlock Text="⚡ Schnellaktionen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button Content="📋 Text kopieren"
+                        HorizontalAlignment="Left"
+                        Padding="12,6"
+                        Classes="accent"
+                        ToolTip.Tip="Prompt-Text in die Zwischenablage kopieren">
+                  <Button.Command>
+                    <Binding Path="CopyPromptTextCommand"/>
+                  </Button.Command>
+                </Button>
+                
+                <Button Content="🧪 Testen"
+                        HorizontalAlignment="Left"
+                        Padding="12,6"
+                        Classes="accent"
+                        ToolTip.Tip="Prompt mit AI-Modell testen">
+                  <Button.Command>
+                    <Binding Path="TestPromptCommand"/>
+                  </Button.Command>
+                </Button>
+              </StackPanel>
+              
+            </StackPanel>
+          </Border>
+          
+      </StackPanel>
+      
+    </Grid>
+    
+  </Grid>
+
+</UserControl>

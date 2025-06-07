@@ -1,0 +1,225 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="maERP.UI.Features.SalesChannels.Views.SalesChannelListView">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    
+    <!-- Header mit Titel und Suche -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,0,1">
+      
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        
+        <!-- Titel -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="🌐 Vertriebskanäle" 
+                     FontSize="24" 
+                     FontWeight="SemiBold"
+                     Margin="0,0,0,4"/>
+          <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Vertriebskanäle}" 
+                     FontSize="14" 
+                     Opacity="0.7"/>
+        </StackPanel>
+        
+        <!-- Suchfeld -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center"
+                    Margin="16,0">
+          
+          <TextBox Text="{Binding SearchText}" 
+                   Watermark="Nach Vertriebskanälen suchen..."
+                   Width="200"
+                   VerticalAlignment="Center"/>
+          
+          <Button Content="🔍" 
+                  Command="{Binding SearchSalesChannelsCommand}"
+                  VerticalAlignment="Center"
+                  Padding="8"/>
+          
+        </StackPanel>
+        
+        <!-- Refresh Button -->
+        <Button Grid.Column="2" 
+                Content="🔄" 
+                Command="{Binding RefreshCommand}"
+                VerticalAlignment="Center"
+                Padding="8"
+                ToolTip.Tip="Aktualisieren"/>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Loading/Error/Content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Vertriebskanäle werden geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Margin="16"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+          <Button Content="Erneut versuchen" 
+                  Command="{Binding RefreshCommand}"
+                  HorizontalAlignment="Left"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- Sales Channels DataGrid -->
+      <ScrollViewer IsVisible="{Binding ShouldShowDataGrid}">
+        <controls:DataGrid ItemsSource="{Binding SalesChannels}"
+                  SelectedItem="{Binding SelectedSalesChannel}"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  DoubleTapped="DataGrid_DoubleTapped">
+          
+          <controls:DataGrid.Columns>
+            
+            <controls:DataGridTextColumn Header="ID" 
+                                Binding="{Binding Id}" 
+                                Width="80"
+                                CanUserSort="True"/>
+            
+            <controls:DataGridTextColumn Header="Name" 
+                                Binding="{Binding Name}" 
+                                Width="200"
+                                CanUserSort="True"/>
+            
+            <controls:DataGridTextColumn Header="Typ" 
+                                Binding="{Binding SalesChannelType}" 
+                                Width="120"
+                                CanUserSort="True"/>
+            
+            <controls:DataGridTextColumn Header="URL" 
+                                Binding="{Binding Url}" 
+                                Width="300"
+                                CanUserSort="True"/>
+            
+            <controls:DataGridTextColumn Header="Benutzername" 
+                                Binding="{Binding Username}" 
+                                Width="150"
+                                CanUserSort="True"/>
+            
+            <controls:DataGridCheckBoxColumn Header="Produkte Import" 
+                                    Binding="{Binding ImportProducts}" 
+                                    Width="120"
+                                    CanUserSort="True"/>
+            
+            <controls:DataGridCheckBoxColumn Header="Bestellungen Import" 
+                                    Binding="{Binding ImportOrders}" 
+                                    Width="140"
+                                    CanUserSort="True"/>
+            
+          </controls:DataGrid.Columns>
+          
+          <controls:DataGrid.Styles>
+            <Style Selector="DataGridRow">
+              <Setter Property="Cursor" Value="Hand"/>
+            </Style>
+            <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+              <Setter Property="Fill" Value="{DynamicResource SystemControlBackgroundListLowBrush}"/>
+            </Style>
+            <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+              <Setter Property="Fill" Value="{DynamicResource SystemAccentColorLight2}"/>
+            </Style>
+          </controls:DataGrid.Styles>
+          
+        </controls:DataGrid>
+      </ScrollViewer>
+      
+    </Grid>
+    
+    <!-- Pagination Footer -->
+    <Border Grid.Row="2" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="16,12"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,1,0,0"
+            IsVisible="{Binding !IsLoading}">
+      
+      <Grid ColumnDefinitions="*,Auto,*">
+        
+        <!-- Page Info Links -->
+        <StackPanel Grid.Column="0" 
+                    Orientation="Horizontal" 
+                    VerticalAlignment="Center"
+                    Spacing="8">
+          <TextBlock Text="{Binding DisplayPageNumber, StringFormat=Seite \{0\}}" 
+                     VerticalAlignment="Center"/>
+          <TextBlock Text="von" 
+                     Opacity="0.7" 
+                     VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding TotalPages}" 
+                     VerticalAlignment="Center"/>
+        </StackPanel>
+        
+        <!-- Navigation Buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8">
+          
+          <Button Content="◀ Zurück" 
+                  Command="{Binding PreviousPageCommand}"
+                  IsEnabled="{Binding CanGoPrevious}"
+                  Padding="12,6"/>
+          
+          <Button Content="Weiter ▶" 
+                  Command="{Binding NextPageCommand}"
+                  IsEnabled="{Binding CanGoNext}"
+                  Padding="12,6"/>
+          
+        </StackPanel>
+        
+        <!-- Items Info Rechts -->
+        <StackPanel Grid.Column="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Spacing="4">
+          <TextBlock Text="{Binding SalesChannels.Count, StringFormat=\{0\} Einträge}" 
+                     Opacity="0.7"/>
+          <TextBlock Text="von" 
+                     Opacity="0.7"/>
+          <TextBlock Text="{Binding TotalCount}" 
+                     Opacity="0.7"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+  </Grid>
+
+</UserControl>

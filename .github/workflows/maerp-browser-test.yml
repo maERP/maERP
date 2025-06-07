@@ -5,11 +5,13 @@ on:
     branches-ignore: [ main ]
     paths:
       - '.github/workflows/**'
+      - 'src/maERP.Domain/**'
       - 'src/maERP.UI/**'
       - 'src/maERP.UI.Browser**'
   pull_request:
     branches: [ main ]
     paths:
+      - 'src/maERP.Domain/**'
       - 'src/maERP.UI/**'
       - 'src/maERP.UI.Browser/**'
 
