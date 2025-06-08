@@ -2,7 +2,7 @@
 
 namespace maERP.Domain.Dtos.Auth;
 
-public class LoginDto
+public class LoginRequestDto
 {
     [Required]
     [EmailAddress]

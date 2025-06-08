@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rg:*)",
+      "Bash(grep:*)",
+      "Bash(./create-migrations.sh:*)",
+      "Bash(bash:*)",
+      "Bash(dotnet ef migrations add:*)",
+      "Bash(dotnet build:*)",
+      "Bash(ls:*)",
+      "Bash(docker run:*)",
+      "Bash(wget:*)",
+      "Bash(sudo dpkg:*)",
+      "Bash(sudo apt-get:*)",
+      "Bash(sudo apt-get install:*)",
+      "Bash(find:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(cat:*)"
+    ],
+    "deny": []
+  }
+}

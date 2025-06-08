@@ -31,6 +31,7 @@ public partial class OrderDetailViewModel : ViewModelBase
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && Order != null;
 
     public Action? GoBackAction { get; set; }
+    public Func<int, Task>? NavigateToOrderEdit { get; set; }
 
     // Address properties for better UI binding
     public string DeliveryAddress => Order != null
@@ -128,5 +129,14 @@ public partial class OrderDetailViewModel : ViewModelBase
     private void GoBack()
     {
         GoBackAction?.Invoke();
+    }
+
+    [RelayCommand]
+    private async Task EditOrder()
+    {
+        if (Order != null && NavigateToOrderEdit != null)
+        {
+            await NavigateToOrderEdit(Order.Id);
+        }
     }
 }

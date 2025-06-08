@@ -9,6 +9,8 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 {
     public void Configure(EntityTypeBuilder<Customer> modelBuilder)
     {
+        // DateEnrollment is now DateTimeOffset and works consistently across all database providers
+
         modelBuilder.HasData(
             new Customer
             {

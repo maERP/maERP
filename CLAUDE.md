@@ -119,3 +119,11 @@ dotnet format
 - DTOs are defined in maERP.Domain an available as ListDto, DetailDto and InputDto
 - Repositories are defined in maERP.Persistence
 - Services are defined in maERP.Application
+- on layout changes, always consider the Avalonia platform limitations and capabilities
+- when implementing new features, always consider the cross-platform nature of the project
+- when implementing new features, always consider the performance and scalability of the solution
+- when implementing new features, always consider the security implications of the solution
+- when adding new axaml files, proof if the DataTemplate neeed to be added to MainView.axaml
+- IMPORTANT: when implementing new layouts, always heavily think about the user experience and usability 
+- IMPORTANT: on layout changes, always look if there is a similar layout and write consistent code
+- When implementing new features or functions, YOU MUST look if there is a similar feature or function and write consistent code

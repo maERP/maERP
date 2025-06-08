@@ -43,6 +43,7 @@ public partial class OrderListViewModel : ViewModelBase
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
     public Func<int, Task>? NavigateToOrderDetail { get; set; }
+    public Func<Task>? NavigateToCreateOrder { get; set; }
 
     public OrderListViewModel(IHttpService httpService)
     {
@@ -146,6 +147,15 @@ public partial class OrderListViewModel : ViewModelBase
         
         SelectedOrder = order;
         await NavigateToOrderDetail(order.Id);
+    }
+
+    [RelayCommand]
+    private async Task CreateOrder()
+    {
+        if (NavigateToCreateOrder != null)
+        {
+            await NavigateToCreateOrder();
+        }
     }
 
     public bool CanGoNext => (CurrentPage + 1) * PageSize < TotalCount;

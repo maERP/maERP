@@ -36,14 +36,17 @@ public partial class MainViewModel : ViewModelBase
     private DashboardViewModel? _dashboardViewModel;
     private OrderListViewModel? _orderListViewModel;
     private OrderDetailViewModel? _orderDetailViewModel;
+    private OrderInputViewModel? _orderInputViewModel;
     private CustomerListViewModel? _customerListViewModel;
     private CustomerDetailViewModel? _customerDetailViewModel;
     private CustomerInputViewModel? _customerInputViewModel;
     private InvoiceListViewModel? _invoiceListViewModel;
     private WarehouseListViewModel? _warehouseListViewModel;
     private WarehouseDetailViewModel? _warehouseDetailViewModel;
+    private WarehouseInputViewModel? _warehouseInputViewModel;
     private ProductListViewModel? _productListViewModel;
     private ProductDetailViewModel? _productDetailViewModel;
+    private ProductInputViewModel? _productInputViewModel;
     private AiModelListViewModel? _aiModelListViewModel;
     private AiModelDetailViewModel? _aiModelDetailViewModel;
     private AiModelInputViewModel? _aiModelInputViewModel;
@@ -52,7 +55,10 @@ public partial class MainViewModel : ViewModelBase
     private AiPromptInputViewModel? _aiPromptInputViewModel;
     private SalesChannelListViewModel? _salesChannelListViewModel;
     private SalesChannelDetailViewModel? _salesChannelDetailViewModel;
+    private SalesChannelInputViewModel? _salesChannelInputViewModel;
     private TaxClassListViewModel? _taxClassListViewModel;
+    private TaxClassDetailViewModel? _taxClassDetailViewModel;
+    private TaxClassInputViewModel? _taxClassInputViewModel;
     private UserListViewModel? _userListViewModel;
 
     public MainViewModel(IAuthenticationService authenticationService,
@@ -141,6 +147,7 @@ public partial class MainViewModel : ViewModelBase
         {
             _orderListViewModel = _serviceProvider.GetRequiredService<OrderListViewModel>();
             _orderListViewModel.NavigateToOrderDetail = NavigateToOrderDetail;
+            _orderListViewModel.NavigateToCreateOrder = NavigateToCreateOrder;
             await _orderListViewModel.InitializeAsync();
         }
         return _orderListViewModel;
@@ -213,6 +220,7 @@ public partial class MainViewModel : ViewModelBase
         {
             _productListViewModel = _serviceProvider.GetRequiredService<ProductListViewModel>();
             _productListViewModel.NavigateToProductDetail = NavigateToProductDetail;
+            _productListViewModel.NavigateToProductInput = NavigateToCreateProduct;
             await _productListViewModel.InitializeAsync();
         }
         return _productListViewModel;
@@ -305,6 +313,7 @@ public partial class MainViewModel : ViewModelBase
         {
             _salesChannelListViewModel = _serviceProvider.GetRequiredService<SalesChannelListViewModel>();
             _salesChannelListViewModel.NavigateToSalesChannelDetail = NavigateToSalesChannelDetail;
+            _salesChannelListViewModel.NavigateToSalesChannelInput = NavigateToSalesChannelInput;
             await _salesChannelListViewModel.InitializeAsync();
         }
         return _salesChannelListViewModel;
@@ -322,6 +331,8 @@ public partial class MainViewModel : ViewModelBase
         if (_taxClassListViewModel == null)
         {
             _taxClassListViewModel = _serviceProvider.GetRequiredService<TaxClassListViewModel>();
+            _taxClassListViewModel.NavigateToTaxClassDetail = NavigateToTaxClassDetail;
+            _taxClassListViewModel.NavigateToTaxClassInput = NavigateToCreateTaxClass;
             await _taxClassListViewModel.InitializeAsync();
         }
         return _taxClassListViewModel;
@@ -357,6 +368,7 @@ public partial class MainViewModel : ViewModelBase
 
         _orderDetailViewModel = _serviceProvider.GetRequiredService<OrderDetailViewModel>();
         _orderDetailViewModel.GoBackAction = async () => await NavigateToOrderList();
+        _orderDetailViewModel.NavigateToOrderEdit = NavigateToEditOrder;
         await _orderDetailViewModel.InitializeAsync(orderId);
         
         CurrentView = _orderDetailViewModel;
@@ -371,6 +383,32 @@ public partial class MainViewModel : ViewModelBase
         await listViewModel.RefreshAsync();
         CurrentView = listViewModel;
         SelectedMenuItem = "Orders";
+    }
+
+    public async Task NavigateToCreateOrder()
+    {
+        if (!IsAuthenticated) return;
+
+        _orderInputViewModel = _serviceProvider.GetRequiredService<OrderInputViewModel>();
+        _orderInputViewModel.GoBackAction = async () => await NavigateToOrderList();
+        _orderInputViewModel.NavigateToOrderDetail = NavigateToOrderDetail;
+        await _orderInputViewModel.InitializeAsync(0); // 0 for new order
+        
+        CurrentView = _orderInputViewModel;
+        SelectedMenuItem = "OrderInput";
+    }
+
+    public async Task NavigateToEditOrder(int orderId)
+    {
+        if (!IsAuthenticated) return;
+
+        _orderInputViewModel = _serviceProvider.GetRequiredService<OrderInputViewModel>();
+        _orderInputViewModel.GoBackAction = async () => await NavigateToOrderDetail(orderId);
+        _orderInputViewModel.NavigateToOrderDetail = NavigateToOrderDetail;
+        await _orderInputViewModel.InitializeAsync(orderId); // Load existing order
+        
+        CurrentView = _orderInputViewModel;
+        SelectedMenuItem = "OrderInput";
     }
 
     public async Task NavigateToCustomerDetail(int customerId)
@@ -428,6 +466,7 @@ public partial class MainViewModel : ViewModelBase
 
         _productDetailViewModel = _serviceProvider.GetRequiredService<ProductDetailViewModel>();
         _productDetailViewModel.GoBackAction = async () => await NavigateToProductList();
+        _productDetailViewModel.NavigateToProductInput = NavigateToEditProduct;
         await _productDetailViewModel.InitializeAsync(productId);
         
         CurrentView = _productDetailViewModel;
@@ -444,13 +483,37 @@ public partial class MainViewModel : ViewModelBase
         SelectedMenuItem = "Products";
     }
 
-    public async Task NavigateToWarehouseDetail(int warehouseId)
+    private async Task<ProductInputViewModel> GetProductInputViewModelAsync(int productId = 0)
+    {
+        _productInputViewModel = _serviceProvider.GetRequiredService<ProductInputViewModel>();
+        _productInputViewModel.GoBackAction = productId > 0 
+            ? async () => await NavigateToProductDetail(productId)
+            : async () => await NavigateToProductList();
+        _productInputViewModel.NavigateToProductDetail = NavigateToProductDetail;
+        await _productInputViewModel.InitializeAsync(productId);
+        return _productInputViewModel;
+    }
+
+    private async Task NavigateToEditProduct(int productId)
+    {
+        CurrentView = await GetProductInputViewModelAsync(productId);
+        SelectedMenuItem = "Products";
+    }
+
+    private async Task NavigateToCreateProduct()
+    {
+        CurrentView = await GetProductInputViewModelAsync();
+        SelectedMenuItem = "Products";
+    }
+
+    public void NavigateToWarehouseDetail(int warehouseId)
     {
         if (!IsAuthenticated) return;
 
         _warehouseDetailViewModel = _serviceProvider.GetRequiredService<WarehouseDetailViewModel>();
         _warehouseDetailViewModel.GoBackAction = async () => await NavigateToWarehouseList();
-        await _warehouseDetailViewModel.InitializeAsync(warehouseId);
+        _warehouseDetailViewModel.NavigateToEditWarehouse = async (id) => await NavigateToWarehouseInput(id);
+        _ = _warehouseDetailViewModel.InitializeAsync(warehouseId);
         
         CurrentView = _warehouseDetailViewModel;
         SelectedMenuItem = "WarehouseDetail";
@@ -466,12 +529,27 @@ public partial class MainViewModel : ViewModelBase
         SelectedMenuItem = "Warehouses";
     }
 
+    public async Task NavigateToWarehouseInput(int? warehouseId = null)
+    {
+        if (!IsAuthenticated) return;
+
+        _warehouseInputViewModel = _serviceProvider.GetRequiredService<WarehouseInputViewModel>();
+        _warehouseInputViewModel.GoBackAction = async () => await NavigateToWarehouseList();
+        _warehouseInputViewModel.OnSaveSuccessAction = async () => await NavigateToWarehouseList();
+        
+        await _warehouseInputViewModel.InitializeAsync(warehouseId);
+        
+        CurrentView = _warehouseInputViewModel;
+        SelectedMenuItem = "WarehouseInput";
+    }
+
     public async Task NavigateToSalesChannelDetail(int salesChannelId)
     {
         if (!IsAuthenticated) return;
 
         _salesChannelDetailViewModel = _serviceProvider.GetRequiredService<SalesChannelDetailViewModel>();
         _salesChannelDetailViewModel.GoBackAction = async () => await NavigateToSalesChannelList();
+        _salesChannelDetailViewModel.NavigateToSalesChannelInput = NavigateToSalesChannelInput;
         await _salesChannelDetailViewModel.InitializeAsync(salesChannelId);
         
         CurrentView = _salesChannelDetailViewModel;
@@ -532,5 +610,76 @@ public partial class MainViewModel : ViewModelBase
         await listViewModel.RefreshAsync();
         CurrentView = listViewModel;
         SelectedMenuItem = "AiPrompts";
+    }
+
+    public async Task NavigateToSalesChannelInput(int salesChannelId)
+    {
+        if (!IsAuthenticated) return;
+
+        _salesChannelInputViewModel = _serviceProvider.GetRequiredService<SalesChannelInputViewModel>();
+        
+        if (salesChannelId > 0)
+        {
+            // Edit mode
+            _salesChannelInputViewModel.GoBackAction = async () => await NavigateToSalesChannelDetail(salesChannelId);
+        }
+        else
+        {
+            // Create mode
+            _salesChannelInputViewModel.GoBackAction = async () => await NavigateToSalesChannelList();
+        }
+        
+        _salesChannelInputViewModel.NavigateToSalesChannelDetail = NavigateToSalesChannelDetail;
+        await _salesChannelInputViewModel.InitializeAsync(salesChannelId);
+        
+        CurrentView = _salesChannelInputViewModel;
+        SelectedMenuItem = "SalesChannelInput";
+    }
+
+    public async Task NavigateToTaxClassDetail(int taxClassId)
+    {
+        if (!IsAuthenticated) return;
+
+        _taxClassDetailViewModel = _serviceProvider.GetRequiredService<TaxClassDetailViewModel>();
+        _taxClassDetailViewModel.GoBackAction = async () => await NavigateToTaxClassList();
+        _taxClassDetailViewModel.NavigateToEditTaxClass = NavigateToEditTaxClass;
+        await _taxClassDetailViewModel.InitializeAsync(taxClassId);
+        
+        CurrentView = _taxClassDetailViewModel;
+        SelectedMenuItem = "TaxClassDetail";
+    }
+
+    public async Task NavigateToTaxClassList()
+    {
+        if (!IsAuthenticated) return;
+        
+        CurrentView = await GetTaxClassListWithRefreshAsync();
+        SelectedMenuItem = "TaxClasses";
+    }
+
+    public async Task NavigateToCreateTaxClass()
+    {
+        if (!IsAuthenticated) return;
+
+        _taxClassInputViewModel = _serviceProvider.GetRequiredService<TaxClassInputViewModel>();
+        _taxClassInputViewModel.GoBackAction = async () => await NavigateToTaxClassList();
+        _taxClassInputViewModel.NavigateToTaxClassDetail = NavigateToTaxClassDetail;
+        await _taxClassInputViewModel.InitializeAsync(0); // 0 for new tax class
+        
+        CurrentView = _taxClassInputViewModel;
+        SelectedMenuItem = "TaxClassInput";
+    }
+
+    public async Task NavigateToEditTaxClass(int taxClassId)
+    {
+        if (!IsAuthenticated) return;
+
+        _taxClassInputViewModel = _serviceProvider.GetRequiredService<TaxClassInputViewModel>();
+        _taxClassInputViewModel.GoBackAction = async () => await NavigateToTaxClassDetail(taxClassId);
+        _taxClassInputViewModel.NavigateToTaxClassDetail = NavigateToTaxClassDetail;
+        await _taxClassInputViewModel.InitializeAsync(taxClassId); // Load existing tax class
+        
+        CurrentView = _taxClassInputViewModel;
+        SelectedMenuItem = "TaxClassInput";
     }
 }

@@ -18,6 +18,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
             .Where(x => x.Id == id)
             .Include(x => x.CustomerAddresses)
             .Include(x => x.Orders)
+            .AsSplitQuery()
             .FirstOrDefaultAsync() ?? null;
     }
     

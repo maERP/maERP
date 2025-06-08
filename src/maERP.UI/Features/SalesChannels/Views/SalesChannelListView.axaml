@@ -15,7 +15,7 @@
             BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
             BorderThickness="0,0,0,1">
       
-      <Grid ColumnDefinitions="*,Auto,Auto">
+      <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
         
         <!-- Titel -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
@@ -47,8 +47,18 @@
           
         </StackPanel>
         
-        <!-- Refresh Button -->
+        <!-- Create Button -->
         <Button Grid.Column="2" 
+                Content="➕ Erstellen" 
+                Command="{Binding CreateSalesChannelCommand}"
+                VerticalAlignment="Center"
+                Padding="12,6"
+                Margin="8,0"
+                Classes="accent"
+                ToolTip.Tip="Neuen Vertriebskanal erstellen"/>
+        
+        <!-- Refresh Button -->
+        <Button Grid.Column="3" 
                 Content="🔄" 
                 Command="{Binding RefreshCommand}"
                 VerticalAlignment="Center"

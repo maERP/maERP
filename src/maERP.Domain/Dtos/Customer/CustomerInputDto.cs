@@ -17,7 +17,7 @@ public class CustomerInputDto : ICustomerInputModel
     public string VatNumber { get; set; } = string.Empty;
     public string Note { get; set; } = string.Empty;
     public CustomerStatus CustomerStatus { get; set; }
-    public DateTime DateEnrollment { get; set; }
+    public DateTimeOffset DateEnrollment { get; set; }
     
     public List<CustomerAddressListDto> CustomerAddresses { get; set; } = new();
 

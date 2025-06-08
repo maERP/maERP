@@ -30,6 +30,7 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && SalesChannel != null;
 
     public Action? GoBackAction { get; set; }
+    public Func<int, Task>? NavigateToSalesChannelInput { get; set; }
 
     // Computed properties for better display
     public bool HasUrl => SalesChannel != null && !string.IsNullOrEmpty(SalesChannel.Url);
@@ -141,5 +142,13 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
     private void GoBack()
     {
         GoBackAction?.Invoke();
+    }
+
+    [RelayCommand]
+    private async Task EditSalesChannel()
+    {
+        if (SalesChannelId <= 0 || NavigateToSalesChannelInput == null) return;
+        
+        await NavigateToSalesChannelInput(SalesChannelId);
     }
 }

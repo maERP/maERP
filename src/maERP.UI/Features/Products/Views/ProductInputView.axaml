@@ -1,0 +1,438 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
+             x:Class="maERP.UI.Features.Products.Views.ProductInputView">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    
+    <!-- Header -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,0,1">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Title -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="{Binding PageTitle}" 
+                     FontSize="24" 
+                     FontWeight="SemiBold"
+                     Margin="0,0,0,4"/>
+          <TextBlock Text="Produkt bearbeiten oder erstellen" 
+                     FontSize="14" 
+                     Opacity="0.7"/>
+        </StackPanel>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="❌ Abbrechen" 
+                  Command="{Binding CancelCommand}"
+                  Padding="12,6"/>
+          <Button Content="💾 Speichern" 
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding !IsSaving}"
+                  Padding="12,6"
+                  Classes="accent"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Produkt wird geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Margin="16"
+              VerticalAlignment="Top">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- Form Content -->
+      <ScrollViewer IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48">
+        <StackPanel Spacing="24">
+          
+          <!-- Basic Information Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="📦 Grundinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <!-- Form Fields Grid -->
+              <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="20" RowSpacing="16">
+                
+                <!-- Row 1: SKU, Name, UseOptimized -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="SKU *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Sku}" 
+                           Watermark="SKU eingeben..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="Produktname *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Name}" 
+                           Watermark="Produktname eingeben..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="0" Grid.Column="2" Spacing="4" VerticalAlignment="Bottom">
+                  <CheckBox Content="Optimierte Texte verwenden" 
+                            IsChecked="{Binding UseOptimized}"
+                            FontWeight="SemiBold"/>
+                </StackPanel>
+                
+                <!-- Row 2: NameOptimized (spans 2 columns) -->
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="4">
+                  <TextBlock Text="Optimierter Name" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding NameOptimized}" 
+                           Watermark="Optimierten Produktname eingeben..."
+                           IsEnabled="{Binding UseOptimized}"/>
+                </StackPanel>
+                
+                <!-- Row 3: EAN, ASIN -->
+                <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="EAN" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Ean}" 
+                           Watermark="EAN eingeben..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="ASIN" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Asin}" 
+                           Watermark="ASIN eingeben..."/>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Product Descriptions Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="📝 Produktbeschreibung" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <!-- Description Fields -->
+              <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                
+                <StackPanel Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Beschreibung" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Description}" 
+                           Watermark="Produktbeschreibung eingeben..."
+                           TextWrapping="Wrap"
+                           AcceptsReturn="True"
+                           MinHeight="120"
+                           VerticalContentAlignment="Top"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Spacing="4">
+                  <TextBlock Text="Optimierte Beschreibung" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding DescriptionOptimized}" 
+                           Watermark="Optimierte Produktbeschreibung eingeben..."
+                           TextWrapping="Wrap"
+                           AcceptsReturn="True"
+                           MinHeight="120"
+                           VerticalContentAlignment="Top"
+                           IsEnabled="{Binding UseOptimized}"/>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Pricing Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="💰 Preise" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <!-- Pricing Fields -->
+              <Grid ColumnDefinitions="*,*,*" ColumnSpacing="20">
+                
+                <StackPanel Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Verkaufspreis *" FontWeight="SemiBold"/>
+                  <NumericUpDown Value="{Binding Price}" 
+                                 Minimum="0"
+                                 Increment="0.01"
+                                 FormatString="C"
+                                 Watermark="Preis eingeben..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Spacing="4">
+                  <TextBlock Text="UVP" FontWeight="SemiBold"/>
+                  <NumericUpDown Value="{Binding Msrp}" 
+                                 Minimum="0"
+                                 Increment="0.01"
+                                 FormatString="C"
+                                 Watermark="UVP eingeben..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="2" Spacing="4">
+                  <TextBlock Text="Steuerklasse *" FontWeight="SemiBold"/>
+                  <ComboBox ItemsSource="{Binding AvailableTaxClasses}"
+                            SelectedItem="{Binding SelectedTaxClass}"
+                            HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate>
+                        <TextBlock>
+                          <TextBlock.Text>
+                            <MultiBinding StringFormat="ID {0} - {1}%">
+                              <Binding Path="Id"/>
+                              <Binding Path="TaxRate"/>
+                            </MultiBinding>
+                          </TextBlock.Text>
+                        </TextBlock>
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Physical Properties Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="📏 Physische Eigenschaften" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <!-- Physical Properties Fields -->
+              <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="20">
+                
+                <StackPanel Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Gewicht (kg)" FontWeight="SemiBold"/>
+                  <NumericUpDown Value="{Binding Weight}" 
+                                 Minimum="0"
+                                 Increment="0.01"
+                                 FormatString="F2"
+                                 Watermark="Gewicht..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Spacing="4">
+                  <TextBlock Text="Breite (cm)" FontWeight="SemiBold"/>
+                  <NumericUpDown Value="{Binding Width}" 
+                                 Minimum="0"
+                                 Increment="0.1"
+                                 FormatString="F1"
+                                 Watermark="Breite..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="2" Spacing="4">
+                  <TextBlock Text="Höhe (cm)" FontWeight="SemiBold"/>
+                  <NumericUpDown Value="{Binding Height}" 
+                                 Minimum="0"
+                                 Increment="0.1"
+                                 FormatString="F1"
+                                 Watermark="Höhe..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="3" Spacing="4">
+                  <TextBlock Text="Tiefe (cm)" FontWeight="SemiBold"/>
+                  <NumericUpDown Value="{Binding Depth}" 
+                                 Minimum="0"
+                                 Increment="0.1"
+                                 FormatString="F1"
+                                 Watermark="Tiefe..."/>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Sales Channels Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="🛒 Verkaufskanäle" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <!-- Sales Channels List -->
+              <StackPanel>
+                <TextBlock Text="{Binding ProductSalesChannelIds.Count, StringFormat=Ausgewählte Kanäle: \{0\}}" 
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,8"/>
+                
+                <ScrollViewer MaxHeight="300" VerticalScrollBarVisibility="Auto">
+                  <ItemsControl ItemsSource="{Binding AvailableSalesChannels}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                                CornerRadius="6"
+                                Padding="12"
+                                Margin="0,0,0,8">
+                          <Grid ColumnDefinitions="Auto,*,Auto">
+                            
+                            <!-- Checkbox -->
+                            <CheckBox Grid.Column="0" 
+                                      IsChecked="{Binding IsSelected}"
+                                      Command="{Binding $parent[UserControl].DataContext.ToggleSalesChannelCommand}"
+                                      CommandParameter="{Binding}"
+                                      VerticalAlignment="Center"/>
+                            
+                            <!-- Sales Channel Info -->
+                            <StackPanel Grid.Column="1" Spacing="4" Margin="12,0,0,0">
+                              <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="{Binding SalesChannel.Name}" FontWeight="SemiBold"/>
+                                <Border Background="#E3F2FD" 
+                                        CornerRadius="4" 
+                                        Padding="4,2">
+                                  <TextBlock Text="{Binding SalesChannel.SalesChannelType}" 
+                                             FontSize="10" 
+                                             FontWeight="SemiBold"
+                                             Foreground="#1976D2"/>
+                                </Border>
+                              </StackPanel>
+                              <TextBlock Text="{Binding SalesChannel.Url}" 
+                                         Opacity="0.7"
+                                         IsVisible="{Binding SalesChannel.Url, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                              <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Border Background="#E8F5E8" 
+                                        CornerRadius="4" 
+                                        Padding="4,2"
+                                        IsVisible="{Binding SalesChannel.ExportProducts}">
+                                  <TextBlock Text="📤 Export" 
+                                             FontSize="10" 
+                                             FontWeight="SemiBold"
+                                             Foreground="#2E7D32"/>
+                                </Border>
+                                <Border Background="#FFF3E0" 
+                                        CornerRadius="4" 
+                                        Padding="4,2"
+                                        IsVisible="{Binding SalesChannel.ImportProducts}">
+                                  <TextBlock Text="📥 Import" 
+                                             FontSize="10" 
+                                             FontWeight="SemiBold"
+                                             Foreground="#F57C00"/>
+                                </Border>
+                              </StackPanel>
+                            </StackPanel>
+                            
+                            <!-- ID -->
+                            <TextBlock Grid.Column="2" 
+                                       Text="{Binding SalesChannel.Id, StringFormat=ID: \{0\}}"
+                                       VerticalAlignment="Center"
+                                       Opacity="0.5"
+                                       FontSize="12"/>
+                            
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </ScrollViewer>
+              </StackPanel>
+              
+            </StackPanel>
+          </Border>
+          
+        </StackPanel>
+      </ScrollViewer>
+      
+    </Grid>
+    
+    <!-- Footer with action buttons -->
+    <Border Grid.Row="2" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,12"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,1,0,0">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Save Status -->
+        <StackPanel Grid.Column="0" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <ProgressBar IsIndeterminate="{Binding IsSaving}" 
+                       IsVisible="{Binding IsSaving}"
+                       Width="20" Height="20"/>
+          <TextBlock Text="Status: Bereit" 
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     IsVisible="{Binding !IsSaving}"/>
+          <TextBlock Text="Status: Wird gespeichert..." 
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     IsVisible="{Binding IsSaving}"/>
+        </StackPanel>
+        
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8">
+          
+          <Button Content="❌ Abbrechen" 
+                  Command="{Binding CancelCommand}"
+                  Padding="16,8"/>
+          
+          <Button Content="💾 Speichern" 
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding !IsSaving}"
+                  Padding="16,8"
+                  Classes="accent"/>
+          
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+  </Grid>
+
+</UserControl>

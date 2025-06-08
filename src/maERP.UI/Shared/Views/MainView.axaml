@@ -268,6 +268,9 @@
             <DataTemplate DataType="{x:Type orderVm:OrderDetailViewModel}">
               <orderViews:OrderDetailView/>
             </DataTemplate>
+			<DataTemplate DataType="{x:Type orderVm:OrderInputViewModel}">
+			  <orderViews:OrderInputView/>
+			</DataTemplate>
             
             <!-- Invoices -->
             <DataTemplate DataType="{x:Type invoiceVm:InvoiceListViewModel}">
@@ -281,6 +284,9 @@
             <DataTemplate DataType="{x:Type productVm:ProductDetailViewModel}">
               <productViews:ProductDetailView/>
             </DataTemplate>
+			<DataTemplate DataType="{x:Type productVm:ProductInputViewModel}">
+			  <productViews:ProductInputView/>
+			</DataTemplate>
             
             <!-- Warehouses -->
             <DataTemplate DataType="{x:Type warehouseVm:WarehouseListViewModel}">
@@ -289,6 +295,9 @@
             <DataTemplate DataType="{x:Type warehouseVm:WarehouseDetailViewModel}">
               <warehouseViews:WarehouseDetailView/>
             </DataTemplate>
+			<DataTemplate DataType="{x:Type warehouseVm:WarehouseInputViewModel}">
+			  <warehouseViews:WarehouseInputView/>
+			</DataTemplate>
             
             <!-- Sales Channels -->
             <DataTemplate DataType="{x:Type salesChannelVm:SalesChannelListViewModel}">
@@ -296,6 +305,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type salesChannelVm:SalesChannelDetailViewModel}">
               <salesChannelViews:SalesChannelDetailView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type salesChannelVm:SalesChannelInputViewModel}">
+              <salesChannelViews:SalesChannelInputView/>
             </DataTemplate>
             
             <!-- AI Models -->
@@ -324,6 +336,12 @@
             <DataTemplate DataType="{x:Type adminVm:TaxClassListViewModel}">
               <adminViews:TaxClassListView/>
             </DataTemplate>
+			<DataTemplate DataType="{x:Type adminVm:TaxClassDetailViewModel}">
+			  <adminViews:TaxClassDetailView/>
+			</DataTemplate>
+			<DataTemplate DataType="{x:Type adminVm:TaxClassInputViewModel}">
+			  <adminViews:TaxClassInputView/>
+			</DataTemplate>
             <DataTemplate DataType="{x:Type adminVm:UserListViewModel}">
               <adminViews:UserListView/>
             </DataTemplate>

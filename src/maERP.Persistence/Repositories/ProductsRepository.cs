@@ -19,7 +19,11 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
 
     public async Task<Product?> GetWithDetailsAsync(int id)
     {
-        return await Context.Product.Include(ps => ps.ProductSalesChannels).Include(ps => ps.ProductStocks).FirstOrDefaultAsync(p => p.Id == id);
+        return await Context.Product
+            .Include(ps => ps.ProductSalesChannels)
+            .Include(ps => ps.ProductStocks)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<bool> UpdateStockAsync(int productId, int warehouseId, int newStock)

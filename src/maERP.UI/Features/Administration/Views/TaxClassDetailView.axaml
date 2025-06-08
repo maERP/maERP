@@ -1,0 +1,213 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Features.Administration.Views.TaxClassDetailView">
+
+  <Grid RowDefinitions="Auto,*">
+    
+    <!-- Header with tax class info and actions -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,0,1">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Title and basic info -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
+            <TextBlock Text="{Binding TaxClass.Id, StringFormat=💰 Steuerklasse #{0}}" 
+                       FontSize="24" 
+                       FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding TaxRateFormatted}" 
+                       FontSize="24" 
+                       FontWeight="SemiBold"/>
+            <Border Background="#E8F5E8" 
+                    CornerRadius="12" 
+                    Padding="8,4">
+              <TextBlock Text="{Binding TaxRateCategory}" 
+                         FontSize="12" 
+                         FontWeight="SemiBold"
+                         Foreground="#2E7D32"/>
+            </Border>
+          </StackPanel>
+          <TextBlock Text="{Binding TaxRateDescription}" 
+                     FontSize="14" 
+                     Opacity="0.7"/>
+        </StackPanel>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="✏️ Bearbeiten" 
+                  Command="{Binding EditTaxClassCommand}"
+                  Padding="12,6"
+                  Classes="accent"/>
+          <Button Content="🔄 Aktualisieren" 
+                  Command="{Binding RefreshCommand}"
+                  Padding="12,6"/>
+          <Button Content="← Zurück" 
+                  Command="{Binding GoBackCommand}"
+                  Padding="12,6"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Steuerklasse wird geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Margin="16"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+          <Button Content="Erneut versuchen" 
+                  Command="{Binding RefreshCommand}"
+                  HorizontalAlignment="Left"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- Tax Class Details Content -->
+      <ScrollViewer IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48">
+        <StackPanel Spacing="24" MaxWidth="800" HorizontalAlignment="Center">
+          
+          <!-- Tax Rate Information Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="32">
+            <StackPanel Spacing="24">
+              
+              <!-- Section Title -->
+              <TextBlock Text="📊 Steuerinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         HorizontalAlignment="Center"/>
+              
+              <!-- Tax Rate Display -->
+              <Grid ColumnDefinitions="*,Auto,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="16">
+                
+                <!-- Large Tax Rate Display -->
+                <StackPanel Grid.Row="0" Grid.ColumnSpan="3" 
+                           HorizontalAlignment="Center" 
+                           Spacing="8">
+                  <TextBlock Text="{Binding TaxRateFormatted}" 
+                             FontSize="48" 
+                             FontWeight="Bold"
+                             HorizontalAlignment="Center"
+                             Foreground="{DynamicResource SystemAccentColor}"/>
+                  <TextBlock Text="{Binding TaxRateDescription}" 
+                             FontSize="16" 
+                             HorizontalAlignment="Center"
+                             Opacity="0.8"/>
+                </StackPanel>
+                
+                <!-- Details Grid -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
+                  <TextBlock Text="ID" FontWeight="SemiBold" FontSize="14"/>
+                  <TextBlock Text="{Binding TaxClass.Id}" FontSize="16"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="1" Grid.Column="2" Spacing="8">
+                  <TextBlock Text="Kategorie" FontWeight="SemiBold" FontSize="14"/>
+                  <TextBlock Text="{Binding TaxRateCategory}" FontSize="16"/>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Usage Examples Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="24">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="📖 Anwendungsbeispiele" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <!-- Examples based on tax rate -->
+              <StackPanel Spacing="12">
+                
+                <!-- Dynamic examples based on tax rate -->
+                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        CornerRadius="4"
+                        Padding="16">
+                  <StackPanel Spacing="8">
+                    <TextBlock Text="💡 Verwendung" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding TaxClass.TaxRate, StringFormat='Diese Steuerklasse mit {0:F2}% wird verwendet für:'}" 
+                               FontSize="13" 
+                               Opacity="0.8"/>
+                    
+                    <!-- Examples based on description -->
+                    <StackPanel Spacing="4">
+                      <TextBlock Text="• Normale Waren und Dienstleistungen" 
+                                 FontSize="12" 
+                                 Opacity="0.7"/>
+                      <TextBlock Text="• Elektronik, Kleidung, Restaurants" 
+                                 FontSize="12" 
+                                 Opacity="0.7"/>
+                      <TextBlock Text="• Alle nicht anderweitig kategorisierten Produkte" 
+                                 FontSize="12" 
+                                 Opacity="0.7"/>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+                
+                <!-- Calculation example -->
+                <Border Background="#F3E5F5"
+                        CornerRadius="4"
+                        Padding="16">
+                  <StackPanel Spacing="8">
+                    <TextBlock Text="🧮 Berechnungsbeispiel" FontWeight="SemiBold"/>
+                    <StackPanel Spacing="4">
+                      <TextBlock Text="{Binding TaxClass.TaxRate, StringFormat='Netto-Preis: 100,00 € + {0:F2}% MwSt.'}" 
+                                 FontSize="12" 
+                                 Opacity="0.8"/>
+                      <TextBlock Text="Beispiel: Alle Preise werden automatisch berechnet" 
+                                 FontSize="12" 
+                                 Opacity="0.6"/>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+                
+              </StackPanel>
+              
+            </StackPanel>
+          </Border>
+          
+        </StackPanel>
+      </ScrollViewer>
+      
+    </Grid>
+    
+  </Grid>
+
+</UserControl>

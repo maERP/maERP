@@ -59,15 +59,21 @@ public partial class App : Application
         services.AddTransient<InvoiceListViewModel>();
         services.AddTransient<OrderListViewModel>();
         services.AddTransient<OrderDetailViewModel>();
+        services.AddTransient<OrderInputViewModel>();
         services.AddTransient<ProductListViewModel>();
         services.AddTransient<ProductDetailViewModel>();
+        services.AddTransient<ProductInputViewModel>();
         services.AddTransient<SalesChannelListViewModel>();
-        services.AddTransient<SalesChannelDetailViewModel>();        
+        services.AddTransient<SalesChannelDetailViewModel>();
+        services.AddTransient<SalesChannelInputViewModel>();        
         services.AddTransient<TaxClassListViewModel>();        
+        services.AddTransient<TaxClassInputViewModel>();        
+        services.AddTransient<TaxClassDetailViewModel>();        
         services.AddTransient<UserListViewModel>();        
         services.AddTransient<WarehouseListViewModel>();
         services.AddTransient<WarehouseDetailViewModel>();
-        
+        services.AddTransient<WarehouseInputViewModel>();
+
         _serviceProvider = services.BuildServiceProvider();
     }
 

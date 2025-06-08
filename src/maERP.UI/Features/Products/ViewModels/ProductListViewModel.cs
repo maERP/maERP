@@ -42,6 +42,7 @@ public partial class ProductListViewModel : ViewModelBase
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
     public Func<int, Task>? NavigateToProductDetail { get; set; }
+    public Func<Task>? NavigateToProductInput { get; set; }
 
     public ProductListViewModel(IHttpService httpService)
     {
@@ -145,6 +146,15 @@ public partial class ProductListViewModel : ViewModelBase
         
         SelectedProduct = product;
         await NavigateToProductDetail(product.Id);
+    }
+
+    [RelayCommand]
+    private async Task CreateProductAsync()
+    {
+        if (NavigateToProductInput != null)
+        {
+            await NavigateToProductInput();
+        }
     }
 
     public bool CanGoNext => (CurrentPage + 1) * PageSize < TotalCount;

@@ -21,5 +21,5 @@ public class Customer : BaseEntity, IBaseEntity
     public ICollection<CustomerAddress>? CustomerAddresses { get; set; }
     public ICollection<CustomerSalesChannel>? CustomerSalesChannels { get; set; }
     public ICollection<Order>? Orders { get; set; }
-    public DateTime DateEnrollment { get; set; }
+    public DateTimeOffset DateEnrollment { get; set; }
 }

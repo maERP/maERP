@@ -1,0 +1,338 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:enums="clr-namespace:maERP.Domain.Enums;assembly=maERP.Domain"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Features.SalesChannels.Views.SalesChannelInputView">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    
+    <!-- Header -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,0,1">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Title -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="{Binding PageTitle}" 
+                     FontSize="24" 
+                     FontWeight="SemiBold"
+                     Margin="0,0,0,4"/>
+          <TextBlock Text="Vertriebskanal bearbeiten oder erstellen" 
+                     FontSize="14" 
+                     Opacity="0.7"/>
+        </StackPanel>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="❌ Abbrechen" 
+                  Command="{Binding CancelCommand}"
+                  Padding="12,6"/>
+          <Button Content="💾 Speichern" 
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding !IsSaving}"
+                  Padding="12,6"
+                  Classes="accent"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Vertriebskanal wird geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Margin="16"
+              VerticalAlignment="Top">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- Form Content -->
+      <ScrollViewer IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48">
+        <StackPanel Spacing="24">
+          
+          <!-- Basic Information Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="🔗 Grundinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <!-- Form Fields Grid -->
+              <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="20" RowSpacing="16">
+                
+                <!-- First Row: Name, Type -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Name *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Name}" 
+                           Watermark="Name des Vertriebskanals eingeben..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="Typ *" FontWeight="SemiBold"/>
+                  <ComboBox ItemsSource="{Binding AvailableSalesChannelTypes}"
+                            SelectedItem="{Binding SalesChannelType}"
+                            HorizontalAlignment="Stretch"/>
+                </StackPanel>
+                
+                <!-- Second Row: Warehouse -->
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="4">
+                  <TextBlock Text="Lager *" FontWeight="SemiBold"/>
+                  <ComboBox ItemsSource="{Binding AvailableWarehouses}"
+                            SelectedItem="{Binding SelectedWarehouse}"
+                            DisplayMemberBinding="{Binding Name}"
+                            HorizontalAlignment="Stretch"/>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Connection Settings Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="🌐 Verbindungseinstellungen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <TextBlock Text="Diese Einstellungen werden für die Verbindung mit externen Systemen benötigt." 
+                         FontSize="14" 
+                         Opacity="0.7"/>
+              
+              <!-- Connection Fields Grid -->
+              <Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto" RowSpacing="16">
+                
+                <!-- URL -->
+                <StackPanel Grid.Row="0" Spacing="4">
+                  <TextBlock Text="🔗 URL" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Url}" 
+                           Watermark="https://example.com/api"
+                           AcceptsReturn="False"/>
+                </StackPanel>
+                
+                <!-- Username and Password -->
+                <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="20">
+                  <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock Text="👤 Benutzername" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding Username}" 
+                             Watermark="Benutzername eingeben..."/>
+                  </StackPanel>
+                  
+                  <StackPanel Grid.Column="1" Spacing="4">
+                    <TextBlock Text="🔐 Passwort" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding Password}" 
+                             Watermark="Passwort eingeben..."
+                             PasswordChar="*"/>
+                  </StackPanel>
+                </Grid>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Import/Export Capabilities Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="⚡ Import/Export-Funktionen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <TextBlock Text="Wählen Sie aus, welche Daten zwischen dem ERP-System und dem Vertriebskanal synchronisiert werden sollen." 
+                         FontSize="14" 
+                         Opacity="0.7"/>
+              
+              <!-- Capabilities Grid -->
+              <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
+                
+                <!-- Import Capabilities -->
+                <StackPanel Grid.Column="0" Spacing="16">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="📥 Import-Funktionen" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"/>
+                    <Border Background="#E8F5E8" 
+                            CornerRadius="8" 
+                            Padding="4,2">
+                      <TextBlock Text="Von extern ins ERP" 
+                                 FontSize="10" 
+                                 FontWeight="SemiBold"
+                                 Foreground="#2E7D32"/>
+                    </Border>
+                  </StackPanel>
+                  
+                  <StackPanel Spacing="12">
+                    <CheckBox Content="📦 Produkte importieren" 
+                              IsChecked="{Binding ImportProducts}"/>
+                    <CheckBox Content="👥 Kunden importieren" 
+                              IsChecked="{Binding ImportCustomers}"/>
+                    <CheckBox Content="🛒 Bestellungen importieren" 
+                              IsChecked="{Binding ImportOrders}"/>
+                  </StackPanel>
+                </StackPanel>
+                
+                <!-- Export Capabilities -->
+                <StackPanel Grid.Column="1" Spacing="16">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="📤 Export-Funktionen" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"/>
+                    <Border Background="#FFF3E0" 
+                            CornerRadius="8" 
+                            Padding="4,2">
+                      <TextBlock Text="Vom ERP nach extern" 
+                                 FontSize="10" 
+                                 FontWeight="SemiBold"
+                                 Foreground="#F57C00"/>
+                    </Border>
+                  </StackPanel>
+                  
+                  <StackPanel Spacing="12">
+                    <CheckBox Content="📦 Produkte exportieren" 
+                              IsChecked="{Binding ExportProducts}"/>
+                    <CheckBox Content="👥 Kunden exportieren" 
+                              IsChecked="{Binding ExportCustomers}"/>
+                    <CheckBox Content="🛒 Bestellungen exportieren" 
+                              IsChecked="{Binding ExportOrders}"/>
+                  </StackPanel>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Help Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20"
+                  BorderBrush="#E3F2FD"
+                  BorderThickness="1">
+            <StackPanel Spacing="12">
+              
+              <!-- Section Title -->
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="💡 Hinweise" 
+                           FontSize="16" 
+                           FontWeight="SemiBold"/>
+              </StackPanel>
+              
+              <StackPanel Spacing="8">
+                <TextBlock Text="• Name: Eindeutiger Name zur Identifizierung des Vertriebskanals" 
+                           FontSize="12" 
+                           Opacity="0.7"/>
+                <TextBlock Text="• Typ: Bestimmt die verfügbaren Integrationsmöglichkeiten" 
+                           FontSize="12" 
+                           Opacity="0.7"/>
+                <TextBlock Text="• Lager: Das Lager, das für Bestandsabfragen und -updates verwendet wird" 
+                           FontSize="12" 
+                           Opacity="0.7"/>
+                <TextBlock Text="• Verbindungseinstellungen: Werden nur bei externen Systemen benötigt (nicht bei Point of Sale)" 
+                           FontSize="12" 
+                           Opacity="0.7"/>
+                <TextBlock Text="• Import/Export: Bestimmt, welche Daten automatisch synchronisiert werden" 
+                           FontSize="12" 
+                           Opacity="0.7"/>
+              </StackPanel>
+              
+            </StackPanel>
+          </Border>
+          
+        </StackPanel>
+      </ScrollViewer>
+      
+    </Grid>
+    
+    <!-- Footer with action buttons -->
+    <Border Grid.Row="2" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,12"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,1,0,0">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Save Status -->
+        <StackPanel Grid.Column="0" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <ProgressBar IsIndeterminate="{Binding IsSaving}" 
+                       IsVisible="{Binding IsSaving}"
+                       Width="20" Height="20"/>
+          <TextBlock Text="Status: Bereit" 
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     IsVisible="{Binding !IsSaving}"/>
+          <TextBlock Text="Status: Wird gespeichert..." 
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     IsVisible="{Binding IsSaving}"/>
+        </StackPanel>
+        
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8">
+          
+          <Button Content="❌ Abbrechen" 
+                  Command="{Binding CancelCommand}"
+                  Padding="16,8"/>
+          
+          <Button Content="💾 Speichern" 
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding !IsSaving}"
+                  Padding="16,8"
+                  Classes="accent"/>
+          
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+  </Grid>
+
+</UserControl>

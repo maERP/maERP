@@ -31,6 +31,7 @@ public partial class ProductDetailViewModel : ViewModelBase
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && Product != null;
 
     public Action? GoBackAction { get; set; }
+    public Func<int, Task>? NavigateToProductInput { get; set; }
 
     // Computed properties for better display
     public string DisplayName => Product.UseOptimized && !string.IsNullOrEmpty(Product.NameOptimized) 
@@ -162,5 +163,14 @@ public partial class ProductDetailViewModel : ViewModelBase
     private void GoBack()
     {
         GoBackAction?.Invoke();
+    }
+
+    [RelayCommand]
+    private async Task EditProductAsync()
+    {
+        if (ProductId > 0 && NavigateToProductInput != null)
+        {
+            await NavigateToProductInput(ProductId);
+        }
     }
 }

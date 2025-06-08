@@ -30,6 +30,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && Warehouse != null;
 
     public Action? GoBackAction { get; set; }
+    public Func<int, Task>? NavigateToEditWarehouse { get; set; }
 
     // Computed properties for better display
     public bool HasName => Warehouse != null && !string.IsNullOrEmpty(Warehouse.Name);
@@ -108,6 +109,14 @@ public partial class WarehouseDetailViewModel : ViewModelBase
     private void GoBack()
     {
         GoBackAction?.Invoke();
+    }
+
+    [RelayCommand]
+    private async Task EditWarehouse()
+    {
+        if (Warehouse == null || NavigateToEditWarehouse == null) return;
+        
+        await NavigateToEditWarehouse(Warehouse.Id);
     }
 
     [RelayCommand]

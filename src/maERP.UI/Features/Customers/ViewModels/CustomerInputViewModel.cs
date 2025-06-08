@@ -57,7 +57,7 @@ public partial class CustomerInputViewModel : ViewModelBase
     private CustomerStatus customerStatus = CustomerStatus.Active;
 
     [ObservableProperty]
-    private DateTime dateEnrollment = DateTime.Now;
+    private DateTimeOffset dateEnrollment = DateTimeOffset.Now;
 
     [ObservableProperty]
     private ObservableCollection<CustomerAddressListDto> customerAddresses = new();
@@ -297,7 +297,7 @@ public partial class CustomerInputViewModel : ViewModelBase
         VatNumber = string.Empty;
         Note = string.Empty;
         CustomerStatus = CustomerStatus.Active;
-        DateEnrollment = DateTime.Now;
+        DateEnrollment = DateTimeOffset.Now;
         CustomerAddresses.Clear();
         ErrorMessage = string.Empty;
         

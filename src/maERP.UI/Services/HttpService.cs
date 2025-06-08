@@ -36,7 +36,7 @@ public class HttpService : IHttpService
         {
             _serverUrl = serverUrl.TrimEnd('/');
 
-            var loginRequest = new LoginDto
+            var loginRequest = new LoginRequestDto
             {
                 Email = email,
                 Password = password,

@@ -42,6 +42,7 @@ public partial class SalesChannelListViewModel : ViewModelBase
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
     public Func<int, Task>? NavigateToSalesChannelDetail { get; set; }
+    public Func<int, Task>? NavigateToSalesChannelInput { get; set; }
 
     public SalesChannelListViewModel(IHttpService httpService)
     {
@@ -145,6 +146,14 @@ public partial class SalesChannelListViewModel : ViewModelBase
         
         SelectedSalesChannel = salesChannel;
         await NavigateToSalesChannelDetail(salesChannel.Id);
+    }
+
+    [RelayCommand]
+    private async Task CreateSalesChannel()
+    {
+        if (NavigateToSalesChannelInput == null) return;
+        
+        await NavigateToSalesChannelInput(0); // 0 indicates create new
     }
 
     public bool CanGoNext => (CurrentPage + 1) * PageSize < TotalCount;

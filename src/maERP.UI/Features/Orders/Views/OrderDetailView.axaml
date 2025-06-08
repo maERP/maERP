@@ -52,6 +52,10 @@
           <Button Content="← Zurück" 
                   Command="{Binding GoBackCommand}"
                   Padding="12,6"/>
+          <Button Content="✏️ Bearbeiten" 
+                  Command="{Binding EditOrderCommand}"
+                  Padding="12,6"
+                  Classes="accent"/>
           <Button Content="🔄 Aktualisieren" 
                   Command="{Binding RefreshCommand}"
                   Padding="12,6"/>
