@@ -31,7 +31,7 @@ public class TaxClassesController : ControllerBase
     {
         if (string.IsNullOrEmpty(orderBy))
         {
-            orderBy = "DateCreated Descending";
+            orderBy = "Id Ascending";
         }
 
         var response = await _mediator.Send(new TaxClassListQuery(pageNumber, pageSize, searchString, orderBy));

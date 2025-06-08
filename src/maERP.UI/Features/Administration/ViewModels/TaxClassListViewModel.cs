@@ -62,7 +62,7 @@ public partial class TaxClassListViewModel : ViewModelBase
 
         try
         {
-            var result = await _httpService.GetPaginatedAsync<TaxClassListDto>("taxclasses", CurrentPage, PageSize, SearchText, "TaxRate Ascending");
+            var result = await _httpService.GetPaginatedAsync<TaxClassListDto>("taxclasses", CurrentPage, PageSize, SearchText, "Id Ascending");
 
             if (result == null)
             {
