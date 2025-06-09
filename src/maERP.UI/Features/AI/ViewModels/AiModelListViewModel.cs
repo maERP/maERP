@@ -41,6 +41,7 @@ public partial class AiModelListViewModel : ViewModelBase
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
+    public Func<Task>? NavigateToAiModelInput { get; set; }
     public Action<int>? NavigateToAiModelDetail { get; set; }
 
     public AiModelListViewModel(IHttpService httpService)
@@ -136,6 +137,13 @@ public partial class AiModelListViewModel : ViewModelBase
     private void SelectAiModel(AiModelListDto? aiModel)
     {
         SelectedAiModel = aiModel;
+    }
+
+    [RelayCommand]
+    private async Task AddAiModel()
+    {
+        if (NavigateToAiModelInput != null)
+            await NavigateToAiModelInput();
     }
 
     [RelayCommand]

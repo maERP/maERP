@@ -239,6 +239,7 @@ public partial class MainViewModel : ViewModelBase
         {
             _aiModelListViewModel = _serviceProvider.GetRequiredService<AiModelListViewModel>();
             _aiModelListViewModel.NavigateToAiModelDetail = ShowAiModelDetail;
+            _aiModelListViewModel.NavigateToAiModelInput = NavigateToCreateAiModel;
             await _aiModelListViewModel.InitializeAsync();
         }
         return _aiModelListViewModel;
@@ -286,6 +287,19 @@ public partial class MainViewModel : ViewModelBase
     private async void ShowAiModelDetail(int aiModelId)
     {
         await NavigateToAiModelDetail(aiModelId);
+    }
+
+    public async Task NavigateToCreateAiModel()
+    {
+        if (!IsAuthenticated) return;
+
+        _aiModelInputViewModel = _serviceProvider.GetRequiredService<AiModelInputViewModel>();
+        _aiModelInputViewModel.GoBackAction = async () => await NavigateToMenuItem("AiModels");
+        _aiModelInputViewModel.NavigateToAiModelDetail = NavigateToAiModelDetail;
+        await _aiModelInputViewModel.InitializeAsync(0); // 0 for new ai model
+        
+        CurrentView = _aiModelInputViewModel;
+        SelectedMenuItem = "AiModelInput";
     }
 
     private async Task<AiPromptListViewModel> GetAiPromptListViewModelAsync()
