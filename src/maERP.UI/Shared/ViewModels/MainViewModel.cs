@@ -60,6 +60,8 @@ public partial class MainViewModel : ViewModelBase
     private TaxClassDetailViewModel? _taxClassDetailViewModel;
     private TaxClassInputViewModel? _taxClassInputViewModel;
     private UserListViewModel? _userListViewModel;
+    private UserDetailViewModel? _userDetailViewModel;
+    private UserInputViewModel? _userInputViewModel;
 
     public MainViewModel(IAuthenticationService authenticationService,
                         LoginViewModel loginViewModel,
@@ -202,6 +204,7 @@ public partial class MainViewModel : ViewModelBase
         {
             _warehouseListViewModel = _serviceProvider.GetRequiredService<WarehouseListViewModel>();
             _warehouseListViewModel.NavigateToWarehouseDetail = NavigateToWarehouseDetail;
+            _warehouseListViewModel.NavigateToWarehouseCreate = async () => await NavigateToWarehouseInput();
             await _warehouseListViewModel.InitializeAsync();
         }
         return _warehouseListViewModel;
@@ -364,6 +367,8 @@ public partial class MainViewModel : ViewModelBase
         if (_userListViewModel == null)
         {
             _userListViewModel = _serviceProvider.GetRequiredService<UserListViewModel>();
+            _userListViewModel.NavigateToUserDetail = NavigateToUserDetail;
+            _userListViewModel.NavigateToCreateUser = NavigateToCreateUser;
             await _userListViewModel.InitializeAsync();
         }
         return _userListViewModel;
@@ -695,5 +700,54 @@ public partial class MainViewModel : ViewModelBase
         
         CurrentView = _taxClassInputViewModel;
         SelectedMenuItem = "TaxClassInput";
+    }
+
+    public async Task NavigateToUserDetail(string userId)
+    {
+        if (!IsAuthenticated) return;
+
+        _userDetailViewModel = _serviceProvider.GetRequiredService<UserDetailViewModel>();
+        _userDetailViewModel.GoBackAction = async () => await NavigateToUserList();
+        _userDetailViewModel.NavigateToEditUser = NavigateToEditUser;
+        await _userDetailViewModel.InitializeAsync(userId);
+        
+        CurrentView = _userDetailViewModel;
+        SelectedMenuItem = "UserDetail";
+    }
+
+    [RelayCommand]
+    private async Task NavigateToUserList()
+    {
+        var listViewModel = await GetUserListViewModelAsync();
+        // Refresh the list to show any changes
+        await listViewModel.RefreshAsync();
+        CurrentView = listViewModel;
+        SelectedMenuItem = "Users";
+    }
+
+    public async Task NavigateToCreateUser()
+    {
+        if (!IsAuthenticated) return;
+
+        _userInputViewModel = _serviceProvider.GetRequiredService<UserInputViewModel>();
+        _userInputViewModel.GoBackAction = async () => await NavigateToUserList();
+        _userInputViewModel.NavigateToUserDetail = NavigateToUserDetail;
+        await _userInputViewModel.InitializeAsync(""); // Empty string for new user
+        
+        CurrentView = _userInputViewModel;
+        SelectedMenuItem = "UserInput";
+    }
+
+    public async Task NavigateToEditUser(string userId)
+    {
+        if (!IsAuthenticated) return;
+
+        _userInputViewModel = _serviceProvider.GetRequiredService<UserInputViewModel>();
+        _userInputViewModel.GoBackAction = async () => await NavigateToUserDetail(userId);
+        _userInputViewModel.NavigateToUserDetail = NavigateToUserDetail;
+        await _userInputViewModel.InitializeAsync(userId); // Load existing user
+        
+        CurrentView = _userInputViewModel;
+        SelectedMenuItem = "UserInput";
     }
 }

@@ -345,6 +345,12 @@
             <DataTemplate DataType="{x:Type adminVm:UserListViewModel}">
               <adminViews:UserListView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type adminVm:UserDetailViewModel}">
+              <adminViews:UserDetailView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type adminVm:UserInputViewModel}">
+              <adminViews:UserInputView/>
+            </DataTemplate>
             
           </ContentControl.DataTemplates>
         </ContentControl>

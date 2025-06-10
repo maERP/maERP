@@ -1,0 +1,274 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Features.Administration.Views.UserInputView">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    
+    <!-- Header -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,0,1">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Title -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="{Binding PageTitle}" 
+                     FontSize="24" 
+                     FontWeight="SemiBold"
+                     Margin="0,0,0,4"/>
+          <TextBlock Text="Benutzerdaten bearbeiten oder erstellen" 
+                     FontSize="14" 
+                     Opacity="0.7"/>
+        </StackPanel>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="🔄 Formular leeren" 
+                  Command="{Binding ClearFormCommand}"
+                  Padding="12,6"
+                  IsVisible="{Binding !IsEditMode}"/>
+          <Button Content="❌ Abbrechen" 
+                  Command="{Binding CancelCommand}"
+                  Padding="12,6"/>
+          <Button Content="💾 Speichern" 
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding !IsSaving}"
+                  Padding="12,6"
+                  Classes="accent"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Benutzer wird geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Margin="16"
+              VerticalAlignment="Top">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- Form Content -->
+      <ScrollViewer IsVisible="{Binding ShouldShowContent}" Padding="24">
+        <StackPanel Spacing="24" MaxWidth="700" HorizontalAlignment="Center">
+          
+          <!-- Basic Information Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="32">
+            <StackPanel Spacing="20">
+              
+              <!-- Section Title -->
+              <TextBlock Text="👤 Grundinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         HorizontalAlignment="Center"/>
+              
+              <!-- User Avatar Preview -->
+              <StackPanel HorizontalAlignment="Center" Spacing="8">
+                <Border Width="60" Height="60"
+                        Background="{DynamicResource SystemAccentColor}"
+                        CornerRadius="30"
+                        HorizontalAlignment="Center">
+                  <TextBlock Text="{Binding Firstname, StringFormat=\{0:C0\}}" 
+                             FontSize="24" 
+                             FontWeight="Bold"
+                             Foreground="White"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="{Binding FullName}" 
+                           FontSize="14" 
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
+                           Opacity="0.8"/>
+              </StackPanel>
+              
+              <!-- Form Fields -->
+              <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="20" RowSpacing="16">
+                
+                <!-- First Row: Firstname, Lastname -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6">
+                  <TextBlock Text="Vorname *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Firstname}" 
+                           Watermark="Vorname eingeben..."
+                           IsEnabled="{Binding !IsSaving}"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="6">
+                  <TextBlock Text="Nachname *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Lastname}" 
+                           Watermark="Nachname eingeben..."
+                           IsEnabled="{Binding !IsSaving}"/>
+                </StackPanel>
+                
+                <!-- Second Row: Email -->
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="6">
+                  <TextBlock Text="E-Mail-Adresse *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Email}" 
+                           Watermark="benutzer@beispiel.de"
+                           IsEnabled="{Binding !IsSaving}"/>
+                  <TextBlock Text="Die E-Mail-Adresse wird für die Anmeldung verwendet" 
+                             FontSize="12" 
+                             Opacity="0.6"/>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Password Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="32">
+            <StackPanel Spacing="20">
+              
+              <!-- Section Title -->
+              <StackPanel Spacing="8" HorizontalAlignment="Center">
+                <TextBlock Text="🔐 Passwort" 
+                           FontSize="18" 
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding PasswordHint}" 
+                           FontSize="13" 
+                           Opacity="0.7"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"/>
+              </StackPanel>
+              
+              <!-- Password Fields -->
+              <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="20" RowSpacing="16">
+                
+                <!-- First Row: Password -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6">
+                  <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Text="Passwort" FontWeight="SemiBold"/>
+                    <TextBlock Text="*" Foreground="Red" IsVisible="{Binding IsPasswordRequired}"/>
+                  </StackPanel>
+                  <TextBox Text="{Binding Password}" 
+                           PasswordChar="●"
+                           Watermark="Mindestens 8 Zeichen..."
+                           IsEnabled="{Binding !IsSaving}"/>
+                </StackPanel>
+                
+                <!-- Second Row: Password Confirm -->
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="6">
+                  <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Text="Passwort bestätigen" FontWeight="SemiBold"/>
+                    <TextBlock Text="*" Foreground="Red" IsVisible="{Binding IsPasswordRequired}"/>
+                  </StackPanel>
+                  <TextBox Text="{Binding PasswordConfirm}" 
+                           PasswordChar="●"
+                           Watermark="Passwort wiederholen..."
+                           IsEnabled="{Binding !IsSaving}"/>
+                </StackPanel>
+                
+              </Grid>
+              
+              <!-- Password Security Info -->
+              <Border Background="#E8F5E8"
+                      BorderBrush="#4CAF50"
+                      BorderThickness="1"
+                      CornerRadius="4"
+                      Padding="16">
+                <StackPanel Spacing="8">
+                  <TextBlock Text="🛡️ Passwort-Sicherheit" FontWeight="SemiBold" FontSize="13"/>
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="• Mindestens 8 Zeichen verwenden" FontSize="11" Opacity="0.8"/>
+                    <TextBlock Text="• Kombination aus Buchstaben, Zahlen und Sonderzeichen" FontSize="11" Opacity="0.8"/>
+                    <TextBlock Text="• Keine persönlichen Informationen verwenden" FontSize="11" Opacity="0.8"/>
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+              
+            </StackPanel>
+          </Border>
+          
+        </StackPanel>
+      </ScrollViewer>
+      
+    </Grid>
+    
+    <!-- Status Footer -->
+    <Border Grid.Row="2" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,12"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,1,0,0">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Save Status -->
+        <StackPanel Grid.Column="0" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <ProgressBar IsIndeterminate="{Binding IsSaving}" 
+                       IsVisible="{Binding IsSaving}"
+                       Width="20" Height="20"/>
+          <TextBlock Text="Status: Bereit" 
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     IsVisible="{Binding !IsSaving}"/>
+          <TextBlock Text="Status: Wird gespeichert..." 
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     IsVisible="{Binding IsSaving}"/>
+        </StackPanel>
+        
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8">
+          
+          <Button Content="❌ Abbrechen" 
+                  Command="{Binding CancelCommand}"
+                  Padding="16,8"/>
+          
+          <Button Content="💾 Speichern" 
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding !IsSaving}"
+                  Padding="16,8"
+                  Classes="accent"/>
+          
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+  </Grid>
+
+</UserControl>

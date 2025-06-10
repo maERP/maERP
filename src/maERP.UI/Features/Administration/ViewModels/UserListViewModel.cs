@@ -41,6 +41,9 @@ public partial class UserListViewModel : ViewModelBase
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
+    public Func<string, Task>? NavigateToUserDetail { get; set; }
+    public Func<Task>? NavigateToCreateUser { get; set; }
+
     public UserListViewModel(IHttpService httpService)
     {
         _httpService = httpService;
@@ -134,6 +137,23 @@ public partial class UserListViewModel : ViewModelBase
     private void SelectUser(UserListDto? user)
     {
         SelectedUser = user;
+    }
+
+    [RelayCommand]
+    private async Task ViewUserDetails(UserListDto? user)
+    {
+        if (user == null || NavigateToUserDetail == null) return;
+        
+        SelectedUser = user;
+        await NavigateToUserDetail(user.Id);
+    }
+
+    [RelayCommand]
+    private async Task CreateNewUser()
+    {
+        if (NavigateToCreateUser == null) return;
+        
+        await NavigateToCreateUser();
     }
 
     public bool CanGoNext => (CurrentPage + 1) * PageSize < TotalCount;

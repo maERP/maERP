@@ -52,7 +52,7 @@
                     Orientation="Horizontal" 
                     Spacing="8" 
                     VerticalAlignment="Center">
-          <Button Content="➕ Neuer Kunde" 
+          <Button Content="➕ Neu" 
                   Command="{Binding CreateNewCustomerCommand}"
                   Padding="12,6"
                   Classes="accent"/>

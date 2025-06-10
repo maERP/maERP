@@ -37,6 +37,9 @@ public partial class AiModelInputViewModel : ViewModelBase
     private string apiKey = string.Empty;
 
     [ObservableProperty]
+    private uint nCtx;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
     private bool isLoading;
 
@@ -99,6 +102,7 @@ public partial class AiModelInputViewModel : ViewModelBase
                 ApiUsername = aiModel.ApiUsername;
                 ApiPassword = aiModel.ApiPassword;
                 ApiKey = aiModel.ApiKey;
+                NCtx = aiModel.NCtx;
                 System.Diagnostics.Debug.WriteLine($"Loaded AI model {AiModelId} for editing");
             }
             else
@@ -135,7 +139,8 @@ public partial class AiModelInputViewModel : ViewModelBase
                 AiModelType = AiModelType,
                 ApiUsername = ApiUsername,
                 ApiPassword = ApiPassword,
-                ApiKey = ApiKey
+                ApiKey = ApiKey,
+                NCtx = NCtx
             };
 
             var result = IsEditMode
@@ -191,6 +196,7 @@ public partial class AiModelInputViewModel : ViewModelBase
         ApiUsername = string.Empty;
         ApiPassword = string.Empty;
         ApiKey = string.Empty;
+        NCtx = 0;
         ErrorMessage = string.Empty;
         ClearErrors();
     }

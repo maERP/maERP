@@ -42,6 +42,7 @@ public partial class WarehouseListViewModel : ViewModelBase
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
     public Action<int>? NavigateToWarehouseDetail { get; set; }
+    public Func<Task>? NavigateToWarehouseCreate { get; set; }
 
     public WarehouseListViewModel(IHttpService httpService)
     {
@@ -145,6 +146,14 @@ public partial class WarehouseListViewModel : ViewModelBase
         
         SelectedWarehouse = warehouse;
         NavigateToWarehouseDetail(warehouse.Id);
+    }
+
+    [RelayCommand]
+    private async Task CreateNewWarehouse()
+    {
+        if (NavigateToWarehouseCreate == null) return;
+        
+        await NavigateToWarehouseCreate();
     }
 
     public bool CanGoNext => (CurrentPage + 1) * PageSize < TotalCount;

@@ -49,7 +49,7 @@
         
         <!-- Create Button -->
         <Button Grid.Column="2" 
-                Content="➕ Erstellen" 
+                Content="➕ Neu" 
                 Command="{Binding CreateSalesChannelCommand}"
                 VerticalAlignment="Center"
                 Padding="12,6"

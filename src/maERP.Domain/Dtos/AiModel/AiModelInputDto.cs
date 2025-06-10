@@ -11,4 +11,5 @@ public class AiModelInputDto : IAiModelInputModel
     public string ApiUsername { get; set; } = string.Empty;
     public string ApiPassword { get; set; } = string.Empty;
     public string ApiKey { get; set; } = string.Empty;
+    public uint NCtx { get; set; }
 }

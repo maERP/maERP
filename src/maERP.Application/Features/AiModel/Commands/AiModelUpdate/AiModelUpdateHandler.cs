@@ -52,7 +52,8 @@ public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result
                 AiModelType = request.AiModelType,
                 ApiUsername = request.ApiUsername,
                 ApiPassword = request.ApiPassword,
-                ApiKey = request.ApiKey
+                ApiKey = request.ApiKey,
+                NCtx = request.NCtx
             };
             
             // Update in database

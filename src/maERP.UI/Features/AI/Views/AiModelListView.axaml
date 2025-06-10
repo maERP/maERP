@@ -52,7 +52,7 @@
                     Orientation="Horizontal" 
                     Spacing="8" 
                     VerticalAlignment="Center">
-          <Button Content="➕ Neues AI-Modell" 
+          <Button Content="➕ Neu" 
                   Command="{Binding AddAiModelCommand}"
                   Padding="12,6"
                   Classes="accent"/>

@@ -133,6 +133,10 @@
                     <TextBlock Text="Extern" IsVisible="{Binding IsExternalModel}"/>
                   </StackPanel>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Context Länge:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding AiModel.NCtx}"/>
+                </StackPanel>
               </StackPanel>
               
             </Grid>

@@ -119,6 +119,16 @@
                   </ComboBox>
                 </StackPanel>
                 
+                <!-- Context Length Field -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Context Länge" FontWeight="SemiBold"/>
+                  <NumericUpDown Value="{Binding NCtx}" 
+                                 Minimum="0"
+                                 Maximum="4294967295"
+                                 Watermark="0"
+                                 IsEnabled="{Binding !IsSaving}"/>
+                </StackPanel>
+                
               </Grid>
             </StackPanel>
           </Border>

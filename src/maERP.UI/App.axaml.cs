@@ -70,6 +70,8 @@ public partial class App : Application
         services.AddTransient<TaxClassInputViewModel>();        
         services.AddTransient<TaxClassDetailViewModel>();        
         services.AddTransient<UserListViewModel>();        
+        services.AddTransient<UserDetailViewModel>();        
+        services.AddTransient<UserInputViewModel>();        
         services.AddTransient<WarehouseListViewModel>();
         services.AddTransient<WarehouseDetailViewModel>();
         services.AddTransient<WarehouseInputViewModel>();
