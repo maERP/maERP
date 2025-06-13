@@ -41,6 +41,7 @@ public partial class App : Application
         services.AddSingleton<IHttpService, HttpService>();
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
         services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddSingleton<IDialogService, DialogService>();
 
         // Register ViewModels
         services.AddSingleton<MainViewModel>();
@@ -75,6 +76,8 @@ public partial class App : Application
         services.AddTransient<WarehouseListViewModel>();
         services.AddTransient<WarehouseDetailViewModel>();
         services.AddTransient<WarehouseInputViewModel>();
+        services.AddTransient<WarehouseSelectionDialogViewModel>();
+        services.AddTransient<ConfirmationDialogViewModel>();
 
         _serviceProvider = services.BuildServiceProvider();
     }

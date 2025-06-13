@@ -15,7 +15,8 @@
       "Bash(sudo apt-get install:*)",
       "Bash(find:*)",
       "Bash(dotnet clean:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(dotnet test:*)"
     ],
     "deny": []
   }

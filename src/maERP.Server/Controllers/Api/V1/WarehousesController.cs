@@ -64,16 +64,22 @@ public class WarehousesController(IMediator mediator) : ControllerBase
         return StatusCode((int)response.StatusCode, response);
     }
 
-    // DELETE: api/v1/<WarehousesController>/5
+    // DELETE: api/v1/<WarehousesController>/5?newWarehouseId=2
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(int id, [FromQuery] int? newWarehouseId = null)
     {
-        var command = new WarehouseDeleteCommand { Id = id };
-        await mediator.Send(command);
-        return NoContent();
+        var command = new WarehouseDeleteCommand { Id = id, NewWarehouseId = newWarehouseId };
+        var response = await mediator.Send(command);
+        
+        if (response.Succeeded)
+        {
+            return NoContent();
+        }
+        
+        return StatusCode((int)response.StatusCode, response);
     }
 }

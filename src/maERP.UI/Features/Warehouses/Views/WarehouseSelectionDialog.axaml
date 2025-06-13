@@ -1,0 +1,88 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="400"
+        x:Class="maERP.UI.Features.Warehouses.Views.WarehouseSelectionDialog"
+        Title="{Binding Title}"
+        Width="500" Height="400"
+        MinWidth="400" MinHeight="300"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False">
+
+  <Grid RowDefinitions="Auto,*,Auto" Margin="20">
+    
+    <!-- Message -->
+    <TextBlock Grid.Row="0" 
+               Text="{Binding Message}" 
+               TextWrapping="Wrap"
+               FontSize="14"
+               Margin="0,0,0,20"/>
+    
+    <!-- Warehouse Selection -->
+    <Border Grid.Row="1" 
+            Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+            CornerRadius="8"
+            Padding="16">
+      <ScrollViewer>
+        <StackPanel Spacing="8">
+          <TextBlock Text="Verfügbare Lager:" 
+                     FontWeight="SemiBold" 
+                     Margin="0,0,0,8"/>
+          
+          <ItemsControl ItemsSource="{Binding AvailableWarehouses}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <RadioButton GroupName="WarehouseSelection"
+                             IsChecked="{Binding $parent[ItemsControl].DataContext.SelectedWarehouse, 
+                                                Converter={x:Static ObjectConverters.Equal}, 
+                                                ConverterParameter={Binding .}}"
+                             Command="{Binding $parent[ItemsControl].DataContext.SelectWarehouseCommand}"
+                             CommandParameter="{Binding .}"
+                             Margin="0,4"
+                             Padding="8">
+                  <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBlock Text="🏭" FontSize="16" VerticalAlignment="Center"/>
+                    <StackPanel>
+                      <TextBlock Text="{Binding Name}" 
+                                 FontWeight="SemiBold"/>
+                      <TextBlock Text="{Binding Id, StringFormat=ID: \{0\}}" 
+                                 FontSize="12" 
+                                 Opacity="0.7"/>
+                    </StackPanel>
+                  </StackPanel>
+                </RadioButton>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          
+          <!-- No warehouses available -->
+          <TextBlock Text="Keine anderen Lager verfügbar"
+                     FontStyle="Italic"
+                     Opacity="0.7"
+                     IsVisible="{Binding !AvailableWarehouses.Count}"/>
+        </StackPanel>
+      </ScrollViewer>
+    </Border>
+    
+    <!-- Buttons -->
+    <StackPanel Grid.Row="2" 
+                Orientation="Horizontal" 
+                HorizontalAlignment="Right" 
+                Spacing="12" 
+                Margin="0,20,0,0">
+      <Button Content="Abbrechen" 
+              Name="CancelButton"
+              Padding="16,8"
+              Click="CancelButton_Click"/>
+      <Button Content="OK" 
+              Name="OkButton"
+              Padding="16,8"
+              Classes="accent"
+              IsEnabled="{Binding IsValidSelection}"
+              Click="OkButton_Click"/>
+    </StackPanel>
+    
+  </Grid>
+
+</Window>
