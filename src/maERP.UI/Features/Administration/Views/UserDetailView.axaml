@@ -1,0 +1,257 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Features.Administration.Views.UserDetailView">
+
+	<Grid RowDefinitions="Auto,*">
+
+		<!-- Header with user info and actions -->
+		<Border Grid.Row="0"
+				Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+				Padding="24,16"
+				BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+				BorderThickness="0,0,0,1">
+
+			<Grid ColumnDefinitions="*,Auto">
+
+				<!-- Title and basic info -->
+				<StackPanel Grid.Column="0" VerticalAlignment="Center">
+					<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
+						<TextBlock Text="{Binding FullName, StringFormat=👤{0}}"
+								   FontSize="24"
+								   FontWeight="SemiBold"/>
+						<Border Background="#E3F2FD"
+								CornerRadius="12"
+								Padding="8,4">
+							<TextBlock Text="Aktiv"
+									   FontSize="12"
+									   FontWeight="SemiBold"
+									   Foreground="#1976D2"/>
+						</Border>
+					</StackPanel>
+					<TextBlock Text="{Binding User.Email}"
+							   FontSize="14"
+							   Opacity="0.7"/>
+				</StackPanel>
+
+				<!-- Action buttons -->
+				<StackPanel Grid.Column="1"
+							Orientation="Horizontal"
+							Spacing="8"
+							VerticalAlignment="Center">
+					<Button Content="✏️ Bearbeiten"
+							Command="{Binding EditUserCommand}"
+							Padding="12,6"
+							Classes="accent"/>
+					<Button Content="🔄 Aktualisieren"
+							Command="{Binding RefreshCommand}"
+							Padding="12,6"/>
+					<Button Content="← Zurück"
+							Command="{Binding GoBackCommand}"
+							Padding="12,6"/>
+				</StackPanel>
+
+			</Grid>
+
+		</Border>
+
+		<!-- Main content -->
+		<Grid Grid.Row="1">
+
+			<!-- Loading Indicator -->
+			<StackPanel IsVisible="{Binding IsLoading}"
+						VerticalAlignment="Center"
+						HorizontalAlignment="Center"
+						Spacing="16">
+				<ProgressBar IsIndeterminate="True" Width="200"/>
+				<TextBlock Text="Benutzer wird geladen..."
+						   HorizontalAlignment="Center"
+						   Opacity="0.7"/>
+			</StackPanel>
+
+			<!-- Error Message -->
+			<Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+					Background="#FFF3CD"
+					BorderBrush="#D6B656"
+					BorderThickness="1"
+					CornerRadius="4"
+					Padding="16"
+					Margin="16"
+					VerticalAlignment="Center">
+				<StackPanel Spacing="8">
+					<TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+					<TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+					<Button Content="Erneut versuchen"
+							Command="{Binding RefreshCommand}"
+							HorizontalAlignment="Left"/>
+				</StackPanel>
+			</Border>
+
+			<!-- User Details Content -->
+			<ScrollViewer IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48">
+				<StackPanel Spacing="24" MaxWidth="800" HorizontalAlignment="Center">
+
+					<!-- Basic User Information Section -->
+					<Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+							CornerRadius="8"
+							Padding="32">
+						<StackPanel Spacing="24">
+
+							<!-- Section Title -->
+							<!--
+              <TextBlock Text="👤 Benutzerinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         HorizontalAlignment="Center"/>-->
+
+							<!-- User Avatar and Core Info -->
+							<StackPanel HorizontalAlignment="Center" Spacing="16">
+
+								<!-- Avatar Placeholder -->
+								<Border Width="80" Height="80"
+										Background="{DynamicResource SystemAccentColor}"
+										CornerRadius="40"
+										HorizontalAlignment="Center">
+									<TextBlock Text="{Binding User.Firstname, StringFormat=\{0:C0\}}"
+											   FontSize="32"
+											   FontWeight="Bold"
+											   Foreground="White"
+											   HorizontalAlignment="Center"
+											   VerticalAlignment="Center"/>
+								</Border>
+
+								<!-- Name and ID -->
+								<StackPanel HorizontalAlignment="Center" Spacing="4">
+									<TextBlock Text="{Binding FullName}"
+											   FontSize="20"
+											   FontWeight="SemiBold"
+											   HorizontalAlignment="Center"/>
+									<TextBlock Text="{Binding User.Email, StringFormat=E-Mail: {0}}"
+											   FontSize="14"
+											   Opacity="0.7"
+											   HorizontalAlignment="Center"/>
+									<TextBlock Text="{Binding User.Id, StringFormat=ID: {0}}"
+											   FontSize="14"
+											   Opacity="0.7"
+											   HorizontalAlignment="Center"/>
+								</StackPanel>
+
+							</StackPanel>
+
+							<!-- Details Grid -->
+							<!--
+							<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="40" RowSpacing="16">
+
+								<StackPanel Grid.Row="0" Grid.Column="0" Spacing="12">
+									<TextBlock Text="📧 Kontaktdaten" FontWeight="SemiBold" FontSize="14"/>
+									<StackPanel Spacing="8">
+										<StackPanel Orientation="Horizontal" Spacing="8">
+											<TextBlock Text="E-Mail:" FontWeight="SemiBold" Width="80"/>
+											<TextBlock Text="{Binding User.Email}"/>
+										</StackPanel>
+									</StackPanel>
+								</StackPanel>
+
+								<StackPanel Grid.Row="0" Grid.Column="1" Spacing="12">
+									<TextBlock Text="👥 Persönliche Daten" FontWeight="SemiBold" FontSize="14"/>
+									<StackPanel Spacing="8">
+										<StackPanel Orientation="Horizontal" Spacing="8">
+											<TextBlock Text="Vorname:" FontWeight="SemiBold" Width="80"/>
+											<TextBlock Text="{Binding User.Firstname}"/>
+										</StackPanel>
+										<StackPanel Orientation="Horizontal" Spacing="8">
+											<TextBlock Text="Nachname:" FontWeight="SemiBold" Width="80"/>
+											<TextBlock Text="{Binding User.Lastname}"/>
+										</StackPanel>
+									</StackPanel>
+								</StackPanel>
+
+							</Grid>
+							-->
+
+						</StackPanel>
+					</Border>
+
+					<!-- Contact and Actions Section -->
+					<!--
+					<Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+							CornerRadius="8"
+							Padding="24">
+						<Grid ColumnDefinitions="*,*" ColumnSpacing="40">
+
+							<StackPanel Grid.Column="0" Spacing="12">
+								<TextBlock Text="📞 Kontakt"
+										   FontSize="16"
+										   FontWeight="SemiBold"/>
+								<StackPanel Spacing="8">
+									<StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding HasEmail}">
+										<TextBlock Text="📧 E-Mail:" FontWeight="SemiBold" Width="100"/>
+										<TextBlock Text="{Binding fUser.Email}"/>
+									</StackPanel>
+								</StackPanel>
+							</StackPanel>
+
+							<StackPanel Grid.Column="1" Spacing="12">
+								<TextBlock Text="⚡ Schnellaktionen"
+										   FontSize="16"
+										   FontWeight="SemiBold"/>
+								<StackPanel Spacing="6">
+									<Button Command="{Binding SendEmailCommand}"
+											HorizontalAlignment="Left"
+											IsVisible="{Binding HasEmail}"
+											Padding="12,6"
+											Classes="accent"
+											ToolTip.Tip="{Binding User.Email, StringFormat=E-Mail an {0} senden}">
+										<StackPanel Orientation="Horizontal" Spacing="8">
+											<TextBlock Text="📧" VerticalAlignment="Center"/>
+											<TextBlock Text="E-Mail senden" VerticalAlignment="Center"/>
+										</StackPanel>
+									</Button>
+								</StackPanel>
+							</StackPanel>
+
+						</Grid>
+					</Border>
+					-->
+
+					<!-- Security Information Section -->
+					<Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+							CornerRadius="8"
+							Padding="24">
+						<StackPanel Spacing="16">
+
+							<!-- Section Title -->
+							<TextBlock Text="🔐 Sicherheitsinformationen"
+									   FontSize="16"
+									   FontWeight="SemiBold"/>
+
+							<!-- Security Info -->
+							<Border Background="#FFF3E0"
+									BorderBrush="#FFB74D"
+									BorderThickness="1"
+									CornerRadius="4"
+									Padding="16">
+								<StackPanel Spacing="8">
+									<TextBlock Text="🔒 Passwort-Status" FontWeight="SemiBold"/>
+									<TextBlock Text="Das Passwort ist aus Sicherheitsgründen nicht sichtbar"
+											   FontSize="12"
+											   Opacity="0.8"/>
+									<TextBlock Text="Zur Passwort-Änderung nutzen Sie die Bearbeiten-Funktion"
+											   FontSize="12"
+											   Opacity="0.6"/>
+								</StackPanel>
+							</Border>
+
+						</StackPanel>
+					</Border>
+
+				</StackPanel>
+			</ScrollViewer>
+
+		</Grid>
+
+	</Grid>
+
+</UserControl>

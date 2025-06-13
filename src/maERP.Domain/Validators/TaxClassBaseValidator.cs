@@ -9,7 +9,6 @@ public class TaxClassBaseValidator<T> : AbstractValidator<T> where T : ITaxClass
     {
         RuleFor(p => p.TaxRate)
             .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .InclusiveBetween(0, 100).WithMessage("{PropertyName} must between 0 and 100.");
+            .GreaterThanOrEqualTo(0).WithMessage("{PropertyName} must be greater or equal than 0.");
     }
 }

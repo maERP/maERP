@@ -9,4 +9,5 @@ public interface IAiModelInputModel
     string ApiUsername { get; }
     string ApiPassword { get; }
     string ApiKey { get; }
+    uint NCtx { get; }
 }

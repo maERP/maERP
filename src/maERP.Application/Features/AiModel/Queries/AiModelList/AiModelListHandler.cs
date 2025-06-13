@@ -37,7 +37,8 @@ public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedRes
                {
                    Id = a.Id,
                    AiModelType = (int)a.AiModelType,
-                   Name = a.Name
+                   Name = a.Name,
+                   NCtx = a.NCtx
                })
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
@@ -51,7 +52,8 @@ public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedRes
             {
                 Id = a.Id,
                 AiModelType = (int)a.AiModelType,
-                Name = a.Name
+                Name = a.Name,
+                NCtx = a.NCtx
             })
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }

@@ -1,6 +1,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Warehouse;
+using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 using MediatR;
 
@@ -10,13 +11,16 @@ public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, Resu
 {
     private readonly IAppLogger<WarehouseDetailHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
+    private readonly IGenericRepository<ProductStock> _productStockRepository;
 
     public WarehouseDetailHandler(
         IAppLogger<WarehouseDetailHandler> logger,
-        IWarehouseRepository warehouseRepository)
+        IWarehouseRepository warehouseRepository,
+        IGenericRepository<ProductStock> productStockRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
+        _productStockRepository = productStockRepository ?? throw new ArgumentNullException(nameof(productStockRepository));
     }
     
     public async Task<Result<WarehouseDetailDto>> Handle(WarehouseDetailQuery request, CancellationToken cancellationToken)
@@ -39,11 +43,19 @@ public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, Resu
                 return result;
             }
 
+            // Anzahl der Produkte in diesem Lager ermitteln
+            var productCount = _productStockRepository.Entities
+                .Where(ps => ps.WarehouseId == warehouse.Id)
+                .Select(ps => ps.ProductId)
+                .Distinct()
+                .Count();
+
             // Manuelles Mapping zur DTO-Entität
             var data = new WarehouseDetailDto
             {
                 Id = warehouse.Id,
-                Name = warehouse.Name
+                Name = warehouse.Name,
+                ProductCount = productCount
             };
 
             result.Succeeded = true;

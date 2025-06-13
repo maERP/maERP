@@ -13,5 +13,5 @@ public interface ICustomerInputModel
     string VatNumber { get; }
     string Note { get; }
     CustomerStatus CustomerStatus { get; }
-    DateTime DateEnrollment { get; }
+    DateTimeOffset DateEnrollment { get; }
 }

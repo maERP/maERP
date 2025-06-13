@@ -18,6 +18,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Where(o => o.Id == id)
             .Include(o => o.OrderItems)
             .Include(o => o.OrderHistories)
+            .AsSplitQuery()
             .FirstOrDefaultAsync() ?? null;
     }
 

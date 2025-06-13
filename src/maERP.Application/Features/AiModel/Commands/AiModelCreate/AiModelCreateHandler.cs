@@ -88,7 +88,8 @@ public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result
                 AiModelType = request.AiModelType,
                 ApiUsername = request.ApiUsername,
                 ApiPassword = request.ApiPassword,
-                ApiKey = request.ApiKey
+                ApiKey = request.ApiKey,
+                NCtx = request.NCtx
             };
             
             // Add the new AI model to the database

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Models.Identity;
+using maERP.Domain.Dtos.Auth;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 using Microsoft.AspNetCore.Identity;
@@ -27,33 +28,33 @@ public class AuthService : IAuthService
         _signInManager = signInManager;
     }
     
-    public async Task<Result<AuthResponse>> Login(AuthRequest request)
+    public async Task<Result<LoginResponseDto>> Login(AuthRequest request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
 
         if (user == null)
         {
-            return Result<AuthResponse>.Fail(ResultStatusCode.Unauthorized, "Ungültige Anmeldedaten.");
+            return Result<LoginResponseDto>.Fail(ResultStatusCode.Unauthorized, "Ungültige Anmeldedaten.");
         }
         
         var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
         if (!result.Succeeded)
         {
-            return Result<AuthResponse>.Fail(ResultStatusCode.Unauthorized, "Ungültige Anmeldedaten.");
+            return Result<LoginResponseDto>.Fail(ResultStatusCode.Unauthorized, "Ungültige Anmeldedaten.");
         }
 
         var jwtSecurityToken = await GenerateToken(user);
 
-        var response = new AuthResponse
+        var response = new LoginResponseDto()
         {
-            Id = user.Id,
+            UserId = user.Id,
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-            Email = user.Email!,
-            UserName = user.Email!
+            Succeeded = true,
+            Message = "Anmeldung erfolgreich."
         };
 
-        return Result<AuthResponse>.Success(response);
+        return Result<LoginResponseDto>.Success(response);
     }
     
     public async Task<Result<RegistrationResponse>> Register(RegistrationRequest request)

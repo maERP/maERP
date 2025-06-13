@@ -9,4 +9,7 @@ public class WarehouseDetailDto
     [Required(ErrorMessage = "Name is required")]
     [Display(Name = "Name")]
     public string Name { get; set; } = string.Empty;
+
+    [Display(Name = "Product Count")]
+    public int ProductCount { get; set; }
 }

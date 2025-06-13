@@ -1,0 +1,229 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using maERP.Domain.Dtos.Warehouse;
+using maERP.UI.Services;
+using maERP.UI.Shared.ViewModels;
+
+namespace maERP.UI.Features.Warehouses.ViewModels;
+
+public partial class WarehouseInputViewModel : ViewModelBase
+{
+    private readonly IHttpService _httpService;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
+    private bool isLoading;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
+    private string errorMessage = string.Empty;
+
+    [ObservableProperty]
+    private bool isSaving;
+
+    [ObservableProperty]
+    private int id;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasValidationErrors))]
+    private string name = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasValidationErrors))]
+    private List<string> validationErrors = new();
+
+    public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
+    public bool HasValidationErrors => ValidationErrors.Count > 0;
+    public bool IsEditMode => Id > 0;
+    public string PageTitle => IsEditMode ? $"🏭 Lager #{Id} bearbeiten" : "🏭 Neues Lager erstellen";
+
+    public Action? GoBackAction { get; set; }
+    public Action? OnSaveSuccessAction { get; set; }
+
+    public WarehouseInputViewModel(IHttpService httpService)
+    {
+        _httpService = httpService;
+    }
+
+    public async Task InitializeAsync(int? warehouseId = null)
+    {
+        if (warehouseId.HasValue && warehouseId.Value > 0)
+        {
+            Id = warehouseId.Value;
+            await LoadWarehouseAsync();
+        }
+        else
+        {
+            // New warehouse
+            Id = 0;
+            Name = string.Empty;
+            ValidationErrors.Clear();
+            OnPropertyChanged(nameof(IsEditMode));
+            OnPropertyChanged(nameof(PageTitle));
+        }
+    }
+
+    [RelayCommand]
+    private async Task LoadWarehouseAsync()
+    {
+        if (Id <= 0) return;
+
+        IsLoading = true;
+        ErrorMessage = string.Empty;
+
+        try
+        {
+            var result = await _httpService.GetAsync<WarehouseDetailDto>($"warehouses/{Id}");
+
+            if (result == null)
+            {
+                ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
+                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+            }
+            else if (result.Succeeded && result.Data != null)
+            {
+                var warehouse = result.Data;
+                Name = warehouse.Name;
+                ValidationErrors.Clear();
+                System.Diagnostics.Debug.WriteLine($"Loaded warehouse {Id} for editing");
+            }
+            else
+            {
+                ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des Lagers {Id}";
+                System.Diagnostics.Debug.WriteLine($"Failed to load warehouse {Id}: {ErrorMessage}");
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Fehler beim Laden des Lagers: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"Exception loading warehouse {Id}: {ex}");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task SaveAsync()
+    {
+        if (IsSaving) return;
+
+        // Validate input
+        if (!ValidateInput())
+        {
+            return;
+        }
+
+        IsSaving = true;
+        ErrorMessage = string.Empty;
+
+        try
+        {
+            var warehouseDto = new WarehouseInputDto
+            {
+                Id = Id,
+                Name = Name.Trim()
+            };
+
+            if (IsEditMode)
+            {
+                // Update existing warehouse
+                var result = await _httpService.PutAsync<WarehouseInputDto, int>($"warehouses/{Id}", warehouseDto);
+                
+                if (result == null)
+                {
+                    ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
+                    System.Diagnostics.Debug.WriteLine("PutAsync returned null - not authenticated or no server URL");
+                }
+                else if (result.Succeeded)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Successfully updated warehouse {Id}");
+                    OnSaveSuccessAction?.Invoke();
+                }
+                else
+                {
+                    ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Aktualisieren des Lagers";
+                    System.Diagnostics.Debug.WriteLine($"Failed to update warehouse {Id}: {ErrorMessage}");
+                }
+            }
+            else
+            {
+                // Create new warehouse
+                var result = await _httpService.PostAsync<WarehouseInputDto, WarehouseDetailDto>("warehouses", warehouseDto);
+                
+                if (result == null)
+                {
+                    ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
+                    System.Diagnostics.Debug.WriteLine("PostAsync returned null - not authenticated or no server URL");
+                }
+                else if (result.Succeeded && result.Data != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Successfully created warehouse with ID {result.Data.Id}");
+                    OnSaveSuccessAction?.Invoke();
+                }
+                else
+                {
+                    ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Erstellen des Lagers";
+                    System.Diagnostics.Debug.WriteLine($"Failed to create warehouse: {ErrorMessage}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Fehler beim Speichern: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"Exception saving warehouse: {ex}");
+        }
+        finally
+        {
+            IsSaving = false;
+        }
+    }
+
+    [RelayCommand]
+    private void Cancel()
+    {
+        GoBackAction?.Invoke();
+    }
+
+    [RelayCommand]
+    private void ManageStock()
+    {
+        // TODO: Implement stock management navigation
+        System.Diagnostics.Debug.WriteLine($"Managing stock for warehouse {Id}");
+    }
+
+    [RelayCommand]
+    private void ManageSalesChannels()
+    {
+        // TODO: Implement sales channel management navigation
+        System.Diagnostics.Debug.WriteLine($"Managing sales channels for warehouse {Id}");
+    }
+
+    private bool ValidateInput()
+    {
+        ValidationErrors.Clear();
+
+        // Validate Name
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            ValidationErrors.Add("• Name ist erforderlich");
+        }
+        else if (Name.Trim().Length < 2)
+        {
+            ValidationErrors.Add("• Name muss mindestens 2 Zeichen lang sein");
+        }
+        else if (Name.Trim().Length > 100)
+        {
+            ValidationErrors.Add("• Name darf maximal 100 Zeichen lang sein");
+        }
+
+        OnPropertyChanged(nameof(HasValidationErrors));
+        return ValidationErrors.Count == 0;
+    }
+}

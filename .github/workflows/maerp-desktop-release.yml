@@ -1,0 +1,131 @@
+name: Release maERP.Desktop
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build project
+      run: dotnet build src/maERP.UI.Desktop/maERP.UI.Desktop.csproj --configuration Release --no-restore
+
+    - name: Generate version
+      id: version
+      run: |
+        VERSION=$(date +%Y.%m.%d).${GITHUB_RUN_NUMBER}
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "Generated version: $VERSION"
+
+    - name: Publish Windows x64
+      run: |
+        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj \
+          --configuration Release \
+          --runtime win-x64 \
+          --self-contained true \
+          --output ./publish/win-x64 \
+          -p:PublishSingleFile=true \
+          -p:PublishTrimmed=false
+
+    - name: Publish Linux x64
+      run: |
+        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj \
+          --configuration Release \
+          --runtime linux-x64 \
+          --self-contained true \
+          --output ./publish/linux-x64 \
+          -p:PublishSingleFile=true \
+          -p:PublishTrimmed=false
+
+    - name: Publish macOS x64
+      run: |
+        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj \
+          --configuration Release \
+          --runtime osx-x64 \
+          --self-contained true \
+          --output ./publish/osx-x64 \
+          -p:PublishSingleFile=true \
+          -p:PublishTrimmed=false
+
+    - name: Publish macOS ARM64
+      run: |
+        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj \
+          --configuration Release \
+          --runtime osx-arm64 \
+          --self-contained true \
+          --output ./publish/osx-arm64 \
+          -p:PublishSingleFile=true \
+          -p:PublishTrimmed=false
+
+    - name: Create release archives
+      run: |
+        cd publish
+        
+        # Windows
+        cd win-x64
+        zip -r ../maERP.Desktop-${{ steps.version.outputs.VERSION }}-win-x64.zip .
+        cd ..
+        
+        # Linux
+        cd linux-x64
+        tar -czf ../maERP.Desktop-${{ steps.version.outputs.VERSION }}-linux-x64.tar.gz .
+        cd ..
+        
+        # macOS x64
+        cd osx-x64
+        tar -czf ../maERP.Desktop-${{ steps.version.outputs.VERSION }}-osx-x64.tar.gz .
+        cd ..
+        
+        # macOS ARM64
+        cd osx-arm64
+        tar -czf ../maERP.Desktop-${{ steps.version.outputs.VERSION }}-osx-arm64.tar.gz .
+        cd ..
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ steps.version.outputs.VERSION }}
+        name: maERP Desktop v${{ steps.version.outputs.VERSION }}
+        body: |
+          ## maERP Desktop Release v${{ steps.version.outputs.VERSION }}
+          
+          Automatisch erstelltes Release der maERP Desktop-Anwendung.
+          
+          ### Downloads
+          - **Windows (x64)**: `maERP.Desktop-${{ steps.version.outputs.VERSION }}-win-x64.zip`
+          - **Linux (x64)**: `maERP.Desktop-${{ steps.version.outputs.VERSION }}-linux-x64.tar.gz`
+          - **macOS (Intel)**: `maERP.Desktop-${{ steps.version.outputs.VERSION }}-osx-x64.tar.gz`
+          - **macOS (Apple Silicon)**: `maERP.Desktop-${{ steps.version.outputs.VERSION }}-osx-arm64.tar.gz`
+          
+          ### Installation
+          1. Laden Sie die entsprechende Datei für Ihr Betriebssystem herunter
+          2. Entpacken Sie das Archiv
+          3. Führen Sie die Anwendung aus (keine Installation erforderlich)
+          
+          ---
+          
+          🤖 Automatisch erstellt durch GitHub Actions
+        draft: false
+        prerelease: false
+        files: |
+          publish/maERP.Desktop-${{ steps.version.outputs.VERSION }}-win-x64.zip
+          publish/maERP.Desktop-${{ steps.version.outputs.VERSION }}-linux-x64.tar.gz
+          publish/maERP.Desktop-${{ steps.version.outputs.VERSION }}-osx-x64.tar.gz
+          publish/maERP.Desktop-${{ steps.version.outputs.VERSION }}-osx-arm64.tar.gz
+        token: ${{ secrets.GITHUB_TOKEN }}

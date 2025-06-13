@@ -1,0 +1,375 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Features.Customers.Views.CustomerDetailView">
+
+  <Grid RowDefinitions="Auto,*">
+    
+    <!-- Header with customer info and actions -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,0,1">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Title and basic info -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
+            <TextBlock Text="{Binding Customer.FullName, StringFormat=👥 {0}}" 
+                       FontSize="24" 
+                       FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding Customer.Id, StringFormat=ID #{0}}" 
+                       FontSize="24" 
+                       FontWeight="SemiBold"/>
+            <Border Background="#E8F5E8" 
+                    CornerRadius="12" 
+                    Padding="8,4">
+              <TextBlock Text="{Binding Customer.CustomerStatus}" 
+                         FontSize="12" 
+                         FontWeight="SemiBold"
+                         Foreground="#2E7D32"/>
+            </Border>
+          </StackPanel>
+          <TextBlock Text="{Binding Customer.DateEnrollment, StringFormat=Kunde seit: \{0:dd.MM.yyyy\}}" 
+                     FontSize="14" 
+                     Opacity="0.7"/>
+        </StackPanel>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="✏️ Bearbeiten" 
+                  Command="{Binding EditCustomerCommand}"
+                  Padding="12,6"
+                  Classes="accent"/>
+          <Button Content="🔄 Aktualisieren" 
+                  Command="{Binding RefreshCommand}"
+                  Padding="12,6"/>
+          <Button Content="← Zurück" 
+                  Command="{Binding GoBackCommand}"
+                  Padding="12,6"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Kunde wird geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Margin="16"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+          <Button Content="Erneut versuchen" 
+                  Command="{Binding RefreshCommand}"
+                  HorizontalAlignment="Left"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- Customer Details Content -->
+      <StackPanel IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48" Spacing="24">
+          
+          <!-- Basic Customer Information Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="40" RowSpacing="12">
+              
+              <!-- Section Title -->
+              <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
+                         Text="👤 Grundinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         Margin="0,0,0,16"/>
+              
+              <!-- Left Column -->
+              <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Kunden-ID:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Customer.Id}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Vorname:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Customer.Firstname}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Nachname:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Customer.Lastname}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" IsVisible="{Binding HasCompanyName}">
+                  <TextBlock Text="Firmenname:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Customer.CompanyName}"/>
+                </StackPanel>
+              </StackPanel>
+              
+              <!-- Right Column -->
+              <StackPanel Grid.Row="1" Grid.Column="1" Spacing="8">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Status:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Customer.CustomerStatus}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Anmeldedatum:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Customer.DateEnrollment, StringFormat=\{0:dd.MM.yyyy\}}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" IsVisible="{Binding HasVatNumber}">
+                  <TextBlock Text="USt-ID:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Customer.VatNumber}"/>
+                </StackPanel>
+              </StackPanel>
+              
+            </Grid>
+          </Border>
+          
+          <!-- Contact Information Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
+              
+              <!-- Contact Details -->
+              <StackPanel Grid.Column="0" Spacing="12">
+                <TextBlock Text="📞 Kontaktinformationen" 
+                           FontSize="16" 
+                           FontWeight="SemiBold"/>
+                <StackPanel Spacing="8">
+                  <StackPanel Orientation="Horizontal" IsVisible="{Binding HasEmail}">
+                    <TextBlock Text="📧 E-Mail:" FontWeight="SemiBold" Width="100"/>
+                    <TextBlock Text="{Binding Customer.Email}"/>
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" IsVisible="{Binding HasPhone}">
+                    <TextBlock Text="📱 Telefon:" FontWeight="SemiBold" Width="100"/>
+                    <TextBlock Text="{Binding Customer.Phone}"/>
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" IsVisible="{Binding HasWebsite}">
+                    <TextBlock Text="🌐 Website:" FontWeight="SemiBold" Width="100"/>
+                    <TextBlock Text="{Binding Customer.Website}"/>
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+              
+              <!-- Quick Actions -->
+              <StackPanel Grid.Column="1" Spacing="12">
+                <TextBlock Text="⚡ Schnellaktionen" 
+                           FontSize="16" 
+                           FontWeight="SemiBold"/>
+                <StackPanel Spacing="6">
+                  <Button Command="{Binding SendEmailCommand}"
+                          HorizontalAlignment="Left"
+                          IsVisible="{Binding HasEmail}"
+                          Padding="12,6"
+                          Classes="accent"
+                          ToolTip.Tip="{Binding Customer.Email, StringFormat=E-Mail an \{0\} senden}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="📧" VerticalAlignment="Center"/>
+                      <TextBlock Text="E-Mail senden" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                  <Button Command="{Binding CallPhoneCommand}"
+                          HorizontalAlignment="Left"
+                          IsVisible="{Binding HasPhone}"
+                          Padding="12,6"
+                          Classes="accent"
+                          ToolTip.Tip="{Binding Customer.Phone, StringFormat=Anrufen: \{0\}}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="📞" VerticalAlignment="Center"/>
+                      <TextBlock Text="Anrufen" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                  <Button Command="{Binding OpenWebsiteCommand}"
+                          HorizontalAlignment="Left"
+                          IsVisible="{Binding HasWebsite}"
+                          Padding="12,6"
+                          Classes="accent"
+                          ToolTip.Tip="{Binding Customer.Website, StringFormat=Website öffnen: \{0\}}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="🌐" VerticalAlignment="Center"/>
+                      <TextBlock Text="Website öffnen" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                </StackPanel>
+              </StackPanel>
+              
+            </Grid>
+          </Border>
+          
+          <!-- Default Addresses Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
+              
+              <!-- Default Delivery Address -->
+              <StackPanel Grid.Column="0" Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <TextBlock Text="🚚 Standard-Lieferadresse" 
+                             FontSize="16" 
+                             FontWeight="SemiBold"/>
+                  <Border Background="#E3F2FD" 
+                          CornerRadius="8" 
+                          Padding="4,2"
+                          IsVisible="{Binding HasDefaultDeliveryAddress}">
+                    <TextBlock Text="Standard" 
+                               FontSize="10" 
+                               FontWeight="SemiBold"
+                               Foreground="#1976D2"/>
+                  </Border>
+                </StackPanel>
+                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        CornerRadius="4"
+                        Padding="12">
+                  <TextBlock Text="{Binding DefaultDeliveryAddressFormatted}" 
+                             TextWrapping="Wrap"
+                             LineHeight="18"/>
+                </Border>
+              </StackPanel>
+              
+              <!-- Default Invoice Address -->
+              <StackPanel Grid.Column="1" Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <TextBlock Text="🧾 Standard-Rechnungsadresse" 
+                             FontSize="16" 
+                             FontWeight="SemiBold"/>
+                  <Border Background="#F3E5F5" 
+                          CornerRadius="8" 
+                          Padding="4,2"
+                          IsVisible="{Binding HasDefaultInvoiceAddress}">
+                    <TextBlock Text="Standard" 
+                               FontSize="10" 
+                               FontWeight="SemiBold"
+                               Foreground="#7B1FA2"/>
+                  </Border>
+                </StackPanel>
+                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        CornerRadius="4"
+                        Padding="12">
+                  <TextBlock Text="{Binding DefaultInvoiceAddressFormatted}" 
+                             TextWrapping="Wrap"
+                             LineHeight="18"/>
+                </Border>
+              </StackPanel>
+              
+            </Grid>
+          </Border>
+          
+          <!-- All Customer Addresses Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20"
+                  IsVisible="{Binding HasAddresses}">
+            <StackPanel Spacing="16">
+              <TextBlock Text="🏠 Alle Adressen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"/>
+              
+              <controls:DataGrid ItemsSource="{Binding Customer.CustomerAddresses}"
+                        AutoGenerateColumns="False"
+                        CanUserReorderColumns="True"
+                        CanUserResizeColumns="True"
+                        CanUserSortColumns="True"
+                        GridLinesVisibility="Horizontal"
+                        HeadersVisibility="Column"
+                        IsReadOnly="True"
+                        MaxHeight="300">
+                
+                <controls:DataGrid.Columns>
+                  <controls:DataGridTextColumn Header="Name" 
+                                      Width="150"
+                                      CanUserSort="True">
+                    <controls:DataGridTextColumn.Binding>
+                      <MultiBinding StringFormat="{}{0} {1}">
+                        <Binding Path="Firstname"/>
+                        <Binding Path="Lastname"/>
+                      </MultiBinding>
+                    </controls:DataGridTextColumn.Binding>
+                  </controls:DataGridTextColumn>
+                  <controls:DataGridTextColumn Header="Firma" 
+                                      Binding="{Binding CompanyName}" 
+                                      Width="120"
+                                      CanUserSort="True"/>
+                  <controls:DataGridTextColumn Header="Straße" 
+                                      Width="200"
+                                      CanUserSort="True">
+                    <controls:DataGridTextColumn.Binding>
+                      <MultiBinding StringFormat="{}{0} {1}">
+                        <Binding Path="Street"/>
+                        <Binding Path="HouseNr"/>
+                      </MultiBinding>
+                    </controls:DataGridTextColumn.Binding>
+                  </controls:DataGridTextColumn>
+                  <controls:DataGridTextColumn Header="Ort" 
+                                      Width="150"
+                                      CanUserSort="True">
+                    <controls:DataGridTextColumn.Binding>
+                      <MultiBinding StringFormat="{}{0} {1}">
+                        <Binding Path="Zip"/>
+                        <Binding Path="City"/>
+                      </MultiBinding>
+                    </controls:DataGridTextColumn.Binding>
+                  </controls:DataGridTextColumn>
+                  <controls:DataGridCheckBoxColumn Header="Standard Lieferung" 
+                                          Binding="{Binding DefaultDeliveryAddress}" 
+                                          Width="120"
+                                          CanUserSort="True"/>
+                  <controls:DataGridCheckBoxColumn Header="Standard Rechnung" 
+                                          Binding="{Binding DefaultInvoiceAddress}" 
+                                          Width="120"
+                                          CanUserSort="True"/>
+                </controls:DataGrid.Columns>
+                
+              </controls:DataGrid>
+            </StackPanel>
+          </Border>
+          
+          <!-- Notes Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20"
+                  IsVisible="{Binding HasNote}">
+            <StackPanel Spacing="12">
+              <TextBlock Text="📝 Notizen" 
+                         FontSize="16" 
+                         FontWeight="SemiBold"/>
+              <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                      CornerRadius="4"
+                      Padding="12">
+                <TextBlock Text="{Binding Customer.Note}" 
+                           TextWrapping="Wrap"/>
+              </Border>
+            </StackPanel>
+          </Border>
+          
+      </StackPanel>
+      
+    </Grid>
+    
+  </Grid>
+
+</UserControl>

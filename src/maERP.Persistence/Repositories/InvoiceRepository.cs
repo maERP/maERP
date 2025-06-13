@@ -37,6 +37,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
             .Include(x => x.Customer)
             .Include(x => x.Order)
             .Include(x => x.InvoiceItems)
+            .AsSplitQuery()
             .FirstOrDefaultAsync();
     }
     

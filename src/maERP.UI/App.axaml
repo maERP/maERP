@@ -1,0 +1,16 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="maERP.UI.App"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+    </Application.Styles>
+
+    <!-- DataTemplates werden zur Laufzeit über die ViewModels und Views verknüpft -->
+    <Application.DataTemplates>
+        <!-- DataTemplates werden in der Zukunft wieder hinzugefügt wenn alle Namespace-Referenzen repariert sind -->
+    </Application.DataTemplates>
+</Application>

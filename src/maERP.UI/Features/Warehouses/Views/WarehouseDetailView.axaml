@@ -1,0 +1,253 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Features.Warehouses.Views.WarehouseDetailView">
+
+  <Grid RowDefinitions="Auto,*">
+    
+    <!-- Header with warehouse info and actions -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="0,0,0,1">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Title and basic info -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
+            <TextBlock Text="{Binding Warehouse.Name, StringFormat=🏭 {0}}" 
+                       FontSize="24" 
+                       FontWeight="SemiBold"/>
+            <Border Background="#E8F5E8" 
+                    CornerRadius="12" 
+                    Padding="8,4"
+                    IsVisible="{Binding HasProductStocks}">
+              <TextBlock Text="Aktiv" 
+                         FontSize="12" 
+                         FontWeight="SemiBold"
+                         Foreground="#2E7D32"/>
+            </Border>
+          </StackPanel>
+          <TextBlock Text="{Binding TotalProducts, StringFormat=Produkte im Lager: \{0\}}" 
+                     FontSize="14" 
+                     Opacity="0.7"/>
+        </StackPanel>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="✏️ Bearbeiten" 
+                  Command="{Binding EditWarehouseCommand}"
+                  Padding="12,6"
+                  Classes="accent"/>
+          <Button Content="🗑️ Löschen" 
+                  Command="{Binding DeleteWarehouseCommand}"
+                  Padding="12,6"
+                  Background="#DC3545"
+                  Foreground="White"/>
+          <Button Content="🔄 Aktualisieren" 
+                  Command="{Binding RefreshCommand}"
+                  Padding="12,6"/>
+          <Button Content="← Zurück" 
+                  Command="{Binding GoBackCommand}"
+                  Padding="12,6"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Lager wird geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="4"
+              Padding="16"
+              Margin="16"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+          <Button Content="Erneut versuchen" 
+                  Command="{Binding RefreshCommand}"
+                  HorizontalAlignment="Left"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- Warehouse Details Content -->
+      <ScrollViewer IsVisible="{Binding ShouldShowContent}" Padding="24">
+        <StackPanel Spacing="24">
+          
+          <!-- Basic Warehouse Information Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="40" RowSpacing="12">
+              
+              <!-- Section Title -->
+              <TextBlock Grid.Row="0" Grid.ColumnSpan="2" 
+                         Text="🏭 Lagerinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         Margin="0,0,0,16"/>
+              
+              <!-- Left Column -->
+              <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Lager-ID:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Warehouse.Id}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Name:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Warehouse.Name}" TextWrapping="Wrap"/>
+                </StackPanel>
+              </StackPanel>
+              
+              <!-- Right Column -->
+              <StackPanel Grid.Row="1" Grid.Column="1" Spacing="8">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Status:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="Aktiv" IsVisible="{Binding HasProductStocks}"/>
+                  <TextBlock Text="Leer" IsVisible="{Binding !HasProductStocks}" Opacity="0.6"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Erstellt am:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="Nicht verfügbar" Opacity="0.6"/>
+                </StackPanel>
+              </StackPanel>
+              
+            </Grid>
+          </Border>
+          
+          <!-- Quick Actions Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
+              
+              <!-- Stock Management -->
+              <StackPanel Grid.Column="0" Spacing="12">
+                <TextBlock Text="📦 Lagerverwaltung" 
+                           FontSize="16" 
+                           FontWeight="SemiBold"/>
+                <StackPanel Spacing="6">
+                  <Button Command="{Binding ManageStockCommand}"
+                          HorizontalAlignment="Left"
+                          Padding="12,6"
+                          Classes="accent">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="📦" VerticalAlignment="Center"/>
+                      <TextBlock Text="Lagerbestände verwalten" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                  <Button Command="{Binding ViewReportsCommand}"
+                          HorizontalAlignment="Left"
+                          Padding="12,6">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="📊" VerticalAlignment="Center"/>
+                      <TextBlock Text="Lagerberichte anzeigen" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                </StackPanel>
+              </StackPanel>
+              
+              <!-- Channel Management -->
+              <StackPanel Grid.Column="1" Spacing="12">
+                <TextBlock Text="🌐 Kanalverwaltung" 
+                           FontSize="16" 
+                           FontWeight="SemiBold"/>
+                <StackPanel Spacing="6">
+                  <Button Command="{Binding ManageSalesChannelsCommand}"
+                          HorizontalAlignment="Left"
+                          Padding="12,6"
+                          Classes="accent">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="🌐" VerticalAlignment="Center"/>
+                      <TextBlock Text="Vertriebskanäle verwalten" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                </StackPanel>
+              </StackPanel>
+              
+            </Grid>
+          </Border>
+          
+          <!-- Statistics Section -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                  CornerRadius="8"
+                  Padding="20">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
+              
+              <!-- Product Statistics -->
+              <StackPanel Grid.Column="0" Spacing="12">
+                <TextBlock Text="📈 Produktstatistiken" 
+                           FontSize="16" 
+                           FontWeight="SemiBold"/>
+                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        CornerRadius="4"
+                        Padding="12">
+                  <StackPanel Spacing="8">
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="Gesamt Produkte:" FontWeight="SemiBold" Width="140"/>
+                      <TextBlock Text="{Binding TotalProducts}" FontSize="16" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="Lagerwert gesamt:" FontWeight="SemiBold" Width="140"/>
+                      <TextBlock Text="{Binding TotalStockValue, StringFormat=\{0:C2\}}" FontSize="16" FontWeight="SemiBold"/>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+              
+              <!-- Availability Info -->
+              <StackPanel Grid.Column="1" Spacing="12">
+                <TextBlock Text="ℹ️ Verfügbarkeit" 
+                           FontSize="16" 
+                           FontWeight="SemiBold"/>
+                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
+                        CornerRadius="4"
+                        Padding="12">
+                  <StackPanel Spacing="6">
+                    <TextBlock Text="Die detaillierte Lagerstatistik wird in einer zukünftigen Version verfügbar sein." 
+                               TextWrapping="Wrap"
+                               Opacity="0.7"/>
+                    <TextBlock Text="Hier können Sie dann Lagerbestände, Bewegungen und weitere Kennzahlen einsehen." 
+                               TextWrapping="Wrap"
+                               FontSize="12"
+                               Opacity="0.6"/>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+              
+            </Grid>
+          </Border>
+          
+        </StackPanel>
+      </ScrollViewer>
+      
+    </Grid>
+    
+  </Grid>
+
+</UserControl>

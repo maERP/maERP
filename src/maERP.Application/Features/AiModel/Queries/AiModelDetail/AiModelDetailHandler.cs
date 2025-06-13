@@ -72,7 +72,8 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, Result<A
                 Name = aiModel.Name,
                 ApiUsername = aiModel.ApiUsername,
                 ApiPassword = aiModel.ApiPassword,
-                ApiKey = aiModel.ApiKey
+                ApiKey = aiModel.ApiKey,
+                NCtx = aiModel.NCtx
             };
 
             // Set successful result with the AI model details
