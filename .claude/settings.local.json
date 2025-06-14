@@ -16,7 +16,9 @@
       "Bash(find:*)",
       "Bash(dotnet clean:*)",
       "Bash(cat:*)",
-      "Bash(dotnet test:*)"
+      "Bash(dotnet test:*)",
+      "Bash(mkdir:*)",
+      "Bash(dotnet ef database update:*)"
     ],
     "deny": []
   }

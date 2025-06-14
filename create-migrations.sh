@@ -26,7 +26,7 @@ show_help() {
     echo ""
     echo "Options:"
     echo "  -n, --name NAME                 Name of the migration (required)"
-    echo "  -d, --database TYPE             Database type (mysql, mssql, postgresql or all) [default: all]"
+    echo "  -d, --database TYPE             Database type (mysql, mssql, postgresql, sqlite or all) [default: all]"
     echo "  -a, --apply                     Apply migrations after creation"
     echo "  -c, --connection-string STRING  Custom connection string for the selected database type"
     echo "  -o, --offline                   Create migrations without connecting to the database (MySQL only)"
@@ -51,6 +51,7 @@ read_connection_strings() {
         MYSQL_CONNECTION=$(jq -r '.DatabaseConfig.ConnectionStrings.MySQL' "$APPSETTINGS_PATH")
         MSSQL_CONNECTION=$(jq -r '.DatabaseConfig.ConnectionStrings.MSSQL' "$APPSETTINGS_PATH")
         POSTGRESQL_CONNECTION=$(jq -r '.DatabaseConfig.ConnectionStrings.PostgreSQL' "$APPSETTINGS_PATH")
+        SQLITE_CONNECTION=$(jq -r '.DatabaseConfig.ConnectionStrings.SQLite' "$APPSETTINGS_PATH")
     else
         # Fallback to grep/sed if jq is not available
         echo -e "${YELLOW}jq not found, using grep/sed to parse JSON (less reliable)${NC}"
@@ -59,10 +60,11 @@ read_connection_strings() {
         MYSQL_CONNECTION=$(grep -o '"MySQL": *"[^"]*"' "$APPSETTINGS_PATH" | sed 's/"MySQL": *"\(.*\)"/\1/')
         MSSQL_CONNECTION=$(grep -o '"MSSQL": *"[^"]*"' "$APPSETTINGS_PATH" | sed 's/"MSSQL": *"\(.*\)"/\1/')
         POSTGRESQL_CONNECTION=$(grep -o '"PostgreSQL": *"[^"]*"' "$APPSETTINGS_PATH" | sed 's/"PostgreSQL": *"\(.*\)"/\1/')
+        SQLITE_CONNECTION=$(grep -o '"SQLite": *"[^"]*"' "$APPSETTINGS_PATH" | sed 's/"SQLite": *"\(.*\)"/\1/')
     fi
 
     # Verify that connection strings were extracted successfully
-    if [ -z "$MYSQL_CONNECTION" ] || [ -z "$MSSQL_CONNECTION" ] || [ -z "$POSTGRESQL_CONNECTION" ]; then
+    if [ -z "$MYSQL_CONNECTION" ] || [ -z "$MSSQL_CONNECTION" ] || [ -z "$POSTGRESQL_CONNECTION" ] || [ -z "$SQLITE_CONNECTION" ]; then
         echo -e "${RED}Error: Failed to read connection strings from appsettings.json${NC}"
         echo -e "${YELLOW}Using default connection strings...${NC}"
         
@@ -70,6 +72,7 @@ read_connection_strings() {
         MYSQL_CONNECTION="Server=127.0.0.1;Port=3306;Database=maerp_migration;Uid=root;Pwd=root;AllowPublicKeyRetrieval=True;"
         MSSQL_CONNECTION="Server=localhost;Database=maerp_migration;User Id=maerp;Password=maerp;TrustServerCertificate=True;"
         POSTGRESQL_CONNECTION="Host=localhost;Port=5432;Database=maerp_migration;Username=maerp;Password=maerp;"
+        SQLITE_CONNECTION="Data Source=maerp_migration.db"
     else
         echo -e "${GREEN}Connection strings successfully loaded from appsettings.json${NC}"
     fi
@@ -145,8 +148,8 @@ if [ -z "$MIGRATION_NAME" ]; then
 fi
 
 # Validate database type
-if [[ "$DATABASE_TYPE" != "mysql" && "$DATABASE_TYPE" != "mssql" && "$DATABASE_TYPE" != "postgresql" && "$DATABASE_TYPE" != "all" ]]; then
-    echo -e "${RED}Error: Invalid database type. Allowed values: mysql, mssql, postgresql, all${NC}"
+if [[ "$DATABASE_TYPE" != "mysql" && "$DATABASE_TYPE" != "mssql" && "$DATABASE_TYPE" != "postgresql" && "$DATABASE_TYPE" != "sqlite" && "$DATABASE_TYPE" != "all" ]]; then
+    echo -e "${RED}Error: Invalid database type. Allowed values: mysql, mssql, postgresql, sqlite, all${NC}"
     show_help
     exit 1
 fi
@@ -180,6 +183,11 @@ create_migration() {
             db_provider="POSTGRESQL"
             connection_string=$POSTGRESQL_CONNECTION
             ;;
+        sqlite)
+            project="src/maERP.Persistence.SQLite/maERP.Persistence.SQLite.csproj"
+            db_provider="SQLITE"
+            connection_string=$SQLITE_CONNECTION
+            ;;
     esac
     
     # Override with custom connection string if provided and we're operating on the selected database type
@@ -198,6 +206,7 @@ create_migration() {
     export DatabaseConfig__ConnectionStrings__MYSQL=$MYSQL_CONNECTION
     export DatabaseConfig__ConnectionStrings__MSSQL=$MSSQL_CONNECTION
     export DatabaseConfig__ConnectionStrings__POSTGRESQL=$POSTGRESQL_CONNECTION
+    export DatabaseConfig__ConnectionStrings__SQLITE=$SQLITE_CONNECTION
     
     # Override the specific connection string for the current database type
     case $db_type in
@@ -209,6 +218,9 @@ create_migration() {
             ;;
         postgresql)
             export DatabaseConfig__ConnectionStrings__POSTGRESQL=$connection_string
+            ;;
+        sqlite)
+            export DatabaseConfig__ConnectionStrings__SQLITE=$connection_string
             ;;
     esac
     
@@ -269,6 +281,7 @@ create_migration() {
                 unset DatabaseConfig__ConnectionStrings__MYSQL
                 unset DatabaseConfig__ConnectionStrings__MSSQL
                 unset DatabaseConfig__ConnectionStrings__POSTGRESQL
+                unset DatabaseConfig__ConnectionStrings__SQLITE
                 return 1
             fi
         elif [ "$APPLY_MIGRATION" = true ] && [ "$OFFLINE_MODE" = true ]; then
@@ -281,6 +294,7 @@ create_migration() {
         unset DatabaseConfig__ConnectionStrings__MYSQL
         unset DatabaseConfig__ConnectionStrings__MSSQL
         unset DatabaseConfig__ConnectionStrings__POSTGRESQL
+        unset DatabaseConfig__ConnectionStrings__SQLITE
         return 1
     fi
     
@@ -289,6 +303,7 @@ create_migration() {
     unset DatabaseConfig__ConnectionStrings__MYSQL
     unset DatabaseConfig__ConnectionStrings__MSSQL
     unset DatabaseConfig__ConnectionStrings__POSTGRESQL
+    unset DatabaseConfig__ConnectionStrings__SQLITE
     return 0
 }
 
@@ -307,7 +322,7 @@ fi
 echo ""
 
 if [ "$DATABASE_TYPE" = "all" ]; then
-    databases=("mysql" "mssql" "postgresql")
+    databases=("mysql" "mssql" "postgresql" "sqlite")
     success=true
     
     for db in "${databases[@]}"; do

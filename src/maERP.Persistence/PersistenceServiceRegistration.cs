@@ -38,6 +38,11 @@ public static class PersistenceServiceRegistration
                         b => b.MigrationsAssembly("maERP.Persistence.PostgreSQL"));
                     break;
 
+                case "SQLITE":
+                    options.UseSqlite(connectionString,
+                        b => b.MigrationsAssembly("maERP.Persistence.SQLite"));
+                    break;
+
                 default:
                     throw new ArgumentException($"Unsupported database provider: {dbOptions.Provider}");
             }

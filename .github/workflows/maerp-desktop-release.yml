@@ -21,7 +21,7 @@ jobs:
         dotnet-version: '9.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore src/maERP.UI.Desktop/maERP.UI.Desktop.csproj
 
     - name: Build project
       run: dotnet build src/maERP.UI.Desktop/maERP.UI.Desktop.csproj --configuration Release --no-restore
