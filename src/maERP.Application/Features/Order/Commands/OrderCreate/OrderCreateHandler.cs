@@ -16,7 +16,7 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<OrderCreateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for order data operations
     /// </summary>
@@ -44,9 +44,9 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
     public async Task<Result<int>> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new order with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new OrderCreateValidator(_orderRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -57,11 +57,11 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
-                nameof(OrderCreateCommand), 
+
+            _logger.LogWarning("Validation errors in create request for {0}: {1}",
+                nameof(OrderCreateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -103,7 +103,7 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
                 DateOrdered = request.DateOrdered
                 // OrderItems would need to be mapped separately
             };
-            
+
             // Add the new order to the database
             await _orderRepository.CreateAsync(orderToCreate);
 
@@ -111,7 +111,7 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = orderToCreate.Id;
-            
+
             _logger.LogInformation("Successfully created order with ID: {Id}", orderToCreate.Id);
         }
         catch (Exception ex)
@@ -120,7 +120,7 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the order: {ex.Message}");
-            
+
             _logger.LogError("Error creating order: {Message}", ex.Message);
         }
 

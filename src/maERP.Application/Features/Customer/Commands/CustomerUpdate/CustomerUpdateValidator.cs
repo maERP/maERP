@@ -11,11 +11,11 @@ public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateComma
     public CustomerUpdateValidator(ICustomerRepository customerRepository)
     {
         _customerRepository = customerRepository;
-        
+
         RuleFor(c => c)
             .MustAsync(CustomerExists).WithMessage("Customer not found");
     }
-    
+
     private async Task<bool> CustomerExists(CustomerUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _customerRepository.ExistsAsync(command.Id);

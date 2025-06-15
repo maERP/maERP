@@ -7,7 +7,7 @@ namespace maERP.Application.Features.AiModel.Commands.AiModelUpdate;
 public class AiModelUpdateValidator : AiModelBaseValidator<AiModelUpdateCommand>
 {
     private readonly IAiModelRepository _aiModelRepository;
-    
+
     public AiModelUpdateValidator(IAiModelRepository aiModelRepository)
     {
         _aiModelRepository = aiModelRepository;
@@ -16,12 +16,12 @@ public class AiModelUpdateValidator : AiModelBaseValidator<AiModelUpdateCommand>
             .MustAsync(AiModelExists).WithMessage("AiModel not found")
             .MustAsync(IsUniqueAsync).WithMessage("AiModel with the same name already exists.");
     }
-    
+
     private async Task<bool> AiModelExists(AiModelUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _aiModelRepository.GetByIdAsync(command.Id, true) != null;
     }
-    
+
     private async Task<bool> IsUniqueAsync(AiModelUpdateCommand command, CancellationToken cancellationToken)
     {
         var aiModel = new Domain.Entities.AiModel

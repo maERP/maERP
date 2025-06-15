@@ -12,7 +12,7 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Re
     private readonly IWarehouseRepository _warehouseRepository;
     private readonly ISalesChannelRepository _salesChannelRepository;
     private readonly IGenericRepository<ProductStock> _productStockRepository;
-    
+
     public WarehouseDeleteHandler(
         IAppLogger<WarehouseDeleteHandler> logger,
         IWarehouseRepository warehouseRepository,
@@ -28,9 +28,9 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Re
     public async Task<Result<int>> Handle(WarehouseDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting warehouse with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new WarehouseDeleteValidator(_warehouseRepository, _salesChannelRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -40,11 +40,11 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Re
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
-                nameof(WarehouseDeleteCommand), 
+
+            _logger.LogWarning("Validation errors in delete request for {0}: {1}",
+                nameof(WarehouseDeleteCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -53,7 +53,7 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Re
             // Handle product redistribution if NewWarehouseId is provided
             if (request.NewWarehouseId.HasValue)
             {
-                _logger.LogInformation("Redistributing products from warehouse {OldId} to warehouse {NewId}", 
+                _logger.LogInformation("Redistributing products from warehouse {OldId} to warehouse {NewId}",
                     request.Id, request.NewWarehouseId.Value);
 
                 // Validate that the target warehouse exists
@@ -75,7 +75,7 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Re
                 {
                     // Check if there's already a stock entry for this product in the target warehouse
                     var existingStock = _productStockRepository.Entities
-                        .FirstOrDefault(ps => ps.ProductId == productStock.ProductId && 
+                        .FirstOrDefault(ps => ps.ProductId == productStock.ProductId &&
                                             ps.WarehouseId == request.NewWarehouseId.Value);
 
                     if (existingStock != null)
@@ -122,14 +122,14 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Re
             {
                 Id = request.Id
             };
-            
+
             // Delete from database
             await _warehouseRepository.DeleteAsync(warehouseToDelete);
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = warehouseToDelete.Id;
-            
+
             _logger.LogInformation("Successfully deleted warehouse with ID: {Id}", warehouseToDelete.Id);
         }
         catch (Exception ex)
@@ -137,7 +137,7 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Re
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while deleting the warehouse: {ex.Message}");
-            
+
             _logger.LogError("Error deleting warehouse: {Message}", ex.Message);
         }
 

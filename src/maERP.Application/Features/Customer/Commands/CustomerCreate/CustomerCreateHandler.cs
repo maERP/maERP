@@ -16,7 +16,7 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<CustomerCreateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for customer data operations
     /// </summary>
@@ -43,11 +43,11 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
     /// <returns>Result containing the ID of the newly created customer if successful</returns>
     public async Task<Result<int>> Handle(CustomerCreateCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Creating new customer with firstname: {Firstname}, lastname: {Lastname}", 
+        _logger.LogInformation("Creating new customer with firstname: {Firstname}, lastname: {Lastname}",
             request.Firstname, request.Lastname);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new CustomerCreateValidator(_customerRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -58,11 +58,11 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
-                nameof(CustomerCreateCommand), 
+
+            _logger.LogWarning("Validation errors in create request for {0}: {1}",
+                nameof(CustomerCreateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -83,7 +83,7 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
                 DateEnrollment = request.DateEnrollment
                 // CustomerAddresses would require additional mapping logic
             };
-            
+
             // Add the new customer to the database
             await _customerRepository.CreateAsync(customerToCreate);
 
@@ -91,7 +91,7 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = customerToCreate.Id;
-            
+
             _logger.LogInformation("Successfully created customer with ID: {Id}", customerToCreate.Id);
         }
         catch (Exception ex)
@@ -100,7 +100,7 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the customer: {ex.Message}");
-            
+
             _logger.LogError("Error creating customer: {Message}", ex.Message);
         }
 

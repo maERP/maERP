@@ -5,5 +5,5 @@ namespace maERP.Application.Features.Setting.Commands.SettingDelete;
 
 public class SettingDeleteCommand : IRequest<Result<int>>
 {
-    public int Id { get; set; }     
+    public int Id { get; set; }
 }

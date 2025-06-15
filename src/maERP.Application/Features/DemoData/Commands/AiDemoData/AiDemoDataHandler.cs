@@ -25,7 +25,7 @@ public class AiDemoDataHandler : IRequestHandler<AiDemoDataCommand, Result<strin
     public async Task<Result<string>> Handle(AiDemoDataCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Starting to create AI demo data (models and prompts)");
-        
+
         var result = new Result<string>();
         var createdItems = new List<string>();
 
@@ -50,7 +50,7 @@ public class AiDemoDataHandler : IRequestHandler<AiDemoDataCommand, Result<strin
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = $"Successfully created: {string.Join(", ", createdItems)}";
-            
+
             _logger.LogInformation("Successfully created AI demo data: {Items}", string.Join(", ", createdItems));
         }
         catch (Exception ex)
@@ -58,7 +58,7 @@ public class AiDemoDataHandler : IRequestHandler<AiDemoDataCommand, Result<strin
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating AI demo data: {ex.Message}");
-            
+
             _logger.LogError("Error creating AI demo data: {Message}", ex.Message);
         }
 

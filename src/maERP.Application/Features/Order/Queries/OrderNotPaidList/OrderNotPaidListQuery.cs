@@ -21,4 +21,4 @@ public class OrderNotPaidListQuery : IRequest<PaginatedResult<OrderListDto>>
         }
         else OrderBy = Array.Empty<string>();
     }
-} 
+}

@@ -22,9 +22,9 @@ public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, Re
     public async Task<Result<int>> Handle(WarehouseUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating warehouse with ID: {Id}, Name: {Name}", request.Id, request.Name);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new WarehouseUpdateValidator(_warehouseRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -34,11 +34,11 @@ public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, Re
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(WarehouseUpdateCommand), 
+
+            _logger.LogWarning("Validation errors in update request for {0}: {1}",
+                nameof(WarehouseUpdateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -50,14 +50,14 @@ public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, Re
                 Id = request.Id,
                 Name = request.Name
             };
-            
+
             // Update in database
             await _warehouseRepository.UpdateAsync(warehouseToUpdate);
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = warehouseToUpdate.Id;
-            
+
             _logger.LogInformation("Successfully updated warehouse with ID: {Id}", warehouseToUpdate.Id);
         }
         catch (Exception ex)
@@ -65,7 +65,7 @@ public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, Re
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while updating the warehouse: {ex.Message}");
-            
+
             _logger.LogError("Error updating warehouse: {Message}", ex.Message);
         }
 

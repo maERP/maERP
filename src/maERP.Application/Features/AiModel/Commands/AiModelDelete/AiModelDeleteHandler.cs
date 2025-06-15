@@ -9,7 +9,7 @@ public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, Result
 {
     private readonly IAppLogger<AiModelDeleteHandler> _logger;
     private readonly IAiModelRepository _aiModelRepository;
-    
+
     public AiModelDeleteHandler(
         IAppLogger<AiModelDeleteHandler> logger,
         IAiModelRepository aiModelRepository)
@@ -21,9 +21,9 @@ public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, Result
     public async Task<Result<int>> Handle(AiModelDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting AI model with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new AiModelDeleteValidator(_aiModelRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -33,11 +33,11 @@ public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
-                nameof(AiModelDeleteCommand), 
+
+            _logger.LogWarning("Validation errors in delete request for {0}: {1}",
+                nameof(AiModelDeleteCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -48,14 +48,14 @@ public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, Result
             {
                 Id = request.Id
             };
-            
+
             // Delete from database
             await _aiModelRepository.DeleteAsync(aiModelToDelete);
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = aiModelToDelete.Id;
-            
+
             _logger.LogInformation("Successfully deleted AI model with ID: {Id}", aiModelToDelete.Id);
         }
         catch (Exception ex)
@@ -63,7 +63,7 @@ public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while deleting the AI model: {ex.Message}");
-            
+
             _logger.LogError("Error deleting AI model: {Message}", ex.Message);
         }
 

@@ -15,7 +15,7 @@ public class WarehouseCreateValidator : WarehouseBaseValidator<WarehouseCreateCo
     /// Repository for warehouse data operations
     /// </summary>
     private readonly IWarehouseRepository _warehouseRepository;
-    
+
     /// <summary>
     /// Constructor that initializes the validator with required dependencies
     /// </summary>
@@ -41,7 +41,7 @@ public class WarehouseCreateValidator : WarehouseBaseValidator<WarehouseCreateCo
         {
             Name = command.Name,
         };
-        
+
         return await _warehouseRepository.IsUniqueAsync(warehouse);
     }
 }

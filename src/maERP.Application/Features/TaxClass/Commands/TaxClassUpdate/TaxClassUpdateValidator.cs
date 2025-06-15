@@ -20,7 +20,7 @@ public class TaxClassUpdateValidator : TaxClassBaseValidator<TaxClassUpdateComma
             .MustAsync(TaxClassExists).WithMessage("TaxClass not found")
             .MustAsync(IsUniqueAsync).WithMessage("TaxClass with the same tax rate already exists.");
     }
-    
+
     private async Task<bool> TaxClassExists(TaxClassUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _taxClassRepository.GetByIdAsync(command.Id, true) != null;

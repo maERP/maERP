@@ -14,17 +14,17 @@ public class InvoiceListQuery : IRequest<PaginatedResult<InvoiceListDto>>
     /// Page number for pagination (1-based)
     /// </summary>
     public int PageNumber { get; set; }
-    
+
     /// <summary>
     /// Number of items per page
     /// </summary>
     public int PageSize { get; set; }
-    
+
     /// <summary>
     /// Optional search string to filter invoices
     /// </summary>
     public string SearchString { get; set; }
-    
+
     /// <summary>
     /// Optional sorting parameters
     /// </summary>

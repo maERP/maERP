@@ -20,7 +20,7 @@ public class InvoiceUpdateValidator : InvoiceBaseValidator<InvoiceUpdateCommand>
     public InvoiceUpdateValidator(IInvoiceRepository invoiceRepository)
     {
         _invoiceRepository = invoiceRepository;
-        
+
         // Add validation rules specific to update operations
         RuleFor(p => p.Id)
             .NotNull()
@@ -32,11 +32,11 @@ public class InvoiceUpdateValidator : InvoiceBaseValidator<InvoiceUpdateCommand>
 
         RuleFor(i => i)
             .MustAsync(InvoiceExists).WithMessage("Rechnung wurde nicht gefunden");
-            
+
         RuleFor(i => i)
             .MustAsync(InvoiceNumberIsUniqueOrUnchanged).WithMessage("Eine Rechnung mit dieser Nummer existiert bereits");
     }
-    
+
     /// <summary>
     /// Asynchronously checks if an invoice with the given ID exists in the database.
     /// </summary>
@@ -47,7 +47,7 @@ public class InvoiceUpdateValidator : InvoiceBaseValidator<InvoiceUpdateCommand>
     {
         return await _invoiceRepository.ExistsAsync(command.Id);
     }
-    
+
     /// <summary>
     /// Asynchronously checks if the invoice number is unique or unchanged.
     /// </summary>
@@ -58,13 +58,13 @@ public class InvoiceUpdateValidator : InvoiceBaseValidator<InvoiceUpdateCommand>
     {
         var existingInvoices = await _invoiceRepository.GetAllAsync();
         var currentInvoice = await _invoiceRepository.GetByIdAsync(command.Id);
-        
+
         // If it's the same invoice number as before, that's fine
         if (currentInvoice != null && currentInvoice.InvoiceNumber == command.InvoiceNumber)
         {
             return true;
         }
-        
+
         // Otherwise, check if the new invoice number is unique
         return !existingInvoices.Any(i => i.InvoiceNumber == command.InvoiceNumber);
     }

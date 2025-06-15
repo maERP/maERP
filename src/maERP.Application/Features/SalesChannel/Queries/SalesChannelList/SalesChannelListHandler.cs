@@ -16,21 +16,21 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
     private readonly ISalesChannelRepository _salesChannelRepository;
 
     public SalesChannelListHandler(
-        IAppLogger<SalesChannelListHandler> logger, 
+        IAppLogger<SalesChannelListHandler> logger,
         ISalesChannelRepository salesChannelRepository)
     {
         _logger = logger;
-        _salesChannelRepository = salesChannelRepository; 
+        _salesChannelRepository = salesChannelRepository;
     }
-    
+
     public async Task<PaginatedResult<SalesChannelListDto>> Handle(SalesChannelListQuery request, CancellationToken cancellationToken)
     {
         var salesChannelFilterSpec = new SalesChannelFilterSpecification(request.SearchString);
-        
+
         _logger.LogInformation("Handle SalesChannelListQuery: {0}", request);
 
         List<Domain.Entities.SalesChannel> entities;
-        
+
         if (request.OrderBy.Any() != true)
         {
             entities = await _salesChannelRepository.Entities
@@ -46,10 +46,10 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
                 .OrderBy(ordering)
                 .ToListAsync(cancellationToken);
         }
-            
+
         return MapToListDtoAndPaginate(entities, request.PageNumber, request.PageSize);
     }
-    
+
     private PaginatedResult<SalesChannelListDto> MapToListDtoAndPaginate(
         List<Domain.Entities.SalesChannel> entities, int pageNumber, int pageSize)
     {
@@ -68,14 +68,14 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
             ExportOrders = entity.ExportOrders,
             WarehouseId = entity.WarehouseId
         }).ToList();
-        
+
         // Erstelle paginierte Ergebnisse
         var totalCount = dtos.Count;
         var pagedItems = dtos
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToList();
-            
+
         return PaginatedResult<SalesChannelListDto>.Success(pagedItems, totalCount, pageNumber, pageSize);
     }
 }

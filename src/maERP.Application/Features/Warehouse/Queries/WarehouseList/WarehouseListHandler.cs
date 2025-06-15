@@ -16,16 +16,16 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
     private readonly IWarehouseRepository _warehouseRepository;
 
     public WarehouseListHandler(
-        IAppLogger<WarehouseListHandler> logger, 
+        IAppLogger<WarehouseListHandler> logger,
         IWarehouseRepository warehouseRepository)
     {
         _logger = logger;
-        _warehouseRepository = warehouseRepository; 
+        _warehouseRepository = warehouseRepository;
     }
     public async Task<PaginatedResult<WarehouseListDto>> Handle(WarehouseListQuery request, CancellationToken cancellationToken)
     {
         var warehouseFilterSpec = new WarehouseFilterSpecification(request.SearchString);
-        
+
         _logger.LogInformation("Handle WarehouseListQuery: {0}", request);
 
         if (request.OrderBy.Any() != true)

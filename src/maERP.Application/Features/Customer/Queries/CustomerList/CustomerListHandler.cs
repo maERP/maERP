@@ -15,16 +15,16 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
     private readonly ICustomerRepository _customerRepository;
 
     public CustomerListHandler(
-        IAppLogger<CustomerListHandler> logger, 
+        IAppLogger<CustomerListHandler> logger,
         ICustomerRepository customerRepository)
     {
         _logger = logger;
-        _customerRepository = customerRepository; 
+        _customerRepository = customerRepository;
     }
     public async Task<PaginatedResult<CustomerListDto>> Handle(CustomerListQuery request, CancellationToken cancellationToken)
     {
         var customerFilterSpec = new CustomerFilterSpecification(request.SearchString);
-        
+
         _logger.LogInformation("CustomerListHandler.Handle: Retrieving customers.");
 
         if (request.OrderBy.Any() != true)

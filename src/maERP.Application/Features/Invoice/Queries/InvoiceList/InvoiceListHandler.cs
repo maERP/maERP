@@ -27,7 +27,7 @@ public class InvoiceListHandler : IRequestHandler<InvoiceListQuery, PaginatedRes
     /// <param name="invoiceRepository">Repository for invoice data access</param>
     /// <param name="customerRepository">Repository for customer data access</param>
     public InvoiceListHandler(
-        IAppLogger<InvoiceListHandler> logger, 
+        IAppLogger<InvoiceListHandler> logger,
         IInvoiceRepository invoiceRepository,
         ICustomerRepository customerRepository)
     {
@@ -45,12 +45,12 @@ public class InvoiceListHandler : IRequestHandler<InvoiceListQuery, PaginatedRes
     public async Task<PaginatedResult<InvoiceListDto>> Handle(InvoiceListQuery request, CancellationToken cancellationToken)
     {
         var invoiceFilterSpec = new InvoiceFilterSpecification(request.SearchString);
-        
+
         _logger.LogInformation("Handle InvoiceListQuery: {0}", request);
 
         // Get all customers for joining customer names
         var customers = await _customerRepository.GetAllAsync();
-        
+
         // If no sorting parameters provided
         if (request.OrderBy.Any() != true)
         {

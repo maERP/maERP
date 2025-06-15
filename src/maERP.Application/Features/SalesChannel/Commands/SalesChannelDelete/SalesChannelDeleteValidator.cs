@@ -18,7 +18,7 @@ public class SalesChannelDeleteValidator : AbstractValidator<SalesChannelDeleteC
         RuleFor(s => s)
             .MustAsync(SalesChannelExists).WithMessage("SalesChannel not found.");
     }
-    
+
     private async Task<bool> SalesChannelExists(SalesChannelDeleteCommand command, CancellationToken cancellationToken)
     {
         return await _salesChannelRepository.ExistsAsync(command.Id);

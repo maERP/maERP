@@ -14,19 +14,19 @@ public class WarehouseDeleteValidator : AbstractValidator<WarehouseDeleteCommand
     {
         _warehouseRepository = warehouseRepository;
         _salesChannelRepository = salesChannelRepository;
-        
+
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
 
         RuleFor(w => w)
             .MustAsync(WarehouseExists).WithMessage("Warehouse not found");
-        
+
         RuleFor(w => w)
             .MustAsync(WarehouseIsNotUsedInSalesChannel)
             .WithMessage("Cannot delete warehouse as it is being used by one or more sales channels.");
     }
-    
+
     private async Task<bool> WarehouseExists(WarehouseDeleteCommand command, CancellationToken cancellationToken)
     {
         return await _warehouseRepository.ExistsAsync(command.Id);

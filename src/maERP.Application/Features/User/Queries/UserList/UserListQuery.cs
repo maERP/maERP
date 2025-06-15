@@ -14,17 +14,17 @@ public class UserListQuery : IRequest<PaginatedResult<UserListDto>>
     /// The page number to retrieve (1-based indexing)
     /// </summary>
     public int PageNumber { get; set; }
-    
+
     /// <summary>
     /// The number of items per page
     /// </summary>
     public int PageSize { get; set; }
-    
+
     /// <summary>
     /// Optional search string to filter users
     /// </summary>
     public string SearchString { get; set; }
-    
+
     /// <summary>
     /// Optional array of properties to order the results by
     /// </summary>

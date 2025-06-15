@@ -20,7 +20,7 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<UserListHandler> _logger;
-    
+
     /// <summary>
     /// ASP.NET Identity UserManager for user data operations
     /// </summary>
@@ -38,7 +38,7 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
         _logger = logger;
         _userManager = userManager;
     }
-    
+
     /// <summary>
     /// Handles the user list query request
     /// </summary>

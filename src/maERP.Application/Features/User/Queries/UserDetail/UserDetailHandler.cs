@@ -17,7 +17,7 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<UserDetailHandler> _logger;
-    
+
     /// <summary>
     /// Repository for user data operations
     /// </summary>
@@ -35,7 +35,7 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
-    
+
     /// <summary>
     /// Handles the user detail query request
     /// </summary>
@@ -45,9 +45,9 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
     public async Task<Result<UserDetailDto>> Handle(UserDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving user details for ID: {Id}", request.Id);
-        
+
         var result = new Result<UserDetailDto>();
-        
+
         try
         {
             // Retrieve user from the repository by ID
@@ -59,7 +59,7 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"User with ID {request.Id} not found");
-                
+
                 _logger.LogWarning("User with ID {Id} not found", request.Id);
                 return result;
             }
@@ -77,7 +77,7 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("User with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -86,10 +86,10 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the user: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving user: {Message}", ex.Message);
         }
-        
+
         return result;
     }
 }

@@ -60,4 +60,4 @@ public class InvoicePdfQueryHandler : IRequestHandler<InvoicePdfQuery, Result<by
     {
         return settings.TryGetValue(key, out var value) ? value : defaultValue;
     }
-} 
+}

@@ -21,4 +21,4 @@ public class OrderReadyForDeliveryListQuery : IRequest<PaginatedResult<OrderList
         }
         else OrderBy = Array.Empty<string>();
     }
-} 
+}

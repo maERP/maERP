@@ -9,7 +9,7 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
 {
     private readonly IAppLogger<SettingDeleteHandler> _logger;
     private readonly ISettingRepository _settingRepository;
-    
+
     public SettingDeleteHandler(
         IAppLogger<SettingDeleteHandler> logger,
         ISettingRepository settingRepository)
@@ -21,9 +21,9 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
     public async Task<Result<int>> Handle(SettingDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting setting with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new SettingDeleteValidator(_settingRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -33,11 +33,11 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
-                nameof(SettingDeleteCommand), 
+
+            _logger.LogWarning("Validation errors in delete request for {0}: {1}",
+                nameof(SettingDeleteCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -48,14 +48,14 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
             {
                 Id = request.Id
             };
-            
+
             // Delete from database
             await _settingRepository.DeleteAsync(settingToDelete);
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = settingToDelete.Id;
-            
+
             _logger.LogInformation("Successfully deleted setting with ID: {Id}", settingToDelete.Id);
         }
         catch (Exception ex)
@@ -63,7 +63,7 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while deleting the setting: {ex.Message}");
-            
+
             _logger.LogError("Error deleting setting: {Message}", ex.Message);
         }
 

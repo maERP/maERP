@@ -22,9 +22,9 @@ public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result
     public async Task<Result<int>> Handle(AiModelUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating AI model with ID: {Id} and name: {Name}", request.Id, request.Name);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new AiModelUpdateValidator(_aiModelRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -34,11 +34,11 @@ public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(AiModelUpdateCommand), 
+
+            _logger.LogWarning("Validation errors in update request for {0}: {1}",
+                nameof(AiModelUpdateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -55,14 +55,14 @@ public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result
                 ApiKey = request.ApiKey,
                 NCtx = request.NCtx
             };
-            
+
             // Update in database
             await _aiModelRepository.UpdateAsync(aiModelToUpdate);
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = aiModelToUpdate.Id;
-            
+
             _logger.LogInformation("Successfully updated AI model with ID: {Id}", aiModelToUpdate.Id);
         }
         catch (Exception ex)
@@ -70,7 +70,7 @@ public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while updating the AI model: {ex.Message}");
-            
+
             _logger.LogError("Error updating AI model: {Message}", ex.Message);
         }
 

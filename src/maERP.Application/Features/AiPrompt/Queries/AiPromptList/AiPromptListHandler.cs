@@ -16,16 +16,16 @@ public class AiPromptListHandler : IRequestHandler<AiPromptListQuery, PaginatedR
     private readonly IAiPromptRepository _aiPromptRepository;
 
     public AiPromptListHandler(
-        IAppLogger<AiPromptListHandler> logger, 
+        IAppLogger<AiPromptListHandler> logger,
         IAiPromptRepository aiPromptRepository)
     {
         _logger = logger;
-        _aiPromptRepository = aiPromptRepository; 
+        _aiPromptRepository = aiPromptRepository;
     }
     public async Task<PaginatedResult<AiPromptListDto>> Handle(AiPromptListQuery request, CancellationToken cancellationToken)
     {
         var aiPromptFilterSpec = new AiPromptFilterSpecification(request.SearchString);
-        
+
         _logger.LogInformation("Handle AiPromptListQuery: {0}", request);
 
         if (request.OrderBy.Any() != true)

@@ -9,7 +9,7 @@ public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Resu
 {
     private readonly IAppLogger<AiPromptDeleteHandler> _logger;
     private readonly IAiPromptRepository _aIPromptRepository;
-    
+
     public AiPromptDeleteHandler(
         IAppLogger<AiPromptDeleteHandler> logger,
         IAiPromptRepository aIPromptRepository)
@@ -21,9 +21,9 @@ public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Resu
     public async Task<Result<int>> Handle(AiPromptDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting AI prompt with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new AiPromptDeleteValidator(_aIPromptRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -33,11 +33,11 @@ public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
-                nameof(AiPromptDeleteCommand), 
+
+            _logger.LogWarning("Validation errors in delete request for {0}: {1}",
+                nameof(AiPromptDeleteCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -48,14 +48,14 @@ public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Resu
             {
                 Id = request.Id
             };
-            
+
             // Delete from database
             await _aIPromptRepository.DeleteAsync(aIPromptToDelete);
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = aIPromptToDelete.Id;
-            
+
             _logger.LogInformation("Successfully deleted AI prompt with ID: {Id}", aIPromptToDelete.Id);
         }
         catch (Exception ex)
@@ -63,7 +63,7 @@ public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while deleting the AI prompt: {ex.Message}");
-            
+
             _logger.LogError("Error deleting AI prompt: {Message}", ex.Message);
         }
 

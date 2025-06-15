@@ -23,12 +23,12 @@ public class SalesChannelCreateValidator : SalesChannelBaseValidator<SalesChanne
     public SalesChannelCreateValidator(ISalesChannelRepository salesChannelRepository)
     {
         _salesChannelRepository = salesChannelRepository;
-        
+
         // Add rule to check if the sales channel name is unique before creating
         RuleFor(s => s)
             .MustAsync(IsUniqueAsync).WithMessage("SalesChannel with the same name already exists.");
     }
-    
+
     /// <summary>
     /// Asynchronously checks if a sales channel with the same name already exists in the database
     /// </summary>

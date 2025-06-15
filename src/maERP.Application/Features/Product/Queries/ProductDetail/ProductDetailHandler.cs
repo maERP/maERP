@@ -17,7 +17,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<ProductDetailHandler> _logger;
-    
+
     /// <summary>
     /// Repository for product data operations
     /// </summary>
@@ -35,7 +35,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
-    
+
     /// <summary>
     /// Handles the product detail query request
     /// </summary>
@@ -45,9 +45,9 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
     public async Task<Result<ProductDetailDto>> Handle(ProductDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving product details for ID: {Id}", request.Id);
-        
+
         var result = new Result<ProductDetailDto>();
-        
+
         try
         {
             // Retrieve product with all related details from the repository
@@ -59,7 +59,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"Product with ID {request.Id} not found");
-                
+
                 _logger.LogWarning("Product with ID {Id} not found", request.Id);
                 return result;
             }
@@ -92,7 +92,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("Product with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -101,10 +101,10 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the product: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving product: {Message}", ex.Message);
         }
-        
+
         return result;
     }
 }

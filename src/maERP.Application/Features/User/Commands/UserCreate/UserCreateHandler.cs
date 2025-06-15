@@ -17,7 +17,7 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<UserCreateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for user data operations
     /// </summary>
@@ -45,9 +45,9 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
     public async Task<Result<string>> Handle(UserCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new user with email: {Email}", request.Email);
-        
+
         var result = new Result<string>();
-        
+
         // Validate incoming data using FluentValidation
         var validator = new UserCreateValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -58,11 +58,11 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
-                nameof(UserCreateCommand), 
+
+            _logger.LogWarning("Validation errors in create request for {0}: {1}",
+                nameof(UserCreateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -76,7 +76,7 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
                 DateCreated = DateTime.UtcNow,
                 DateModified = DateTime.UtcNow
             };
-            
+
             // Add the new user to the database with the provided password
             await _userRepository.CreateAsync(userToCreate, request.Password);
 
@@ -84,7 +84,7 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = userToCreate.Id;
-            
+
             _logger.LogInformation("Successfully created user with ID: {Id}", userToCreate.Id);
         }
         catch (Exception ex)
@@ -93,7 +93,7 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the user: {ex.Message}");
-            
+
             _logger.LogError("Error creating user: {Message}", ex.Message);
         }
 

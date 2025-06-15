@@ -17,7 +17,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<OrderDetailHandler> _logger;
-    
+
     /// <summary>
     /// Repository for order data operations
     /// </summary>
@@ -35,7 +35,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
     }
-    
+
     /// <summary>
     /// Handles the order detail query request
     /// </summary>
@@ -45,9 +45,9 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
     public async Task<Result<OrderDetailDto>> Handle(OrderDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving order details for ID: {Id}", request.Id);
-        
+
         var result = new Result<OrderDetailDto>();
-        
+
         try
         {
             // Retrieve order with all related details from the repository
@@ -59,7 +59,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"Order with ID {request.Id} not found");
-                
+
                 _logger.LogWarning("Order with ID {Id} not found", request.Id);
                 return result;
             }
@@ -116,7 +116,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("Order with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -125,10 +125,10 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the order: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving order: {Message}", ex.Message);
         }
-        
+
         return result;
     }
 

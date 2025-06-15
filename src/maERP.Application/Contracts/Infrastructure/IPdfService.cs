@@ -14,4 +14,4 @@ public interface IPdfService
     /// <param name="outputPath">Optional path to save the PDF file. If null, returns the PDF as a byte array</param>
     /// <returns>Byte array containing the PDF if outputPath is null, otherwise returns null after saving to file</returns>
     byte[]? GenerateInvoice(Invoice invoice, string? outputPath = null);
-} 
+}

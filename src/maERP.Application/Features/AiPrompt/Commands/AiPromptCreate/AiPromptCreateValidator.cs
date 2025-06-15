@@ -7,7 +7,7 @@ namespace maERP.Application.Features.AiPrompt.Commands.AiPromptCreate;
 public class AiPromptCreateValidator : AiPromptBaseValidator<AiPromptCreateCommand>
 {
     private readonly IAiPromptRepository _aIPromptRepository;
-    
+
     public AiPromptCreateValidator(IAiPromptRepository aiPromptRepository)
     {
         _aIPromptRepository = aiPromptRepository;
@@ -22,7 +22,7 @@ public class AiPromptCreateValidator : AiPromptBaseValidator<AiPromptCreateComma
         {
             Identifier = command.Identifier
         };
-        
+
         return await _aIPromptRepository.IsUniqueAsync(aiPrompt);
     }
 }

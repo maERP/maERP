@@ -14,11 +14,11 @@ public class DeleteOrderValidator : AbstractValidator<DeleteOrderCommand>
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-        
+
         RuleFor(o => o)
             .MustAsync(OrderExists).WithMessage("Order not found");
     }
-    
+
     private async Task<bool> OrderExists(DeleteOrderCommand command, CancellationToken cancellationToken)
     {
         return await _orderRepository.ExistsAsync(command.Id);

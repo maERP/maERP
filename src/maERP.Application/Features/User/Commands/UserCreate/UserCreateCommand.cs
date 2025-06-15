@@ -12,10 +12,10 @@ public class UserCreateCommand : IRequest<Result<string>>
     /// <summary>
     /// Email address of the user to create
     /// </summary>
-    public string Email { get; set; } =  string.Empty;  
-    
+    public string Email { get; set; } = string.Empty;
+
     /// <summary>
     /// Password for the new user account
     /// </summary>
-    public string Password { get; set; } =  string.Empty;
+    public string Password { get; set; } = string.Empty;
 }

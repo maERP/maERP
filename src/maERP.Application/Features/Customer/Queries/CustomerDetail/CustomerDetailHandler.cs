@@ -18,7 +18,7 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<CustomerDetailHandler> _logger;
-    
+
     /// <summary>
     /// Repository for customer data operations
     /// </summary>
@@ -36,7 +36,7 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
-    
+
     /// <summary>
     /// Handles the customer detail query request
     /// </summary>
@@ -46,9 +46,9 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
     public async Task<Result<CustomerDetailDto>> Handle(CustomerDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving customer details for ID: {Id}", request.Id);
-        
+
         var result = new Result<CustomerDetailDto>();
-        
+
         try
         {
             // Retrieve customer with all related details from the repository
@@ -60,7 +60,7 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"Customer with ID {request.Id} not found");
-                
+
                 _logger.LogWarning("Customer with ID {Id} not found", request.Id);
                 return result;
             }
@@ -99,7 +99,7 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("Customer with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -108,10 +108,10 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the customer: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving customer: {Message}", ex.Message);
         }
-        
+
         return result;
     }
 }

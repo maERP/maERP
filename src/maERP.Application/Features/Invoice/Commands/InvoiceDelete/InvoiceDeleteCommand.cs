@@ -12,5 +12,5 @@ public class InvoiceDeleteCommand : IRequest<Result<int>>
     /// <summary>
     /// The ID of the invoice to delete
     /// </summary>
-    public int Id { get; set; }     
+    public int Id { get; set; }
 }

@@ -17,7 +17,7 @@ public class SettingDetailHandler : IRequestHandler<SettingDetailQuery, Result<S
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<SettingDetailHandler> _logger;
-    
+
     /// <summary>
     /// Repository for setting data operations
     /// </summary>
@@ -35,7 +35,7 @@ public class SettingDetailHandler : IRequestHandler<SettingDetailQuery, Result<S
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
     }
-    
+
     /// <summary>
     /// Handles the setting detail query request
     /// </summary>
@@ -45,9 +45,9 @@ public class SettingDetailHandler : IRequestHandler<SettingDetailQuery, Result<S
     public async Task<Result<SettingDetailDto>> Handle(SettingDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving setting details for ID: {Id}", request.Id);
-        
+
         var result = new Result<SettingDetailDto>();
-        
+
         try
         {
             // Retrieve setting with all related details from the repository
@@ -59,7 +59,7 @@ public class SettingDetailHandler : IRequestHandler<SettingDetailQuery, Result<S
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"Setting with ID {request.Id} not found");
-                
+
                 _logger.LogWarning("Setting with ID {Id} not found", request.Id);
                 return result;
             }
@@ -71,7 +71,7 @@ public class SettingDetailHandler : IRequestHandler<SettingDetailQuery, Result<S
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("Setting with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -80,13 +80,13 @@ public class SettingDetailHandler : IRequestHandler<SettingDetailQuery, Result<S
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the setting: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving setting: {Message}", ex.Message);
         }
-        
+
         return result;
     }
-    
+
     /// <summary>
     /// Maps a setting entity to a detail DTO
     /// </summary>

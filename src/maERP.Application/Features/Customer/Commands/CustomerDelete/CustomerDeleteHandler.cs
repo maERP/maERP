@@ -22,9 +22,9 @@ public class CustomerDeleteHandler : IRequestHandler<CustomerDeleteCommand, Resu
     public async Task<Result<int>> Handle(CustomerDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting customer with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new CustomerDeleteValidator(_customerRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -34,11 +34,11 @@ public class CustomerDeleteHandler : IRequestHandler<CustomerDeleteCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
-                nameof(CustomerDeleteCommand), 
+
+            _logger.LogWarning("Validation errors in delete request for {0}: {1}",
+                nameof(CustomerDeleteCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -49,14 +49,14 @@ public class CustomerDeleteHandler : IRequestHandler<CustomerDeleteCommand, Resu
             {
                 Id = request.Id
             };
-            
+
             // Delete from database
             await _customerRepository.DeleteAsync(customerToDelete);
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = customerToDelete.Id;
-            
+
             _logger.LogInformation("Successfully deleted customer with ID: {Id}", customerToDelete.Id);
         }
         catch (Exception ex)
@@ -64,7 +64,7 @@ public class CustomerDeleteHandler : IRequestHandler<CustomerDeleteCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while deleting the customer: {ex.Message}");
-            
+
             _logger.LogError("Error deleting customer: {Message}", ex.Message);
         }
 

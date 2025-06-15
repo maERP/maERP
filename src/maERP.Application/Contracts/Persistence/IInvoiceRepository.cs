@@ -14,21 +14,21 @@ public interface IInvoiceRepository : IGenericRepository<Invoice>
     /// <param name="id">The invoice ID</param>
     /// <returns>The invoice with all related entities or null if not found</returns>
     Task<Invoice?> GetInvoiceWithDetailsAsync(int id);
-    
+
     /// <summary>
     /// Gets invoices for a specific customer
     /// </summary>
     /// <param name="customerId">The customer ID</param>
     /// <returns>Collection of invoices for the customer</returns>
     Task<ICollection<Invoice>> GetInvoicesByCustomerIdAsync(int customerId);
-    
+
     /// <summary>
     /// Gets invoices by their status
     /// </summary>
     /// <param name="status">The invoice status</param>
     /// <returns>Collection of invoices with the specified status</returns>
     Task<ICollection<Invoice>> GetInvoicesByStatusAsync(InvoiceStatus status);
-    
+
     /// <summary>
     /// Creates an invoice from an order, including all invoice items from order items
     /// </summary>

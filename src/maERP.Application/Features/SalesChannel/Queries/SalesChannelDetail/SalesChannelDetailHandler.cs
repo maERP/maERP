@@ -17,7 +17,7 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<SalesChannelDetailHandler> _logger;
-    
+
     /// <summary>
     /// Repository for sales channel data operations
     /// </summary>
@@ -35,7 +35,7 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
     }
-    
+
     /// <summary>
     /// Handles the sales channel detail query request
     /// </summary>
@@ -45,9 +45,9 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
     public async Task<Result<SalesChannelDetailDto>> Handle(SalesChannelDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving sales channel details for ID: {Id}", request.Id);
-        
+
         var result = new Result<SalesChannelDetailDto>();
-        
+
         try
         {
             // Retrieve sales channel with all related details from the repository
@@ -59,7 +59,7 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"Sales channel with ID {request.Id} not found");
-                
+
                 _logger.LogWarning("Sales channel with ID {Id} not found", request.Id);
                 return result;
             }
@@ -71,7 +71,7 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("Sales channel with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -80,13 +80,13 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the sales channel: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving sales channel: {Message}", ex.Message);
         }
-        
+
         return result;
     }
-    
+
     /// <summary>
     /// Maps a sales channel entity to a detail DTO
     /// </summary>

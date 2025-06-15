@@ -15,17 +15,17 @@ public class OrderListHandler : IRequestHandler<OrderListQuery, PaginatedResult<
     private readonly IOrderRepository _orderRepository;
 
     public OrderListHandler(
-        IAppLogger<OrderListHandler> logger, 
+        IAppLogger<OrderListHandler> logger,
         IOrderRepository orderRepository)
     {
         _logger = logger;
-        _orderRepository = orderRepository; 
+        _orderRepository = orderRepository;
     }
 
     public async Task<PaginatedResult<OrderListDto>> Handle(OrderListQuery request, CancellationToken cancellationToken)
     {
         var orderFilterSpec = new OrderFilterSpecification(request.SearchString);
-        
+
         _logger.LogInformation("Handle OrderListQuery: {0}", request);
 
         if (request.OrderBy.Any() != true)

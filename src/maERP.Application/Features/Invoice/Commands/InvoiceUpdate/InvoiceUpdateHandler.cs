@@ -16,7 +16,7 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<InvoiceUpdateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for invoice data operations
     /// </summary>
@@ -44,9 +44,9 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
     public async Task<Result<int>> Handle(InvoiceUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating invoice with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new InvoiceUpdateValidator(_invoiceRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -57,11 +57,11 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(InvoiceUpdateCommand), 
+
+            _logger.LogWarning("Validation errors in update request for {0}: {1}",
+                nameof(InvoiceUpdateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -102,7 +102,7 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
                 DeliveryAddressCountry = request.DeliveryAddressCountry
                 // InvoiceItems would need to be mapped separately
             };
-            
+
             // Update the invoice in the database
             await _invoiceRepository.UpdateAsync(invoiceToUpdate);
 
@@ -110,7 +110,7 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = invoiceToUpdate.Id;
-            
+
             _logger.LogInformation("Successfully updated invoice with ID: {Id}", invoiceToUpdate.Id);
         }
         catch (Exception ex)
@@ -119,7 +119,7 @@ public class InvoiceUpdateHandler : IRequestHandler<InvoiceUpdateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while updating the invoice: {ex.Message}");
-            
+
             _logger.LogError("Error updating invoice: {Message}", ex.Message);
         }
 

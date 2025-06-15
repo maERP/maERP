@@ -17,7 +17,7 @@ namespace maERP.Application.Specifications
             }
             else
             {
-                Criteria = p => true;               
+                Criteria = p => true;
             }
         }
 

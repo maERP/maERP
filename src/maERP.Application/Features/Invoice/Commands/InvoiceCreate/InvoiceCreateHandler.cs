@@ -16,7 +16,7 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<InvoiceCreateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for invoice data operations
     /// </summary>
@@ -44,9 +44,9 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
     public async Task<Result<int>> Handle(InvoiceCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new invoice with number: {InvoiceNumber}", request.InvoiceNumber);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new InvoiceCreateValidator(_invoiceRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -57,11 +57,11 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
-                nameof(InvoiceCreateCommand), 
+
+            _logger.LogWarning("Validation errors in create request for {0}: {1}",
+                nameof(InvoiceCreateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -101,7 +101,7 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
                 DeliveryAddressCountry = request.DeliveryAddressCountry
                 // InvoiceItems would need to be mapped separately
             };
-            
+
             // Add the new invoice to the database
             await _invoiceRepository.CreateAsync(invoiceToCreate);
 
@@ -109,7 +109,7 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = invoiceToCreate.Id;
-            
+
             _logger.LogInformation("Successfully created invoice with ID: {Id}", invoiceToCreate.Id);
         }
         catch (Exception ex)
@@ -118,7 +118,7 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the invoice: {ex.Message}");
-            
+
             _logger.LogError("Error creating invoice: {Message}", ex.Message);
         }
 

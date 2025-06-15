@@ -17,7 +17,7 @@ public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, Result
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<TaxClassDetailHandler> _logger;
-    
+
     /// <summary>
     /// Repository for tax class data operations
     /// </summary>
@@ -35,7 +35,7 @@ public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, Result
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
-    
+
     /// <summary>
     /// Handles the tax class detail query request
     /// </summary>
@@ -45,9 +45,9 @@ public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, Result
     public async Task<Result<TaxClassDetailDto>> Handle(TaxClassDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving tax class details for ID: {Id}", request.Id);
-        
+
         var result = new Result<TaxClassDetailDto>();
-        
+
         try
         {
             // Retrieve tax class with all related details from the repository
@@ -59,7 +59,7 @@ public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, Result
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"Tax class with ID {request.Id} not found");
-                
+
                 _logger.LogWarning("Tax class with ID {Id} not found", request.Id);
                 return result;
             }
@@ -75,7 +75,7 @@ public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, Result
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("Tax class with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -84,10 +84,10 @@ public class TaxClassDetailHandler : IRequestHandler<TaxClassDetailQuery, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the tax class: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving tax class: {Message}", ex.Message);
         }
-        
+
         return result;
     }
 }

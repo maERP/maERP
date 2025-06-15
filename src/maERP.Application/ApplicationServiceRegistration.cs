@@ -7,7 +7,8 @@ public static class ApplicationServiceRegistration
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddMediatR(options => {
+        services.AddMediatR(options =>
+        {
             options.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
 

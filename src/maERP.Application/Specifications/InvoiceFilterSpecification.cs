@@ -18,14 +18,14 @@ namespace maERP.Application.Specifications
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = i => (i.InvoiceNumber.Contains(searchString) || 
-                                i.InvoiceAddressCompanyName.Contains(searchString) || 
-                                i.InvoiceAddressFirstName.Contains(searchString) || 
+                Criteria = i => (i.InvoiceNumber.Contains(searchString) ||
+                                i.InvoiceAddressCompanyName.Contains(searchString) ||
+                                i.InvoiceAddressFirstName.Contains(searchString) ||
                                 i.InvoiceAddressLastName.Contains(searchString));
             }
             else
             {
-                Criteria = i => true;               
+                Criteria = i => true;
             }
         }
 

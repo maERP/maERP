@@ -16,7 +16,7 @@ public class AiModelCreateValidator : AiModelBaseValidator<AiModelCreateCommand>
     /// Repository for AI model data operations
     /// </summary>
     private readonly IAiModelRepository _aiModelRepository;
-    
+
     /// <summary>
     /// Constructor that initializes the validator with required dependencies
     /// </summary>
@@ -24,7 +24,7 @@ public class AiModelCreateValidator : AiModelBaseValidator<AiModelCreateCommand>
     public AiModelCreateValidator(IAiModelRepository aiModelRepository)
     {
         _aiModelRepository = aiModelRepository ?? throw new ArgumentNullException(nameof(aiModelRepository));
-            
+
         // Add rule to check if the AI model name is unique before creating
         RuleFor(q => q)
             .MustAsync(IsUniqueAsync).WithMessage("AiModel with the same name already exists.");
@@ -42,7 +42,7 @@ public class AiModelCreateValidator : AiModelBaseValidator<AiModelCreateCommand>
         {
             Name = command.Name,
         };
-        
+
         return await _aiModelRepository.IsUniqueAsync(aiModel);
     }
 }

@@ -15,11 +15,11 @@ public class OrderNotPaidListHandler : IRequestHandler<OrderNotPaidListQuery, Pa
     private readonly IOrderRepository _orderRepository;
 
     public OrderNotPaidListHandler(
-        IAppLogger<OrderNotPaidListHandler> logger, 
+        IAppLogger<OrderNotPaidListHandler> logger,
         IOrderRepository orderRepository)
     {
         _logger = logger;
-        _orderRepository = orderRepository; 
+        _orderRepository = orderRepository;
     }
 
     public async Task<PaginatedResult<OrderListDto>> Handle(OrderNotPaidListQuery request, CancellationToken cancellationToken)
@@ -87,4 +87,4 @@ public class OrderNotPaidListHandler : IRequestHandler<OrderNotPaidListQuery, Pa
             })
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
-} 
+}

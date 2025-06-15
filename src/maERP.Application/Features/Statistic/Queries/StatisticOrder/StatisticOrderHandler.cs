@@ -27,7 +27,7 @@ public class StatisticOrderHandler : IRequestHandler<StatisticOrderQuery, Result
         try
         {
             _logger.LogInformation("Handle StatisticOrderQuery: {0}", request);
-            
+
             var statisticDto = new StatisticOrderDto();
             var thirtyDaysAgo = DateTime.UtcNow.Date.AddDays(-30);
 
@@ -64,7 +64,7 @@ public class StatisticOrderHandler : IRequestHandler<StatisticOrderQuery, Result
 
             // Sort by date ascending
             statisticDto.DailyStatistics = statisticDto.DailyStatistics.OrderBy(x => x.Date).ToList();
-            
+
             return Result<StatisticOrderDto>.Success(statisticDto);
         }
         catch (Exception ex)

@@ -7,7 +7,7 @@ namespace maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
 public class AiPromptUpdateValidator : AiPromptBaseValidator<AiPromptUpdateCommand>
 {
     private readonly IAiPromptRepository _aIPromptRepository;
-    
+
     public AiPromptUpdateValidator(IAiPromptRepository aIPromptRepository)
     {
         _aIPromptRepository = aIPromptRepository;
@@ -16,12 +16,12 @@ public class AiPromptUpdateValidator : AiPromptBaseValidator<AiPromptUpdateComma
             .MustAsync(AiPromptExists).WithMessage("AiPrompt not found")
             .MustAsync(IsUniqueAsync).WithMessage("AiPrompt with the same name already exists.");
     }
-    
+
     private async Task<bool> AiPromptExists(AiPromptUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _aIPromptRepository.GetByIdAsync(command.Id, true) != null;
     }
-    
+
     private async Task<bool> IsUniqueAsync(AiPromptUpdateCommand command, CancellationToken cancellationToken)
     {
         var aIPrompt = new Domain.Entities.AiPrompt

@@ -16,7 +16,7 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<SalesChannelCreateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for sales channel data operations
     /// </summary>
@@ -44,9 +44,9 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
     public async Task<Result<int>> Handle(SalesChannelCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new sales channel with name: {Name}", request.Name);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new SalesChannelCreateValidator(_salesChannelRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -57,11 +57,11 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
-                nameof(SalesChannelCreateCommand), 
+
+            _logger.LogWarning("Validation errors in create request for {0}: {1}",
+                nameof(SalesChannelCreateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -69,7 +69,7 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
         {
             // Map request to domain entity
             var salesChannelToCreate = MapToEntity(request);
-            
+
             // Add the new sales channel to the database
             await _salesChannelRepository.CreateAsync(salesChannelToCreate);
 
@@ -77,7 +77,7 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = salesChannelToCreate.Id;
-            
+
             _logger.LogInformation("Successfully created sales channel with ID: {Id}", salesChannelToCreate.Id);
         }
         catch (Exception ex)
@@ -86,13 +86,13 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the sales channel: {ex.Message}");
-            
+
             _logger.LogError("Error creating sales channel: {Message}", ex.Message);
         }
 
         return result;
     }
-    
+
     /// <summary>
     /// Maps a sales channel command to a domain entity
     /// </summary>

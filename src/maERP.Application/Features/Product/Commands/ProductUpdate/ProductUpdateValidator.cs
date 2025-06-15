@@ -19,11 +19,11 @@ public class ProductUpdateValidator : ProductBaseValidator<ProductUpdateCommand>
         RuleFor(p => p.Id)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.");
-            
+
         RuleFor(p => p)
             .MustAsync(ProductExists).WithMessage("Product does not exist.");
     }
-    
+
     private async Task<bool> ProductExists(ProductUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _productRepository.GetByIdAsync(command.Id, true) != null;

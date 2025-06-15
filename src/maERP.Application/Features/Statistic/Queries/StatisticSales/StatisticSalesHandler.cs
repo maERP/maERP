@@ -24,9 +24,9 @@ public class StatisticSalesHandler : IRequestHandler<StatisticSalesQuery, Result
         try
         {
             _logger.LogInformation("Handle StatisticSalesQuery: {0}", request);
-            
+
             var statisticDto = new StatisticSalesDto();
-            
+
             var now = DateTime.UtcNow;
             var hours24Ago = now.AddHours(-24);
             var days7Ago = now.AddDays(-7);
@@ -52,7 +52,7 @@ public class StatisticSalesHandler : IRequestHandler<StatisticSalesQuery, Result
             statisticDto.Sales365Days = await _orderRepository.Entities
                 .Where(o => o.DateOrdered >= days365Ago)
                 .SumAsync(o => o.Total, cancellationToken);
-            
+
             return Result<StatisticSalesDto>.Success(statisticDto);
         }
         catch (Exception ex)
@@ -61,4 +61,4 @@ public class StatisticSalesHandler : IRequestHandler<StatisticSalesQuery, Result
             return Result<StatisticSalesDto>.Fail(ResultStatusCode.InternalServerError, "Fehler beim Ermitteln der Umsatzstatistik");
         }
     }
-} 
+}

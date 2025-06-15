@@ -2,7 +2,7 @@
 using maERP.Domain.Entities.Common;
 
 namespace maERP.Application.Specifications.Base;
-    
+
 public interface ISpecification<T> where T : class, IBaseEntity
 {
     Expression<Func<T, bool>> Criteria { get; }

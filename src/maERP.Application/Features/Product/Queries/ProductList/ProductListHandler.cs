@@ -15,17 +15,17 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
     private readonly IProductRepository _productRepository;
 
     public ProductListHandler(
-        IAppLogger<ProductListHandler> logger, 
+        IAppLogger<ProductListHandler> logger,
         IProductRepository productRepository)
     {
         _logger = logger;
-        _productRepository = productRepository; 
+        _productRepository = productRepository;
     }
-    
+
     public async Task<PaginatedResult<ProductListDto>> Handle(ProductListQuery request, CancellationToken cancellationToken)
     {
         var orderFilterSpec = new ProductFilterSpecification(request.SearchString);
-        
+
         _logger.LogInformation("Handle ProductListQuery: {0}", request);
 
         if (request.OrderBy.Any() != true)
@@ -34,7 +34,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
                .Specify(orderFilterSpec)
                .Select(p => MapToProductListDto(p))
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-               
+
             return products;
         }
 
@@ -45,10 +45,10 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
             .OrderBy(ordering)
             .Select(p => MapToProductListDto(p))
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
-            
+
         return orderedProducts;
     }
-    
+
     private static ProductListDto MapToProductListDto(Domain.Entities.Product product)
     {
         return new ProductListDto

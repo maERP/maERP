@@ -42,6 +42,7 @@ jobs:
           --output ./publish/win-x64 \
           -p:PublishSingleFile=true \
           -p:PublishTrimmed=false
+        mv ./publish/win-x64/maERP.UI.Desktop.exe ./publish/win-x64/maERP.Desktop.exe
 
     - name: Publish Linux x64
       run: |
@@ -52,6 +53,7 @@ jobs:
           --output ./publish/linux-x64 \
           -p:PublishSingleFile=true \
           -p:PublishTrimmed=false
+        mv ./publish/linux-x64/maERP.UI.Desktop ./publish/linux-x64/maERP.Desktop
 
     - name: Publish macOS x64
       run: |
@@ -62,6 +64,7 @@ jobs:
           --output ./publish/osx-x64 \
           -p:PublishSingleFile=true \
           -p:PublishTrimmed=false
+        mv ./publish/osx-x64/maERP.UI.Desktop ./publish/osx-x64/maERP.Desktop
 
     - name: Publish macOS ARM64
       run: |
@@ -72,6 +75,7 @@ jobs:
           --output ./publish/osx-arm64 \
           -p:PublishSingleFile=true \
           -p:PublishTrimmed=false
+        mv ./publish/osx-arm64/maERP.UI.Desktop ./publish/osx-arm64/maERP.Desktop
 
     - name: Create release archives
       run: |

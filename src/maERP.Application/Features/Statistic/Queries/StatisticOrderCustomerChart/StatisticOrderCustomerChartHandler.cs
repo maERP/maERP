@@ -19,13 +19,13 @@ public class StatisticOrderCustomerChartHandler : IRequestHandler<StatisticOrder
     }
 
     public async Task<Result<StatisticOrderCustomerChartResponse>> Handle(StatisticOrderCustomerChartQuery request, CancellationToken cancellationToken)
-    { 
+    {
         try
         {
             _logger.LogInformation("Handle StatisticOrderCustomerChartQuery: {0}", request);
-            
+
             var response = new StatisticOrderCustomerChartResponse();
-            
+
             response.chartData = await _orderRepository.Entities
                 .Where(order => order.DateOrdered >= DateTime.UtcNow.AddDays(-30))
                 .GroupBy(order => order.DateOrdered.Date)
@@ -42,7 +42,7 @@ public class StatisticOrderCustomerChartHandler : IRequestHandler<StatisticOrder
         catch (Exception ex)
         {
             _logger.LogError("Fehler beim Ermitteln der Bestell- und Kundendiagrammdaten: {0}", ex.Message);
-            return Result<StatisticOrderCustomerChartResponse>.Fail(ResultStatusCode.InternalServerError, 
+            return Result<StatisticOrderCustomerChartResponse>.Fail(ResultStatusCode.InternalServerError,
                 "Fehler beim Ermitteln der Bestell- und Kundendiagrammdaten");
         }
     }

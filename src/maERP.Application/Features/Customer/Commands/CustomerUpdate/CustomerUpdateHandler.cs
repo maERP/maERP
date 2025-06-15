@@ -23,9 +23,9 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
     public async Task<Result<int>> Handle(CustomerUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating customer with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new CustomerUpdateValidator(_customerRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -35,11 +35,11 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(CustomerUpdateCommand), 
+
+            _logger.LogWarning("Validation errors in update request for {0}: {1}",
+                nameof(CustomerUpdateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -47,7 +47,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
         {
             // Manual mapping instead of AutoMapper
             var customerToUpdate = await _customerRepository.GetByIdAsync(request.Id);
-            
+
             if (customerToUpdate == null)
             {
                 result.Succeeded = false;
@@ -55,7 +55,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
                 result.Messages.Add($"Customer with ID {request.Id} not found");
                 return result;
             }
-            
+
             // Manual assignment of properties
             customerToUpdate.Firstname = request.Firstname;
             customerToUpdate.Lastname = request.Lastname;
@@ -67,18 +67,18 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
             customerToUpdate.Note = request.Note;
             customerToUpdate.CustomerStatus = request.CustomerStatus;
             customerToUpdate.DateEnrollment = request.DateEnrollment;
-            
+
             // Update CustomerAddresses if available
             if (request.CustomerAddresses.Any())
             {
                 // Load existing addresses
                 var existingAddresses = await _customerRepository.GetCustomerAddressByCustomerIdAsync(request.Id);
-                
+
                 foreach (var addressDto in request.CustomerAddresses)
                 {
                     // Search for existing address
                     var existingAddress = existingAddresses.FirstOrDefault(a => a.Id == addressDto.Id);
-                    
+
                     if (existingAddress != null)
                     {
                         // Update existing address
@@ -110,19 +110,19 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
                             // Using a fixed default value for CountryId as it's missing in CustomerAddressListDto
                             CountryId = 1 // Default country (needs to be adjusted)
                         };
-                        
+
                         await _customerRepository.AddCustomerAddressAsync(newAddress);
                     }
                 }
             }
-            
+
             // Update in database
             await _customerRepository.UpdateAsync(customerToUpdate);
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = customerToUpdate.Id;
-            
+
             _logger.LogInformation("Successfully updated customer with ID: {Id}", customerToUpdate.Id);
         }
         catch (Exception ex)
@@ -130,7 +130,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while updating the customer: {ex.Message}");
-            
+
             _logger.LogError("Error updating customer: {Message}", ex.Message);
         }
 

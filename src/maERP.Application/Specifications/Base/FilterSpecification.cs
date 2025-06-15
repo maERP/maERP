@@ -12,7 +12,7 @@ public abstract class FilterSpecification<T> : ISpecification<T> where T : class
 #nullable enable
     public List<Expression<Func<T, object>>> Includes { get; } = new();
     public List<string> IncludeStrings { get; } = new();
-    
+
     // ReSharper disable once UnusedMember.Global
     // ReSharper disable once VirtualMemberNeverOverridden.Global
     protected virtual void AddInclude(Expression<Func<T, object>> includeExpression)

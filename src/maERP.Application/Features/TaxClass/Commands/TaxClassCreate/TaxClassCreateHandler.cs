@@ -16,7 +16,7 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<TaxClassCreateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for tax class data operations
     /// </summary>
@@ -44,9 +44,9 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
     public async Task<Result<int>> Handle(TaxClassCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new tax class with tax rate: {TaxRate}", request.TaxRate);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new TaxClassCreateValidator(_taxClassRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -57,11 +57,11 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
-                nameof(TaxClassCreateCommand), 
+
+            _logger.LogWarning("Validation errors in create request for {0}: {1}",
+                nameof(TaxClassCreateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -72,7 +72,7 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
             {
                 TaxRate = request.TaxRate
             };
-            
+
             // Add the new tax class to the database
             await _taxClassRepository.CreateAsync(taxClassToCreate);
 
@@ -80,7 +80,7 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = taxClassToCreate.Id;
-            
+
             _logger.LogInformation("Successfully created tax class with ID: {Id}", taxClassToCreate.Id);
         }
         catch (Exception ex)
@@ -89,7 +89,7 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the tax class: {ex.Message}");
-            
+
             _logger.LogError("Error creating tax class: {Message}", ex.Message);
         }
 

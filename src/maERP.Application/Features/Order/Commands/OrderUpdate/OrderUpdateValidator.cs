@@ -11,8 +11,8 @@ public class OrderUpdateValidator : OrderBaseValidator<OrderUpdateCommand>
     public OrderUpdateValidator(IOrderRepository orderRepository)
     {
         _orderRepository = orderRepository;
-        
-        
+
+
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
@@ -24,7 +24,7 @@ public class OrderUpdateValidator : OrderBaseValidator<OrderUpdateCommand>
         RuleFor(o => o)
             .MustAsync(OrderExists).WithMessage("Order not found");
     }
-    
+
     private async Task<bool> OrderExists(OrderUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _orderRepository.ExistsAsync(command.Id);

@@ -16,17 +16,17 @@ public class AiModelListHandler : IRequestHandler<AiModelListQuery, PaginatedRes
     private readonly IAiModelRepository _aiModelRepository;
 
     public AiModelListHandler(
-        IAppLogger<AiModelListHandler> logger, 
+        IAppLogger<AiModelListHandler> logger,
         IAiModelRepository aiModelRepository)
     {
         _logger = logger;
-        _aiModelRepository = aiModelRepository; 
+        _aiModelRepository = aiModelRepository;
     }
-    
+
     public async Task<PaginatedResult<AiModelListDto>> Handle(AiModelListQuery request, CancellationToken cancellationToken)
     {
         var aiModelFilterSpec = new AiModelFilterSpecification(request.SearchString);
-        
+
         _logger.LogInformation("Handle AiModelListQuery: {0}", request);
 
         if (request.OrderBy.Any() != true)

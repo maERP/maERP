@@ -15,17 +15,17 @@ public class OrderCustomerListHandler : IRequestHandler<OrderCustomerListQuery, 
     private readonly IOrderRepository _orderRepository;
 
     public OrderCustomerListHandler(
-        IAppLogger<OrderCustomerListHandler> logger, 
+        IAppLogger<OrderCustomerListHandler> logger,
         IOrderRepository orderRepository)
     {
         _logger = logger;
-        _orderRepository = orderRepository; 
+        _orderRepository = orderRepository;
     }
 
     public async Task<PaginatedResult<OrderListDto>> Handle(OrderCustomerListQuery request, CancellationToken cancellationToken)
     {
         var orderFilterSpec = new OrderCustomerFilterSpecification(request.CustomerId, request.SearchString);
-        
+
         _logger.LogInformation("Handle OrderCustomerListQuery für Kunde {CustomerId}: {Request}", request.CustomerId, request);
 
         if (request.OrderBy.Any() != true)
@@ -64,4 +64,4 @@ public class OrderCustomerListHandler : IRequestHandler<OrderCustomerListQuery, 
             })
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
-} 
+}

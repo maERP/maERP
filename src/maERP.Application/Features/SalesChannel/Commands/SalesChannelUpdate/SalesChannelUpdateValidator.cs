@@ -11,7 +11,7 @@ public class SalesChannelUpdateValidator : SalesChannelBaseValidator<SalesChanne
     public SalesChannelUpdateValidator(ISalesChannelRepository salesChannelRepository)
     {
         _salesChannelRepository = salesChannelRepository;
-        
+
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
@@ -19,7 +19,7 @@ public class SalesChannelUpdateValidator : SalesChannelBaseValidator<SalesChanne
         RuleFor(s => s)
             .MustAsync(IsUnique).WithMessage("Sales Channel is not unique.");
     }
-    
+
     private async Task<bool> IsUnique(SalesChannelUpdateCommand command, CancellationToken cancellationToken)
     {
         var salesChannel = new Domain.Entities.SalesChannel

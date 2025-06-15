@@ -18,7 +18,7 @@ public class SettingDeleteValidator : AbstractValidator<SettingDeleteCommand>
         RuleFor(s => s)
             .MustAsync(SettingExists).WithMessage("Setting not found.");
     }
-    
+
     private async Task<bool> SettingExists(SettingDeleteCommand command, CancellationToken cancellationToken)
     {
         return await _settingRepository.ExistsAsync(command.Id);

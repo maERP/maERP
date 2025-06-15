@@ -17,7 +17,7 @@ public class UserCreateValidator : AbstractValidator<UserCreateCommand>
         RuleFor(p => p.Email)
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.");
-        
+
         // Unique user validation rule
         RuleFor(u => u)
             .MustAsync(UserUnique).WithMessage("User with the same email already exists.");

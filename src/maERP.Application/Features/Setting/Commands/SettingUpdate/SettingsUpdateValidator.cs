@@ -11,7 +11,7 @@ public class SettingUpdateValidator : SettingBaseValidator<SettingUpdateCommand>
     public SettingUpdateValidator(ISettingRepository settingRepository)
     {
         _settingRepository = settingRepository;
-        
+
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
@@ -19,7 +19,7 @@ public class SettingUpdateValidator : SettingBaseValidator<SettingUpdateCommand>
         RuleFor(s => s)
             .MustAsync(IsUnique).WithMessage("Setting is not unique.");
     }
-    
+
     private async Task<bool> IsUnique(SettingUpdateCommand command, CancellationToken cancellationToken)
     {
         var setting = new Domain.Entities.Setting()

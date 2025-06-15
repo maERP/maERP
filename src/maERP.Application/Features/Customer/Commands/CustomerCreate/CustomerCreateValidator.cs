@@ -23,9 +23,9 @@ public class CustomerCreateValidator : CustomerBaseValidator<CustomerCreateComma
     public CustomerCreateValidator(ICustomerRepository customerRepository)
     {
         _customerRepository = customerRepository;
-            
+
         // Add rule to check if the customer is unique before creating
-        RuleFor(q => q)    
+        RuleFor(q => q)
             .MustAsync(IsUniqueAsync).WithMessage("Customer with the same values already exists.");
     }
 
@@ -41,7 +41,7 @@ public class CustomerCreateValidator : CustomerBaseValidator<CustomerCreateComma
         {
             Firstname = command.Firstname,
         };
-        
-        return await _customerRepository.IsUniqueAsync(customer);     
+
+        return await _customerRepository.IsUniqueAsync(customer);
     }
 }

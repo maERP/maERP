@@ -31,9 +31,9 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
     public async Task<Result<int>> Handle(OrderUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating order with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new OrderUpdateValidator(_orderRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -43,11 +43,11 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(OrderUpdateCommand), 
+
+            _logger.LogWarning("Validation errors in update request for {0}: {1}",
+                nameof(OrderUpdateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -90,20 +90,20 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
                 DateOrdered = request.DateOrdered
                 // OrderItems müssten separat gemappt werden
             };
-            
+
             // Update in database
             await _orderRepository.UpdateAsync(orderToUpdate);
-            
+
             // Prüfen, ob eine Rechnung erstellt werden kann
             bool canCreateInvoice = await _orderRepository.CanCreateInvoice(orderToUpdate.Id);
-            
+
             if (canCreateInvoice)
             {
                 try
                 {
                     // Bestellung mit Details laden
                     var orderWithDetails = await _orderRepository.GetWithDetailsAsync(orderToUpdate.Id);
-                    
+
                     if (orderWithDetails != null)
                     {
                         // Rechnung erstellen mit der ausgelagerten Methode
@@ -115,11 +115,11 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
                     _logger.LogError("Error creating invoice for order ID {Id}: {Message}", orderToUpdate.Id, ex.Message);
                 }
             }
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = orderToUpdate.Id;
-            
+
             _logger.LogInformation("Successfully updated order with ID: {Id}", orderToUpdate.Id);
         }
         catch (Exception ex)
@@ -127,7 +127,7 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while updating the order: {ex.Message}");
-            
+
             _logger.LogError("Error updating order: {Message}", ex.Message);
         }
 

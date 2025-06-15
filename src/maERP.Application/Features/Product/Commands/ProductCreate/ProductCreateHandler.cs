@@ -16,7 +16,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<ProductCreateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for product data operations
     /// </summary>
@@ -44,9 +44,9 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
     public async Task<Result<int>> Handle(ProductCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new product with SKU: {Sku}, Name: {Name}", request.Sku, request.Name);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new ProductCreateValidator(_productRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -57,11 +57,11 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
-                nameof(ProductCreateCommand), 
+
+            _logger.LogWarning("Validation errors in create request for {0}: {1}",
+                nameof(ProductCreateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -86,7 +86,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
                 Depth = request.Depth,
                 TaxClassId = request.TaxClassId
             };
-            
+
             // Add the new product to the database
             await _productRepository.CreateAsync(productToCreate);
 
@@ -94,7 +94,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = productToCreate.Id;
-            
+
             _logger.LogInformation("Successfully created product with ID: {Id}", productToCreate.Id);
         }
         catch (Exception ex)
@@ -103,7 +103,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the product: {ex.Message}");
-            
+
             _logger.LogError("Error creating product: {Message}", ex.Message);
         }
 

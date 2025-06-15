@@ -16,7 +16,7 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<UserUpdateHandler> _logger;
-    
+
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
@@ -36,9 +36,9 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
     public async Task<Result<string>> Handle(UserUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating user with ID: {Id}", request.Id);
-        
+
         var result = new Result<string>();
-        
+
         // Validate incoming data using FluentValidation
         var validator = new UserUpdateValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -49,11 +49,11 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(UserUpdateCommand), 
+
+            _logger.LogWarning("Validation errors in update request for {0}: {1}",
+                nameof(UserUpdateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -67,15 +67,15 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
                 Email = request.Email,
                 DateModified = DateTime.UtcNow
             };
-            
+
             // TODO: Update the user in the database
             // await _userRepository.UpdateAsync(userToUpdate);
-            
+
             // Set successful result with the updated user's ID
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = userToUpdate.Id;
-            
+
             _logger.LogInformation("Successfully updated user with ID: {Id}", userToUpdate.Id);
         }
         catch (Exception ex)
@@ -84,7 +84,7 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while updating the user: {ex.Message}");
-            
+
             _logger.LogError("Error updating user: {Message}", ex.Message);
         }
 

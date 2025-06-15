@@ -12,8 +12,8 @@ public class UserUpdateCommand : IRequest<Result<string>>
     /// <summary>
     /// The unique identifier of the user to update
     /// </summary>
-    public string Id { get; set; } = string.Empty;     
-    
+    public string Id { get; set; } = string.Empty;
+
     /// <summary>
     /// Updated email address for the user
     /// </summary>

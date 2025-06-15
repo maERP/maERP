@@ -22,7 +22,7 @@ public class OrderCreateValidator : OrderBaseValidator<OrderCreateCommand>
     public OrderCreateValidator(IOrderRepository orderRepository)
     {
         _orderRepository = orderRepository;
-        
+
         /*
         // Commented out uniqueness check - would be used if orders needed to be unique
         RuleFor(q => q)
@@ -41,7 +41,7 @@ public class OrderCreateValidator : OrderBaseValidator<OrderCreateCommand>
     {
         var orderToCreate = new Domain.Entities.Order
         {
-             Id = command.Id
+            Id = command.Id
         };
 
         return await _orderRepository.IsUniqueAsync(orderToCreate);

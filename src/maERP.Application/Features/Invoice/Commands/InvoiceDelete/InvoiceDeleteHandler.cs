@@ -16,7 +16,7 @@ public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<InvoiceDeleteHandler> _logger;
-    
+
     /// <summary>
     /// Repository for invoice data operations
     /// </summary>
@@ -44,9 +44,9 @@ public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result
     public async Task<Result<int>> Handle(InvoiceDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting invoice with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new InvoiceDeleteValidator(_invoiceRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -57,11 +57,11 @@ public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
-                nameof(InvoiceDeleteCommand), 
+
+            _logger.LogWarning("Validation errors in delete request for {0}: {1}",
+                nameof(InvoiceDeleteCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -72,15 +72,15 @@ public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result
             {
                 Id = request.Id
             };
-            
+
             // Delete from database
             await _invoiceRepository.DeleteAsync(invoiceToDelete);
-            
+
             // Set successful result with the deleted invoice ID
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = invoiceToDelete.Id;
-            
+
             _logger.LogInformation("Successfully deleted invoice with ID: {Id}", invoiceToDelete.Id);
         }
         catch (Exception ex)
@@ -89,7 +89,7 @@ public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"Ein Fehler ist beim Löschen der Rechnung aufgetreten: {ex.Message}");
-            
+
             _logger.LogError("Error deleting invoice: {Message}", ex.Message);
         }
 

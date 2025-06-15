@@ -28,61 +28,61 @@ public class StatisticMostSellingProductsHandler : IRequestHandler<StatisticMost
         try
         {
             _logger.LogInformation("Handle StatisticMostSellingProductsQuery: {0}", request);
-            
+
             var statisticDto = new StatisticMostSellingProductsDto();
-            
+
             // Zeiträume definieren
             var today = DateTime.UtcNow.Date;
             var sevenDaysAgo = today.AddDays(-7);
             var firstDayOfMonth = new DateTime(today.Year, today.Month, 1);
             var firstDayOfYear = new DateTime(today.Year, 1, 1);
-            
+
             // Die 10 meistverkauften Produkte von heute abrufen
             statisticDto.TopProductsToday = await GetTopSellingProducts(today, today.AddDays(1), cancellationToken);
-            
+
             // Die 10 meistverkauften Produkte der letzten 7 Tage abrufen
             statisticDto.TopProductsLastSevenDays = await GetTopSellingProducts(sevenDaysAgo, today.AddDays(1), cancellationToken);
-            
+
             // Die 10 meistverkauften Produkte dieses Monats abrufen
             statisticDto.TopProductsThisMonth = await GetTopSellingProducts(firstDayOfMonth, today.AddDays(1), cancellationToken);
-            
+
             // Die 10 meistverkauften Produkte dieses Jahres abrufen
             statisticDto.TopProductsThisYear = await GetTopSellingProducts(firstDayOfYear, today.AddDays(1), cancellationToken);
-            
+
             // Die 10 meistverkauften Produkte aller Zeiten abrufen
             statisticDto.TopProductsAllTime = await GetTopSellingProducts(null, null, cancellationToken);
-            
+
             return Result<StatisticMostSellingProductsDto>.Success(statisticDto);
         }
         catch (Exception ex)
         {
             _logger.LogError("Fehler beim Ermitteln der meistverkauften Produkte: {0}", ex.Message);
             return Result<StatisticMostSellingProductsDto>.Fail(
-                ResultStatusCode.InternalServerError, 
+                ResultStatusCode.InternalServerError,
                 "Fehler beim Ermitteln der meistverkauften Produkte");
         }
     }
-    
+
     private async Task<List<MostSellingProductItem>> GetTopSellingProducts(
-        DateTime? startDate, 
-        DateTime? endDate, 
+        DateTime? startDate,
+        DateTime? endDate,
         CancellationToken cancellationToken)
     {
         var query = _orderRepository.Entities
             .Include(o => o.OrderItems)
             .Where(o => o.OrderItems.Any());
-        
+
         // Zeitraum-Filter anwenden, falls vorhanden
         if (startDate.HasValue)
         {
             query = query.Where(o => o.DateOrdered >= startDate.Value);
         }
-        
+
         if (endDate.HasValue)
         {
             query = query.Where(o => o.DateOrdered < endDate.Value);
         }
-        
+
         // Bestellungen mit ihren Positionen abrufen und nach Produkt gruppieren
         var topProducts = await query
             .SelectMany(o => o.OrderItems)
@@ -95,14 +95,14 @@ public class StatisticMostSellingProductsHandler : IRequestHandler<StatisticMost
             .OrderByDescending(x => x.TotalQuantity)
             .Take(10)
             .ToListAsync(cancellationToken);
-        
+
         // Produkt-Informationen anreichern
         var result = new List<MostSellingProductItem>();
-        
+
         foreach (var product in topProducts)
         {
             var productInfo = await _productRepository.GetByIdAsync(product.ProductId);
-            
+
             if (productInfo != null)
             {
                 result.Add(new MostSellingProductItem
@@ -114,7 +114,7 @@ public class StatisticMostSellingProductsHandler : IRequestHandler<StatisticMost
                 });
             }
         }
-        
+
         return result;
     }
-} 
+}

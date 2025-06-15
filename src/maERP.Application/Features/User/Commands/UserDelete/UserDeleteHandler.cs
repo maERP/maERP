@@ -17,12 +17,12 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
     /// ASP.NET Identity UserManager for user data operations
     /// </summary>
     private readonly UserManager<ApplicationUser> _userManager;
-    
+
     /// <summary>
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<UserDeleteHandler> _logger;
-    
+
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
@@ -45,9 +45,9 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
     public async Task<Result<string>> Handle(UserDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting user with ID: {Id}", request.Id);
-        
+
         var result = new Result<string>();
-        
+
         // Validate incoming data using FluentValidation
         var validator = new UserDeleteValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -58,11 +58,11 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
-                nameof(UserDeleteCommand), 
+
+            _logger.LogWarning("Validation errors in delete request for {0}: {1}",
+                nameof(UserDeleteCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -70,32 +70,32 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
         {
             // Find the user to delete by ID
             var userToDelete = await _userManager.FindByIdAsync(request.Id);
-            
+
             // If user not found, return a not found result
             if (userToDelete == null)
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"User with ID {request.Id} not found.");
-                
+
                 _logger.LogWarning("User with ID {0} not found", request.Id);
                 return result;
             }
 
             // Delete the user using ASP.NET Identity UserManager
             var deleteResult = await _userManager.DeleteAsync(userToDelete);
-            
+
             // If deletion fails, return an error result with the error descriptions
             if (!deleteResult.Succeeded)
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.InternalServerError;
                 result.Messages.AddRange(deleteResult.Errors.Select(e => e.Description));
-                
-                _logger.LogError("Error deleting user {0}: {1}", 
-                    request.Id, 
+
+                _logger.LogError("Error deleting user {0}: {1}",
+                    request.Id,
                     string.Join(", ", deleteResult.Errors.Select(e => e.Description)));
-                    
+
                 return result;
             }
 
@@ -103,7 +103,7 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = userToDelete.Id;
-            
+
             _logger.LogInformation("User {0} deleted successfully", userToDelete.Id);
         }
         catch (Exception ex)
@@ -112,7 +112,7 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while deleting the user: {ex.Message}");
-            
+
             _logger.LogError("Error deleting user: {Message}", ex.Message);
         }
 

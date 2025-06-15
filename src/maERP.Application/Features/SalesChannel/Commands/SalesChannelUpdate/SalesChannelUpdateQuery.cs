@@ -22,9 +22,9 @@ public class SalesChannelUpdateQuery : IRequestHandler<SalesChannelUpdateCommand
     public async Task<Result<int>> Handle(SalesChannelUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating sales channel with ID: {Id} and name: {Name}", request.Id, request.Name);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new SalesChannelUpdateValidator(_salesChannelRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -34,11 +34,11 @@ public class SalesChannelUpdateQuery : IRequestHandler<SalesChannelUpdateCommand
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in update request for {0}: {1}", 
-                nameof(SalesChannelUpdateCommand), 
+
+            _logger.LogWarning("Validation errors in update request for {0}: {1}",
+                nameof(SalesChannelUpdateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -46,14 +46,14 @@ public class SalesChannelUpdateQuery : IRequestHandler<SalesChannelUpdateCommand
         {
             // Map to domain entity
             var salesChannelToUpdate = MapToEntity(request);
-            
+
             // Update in database
             await _salesChannelRepository.UpdateAsync(salesChannelToUpdate);
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = salesChannelToUpdate.Id;
-            
+
             _logger.LogInformation("Successfully updated sales channel with ID: {Id}", salesChannelToUpdate.Id);
         }
         catch (Exception ex)
@@ -61,13 +61,13 @@ public class SalesChannelUpdateQuery : IRequestHandler<SalesChannelUpdateCommand
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while updating the sales channel: {ex.Message}");
-            
+
             _logger.LogError("Error updating sales channel: {Message}", ex.Message);
         }
 
         return result;
     }
-    
+
     private Domain.Entities.SalesChannel MapToEntity(SalesChannelUpdateCommand command)
     {
         return new Domain.Entities.SalesChannel

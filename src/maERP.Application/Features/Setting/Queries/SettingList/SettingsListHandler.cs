@@ -16,21 +16,21 @@ public class SettingListHandler : IRequestHandler<SettingListQuery, PaginatedRes
     private readonly ISettingRepository _SettingRepository;
 
     public SettingListHandler(
-        IAppLogger<SettingListHandler> logger, 
+        IAppLogger<SettingListHandler> logger,
         ISettingRepository settingRepository)
     {
         _logger = logger;
-        _SettingRepository = settingRepository; 
+        _SettingRepository = settingRepository;
     }
-    
+
     public async Task<PaginatedResult<SettingListDto>> Handle(SettingListQuery request, CancellationToken cancellationToken)
     {
         var settingFilterSpec = new SettingFilterSpecification(request.SearchString);
-        
+
         _logger.LogInformation("Handle SettingListQuery: {0}", request);
 
         List<Domain.Entities.Setting> entities;
-        
+
         if (request.OrderBy.Any() != true)
         {
             entities = await _SettingRepository.Entities
@@ -46,10 +46,10 @@ public class SettingListHandler : IRequestHandler<SettingListQuery, PaginatedRes
                 .OrderBy(ordering)
                 .ToListAsync(cancellationToken);
         }
-            
+
         return MapToListDtoAndPaginate(entities, request.PageNumber, request.PageSize);
     }
-    
+
     private PaginatedResult<SettingListDto> MapToListDtoAndPaginate(
         List<Domain.Entities.Setting> entities, int pageNumber, int pageSize)
     {
@@ -59,14 +59,14 @@ public class SettingListHandler : IRequestHandler<SettingListQuery, PaginatedRes
             Key = entity.Key,
             Value = entity.Value
         }).ToList();
-        
+
         // Erstelle paginierte Ergebnisse
         var totalCount = dtos.Count;
         var pagedItems = dtos
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToList();
-            
+
         return PaginatedResult<SettingListDto>.Success(pagedItems, totalCount, pageNumber, pageSize);
     }
 }

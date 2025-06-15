@@ -25,7 +25,6 @@ public class DialogService : IDialogService
             };
 
             // Try to get the main window for proper modal dialog display
-            // In a real application with proper window management, this would work
             try
             {
                 var mainWindow = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
@@ -34,14 +33,8 @@ public class DialogService : IDialogService
 
                 if (mainWindow != null)
                 {
-                    // This would show a real modal dialog in a proper desktop application
-                    // For now we log the intent and simulate user confirmation
-                    System.Diagnostics.Debug.WriteLine($"[DIALOG] {title}: {message}");
-                    System.Diagnostics.Debug.WriteLine($"[DIALOG] Buttons: [{cancelText}] [{confirmText}]");
-                    System.Diagnostics.Debug.WriteLine($"[DIALOG] User clicked: {confirmText} (simulated)");
-                    
-                    await Task.Delay(100);
-                    return true; // Simulate user confirmation
+                    await dialog.ShowDialog(mainWindow);
+                    return dialog.DialogResult;
                 }
             }
             catch (Exception ex)
@@ -49,7 +42,7 @@ public class DialogService : IDialogService
                 System.Diagnostics.Debug.WriteLine($"Could not show modal dialog: {ex.Message}");
             }
 
-            // Fallback: simulate user confirmation
+            // Fallback: simulate user confirmation for non-desktop platforms
             System.Diagnostics.Debug.WriteLine($"[DIALOG] {title}: {message} (fallback simulation)");
             await Task.Delay(100);
             return true;
@@ -87,20 +80,8 @@ public class DialogService : IDialogService
 
                 if (mainWindow != null)
                 {
-                    // This would show a real modal dialog in a proper desktop application
-                    System.Diagnostics.Debug.WriteLine($"[DIALOG] {title}: {message}");
-                    System.Diagnostics.Debug.WriteLine($"[DIALOG] Available warehouses:");
-                    foreach (var wh in warehouses)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"[DIALOG]   - {wh.Id}: {wh.Name}");
-                    }
-                    
-                    // Simulate user selecting the first warehouse for demo
-                    var selectedWarehouse = warehouses.First();
-                    System.Diagnostics.Debug.WriteLine($"[DIALOG] User selected: {selectedWarehouse.Id} ({selectedWarehouse.Name}) (simulated)");
-                    
-                    await Task.Delay(100);
-                    return selectedWarehouse.Id;
+                    await dialog.ShowDialog(mainWindow);
+                    return dialog.DialogResult ? dialog.SelectedWarehouseId : null;
                 }
             }
             catch (Exception ex)
@@ -108,7 +89,7 @@ public class DialogService : IDialogService
                 System.Diagnostics.Debug.WriteLine($"Could not show warehouse selection dialog: {ex.Message}");
             }
 
-            // Fallback: simulate user selection
+            // Fallback: simulate user selection for non-desktop platforms
             var fallbackSelection = warehouses.First();
             System.Diagnostics.Debug.WriteLine($"[DIALOG] Warehouse selection fallback: {fallbackSelection.Id} ({fallbackSelection.Name})");
             await Task.Delay(100);

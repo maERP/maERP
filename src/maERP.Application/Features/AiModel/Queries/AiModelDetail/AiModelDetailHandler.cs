@@ -17,7 +17,7 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, Result<A
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<AiModelDetailHandler> _logger;
-    
+
     /// <summary>
     /// Repository for AI model data operations
     /// </summary>
@@ -35,7 +35,7 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, Result<A
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _aiModelRepository = aiModelRepository ?? throw new ArgumentNullException(nameof(aiModelRepository));
     }
-    
+
     /// <summary>
     /// Handles the AI model detail query request
     /// </summary>
@@ -45,9 +45,9 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, Result<A
     public async Task<Result<AiModelDetailDto>> Handle(AiModelDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving AI model details for ID: {Id}", request.Id);
-        
+
         var result = new Result<AiModelDetailDto>();
-        
+
         try
         {
             // Retrieve AI model with all related details from the repository
@@ -59,7 +59,7 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, Result<A
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"AI model with ID {request.Id} not found");
-                
+
                 _logger.LogWarning("AI model with ID {Id} not found", request.Id);
                 return result;
             }
@@ -80,7 +80,7 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, Result<A
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("AI model with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -89,10 +89,10 @@ public class AiModelDetailHandler : IRequestHandler<AiModelDetailQuery, Result<A
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the AI model: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving AI model: {Message}", ex.Message);
         }
-        
+
         return result;
     }
 }

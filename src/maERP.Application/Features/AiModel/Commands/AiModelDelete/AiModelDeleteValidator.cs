@@ -10,7 +10,7 @@ public class AiModelDeleteValidator : AbstractValidator<AiModelDeleteCommand>
     public AiModelDeleteValidator(IAiModelRepository aiModelRepository)
     {
         _aiModelRepository = aiModelRepository;
-        
+
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
@@ -18,7 +18,7 @@ public class AiModelDeleteValidator : AbstractValidator<AiModelDeleteCommand>
         RuleFor(w => w)
             .MustAsync(AiModelExists).WithMessage("AiModel not found");
     }
-    
+
     private async Task<bool> AiModelExists(AiModelDeleteCommand command, CancellationToken cancellationToken)
     {
         return await _aiModelRepository.ExistsAsync(command.Id);

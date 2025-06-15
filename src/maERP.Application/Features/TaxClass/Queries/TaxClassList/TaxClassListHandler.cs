@@ -15,17 +15,17 @@ public class TaxClassListHandler : IRequestHandler<TaxClassListQuery, PaginatedR
     private readonly ITaxClassRepository _taxClassRepository;
 
     public TaxClassListHandler(
-        IAppLogger<TaxClassListHandler> logger, 
+        IAppLogger<TaxClassListHandler> logger,
         ITaxClassRepository taxClassRepository)
     {
         _logger = logger;
-        _taxClassRepository = taxClassRepository; 
+        _taxClassRepository = taxClassRepository;
     }
-    
+
     public async Task<PaginatedResult<TaxClassListDto>> Handle(TaxClassListQuery request, CancellationToken cancellationToken)
     {
         var taxClassFilterSpec = new TaxClassFilterSpecification(request.SearchString);
-        
+
         _logger.LogInformation("Handle TaxClassListQuery: {0}", request);
 
         if (request.OrderBy.Any() != true)

@@ -14,13 +14,13 @@ public class OrderCustomerFilterSpecification : FilterSpecification<Order>
 
         if (!string.IsNullOrEmpty(searchString))
         {
-            Criteria = o => o.CustomerId == customerId && (o.InvoiceAddressCompanyName.Contains(searchString) || 
-                                                        o.InvoiceAddressFirstName.Contains(searchString) || 
+            Criteria = o => o.CustomerId == customerId && (o.InvoiceAddressCompanyName.Contains(searchString) ||
+                                                        o.InvoiceAddressFirstName.Contains(searchString) ||
                                                         o.InvoiceAddressLastName.Contains(searchString));
         }
         else
         {
-            Criteria = o => o.CustomerId == customerId;               
+            Criteria = o => o.CustomerId == customerId;
         }
     }
-} 
+}

@@ -18,7 +18,7 @@ public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<AiModelCreateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for AI model data operations
     /// </summary>
@@ -46,9 +46,9 @@ public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result
     public async Task<Result<int>> Handle(AiModelCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new AI model with name: {Name}", request.Name);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new AiModelCreateValidator(_aiModelRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -59,23 +59,23 @@ public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
-                nameof(AiModelCreateCommand), 
+
+            _logger.LogWarning("Validation errors in create request for {0}: {1}",
+                nameof(AiModelCreateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
-        
+
         // Validate that the AI model type is a valid enum value
         if (!Enum.IsDefined(typeof(AiModelType), request.AiModelType))
         {
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.Add($"Invalid AiModelType value: {request.AiModelType}");
-            
+
             _logger.LogWarning("Invalid AiModelType value in create request: {0}", request.AiModelType);
-            
+
             return result;
         }
 
@@ -91,7 +91,7 @@ public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result
                 ApiKey = request.ApiKey,
                 NCtx = request.NCtx
             };
-            
+
             // Add the new AI model to the database
             await _aiModelRepository.CreateAsync(aiModelToCreate);
 
@@ -99,7 +99,7 @@ public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = aiModelToCreate.Id;
-            
+
             _logger.LogInformation("Successfully created AI model with ID: {Id}", aiModelToCreate.Id);
         }
         catch (Exception ex)
@@ -108,7 +108,7 @@ public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the AI model: {ex.Message}");
-            
+
             _logger.LogError("Error creating AI model: {Message}", ex.Message);
         }
 

@@ -22,11 +22,11 @@ public class InvoiceDeleteValidator : AbstractValidator<InvoiceDeleteCommand>
         RuleFor(p => p.Id)
             .NotNull()
             .GreaterThan(0).WithMessage("{PropertyName} muss größer als 0 sein.");
-        
+
         RuleFor(i => i)
             .MustAsync(InvoiceExists).WithMessage("Rechnung wurde nicht gefunden");
     }
-    
+
     /// <summary>
     /// Asynchronously checks if an invoice with the given ID exists in the database.
     /// </summary>

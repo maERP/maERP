@@ -33,7 +33,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
     public async Task<Result<string>> Handle(AllDemoDataCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Starting to create all demo data");
-        
+
         var result = new Result<string>();
         var createdItems = new List<string>();
 
@@ -78,11 +78,11 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
                 await _orderRepository.CreateAsync(order);
             }
             createdItems.Add($"{orders.Count} orders");
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = $"Successfully created: {string.Join(", ", createdItems)}";
-            
+
             _logger.LogInformation("Successfully created all demo data: {Items}", string.Join(", ", createdItems));
         }
         catch (Exception ex)
@@ -90,7 +90,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating demo data: {ex.Message}");
-            
+
             _logger.LogError("Error creating demo data: {Message}", ex.Message);
         }
 
@@ -110,7 +110,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
     private List<Domain.Entities.Customer> GetDemoCustomers()
     {
         var baseDate = DateTimeOffset.UtcNow.AddDays(-30);
-        
+
         return new List<Domain.Entities.Customer>
         {
             new()
@@ -251,7 +251,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
         var standardTaxId = taxClasses.First(t => t.TaxRate == 19.0).Id; // Standard VAT
         var reducedTaxId = taxClasses.First(t => t.TaxRate == 7.0).Id;   // Reduced VAT
         var zeroTaxId = taxClasses.First(t => t.TaxRate == 0.0).Id;      // Tax-free
-        
+
         return new List<Domain.Entities.Product>
         {
             new() { Sku = "LAPTOP-001", Name = "Business Laptop Pro", Price = 1299.99m, Msrp = 1499.99m, Weight = 1.8m, TaxClassId = standardTaxId },
@@ -282,11 +282,11 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
         var random = new Random(42); // Fixed seed for consistent demo data
         var orders = new List<Domain.Entities.Order>();
         var baseDate = DateTime.UtcNow.AddDays(-20);
-        
+
         var orderStatuses = new[] { OrderStatus.Pending, OrderStatus.Processing, OrderStatus.ReadyForDelivery, OrderStatus.Completed, OrderStatus.OnHold };
         var paymentStatuses = new[] { PaymentStatus.Invoiced, PaymentStatus.CompletelyPaid, PaymentStatus.PartiallyPaid, PaymentStatus.FirstReminder };
         var paymentMethods = new[] { "Credit Card", "PayPal", "Bank Transfer", "Invoice" };
-        
+
         for (int i = 1; i <= 20; i++)
         {
             var customer = customers[random.Next(customers.Count)];
@@ -294,7 +294,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var shippingCost = (decimal)(random.NextDouble() * 20 + 5); // 5-25€
             var totalTax = subtotal * 0.19m; // 19% VAT
             var total = subtotal + shippingCost + totalTax;
-            
+
             orders.Add(new Domain.Entities.Order
             {
                 CustomerId = customer.Id,
@@ -333,7 +333,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
                 DateOrdered = baseDate.AddDays(random.Next(0, 20))
             });
         }
-        
+
         return orders;
     }
 

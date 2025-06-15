@@ -21,9 +21,9 @@ public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, Result<int
     public async Task<Result<int>> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting order with ID: {Id}", request.Id);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new DeleteOrderValidator(_orderRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -33,11 +33,11 @@ public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, Result<int
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in delete request for {0}: {1}", 
-                nameof(DeleteOrderCommand), 
+
+            _logger.LogWarning("Validation errors in delete request for {0}: {1}",
+                nameof(DeleteOrderCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -48,14 +48,14 @@ public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, Result<int
             {
                 Id = request.Id
             };
-            
+
             // Delete from database
             await _orderRepository.DeleteAsync(orderToDelete);
-            
+
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = orderToDelete.Id;
-            
+
             _logger.LogInformation("Successfully deleted order with ID: {Id}", orderToDelete.Id);
         }
         catch (Exception ex)
@@ -63,7 +63,7 @@ public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, Result<int
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while deleting the order: {ex.Message}");
-            
+
             _logger.LogError("Error deleting order: {Message}", ex.Message);
         }
 

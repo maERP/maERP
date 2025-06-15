@@ -4,4 +4,4 @@ using MediatR;
 
 namespace maERP.Application.Features.Statistic.Queries.StatisticSales;
 
-public record StatisticSalesQuery : IRequest<Result<StatisticSalesDto>>; 
+public record StatisticSalesQuery : IRequest<Result<StatisticSalesDto>>;

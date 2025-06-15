@@ -21,9 +21,9 @@ public class AiPromptCreateHandler : IRequestHandler<AiPromptCreateCommand, Resu
     public async Task<Result<int>> Handle(AiPromptCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new AI prompt with identifier: {Identifier}", request.Identifier);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new AiPromptCreateValidator(_aIPromptRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -33,11 +33,11 @@ public class AiPromptCreateHandler : IRequestHandler<AiPromptCreateCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
-                nameof(AiPromptCreateCommand), 
+
+            _logger.LogWarning("Validation errors in create request for {0}: {1}",
+                nameof(AiPromptCreateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -50,14 +50,14 @@ public class AiPromptCreateHandler : IRequestHandler<AiPromptCreateCommand, Resu
                 Identifier = request.Identifier,
                 PromptText = request.PromptText
             };
-            
+
             // add to database
             await _aIPromptRepository.CreateAsync(aIPromptToCreate);
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = aIPromptToCreate.Id;
-            
+
             _logger.LogInformation("Successfully created AI prompt with ID: {Id}", aIPromptToCreate.Id);
         }
         catch (Exception ex)
@@ -65,7 +65,7 @@ public class AiPromptCreateHandler : IRequestHandler<AiPromptCreateCommand, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the AI prompt: {ex.Message}");
-            
+
             _logger.LogError("Error creating AI prompt: {Message}", ex.Message);
         }
 

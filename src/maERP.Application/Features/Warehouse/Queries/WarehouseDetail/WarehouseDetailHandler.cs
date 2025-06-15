@@ -22,13 +22,13 @@ public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, Resu
         _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
         _productStockRepository = productStockRepository ?? throw new ArgumentNullException(nameof(productStockRepository));
     }
-    
+
     public async Task<Result<WarehouseDetailDto>> Handle(WarehouseDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving warehouse details for ID: {Id}", request.Id);
-        
+
         var result = new Result<WarehouseDetailDto>();
-        
+
         try
         {
             var warehouse = await _warehouseRepository.GetByIdAsync(request.Id, true);
@@ -38,7 +38,7 @@ public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, Resu
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"Warehouse with ID {request.Id} not found");
-                
+
                 _logger.LogWarning("Warehouse with ID {Id} not found", request.Id);
                 return result;
             }
@@ -61,7 +61,7 @@ public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, Resu
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("Warehouse with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -69,10 +69,10 @@ public class WarehouseDetailHandler : IRequestHandler<WarehouseDetailQuery, Resu
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the warehouse: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving warehouse: {Message}", ex.Message);
         }
-        
+
         return result;
     }
 }

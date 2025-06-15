@@ -24,7 +24,7 @@ public class StatisticProductHandler : IRequestHandler<StatisticProductQuery, Re
         try
         {
             _logger.LogInformation("Handle StatisticProductQuery: {0}", request);
-            
+
             var statisticDto = new StatisticProductDto();
 
             statisticDto.ProductTotal = await _productRepository.Entities.CountAsync();
@@ -36,7 +36,7 @@ public class StatisticProductHandler : IRequestHandler<StatisticProductQuery, Re
             statisticDto.ProductInWarehouse = await _productRepository.Entities
                 .Where(p => p.ProductStocks.Any(w => w.Stock > 0))
                 .SumAsync(p => p.ProductStocks.Sum(w => w.Stock));
-               
+
             return Result<StatisticProductDto>.Success(statisticDto);
         }
         catch (Exception ex)

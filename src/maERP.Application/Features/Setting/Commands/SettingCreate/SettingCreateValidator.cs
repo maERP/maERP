@@ -23,12 +23,12 @@ public class SettingCreateValidator : SettingBaseValidator<SettingCreateCommand>
     public SettingCreateValidator(ISettingRepository settingRepository)
     {
         _settingRepository = settingRepository;
-        
+
         // Add rule to check if the setting key is unique before creating
         RuleFor(s => s)
             .MustAsync(IsUniqueAsync).WithMessage("Setting with the same name already exists.");
     }
-    
+
     /// <summary>
     /// Asynchronously checks if a setting with the same name already exists in the database
     /// </summary>

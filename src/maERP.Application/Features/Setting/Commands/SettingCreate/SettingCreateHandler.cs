@@ -16,7 +16,7 @@ public class SettingCreateHandler : IRequestHandler<SettingCreateCommand, Result
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<SettingCreateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for setting data operations
     /// </summary>
@@ -44,9 +44,9 @@ public class SettingCreateHandler : IRequestHandler<SettingCreateCommand, Result
     public async Task<Result<int>> Handle(SettingCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new setting with name: {Name}", request.Key);
-        
+
         var result = new Result<int>();
-        
+
         // Validate incoming data
         var validator = new SettingCreateValidator(_settingRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -57,11 +57,11 @@ public class SettingCreateHandler : IRequestHandler<SettingCreateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-            
-            _logger.LogWarning("Validation errors in create request for {0}: {1}", 
-                nameof(SettingCreateCommand), 
+
+            _logger.LogWarning("Validation errors in create request for {0}: {1}",
+                nameof(SettingCreateCommand),
                 string.Join(", ", result.Messages));
-                
+
             return result;
         }
 
@@ -69,7 +69,7 @@ public class SettingCreateHandler : IRequestHandler<SettingCreateCommand, Result
         {
             // Map request to domain entity
             var settingToCreate = MapToEntity(request);
-            
+
             // Add the new setting to the database
             await _settingRepository.CreateAsync(settingToCreate);
 
@@ -77,7 +77,7 @@ public class SettingCreateHandler : IRequestHandler<SettingCreateCommand, Result
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = settingToCreate.Id;
-            
+
             _logger.LogInformation("Successfully created setting with ID: {Id}", settingToCreate.Id);
         }
         catch (Exception ex)
@@ -86,7 +86,7 @@ public class SettingCreateHandler : IRequestHandler<SettingCreateCommand, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the setting: {ex.Message}");
-            
+
             _logger.LogError("Error creating setting: {Message}", ex.Message);
         }
 

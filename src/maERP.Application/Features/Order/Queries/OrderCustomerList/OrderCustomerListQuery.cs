@@ -25,4 +25,4 @@ public class OrderCustomerListQuery : IRequest<PaginatedResult<OrderListDto>>
         }
         else OrderBy = new string[] { };
     }
-} 
+}

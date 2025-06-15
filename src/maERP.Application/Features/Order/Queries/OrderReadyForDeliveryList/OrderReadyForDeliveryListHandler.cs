@@ -15,11 +15,11 @@ public class OrderReadyForDeliveryListHandler : IRequestHandler<OrderReadyForDel
     private readonly IOrderRepository _orderRepository;
 
     public OrderReadyForDeliveryListHandler(
-        IAppLogger<OrderReadyForDeliveryListHandler> logger, 
+        IAppLogger<OrderReadyForDeliveryListHandler> logger,
         IOrderRepository orderRepository)
     {
         _logger = logger;
-        _orderRepository = orderRepository; 
+        _orderRepository = orderRepository;
     }
 
     public async Task<PaginatedResult<OrderListDto>> Handle(OrderReadyForDeliveryListQuery request, CancellationToken cancellationToken)
@@ -62,4 +62,4 @@ public class OrderReadyForDeliveryListHandler : IRequestHandler<OrderReadyForDel
             })
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
-} 
+}

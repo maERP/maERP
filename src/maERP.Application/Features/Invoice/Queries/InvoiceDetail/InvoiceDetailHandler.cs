@@ -17,12 +17,12 @@ public class InvoiceDetailHandler : IRequestHandler<InvoiceDetailQuery, Result<I
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<InvoiceDetailHandler> _logger;
-    
+
     /// <summary>
     /// Repository for invoice data operations
     /// </summary>
     private readonly IInvoiceRepository _invoiceRepository;
-    
+
     /// <summary>
     /// Repository for customer data operations
     /// </summary>
@@ -43,7 +43,7 @@ public class InvoiceDetailHandler : IRequestHandler<InvoiceDetailQuery, Result<I
         _invoiceRepository = invoiceRepository ?? throw new ArgumentNullException(nameof(invoiceRepository));
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
-    
+
     /// <summary>
     /// Handles the invoice detail query request
     /// </summary>
@@ -53,9 +53,9 @@ public class InvoiceDetailHandler : IRequestHandler<InvoiceDetailQuery, Result<I
     public async Task<Result<InvoiceDetailDto>> Handle(InvoiceDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving invoice details for ID: {Id}", request.Id);
-        
+
         var result = new Result<InvoiceDetailDto>();
-        
+
         try
         {
             // Retrieve invoice with all related details from the repository
@@ -67,15 +67,15 @@ public class InvoiceDetailHandler : IRequestHandler<InvoiceDetailQuery, Result<I
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"Rechnung mit ID {request.Id} wurde nicht gefunden");
-                
+
                 _logger.LogWarning("Invoice with ID {Id} not found", request.Id);
                 return result;
             }
 
             // Get customer data to include customer name
             var customer = await _customerRepository.GetByIdAsync(invoice.CustomerId);
-            var customerName = customer != null 
-                ? $"{customer.Firstname} {customer.Lastname}".Trim() 
+            var customerName = customer != null
+                ? $"{customer.Firstname} {customer.Lastname}".Trim()
                 : string.Empty;
 
             // Manual mapping from entity to DTO
@@ -135,7 +135,7 @@ public class InvoiceDetailHandler : IRequestHandler<InvoiceDetailQuery, Result<I
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("Invoice with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -144,10 +144,10 @@ public class InvoiceDetailHandler : IRequestHandler<InvoiceDetailQuery, Result<I
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"Ein Fehler ist beim Abrufen der Rechnungsdetails aufgetreten: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving invoice details: {Message}", ex.Message);
         }
-        
+
         return result;
     }
 }

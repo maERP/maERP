@@ -18,13 +18,13 @@ public class AiPromptDetailHandler : IRequestHandler<AiPromptDetailQuery, Result
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _aiPromptRepository = aiPromptRepository ?? throw new ArgumentNullException(nameof(aiPromptRepository));
     }
-    
+
     public async Task<Result<AiPromptDetailDto>> Handle(AiPromptDetailQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Retrieving AI prompt details for ID: {Id}", request.Id);
-        
+
         var result = new Result<AiPromptDetailDto>();
-        
+
         try
         {
             var aiPrompt = await _aiPromptRepository.GetByIdAsync(request.Id, true);
@@ -34,7 +34,7 @@ public class AiPromptDetailHandler : IRequestHandler<AiPromptDetailQuery, Result
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add($"AI prompt with ID {request.Id} not found");
-                
+
                 _logger.LogWarning("AI prompt with ID {Id} not found", request.Id);
                 return result;
             }
@@ -51,7 +51,7 @@ public class AiPromptDetailHandler : IRequestHandler<AiPromptDetailQuery, Result
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = data;
-            
+
             _logger.LogInformation("AI prompt with ID {Id} retrieved successfully", request.Id);
         }
         catch (Exception ex)
@@ -59,10 +59,10 @@ public class AiPromptDetailHandler : IRequestHandler<AiPromptDetailQuery, Result
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the AI prompt: {ex.Message}");
-            
+
             _logger.LogError("Error retrieving AI prompt: {Message}", ex.Message);
         }
-        
+
         return result;
     }
 }
