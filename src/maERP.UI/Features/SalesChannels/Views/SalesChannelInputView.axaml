@@ -10,22 +10,25 @@
     
     <!-- Header -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,16"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,0,0,1">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
       
       <Grid ColumnDefinitions="*,Auto">
         
         <!-- Title -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
           <TextBlock Text="{Binding PageTitle}" 
-                     FontSize="24" 
+                     FontSize="28" 
                      FontWeight="SemiBold"
-                     Margin="0,0,0,4"/>
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                     Margin="0,0,0,6"/>
           <TextBlock Text="Vertriebskanal bearbeiten oder erstellen" 
                      FontSize="14" 
-                     Opacity="0.7"/>
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
         </StackPanel>
         
         <!-- Action buttons -->
@@ -35,12 +38,18 @@
                     VerticalAlignment="Center">
           <Button Content="❌ Abbrechen" 
                   Command="{Binding CancelCommand}"
-                  Padding="12,6"/>
+                  Padding="12,8"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
           <Button Content="💾 Speichern" 
                   Command="{Binding SaveCommand}"
                   IsEnabled="{Binding !IsSaving}"
-                  Padding="12,6"
-                  Classes="accent"/>
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
         </StackPanel>
         
       </Grid>
@@ -66,9 +75,9 @@
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
-              CornerRadius="4"
-              Padding="16"
-              Margin="16"
+              CornerRadius="8"
+              Padding="20"
+              Margin="20"
               VerticalAlignment="Top">
         <StackPanel Spacing="8">
           <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
@@ -81,7 +90,9 @@
         <StackPanel Spacing="24">
           
           <!-- Basic Information Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <StackPanel Spacing="16">
@@ -89,7 +100,8 @@
               <!-- Section Title -->
               <TextBlock Text="🔗 Grundinformationen" 
                          FontSize="18" 
-                         FontWeight="SemiBold"/>
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               
               <!-- Form Fields Grid -->
               <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="20" RowSpacing="16">
@@ -123,7 +135,9 @@
           </Border>
           
           <!-- Connection Settings Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <StackPanel Spacing="16">
@@ -131,7 +145,8 @@
               <!-- Section Title -->
               <TextBlock Text="🌐 Verbindungseinstellungen" 
                          FontSize="18" 
-                         FontWeight="SemiBold"/>
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               
               <TextBlock Text="Diese Einstellungen werden für die Verbindung mit externen Systemen benötigt." 
                          FontSize="14" 
@@ -170,7 +185,9 @@
           </Border>
           
           <!-- Import/Export Capabilities Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <StackPanel Spacing="16">
@@ -178,7 +195,8 @@
               <!-- Section Title -->
               <TextBlock Text="⚡ Import/Export-Funktionen" 
                          FontSize="18" 
-                         FontWeight="SemiBold"/>
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               
               <TextBlock Text="Wählen Sie aus, welche Daten zwischen dem ERP-System und dem Vertriebskanal synchronisiert werden sollen." 
                          FontSize="14" 
@@ -245,18 +263,19 @@
           </Border>
           
           <!-- Help Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
-                  Padding="20"
-                  BorderBrush="#E3F2FD"
-                  BorderThickness="1">
+                  Padding="20">
             <StackPanel Spacing="12">
               
               <!-- Section Title -->
               <StackPanel Orientation="Horizontal" Spacing="8">
                 <TextBlock Text="💡 Hinweise" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               </StackPanel>
               
               <StackPanel Spacing="8">
@@ -287,10 +306,12 @@
     
     <!-- Footer with action buttons -->
     <Border Grid.Row="2" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,12"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,1,0,0">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="20,16"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0">
       
       <Grid ColumnDefinitions="*,Auto">
         
@@ -319,13 +340,19 @@
           
           <Button Content="❌ Abbrechen" 
                   Command="{Binding CancelCommand}"
-                  Padding="16,8"/>
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
           
           <Button Content="💾 Speichern" 
                   Command="{Binding SaveCommand}"
                   IsEnabled="{Binding !IsSaving}"
-                  Padding="16,8"
-                  Classes="accent"/>
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
           
         </StackPanel>
         

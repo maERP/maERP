@@ -10,22 +10,23 @@
     
     <!-- Header mit Titel und Suche -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,16"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,0,0,1">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
       
       <Grid ColumnDefinitions="*,Auto,Auto">
         
         <!-- Titel -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
           <TextBlock Text="🏪 Lager" 
-                     FontSize="24" 
+                     FontSize="{DynamicResource FontSizeTitle}" 
                      FontWeight="SemiBold"
-                     Margin="0,0,0,4"/>
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                     Margin="0,0,0,6"/>
           <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Lager}" 
-                     FontSize="14" 
-                     Opacity="0.7"/>
+                     FontSize="{DynamicResource FontSizeBody}" 
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
         </StackPanel>
         
         <!-- Suchfeld -->
@@ -37,13 +38,16 @@
           
           <TextBox Text="{Binding SearchText}" 
                    Watermark="Nach Lagern suchen..."
-                   Width="200"
+                   Width="240"
+                   CornerRadius="6"
+                   Padding="12,8"
                    VerticalAlignment="Center"/>
           
           <Button Content="🔍" 
                   Command="{Binding SearchWarehousesCommand}"
                   VerticalAlignment="Center"
-                  Padding="8"/>
+                  Padding="12,8"
+                  CornerRadius="6"/>
           
         </StackPanel>
         
@@ -54,11 +58,17 @@
                     VerticalAlignment="Center">
           <Button Content="➕ Neu" 
                   Command="{Binding CreateNewWarehouseCommand}"
-                  Padding="12,6"
-                  Classes="accent"/>
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
           <Button Content="🔄" 
                   Command="{Binding RefreshCommand}"
-                  Padding="8"
+                  Padding="12,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   ToolTip.Tip="Aktualisieren"/>
         </StackPanel>
         
@@ -85,9 +95,9 @@
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
-              CornerRadius="4"
-              Padding="16"
-              Margin="16"
+              CornerRadius="8"
+              Padding="20"
+              Margin="20"
               VerticalAlignment="Center">
         <StackPanel Spacing="8">
           <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
@@ -131,10 +141,11 @@
               <Setter Property="Cursor" Value="Hand"/>
             </Style>
             <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource SystemControlBackgroundListLowBrush}"/>
+              <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
             </Style>
             <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource SystemAccentColorLight2}"/>
+              <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+              <Setter Property="Opacity" Value="0.1"/>
             </Style>
           </controls:DataGrid.Styles>
           
@@ -145,10 +156,10 @@
     
     <!-- Pagination Footer -->
     <Border Grid.Row="2" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="16,12"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,1,0,0"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="20,16"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0"
             IsVisible="{Binding !IsLoading}">
       
       <Grid ColumnDefinitions="*,Auto,*">
@@ -175,12 +186,14 @@
           <Button Content="◀ Zurück" 
                   Command="{Binding PreviousPageCommand}"
                   IsEnabled="{Binding CanGoPrevious}"
-                  Padding="12,6"/>
+                  Padding="16,10"
+                  CornerRadius="6"/>
           
           <Button Content="Weiter ▶" 
                   Command="{Binding NextPageCommand}"
                   IsEnabled="{Binding CanGoNext}"
-                  Padding="12,6"/>
+                  Padding="16,10"
+                  CornerRadius="6"/>
           
         </StackPanel>
         

@@ -9,10 +9,12 @@
     
     <!-- Header -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,16"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,0,0,1">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
       
       <Grid ColumnDefinitions="*,Auto">
         
@@ -21,10 +23,11 @@
           <TextBlock Text="{Binding PageTitle}" 
                      FontSize="24" 
                      FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                      Margin="0,0,0,4"/>
           <TextBlock Text="Steuerklasse bearbeiten oder erstellen" 
                      FontSize="14" 
-                     Opacity="0.7"/>
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
         </StackPanel>
         
         <!-- Action buttons -->
@@ -35,15 +38,25 @@
           <Button Content="🔄 Formular leeren" 
                   Command="{Binding ClearFormCommand}"
                   Padding="12,6"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   IsVisible="{Binding !IsEditMode}"/>
           <Button Content="← Zurück" 
                   Command="{Binding CancelCommand}"
-                  Padding="12,6"/>
+                  Padding="12,6"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
           <Button Content="💾 Speichern" 
                   Command="{Binding SaveCommand}"
                   IsEnabled="{Binding !IsSaving}"
                   Padding="12,6"
-                  Classes="accent"/>
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
         </StackPanel>
         
       </Grid>
@@ -61,7 +74,7 @@
         <ProgressBar IsIndeterminate="True" Width="200"/>
         <TextBlock Text="Steuerklasse wird geladen..." 
                    HorizontalAlignment="Center"
-                   Opacity="0.7"/>
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
       </StackPanel>
       
       <!-- Error Message -->
@@ -69,9 +82,9 @@
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
-              CornerRadius="4"
-              Padding="16"
-              Margin="16"
+              CornerRadius="8"
+              Padding="20"
+              Margin="20"
               VerticalAlignment="Top">
         <StackPanel Spacing="8">
           <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
@@ -84,7 +97,9 @@
         <StackPanel Spacing="24" MaxWidth="600" HorizontalAlignment="Center">
           
           <!-- Basic Information Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="32">
             <StackPanel Spacing="24">
@@ -93,13 +108,15 @@
               <TextBlock Text="📊 Steuerklasse" 
                          FontSize="18" 
                          FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                          HorizontalAlignment="Center"/>
               
               <!-- Tax Rate Field -->
               <StackPanel Spacing="8">
                 <TextBlock Text="Steuersatz *" 
                            FontWeight="SemiBold"
-                           FontSize="14"/>
+                           FontSize="14"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <Grid ColumnDefinitions="*,Auto">
                   <NumericUpDown Grid.Column="0"
                                  Value="{Binding TaxRate}" 
@@ -120,21 +137,24 @@
                 </Grid>
                 <TextBlock Text="Geben Sie den Steuersatz in Prozent ein (z.B. 19.00 für 19%)" 
                            FontSize="12" 
-                           Opacity="0.6"/>
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
               </StackPanel>
               
               <!-- Examples Section -->
-              <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                      CornerRadius="4"
+              <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                      BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                      BorderThickness="1"
+                      CornerRadius="8"
                       Padding="16">
                 <StackPanel Spacing="8">
                   <TextBlock Text="📖 Beispiele" 
                              FontWeight="SemiBold"
-                             FontSize="13"/>
+                             FontSize="13"
+                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                   <StackPanel Spacing="4">
-                    <TextBlock Text="• 19.00% = Deutscher Regelsteuersatz" FontSize="11" Opacity="0.8"/>
-                    <TextBlock Text="• 7.00% = Deutscher ermäßigter Steuersatz" FontSize="11" Opacity="0.8"/>
-                    <TextBlock Text="• 0.00% = Steuerfreie Waren" FontSize="11" Opacity="0.8"/>
+                    <TextBlock Text="• 19.00% = Deutscher Regelsteuersatz" FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                    <TextBlock Text="• 7.00% = Deutscher ermäßigter Steuersatz" FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                    <TextBlock Text="• 0.00% = Steuerfreie Waren" FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                   </StackPanel>
                 </StackPanel>
               </Border>
@@ -149,10 +169,12 @@
     
     <!-- Status Footer -->
     <Border Grid.Row="2" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
             Padding="16,12"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
             BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0"
             IsVisible="{Binding IsSaving}">
       
       <StackPanel Orientation="Horizontal" 
@@ -161,7 +183,7 @@
         <ProgressBar IsIndeterminate="True" Width="150" Height="4"/>
         <TextBlock Text="Steuerklasse wird gespeichert..." 
                    VerticalAlignment="Center"
-                   Opacity="0.7"/>
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
       </StackPanel>
       
     </Border>

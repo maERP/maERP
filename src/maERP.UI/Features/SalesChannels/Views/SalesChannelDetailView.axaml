@@ -9,10 +9,12 @@
     
     <!-- Header with sales channel info and actions -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,16"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,0,0,1">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
       
       <Grid ColumnDefinitions="*,Auto">
         
@@ -21,7 +23,8 @@
           <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
             <TextBlock Text="{Binding SalesChannel.Name, StringFormat=🔗 {0}}" 
                        FontSize="24" 
-                       FontWeight="SemiBold"/>
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
             <Border Background="#E3F2FD" 
                     CornerRadius="12" 
                     Padding="8,4">
@@ -35,7 +38,7 @@
             <TextBlock Text="{Binding SalesChannelTypeIcon}" FontSize="16"/>
             <TextBlock Text="{Binding SalesChannelTypeDisplay}" 
                        FontSize="14" 
-                       Opacity="0.7"/>
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
           </StackPanel>
         </StackPanel>
         
@@ -46,14 +49,24 @@
                     VerticalAlignment="Center">
           <Button Content="← Zurück" 
                   Command="{Binding GoBackCommand}"
-                  Padding="12,6"/>
+                  Padding="12,6"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
           <Button Content="✏️ Bearbeiten" 
                   Command="{Binding EditSalesChannelCommand}"
                   Padding="12,6"
-                  Classes="accent"/>
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
           <Button Content="🔄 Aktualisieren" 
                   Command="{Binding RefreshCommand}"
-                  Padding="12,6"/>
+                  Padding="12,6"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
         </StackPanel>
         
       </Grid>
@@ -71,7 +84,7 @@
         <ProgressBar IsIndeterminate="True" Width="200"/>
         <TextBlock Text="Vertriebskanal wird geladen..." 
                    HorizontalAlignment="Center"
-                   Opacity="0.7"/>
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
       </StackPanel>
       
       <!-- Error Message -->
@@ -79,8 +92,8 @@
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
-              CornerRadius="4"
-              Padding="16"
+              CornerRadius="8"
+              Padding="20"
               Margin="16"
               VerticalAlignment="Center">
         <StackPanel Spacing="8">
@@ -96,7 +109,9 @@
       <StackPanel IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48" Spacing="24">
           
           <!-- Basic Sales Channel Information Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="40" RowSpacing="12">
@@ -106,6 +121,7 @@
                          Text="🔗 Grundinformationen" 
                          FontSize="18" 
                          FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                          Margin="0,0,0,16"/>
               
               <!-- Left Column -->
@@ -136,7 +152,9 @@
           </Border>
           
           <!-- Connection Information Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20"
                   IsVisible="{Binding HasConnectionInfo}">
@@ -146,7 +164,8 @@
               <StackPanel Grid.Column="0" Spacing="12">
                 <TextBlock Text="🌐 Verbindungsdetails" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="8">
                   <StackPanel Orientation="Horizontal" IsVisible="{Binding HasUrl}">
                     <TextBlock Text="🔗 URL:" FontWeight="SemiBold" Width="100"/>
@@ -167,10 +186,11 @@
               <StackPanel Grid.Column="1" Spacing="12">
                 <TextBlock Text="📊 Verbindungsstatus" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="6">
-                  <Border Background="#E8F5E8" 
-                          CornerRadius="4" 
+                  <Border Background="{DynamicResource SubtleFillColorTransparentBrush}" 
+                          CornerRadius="6" 
                           Padding="8,4"
                           IsVisible="{Binding HasConnectionInfo}">
                     <TextBlock Text="✅ Verbindungsdaten vorhanden" 
@@ -179,7 +199,11 @@
                   </Border>
                   <Button Content="🔄 Verbindung testen" 
                           HorizontalAlignment="Left"
-                          Padding="12,6"/>
+                          Padding="12,6"
+                          CornerRadius="6"
+                          Background="{DynamicResource ControlFillColorDefaultBrush}"
+                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"/>
                 </StackPanel>
               </StackPanel>
               
@@ -187,7 +211,9 @@
           </Border>
           
           <!-- Import/Export Capabilities Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20"
                   IsVisible="{Binding HasAnyCapabilities}">
@@ -198,9 +224,10 @@
                 <StackPanel Orientation="Horizontal" Spacing="8">
                   <TextBlock Text="📥 Import-Funktionen" 
                              FontSize="16" 
-                             FontWeight="SemiBold"/>
-                  <Border Background="#E8F5E8" 
-                          CornerRadius="8" 
+                             FontWeight="SemiBold"
+                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                  <Border Background="{DynamicResource SubtleFillColorTransparentBrush}" 
+                          CornerRadius="6" 
                           Padding="4,2"
                           IsVisible="{Binding HasImportCapabilities}">
                     <TextBlock Text="Aktiv" 
@@ -230,9 +257,10 @@
                 <StackPanel Orientation="Horizontal" Spacing="8">
                   <TextBlock Text="📤 Export-Funktionen" 
                              FontSize="16" 
-                             FontWeight="SemiBold"/>
-                  <Border Background="#FFF3E0" 
-                          CornerRadius="8" 
+                             FontWeight="SemiBold"
+                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                  <Border Background="{DynamicResource SubtleFillColorTransparentBrush}" 
+                          CornerRadius="6" 
                           Padding="4,2"
                           IsVisible="{Binding HasExportCapabilities}">
                     <TextBlock Text="Aktiv" 
@@ -261,60 +289,94 @@
           </Border>
           
           <!-- Synchronization Actions Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20"
                   IsVisible="{Binding HasAnyCapabilities}">
             <StackPanel Spacing="16">
               <TextBlock Text="⚡ Synchronisation" 
                          FontSize="18" 
-                         FontWeight="SemiBold"/>
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               
               <Grid ColumnDefinitions="*,*,*" ColumnSpacing="16">
                 
                 <!-- Import Actions -->
                 <StackPanel Grid.Column="0" Spacing="8" IsVisible="{Binding HasImportCapabilities}">
-                  <TextBlock Text="📥 Import starten" FontWeight="SemiBold"/>
+                  <TextBlock Text="📥 Import starten" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                   <Button Content="📦 Produkte importieren" 
                           HorizontalAlignment="Stretch"
                           IsVisible="{Binding SalesChannel.ImportProducts}"
-                          Padding="8,6"/>
+                          Padding="8,6"
+                          CornerRadius="6"
+                          Background="{DynamicResource ControlFillColorDefaultBrush}"
+                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"/>
                   <Button Content="👥 Kunden importieren" 
                           HorizontalAlignment="Stretch"
                           IsVisible="{Binding SalesChannel.ImportCustomers}"
-                          Padding="8,6"/>
+                          Padding="8,6"
+                          CornerRadius="6"
+                          Background="{DynamicResource ControlFillColorDefaultBrush}"
+                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"/>
                   <Button Content="🛒 Bestellungen importieren" 
                           HorizontalAlignment="Stretch"
                           IsVisible="{Binding SalesChannel.ImportOrders}"
-                          Padding="8,6"/>
+                          Padding="8,6"
+                          CornerRadius="6"
+                          Background="{DynamicResource ControlFillColorDefaultBrush}"
+                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"/>
                 </StackPanel>
                 
                 <!-- Export Actions -->
                 <StackPanel Grid.Column="1" Spacing="8" IsVisible="{Binding HasExportCapabilities}">
-                  <TextBlock Text="📤 Export starten" FontWeight="SemiBold"/>
+                  <TextBlock Text="📤 Export starten" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                   <Button Content="📦 Produkte exportieren" 
                           HorizontalAlignment="Stretch"
                           IsVisible="{Binding SalesChannel.ExportProducts}"
-                          Padding="8,6"/>
+                          Padding="8,6"
+                          CornerRadius="6"
+                          Background="{DynamicResource ControlFillColorDefaultBrush}"
+                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"/>
                   <Button Content="👥 Kunden exportieren" 
                           HorizontalAlignment="Stretch"
                           IsVisible="{Binding SalesChannel.ExportCustomers}"
-                          Padding="8,6"/>
+                          Padding="8,6"
+                          CornerRadius="6"
+                          Background="{DynamicResource ControlFillColorDefaultBrush}"
+                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"/>
                   <Button Content="🛒 Bestellungen exportieren" 
                           HorizontalAlignment="Stretch"
                           IsVisible="{Binding SalesChannel.ExportOrders}"
-                          Padding="8,6"/>
+                          Padding="8,6"
+                          CornerRadius="6"
+                          Background="{DynamicResource ControlFillColorDefaultBrush}"
+                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"/>
                 </StackPanel>
                 
                 <!-- Full Sync Actions -->
                 <StackPanel Grid.Column="2" Spacing="8">
-                  <TextBlock Text="🔄 Vollsynchronisation" FontWeight="SemiBold"/>
+                  <TextBlock Text="🔄 Vollsynchronisation" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                   <Button Content="🔄 Alle Daten synchronisieren" 
                           HorizontalAlignment="Stretch"
-                          Padding="8,6"/>
+                          Padding="8,6"
+                          CornerRadius="6"
+                          Background="{DynamicResource AccentFillColorDefaultBrush}"
+                          Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
                   <Button Content="📊 Sync-Status anzeigen" 
                           HorizontalAlignment="Stretch"
-                          Padding="8,6"/>
+                          Padding="8,6"
+                          CornerRadius="6"
+                          Background="{DynamicResource ControlFillColorDefaultBrush}"
+                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"/>
                 </StackPanel>
                 
               </Grid>

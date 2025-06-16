@@ -19,7 +19,10 @@
       "Bash(dotnet test:*)",
       "Bash(mkdir:*)",
       "Bash(dotnet ef database update:*)",
-      "Bash(dotnet format:*)"
+      "Bash(dotnet format:*)",
+      "Bash(sed:*)",
+      "Bash(timeout:*)",
+      "Bash(gtimeout:*)"
     ],
     "deny": []
   }

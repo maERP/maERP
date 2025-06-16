@@ -9,10 +9,12 @@
     
     <!-- Header with product info and actions -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,16"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,0,0,1">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
       
       <Grid ColumnDefinitions="*,Auto">
         
@@ -21,7 +23,8 @@
           <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
             <TextBlock Text="{Binding DisplayName, StringFormat=📦 {0}}" 
                        FontSize="24" 
-                       FontWeight="SemiBold"/>
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
             <Border Background="#E8F5E8" 
                     CornerRadius="12" 
                     Padding="8,4"
@@ -35,10 +38,10 @@
           <StackPanel Orientation="Horizontal" Spacing="16">
             <TextBlock Text="{Binding Product.Sku, StringFormat=SKU: \{0\}}" 
                        FontSize="14" 
-                       Opacity="0.7"/>
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
             <TextBlock Text="{Binding Product.Ean, StringFormat=EAN: \{0\}}" 
                        FontSize="14" 
-                       Opacity="0.7"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                        IsVisible="{Binding HasEan}"/>
           </StackPanel>
         </StackPanel>
@@ -50,14 +53,24 @@
                     VerticalAlignment="Center">
           <Button Content="← Zurück" 
                   Command="{Binding GoBackCommand}"
-                  Padding="12,6"/>
+                  Padding="12,6"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
           <Button Content="✏️ Bearbeiten" 
                   Command="{Binding EditProductCommand}"
                   Padding="12,6"
-                  Classes="accent"/>
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
           <Button Content="🔄 Aktualisieren" 
                   Command="{Binding RefreshCommand}"
-                  Padding="12,6"/>
+                  Padding="12,6"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
         </StackPanel>
         
       </Grid>
@@ -75,7 +88,7 @@
         <ProgressBar IsIndeterminate="True" Width="200"/>
         <TextBlock Text="Produkt wird geladen..." 
                    HorizontalAlignment="Center"
-                   Opacity="0.7"/>
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
       </StackPanel>
       
       <!-- Error Message -->
@@ -83,8 +96,8 @@
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
-              CornerRadius="4"
-              Padding="16"
+              CornerRadius="8"
+              Padding="20"
               Margin="16"
               VerticalAlignment="Center">
         <StackPanel Spacing="8">
@@ -101,7 +114,9 @@
         <StackPanel Spacing="24">
           
           <!-- Basic Product Information Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="40" RowSpacing="12">
@@ -111,6 +126,7 @@
                          Text="📋 Produktinformationen" 
                          FontSize="18" 
                          FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                          Margin="0,0,0,16"/>
               
               <!-- Left Column -->
@@ -157,7 +173,9 @@
           </Border>
           
           <!-- Pricing Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
@@ -166,7 +184,8 @@
               <StackPanel Grid.Column="0" Spacing="12">
                 <TextBlock Text="💰 Preisgestaltung" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="8">
                   <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Verkaufspreis:" FontWeight="SemiBold" Width="140"/>
@@ -187,9 +206,10 @@
               <StackPanel Grid.Column="1" Spacing="12" IsVisible="{Binding HasMsrp}">
                 <TextBlock Text="📊 Preisanalyse" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
-                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        CornerRadius="4"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="6"
                         Padding="12">
                   <StackPanel Spacing="4">
                     <StackPanel Orientation="Horizontal" Spacing="8">
@@ -214,7 +234,9 @@
           </Border>
           
           <!-- Physical Properties Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20"
                   IsVisible="{Binding HasDimensions}">
@@ -224,7 +246,8 @@
               <StackPanel Grid.Column="0" Spacing="12">
                 <TextBlock Text="📐 Abmessungen" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="8">
                   <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Maße:" FontWeight="SemiBold" Width="100"/>
@@ -245,7 +268,8 @@
               <StackPanel Grid.Column="1" Spacing="12">
                 <TextBlock Text="📏 Detailmaße" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="6">
                   <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Breite:" FontWeight="SemiBold" Width="80"/>
@@ -270,7 +294,9 @@
           </Border>
           
           <!-- Description Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20"
                   IsVisible="{Binding HasDescription}">
@@ -278,7 +304,8 @@
               <StackPanel Orientation="Horizontal" Spacing="12">
                 <TextBlock Text="📝 Produktbeschreibung" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <Border Background="#E3F2FD" 
                         CornerRadius="8" 
                         Padding="4,2"
@@ -289,8 +316,8 @@
                              Foreground="#1976D2"/>
                 </Border>
               </StackPanel>
-              <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                      CornerRadius="4"
+              <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                      CornerRadius="6"
                       Padding="12">
                 <TextBlock Text="{Binding DisplayDescription}" 
                            TextWrapping="Wrap"
@@ -300,7 +327,9 @@
           </Border>
           
           <!-- Sales Channels & Stock Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
@@ -309,15 +338,16 @@
               <StackPanel Grid.Column="0" Spacing="12">
                 <TextBlock Text="🌐 Vertriebskanäle" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
-                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        CornerRadius="4"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="6"
                         Padding="12">
                   <StackPanel Spacing="4">
                     <TextBlock Text="{Binding Product.ProductSalesChannel.Count, StringFormat=Anzahl: \{0\}}" 
                                IsVisible="{Binding HasSalesChannels}"/>
                     <TextBlock Text="Keine Vertriebskanäle zugeordnet" 
-                               Opacity="0.6"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                IsVisible="{Binding !HasSalesChannels}"/>
                     <!-- TODO: Here we could show actual sales channel names once we have the data -->
                   </StackPanel>
@@ -328,15 +358,16 @@
               <StackPanel Grid.Column="1" Spacing="12">
                 <TextBlock Text="📦 Lagerbestände" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
-                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        CornerRadius="4"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="6"
                         Padding="12">
                   <StackPanel Spacing="4">
                     <TextBlock Text="{Binding Product.ProductStocks.Count, StringFormat=Lager: \{0\}}" 
                                IsVisible="{Binding HasStocks}"/>
                     <TextBlock Text="Keine Lagerbestände erfasst" 
-                               Opacity="0.6"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                IsVisible="{Binding !HasStocks}"/>
                     <!-- TODO: Here we could show actual stock quantities once we have the detailed data -->
                   </StackPanel>

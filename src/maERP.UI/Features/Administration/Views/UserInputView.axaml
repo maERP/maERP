@@ -9,22 +9,25 @@
     
     <!-- Header -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,16"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,0,0,1">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
       
       <Grid ColumnDefinitions="*,Auto">
         
         <!-- Title -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
           <TextBlock Text="{Binding PageTitle}" 
-                     FontSize="24" 
+                     FontSize="28" 
                      FontWeight="SemiBold"
-                     Margin="0,0,0,4"/>
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                     Margin="0,0,0,6"/>
           <TextBlock Text="Benutzerdaten bearbeiten oder erstellen" 
                      FontSize="14" 
-                     Opacity="0.7"/>
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
         </StackPanel>
         
         <!-- Action buttons -->
@@ -34,16 +37,26 @@
                     VerticalAlignment="Center">
           <Button Content="🔄 Formular leeren" 
                   Command="{Binding ClearFormCommand}"
-                  Padding="12,6"
+                  Padding="12,8"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   IsVisible="{Binding !IsEditMode}"/>
           <Button Content="❌ Abbrechen" 
                   Command="{Binding CancelCommand}"
-                  Padding="12,6"/>
+                  Padding="12,8"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
           <Button Content="💾 Speichern" 
                   Command="{Binding SaveCommand}"
                   IsEnabled="{Binding !IsSaving}"
-                  Padding="12,6"
-                  Classes="accent"/>
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
         </StackPanel>
         
       </Grid>
@@ -69,9 +82,9 @@
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
-              CornerRadius="4"
-              Padding="16"
-              Margin="16"
+              CornerRadius="8"
+              Padding="20"
+              Margin="20"
               VerticalAlignment="Top">
         <StackPanel Spacing="8">
           <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
@@ -84,7 +97,9 @@
         <StackPanel Spacing="24" MaxWidth="700" HorizontalAlignment="Center">
           
           <!-- Basic Information Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="32">
             <StackPanel Spacing="20">
@@ -93,6 +108,7 @@
               <TextBlock Text="👤 Grundinformationen" 
                          FontSize="18" 
                          FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                          HorizontalAlignment="Center"/>
               
               <!-- User Avatar Preview -->
@@ -150,7 +166,9 @@
           </Border>
           
           <!-- Password Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="32">
             <StackPanel Spacing="20">
@@ -160,6 +178,7 @@
                 <TextBlock Text="🔐 Passwort" 
                            FontSize="18" 
                            FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                            HorizontalAlignment="Center"/>
                 <TextBlock Text="{Binding PasswordHint}" 
                            FontSize="13" 
@@ -201,8 +220,8 @@
               <Border Background="#E8F5E8"
                       BorderBrush="#4CAF50"
                       BorderThickness="1"
-                      CornerRadius="4"
-                      Padding="16">
+                      CornerRadius="8"
+                      Padding="20">
                 <StackPanel Spacing="8">
                   <TextBlock Text="🛡️ Passwort-Sicherheit" FontWeight="SemiBold" FontSize="13"/>
                   <StackPanel Spacing="4">
@@ -223,10 +242,12 @@
     
     <!-- Status Footer -->
     <Border Grid.Row="2" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,12"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,1,0,0">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="20,16"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0">
       
       <Grid ColumnDefinitions="*,Auto">
         
@@ -255,13 +276,19 @@
           
           <Button Content="❌ Abbrechen" 
                   Command="{Binding CancelCommand}"
-                  Padding="16,8"/>
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
           
           <Button Content="💾 Speichern" 
                   Command="{Binding SaveCommand}"
                   IsEnabled="{Binding !IsSaving}"
-                  Padding="16,8"
-                  Classes="accent"/>
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
           
         </StackPanel>
         

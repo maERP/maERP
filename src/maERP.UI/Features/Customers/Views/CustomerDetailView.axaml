@@ -10,22 +10,26 @@
     
     <!-- Header with customer info and actions -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,16"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,0,0,1">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
       
       <Grid ColumnDefinitions="*,Auto">
         
         <!-- Title and basic info -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
-          <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
+          <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,6">
             <TextBlock Text="{Binding Customer.FullName, StringFormat=👥 {0}}" 
-                       FontSize="24" 
-                       FontWeight="SemiBold"/>
+                       FontSize="28" 
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
             <TextBlock Text="{Binding Customer.Id, StringFormat=ID #{0}}" 
-                       FontSize="24" 
-                       FontWeight="SemiBold"/>
+                       FontSize="20" 
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
             <Border Background="#E8F5E8" 
                     CornerRadius="12" 
                     Padding="8,4">
@@ -37,7 +41,7 @@
           </StackPanel>
           <TextBlock Text="{Binding Customer.DateEnrollment, StringFormat=Kunde seit: \{0:dd.MM.yyyy\}}" 
                      FontSize="14" 
-                     Opacity="0.7"/>
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
         </StackPanel>
         
         <!-- Action buttons -->
@@ -47,14 +51,25 @@
                     VerticalAlignment="Center">
           <Button Content="✏️ Bearbeiten" 
                   Command="{Binding EditCustomerCommand}"
-                  Padding="12,6"
-                  Classes="accent"/>
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
           <Button Content="🔄 Aktualisieren" 
                   Command="{Binding RefreshCommand}"
-                  Padding="12,6"/>
+                  Padding="12,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  ToolTip.Tip="Aktualisieren"/>
           <Button Content="← Zurück" 
                   Command="{Binding GoBackCommand}"
-                  Padding="12,6"/>
+                  Padding="12,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
         </StackPanel>
         
       </Grid>
@@ -80,9 +95,9 @@
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
-              CornerRadius="4"
-              Padding="16"
-              Margin="16"
+              CornerRadius="8"
+              Padding="20"
+              Margin="20"
               VerticalAlignment="Center">
         <StackPanel Spacing="8">
           <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
@@ -97,9 +112,11 @@
       <StackPanel IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48" Spacing="24">
           
           <!-- Basic Customer Information Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
-                  Padding="20">
+                  Padding="24">
             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="40" RowSpacing="12">
               
               <!-- Section Title -->
@@ -107,6 +124,7 @@
                          Text="👤 Grundinformationen" 
                          FontSize="18" 
                          FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                          Margin="0,0,0,16"/>
               
               <!-- Left Column -->
@@ -149,16 +167,19 @@
           </Border>
           
           <!-- Contact Information Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
-                  Padding="20">
+                  Padding="24">
             <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
               
               <!-- Contact Details -->
               <StackPanel Grid.Column="0" Spacing="12">
                 <TextBlock Text="📞 Kontaktinformationen" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="8">
                   <StackPanel Orientation="Horizontal" IsVisible="{Binding HasEmail}">
                     <TextBlock Text="📧 E-Mail:" FontWeight="SemiBold" Width="100"/>
@@ -179,13 +200,16 @@
               <StackPanel Grid.Column="1" Spacing="12">
                 <TextBlock Text="⚡ Schnellaktionen" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="6">
                   <Button Command="{Binding SendEmailCommand}"
                           HorizontalAlignment="Left"
                           IsVisible="{Binding HasEmail}"
-                          Padding="12,6"
-                          Classes="accent"
+                          Padding="12,8"
+                          CornerRadius="6"
+                          Background="{DynamicResource AccentFillColorDefaultBrush}"
+                          Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
                           ToolTip.Tip="{Binding Customer.Email, StringFormat=E-Mail an \{0\} senden}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                       <TextBlock Text="📧" VerticalAlignment="Center"/>
@@ -195,8 +219,10 @@
                   <Button Command="{Binding CallPhoneCommand}"
                           HorizontalAlignment="Left"
                           IsVisible="{Binding HasPhone}"
-                          Padding="12,6"
-                          Classes="accent"
+                          Padding="12,8"
+                          CornerRadius="6"
+                          Background="{DynamicResource AccentFillColorDefaultBrush}"
+                          Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
                           ToolTip.Tip="{Binding Customer.Phone, StringFormat=Anrufen: \{0\}}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                       <TextBlock Text="📞" VerticalAlignment="Center"/>
@@ -206,8 +232,10 @@
                   <Button Command="{Binding OpenWebsiteCommand}"
                           HorizontalAlignment="Left"
                           IsVisible="{Binding HasWebsite}"
-                          Padding="12,6"
-                          Classes="accent"
+                          Padding="12,8"
+                          CornerRadius="6"
+                          Background="{DynamicResource AccentFillColorDefaultBrush}"
+                          Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
                           ToolTip.Tip="{Binding Customer.Website, StringFormat=Website öffnen: \{0\}}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                       <TextBlock Text="🌐" VerticalAlignment="Center"/>
@@ -221,9 +249,11 @@
           </Border>
           
           <!-- Default Addresses Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
-                  Padding="20">
+                  Padding="24">
             <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
               
               <!-- Default Delivery Address -->
@@ -231,7 +261,8 @@
                 <StackPanel Orientation="Horizontal" Spacing="8">
                   <TextBlock Text="🚚 Standard-Lieferadresse" 
                              FontSize="16" 
-                             FontWeight="SemiBold"/>
+                             FontWeight="SemiBold"
+                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                   <Border Background="#E3F2FD" 
                           CornerRadius="8" 
                           Padding="4,2"
@@ -242,9 +273,9 @@
                                Foreground="#1976D2"/>
                   </Border>
                 </StackPanel>
-                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        CornerRadius="4"
-                        Padding="12">
+                <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="6"
+                        Padding="16">
                   <TextBlock Text="{Binding DefaultDeliveryAddressFormatted}" 
                              TextWrapping="Wrap"
                              LineHeight="18"/>
@@ -256,7 +287,8 @@
                 <StackPanel Orientation="Horizontal" Spacing="8">
                   <TextBlock Text="🧾 Standard-Rechnungsadresse" 
                              FontSize="16" 
-                             FontWeight="SemiBold"/>
+                             FontWeight="SemiBold"
+                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                   <Border Background="#F3E5F5" 
                           CornerRadius="8" 
                           Padding="4,2"
@@ -267,9 +299,9 @@
                                Foreground="#7B1FA2"/>
                   </Border>
                 </StackPanel>
-                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        CornerRadius="4"
-                        Padding="12">
+                <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="6"
+                        Padding="16">
                   <TextBlock Text="{Binding DefaultInvoiceAddressFormatted}" 
                              TextWrapping="Wrap"
                              LineHeight="18"/>
@@ -280,14 +312,17 @@
           </Border>
           
           <!-- All Customer Addresses Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
-                  Padding="20"
+                  Padding="24"
                   IsVisible="{Binding HasAddresses}">
             <StackPanel Spacing="16">
               <TextBlock Text="🏠 Alle Adressen" 
                          FontSize="18" 
-                         FontWeight="SemiBold"/>
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               
               <controls:DataGrid ItemsSource="{Binding Customer.CustomerAddresses}"
                         AutoGenerateColumns="False"
@@ -349,16 +384,19 @@
           </Border>
           
           <!-- Notes Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
-                  Padding="20"
+                  Padding="24"
                   IsVisible="{Binding HasNote}">
             <StackPanel Spacing="12">
               <TextBlock Text="📝 Notizen" 
                          FontSize="16" 
-                         FontWeight="SemiBold"/>
-              <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                      CornerRadius="4"
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+              <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                      CornerRadius="6"
                       Padding="12">
                 <TextBlock Text="{Binding Customer.Note}" 
                            TextWrapping="Wrap"/>

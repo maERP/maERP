@@ -1,0 +1,31 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="256" height="256" rx="32" fill="#1a365d"/>
+  
+  <!-- Main geometric element - abstract representation of connected business processes -->
+  <g transform="translate(64, 48)">
+    <!-- Upper connected rectangles -->
+    <rect x="0" y="0" width="32" height="24" rx="4" fill="#3182ce" opacity="0.9"/>
+    <rect x="40" y="0" width="32" height="24" rx="4" fill="#3182ce" opacity="0.7"/>
+    <rect x="80" y="0" width="32" height="24" rx="4" fill="#3182ce" opacity="0.9"/>
+    
+    <!-- Connection lines -->
+    <line x1="32" y1="12" x2="40" y2="12" stroke="#63b3ed" stroke-width="3"/>
+    <line x1="72" y1="12" x2="80" y2="12" stroke="#63b3ed" stroke-width="3"/>
+    
+    <!-- Lower connected rectangles -->
+    <rect x="20" y="36" width="32" height="24" rx="4" fill="#2c5282" opacity="0.8"/>
+    <rect x="60" y="36" width="32" height="24" rx="4" fill="#2c5282" opacity="0.8"/>
+    
+    <!-- Vertical connection lines -->
+    <line x1="48" y1="24" x2="36" y2="36" stroke="#63b3ed" stroke-width="3"/>
+    <line x1="88" y1="24" x2="76" y2="36" stroke="#63b3ed" stroke-width="3"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="128" y="155" font-family="Arial, sans-serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#ffffff">ma</text>
+  <text x="128" y="200" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#63b3ed">ERP</text>
+  
+  <!-- Subtle accent line -->
+  <rect x="64" y="210" width="128" height="3" rx="1.5" fill="#3182ce" opacity="0.6"/>
+</svg>

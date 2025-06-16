@@ -9,6 +9,68 @@
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
     </Application.Styles>
 
+    <Application.Resources>
+        <!-- Windows 11 Design System -->
+        
+        <!-- Corner Radius System -->
+        <CornerRadius x:Key="CornerRadiusSmall">4</CornerRadius>
+        <CornerRadius x:Key="CornerRadiusMedium">8</CornerRadius>
+        <CornerRadius x:Key="CornerRadiusLarge">12</CornerRadius>
+        
+        <!-- Elevation Shadows -->
+        <BoxShadows x:Key="ElevationShadow1">0 1 3 0 #14000000</BoxShadows>
+        <BoxShadows x:Key="ElevationShadow2">0 2 6 0 #1A000000</BoxShadows>
+        <BoxShadows x:Key="ElevationShadow3">0 4 12 0 #1F000000</BoxShadows>
+        <BoxShadows x:Key="ElevationShadow4">0 8 24 0 #26000000</BoxShadows>
+        
+        <!-- Spacing System (4px grid) -->
+        <x:Double x:Key="SpacingXS">4</x:Double>
+        <x:Double x:Key="SpacingS">8</x:Double>
+        <x:Double x:Key="SpacingM">12</x:Double>
+        <x:Double x:Key="SpacingL">16</x:Double>
+        <x:Double x:Key="SpacingXL">20</x:Double>
+        <x:Double x:Key="SpacingXXL">24</x:Double>
+        
+        <!-- Typography System -->
+        <x:Double x:Key="FontSizeCaption">12</x:Double>
+        <x:Double x:Key="FontSizeBody">14</x:Double>
+        <x:Double x:Key="FontSizeSubtitle">20</x:Double>
+        <x:Double x:Key="FontSizeTitle">28</x:Double>
+        <x:Double x:Key="FontSizeDisplay">68</x:Double>
+        
+        <!-- Windows 11 Color Resources -->
+        <SolidColorBrush x:Key="LayerFillColorDefaultBrush" Color="#F3F3F3"/>
+        <SolidColorBrush x:Key="CardStrokeColorDefaultBrush" Color="#0F000000"/>
+        <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#005FB8"/>
+        <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="TextOnAccentFillColorSecondaryBrush" Color="#E6FFFFFF"/>
+        <SolidColorBrush x:Key="ControlFillColorDefaultBrush" Color="#F9F9F9"/>
+        <SolidColorBrush x:Key="ControlStrokeColorDefaultBrush" Color="#0F000000"/>
+        <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="#E4000000"/>
+        <SolidColorBrush x:Key="TextFillColorSecondaryBrush" Color="#9E000000"/>
+        <SolidColorBrush x:Key="SubtleFillColorSecondaryBrush" Color="#09000000"/>
+        <SolidColorBrush x:Key="SubtleFillColorTertiaryBrush" Color="#06000000"/>
+        
+        <!-- Semantic Colors -->
+        <SolidColorBrush x:Key="SystemFillColorSuccessBrush" Color="#10893E"/>
+        <SolidColorBrush x:Key="SystemFillColorCautionBrush" Color="#9D5D00"/>
+        <SolidColorBrush x:Key="SystemFillColorCriticalBrush" Color="#C42B1C"/>
+        <SolidColorBrush x:Key="SystemFillColorNeutralBrush" Color="#8A8A8A"/>
+        
+        <!-- Dark theme variants -->
+        <SolidColorBrush x:Key="LayerFillColorDefaultBrushDark" Color="#202020"/>
+        <SolidColorBrush x:Key="CardStrokeColorDefaultBrushDark" Color="#0FFFFFFF"/>
+        <SolidColorBrush x:Key="AccentFillColorDefaultBrushDark" Color="#60CDFF"/>
+        <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrushDark" Color="#000000"/>
+        <SolidColorBrush x:Key="TextOnAccentFillColorSecondaryBrushDark" Color="#E6000000"/>
+        <SolidColorBrush x:Key="ControlFillColorDefaultBrushDark" Color="#2A2A2A"/>
+        <SolidColorBrush x:Key="ControlStrokeColorDefaultBrushDark" Color="#0FFFFFFF"/>
+        <SolidColorBrush x:Key="TextFillColorPrimaryBrushDark" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="TextFillColorSecondaryBrushDark" Color="#C5FFFFFF"/>
+        <SolidColorBrush x:Key="SubtleFillColorSecondaryBrushDark" Color="#0FFFFFFF"/>
+        <SolidColorBrush x:Key="SubtleFillColorTertiaryBrushDark" Color="#08FFFFFF"/>
+    </Application.Resources>
+
     <!-- DataTemplates werden zur Laufzeit über die ViewModels und Views verknüpft -->
     <Application.DataTemplates>
         <!-- DataTemplates werden in der Zukunft wieder hinzugefügt wenn alle Namespace-Referenzen repariert sind -->

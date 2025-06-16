@@ -10,9 +10,14 @@
         MaxWidth="600" MaxHeight="400"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        CanResize="False">
+        CanResize="False"
+        Background="{DynamicResource LayerFillColorDefaultBrush}"
+        CornerRadius="{DynamicResource CornerRadiusMedium}">
 
-  <Grid RowDefinitions="*,Auto" Margin="24">
+  <Border CornerRadius="{DynamicResource CornerRadiusMedium}"
+          Background="{DynamicResource ControlFillColorDefaultBrush}"
+          BoxShadow="{DynamicResource ElevationShadow4}">
+    <Grid RowDefinitions="*,Auto" Margin="24">
     
     <!-- Content -->
     <StackPanel Grid.Row="0" 
@@ -25,11 +30,13 @@
                   HorizontalAlignment="Center">
         <TextBlock Text="{Binding Icon}" 
                    FontSize="32" 
-                   VerticalAlignment="Center"/>
+                   VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
         <TextBlock Text="{Binding Message}" 
                    TextWrapping="Wrap"
-                   FontSize="14"
+                   FontSize="{DynamicResource FontSizeBody}"
                    VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                    MaxWidth="350"/>
       </StackPanel>
       
@@ -45,16 +52,22 @@
               Name="CancelButton"
               Padding="20,8"
               MinWidth="100"
+              CornerRadius="{DynamicResource CornerRadiusSmall}"
+              Background="{DynamicResource ControlFillColorDefaultBrush}"
+              BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+              BorderThickness="1"
               Click="CancelButton_Click"/>
       <Button Content="{Binding ConfirmButtonText}" 
               Name="ConfirmButton"
               Padding="20,8"
               MinWidth="100"
-              Background="#DC3545"
-              Foreground="White"
+              CornerRadius="{DynamicResource CornerRadiusSmall}"
+              Background="{DynamicResource SystemFillColorCriticalBrush}"
+              Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
               Click="ConfirmButton_Click"/>
     </StackPanel>
     
-  </Grid>
+    </Grid>
+  </Border>
 
 </Window>

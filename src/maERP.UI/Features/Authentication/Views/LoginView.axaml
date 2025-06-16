@@ -5,12 +5,13 @@
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
              x:Class="maERP.UI.Features.Authentication.Views.LoginView">
 
-  <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
-          CornerRadius="12"
-          Padding="40"
+  <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+          CornerRadius="{DynamicResource CornerRadiusMedium}"
+          Padding="24"
           MaxWidth="400"
           HorizontalAlignment="Center"
-          VerticalAlignment="Center">
+          VerticalAlignment="Center"
+          BoxShadow="{DynamicResource ElevationShadow3}">
     
     <StackPanel Spacing="24">
       
@@ -18,8 +19,8 @@
       <StackPanel Spacing="12" HorizontalAlignment="Center">
         <TextBlock Text="maERP" 
                    FontSize="32" 
-                   FontWeight="Bold"
-                   Foreground="{DynamicResource SystemAccentColor}"
+                   FontWeight="SemiBold"
+                   Foreground="{DynamicResource AccentFillColorDefaultBrush}"
                    HorizontalAlignment="Center"/>
         <TextBlock Text="Enterprise Resource Planning" 
                    FontSize="14" 
@@ -35,7 +36,8 @@
           <TextBlock Text="Server-URL" FontWeight="SemiBold"/>
           <TextBox Text="{Binding ServerUrl}"
                    Watermark="https://localhost:8443"
-                   CornerRadius="6"/>
+                   CornerRadius="{DynamicResource CornerRadiusSmall}"
+                   Padding="12,8"/>
         </StackPanel>
         
         <!-- Email -->
@@ -63,11 +65,12 @@
         
         <!-- Fehlermeldung -->
         <Border IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}"
-                Background="#FFE6E6"
-                BorderBrush="#FF6B6B"
+                Background="{DynamicResource SystemFillColorCriticalBrush}"
+                BorderBrush="{DynamicResource SystemFillColorCriticalBrush}"
                 BorderThickness="1"
-                CornerRadius="6"
-                Padding="12">
+                CornerRadius="{DynamicResource CornerRadiusSmall}"
+                Padding="12"
+                Opacity="0.1">
           <TextBlock Text="{Binding ErrorMessage}"
                      Foreground="#C92A2A"
                      TextWrapping="Wrap"/>
@@ -82,8 +85,8 @@
                 Padding="0,12"
                 CornerRadius="6"
                 FontWeight="SemiBold"
-                Background="{DynamicResource SystemAccentColor}"
-                Foreground="White">
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
+                Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}">
           <Button.Styles>
             <Style Selector="Button:pointerover">
               <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight1}"/>

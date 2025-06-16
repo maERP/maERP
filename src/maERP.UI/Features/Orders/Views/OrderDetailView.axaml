@@ -10,10 +10,12 @@
     
     <!-- Header with order info and actions -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,16"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,0,0,1">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
       
       <Grid ColumnDefinitions="*,Auto">
         <!-- Title and basic info -->
@@ -21,7 +23,8 @@
           <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
             <TextBlock Text="{Binding Order.Id, StringFormat=📋 #{0}}" 
                        FontSize="24" 
-                       FontWeight="SemiBold"/>
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
             <Border Background="#E3F2FD" 
                     CornerRadius="12" 
                     Padding="8,4">
@@ -41,7 +44,7 @@
           </StackPanel>
           <TextBlock Text="{Binding Order.DateOrdered, StringFormat=Bestellt am: \{0:dd.MM.yyyy HH:mm\}}" 
                      FontSize="14" 
-                     Opacity="0.7"/>
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
         </StackPanel>
         
         <!-- Action buttons -->
@@ -51,14 +54,24 @@
                     VerticalAlignment="Center">
           <Button Content="← Zurück" 
                   Command="{Binding GoBackCommand}"
-                  Padding="12,6"/>
+                  Padding="12,6"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
           <Button Content="✏️ Bearbeiten" 
                   Command="{Binding EditOrderCommand}"
                   Padding="12,6"
-                  Classes="accent"/>
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
           <Button Content="🔄 Aktualisieren" 
                   Command="{Binding RefreshCommand}"
-                  Padding="12,6"/>
+                  Padding="12,6"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
         </StackPanel>
         
       </Grid>
@@ -76,7 +89,7 @@
         <ProgressBar IsIndeterminate="True" Width="200"/>
         <TextBlock Text="Bestellung wird geladen..." 
                    HorizontalAlignment="Center"
-                   Opacity="0.7"/>
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
       </StackPanel>
       
       <!-- Error Message -->
@@ -84,8 +97,8 @@
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
-              CornerRadius="4"
-              Padding="16"
+              CornerRadius="8"
+              Padding="20"
               Margin="16"
               VerticalAlignment="Center">
         <StackPanel Spacing="8">
@@ -102,7 +115,9 @@
         <StackPanel Spacing="24">
           
           <!-- Customer and Basic Info Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="40" RowSpacing="12">
@@ -112,6 +127,7 @@
                          Text="📋 Bestellinformationen" 
                          FontSize="18" 
                          FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                          Margin="0,0,0,16"/>
               
               <!-- Left Column -->
@@ -158,13 +174,16 @@
           </Border>
           
           <!-- Order Items Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <StackPanel Spacing="16">
               <TextBlock Text="🛍️ Bestellpositionen" 
                          FontSize="18" 
-                         FontWeight="SemiBold"/>
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               
               <controls:DataGrid ItemsSource="{Binding Order.OrderItems}"
                         AutoGenerateColumns="False"
@@ -200,7 +219,9 @@
           </Border>
           
           <!-- Addresses Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
@@ -209,9 +230,10 @@
               <StackPanel Grid.Column="0" Spacing="12">
                 <TextBlock Text="🚚 Lieferadresse" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
-                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        CornerRadius="4"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="6"
                         Padding="12"
                         IsVisible="{Binding HasDeliveryAddress}">
                   <TextBlock Text="{Binding DeliveryAddress}" 
@@ -219,7 +241,7 @@
                              LineHeight="18"/>
                 </Border>
                 <TextBlock Text="Keine Lieferadresse angegeben" 
-                           Opacity="0.6"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                            IsVisible="{Binding !HasDeliveryAddress}"/>
               </StackPanel>
               
@@ -227,9 +249,10 @@
               <StackPanel Grid.Column="1" Spacing="12">
                 <TextBlock Text="🧾 Rechnungsadresse" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
-                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        CornerRadius="4"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="6"
                         Padding="12">
                   <TextBlock Text="{Binding InvoiceAddress}" 
                              TextWrapping="Wrap"
@@ -241,7 +264,9 @@
           </Border>
           
           <!-- Payment and Shipping Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
@@ -250,7 +275,8 @@
               <StackPanel Grid.Column="0" Spacing="12">
                 <TextBlock Text="💳 Zahlungsinformationen" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="6">
                   <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Zahlungsart:" FontWeight="SemiBold" Width="140"/>
@@ -271,7 +297,8 @@
               <StackPanel Grid.Column="1" Spacing="12">
                 <TextBlock Text="📦 Versandinformationen" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="6">
                   <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Versandart:" FontWeight="SemiBold" Width="140"/>
@@ -292,13 +319,16 @@
           </Border>
           
           <!-- Financial Summary Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <StackPanel Spacing="12">
               <TextBlock Text="💰 Kostenübersicht" 
                          FontSize="16" 
-                         FontWeight="SemiBold"/>
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
                 
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Zwischensumme:" />
@@ -320,16 +350,19 @@
           </Border>
           
           <!-- Note Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20"
                   IsVisible="{Binding HasNote}">
             <StackPanel Spacing="12">
               <TextBlock Text="📝 Notizen" 
                          FontSize="16" 
-                         FontWeight="SemiBold"/>
-              <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                      CornerRadius="4"
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+              <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                      CornerRadius="6"
                       Padding="12">
                 <TextBlock Text="{Binding Order.Note}" 
                            TextWrapping="Wrap"/>
@@ -338,14 +371,17 @@
           </Border>
           
           <!-- Order History Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20"
                   IsVisible="{Binding HasOrderHistory}">
             <StackPanel Spacing="12">
               <TextBlock Text="📜 Bestellhistorie" 
                          FontSize="16" 
-                         FontWeight="SemiBold"/>
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               
               <controls:DataGrid ItemsSource="{Binding Order.OrderHistory}"
                         AutoGenerateColumns="False"

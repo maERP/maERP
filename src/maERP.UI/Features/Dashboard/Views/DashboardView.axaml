@@ -11,32 +11,34 @@
       <!-- Header -->
       <StackPanel Spacing="8">
         <TextBlock Text="{Binding WelcomeMessage}" 
-                   FontSize="28" 
-                   FontWeight="Bold"/>
+                   FontSize="{DynamicResource FontSizeTitle}" 
+                   FontWeight="SemiBold"
+                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
         <TextBlock Text="{Binding CurrentDate, StringFormat='Heute ist {0:dddd, dd. MMMM yyyy}'}" 
-                   FontSize="14" 
-                   Opacity="0.7"/>
+                   FontSize="{DynamicResource FontSizeBody}" 
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
       </StackPanel>
       
       <!-- Dashboard Cards Grid -->
       <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" Margin="0,16,0,0">
         <Grid.Styles>
           <Style Selector="Border.card">
-            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"/>
-            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource CornerRadiusMedium}"/>
             <Setter Property="Padding" Value="20"/>
             <Setter Property="Margin" Value="8"/>
-            <Setter Property="BoxShadow" Value="0 2 8 0 #1F000000"/>
+            <Setter Property="BoxShadow" Value="{DynamicResource ElevationShadow2}"/>
           </Style>
           <Style Selector="TextBlock.card-title">
-            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontSize" Value="{DynamicResource FontSizeBody}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
             <Setter Property="Margin" Value="0,0,0,8"/>
           </Style>
           <Style Selector="TextBlock.card-value">
-            <Setter Property="FontSize" Value="24"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}"/>
+            <Setter Property="FontSize" Value="{DynamicResource FontSizeSubtitle}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
           </Style>
         </Grid.Styles>
         
@@ -45,7 +47,7 @@
           <StackPanel>
             <TextBlock Classes="card-title" Text="Kunden"/>
             <TextBlock Classes="card-value" Text="1,234"/>
-            <TextBlock Text="+12% diesen Monat" FontSize="12" Opacity="0.6"/>
+            <TextBlock Text="+12% diesen Monat" FontSize="{DynamicResource FontSizeCaption}" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
           </StackPanel>
         </Border>
         
@@ -54,7 +56,7 @@
           <StackPanel>
             <TextBlock Classes="card-title" Text="Bestellungen"/>
             <TextBlock Classes="card-value" Text="456"/>
-            <TextBlock Text="+8% diesen Monat" FontSize="12" Opacity="0.6"/>
+            <TextBlock Text="+8% diesen Monat" FontSize="{DynamicResource FontSizeCaption}" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
           </StackPanel>
         </Border>
         
@@ -63,7 +65,7 @@
           <StackPanel>
             <TextBlock Classes="card-title" Text="Umsatz"/>
             <TextBlock Classes="card-value" Text="€89,432"/>
-            <TextBlock Text="+15% diesen Monat" FontSize="12" Opacity="0.6"/>
+            <TextBlock Text="+15% diesen Monat" FontSize="{DynamicResource FontSizeCaption}" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
           </StackPanel>
         </Border>
         
@@ -72,7 +74,7 @@
           <StackPanel>
             <TextBlock Classes="card-title" Text="Produkte"/>
             <TextBlock Classes="card-value" Text="2,789"/>
-            <TextBlock Text="687 auf Lager" FontSize="12" Opacity="0.6"/>
+            <TextBlock Text="687 auf Lager" FontSize="{DynamicResource FontSizeCaption}" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
           </StackPanel>
         </Border>
         
@@ -81,7 +83,7 @@
           <StackPanel>
             <TextBlock Classes="card-title" Text="Offene Rechnungen"/>
             <TextBlock Classes="card-value" Text="23"/>
-            <TextBlock Text="€12,456 Gesamtwert" FontSize="12" Opacity="0.6"/>
+            <TextBlock Text="€12,456 Gesamtwert" FontSize="{DynamicResource FontSizeCaption}" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
           </StackPanel>
         </Border>
         
@@ -90,7 +92,7 @@
           <StackPanel>
             <TextBlock Classes="card-title" Text="Lagerbestände"/>
             <TextBlock Classes="card-value" Text="95%"/>
-            <TextBlock Text="Ausreichend" FontSize="12" Foreground="Green"/>
+            <TextBlock Text="Ausreichend" FontSize="{DynamicResource FontSizeCaption}" Foreground="{DynamicResource SystemFillColorSuccessBrush}"/>
           </StackPanel>
         </Border>
         
@@ -98,26 +100,26 @@
       
       <!-- Quick Actions -->
       <StackPanel Spacing="16">
-        <TextBlock Text="Schnellaktionen" FontSize="20" FontWeight="SemiBold"/>
+        <TextBlock Text="Schnellaktionen" FontSize="{DynamicResource FontSizeSubtitle}" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
         <StackPanel Orientation="Horizontal" Spacing="12">
           
           <Button Content="Neue Bestellung" 
                   Padding="16,8" 
-                  CornerRadius="6"
-                  Background="{DynamicResource SystemAccentColor}"
-                  Foreground="White"/>
+                  CornerRadius="{DynamicResource CornerRadiusSmall}"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
           
           <Button Content="Kunde hinzufügen" 
                   Padding="16,8" 
-                  CornerRadius="6"/>
+                  CornerRadius="{DynamicResource CornerRadiusSmall}"/>
           
           <Button Content="Rechnung erstellen" 
                   Padding="16,8" 
-                  CornerRadius="6"/>
+                  CornerRadius="{DynamicResource CornerRadiusSmall}"/>
           
           <Button Content="Lager verwalten" 
                   Padding="16,8" 
-                  CornerRadius="6"/>
+                  CornerRadius="{DynamicResource CornerRadiusSmall}"/>
           
         </StackPanel>
       </StackPanel>

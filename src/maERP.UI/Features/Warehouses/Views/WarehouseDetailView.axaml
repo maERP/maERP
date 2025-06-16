@@ -9,10 +9,12 @@
     
     <!-- Header with warehouse info and actions -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,16"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,0,0,1">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
       
       <Grid ColumnDefinitions="*,Auto">
         
@@ -21,7 +23,8 @@
           <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
             <TextBlock Text="{Binding Warehouse.Name, StringFormat=🏭 {0}}" 
                        FontSize="24" 
-                       FontWeight="SemiBold"/>
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
             <Border Background="#E8F5E8" 
                     CornerRadius="12" 
                     Padding="8,4"
@@ -34,7 +37,7 @@
           </StackPanel>
           <TextBlock Text="{Binding TotalProducts, StringFormat=Produkte im Lager: \{0\}}" 
                      FontSize="14" 
-                     Opacity="0.7"/>
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
         </StackPanel>
         
         <!-- Action buttons -->
@@ -45,18 +48,29 @@
           <Button Content="✏️ Bearbeiten" 
                   Command="{Binding EditWarehouseCommand}"
                   Padding="12,6"
-                  Classes="accent"/>
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
           <Button Content="🗑️ Löschen" 
                   Command="{Binding DeleteWarehouseCommand}"
                   Padding="12,6"
+                  CornerRadius="6"
                   Background="#DC3545"
                   Foreground="White"/>
           <Button Content="🔄 Aktualisieren" 
                   Command="{Binding RefreshCommand}"
-                  Padding="12,6"/>
+                  Padding="12,6"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
           <Button Content="← Zurück" 
                   Command="{Binding GoBackCommand}"
-                  Padding="12,6"/>
+                  Padding="12,6"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
         </StackPanel>
         
       </Grid>
@@ -74,7 +88,7 @@
         <ProgressBar IsIndeterminate="True" Width="200"/>
         <TextBlock Text="Lager wird geladen..." 
                    HorizontalAlignment="Center"
-                   Opacity="0.7"/>
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
       </StackPanel>
       
       <!-- Error Message -->
@@ -82,8 +96,8 @@
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
-              CornerRadius="4"
-              Padding="16"
+              CornerRadius="8"
+              Padding="20"
               Margin="16"
               VerticalAlignment="Center">
         <StackPanel Spacing="8">
@@ -100,7 +114,9 @@
         <StackPanel Spacing="24">
           
           <!-- Basic Warehouse Information Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="40" RowSpacing="12">
@@ -110,6 +126,7 @@
                          Text="🏭 Lagerinformationen" 
                          FontSize="18" 
                          FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                          Margin="0,0,0,16"/>
               
               <!-- Left Column -->
@@ -129,11 +146,11 @@
                 <StackPanel Orientation="Horizontal">
                   <TextBlock Text="Status:" FontWeight="SemiBold" Width="140"/>
                   <TextBlock Text="Aktiv" IsVisible="{Binding HasProductStocks}"/>
-                  <TextBlock Text="Leer" IsVisible="{Binding !HasProductStocks}" Opacity="0.6"/>
+                  <TextBlock Text="Leer" IsVisible="{Binding !HasProductStocks}" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                   <TextBlock Text="Erstellt am:" FontWeight="SemiBold" Width="140"/>
-                  <TextBlock Text="Nicht verfügbar" Opacity="0.6"/>
+                  <TextBlock Text="Nicht verfügbar" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                 </StackPanel>
               </StackPanel>
               
@@ -141,7 +158,9 @@
           </Border>
           
           <!-- Quick Actions Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
@@ -150,12 +169,15 @@
               <StackPanel Grid.Column="0" Spacing="12">
                 <TextBlock Text="📦 Lagerverwaltung" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="6">
                   <Button Command="{Binding ManageStockCommand}"
                           HorizontalAlignment="Left"
                           Padding="12,6"
-                          Classes="accent">
+                          CornerRadius="6"
+                          Background="{DynamicResource AccentFillColorDefaultBrush}"
+                          Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                       <TextBlock Text="📦" VerticalAlignment="Center"/>
                       <TextBlock Text="Lagerbestände verwalten" VerticalAlignment="Center"/>
@@ -163,7 +185,11 @@
                   </Button>
                   <Button Command="{Binding ViewReportsCommand}"
                           HorizontalAlignment="Left"
-                          Padding="12,6">
+                          Padding="12,6"
+                          CornerRadius="6"
+                          Background="{DynamicResource ControlFillColorDefaultBrush}"
+                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                       <TextBlock Text="📊" VerticalAlignment="Center"/>
                       <TextBlock Text="Lagerberichte anzeigen" VerticalAlignment="Center"/>
@@ -176,12 +202,15 @@
               <StackPanel Grid.Column="1" Spacing="12">
                 <TextBlock Text="🌐 Kanalverwaltung" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <StackPanel Spacing="6">
                   <Button Command="{Binding ManageSalesChannelsCommand}"
                           HorizontalAlignment="Left"
                           Padding="12,6"
-                          Classes="accent">
+                          CornerRadius="6"
+                          Background="{DynamicResource AccentFillColorDefaultBrush}"
+                          Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                       <TextBlock Text="🌐" VerticalAlignment="Center"/>
                       <TextBlock Text="Vertriebskanäle verwalten" VerticalAlignment="Center"/>
@@ -194,7 +223,9 @@
           </Border>
           
           <!-- Statistics Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="20">
             <Grid ColumnDefinitions="*,*" ColumnSpacing="40">
@@ -203,9 +234,10 @@
               <StackPanel Grid.Column="0" Spacing="12">
                 <TextBlock Text="📈 Produktstatistiken" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
-                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        CornerRadius="4"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="6"
                         Padding="12">
                   <StackPanel Spacing="8">
                     <StackPanel Orientation="Horizontal">
@@ -224,18 +256,19 @@
               <StackPanel Grid.Column="1" Spacing="12">
                 <TextBlock Text="ℹ️ Verfügbarkeit" 
                            FontSize="16" 
-                           FontWeight="SemiBold"/>
-                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        CornerRadius="4"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="6"
                         Padding="12">
                   <StackPanel Spacing="6">
                     <TextBlock Text="Die detaillierte Lagerstatistik wird in einer zukünftigen Version verfügbar sein." 
                                TextWrapping="Wrap"
-                               Opacity="0.7"/>
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                     <TextBlock Text="Hier können Sie dann Lagerbestände, Bewegungen und weitere Kennzahlen einsehen." 
                                TextWrapping="Wrap"
                                FontSize="12"
-                               Opacity="0.6"/>
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                   </StackPanel>
                 </Border>
               </StackPanel>

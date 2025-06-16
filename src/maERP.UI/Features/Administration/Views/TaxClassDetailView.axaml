@@ -9,10 +9,12 @@
     
     <!-- Header with tax class info and actions -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
-            Padding="24,16"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-            BorderThickness="0,0,0,1">
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
       
       <Grid ColumnDefinitions="*,Auto">
         
@@ -20,8 +22,9 @@
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
           <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
             <TextBlock Text="{Binding TaxRateFormatted, StringFormat=💰 {0}}" 
-                       FontSize="24" 
-                       FontWeight="SemiBold"/>
+                       FontSize="28" 
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
             <Border Background="#E8F5E8" 
                     CornerRadius="12" 
                     Padding="8,4">
@@ -33,7 +36,7 @@
           </StackPanel>
           <TextBlock Text="{Binding TaxRateDescription}" 
                      FontSize="14" 
-                     Opacity="0.7"/>
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
         </StackPanel>
         
         <!-- Action buttons -->
@@ -43,14 +46,25 @@
                     VerticalAlignment="Center">
           <Button Content="✏️ Bearbeiten" 
                   Command="{Binding EditTaxClassCommand}"
-                  Padding="12,6"
-                  Classes="accent"/>
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
           <Button Content="🔄 Aktualisieren" 
                   Command="{Binding RefreshCommand}"
-                  Padding="12,6"/>
+                  Padding="12,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  ToolTip.Tip="Aktualisieren"/>
           <Button Content="← Zurück" 
                   Command="{Binding GoBackCommand}"
-                  Padding="12,6"/>
+                  Padding="12,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
         </StackPanel>
         
       </Grid>
@@ -76,9 +90,9 @@
               Background="#FFF3CD" 
               BorderBrush="#D6B656" 
               BorderThickness="1"
-              CornerRadius="4"
-              Padding="16"
-              Margin="16"
+              CornerRadius="8"
+              Padding="20"
+              Margin="20"
               VerticalAlignment="Center">
         <StackPanel Spacing="8">
           <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
@@ -94,7 +108,9 @@
         <StackPanel Spacing="24" MaxWidth="800" HorizontalAlignment="Center">
           
           <!-- Tax Rate Information Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="32">
             <StackPanel Spacing="24">
@@ -103,6 +119,7 @@
               <TextBlock Text="📊 Steuerinformationen" 
                          FontSize="18" 
                          FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                          HorizontalAlignment="Center"/>
               
               <!-- Tax Rate Display -->
@@ -140,7 +157,9 @@
           </Border>
           
           <!-- Usage Examples Section -->
-          <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
                   CornerRadius="8"
                   Padding="24">
             <StackPanel Spacing="16">
@@ -148,15 +167,16 @@
               <!-- Section Title -->
               <TextBlock Text="📖 Anwendungsbeispiele" 
                          FontSize="18" 
-                         FontWeight="SemiBold"/>
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               
               <!-- Examples based on tax rate -->
               <StackPanel Spacing="12">
                 
                 <!-- Dynamic examples based on tax rate -->
-                <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"
-                        CornerRadius="4"
-                        Padding="16">
+                <Border Background="{DynamicResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="6"
+                        Padding="20">
                   <StackPanel Spacing="8">
                     <TextBlock Text="💡 Verwendung" FontWeight="SemiBold"/>
                     <TextBlock Text="{Binding TaxClass.TaxRate, StringFormat='Diese Steuerklasse mit {0:F2}% wird verwendet für:'}" 
