@@ -13,6 +13,7 @@ namespace maERP.UI.Features.Orders.ViewModels;
 public partial class OrderListViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private ObservableCollection<OrderListDto> orders = new();
@@ -45,9 +46,10 @@ public partial class OrderListViewModel : ViewModelBase
     public Func<int, Task>? NavigateToOrderDetail { get; set; }
     public Func<Task>? NavigateToCreateOrder { get; set; }
 
-    public OrderListViewModel(IHttpService httpService)
+    public OrderListViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync()
@@ -69,7 +71,7 @@ public partial class OrderListViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 Orders.Clear();
-                System.Diagnostics.Debug.WriteLine("GetPaginatedAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetPaginatedAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -79,25 +81,25 @@ public partial class OrderListViewModel : ViewModelBase
                     Orders.Add(order);
                 }
                 TotalCount = result.TotalCount;
-                System.Diagnostics.Debug.WriteLine($"Loaded {Orders.Count} orders successfully");
+                _debugService.LogInfo($"Loaded {Orders.Count} orders successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Bestellungen";
                 Orders.Clear();
-                System.Diagnostics.Debug.WriteLine($"Failed to load orders: {ErrorMessage}");
+                _debugService.LogError($"Failed to load orders: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Bestellungen: {ex.Message}";
             Orders.Clear();
-            System.Diagnostics.Debug.WriteLine($"Exception loading orders: {ex}");
+            _debugService.LogError(ex, "Exception loading orders");
         }
         finally
         {
             IsLoading = false;
-            System.Diagnostics.Debug.WriteLine($"finally");
+            _debugService.LogDebug("finally");
         }
     }
 

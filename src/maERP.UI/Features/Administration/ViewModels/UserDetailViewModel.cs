@@ -11,6 +11,7 @@ namespace maERP.UI.Features.Administration.ViewModels;
 public partial class UserDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private UserDetailDto user = new();
@@ -35,9 +36,10 @@ public partial class UserDetailViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<string, Task>? NavigateToEditUser { get; set; }
 
-    public UserDetailViewModel(IHttpService httpService)
+    public UserDetailViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(string userId)
@@ -65,25 +67,25 @@ public partial class UserDetailViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
                 User = result.Data;
                 OnPropertyChanged(nameof(FullName));
                 OnPropertyChanged(nameof(HasEmail));
-                System.Diagnostics.Debug.WriteLine($"Loaded user {User.Email} successfully");
+                _debugService.LogInfo($"Loaded user {User.Email} successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.Count > 0 ? result.Messages[0] : "Fehler beim Laden des Benutzers";
-                System.Diagnostics.Debug.WriteLine($"Failed to load user: {ErrorMessage}");
+                _debugService.LogError($"Failed to load user: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des Benutzers: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception loading user: {ex}");
+            _debugService.LogError($"Exception loading user: {ex}");
         }
         finally
         {
@@ -128,7 +130,7 @@ public partial class UserDetailViewModel : ViewModelBase
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to open email client: {ex.Message}");
+                _debugService.LogError($"Failed to open email client: {ex.Message}");
             }
         }
     }

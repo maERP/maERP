@@ -12,6 +12,7 @@ namespace maERP.UI.Features.Administration.ViewModels;
 public partial class TaxClassDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private TaxClassDetailDto? taxClass;
@@ -56,9 +57,10 @@ public partial class TaxClassDetailViewModel : ViewModelBase
         _ => "📋 Individuell"
     };
 
-    public TaxClassDetailViewModel(IHttpService httpService)
+    public TaxClassDetailViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int taxClassId)
@@ -83,7 +85,7 @@ public partial class TaxClassDetailViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 TaxClass = null;
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -91,20 +93,20 @@ public partial class TaxClassDetailViewModel : ViewModelBase
                 OnPropertyChanged(nameof(TaxRateFormatted));
                 OnPropertyChanged(nameof(TaxRateDescription));
                 OnPropertyChanged(nameof(TaxRateCategory));
-                System.Diagnostics.Debug.WriteLine($"Loaded tax class {TaxClassId} successfully");
+                _debugService.LogInfo($"Loaded tax class {TaxClassId} successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden der Steuerklasse {TaxClassId}";
                 TaxClass = null;
-                System.Diagnostics.Debug.WriteLine($"Failed to load tax class {TaxClassId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load tax class {TaxClassId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Steuerklasse: {ex.Message}";
             TaxClass = null;
-            System.Diagnostics.Debug.WriteLine($"Exception loading tax class {TaxClassId}: {ex}");
+            _debugService.LogError($"Exception loading tax class {TaxClassId}: {ex}");
         }
         finally
         {

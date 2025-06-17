@@ -12,6 +12,7 @@ namespace maERP.UI.Features.AI.ViewModels;
 public partial class AiPromptListViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private ObservableCollection<AiPromptListDto> aiPrompts = new();
@@ -44,9 +45,10 @@ public partial class AiPromptListViewModel : ViewModelBase
     public Func<Task>? NavigateToCreateAiPrompt { get; set; }
     public Func<int, Task>? NavigateToAiPromptDetail { get; set; }
 
-    public AiPromptListViewModel(IHttpService httpService)
+    public AiPromptListViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync()
@@ -68,7 +70,7 @@ public partial class AiPromptListViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 AiPrompts.Clear();
-                System.Diagnostics.Debug.WriteLine("GetPaginatedAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetPaginatedAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -78,25 +80,25 @@ public partial class AiPromptListViewModel : ViewModelBase
                     AiPrompts.Add(aiPrompt);
                 }
                 TotalCount = result.TotalCount;
-                System.Diagnostics.Debug.WriteLine($"Loaded {AiPrompts.Count} AI prompts successfully");
+                _debugService.LogInfo($"Loaded {AiPrompts.Count} AI prompts successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der AI-Prompts";
                 AiPrompts.Clear();
-                System.Diagnostics.Debug.WriteLine($"Failed to load AI prompts: {ErrorMessage}");
+                _debugService.LogError($"Failed to load AI prompts: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der AI-Prompts: {ex.Message}";
             AiPrompts.Clear();
-            System.Diagnostics.Debug.WriteLine($"Exception loading AI prompts: {ex}");
+            _debugService.LogError($"Exception loading AI prompts: {ex}");
         }
         finally
         {
             IsLoading = false;
-            System.Diagnostics.Debug.WriteLine($"finally");
+            _debugService.LogDebug("LoadAiPromptsAsync completed");
         }
     }
 

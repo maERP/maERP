@@ -7,6 +7,8 @@
              xmlns:authViews="clr-namespace:maERP.UI.Features.Authentication.Views"
              xmlns:dashboardVm="clr-namespace:maERP.UI.Features.Dashboard.ViewModels"
              xmlns:dashboardViews="clr-namespace:maERP.UI.Features.Dashboard.Views"
+             xmlns:importExportVm="clr-namespace:maERP.UI.Features.ImportExport.ViewModels"
+             xmlns:importExportViews="clr-namespace:maERP.UI.Features.ImportExport.Views"
              xmlns:customerVm="clr-namespace:maERP.UI.Features.Customers.ViewModels"
              xmlns:customerViews="clr-namespace:maERP.UI.Features.Customers.Views"
              xmlns:orderVm="clr-namespace:maERP.UI.Features.Orders.ViewModels"
@@ -25,7 +27,8 @@
              xmlns:adminViews="clr-namespace:maERP.UI.Features.Administration.Views"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="maERP.UI.Shared.Views.MainView"
-             x:DataType="vm:MainViewModel">
+             x:DataType="vm:MainViewModel"
+             Focusable="True">
 
   <Grid>
     <!-- Login View wenn nicht authentifiziert -->
@@ -228,6 +231,16 @@
                     Margin="0,3"
                     CornerRadius="8"/>
             
+            <Button Content="📥📤 Import/Export"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="ImportExport"
+                    Classes="nav-button"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Padding="20,14"
+                    Margin="0,3"
+                    CornerRadius="8"/>
+            
           </StackPanel>
         </ScrollViewer>
         
@@ -254,6 +267,11 @@
             <!-- Dashboard -->
             <DataTemplate DataType="{x:Type dashboardVm:DashboardViewModel}">
               <dashboardViews:DashboardView/>
+            </DataTemplate>
+            
+            <!-- Import/Export -->
+            <DataTemplate DataType="{x:Type importExportVm:ImportExportOverviewViewModel}">
+              <importExportViews:ImportExportOverviewView/>
             </DataTemplate>
             
             <!-- Customers -->

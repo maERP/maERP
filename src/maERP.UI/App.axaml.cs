@@ -9,6 +9,7 @@ using maERP.UI.Shared.Views;
 using maERP.UI.Features.Authentication.ViewModels;
 using maERP.UI.Features.Dashboard.ViewModels;
 using maERP.UI.Features.Customers.ViewModels;
+using maERP.UI.Features.ImportExport.ViewModels;
 using maERP.UI.Features.Products.ViewModels;
 using maERP.UI.Features.Orders.ViewModels;
 using maERP.UI.Features.Warehouses.ViewModels;
@@ -42,6 +43,7 @@ public partial class App : Application
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<IDialogService, DialogService>();
+        services.AddSingleton<IDebugService, DebugService>();
 
         // Register ViewModels
         services.AddSingleton<MainViewModel>();
@@ -57,6 +59,7 @@ public partial class App : Application
         services.AddTransient<CustomerDetailViewModel>();
         services.AddTransient<CustomerInputViewModel>();
         services.AddTransient<DashboardViewModel>();
+        services.AddTransient<ImportExportOverviewViewModel>();
         services.AddTransient<InvoiceListViewModel>();
         services.AddTransient<OrderListViewModel>();
         services.AddTransient<OrderDetailViewModel>();
@@ -78,6 +81,7 @@ public partial class App : Application
         services.AddTransient<WarehouseInputViewModel>();
         services.AddTransient<WarehouseSelectionDialogViewModel>();
         services.AddTransient<ConfirmationDialogViewModel>();
+        services.AddTransient<DebugWindowViewModel>();
 
         _serviceProvider = services.BuildServiceProvider();
     }

@@ -12,6 +12,12 @@ namespace maERP.UI.Services;
 
 public class DialogService : IDialogService
 {
+    private readonly IDebugService _debugService;
+
+    public DialogService(IDebugService debugService)
+    {
+        _debugService = debugService;
+    }
     public async Task<bool> ShowConfirmationDialogAsync(string title, string message, string confirmText = "Ja", string cancelText = "Abbrechen", string icon = "❓")
     {
         try
@@ -39,11 +45,11 @@ public class DialogService : IDialogService
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Could not show modal dialog: {ex.Message}");
+                _debugService.LogError(ex, "Could not show modal dialog");
             }
 
             // Fallback: simulate user confirmation for non-desktop platforms
-            System.Diagnostics.Debug.WriteLine($"[DIALOG] {title}: {message} (fallback simulation)");
+            _debugService.LogWarning($"[DIALOG] {title}: {message} (fallback simulation)");
             await Task.Delay(100);
             return true;
         }
@@ -59,7 +65,7 @@ public class DialogService : IDialogService
         {
             if (!warehouses.Any())
             {
-                System.Diagnostics.Debug.WriteLine("[DIALOG] No warehouses available for selection");
+                _debugService.LogWarning("[DIALOG] No warehouses available for selection");
                 return null;
             }
 
@@ -86,12 +92,12 @@ public class DialogService : IDialogService
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Could not show warehouse selection dialog: {ex.Message}");
+                _debugService.LogError(ex, "Could not show warehouse selection dialog");
             }
 
             // Fallback: simulate user selection for non-desktop platforms
             var fallbackSelection = warehouses.First();
-            System.Diagnostics.Debug.WriteLine($"[DIALOG] Warehouse selection fallback: {fallbackSelection.Id} ({fallbackSelection.Name})");
+            _debugService.LogWarning($"[DIALOG] Warehouse selection fallback: {fallbackSelection.Id} ({fallbackSelection.Name})");
             await Task.Delay(100);
             return fallbackSelection.Id;
         }

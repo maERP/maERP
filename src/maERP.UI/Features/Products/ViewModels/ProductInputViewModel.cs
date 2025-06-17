@@ -17,6 +17,7 @@ namespace maERP.UI.Features.Products.ViewModels;
 public partial class ProductInputViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -120,9 +121,10 @@ public partial class ProductInputViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<int, Task>? NavigateToProductDetail { get; set; }
 
-    public ProductInputViewModel(IHttpService httpService)
+    public ProductInputViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int productId = 0)
@@ -156,7 +158,7 @@ public partial class ProductInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -198,18 +200,18 @@ public partial class ProductInputViewModel : ViewModelBase
                     salesChannelVm.IsSelected = ProductSalesChannelIds.Contains(salesChannelVm.SalesChannel.Id);
                 }
 
-                System.Diagnostics.Debug.WriteLine($"Loaded product {ProductId} for editing successfully");
+                _debugService.LogInfo($"Loaded product {ProductId} for editing successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des Produkts {ProductId}";
-                System.Diagnostics.Debug.WriteLine($"Failed to load product {ProductId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load product {ProductId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des Produkts: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception loading product {ProductId}: {ex}");
+            _debugService.LogError(ex, $"Exception loading product {ProductId}");
         }
         finally
         {
@@ -255,11 +257,11 @@ public partial class ProductInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("SaveAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("SaveAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded)
             {
-                System.Diagnostics.Debug.WriteLine($"Product {(IsEditMode ? "updated" : "created")} successfully");
+                _debugService.LogInfo($"Product {(IsEditMode ? "updated" : "created")} successfully");
                 
                 if (IsEditMode && NavigateToProductDetail != null)
                 {
@@ -277,13 +279,13 @@ public partial class ProductInputViewModel : ViewModelBase
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim {(IsEditMode ? "Speichern" : "Erstellen")} des Produkts";
-                System.Diagnostics.Debug.WriteLine($"Failed to save product: {ErrorMessage}");
+                _debugService.LogError($"Failed to save product: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Speichern: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception saving product: {ex}");
+            _debugService.LogError(ex, "Exception saving product");
         }
         finally
         {
@@ -339,7 +341,7 @@ public partial class ProductInputViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Exception loading dropdown data: {ex}");
+            _debugService.LogError(ex, "Exception loading dropdown data");
         }
     }
 

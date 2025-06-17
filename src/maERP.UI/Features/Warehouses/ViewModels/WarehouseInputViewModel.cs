@@ -14,6 +14,7 @@ namespace maERP.UI.Features.Warehouses.ViewModels;
 public partial class WarehouseInputViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
@@ -45,9 +46,10 @@ public partial class WarehouseInputViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Action? OnSaveSuccessAction { get; set; }
 
-    public WarehouseInputViewModel(IHttpService httpService)
+    public WarehouseInputViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int? warehouseId = null)
@@ -83,25 +85,25 @@ public partial class WarehouseInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
                 var warehouse = result.Data;
                 Name = warehouse.Name;
                 ValidationErrors.Clear();
-                System.Diagnostics.Debug.WriteLine($"Loaded warehouse {Id} for editing");
+                _debugService.LogInfo($"Loaded warehouse {Id} for editing");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des Lagers {Id}";
-                System.Diagnostics.Debug.WriteLine($"Failed to load warehouse {Id}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load warehouse {Id}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des Lagers: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception loading warehouse {Id}: {ex}");
+            _debugService.LogError(ex, $"Exception loading warehouse {Id}");
         }
         finally
         {
@@ -139,17 +141,17 @@ public partial class WarehouseInputViewModel : ViewModelBase
                 if (result == null)
                 {
                     ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                    System.Diagnostics.Debug.WriteLine("PutAsync returned null - not authenticated or no server URL");
+                    _debugService.LogWarning("PutAsync returned null - not authenticated or no server URL");
                 }
                 else if (result.Succeeded)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Successfully updated warehouse {Id}");
+                    _debugService.LogInfo($"Successfully updated warehouse {Id}");
                     OnSaveSuccessAction?.Invoke();
                 }
                 else
                 {
                     ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Aktualisieren des Lagers";
-                    System.Diagnostics.Debug.WriteLine($"Failed to update warehouse {Id}: {ErrorMessage}");
+                    _debugService.LogError($"Failed to update warehouse {Id}: {ErrorMessage}");
                 }
             }
             else
@@ -160,24 +162,24 @@ public partial class WarehouseInputViewModel : ViewModelBase
                 if (result == null)
                 {
                     ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                    System.Diagnostics.Debug.WriteLine("PostAsync returned null - not authenticated or no server URL");
+                    _debugService.LogWarning("PostAsync returned null - not authenticated or no server URL");
                 }
                 else if (result.Succeeded && result.Data != null)
                 {
-                    System.Diagnostics.Debug.WriteLine($"Successfully created warehouse with ID {result.Data.Id}");
+                    _debugService.LogInfo($"Successfully created warehouse with ID {result.Data.Id}");
                     OnSaveSuccessAction?.Invoke();
                 }
                 else
                 {
                     ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Erstellen des Lagers";
-                    System.Diagnostics.Debug.WriteLine($"Failed to create warehouse: {ErrorMessage}");
+                    _debugService.LogError($"Failed to create warehouse: {ErrorMessage}");
                 }
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Speichern: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception saving warehouse: {ex}");
+            _debugService.LogError(ex, "Exception saving warehouse");
         }
         finally
         {
@@ -195,14 +197,14 @@ public partial class WarehouseInputViewModel : ViewModelBase
     private void ManageStock()
     {
         // TODO: Implement stock management navigation
-        System.Diagnostics.Debug.WriteLine($"Managing stock for warehouse {Id}");
+        _debugService.LogInfo($"Managing stock for warehouse {Id}");
     }
 
     [RelayCommand]
     private void ManageSalesChannels()
     {
         // TODO: Implement sales channel management navigation
-        System.Diagnostics.Debug.WriteLine($"Managing sales channels for warehouse {Id}");
+        _debugService.LogInfo($"Managing sales channels for warehouse {Id}");
     }
 
     private bool ValidateInput()

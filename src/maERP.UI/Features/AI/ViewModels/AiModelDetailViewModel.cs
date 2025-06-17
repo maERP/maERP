@@ -12,6 +12,7 @@ namespace maERP.UI.Features.AI.ViewModels;
 public partial class AiModelDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private AiModelDetailDto? aiModel;
@@ -61,9 +62,10 @@ public partial class AiModelDetailViewModel : ViewModelBase
     public bool IsLocalModel => AiModel?.AiModelType is AiModelType.Ollama or AiModelType.VLlm or AiModelType.LmStudio;
     public bool IsExternalModel => AiModel?.AiModelType is AiModelType.ChatGpt4O or AiModelType.Claude35;
 
-    public AiModelDetailViewModel(IHttpService httpService)
+    public AiModelDetailViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int aiModelId)
@@ -88,7 +90,7 @@ public partial class AiModelDetailViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 AiModel = null;
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -100,20 +102,20 @@ public partial class AiModelDetailViewModel : ViewModelBase
                 OnPropertyChanged(nameof(SecurityNote));
                 OnPropertyChanged(nameof(IsLocalModel));
                 OnPropertyChanged(nameof(IsExternalModel));
-                System.Diagnostics.Debug.WriteLine($"Loaded AI model {AiModelId} successfully");
+                _debugService.LogInfo($"Loaded AI model {AiModelId} successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des AI-Modells {AiModelId}";
                 AiModel = null;
-                System.Diagnostics.Debug.WriteLine($"Failed to load AI model {AiModelId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load AI model {AiModelId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des AI-Modells: {ex.Message}";
             AiModel = null;
-            System.Diagnostics.Debug.WriteLine($"Exception loading AI model {AiModelId}: {ex}");
+            _debugService.LogError($"Exception loading AI model {AiModelId}: {ex}");
         }
         finally
         {

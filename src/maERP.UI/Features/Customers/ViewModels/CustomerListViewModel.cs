@@ -13,6 +13,7 @@ namespace maERP.UI.Features.Customers.ViewModels;
 public partial class CustomerListViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private ObservableCollection<CustomerListDto> customers = new();
@@ -45,9 +46,10 @@ public partial class CustomerListViewModel : ViewModelBase
     public Func<int, Task>? NavigateToCustomerDetail { get; set; }
     public Func<Task>? NavigateToCreateCustomer { get; set; }
 
-    public CustomerListViewModel(IHttpService httpService)
+    public CustomerListViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync()
@@ -69,7 +71,7 @@ public partial class CustomerListViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 Customers.Clear();
-                System.Diagnostics.Debug.WriteLine("GetPaginatedAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetPaginatedAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -79,25 +81,25 @@ public partial class CustomerListViewModel : ViewModelBase
                     Customers.Add(customer);
                 }
                 TotalCount = result.TotalCount;
-                System.Diagnostics.Debug.WriteLine($"Loaded {Customers.Count} customers successfully");
+                _debugService.LogInfo($"Loaded {Customers.Count} customers successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Kunden";
                 Customers.Clear();
-                System.Diagnostics.Debug.WriteLine($"Failed to load customers: {ErrorMessage}");
+                _debugService.LogError($"Failed to load customers: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Kunden: {ex.Message}";
             Customers.Clear();
-            System.Diagnostics.Debug.WriteLine($"Exception loading customers: {ex}");
+            _debugService.LogError(ex, "Exception loading customers");
         }
         finally
         {
             IsLoading = false;
-            System.Diagnostics.Debug.WriteLine($"finally");
+            _debugService.LogDebug("finally");
         }
     }
 

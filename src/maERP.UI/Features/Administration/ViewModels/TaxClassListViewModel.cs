@@ -12,6 +12,7 @@ namespace maERP.UI.Features.Administration.ViewModels;
 public partial class TaxClassListViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private ObservableCollection<TaxClassListDto> taxClasses = new();
@@ -44,9 +45,10 @@ public partial class TaxClassListViewModel : ViewModelBase
     public Func<Task>? NavigateToTaxClassInput { get; set; }
     public Func<int, Task>? NavigateToTaxClassDetail { get; set; }
 
-    public TaxClassListViewModel(IHttpService httpService)
+    public TaxClassListViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync()
@@ -68,7 +70,7 @@ public partial class TaxClassListViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 TaxClasses.Clear();
-                System.Diagnostics.Debug.WriteLine("GetPaginatedAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetPaginatedAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -78,25 +80,25 @@ public partial class TaxClassListViewModel : ViewModelBase
                     TaxClasses.Add(taxClass);
                 }
                 TotalCount = result.TotalCount;
-                System.Diagnostics.Debug.WriteLine($"Loaded {TaxClasses.Count} tax classes successfully");
+                _debugService.LogInfo($"Loaded {TaxClasses.Count} tax classes successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Steuerklassen";
                 TaxClasses.Clear();
-                System.Diagnostics.Debug.WriteLine($"Failed to load tax classes: {ErrorMessage}");
+                _debugService.LogError($"Failed to load tax classes: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Steuerklassen: {ex.Message}";
             TaxClasses.Clear();
-            System.Diagnostics.Debug.WriteLine($"Exception loading tax classes: {ex}");
+            _debugService.LogError($"Exception loading tax classes: {ex}");
         }
         finally
         {
             IsLoading = false;
-            System.Diagnostics.Debug.WriteLine($"finally");
+            _debugService.LogDebug("LoadTaxClassesAsync completed");
         }
     }
 

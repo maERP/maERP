@@ -12,6 +12,7 @@ namespace maERP.UI.Features.Invoices.ViewModels;
 public partial class InvoiceListViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private ObservableCollection<InvoiceListDto> invoices = new();
@@ -41,9 +42,10 @@ public partial class InvoiceListViewModel : ViewModelBase
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
-    public InvoiceListViewModel(IHttpService httpService)
+    public InvoiceListViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync()
@@ -65,7 +67,7 @@ public partial class InvoiceListViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 Invoices.Clear();
-                System.Diagnostics.Debug.WriteLine("GetPaginatedAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetPaginatedAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -75,25 +77,25 @@ public partial class InvoiceListViewModel : ViewModelBase
                     Invoices.Add(invoice);
                 }
                 TotalCount = result.TotalCount;
-                System.Diagnostics.Debug.WriteLine($"Loaded {Invoices.Count} invoices successfully");
+                _debugService.LogInfo($"Loaded {Invoices.Count} invoices successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Rechnungen";
                 Invoices.Clear();
-                System.Diagnostics.Debug.WriteLine($"Failed to load invoices: {ErrorMessage}");
+                _debugService.LogError($"Failed to load invoices: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Rechnungen: {ex.Message}";
             Invoices.Clear();
-            System.Diagnostics.Debug.WriteLine($"Exception loading invoices: {ex}");
+            _debugService.LogError($"Exception loading invoices: {ex}");
         }
         finally
         {
             IsLoading = false;
-            System.Diagnostics.Debug.WriteLine($"finally");
+            _debugService.LogDebug("LoadInvoicesAsync completed");
         }
     }
 

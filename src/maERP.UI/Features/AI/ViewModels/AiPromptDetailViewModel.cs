@@ -11,6 +11,7 @@ namespace maERP.UI.Features.AI.ViewModels;
 public partial class AiPromptDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private AiPromptDetailDto? aiPrompt;
@@ -37,9 +38,10 @@ public partial class AiPromptDetailViewModel : ViewModelBase
     public bool HasIdentifier => AiPrompt != null && !string.IsNullOrEmpty(AiPrompt.Identifier);
     public bool HasPromptText => AiPrompt != null && !string.IsNullOrEmpty(AiPrompt.PromptText);
 
-    public AiPromptDetailViewModel(IHttpService httpService)
+    public AiPromptDetailViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int aiPromptId)
@@ -64,27 +66,27 @@ public partial class AiPromptDetailViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 AiPrompt = null;
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
                 AiPrompt = result.Data;
                 OnPropertyChanged(nameof(HasIdentifier));
                 OnPropertyChanged(nameof(HasPromptText));
-                System.Diagnostics.Debug.WriteLine($"Loaded AI prompt {AiPromptId} successfully");
+                _debugService.LogInfo($"Loaded AI prompt {AiPromptId} successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des AI-Prompts {AiPromptId}";
                 AiPrompt = null;
-                System.Diagnostics.Debug.WriteLine($"Failed to load AI prompt {AiPromptId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load AI prompt {AiPromptId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des AI-Prompts: {ex.Message}";
             AiPrompt = null;
-            System.Diagnostics.Debug.WriteLine($"Exception loading AI prompt {AiPromptId}: {ex}");
+            _debugService.LogError($"Exception loading AI prompt {AiPromptId}: {ex}");
         }
         finally
         {
@@ -117,7 +119,7 @@ public partial class AiPromptDetailViewModel : ViewModelBase
     {
         if (AiPrompt == null || string.IsNullOrEmpty(AiPrompt.PromptText)) return;
 
-        System.Diagnostics.Debug.WriteLine($"Copy prompt text requested for prompt {AiPrompt.Id}");
+        _debugService.LogDebug($"Copy prompt text requested for prompt {AiPrompt.Id}");
     }
 
     [RelayCommand]
@@ -125,7 +127,7 @@ public partial class AiPromptDetailViewModel : ViewModelBase
     {
         if (AiPrompt == null) return;
         
-        System.Diagnostics.Debug.WriteLine($"Testing prompt {AiPrompt.Id} with model {AiPrompt.AiModelId}");
+        _debugService.LogDebug($"Testing prompt {AiPrompt.Id} with model {AiPrompt.AiModelId}");
     }
 
     [RelayCommand]
@@ -147,23 +149,23 @@ public partial class AiPromptDetailViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("DeleteAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("DeleteAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded)
             {
-                System.Diagnostics.Debug.WriteLine($"Successfully deleted AI prompt {AiPrompt.Id}");
+                _debugService.LogInfo($"Successfully deleted AI prompt {AiPrompt.Id}");
                 GoBackAction?.Invoke();
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Löschen des AI-Prompts";
-                System.Diagnostics.Debug.WriteLine($"Failed to delete AI prompt {AiPrompt.Id}: {ErrorMessage}");
+                _debugService.LogError($"Failed to delete AI prompt {AiPrompt.Id}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Löschen des AI-Prompts: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception deleting AI prompt {AiPrompt.Id}: {ex}");
+            _debugService.LogError($"Exception deleting AI prompt {AiPrompt.Id}: {ex}");
         }
         finally
         {
@@ -180,7 +182,7 @@ public partial class AiPromptDetailViewModel : ViewModelBase
             
             // For now we'll use debug output to simulate confirmation
             // In a real implementation, you'd show a confirmation dialog
-            System.Diagnostics.Debug.WriteLine($"Confirming deletion of AI prompt: {AiPrompt.Identifier}");
+            _debugService.LogDebug($"Confirming deletion of AI prompt: {AiPrompt.Identifier}");
             
             // Simulate user confirming deletion
             await Task.Delay(100);

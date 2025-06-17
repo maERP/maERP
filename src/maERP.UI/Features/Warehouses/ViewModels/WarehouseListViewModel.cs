@@ -12,6 +12,7 @@ namespace maERP.UI.Features.Warehouses.ViewModels;
 public partial class WarehouseListViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private ObservableCollection<WarehouseListDto> warehouses = new();
@@ -44,9 +45,10 @@ public partial class WarehouseListViewModel : ViewModelBase
     public Action<int>? NavigateToWarehouseDetail { get; set; }
     public Func<Task>? NavigateToWarehouseCreate { get; set; }
 
-    public WarehouseListViewModel(IHttpService httpService)
+    public WarehouseListViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync()
@@ -68,7 +70,7 @@ public partial class WarehouseListViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 Warehouses.Clear();
-                System.Diagnostics.Debug.WriteLine("GetPaginatedAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetPaginatedAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -78,25 +80,25 @@ public partial class WarehouseListViewModel : ViewModelBase
                     Warehouses.Add(warehouse);
                 }
                 TotalCount = result.TotalCount;
-                System.Diagnostics.Debug.WriteLine($"Loaded {Warehouses.Count} warehouses successfully");
+                _debugService.LogInfo($"Loaded {Warehouses.Count} warehouses successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Lager";
                 Warehouses.Clear();
-                System.Diagnostics.Debug.WriteLine($"Failed to load warehouses: {ErrorMessage}");
+                _debugService.LogError($"Failed to load warehouses: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Lager: {ex.Message}";
             Warehouses.Clear();
-            System.Diagnostics.Debug.WriteLine($"Exception loading warehouses: {ex}");
+            _debugService.LogError(ex, "Exception loading warehouses");
         }
         finally
         {
             IsLoading = false;
-            System.Diagnostics.Debug.WriteLine($"finally");
+            _debugService.LogDebug("finally");
         }
     }
 

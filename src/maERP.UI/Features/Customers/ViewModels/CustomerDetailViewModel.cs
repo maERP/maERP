@@ -16,6 +16,7 @@ namespace maERP.UI.Features.Customers.ViewModels;
 public partial class CustomerDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private CustomerDetailDto? customer;
@@ -80,9 +81,10 @@ public partial class CustomerDetailViewModel : ViewModelBase
         ? GetFormattedAddress(DefaultInvoiceAddress) 
         : "Keine Standard-Rechnungsadresse";
 
-    public CustomerDetailViewModel(IHttpService httpService)
+    public CustomerDetailViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int customerId)
@@ -107,7 +109,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 Customer = null;
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -125,20 +127,20 @@ public partial class CustomerDetailViewModel : ViewModelBase
                 OnPropertyChanged(nameof(HasDefaultInvoiceAddress));
                 OnPropertyChanged(nameof(DefaultDeliveryAddressFormatted));
                 OnPropertyChanged(nameof(DefaultInvoiceAddressFormatted));
-                System.Diagnostics.Debug.WriteLine($"Loaded customer {CustomerId} successfully");
+                _debugService.LogInfo($"Loaded customer {CustomerId} successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des Kunden {CustomerId}";
                 Customer = null;
-                System.Diagnostics.Debug.WriteLine($"Failed to load customer {CustomerId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load customer {CustomerId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des Kunden: {ex.Message}";
             Customer = null;
-            System.Diagnostics.Debug.WriteLine($"Exception loading customer {CustomerId}: {ex}");
+            _debugService.LogError(ex, $"Exception loading customer {CustomerId}");
         }
         finally
         {
@@ -175,11 +177,11 @@ public partial class CustomerDetailViewModel : ViewModelBase
         {
             var emailUri = $"mailto:{Customer.Email}";
             OpenUrl(emailUri);
-            System.Diagnostics.Debug.WriteLine($"Opening email client for: {Customer.Email}");
+            _debugService.LogInfo($"Opening email client for: {Customer.Email}");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to open email client: {ex.Message}");
+            _debugService.LogError(ex, "Failed to open email client");
         }
     }
 
@@ -192,11 +194,11 @@ public partial class CustomerDetailViewModel : ViewModelBase
         {
             var phoneUri = $"tel:{Customer.Phone}";
             OpenUrl(phoneUri);
-            System.Diagnostics.Debug.WriteLine($"Opening phone app for: {Customer.Phone}");
+            _debugService.LogInfo($"Opening phone app for: {Customer.Phone}");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to open phone app: {ex.Message}");
+            _debugService.LogError(ex, "Failed to open phone app");
         }
     }
 
@@ -213,11 +215,11 @@ public partial class CustomerDetailViewModel : ViewModelBase
                 website = "https://" + website;
             }
             OpenUrl(website);
-            System.Diagnostics.Debug.WriteLine($"Opening website: {website}");
+            _debugService.LogInfo($"Opening website: {website}");
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to open website: {ex.Message}");
+            _debugService.LogError(ex, "Failed to open website");
         }
     }
 
@@ -244,7 +246,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Failed to open URL {url}: {ex.Message}");
+            _debugService.LogError(ex, $"Failed to open URL {url}");
         }
     }
 }

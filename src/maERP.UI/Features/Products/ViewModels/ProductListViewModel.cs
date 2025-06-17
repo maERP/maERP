@@ -12,6 +12,7 @@ namespace maERP.UI.Features.Products.ViewModels;
 public partial class ProductListViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private ObservableCollection<ProductListDto> products = new();
@@ -44,9 +45,10 @@ public partial class ProductListViewModel : ViewModelBase
     public Func<int, Task>? NavigateToProductDetail { get; set; }
     public Func<Task>? NavigateToProductInput { get; set; }
 
-    public ProductListViewModel(IHttpService httpService)
+    public ProductListViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync()
@@ -68,7 +70,7 @@ public partial class ProductListViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 Products.Clear();
-                System.Diagnostics.Debug.WriteLine("GetPaginatedAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetPaginatedAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -78,25 +80,25 @@ public partial class ProductListViewModel : ViewModelBase
                     Products.Add(product);
                 }
                 TotalCount = result.TotalCount;
-                System.Diagnostics.Debug.WriteLine($"Loaded {Products.Count} products successfully");
+                _debugService.LogInfo($"Loaded {Products.Count} products successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Produkte";
                 Products.Clear();
-                System.Diagnostics.Debug.WriteLine($"Failed to load products: {ErrorMessage}");
+                _debugService.LogError($"Failed to load products: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Produkte: {ex.Message}";
             Products.Clear();
-            System.Diagnostics.Debug.WriteLine($"Exception loading products: {ex}");
+            _debugService.LogError(ex, "Exception loading products");
         }
         finally
         {
             IsLoading = false;
-            System.Diagnostics.Debug.WriteLine($"finally");
+            _debugService.LogDebug("finally");
         }
     }
 

@@ -13,6 +13,7 @@ namespace maERP.UI.Features.Products.ViewModels;
 public partial class ProductDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private ProductDetailDto? product;
@@ -84,9 +85,10 @@ public partial class ProductDetailViewModel : ViewModelBase
     public bool HasVolume => Volume > 0;
     public string VolumeText => HasVolume ? $"{Volume:F2} cm³" : "Nicht berechenbar";
 
-    public ProductDetailViewModel(IHttpService httpService)
+    public ProductDetailViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int productId)
@@ -111,7 +113,7 @@ public partial class ProductDetailViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 Product = null;
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -132,20 +134,20 @@ public partial class ProductDetailViewModel : ViewModelBase
                 OnPropertyChanged(nameof(Volume));
                 OnPropertyChanged(nameof(HasVolume));
                 OnPropertyChanged(nameof(VolumeText));
-                System.Diagnostics.Debug.WriteLine($"Loaded product {ProductId} successfully");
+                _debugService.LogInfo($"Loaded product {ProductId} successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des Produkts {ProductId}";
                 Product = null;
-                System.Diagnostics.Debug.WriteLine($"Failed to load product {ProductId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load product {ProductId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des Produkts: {ex.Message}";
             Product = null;
-            System.Diagnostics.Debug.WriteLine($"Exception loading product {ProductId}: {ex}");
+            _debugService.LogError(ex, $"Exception loading product {ProductId}");
         }
         finally
         {

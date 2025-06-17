@@ -12,6 +12,7 @@ namespace maERP.UI.Features.Administration.ViewModels;
 public partial class UserListViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private ObservableCollection<UserListDto> users = new();
@@ -44,9 +45,10 @@ public partial class UserListViewModel : ViewModelBase
     public Func<string, Task>? NavigateToUserDetail { get; set; }
     public Func<Task>? NavigateToCreateUser { get; set; }
 
-    public UserListViewModel(IHttpService httpService)
+    public UserListViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync()
@@ -68,7 +70,7 @@ public partial class UserListViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 Users.Clear();
-                System.Diagnostics.Debug.WriteLine("GetPaginatedAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetPaginatedAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -78,25 +80,25 @@ public partial class UserListViewModel : ViewModelBase
                     Users.Add(user);
                 }
                 TotalCount = result.TotalCount;
-                System.Diagnostics.Debug.WriteLine($"Loaded {Users.Count} users successfully");
+                _debugService.LogInfo($"Loaded {Users.Count} users successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Benutzer";
                 Users.Clear();
-                System.Diagnostics.Debug.WriteLine($"Failed to load users: {ErrorMessage}");
+                _debugService.LogError($"Failed to load users: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Benutzer: {ex.Message}";
             Users.Clear();
-            System.Diagnostics.Debug.WriteLine($"Exception loading users: {ex}");
+            _debugService.LogError($"Exception loading users: {ex}");
         }
         finally
         {
             IsLoading = false;
-            System.Diagnostics.Debug.WriteLine($"finally");
+            _debugService.LogDebug("LoadUsersAsync completed");
         }
     }
 

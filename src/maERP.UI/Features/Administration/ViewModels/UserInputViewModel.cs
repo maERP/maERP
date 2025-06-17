@@ -13,6 +13,7 @@ namespace maERP.UI.Features.Administration.ViewModels;
 public partial class UserInputViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -67,9 +68,10 @@ public partial class UserInputViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<string, Task>? NavigateToUserDetail { get; set; }
 
-    public UserInputViewModel(IHttpService httpService)
+    public UserInputViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(string userId = "")
@@ -101,7 +103,7 @@ public partial class UserInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -113,18 +115,18 @@ public partial class UserInputViewModel : ViewModelBase
                 PasswordConfirm = string.Empty;
                 
                 OnPropertyChanged(nameof(FullName));
-                System.Diagnostics.Debug.WriteLine($"Loaded user {UserId} for editing");
+                _debugService.LogInfo($"Loaded user {UserId} for editing");
             }
             else
             {
                 ErrorMessage = result.Messages?.Count > 0 ? result.Messages[0] : $"Fehler beim Laden des Benutzers {UserId}";
-                System.Diagnostics.Debug.WriteLine($"Failed to load user {UserId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load user {UserId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des Benutzers: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception loading user {UserId}: {ex}");
+            _debugService.LogError($"Exception loading user {UserId}: {ex}");
         }
         finally
         {
@@ -158,11 +160,11 @@ public partial class UserInputViewModel : ViewModelBase
                 if (result == null)
                 {
                     ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                    System.Diagnostics.Debug.WriteLine("SaveAsync returned null - not authenticated or no server URL");
+                    _debugService.LogWarning("SaveAsync returned null - not authenticated or no server URL");
                 }
                 else if (result.Succeeded)
                 {
-                    System.Diagnostics.Debug.WriteLine($"User {UserId} updated successfully");
+                    _debugService.LogInfo($"User {UserId} updated successfully");
                     
                     if (NavigateToUserDetail != null)
                     {
@@ -176,7 +178,7 @@ public partial class UserInputViewModel : ViewModelBase
                 else
                 {
                     ErrorMessage = result.Messages?.Count > 0 ? result.Messages[0] : "Fehler beim Aktualisieren des Benutzers";
-                    System.Diagnostics.Debug.WriteLine($"Failed to update user: {ErrorMessage}");
+                    _debugService.LogError($"Failed to update user: {ErrorMessage}");
                 }
             }
             else
@@ -195,11 +197,11 @@ public partial class UserInputViewModel : ViewModelBase
                 if (result == null)
                 {
                     ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                    System.Diagnostics.Debug.WriteLine("SaveAsync returned null - not authenticated or no server URL");
+                    _debugService.LogWarning("SaveAsync returned null - not authenticated or no server URL");
                 }
                 else if (result.Succeeded)
                 {
-                    System.Diagnostics.Debug.WriteLine($"User created successfully");
+                    _debugService.LogInfo($"User created successfully");
                     
                     if (NavigateToUserDetail != null)
                     {
@@ -213,14 +215,14 @@ public partial class UserInputViewModel : ViewModelBase
                 else
                 {
                     ErrorMessage = result.Messages?.Count > 0 ? result.Messages[0] : "Fehler beim Erstellen des Benutzers";
-                    System.Diagnostics.Debug.WriteLine($"Failed to create user: {ErrorMessage}");
+                    _debugService.LogError($"Failed to create user: {ErrorMessage}");
                 }
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Speichern des Benutzers: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception saving user: {ex}");
+            _debugService.LogError($"Exception saving user: {ex}");
         }
         finally
         {

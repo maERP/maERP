@@ -17,6 +17,7 @@ namespace maERP.UI.Features.Customers.ViewModels;
 public partial class CustomerInputViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -124,9 +125,10 @@ public partial class CustomerInputViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<int, Task>? NavigateToCustomerDetail { get; set; }
 
-    public CustomerInputViewModel(IHttpService httpService)
+    public CustomerInputViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int customerId = 0)
@@ -158,7 +160,7 @@ public partial class CustomerInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -186,18 +188,18 @@ public partial class CustomerInputViewModel : ViewModelBase
                     }
                 }
 
-                System.Diagnostics.Debug.WriteLine($"Loaded customer {CustomerId} for editing successfully");
+                _debugService.LogInfo($"Loaded customer {CustomerId} for editing successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des Kunden {CustomerId}";
-                System.Diagnostics.Debug.WriteLine($"Failed to load customer {CustomerId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load customer {CustomerId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des Kunden: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception loading customer {CustomerId}: {ex}");
+            _debugService.LogError(ex, $"Exception loading customer {CustomerId}");
         }
         finally
         {
@@ -238,11 +240,11 @@ public partial class CustomerInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("SaveAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("SaveAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded)
             {
-                System.Diagnostics.Debug.WriteLine($"Customer {(IsEditMode ? "updated" : "created")} successfully");
+                _debugService.LogInfo($"Customer {(IsEditMode ? "updated" : "created")} successfully");
                 
                 if (IsEditMode && NavigateToCustomerDetail != null)
                 {
@@ -260,13 +262,13 @@ public partial class CustomerInputViewModel : ViewModelBase
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim {(IsEditMode ? "Speichern" : "Erstellen")} des Kunden";
-                System.Diagnostics.Debug.WriteLine($"Failed to save customer: {ErrorMessage}");
+                _debugService.LogError($"Failed to save customer: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Speichern: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception saving customer: {ex}");
+            _debugService.LogError(ex, "Exception saving customer");
         }
         finally
         {

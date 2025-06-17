@@ -12,6 +12,7 @@ namespace maERP.UI.Features.AI.ViewModels;
 public partial class AiModelListViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private ObservableCollection<AiModelListDto> aiModels = new();
@@ -44,9 +45,10 @@ public partial class AiModelListViewModel : ViewModelBase
     public Func<Task>? NavigateToAiModelInput { get; set; }
     public Action<int>? NavigateToAiModelDetail { get; set; }
 
-    public AiModelListViewModel(IHttpService httpService)
+    public AiModelListViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync()
@@ -68,7 +70,7 @@ public partial class AiModelListViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 AiModels.Clear();
-                System.Diagnostics.Debug.WriteLine("GetPaginatedAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetPaginatedAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -78,25 +80,25 @@ public partial class AiModelListViewModel : ViewModelBase
                     AiModels.Add(aiModel);
                 }
                 TotalCount = result.TotalCount;
-                System.Diagnostics.Debug.WriteLine($"Loaded {AiModels.Count} AI models successfully");
+                _debugService.LogInfo($"Loaded {AiModels.Count} AI models successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der AI-Modelle";
                 AiModels.Clear();
-                System.Diagnostics.Debug.WriteLine($"Failed to load AI models: {ErrorMessage}");
+                _debugService.LogError($"Failed to load AI models: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der AI-Modelle: {ex.Message}";
             AiModels.Clear();
-            System.Diagnostics.Debug.WriteLine($"Exception loading AI models: {ex}");
+            _debugService.LogError($"Exception loading AI models: {ex}");
         }
         finally
         {
             IsLoading = false;
-            System.Diagnostics.Debug.WriteLine($"finally");
+            _debugService.LogDebug("LoadAiModelsAsync completed");
         }
     }
 

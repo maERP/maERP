@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -13,6 +14,7 @@ namespace maERP.UI.Services;
 public class HttpService : IHttpService
 {
     private readonly HttpClient _httpClient;
+    private readonly IDebugService _debugService;
     private string? _token;
     private string? _serverUrl;
     private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
@@ -21,9 +23,10 @@ public class HttpService : IHttpService
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
-    public HttpService(HttpClient httpClient)
+    public HttpService(HttpClient httpClient, IDebugService debugService)
     {
         _httpClient = httpClient;
+        _debugService = debugService;
     }
 
     public string? ServerUrl => _serverUrl;
@@ -229,6 +232,77 @@ public class HttpService : IHttpService
         catch (Exception ex)
         {
             return (Result)Result.Fail($"Error deleting data: {ex.Message}");
+        }
+    }
+
+    public async Task<FileDownloadResult> DownloadFileAsync(string endpoint, string suggestedFileName)
+    {
+        if (!IsAuthenticated || string.IsNullOrEmpty(_serverUrl))
+        {
+            return new FileDownloadResult
+            {
+                Success = false,
+                ErrorMessage = "Not authenticated or no server URL"
+            };
+        }
+
+        try
+        {
+            var url = $"{_serverUrl}/api/v1/{endpoint.TrimStart('/')}";
+            _debugService.LogDebug($"Downloading from URL: {url}");
+            var response = await _httpClient.GetAsync(url);
+            _debugService.LogDebug($"Response status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsByteArrayAsync();
+                
+                // Get the Downloads folder path
+                var downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                downloadsPath = Path.Combine(downloadsPath, "Downloads");
+                
+                // Ensure the Downloads directory exists
+                Directory.CreateDirectory(downloadsPath);
+                
+                // Generate unique filename if file already exists
+                var fileName = suggestedFileName;
+                var fullPath = Path.Combine(downloadsPath, fileName);
+                var counter = 1;
+                
+                while (File.Exists(fullPath))
+                {
+                    var nameWithoutExtension = Path.GetFileNameWithoutExtension(suggestedFileName);
+                    var extension = Path.GetExtension(suggestedFileName);
+                    fileName = $"{nameWithoutExtension}_{counter}{extension}";
+                    fullPath = Path.Combine(downloadsPath, fileName);
+                    counter++;
+                }
+                
+                // Write the file
+                await File.WriteAllBytesAsync(fullPath, content);
+                
+                return new FileDownloadResult
+                {
+                    Success = true,
+                    FilePath = fullPath
+                };
+            }
+            else
+            {
+                return new FileDownloadResult
+                {
+                    Success = false,
+                    ErrorMessage = $"Download failed with status: {response.StatusCode}"
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new FileDownloadResult
+            {
+                Success = false,
+                ErrorMessage = $"Error downloading file: {ex.Message}"
+            };
         }
     }
 }

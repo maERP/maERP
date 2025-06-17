@@ -15,6 +15,7 @@ namespace maERP.UI.Features.AI.ViewModels;
 public partial class AiPromptInputViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -63,9 +64,10 @@ public partial class AiPromptInputViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<int, Task>? NavigateToAiPromptDetail { get; set; }
 
-    public AiPromptInputViewModel(IHttpService httpService)
+    public AiPromptInputViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int aiPromptId = 0)
@@ -93,18 +95,18 @@ public partial class AiPromptInputViewModel : ViewModelBase
             if (result?.Succeeded == true && result.Data != null)
             {
                 AvailableAiModels = result.Data;
-                System.Diagnostics.Debug.WriteLine($"Loaded {AvailableAiModels.Count} AI models");
+                _debugService.LogInfo($"Loaded {AvailableAiModels.Count} AI models");
             }
             else
             {
                 AvailableAiModels = new ObservableCollection<AiModelListDto>();
-                System.Diagnostics.Debug.WriteLine("Failed to load AI models or empty result");
+                _debugService.LogWarning("Failed to load AI models or empty result");
             }
         }
         catch (Exception ex)
         {
             AvailableAiModels = new ObservableCollection<AiModelListDto>();
-            System.Diagnostics.Debug.WriteLine($"Exception loading AI models: {ex.Message}");
+            _debugService.LogError($"Exception loading AI models: {ex.Message}");
         }
     }
 
@@ -123,7 +125,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -133,18 +135,18 @@ public partial class AiPromptInputViewModel : ViewModelBase
                 PromptText = prompt.PromptText;
 
                 SelectedAiModel = AvailableAiModels.FirstOrDefault(m => m.Id == AiModelId);
-                System.Diagnostics.Debug.WriteLine($"Loaded AI prompt {AiPromptId} for editing");
+                _debugService.LogInfo($"Loaded AI prompt {AiPromptId} for editing");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des AI-Prompts {AiPromptId}";
-                System.Diagnostics.Debug.WriteLine($"Failed to load AI prompt {AiPromptId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load AI prompt {AiPromptId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des AI-Prompts: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception loading AI prompt {AiPromptId}: {ex}");
+            _debugService.LogError($"Exception loading AI prompt {AiPromptId}: {ex}");
         }
         finally
         {
@@ -185,11 +187,11 @@ public partial class AiPromptInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("SaveAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("SaveAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded)
             {
-                System.Diagnostics.Debug.WriteLine($"AI prompt {(IsEditMode ? "updated" : "created")} successfully");
+                _debugService.LogInfo($"AI prompt {(IsEditMode ? "updated" : "created")} successfully");
                 
                 if (IsEditMode && NavigateToAiPromptDetail != null)
                 {
@@ -207,13 +209,13 @@ public partial class AiPromptInputViewModel : ViewModelBase
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim {(IsEditMode ? "Aktualisieren" : "Erstellen")} des AI-Prompts";
-                System.Diagnostics.Debug.WriteLine($"Failed to save AI prompt: {ErrorMessage}");
+                _debugService.LogError($"Failed to save AI prompt: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Speichern: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception saving AI prompt: {ex}");
+            _debugService.LogError($"Exception saving AI prompt: {ex}");
         }
         finally
         {
@@ -273,7 +275,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
             return;
         }
 
-        System.Diagnostics.Debug.WriteLine($"Testing prompt with model {SelectedAiModel.Name}: {PromptText[..Math.Min(50, PromptText.Length)]}...");
+        _debugService.LogDebug($"Testing prompt with model {SelectedAiModel.Name}: {PromptText[..Math.Min(50, PromptText.Length)]}...");
     }
 
     [RelayCommand]
@@ -289,7 +291,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
 
         var randomTemplate = templates[new Random().Next(templates.Length)];
         PromptText = randomTemplate;
-        System.Diagnostics.Debug.WriteLine("Loaded template prompt");
+        _debugService.LogDebug("Loaded template prompt");
     }
 
     [RelayCommand]
@@ -303,7 +305,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
             .Trim();
 
         PromptText = formatted;
-        System.Diagnostics.Debug.WriteLine("Formatted prompt text");
+        _debugService.LogDebug("Formatted prompt text");
     }
 
     partial void OnSelectedAiModelChanged(AiModelListDto? value)

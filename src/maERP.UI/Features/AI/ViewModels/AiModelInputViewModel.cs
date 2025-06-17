@@ -13,6 +13,7 @@ namespace maERP.UI.Features.AI.ViewModels;
 public partial class AiModelInputViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -58,9 +59,10 @@ public partial class AiModelInputViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<int, Task>? NavigateToAiModelDetail { get; set; }
 
-    public AiModelInputViewModel(IHttpService httpService)
+    public AiModelInputViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int aiModelId = 0)
@@ -92,7 +94,7 @@ public partial class AiModelInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -103,18 +105,18 @@ public partial class AiModelInputViewModel : ViewModelBase
                 ApiPassword = aiModel.ApiPassword;
                 ApiKey = aiModel.ApiKey;
                 NCtx = aiModel.NCtx;
-                System.Diagnostics.Debug.WriteLine($"Loaded AI model {AiModelId} for editing");
+                _debugService.LogInfo($"Loaded AI model {AiModelId} for editing");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des AI-Modells {AiModelId}";
-                System.Diagnostics.Debug.WriteLine($"Failed to load AI model {AiModelId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load AI model {AiModelId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des AI-Modells: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception loading AI model {AiModelId}: {ex}");
+            _debugService.LogError($"Exception loading AI model {AiModelId}: {ex}");
         }
         finally
         {
@@ -150,11 +152,11 @@ public partial class AiModelInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("SaveAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("SaveAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded)
             {
-                System.Diagnostics.Debug.WriteLine($"AI model {(IsEditMode ? "updated" : "created")} successfully");
+                _debugService.LogInfo($"AI model {(IsEditMode ? "updated" : "created")} successfully");
                 
                 if (IsEditMode && NavigateToAiModelDetail != null)
                 {
@@ -168,13 +170,13 @@ public partial class AiModelInputViewModel : ViewModelBase
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim {(IsEditMode ? "Aktualisieren" : "Erstellen")} des AI-Modells";
-                System.Diagnostics.Debug.WriteLine($"Failed to save AI model: {ErrorMessage}");
+                _debugService.LogError($"Failed to save AI model: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Speichern des AI-Modells: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception saving AI model: {ex}");
+            _debugService.LogError($"Exception saving AI model: {ex}");
         }
         finally
         {

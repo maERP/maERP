@@ -14,6 +14,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
     private readonly IDialogService _dialogService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private WarehouseDetailDto? warehouse;
@@ -46,10 +47,11 @@ public partial class WarehouseDetailViewModel : ViewModelBase
     public int TotalProducts => Warehouse?.ProductCount ?? 0;
     public decimal TotalStockValue => 0; // TODO: Calculate from product stocks and prices
 
-    public WarehouseDetailViewModel(IHttpService httpService, IDialogService dialogService)
+    public WarehouseDetailViewModel(IHttpService httpService, IDialogService dialogService, IDebugService debugService)
     {
         _httpService = httpService;
         _dialogService = dialogService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int warehouseId)
@@ -74,7 +76,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 Warehouse = null;
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -84,20 +86,20 @@ public partial class WarehouseDetailViewModel : ViewModelBase
                 OnPropertyChanged(nameof(HasProductStocks));
                 OnPropertyChanged(nameof(TotalProducts));
                 OnPropertyChanged(nameof(TotalStockValue));
-                System.Diagnostics.Debug.WriteLine($"Loaded warehouse {WarehouseId} successfully");
+                _debugService.LogInfo($"Loaded warehouse {WarehouseId} successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des Lagers {WarehouseId}";
                 Warehouse = null;
-                System.Diagnostics.Debug.WriteLine($"Failed to load warehouse {WarehouseId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load warehouse {WarehouseId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des Lagers: {ex.Message}";
             Warehouse = null;
-            System.Diagnostics.Debug.WriteLine($"Exception loading warehouse {WarehouseId}: {ex}");
+            _debugService.LogError(ex, $"Exception loading warehouse {WarehouseId}");
         }
         finally
         {
@@ -129,21 +131,21 @@ public partial class WarehouseDetailViewModel : ViewModelBase
     private void ManageStock()
     {
         // TODO: Implement stock management navigation
-        System.Diagnostics.Debug.WriteLine($"Managing stock for warehouse {WarehouseId}");
+        _debugService.LogInfo($"Managing stock for warehouse {WarehouseId}");
     }
 
     [RelayCommand]
     private void ManageSalesChannels()
     {
         // TODO: Implement sales channel management navigation
-        System.Diagnostics.Debug.WriteLine($"Managing sales channels for warehouse {WarehouseId}");
+        _debugService.LogInfo($"Managing sales channels for warehouse {WarehouseId}");
     }
 
     [RelayCommand]
     private void ViewReports()
     {
         // TODO: Implement warehouse reports navigation
-        System.Diagnostics.Debug.WriteLine($"Viewing reports for warehouse {WarehouseId}");
+        _debugService.LogInfo($"Viewing reports for warehouse {WarehouseId}");
     }
 
     [RelayCommand]
@@ -180,23 +182,23 @@ public partial class WarehouseDetailViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("DeleteAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("DeleteAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded)
             {
-                System.Diagnostics.Debug.WriteLine($"Successfully deleted warehouse {Warehouse.Id}");
+                _debugService.LogInfo($"Successfully deleted warehouse {Warehouse.Id}");
                 GoBackAction?.Invoke();
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Löschen des Lagers";
-                System.Diagnostics.Debug.WriteLine($"Failed to delete warehouse {Warehouse.Id}: {ErrorMessage}");
+                _debugService.LogError($"Failed to delete warehouse {Warehouse.Id}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Löschen des Lagers: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception deleting warehouse {Warehouse.Id}: {ex}");
+            _debugService.LogError(ex, $"Exception deleting warehouse {Warehouse.Id}");
         }
         finally
         {
@@ -237,7 +239,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
 
             if (warehousesResult?.Data == null || !warehousesResult.Succeeded)
             {
-                System.Diagnostics.Debug.WriteLine("Failed to load warehouses for selection");
+                _debugService.LogError("Failed to load warehouses for selection");
                 return null;
             }
 
@@ -247,7 +249,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
 
             if (!availableWarehouses.Any())
             {
-                System.Diagnostics.Debug.WriteLine("No other warehouses available for product redistribution");
+                _debugService.LogWarning("No other warehouses available for product redistribution");
                 ErrorMessage = "Keine anderen Lager verfügbar für die Produktumverteilung";
                 return null;
             }
@@ -259,7 +261,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Exception during warehouse selection: {ex}");
+            _debugService.LogError(ex, "Exception during warehouse selection");
             return null;
         }
     }

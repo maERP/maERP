@@ -1,0 +1,160 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="maERP.UI.Features.ImportExport.Views.ImportExportOverviewView">
+
+  <Grid RowDefinitions="Auto,*">
+    
+    <!-- Header -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
+      
+      <StackPanel VerticalAlignment="Center">
+        <TextBlock Text="📥📤 Import / Export" 
+                   FontSize="28" 
+                   FontWeight="SemiBold"
+                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                   Margin="0,0,0,6"/>
+        <TextBlock Text="Importieren und exportieren Sie Ihre Daten in verschiedenen Formaten" 
+                   FontSize="14" 
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+      </StackPanel>
+      
+    </Border>
+    
+    <!-- Content Area -->
+    <Grid Grid.Row="1" Margin="32,16,32,32">
+      
+      <!-- Loading Indicator -->
+      <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+              CornerRadius="8"
+              Padding="32"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              IsVisible="{Binding IsLoading}">
+        <StackPanel Spacing="16" HorizontalAlignment="Center">
+          <ProgressBar IsIndeterminate="True" Width="200" Height="4"/>
+          <TextBlock Text="Verarbeitung läuft..." 
+                     FontSize="14" 
+                     HorizontalAlignment="Center"
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Status Message -->
+      <Border CornerRadius="8"
+              Padding="24"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              MaxWidth="600"
+              IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+        <Border.Background>
+          <SolidColorBrush Color="{DynamicResource SystemFillColorCautionColor}"/>
+        </Border.Background>
+        <StackPanel Spacing="12" HorizontalAlignment="Center">
+          <TextBlock Text="📋 Status"
+                     FontSize="16"
+                     FontWeight="SemiBold"
+                     HorizontalAlignment="Center"
+                     Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+          <TextBlock Text="{Binding ErrorMessage}"
+                     FontSize="14"
+                     HorizontalAlignment="Center"
+                     TextWrapping="Wrap"
+                     MaxWidth="500"
+                     Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Main Content Grid -->
+      <ScrollViewer IsVisible="{Binding !IsLoading}">
+        <ItemsControl ItemsSource="{Binding Categories}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <UniformGrid Columns="2" HorizontalAlignment="Center"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                      BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                      BorderThickness="1"
+                      CornerRadius="8"
+                      Padding="24"
+                      Margin="8"
+                      MinHeight="180">
+                
+                <Grid RowDefinitions="Auto,*,Auto">
+                  
+                  <!-- Icon and Title -->
+                  <StackPanel Grid.Row="0" Spacing="12" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Icon}" 
+                               FontSize="36" 
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Title}" 
+                               FontSize="18" 
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                  </StackPanel>
+                  
+                  <!-- Description -->
+                  <TextBlock Grid.Row="1" 
+                             Text="{Binding Description}" 
+                             FontSize="14" 
+                             TextWrapping="Wrap"
+                             HorizontalAlignment="Center"
+                             TextAlignment="Center"
+                             VerticalAlignment="Center"
+                             Margin="0,12"
+                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                  
+                  <!-- Action Buttons -->
+                  <StackPanel Grid.Row="2" 
+                              Orientation="Horizontal" 
+                              Spacing="8" 
+                              HorizontalAlignment="Center">
+                    
+                    <Button Content="📥 Import" 
+                            Command="{Binding $parent[UserControl].DataContext.ImportCommand}"
+                            CommandParameter="{Binding}"
+                            IsEnabled="{Binding IsEnabled}"
+                            Padding="16,8"
+                            CornerRadius="6"
+                            Background="{DynamicResource AccentFillColorDefaultBrush}"
+                            Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+                    
+                    <Button Content="📤 Export" 
+                            Command="{Binding $parent[UserControl].DataContext.ExportCommand}"
+                            CommandParameter="{Binding}"
+                            IsEnabled="{Binding IsEnabled}"
+                            Padding="16,8"
+                            CornerRadius="6"
+                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="1"/>
+                    
+                  </StackPanel>
+                  
+                </Grid>
+                
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+          
+        </ItemsControl>
+      </ScrollViewer>
+      
+    </Grid>
+    
+  </Grid>
+  
+</UserControl>

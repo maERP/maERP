@@ -1,0 +1,117 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:maERP.UI.Shared.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="maERP.UI.Shared.Views.DebugWindow"
+        x:DataType="vm:DebugWindowViewModel"
+        Title="Debug Console - maERP"
+        Width="800" Height="600"
+        Icon="/Assets/avalonia-logo.ico"
+        WindowStartupLocation="CenterScreen">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Header -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource AccentFillColorDefaultBrush}" 
+            Padding="16,8">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+          <TextBlock Text="🐛" FontSize="16" VerticalAlignment="Center"/>
+          <TextBlock Text="Debug Console" 
+                     FontSize="14" 
+                     FontWeight="SemiBold" 
+                     Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                     VerticalAlignment="Center"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <Button Content="🗑️ Clear" 
+                  Command="{Binding ClearLogsCommand}"
+                  Classes="accent"
+                  Padding="8,4"/>
+          <ToggleButton Content="{Binding AutoScrollText}"
+                        IsChecked="{Binding AutoScroll}"
+                        Padding="8,4"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Debug Log Content -->
+    <Border Grid.Row="1" 
+            Background="{DynamicResource LayerFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1,0,1,0">
+      <ScrollViewer x:Name="LogScrollViewer"
+                    VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Auto"
+                    Padding="8">
+        <ItemsControl ItemsSource="{Binding DebugLogs}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Background="{Binding LevelBrush}"
+                      BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                      BorderThickness="1"
+                      CornerRadius="4"
+                      Margin="0,2"
+                      Padding="8,4">
+                <Grid ColumnDefinitions="Auto,Auto,*">
+                  <TextBlock Grid.Column="0" 
+                             Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss.fff}'}"
+                             FontFamily="Consolas,Monaco,monospace"
+                             FontSize="11"
+                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                             Margin="0,0,8,0"/>
+                  
+                  <TextBlock Grid.Column="1" 
+                             Text="{Binding Level}"
+                             FontFamily="Consolas,Monaco,monospace"
+                             FontSize="11"
+                             FontWeight="SemiBold"
+                             Foreground="{Binding LevelForeground}"
+                             MinWidth="50"
+                             Margin="0,0,8,0"/>
+                  
+                  <TextBlock Grid.Column="2" 
+                             Text="{Binding Message}"
+                             FontFamily="Consolas,Monaco,monospace"
+                             FontSize="11"
+                             TextWrapping="Wrap"
+                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+    </Border>
+
+    <!-- Footer -->
+    <Border Grid.Row="2" 
+            Background="{DynamicResource LayerFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            Padding="16,8">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Grid.Column="0" 
+                   Text="{Binding StatusText}"
+                   FontSize="12"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                   VerticalAlignment="Center"/>
+        
+        <TextBlock Grid.Column="1" 
+                   Text="{Binding LogCount, StringFormat='Logs: {0}'}"
+                   FontSize="12"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                   VerticalAlignment="Center"/>
+      </Grid>
+    </Border>
+  </Grid>
+</Window>

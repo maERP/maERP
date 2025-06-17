@@ -12,6 +12,7 @@ namespace maERP.UI.Features.SalesChannels.ViewModels;
 public partial class SalesChannelDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private SalesChannelDetailDto? salesChannel;
@@ -69,9 +70,10 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
     // Password display (masked)
     public string PasswordDisplay => HasPassword ? "••••••••" : "Nicht gesetzt";
 
-    public SalesChannelDetailViewModel(IHttpService httpService)
+    public SalesChannelDetailViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int salesChannelId)
@@ -96,7 +98,7 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 SalesChannel = null;
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -111,20 +113,20 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
                 OnPropertyChanged(nameof(SalesChannelTypeDisplay));
                 OnPropertyChanged(nameof(SalesChannelTypeIcon));
                 OnPropertyChanged(nameof(PasswordDisplay));
-                System.Diagnostics.Debug.WriteLine($"Loaded sales channel {SalesChannelId} successfully");
+                _debugService.LogInfo($"Loaded sales channel {SalesChannelId} successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des Vertriebskanals {SalesChannelId}";
                 SalesChannel = null;
-                System.Diagnostics.Debug.WriteLine($"Failed to load sales channel {SalesChannelId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load sales channel {SalesChannelId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des Vertriebskanals: {ex.Message}";
             SalesChannel = null;
-            System.Diagnostics.Debug.WriteLine($"Exception loading sales channel {SalesChannelId}: {ex}");
+            _debugService.LogError(ex, $"Exception loading sales channel {SalesChannelId}");
         }
         finally
         {

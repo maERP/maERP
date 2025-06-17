@@ -17,6 +17,7 @@ namespace maERP.UI.Features.SalesChannels.ViewModels;
 public partial class SalesChannelInputViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -91,9 +92,10 @@ public partial class SalesChannelInputViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<int, Task>? NavigateToSalesChannelDetail { get; set; }
 
-    public SalesChannelInputViewModel(IHttpService httpService)
+    public SalesChannelInputViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int salesChannelId = 0)
@@ -137,7 +139,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Exception loading warehouses: {ex}");
+            _debugService.LogError(ex, "Exception loading warehouses");
         }
     }
 
@@ -156,7 +158,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -179,18 +181,18 @@ public partial class SalesChannelInputViewModel : ViewModelBase
                 // Set selected warehouse
                 SelectedWarehouse = AvailableWarehouses.FirstOrDefault(w => w.Id == WarehouseId);
 
-                System.Diagnostics.Debug.WriteLine($"Loaded sales channel {SalesChannelId} for editing successfully");
+                _debugService.LogInfo($"Loaded sales channel {SalesChannelId} for editing successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden des Vertriebskanals {SalesChannelId}";
-                System.Diagnostics.Debug.WriteLine($"Failed to load sales channel {SalesChannelId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load sales channel {SalesChannelId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden des Vertriebskanals: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception loading sales channel {SalesChannelId}: {ex}");
+            _debugService.LogError(ex, $"Exception loading sales channel {SalesChannelId}");
         }
         finally
         {
@@ -232,11 +234,11 @@ public partial class SalesChannelInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("SaveAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("SaveAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded)
             {
-                System.Diagnostics.Debug.WriteLine($"Sales channel {(IsEditMode ? "updated" : "created")} successfully");
+                _debugService.LogInfo($"Sales channel {(IsEditMode ? "updated" : "created")} successfully");
                 
                 if (IsEditMode && NavigateToSalesChannelDetail != null)
                 {
@@ -254,13 +256,13 @@ public partial class SalesChannelInputViewModel : ViewModelBase
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim {(IsEditMode ? "Speichern" : "Erstellen")} des Vertriebskanals";
-                System.Diagnostics.Debug.WriteLine($"Failed to save sales channel: {ErrorMessage}");
+                _debugService.LogError($"Failed to save sales channel: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Speichern: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception saving sales channel: {ex}");
+            _debugService.LogError(ex, "Exception saving sales channel");
         }
         finally
         {

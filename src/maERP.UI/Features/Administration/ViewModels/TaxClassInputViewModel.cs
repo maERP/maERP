@@ -13,6 +13,7 @@ namespace maERP.UI.Features.Administration.ViewModels;
 public partial class TaxClassInputViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -43,9 +44,10 @@ public partial class TaxClassInputViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<int, Task>? NavigateToTaxClassDetail { get; set; }
 
-    public TaxClassInputViewModel(IHttpService httpService)
+    public TaxClassInputViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int taxClassId = 0)
@@ -77,24 +79,24 @@ public partial class TaxClassInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
                 var taxClass = result.Data;
                 TaxRate = taxClass.TaxRate;
-                System.Diagnostics.Debug.WriteLine($"Loaded tax class {TaxClassId} for editing");
+                _debugService.LogInfo($"Loaded tax class {TaxClassId} for editing");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden der Steuerklasse {TaxClassId}";
-                System.Diagnostics.Debug.WriteLine($"Failed to load tax class {TaxClassId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load tax class {TaxClassId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Steuerklasse: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception loading tax class {TaxClassId}: {ex}");
+            _debugService.LogError($"Exception loading tax class {TaxClassId}: {ex}");
         }
         finally
         {
@@ -125,11 +127,11 @@ public partial class TaxClassInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("SaveAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("SaveAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded)
             {
-                System.Diagnostics.Debug.WriteLine($"Tax class {(IsEditMode ? "updated" : "created")} successfully");
+                _debugService.LogInfo($"Tax class {(IsEditMode ? "updated" : "created")} successfully");
                 
                 if (IsEditMode && NavigateToTaxClassDetail != null)
                 {
@@ -143,13 +145,13 @@ public partial class TaxClassInputViewModel : ViewModelBase
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim {(IsEditMode ? "Aktualisieren" : "Erstellen")} der Steuerklasse";
-                System.Diagnostics.Debug.WriteLine($"Failed to save tax class: {ErrorMessage}");
+                _debugService.LogError($"Failed to save tax class: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Speichern der Steuerklasse: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception saving tax class: {ex}");
+            _debugService.LogError($"Exception saving tax class: {ex}");
         }
         finally
         {

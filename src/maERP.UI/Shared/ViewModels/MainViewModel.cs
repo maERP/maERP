@@ -14,6 +14,7 @@ using maERP.UI.Features.SalesChannels.ViewModels;
 using maERP.UI.Features.Invoices.ViewModels;
 using maERP.UI.Features.AI.ViewModels;
 using maERP.UI.Features.Administration.ViewModels;
+using maERP.UI.Features.ImportExport.ViewModels;
 
 namespace maERP.UI.Shared.ViewModels;
 
@@ -21,6 +22,7 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly IAuthenticationService _authenticationService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private bool isAuthenticated;
@@ -62,13 +64,16 @@ public partial class MainViewModel : ViewModelBase
     private UserListViewModel? _userListViewModel;
     private UserDetailViewModel? _userDetailViewModel;
     private UserInputViewModel? _userInputViewModel;
+    private ImportExportOverviewViewModel? _importExportOverviewViewModel;
 
     public MainViewModel(IAuthenticationService authenticationService,
                         LoginViewModel loginViewModel,
-                        IServiceProvider serviceProvider)
+                        IServiceProvider serviceProvider,
+                        IDebugService debugService)
     {
         _authenticationService = authenticationService;
         _serviceProvider = serviceProvider;
+        _debugService = debugService;
         LoginViewModel = loginViewModel;
 
         LoginViewModel.OnLoginSuccessful += OnLoginSuccessful;
@@ -130,6 +135,7 @@ public partial class MainViewModel : ViewModelBase
             "SalesChannels" => await GetSalesChannelListWithRefreshAsync(),
             "TaxClasses" => await GetTaxClassListWithRefreshAsync(),
             "Users" => await GetUserListWithRefreshAsync(),
+            "ImportExport" => await GetImportExportOverviewViewModelAsync(),
             _ => await GetDashboardViewModelAsync()
         };
     }
@@ -749,5 +755,21 @@ public partial class MainViewModel : ViewModelBase
         
         CurrentView = _userInputViewModel;
         SelectedMenuItem = "UserInput";
+    }
+
+    private Task<ImportExportOverviewViewModel> GetImportExportOverviewViewModelAsync()
+    {
+        if (_importExportOverviewViewModel == null)
+        {
+            _importExportOverviewViewModel = _serviceProvider.GetRequiredService<ImportExportOverviewViewModel>();
+        }
+        return Task.FromResult(_importExportOverviewViewModel);
+    }
+
+    [RelayCommand]
+    public void ToggleDebugWindow()
+    {
+        _debugService.ToggleDebugWindow();
+        _debugService.LogInfo("Debug window toggled via F12 key");
     }
 }

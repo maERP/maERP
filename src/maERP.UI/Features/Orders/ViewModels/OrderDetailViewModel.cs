@@ -13,6 +13,7 @@ namespace maERP.UI.Features.Orders.ViewModels;
 public partial class OrderDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     private OrderDetailDto? order;
@@ -59,9 +60,10 @@ public partial class OrderDetailViewModel : ViewModelBase
     public bool HasNote => Order != null && !string.IsNullOrEmpty(Order.Note);
     public bool HasOrderHistory => Order?.OrderHistory?.Any() == true;
 
-    public OrderDetailViewModel(IHttpService httpService)
+    public OrderDetailViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
     }
 
     public async Task InitializeAsync(int orderId)
@@ -86,7 +88,7 @@ public partial class OrderDetailViewModel : ViewModelBase
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 Order = null;
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -98,20 +100,20 @@ public partial class OrderDetailViewModel : ViewModelBase
                 OnPropertyChanged(nameof(HasDeliveryAddress));
                 OnPropertyChanged(nameof(HasNote));
                 OnPropertyChanged(nameof(HasOrderHistory));
-                System.Diagnostics.Debug.WriteLine($"Loaded order {OrderId} successfully");
+                _debugService.LogInfo($"Loaded order {OrderId} successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden der Bestellung {OrderId}";
                 Order = null;
-                System.Diagnostics.Debug.WriteLine($"Failed to load order {OrderId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load order {OrderId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Bestellung: {ex.Message}";
             Order = null;
-            System.Diagnostics.Debug.WriteLine($"Exception loading order {OrderId}: {ex}");
+            _debugService.LogError(ex, $"Exception loading order {OrderId}");
         }
         finally
         {

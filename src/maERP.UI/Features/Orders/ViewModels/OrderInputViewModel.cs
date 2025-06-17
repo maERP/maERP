@@ -17,6 +17,7 @@ namespace maERP.UI.Features.Orders.ViewModels;
 public partial class OrderInputViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
+    private readonly IDebugService _debugService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -193,9 +194,10 @@ public partial class OrderInputViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<int, Task>? NavigateToOrderDetail { get; set; }
 
-    public OrderInputViewModel(IHttpService httpService)
+    public OrderInputViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
+        _debugService = debugService;
         OrderItems.CollectionChanged += (_, _) => OnPropertyChanged(nameof(OrderItemsSubtotal));
         OrderItems.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasOrderItems));
         OrderItems.CollectionChanged += (_, _) => CalculateTotals();
@@ -239,7 +241,7 @@ public partial class OrderInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("GetAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("GetAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
@@ -293,18 +295,18 @@ public partial class OrderInputViewModel : ViewModelBase
                     }
                 }
 
-                System.Diagnostics.Debug.WriteLine($"Loaded order {OrderId} for editing successfully");
+                _debugService.LogInfo($"Loaded order {OrderId} for editing successfully");
             }
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim Laden der Bestellung {OrderId}";
-                System.Diagnostics.Debug.WriteLine($"Failed to load order {OrderId}: {ErrorMessage}");
+                _debugService.LogError($"Failed to load order {OrderId}: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Laden der Bestellung: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception loading order {OrderId}: {ex}");
+            _debugService.LogError(ex, $"Exception loading order {OrderId}");
         }
         finally
         {
@@ -371,11 +373,11 @@ public partial class OrderInputViewModel : ViewModelBase
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                System.Diagnostics.Debug.WriteLine("SaveAsync returned null - not authenticated or no server URL");
+                _debugService.LogWarning("SaveAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded)
             {
-                System.Diagnostics.Debug.WriteLine($"Order {(IsEditMode ? "updated" : "created")} successfully");
+                _debugService.LogInfo($"Order {(IsEditMode ? "updated" : "created")} successfully");
                 
                 if (IsEditMode && NavigateToOrderDetail != null)
                 {
@@ -393,13 +395,13 @@ public partial class OrderInputViewModel : ViewModelBase
             else
             {
                 ErrorMessage = result.Messages?.FirstOrDefault() ?? $"Fehler beim {(IsEditMode ? "Speichern" : "Erstellen")} der Bestellung";
-                System.Diagnostics.Debug.WriteLine($"Failed to save order: {ErrorMessage}");
+                _debugService.LogError($"Failed to save order: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = $"Fehler beim Speichern: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"Exception saving order: {ex}");
+            _debugService.LogError(ex, "Exception saving order");
         }
         finally
         {

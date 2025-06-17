@@ -1,31 +1,32 @@
-<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
   <!-- Background -->
-  <rect width="256" height="256" rx="32" fill="#1a365d"/>
+  <!--<rect width="1024" height="1024" rx="128" fill="#1a365d"/>-->
+  <rect width="1024" height="1024" fill="#1a365d"/>
   
   <!-- Main geometric element - abstract representation of connected business processes -->
-  <g transform="translate(64, 48)">
+  <g transform="translate(288, 192)">
     <!-- Upper connected rectangles -->
-    <rect x="0" y="0" width="32" height="24" rx="4" fill="#3182ce" opacity="0.9"/>
-    <rect x="40" y="0" width="32" height="24" rx="4" fill="#3182ce" opacity="0.7"/>
-    <rect x="80" y="0" width="32" height="24" rx="4" fill="#3182ce" opacity="0.9"/>
-    
+    <rect x="0" y="0" width="128" height="96" rx="16" fill="#3182ce" opacity="0.9"/>
+    <rect x="160" y="0" width="128" height="96" rx="16" fill="#3182ce" opacity="0.7"/>
+    <rect x="320" y="0" width="128" height="96" rx="16" fill="#3182ce" opacity="0.9"/>
+
     <!-- Connection lines -->
-    <line x1="32" y1="12" x2="40" y2="12" stroke="#63b3ed" stroke-width="3"/>
-    <line x1="72" y1="12" x2="80" y2="12" stroke="#63b3ed" stroke-width="3"/>
+    <line x1="128" y1="48" x2="160" y2="48" stroke="#63b3ed" stroke-width="12"/>
+    <line x1="288" y1="48" x2="320" y2="48" stroke="#63b3ed" stroke-width="12"/>
     
     <!-- Lower connected rectangles -->
-    <rect x="20" y="36" width="32" height="24" rx="4" fill="#2c5282" opacity="0.8"/>
-    <rect x="60" y="36" width="32" height="24" rx="4" fill="#2c5282" opacity="0.8"/>
+    <rect x="80" y="144" width="128" height="96" rx="16" fill="#2c5282" opacity="0.8"/>
+    <rect x="240" y="144" width="128" height="96" rx="16" fill="#2c5282" opacity="0.8"/>
     
     <!-- Vertical connection lines -->
-    <line x1="48" y1="24" x2="36" y2="36" stroke="#63b3ed" stroke-width="3"/>
-    <line x1="88" y1="24" x2="76" y2="36" stroke="#63b3ed" stroke-width="3"/>
+    <line x1="192" y1="96" x2="144" y2="144" stroke="#63b3ed" stroke-width="12"/>
+    <line x1="352" y1="96" x2="304" y2="144" stroke="#63b3ed" stroke-width="12"/>
   </g>
   
   <!-- Text -->
-  <text x="128" y="155" font-family="Arial, sans-serif" font-size="42" font-weight="bold" text-anchor="middle" fill="#ffffff">ma</text>
-  <text x="128" y="200" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#63b3ed">ERP</text>
+  <text x="512" y="620" font-family="Arial, sans-serif" font-size="168" font-weight="bold" text-anchor="middle" fill="#ffffff">ma</text>
+  <text x="512" y="800" font-family="Arial, sans-serif" font-size="192" font-weight="bold" text-anchor="middle" fill="#63b3ed">ERP</text>
   
   <!-- Subtle accent line -->
-  <rect x="64" y="210" width="128" height="3" rx="1.5" fill="#3182ce" opacity="0.6"/>
+  <rect x="256" y="840" width="512" height="12" rx="6" fill="#3182ce" opacity="0.6"/>
 </svg>

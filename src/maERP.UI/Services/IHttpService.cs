@@ -18,4 +18,12 @@ public interface IHttpService
     Task<Result<TResponse>?> PostAsync<TRequest, TResponse>(string endpoint, TRequest data);
     Task<Result<TResponse>?> PutAsync<TRequest, TResponse>(string endpoint, TRequest data);
     Task<Result?> DeleteAsync(string endpoint);
+    Task<FileDownloadResult> DownloadFileAsync(string endpoint, string suggestedFileName);
+}
+
+public class FileDownloadResult
+{
+    public bool Success { get; set; }
+    public string? FilePath { get; set; }
+    public string? ErrorMessage { get; set; }
 }
