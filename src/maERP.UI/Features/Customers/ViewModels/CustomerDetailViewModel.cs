@@ -223,7 +223,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
         }
     }
 
-    private static void OpenUrl(string url)
+    private void OpenUrl(string url)
     {
         try
         {
