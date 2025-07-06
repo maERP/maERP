@@ -60,9 +60,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
     private bool exportOrders;
 
     [ObservableProperty]
-    [Required(ErrorMessage = "Lager ist erforderlich")]
-    [NotifyDataErrorInfo]
-    private int warehouseId;
+    private ObservableCollection<WarehouseDetailDto> selectedWarehouses = new();
 
     [ObservableProperty]
     private WarehouseDetailDto? selectedWarehouse;
@@ -132,7 +130,6 @@ public partial class SalesChannelInputViewModel : ViewModelBase
                 // Set default warehouse if creating new sales channel
                 if (!IsEditMode && AvailableWarehouses.Any())
                 {
-                    WarehouseId = AvailableWarehouses.First().Id;
                     SelectedWarehouse = AvailableWarehouses.First();
                 }
             }
@@ -176,10 +173,16 @@ public partial class SalesChannelInputViewModel : ViewModelBase
                 ExportCustomers = salesChannel.ExportCustomers;
                 ImportOrders = salesChannel.ImportOrders;
                 ExportOrders = salesChannel.ExportOrders;
-                WarehouseId = salesChannel.WarehouseId;
-                
-                // Set selected warehouse
-                SelectedWarehouse = AvailableWarehouses.FirstOrDefault(w => w.Id == WarehouseId);
+                // Set selected warehouses
+                SelectedWarehouses.Clear();
+                foreach (var warehouse in salesChannel.Warehouses)
+                {
+                    var availableWarehouse = AvailableWarehouses.FirstOrDefault(w => w.Id == warehouse.Id);
+                    if (availableWarehouse != null)
+                    {
+                        SelectedWarehouses.Add(availableWarehouse);
+                    }
+                }
 
                 _debugService.LogInfo($"Loaded sales channel {SalesChannelId} for editing successfully");
             }
@@ -224,7 +227,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
                 ExportCustomers = ExportCustomers,
                 ImportOrders = ImportOrders,
                 ExportOrders = ExportOrders,
-                WarehouseId = WarehouseId
+                WarehouseIds = SelectedWarehouses.Select(w => w.Id).ToList()
             };
 
             var result = IsEditMode
@@ -288,8 +291,17 @@ public partial class SalesChannelInputViewModel : ViewModelBase
         if (warehouse != null)
         {
             SelectedWarehouse = warehouse;
-            WarehouseId = warehouse.Id;
+            if (!SelectedWarehouses.Contains(warehouse))
+            {
+                SelectedWarehouses.Add(warehouse);
+            }
         }
+    }
+
+    [RelayCommand]
+    private void RemoveWarehouse(WarehouseDetailDto warehouse)
+    {
+        SelectedWarehouses.Remove(warehouse);
     }
 
     private void ClearForm()
@@ -305,8 +317,8 @@ public partial class SalesChannelInputViewModel : ViewModelBase
         ExportCustomers = false;
         ImportOrders = false;
         ExportOrders = false;
-        WarehouseId = AvailableWarehouses.Any() ? AvailableWarehouses.First().Id : 0;
-        SelectedWarehouse = AvailableWarehouses.FirstOrDefault();
+        SelectedWarehouses.Clear();
+        SelectedWarehouse = null;
         ErrorMessage = string.Empty;
         
         ClearErrors();
@@ -322,9 +334,9 @@ public partial class SalesChannelInputViewModel : ViewModelBase
             return false;
         }
 
-        if (WarehouseId <= 0)
+        if (!SelectedWarehouses.Any())
         {
-            ErrorMessage = "Bitte wählen Sie ein Lager aus";
+            ErrorMessage = "Bitte wählen Sie mindestens ein Lager aus";
             return false;
         }
 

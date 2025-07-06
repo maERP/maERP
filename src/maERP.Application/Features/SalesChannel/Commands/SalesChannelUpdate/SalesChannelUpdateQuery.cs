@@ -84,7 +84,6 @@ public class SalesChannelUpdateQuery : IRequestHandler<SalesChannelUpdateCommand
             ExportProducts = command.ExportProducts,
             ExportCustomers = command.ExportCustomers,
             ExportOrders = command.ExportOrders,
-            WarehouseId = command.WarehouseId
         };
     }
 }

@@ -12,7 +12,7 @@ public class WarehouseConfiguration : IEntityTypeConfiguration<Warehouse>
             new Warehouse
             {
                 Id = 1,
-                Name = "Testlager"
+                Name = "Hauptlager"
             }
         );
 

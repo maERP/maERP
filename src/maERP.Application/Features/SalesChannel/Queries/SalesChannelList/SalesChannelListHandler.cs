@@ -5,6 +5,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
 using maERP.Domain.Dtos.SalesChannel;
+using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using MediatR;
 
@@ -66,7 +67,11 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
             ExportProducts = entity.ExportProducts,
             ExportCustomers = entity.ExportCustomers,
             ExportOrders = entity.ExportOrders,
-            WarehouseId = entity.WarehouseId
+            Warehouses = entity.Warehouses?.Select(w => new WarehouseDetailDto
+            {
+                Id = w.Id,
+                Name = w.Name
+            }).ToList() ?? new List<WarehouseDetailDto>()
         }).ToList();
 
         // Erstelle paginierte Ergebnisse

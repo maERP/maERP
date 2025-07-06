@@ -15,6 +15,7 @@ using maERP.UI.Features.Invoices.ViewModels;
 using maERP.UI.Features.AI.ViewModels;
 using maERP.UI.Features.Administration.ViewModels;
 using maERP.UI.Features.ImportExport.ViewModels;
+using maERP.UI.Features.GoodsReceipts.ViewModels;
 
 namespace maERP.UI.Shared.ViewModels;
 
@@ -65,6 +66,8 @@ public partial class MainViewModel : ViewModelBase
     private UserDetailViewModel? _userDetailViewModel;
     private UserInputViewModel? _userInputViewModel;
     private ImportExportOverviewViewModel? _importExportOverviewViewModel;
+    private GoodsReceiptListViewModel? _goodsReceiptListViewModel;
+    private GoodsReceiptInputViewModel? _goodsReceiptInputViewModel;
 
     public MainViewModel(IAuthenticationService authenticationService,
                         LoginViewModel loginViewModel,
@@ -136,6 +139,7 @@ public partial class MainViewModel : ViewModelBase
             "TaxClasses" => await GetTaxClassListWithRefreshAsync(),
             "Users" => await GetUserListWithRefreshAsync(),
             "ImportExport" => await GetImportExportOverviewViewModelAsync(),
+            "GoodsReceipts" => await GetGoodsReceiptListWithRefreshAsync(),
             _ => await GetDashboardViewModelAsync()
         };
     }
@@ -764,6 +768,45 @@ public partial class MainViewModel : ViewModelBase
             _importExportOverviewViewModel = _serviceProvider.GetRequiredService<ImportExportOverviewViewModel>();
         }
         return Task.FromResult(_importExportOverviewViewModel);
+    }
+
+    private async Task<GoodsReceiptListViewModel> GetGoodsReceiptListViewModelAsync()
+    {
+        if (_goodsReceiptListViewModel == null)
+        {
+            _goodsReceiptListViewModel = _serviceProvider.GetRequiredService<GoodsReceiptListViewModel>();
+            _goodsReceiptListViewModel.NavigateToCreateGoodsReceipt = NavigateToCreateGoodsReceipt;
+            await _goodsReceiptListViewModel.InitializeAsync();
+        }
+        return _goodsReceiptListViewModel;
+    }
+
+    private async Task<GoodsReceiptListViewModel> GetGoodsReceiptListWithRefreshAsync()
+    {
+        var listViewModel = await GetGoodsReceiptListViewModelAsync();
+        await listViewModel.RefreshAsync();
+        return listViewModel;
+    }
+
+    public async Task NavigateToCreateGoodsReceipt()
+    {
+        if (!IsAuthenticated) return;
+
+        _goodsReceiptInputViewModel = _serviceProvider.GetRequiredService<GoodsReceiptInputViewModel>();
+        _goodsReceiptInputViewModel.GoBackAction = async () => await NavigateToGoodsReceiptList();
+        await _goodsReceiptInputViewModel.InitializeAsync(0); // 0 for new goods receipt
+        
+        CurrentView = _goodsReceiptInputViewModel;
+        SelectedMenuItem = "GoodsReceiptInput";
+    }
+
+    [RelayCommand]
+    private async Task NavigateToGoodsReceiptList()
+    {
+        var listViewModel = await GetGoodsReceiptListViewModelAsync();
+        await listViewModel.RefreshAsync();
+        CurrentView = listViewModel;
+        SelectedMenuItem = "GoodsReceipts";
     }
 
     [RelayCommand]

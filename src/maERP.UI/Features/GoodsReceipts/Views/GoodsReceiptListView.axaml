@@ -1,0 +1,227 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="maERP.UI.Features.GoodsReceipts.Views.GoodsReceiptListView">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    
+    <!-- Header mit Titel und Suche -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
+      
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        
+        <!-- Titel -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="📦📥 Wareneingänge" 
+                     FontSize="28" 
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                     Margin="0,0,0,6"/>
+          <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Wareneingänge}" 
+                     FontSize="14" 
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+        </StackPanel>
+        
+        <!-- Suchfeld -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center"
+                    Margin="16,0">
+          
+          <TextBox Text="{Binding SearchText}" 
+                   Watermark="Nach Wareneingängen suchen..."
+                   Width="240"
+                   VerticalAlignment="Center"
+                   CornerRadius="6"
+                   Padding="12,8"/>
+          
+          <Button Content="🔍" 
+                  Command="{Binding SearchGoodsReceiptsCommand}"
+                  VerticalAlignment="Center"
+                  Padding="12,8"
+                  CornerRadius="6"/>
+          
+        </StackPanel>
+        
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="2" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="➕ Neuer Wareneingang" 
+                  Command="{Binding CreateNewGoodsReceiptCommand}"
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+          <Button Content="🔄" 
+                  Command="{Binding RefreshCommand}"
+                  Padding="12,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  ToolTip.Tip="Aktualisieren"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Loading/Error/Content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Wareneingänge werden geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="16"
+              Margin="16"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler beim Laden" 
+                     FontWeight="SemiBold"
+                     FontSize="16"
+                     Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" 
+                     TextWrapping="Wrap"
+                     Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- Data Grid -->
+      <ScrollViewer IsVisible="{Binding ShouldShowDataGrid}" 
+                    VerticalScrollBarVisibility="Auto" 
+                    HorizontalScrollBarVisibility="Auto">
+        <controls:DataGrid ItemsSource="{Binding GoodsReceipts}"
+                          SelectedItem="{Binding SelectedGoodsReceipt}"
+                          AutoGenerateColumns="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          IsReadOnly="True"
+                          GridLinesVisibility="Horizontal"
+                          HeadersVisibility="Column"
+                          Margin="8">
+          
+          <controls:DataGrid.Columns>
+            
+            <controls:DataGridTextColumn Header="ID" 
+                                        Binding="{Binding Id}"
+                                        Width="80"
+                                        CanUserSort="True"/>
+            
+            <controls:DataGridTextColumn Header="Datum" 
+                                        Binding="{Binding ReceiptDate, StringFormat=dd.MM.yyyy}"
+                                        Width="120"
+                                        CanUserSort="True"/>
+            
+            <controls:DataGridTextColumn Header="Produkt" 
+                                        Binding="{Binding ProductName}"
+                                        Width="*"
+                                        CanUserSort="True"/>
+            
+            <controls:DataGridTextColumn Header="Menge" 
+                                        Binding="{Binding Quantity}"
+                                        Width="100"
+                                        CanUserSort="True"/>
+            
+            <controls:DataGridTextColumn Header="Lager" 
+                                        Binding="{Binding WarehouseName}"
+                                        Width="150"
+                                        CanUserSort="True"/>
+            
+            <controls:DataGridTextColumn Header="Lieferant" 
+                                        Binding="{Binding Supplier}"
+                                        Width="200"
+                                        CanUserSort="True"/>
+            
+          </controls:DataGrid.Columns>
+          
+        </controls:DataGrid>
+      </ScrollViewer>
+      
+    </Grid>
+    
+    <!-- Pagination Controls -->
+    <Border Grid.Row="2" 
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Padding="24,16"
+            IsVisible="{Binding ShouldShowDataGrid}">
+      
+      <Grid ColumnDefinitions="*,Auto,*">
+        
+        <!-- Left - Page Info -->
+        <TextBlock Grid.Column="0" 
+                   Text="{Binding DisplayPageNumber, StringFormat=Seite \{0\} von \{1\}}"
+                   VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+          <TextBlock.Text>
+            <MultiBinding StringFormat="Seite {0} von {1}">
+              <Binding Path="DisplayPageNumber"/>
+              <Binding Path="TotalPages"/>
+            </MultiBinding>
+          </TextBlock.Text>
+        </TextBlock>
+        
+        <!-- Center - Navigation -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8"
+                    HorizontalAlignment="Center">
+          
+          <Button Content="⬅️ Zurück" 
+                  Command="{Binding PreviousPageCommand}"
+                  IsEnabled="{Binding CanGoPrevious}"
+                  Padding="12,8"
+                  CornerRadius="6"/>
+          
+          <Button Content="Weiter ➡️" 
+                  Command="{Binding NextPageCommand}"
+                  IsEnabled="{Binding CanGoNext}"
+                  Padding="12,8"
+                  CornerRadius="6"/>
+          
+        </StackPanel>
+        
+        <!-- Right - Items per page info -->
+        <TextBlock Grid.Column="2" 
+                   Text="{Binding TotalCount, StringFormat=\{0\} Einträge gesamt}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+        
+      </Grid>
+      
+    </Border>
+    
+  </Grid>
+
+</UserControl>

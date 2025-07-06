@@ -22,6 +22,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new WarehouseConfiguration());
         modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
         modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
+        modelBuilder.ApplyConfiguration(new GoodsReceiptConfiguration());
     }
 
     public DbSet<AiModel> AiModel { get; set; } = null!;
@@ -46,6 +47,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ShippingProviderRate> ShippingProviderRate { get; set; } = null!;
     public DbSet<TaxClass> TaxClass { get; set; } = null!;
     public DbSet<Warehouse> Warehouse { get; set; } = null!;
+    public DbSet<GoodsReceipt> GoodsReceipt { get; set; } = null!;
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

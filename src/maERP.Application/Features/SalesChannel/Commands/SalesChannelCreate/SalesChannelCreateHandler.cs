@@ -113,7 +113,6 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
             ExportProducts = command.ExportProducts,
             ExportCustomers = command.ExportCustomers,
             ExportOrders = command.ExportOrders,
-            WarehouseId = command.WarehouseId
         };
     }
 }

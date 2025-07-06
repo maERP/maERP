@@ -35,6 +35,6 @@ public class WarehouseDeleteValidator : AbstractValidator<WarehouseDeleteCommand
     private async Task<bool> WarehouseIsNotUsedInSalesChannel(WarehouseDeleteCommand command, CancellationToken cancellationToken)
     {
         var salesChannels = await _salesChannelRepository.GetAllAsync();
-        return !salesChannels.Any(sc => sc.WarehouseId == command.Id);
+        return !salesChannels.Any(sc => sc.Warehouses != null && sc.Warehouses.Any(w => w.Id == command.Id));
     }
 }

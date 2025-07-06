@@ -262,9 +262,27 @@ public class OrderImportRepository : IOrderImportRepository
                 foreach (var orderItem in newOrder.OrderItems)
                 {
                     Product product = await _productRepository.GetWithDetailsAsync(orderItem.ProductId) ?? throw new Exception("OrderImportRepository: Product not found");
-                    product.ProductStocks.FirstOrDefault(w => w.WarehouseId == salesChannel.WarehouseId)!.Stock -= orderItem.Quantity;
-                    await _productRepository.UpdateAsync(product);
-                    _logger.LogInformation("Order {0}: Stock updated for product {1}", importOrder.RemoteOrderId, product.Sku);
+                    
+                    // Use first warehouse of sales channel for stock update
+                    var warehouse = salesChannel.Warehouses?.FirstOrDefault();
+                    if (warehouse != null)
+                    {
+                        var productStock = product.ProductStocks.FirstOrDefault(w => w.WarehouseId == warehouse.Id);
+                        if (productStock != null)
+                        {
+                            productStock.Stock -= orderItem.Quantity;
+                            await _productRepository.UpdateAsync(product);
+                            _logger.LogInformation("Order {0}: Stock updated for product {1} in warehouse {2}", importOrder.RemoteOrderId, product.Sku, warehouse.Name);
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Order {0}: No stock found for product {1} in warehouse {2}", importOrder.RemoteOrderId, product.Sku, warehouse.Name);
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Order {0}: SalesChannel has no warehouses configured, cannot update stock for product {1}", importOrder.RemoteOrderId, product.Sku);
+                    }
                 }
             }
         }

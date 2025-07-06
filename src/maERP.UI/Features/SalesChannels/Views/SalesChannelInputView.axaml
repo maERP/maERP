@@ -120,13 +120,67 @@
                             HorizontalAlignment="Stretch"/>
                 </StackPanel>
                 
-                <!-- Second Row: Warehouse -->
+                <!-- Second Row: Warehouses -->
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="4">
-                  <TextBlock Text="Lager *" FontWeight="SemiBold"/>
-                  <ComboBox ItemsSource="{Binding AvailableWarehouses}"
-                            SelectedItem="{Binding SelectedWarehouse}"
-                            DisplayMemberBinding="{Binding Name}"
-                            HorizontalAlignment="Stretch"/>
+                  <TextBlock Text="Lager" FontWeight="SemiBold"/>
+                  
+                  <!-- Selected Warehouses Display -->
+                  <Border BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"
+                          CornerRadius="4"
+                          Padding="8"
+                          MinHeight="40">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="100">
+                      <ItemsControl ItemsSource="{Binding SelectedWarehouses}">
+                        <ItemsControl.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                          </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate>
+                            <Border Background="{DynamicResource AccentFillColorDefaultBrush}"
+                                    CornerRadius="12"
+                                    Padding="8,4"
+                                    Margin="4,2">
+                              <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="{Binding Name}" 
+                                           Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                                           FontSize="12"/>
+                                <Button Content="×"
+                                        Command="{Binding $parent[UserControl].DataContext.RemoveWarehouseCommand}"
+                                        CommandParameter="{Binding}"
+                                        Background="Transparent"
+                                        Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                                        FontSize="14"
+                                        FontWeight="Bold"
+                                        Padding="4,0"
+                                        Width="20"
+                                        Height="20"/>
+                              </StackPanel>
+                            </Border>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+                    </ScrollViewer>
+                  </Border>
+                  
+                  <!-- Warehouse Selection ComboBox -->
+                  <Grid ColumnDefinitions="*,Auto">
+                    <ComboBox Grid.Column="0"
+                              ItemsSource="{Binding AvailableWarehouses}"
+                              SelectedItem="{Binding SelectedWarehouse}"
+                              DisplayMemberBinding="{Binding Name}"
+                              HorizontalAlignment="Stretch"/>
+                    <Button Grid.Column="1"
+                            Content="+"
+                            Command="{Binding OnWarehouseSelectionChangedCommand}"
+                            CommandParameter="{Binding SelectedWarehouse}"
+                            Margin="8,0,0,0"
+                            Width="32"
+                            Height="32"
+                            VerticalAlignment="Stretch"/>
+                  </Grid>
                 </StackPanel>
                 
               </Grid>
@@ -285,7 +339,7 @@
                 <TextBlock Text="• Typ: Bestimmt die verfügbaren Integrationsmöglichkeiten" 
                            FontSize="12" 
                            Opacity="0.7"/>
-                <TextBlock Text="• Lager: Das Lager, das für Bestandsabfragen und -updates verwendet wird" 
+                <TextBlock Text="• Lager: Die Lager, die für Bestandsabfragen und -updates verwendet werden" 
                            FontSize="12" 
                            Opacity="0.7"/>
                 <TextBlock Text="• Verbindungseinstellungen: Werden nur bei externen Systemen benötigt (nicht bei Point of Sale)" 

@@ -17,6 +17,7 @@ using maERP.UI.Features.SalesChannels.ViewModels;
 using maERP.UI.Features.Invoices.ViewModels;
 using maERP.UI.Features.AI.ViewModels;
 using maERP.UI.Features.Administration.ViewModels;
+using maERP.UI.Features.GoodsReceipts.ViewModels;
 using maERP.UI.Services;
 
 namespace maERP.UI;
@@ -80,6 +81,8 @@ public partial class App : Application
         services.AddTransient<WarehouseDetailViewModel>();
         services.AddTransient<WarehouseInputViewModel>();
         services.AddTransient<WarehouseSelectionDialogViewModel>();
+        services.AddTransient<GoodsReceiptListViewModel>();
+        services.AddTransient<GoodsReceiptInputViewModel>();
         services.AddTransient<ConfirmationDialogViewModel>();
         services.AddTransient<DebugWindowViewModel>();
 

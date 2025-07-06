@@ -1,6 +1,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.SalesChannel;
+using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using MediatR;
 
@@ -108,7 +109,11 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
             ExportProducts = entity.ExportProducts,
             ExportCustomers = entity.ExportCustomers,
             ExportOrders = entity.ExportOrders,
-            WarehouseId = entity.WarehouseId
+            Warehouses = entity.Warehouses?.Select(w => new WarehouseDetailDto
+            {
+                Id = w.Id,
+                Name = w.Name
+            }).ToList() ?? new List<WarehouseDetailDto>()
         };
     }
 }

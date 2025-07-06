@@ -9,5 +9,8 @@ public class ProductStock : BaseEntity, IBaseEntity
     public int ProductId { get; set; }
     public int WarehouseId { get; set; }
     public Warehouse Warehouse { get; set; } = null!;
-    public double Stock { get; set; } = 0;
+    public double Stock { get; set; }
+    public double StockMin { get; set; }
+    public double StockMax { get; set; }
+    public double StorageLocation { get; set; }
 }

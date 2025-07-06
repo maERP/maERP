@@ -9,6 +9,10 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
 {
     public void Configure(EntityTypeBuilder<SalesChannel> modelBuilder)
     {
+        modelBuilder.HasMany(sc => sc.Warehouses)
+            .WithMany(w => w.SalesChannels)
+            .UsingEntity(j => j.ToTable("SalesChannelWarehouses"));
+
         modelBuilder.HasData(
             new SalesChannel
             {
@@ -23,8 +27,7 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
                 ImportOrders = false,
                 ExportProducts = false,
                 ExportCustomers = false,
-                ExportOrders = false,
-                WarehouseId = 1
+                ExportOrders = false
             }
         );
 

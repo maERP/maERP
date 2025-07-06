@@ -19,6 +19,5 @@ public class SalesChannelListDto
     public bool ImportOrders { get; set; }
     public bool ExportOrders { get; set; }
 
-    public int WarehouseId { get; set; }
-    public WarehouseDetailDto? Warehouse { get; set; }
+    public List<WarehouseDetailDto> Warehouses { get; set; } = new();
 }

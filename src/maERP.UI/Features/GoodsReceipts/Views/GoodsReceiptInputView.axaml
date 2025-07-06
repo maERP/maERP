@@ -1,0 +1,275 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Features.GoodsReceipts.Views.GoodsReceiptInputView">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    
+    <!-- Header -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Title -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="{Binding PageTitle}" 
+                     FontSize="28" 
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                     Margin="0,0,0,6"/>
+          <TextBlock Text="Wareneingänge schnell und einfach erfassen" 
+                     FontSize="14" 
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+        </StackPanel>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="◀️ Zurück" 
+                  Command="{Binding GoBackCommand}"
+                  Padding="12,8"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Daten werden geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Success/Error Messages -->
+      <StackPanel Margin="24,16,24,0" Spacing="8">
+        
+        <!-- Success Message -->
+        <Border IsVisible="{Binding SuccessMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+                Background="#D4EDDA" 
+                BorderBrush="#C3E6CB" 
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="16">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <TextBlock Text="✅" FontSize="16"/>
+            <TextBlock Text="{Binding SuccessMessage}" 
+                       Foreground="#155724"
+                       FontWeight="SemiBold"/>
+          </StackPanel>
+        </Border>
+        
+        <!-- Error Message -->
+        <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+                Background="#F8D7DA" 
+                BorderBrush="#F5C6CB" 
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="16">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <TextBlock Text="❌" FontSize="16"/>
+            <TextBlock Text="{Binding ErrorMessage}" 
+                       Foreground="#721C24"
+                       FontWeight="SemiBold"/>
+          </StackPanel>
+        </Border>
+        
+      </StackPanel>
+      
+      <!-- Form Content -->
+      <ScrollViewer IsVisible="{Binding ShouldShowContent}" Margin="24,16,24,16">
+        <StackPanel Spacing="20" MaxWidth="800" HorizontalAlignment="Center">
+          
+          <!-- Wareneingang Formular -->
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="12"
+                  Padding="32">
+            <StackPanel Spacing="24">
+              
+              <!-- Section Title -->
+              <TextBlock Text="📦📥 Wareneingang erfassen" 
+                         FontSize="20" 
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                         HorizontalAlignment="Center"/>
+              
+              <!-- Form Fields -->
+              <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="24" RowSpacing="20">
+                
+                <!-- Row 1: Datum, Lager -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6">
+                  <TextBlock Text="📅 Datum" FontWeight="SemiBold" FontSize="14"/>
+                  <DatePicker SelectedDate="{Binding ReceiptDate}" 
+                             CornerRadius="8"
+                             Padding="12,10"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="6">
+                  <TextBlock Text="🏪 Lager *" FontWeight="SemiBold" FontSize="14"/>
+                  <ComboBox ItemsSource="{Binding AvailableWarehouses}"
+                           SelectedItem="{Binding SelectedWarehouse}"
+                           DisplayMemberBinding="{Binding Name}"
+                           CornerRadius="8"
+                           Padding="12,10"/>
+                </StackPanel>
+                
+                <!-- Row 2: Produkt (spans both columns) -->
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="6">
+                  <TextBlock Text="📦 Produkt *" FontWeight="SemiBold" FontSize="14"/>
+                  <ComboBox ItemsSource="{Binding AvailableProducts}"
+                           SelectedItem="{Binding SelectedProduct}"
+                           DisplayMemberBinding="{Binding Name}"
+                           CornerRadius="8"
+                           Padding="12,10"
+                           IsTextSearchEnabled="True"/>
+                </StackPanel>
+                
+                <!-- Row 3: Menge, Lieferant -->
+                <StackPanel Grid.Row="2" Grid.Column="0" Spacing="6">
+                  <TextBlock Text="📊 Menge *" FontWeight="SemiBold" FontSize="14"/>
+                  <NumericUpDown Value="{Binding Quantity}"
+                                Minimum="1"
+                                Maximum="999999"
+                                Increment="1"
+                                CornerRadius="8"
+                                Padding="12,10"
+                                FontSize="16"
+                                FontWeight="SemiBold"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="2" Grid.Column="1" Spacing="6">
+                  <TextBlock Text="🚚 Lieferant" FontWeight="SemiBold" FontSize="14"/>
+                  <TextBox Text="{Binding Supplier}" 
+                           Watermark="Lieferant eingeben (optional)..."
+                           CornerRadius="8"
+                           Padding="12,10"/>
+                </StackPanel>
+                
+                <!-- Row 4: Notizen (spans both columns) -->
+                <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Spacing="6">
+                  <TextBlock Text="📝 Notizen" FontWeight="SemiBold" FontSize="14"/>
+                  <TextBox Text="{Binding Notes}" 
+                           Watermark="Notizen zum Wareneingang (optional)..."
+                           CornerRadius="8"
+                           Padding="12,10"
+                           Height="80"
+                           AcceptsReturn="True"
+                           TextWrapping="Wrap"/>
+                </StackPanel>
+                
+                <!-- Row 5: Action Buttons (spans both columns) -->
+                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" 
+                           Orientation="Horizontal" 
+                           Spacing="12" 
+                           HorizontalAlignment="Center"
+                           Margin="0,16,0,0">
+                  
+                  <Button Content="💾 Speichern" 
+                          Command="{Binding SaveGoodsReceiptCommand}"
+                          IsEnabled="{Binding !IsSaving}"
+                          Padding="24,12"
+                          CornerRadius="8"
+                          FontSize="16"
+                          FontWeight="SemiBold"
+                          Background="{DynamicResource AccentFillColorDefaultBrush}"
+                          Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                          MinWidth="140"/>
+                  
+                  <Button Content="💾➕ Speichern und Nächster" 
+                          Command="{Binding SaveAndNewGoodsReceiptCommand}"
+                          IsEnabled="{Binding !IsSaving}"
+                          Padding="24,12"
+                          CornerRadius="8"
+                          FontSize="16"
+                          FontWeight="SemiBold"
+                          Background="{DynamicResource SystemFillColorSuccessBrush}"
+                          Foreground="White"
+                          MinWidth="200"
+                          ToolTip.Tip="Speichert den aktuellen Wareneingang und bereitet das Formular für den nächsten vor"/>
+                  
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Quick Guide Card -->
+          <Border Background="{DynamicResource LayerFillColorAltBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="12">
+              
+              <TextBlock Text="💡 Schnell-Anleitung" 
+                         FontSize="16" 
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+              
+              <TextBlock TextWrapping="Wrap" 
+                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                         LineHeight="1.4">
+                <Run Text="• Wählen Sie zuerst das Lager aus, in das die Waren eingelagert werden sollen."/>
+                <LineBreak/>
+                <Run Text="• Suchen Sie das Produkt über die Produktauswahl (Sie können tippen um zu suchen)."/>
+                <LineBreak/>
+                <Run Text="• Geben Sie die Menge ein und optional den Lieferanten."/>
+                <LineBreak/>
+                <Run Text="• Verwenden Sie 'Speichern und Nächster' für schnelle Mehrfacherfassung."/>
+              </TextBlock>
+              
+            </StackPanel>
+          </Border>
+          
+        </StackPanel>
+      </ScrollViewer>
+      
+    </Grid>
+    
+    <!-- Footer with saving indicator -->
+    <Border Grid.Row="2" 
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Padding="24,12"
+            IsVisible="{Binding IsSaving}">
+      
+      <StackPanel Orientation="Horizontal" 
+                  Spacing="12" 
+                  HorizontalAlignment="Center">
+        <ProgressBar IsIndeterminate="True" Width="120" Height="6"/>
+        <TextBlock Text="Wareneingang wird gespeichert..." 
+                   VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+      </StackPanel>
+      
+    </Border>
+    
+  </Grid>
+
+</UserControl>

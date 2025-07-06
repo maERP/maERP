@@ -16,15 +16,13 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
     public async Task<SalesChannel> GetDetails(int id)
     {
         var salesChannel = await Context.SalesChannel
-            .Include(s => s.WarehouseId)
+            .Include(s => s.Warehouses)
             .FirstOrDefaultAsync(s => s.Id == id);
 
         if (salesChannel == null)
         {
             throw new NotFoundException("SalesChannel not found", id);
         }
-        
-        salesChannel.WarehouseId = salesChannel.WarehouseId;
 
         return salesChannel;
     }
@@ -40,32 +38,4 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
         return await Context.SalesChannel
             .AnyAsync(s => s.Name == salesChannel.Name && s.Id != id) ? false : true;
     }
-
-    /*
-    public async Task<SalesChannelDetailDto> AddWithDetailsAsync(SalesChannelCreateDto salesChannelCreateDto)
-    {
-        var salesChannel = _mapper.Map<SalesChannel>(salesChannelCreateDto);
-        salesChannel.Warehouse = await _context.Warehouse.FirstOrDefaultAsync(w => w.Id == salesChannelCreateDto.WarehouseId);
-
-        _context.Add(salesChannel);
-        await _context.SaveChangesAsync();
-        var salesChannelDetailDto = _mapper.Map<SalesChannelDetailDto>(salesChannel);
-
-        return salesChannelDetailDto;
-    }
-
-    public async Task UpdateWithDetailsAsync(int id, SalesChannelUpdateDto salesChannelUpdateDto)
-    {
-        if (!await Exists(id))
-        {
-            throw new NotFoundException("SalesChannel not found", id);
-        }
-
-        var salesChannel = _mapper.Map<SalesChannel>(salesChannelUpdateDto);
-        salesChannel.Warehouse = await _context.Warehouse.FirstOrDefaultAsync(w => w.Id == salesChannelUpdateDto.WarehouseId);
-
-        _context.Update(salesChannel);
-        await _context.SaveChangesAsync();
-    }
-    */
 }
