@@ -72,7 +72,16 @@ public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Pro
                 new() {
                     Id = 4,
                     Name = "SalesChannel 4",
-                    WarehouseId = 1
+                    Warehouses = new List<Warehouse> {
+                        new() {
+                            Id = 3,
+                            Name = "Warehouse 3"
+                        },
+                        new() {
+                            Id = 4,
+                            Name = "Warehouse 4"
+                        }
+                    }
                 }
         });
 
@@ -104,7 +113,16 @@ public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Pro
                     ExportProducts = false,
                     ExportCustomers = false,
                     ExportOrders = false,
-                    WarehouseId = 1
+                    Warehouses = new List<Warehouse> {
+                        new() {
+                            Id = 5,
+                            Name = "Warehouse 5"
+                        },
+                        new() {
+                            Id = 6,
+                            Name = "Warehouse 6"
+                        }
+                    }
                 }
         });
 
@@ -120,7 +138,7 @@ public class SalesChannelCrudTest : IClassFixture<MaErpWebApplicationFactory<Pro
             ExportProducts = false,
             ExportCustomers = false,
             ExportOrders = false,
-            WarehouseId = 1
+            WarehouseIds = new List<int> { 1, 2 },
         };
 
         var httpResponseMessage = await httpClient.PutAsJsonAsync(url, saleschannel);

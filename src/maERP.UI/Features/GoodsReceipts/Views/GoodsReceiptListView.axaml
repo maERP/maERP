@@ -183,12 +183,6 @@
                    Text="{Binding DisplayPageNumber, StringFormat=Seite \{0\} von \{1\}}"
                    VerticalAlignment="Center"
                    Foreground="{DynamicResource TextFillColorSecondaryBrush}">
-          <TextBlock.Text>
-            <MultiBinding StringFormat="Seite {0} von {1}">
-              <Binding Path="DisplayPageNumber"/>
-              <Binding Path="TotalPages"/>
-            </MultiBinding>
-          </TextBlock.Text>
         </TextBlock>
         
         <!-- Center - Navigation -->
