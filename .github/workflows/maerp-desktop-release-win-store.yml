@@ -51,7 +51,6 @@ jobs:
           --runtime win-x64 `
           --self-contained true `
           --output ./publish/msix `
-          -p:PublishProfile=win-x64 `
           -p:PublishSingleFile=false `
           -p:Version=${{ steps.version.outputs.VERSION }} `
           -p:AssemblyVersion=${{ steps.version.outputs.VERSION }} `
