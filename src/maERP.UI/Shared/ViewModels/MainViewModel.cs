@@ -149,6 +149,9 @@ public partial class MainViewModel : ViewModelBase
         if (_dashboardViewModel == null)
         {
             _dashboardViewModel = _serviceProvider.GetRequiredService<DashboardViewModel>();
+            _dashboardViewModel.NavigateToCreateOrder = NavigateToCreateOrder;
+            _dashboardViewModel.NavigateToCreateCustomer = NavigateToCreateCustomer;
+            _dashboardViewModel.NavigateToMenuItem = NavigateToMenuItem;
         }
         return Task.FromResult(_dashboardViewModel);
     }

@@ -107,19 +107,23 @@
                   Padding="16,8" 
                   CornerRadius="{DynamicResource CornerRadiusSmall}"
                   Background="{DynamicResource AccentFillColorDefaultBrush}"
-                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                  Command="{Binding CreateOrderCommand}"/>
           
           <Button Content="Kunde hinzufügen" 
                   Padding="16,8" 
-                  CornerRadius="{DynamicResource CornerRadiusSmall}"/>
+                  CornerRadius="{DynamicResource CornerRadiusSmall}"
+                  Command="{Binding CreateCustomerCommand}"/>
           
           <Button Content="Rechnung erstellen" 
                   Padding="16,8" 
-                  CornerRadius="{DynamicResource CornerRadiusSmall}"/>
+                  CornerRadius="{DynamicResource CornerRadiusSmall}"
+                  Command="{Binding ManageInvoicesCommand}"/>
           
           <Button Content="Lager verwalten" 
                   Padding="16,8" 
-                  CornerRadius="{DynamicResource CornerRadiusSmall}"/>
+                  CornerRadius="{DynamicResource CornerRadiusSmall}"
+                  Command="{Binding ManageWarehousesCommand}"/>
           
         </StackPanel>
       </StackPanel>
