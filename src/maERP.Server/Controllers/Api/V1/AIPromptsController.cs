@@ -6,7 +6,7 @@ using maERP.Application.Features.AiPrompt.Queries.AiPromptDetail;
 using maERP.Application.Features.AiPrompt.Queries.AiPromptList;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

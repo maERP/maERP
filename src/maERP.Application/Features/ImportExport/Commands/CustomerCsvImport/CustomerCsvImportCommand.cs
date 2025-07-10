@@ -1,5 +1,5 @@
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Http;
 
 namespace maERP.Application.Features.ImportExport.Commands.CustomerCsvImport;

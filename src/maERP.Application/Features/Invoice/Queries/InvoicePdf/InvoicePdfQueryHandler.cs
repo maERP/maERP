@@ -1,4 +1,4 @@
-using MediatR;
+using maERP.Application.Mediator;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Infrastructure;
 using maERP.Domain.Wrapper;

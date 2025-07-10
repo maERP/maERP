@@ -6,7 +6,7 @@ using maERP.Application.Features.TaxClass.Queries.TaxClassDetail;
 using maERP.Application.Features.TaxClass.Queries.TaxClassList;
 using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -6,7 +6,7 @@ using maERP.Application.Features.Customer.Queries.CustomerDetail;
 using maERP.Application.Features.Customer.Queries.CustomerList;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -6,7 +6,7 @@ using maERP.Application.Features.AiModel.Queries.AiModelDetail;
 using maERP.Application.Features.AiModel.Queries.AiModelList;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

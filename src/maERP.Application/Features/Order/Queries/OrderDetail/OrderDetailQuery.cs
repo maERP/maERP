@@ -1,6 +1,6 @@
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Order.Queries.OrderDetail;
 

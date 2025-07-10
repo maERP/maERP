@@ -7,7 +7,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.ImportExport.Queries.CustomerCsvExport;

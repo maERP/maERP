@@ -3,7 +3,7 @@ using maERP.Application.Extensions;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Identity;
 using System.Linq.Dynamic.Core;
 

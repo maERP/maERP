@@ -6,7 +6,7 @@ using maERP.Application.Features.Warehouse.Queries.WarehouseDetail;
 using maERP.Application.Features.Warehouse.Queries.WarehouseList;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

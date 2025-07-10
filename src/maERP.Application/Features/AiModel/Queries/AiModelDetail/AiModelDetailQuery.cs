@@ -1,6 +1,6 @@
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.AiModel.Queries.AiModelDetail;
 

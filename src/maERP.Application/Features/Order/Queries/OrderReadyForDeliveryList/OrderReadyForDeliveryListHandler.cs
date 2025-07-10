@@ -5,7 +5,7 @@ using maERP.Application.Extensions;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Order.Queries.OrderReadyForDeliveryList;
 

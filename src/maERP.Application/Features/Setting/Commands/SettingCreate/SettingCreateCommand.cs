@@ -1,6 +1,6 @@
 using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Setting.Commands.SettingCreate;
 

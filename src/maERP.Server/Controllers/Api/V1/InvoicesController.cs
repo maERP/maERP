@@ -7,7 +7,7 @@ using maERP.Application.Features.Invoice.Queries.InvoiceList;
 using maERP.Application.Features.Invoice.Queries.InvoicePdf;
 using maERP.Domain.Dtos.Invoice;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

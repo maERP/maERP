@@ -1,13 +1,13 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Customer.Commands.CustomerCreate;
 
 /// <summary>
 /// Handler for processing customer creation commands.
-/// Implements IRequestHandler from MediatR to handle CustomerCreateCommand requests
+/// Implements IRequestHandler from custom mediator to handle CustomerCreateCommand requests
 /// and return the ID of the newly created customer wrapped in a Result.
 /// </summary>
 public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Result<int>>

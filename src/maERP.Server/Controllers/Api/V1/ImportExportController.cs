@@ -2,7 +2,7 @@ using Asp.Versioning;
 using maERP.Application.Features.ImportExport.Commands.CustomerCsvImport;
 using maERP.Application.Features.ImportExport.Queries.CustomerCsvExport;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -3,7 +3,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Dtos.CustomerAddress;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Customer.Queries.CustomerDetail;
 

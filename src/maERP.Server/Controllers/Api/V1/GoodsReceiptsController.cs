@@ -4,7 +4,7 @@ using maERP.Application.Features.GoodsReceipt.Queries.GoodsReceiptDetail;
 using maERP.Application.Features.GoodsReceipt.Queries.GoodsReceiptList;
 using maERP.Domain.Dtos.GoodsReceipt;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

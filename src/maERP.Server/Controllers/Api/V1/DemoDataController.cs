@@ -3,7 +3,7 @@ using maERP.Application.Features.DemoData.Commands.AllDemoData;
 using maERP.Application.Features.DemoData.Commands.AiDemoData;
 using maERP.Application.Features.DemoData.Commands.ClearAllData;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

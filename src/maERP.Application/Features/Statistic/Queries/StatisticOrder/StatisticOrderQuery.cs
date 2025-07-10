@@ -1,6 +1,6 @@
 ﻿using maERP.Domain.Dtos.Statistic;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Statistic.Queries.StatisticOrder;
 

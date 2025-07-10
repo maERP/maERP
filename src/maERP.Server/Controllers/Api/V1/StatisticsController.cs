@@ -6,7 +6,7 @@ using maERP.Application.Features.Statistic.Queries.StatisticSales;
 using maERP.Application.Features.Statistic.Queries.StatisticMostSellingProducts;
 using maERP.Domain.Dtos.Statistic;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -9,7 +9,7 @@ using maERP.Application.Features.Order.Queries.OrderNotPaidList;
 using maERP.Application.Features.Order.Queries.OrderReadyForDeliveryList;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

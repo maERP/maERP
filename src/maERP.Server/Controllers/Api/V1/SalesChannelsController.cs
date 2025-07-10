@@ -6,7 +6,7 @@ using maERP.Application.Features.SalesChannel.Queries.SalesChannelDetail;
 using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

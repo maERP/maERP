@@ -2,7 +2,7 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Statistic;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.Statistic.Queries.StatisticSales;

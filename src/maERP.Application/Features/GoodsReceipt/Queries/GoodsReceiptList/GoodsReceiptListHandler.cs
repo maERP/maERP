@@ -5,7 +5,7 @@ using maERP.Application.Extensions;
 using maERP.Application.Specifications;
 using maERP.Domain.Dtos.GoodsReceipt;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.GoodsReceipt.Queries.GoodsReceiptList;
 

@@ -5,7 +5,7 @@ using maERP.Application.Extensions;
 using maERP.Application.Specifications;
 using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.Setting.Queries.SettingList;

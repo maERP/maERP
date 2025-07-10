@@ -1,7 +1,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Application.Features.User.Commands.UserDelete;

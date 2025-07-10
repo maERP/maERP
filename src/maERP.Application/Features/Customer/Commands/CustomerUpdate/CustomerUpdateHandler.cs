@@ -1,7 +1,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
-using MediatR;
+using maERP.Application.Mediator;
 using maERP.Domain.Entities;
 
 namespace maERP.Application.Features.Customer.Commands.CustomerUpdate;
