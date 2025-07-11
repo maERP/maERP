@@ -22,7 +22,8 @@
       "Bash(dotnet format:*)",
       "Bash(sed:*)",
       "Bash(timeout:*)",
-      "Bash(gtimeout:*)"
+      "Bash(gtimeout:*)",
+      "Bash(dotnet run:*)"
     ],
     "deny": []
   }
