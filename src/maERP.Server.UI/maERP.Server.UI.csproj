@@ -6,6 +6,29 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        
+        <!-- MSIX Packaging Configuration -->
+        <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+        <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+        <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+        <AppxPackageSigningTimestampUrl>http://timestamp.digicert.com</AppxPackageSigningTimestampUrl>
+        <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+        <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+        <GenerateTestArtifacts>True</GenerateTestArtifacts>
+        <AppxBundle>Always</AppxBundle>
+        <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+        
+        <!-- Application Identity -->
+        <ApplicationDisplayName>maERP Server UI</ApplicationDisplayName>
+        <ApplicationDescription>maERP Server UI - Cross-platform ERP System</ApplicationDescription>
+        <ApplicationPublisher>maERP</ApplicationPublisher>
+        <ApplicationPublisherDisplayName>maERP</ApplicationPublisherDisplayName>
+        <ApplicationVersion>1.0.0.0</ApplicationVersion>
+        <ApplicationId>maERP.Server.UI</ApplicationId>
+        
+        <!-- Capabilities -->
+        <AppxPackageSigningKeyDigestAlgorithm>SHA256</AppxPackageSigningKeyDigestAlgorithm>
+        <AppxPackageSigningKeyFile>maERP.Server.UI_TemporaryKey.pfx</AppxPackageSigningKeyFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,5 +47,8 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
+        
+        <!-- MSIX Packaging Tools -->
+        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.2428" />
     </ItemGroup>
 </Project>
