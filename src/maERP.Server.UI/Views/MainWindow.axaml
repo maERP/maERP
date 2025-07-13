@@ -3,11 +3,11 @@
         xmlns:vm="using:maERP.Server.UI.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
         x:Class="maERP.Server.UI.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="maERP.Server.UI">
+        Title="maERP.Server">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,6 +15,63 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+	<TabControl Margin="20">
+		<!-- Server Tab -->
+		<TabItem Header="Server">
+			<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+				<TextBlock Text="{Binding ServerStatus}" />
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+					<TextBlock Text="Port:" VerticalAlignment="Center" />
+					<TextBox Text="{Binding ServerPort}" Width="80" IsEnabled="{Binding !IsServerRunning}" />
+				</StackPanel>
+				<Button Content="{Binding ServerButtonText}" Command="{Binding ToggleServerCommand}" />
+			</StackPanel>
+		</TabItem>
+		
+		<!-- Database Tab -->
+		<TabItem Header="Datenbank">
+			<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="15">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+					<TextBlock Text="Typ:" VerticalAlignment="Center" Width="80" />
+					<ComboBox ItemsSource="{Binding DatabaseProviders}" 
+							  SelectedItem="{Binding SelectedDatabaseProvider}" 
+							  Width="120" 
+							  IsEnabled="{Binding !IsServerRunning}" />
+				</StackPanel>
+				
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+					<TextBlock Text="Host:" VerticalAlignment="Center" Width="80" />
+					<TextBox Text="{Binding DatabaseHost}" Width="200" IsEnabled="{Binding !IsServerRunning}" />
+				</StackPanel>
+				
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+					<TextBlock Text="Port:" VerticalAlignment="Center" Width="80" />
+					<TextBox Text="{Binding DatabasePort}" Width="80" IsEnabled="{Binding !IsServerRunning}" />
+				</StackPanel>
+				
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+					<TextBlock Text="Benutzer:" VerticalAlignment="Center" Width="80" />
+					<TextBox Text="{Binding DatabaseUsername}" Width="200" IsEnabled="{Binding !IsServerRunning}" />
+				</StackPanel>
+				
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+					<TextBlock Text="Datenbank:" VerticalAlignment="Center" Width="80" />
+					<TextBox Text="{Binding DatabaseName}" Width="200" IsEnabled="{Binding !IsServerRunning}" />
+				</StackPanel>
+			</StackPanel>
+		</TabItem>
+		
+		<!-- Windows Service Tab -->
+		<TabItem Header="Windows-Service">
+			<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+				<TextBlock Text="Um maERP.Server automatisch mit Windows zu starten, kann dieser als Windows-Service installiert werden" 
+						   TextWrapping="Wrap" 
+						   MaxWidth="400" 
+						   TextAlignment="Center" />
+				<TextBlock Text="Status: Windows-Service nicht eingerichtet" />
+				<Button Content="Windows-Service einrichten" />
+			</StackPanel>
+		</TabItem>
+	</TabControl>
+	
 </Window>

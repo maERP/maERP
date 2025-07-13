@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net9.0</TargetFramework>
@@ -32,11 +32,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Models\"/>
-        <AvaloniaResource Include="Assets\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.2.1"/>
         <PackageReference Include="Avalonia.Desktop" Version="11.2.1"/>
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.1"/>
@@ -47,8 +42,26 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
-        
+
         <!-- MSIX Packaging Tools -->
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.2428" />
+    </ItemGroup>
+
+    <!-- Build maERP.Server before packaging -->
+    <Target Name="BuildServerBeforePackaging" BeforeTargets="Build">
+        <MSBuild Projects="$(MSBuildThisFileDirectory)..\maERP.Server\maERP.Server.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
+    </Target>
+    
+    <!-- Include maERP.Server binary in MSIX package -->
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)..\maERP.Server\bin\$(Configuration)\net9.0\**" Condition="Exists('$(MSBuildThisFileDirectory)..\maERP.Server\bin\$(Configuration)\net9.0\')" Link="maERP.Server\%(RecursiveDir)%(Filename)%(Extension)">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Pack>true</Pack>
+            <PackagePath>Server\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
 </Project>

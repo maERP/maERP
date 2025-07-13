@@ -23,7 +23,16 @@
       "Bash(sed:*)",
       "Bash(timeout:*)",
       "Bash(gtimeout:*)",
-      "Bash(dotnet run:*)"
+      "Bash(dotnet run:*)",
+      "Bash(dotnet nuget locals:*)",
+      "Bash(true)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet --info)",
+      "Bash(dotnet:*)",
+      "Bash(NUGET_FALLBACK_PACKAGES=\"\" dotnet build src/maERP.Server.UI/maERP.Server.UI.csproj --no-restore)",
+      "Bash(chmod:*)",
+      "Bash(./maERP.Server --version)",
+      "Bash(./maERP.Server --help)"
     ],
     "deny": []
   }

@@ -38,8 +38,22 @@ if ($CreateCertificate -or -not (Test-Path $CertificatePath)) {
     Write-Host "Certificate created: $CertificatePath" -ForegroundColor Green
 }
 
-# Projekt bauen
-Write-Host "Building project..." -ForegroundColor Yellow
+# maERP.Server zuerst bauen
+Write-Host "Building maERP.Server..." -ForegroundColor Yellow
+$ServerProjectPath = "$ProjectDir\..\maERP.Server\maERP.Server.csproj"
+if (Test-Path $ServerProjectPath) {
+    dotnet build $ServerProjectPath --configuration $Configuration
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "maERP.Server build failed!" -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "maERP.Server build completed successfully" -ForegroundColor Green
+} else {
+    Write-Host "Warning: maERP.Server project not found at $ServerProjectPath" -ForegroundColor Yellow
+}
+
+# UI-Projekt bauen
+Write-Host "Building maERP.Server.UI..." -ForegroundColor Yellow
 dotnet build $ProjectDir\$ProjectName.csproj --configuration $Configuration --platform $Platform
 
 if ($LASTEXITCODE -ne 0) {
