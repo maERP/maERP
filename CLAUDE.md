@@ -26,6 +26,7 @@ The codebase implements:
 - Repository pattern for data access
 - JWT authentication
 - No Automapper, using manual mapping instead
+- No MediatR, using manual Mediator instead
 - Avalonia with CommunityToolkit.MVVM for cross-platform UI
 - UI projects not using direct database acces, using REST-API instead
 

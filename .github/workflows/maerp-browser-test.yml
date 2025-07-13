@@ -4,7 +4,6 @@ on:
   push:
     branches-ignore: [ main ]
     paths:
-      - '.github/workflows/**'
       - 'src/maERP.Domain/**'
       - 'src/maERP.UI/**'
       - 'src/maERP.UI.Browser**'

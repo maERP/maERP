@@ -3,6 +3,9 @@ name: Release maERP.Desktop
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'src/maERP.UI.Desktop/**'
+      - 'src/maERP.UI/**'
   workflow_dispatch:
 
 jobs:
