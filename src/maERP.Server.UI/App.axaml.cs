@@ -40,10 +40,21 @@ public partial class App : Application
             // Create system tray icon
             CreateTrayIcon();
             
-            // Hide window on startup and show in tray
-            _mainWindow.WindowState = WindowState.Minimized;
-            _mainWindow.ShowInTaskbar = false;
-            _mainWindow.IsVisible = false;
+            // Platform-specific startup behavior
+            if (OperatingSystem.IsMacOS())
+            {
+                // On macOS, show the window normally since tray behavior is different
+                _mainWindow.WindowState = WindowState.Normal;
+                _mainWindow.ShowInTaskbar = true;
+                _mainWindow.IsVisible = true;
+            }
+            else
+            {
+                // On Windows/Linux, hide window on startup and show in tray
+                _mainWindow.WindowState = WindowState.Minimized;
+                _mainWindow.ShowInTaskbar = false;
+                _mainWindow.IsVisible = false;
+            }
         }
 
         base.OnFrameworkInitializationCompleted();
