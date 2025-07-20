@@ -23,7 +23,10 @@
       "Bash(sed:*)",
       "Bash(timeout:*)",
       "Bash(gtimeout:*)",
-      "Bash(dotnet run:*)"
+      "Bash(dotnet run:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(rm:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }
