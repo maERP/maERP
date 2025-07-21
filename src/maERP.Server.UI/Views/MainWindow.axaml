@@ -3,11 +3,13 @@
         xmlns:vm="using:maERP.Server.UI.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="520"
         x:Class="maERP.Server.UI.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="maERP.Server.UI">
+        Title="maERP.Server.UI"
+        MaxWidth="500"
+        MaxHeight="520">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,62 +17,202 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
+    <Window.Styles>
+        <Style Selector="TabItem">
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="0,0,2,0"/>
+        </Style>
+    </Window.Styles>
+
 	<TabControl Margin="20">
 		<!-- Server Tab -->
 		<TabItem Header="Server">
-			<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
-				<TextBlock Text="{Binding ServerStatus}" />
-				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
-					<TextBlock Text="Port:" VerticalAlignment="Center" />
-					<TextBox Text="{Binding ServerPort}" Width="80" IsEnabled="{Binding !IsServerRunning}" />
+			<Border Padding="10" Background="#FAFAFA" CornerRadius="8" Margin="8">
+				<StackPanel Spacing="24">
+					<!-- Status Section -->
+					<Border Background="White" CornerRadius="6" Padding="20" BoxShadow="0 2 8 0 #10000000">
+						<StackPanel Spacing="12">
+							<TextBlock Text="Server Status" FontWeight="SemiBold" Foreground="#2D2D2D"/>
+							<Border Background="#F0F8FF" CornerRadius="4" Padding="12,8" BorderBrush="#D0E7FF" BorderThickness="1">
+								<TextBlock Text="{Binding ServerStatus}" 
+								          Foreground="#0066CC"
+								          FontWeight="Medium"/>
+							</Border>
+							<Button Content="{Binding ServerButtonText}" 
+							        Command="{Binding ToggleServerCommand}"
+							        HorizontalAlignment="Left"
+							        Padding="24,10"
+							        CornerRadius="4"
+							        FontWeight="Medium"
+							        Background="#0078D4"
+							        Foreground="White"
+							        BorderThickness="0"/>
+						</StackPanel>
+					</Border>
+
+					<!-- Windows Service Section -->
+					<Border Background="White" CornerRadius="6" Padding="20" BoxShadow="0 2 8 0 #10000000"
+					        IsVisible="{Binding IsWindowsServiceSectionVisible}">
+						<StackPanel Spacing="12">
+							<TextBlock Text="Windows-Service" FontWeight="SemiBold" Foreground="#2D2D2D"/>
+							<TextBlock Text="Um maERP.Server automatisch mit Windows zu starten, kann dieser als Windows-Service installiert werden." 
+							          TextWrapping="Wrap" 
+							          Foreground="#5D5D5D"
+							          LineHeight="20"/>
+							<Border Background="{Binding ServiceStatusBackground}" 
+							        BorderBrush="{Binding ServiceStatusBorderBrush}" 
+							        CornerRadius="4" 
+							        Padding="12,8" 
+							        BorderThickness="1">
+								<TextBlock Text="{Binding ServiceStatus}" 
+								          Foreground="{Binding ServiceStatusForeground}"
+								          FontWeight="Medium"/>
+							</Border>
+							<Button Content="{Binding ServiceButtonText}" 
+							        Command="{Binding ToggleWindowsServiceCommand}"
+							        IsEnabled="{Binding !IsServerRunning}"
+							        HorizontalAlignment="Left"
+							        Padding="20,8"
+							        CornerRadius="4"
+							        FontWeight="Medium"
+							        Background="#6C757D"
+							        Foreground="White"
+							        BorderThickness="0"/>
+						</StackPanel>
+					</Border>
 				</StackPanel>
-				<Button Content="{Binding ServerButtonText}" Command="{Binding ToggleServerCommand}" />
-			</StackPanel>
+			</Border>
 		</TabItem>
 		
-		<!-- Database Tab -->
-		<TabItem Header="Datenbank">
-			<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="15">
-				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
-					<TextBlock Text="Typ:" VerticalAlignment="Center" Width="80" />
-					<ComboBox ItemsSource="{Binding DatabaseProviders}" 
-							  SelectedItem="{Binding SelectedDatabaseProvider}" 
-							  Width="120" 
-							  IsEnabled="{Binding !IsServerRunning}" />
-				</StackPanel>
-				
-				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
-					<TextBlock Text="Host:" VerticalAlignment="Center" Width="80" />
-					<TextBox Text="{Binding DatabaseHost}" Width="200" IsEnabled="{Binding !IsServerRunning}" />
-				</StackPanel>
-				
-				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
-					<TextBlock Text="Port:" VerticalAlignment="Center" Width="80" />
-					<TextBox Text="{Binding DatabasePort}" Width="80" IsEnabled="{Binding !IsServerRunning}" />
-				</StackPanel>
-				
-				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
-					<TextBlock Text="Benutzer:" VerticalAlignment="Center" Width="80" />
-					<TextBox Text="{Binding DatabaseUsername}" Width="200" IsEnabled="{Binding !IsServerRunning}" />
-				</StackPanel>
-				
-				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
-					<TextBlock Text="Datenbank:" VerticalAlignment="Center" Width="80" />
-					<TextBox Text="{Binding DatabaseName}" Width="200" IsEnabled="{Binding !IsServerRunning}" />
-				</StackPanel>
-			</StackPanel>
-		</TabItem>
-		
-		<!-- Windows Service Tab -->
-		<TabItem Header="Windows-Service">
-			<StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
-				<TextBlock Text="Um maERP.Server automatisch mit Windows zu starten, kann dieser als Windows-Service installiert werden" 
-						   TextWrapping="Wrap" 
-						   MaxWidth="400" 
-						   TextAlignment="Center" />
-				<TextBlock Text="Status: Windows-Service nicht eingerichtet" />
-				<Button Content="Windows-Service einrichten" />
-			</StackPanel>
+		<!-- Settings Tab -->
+		<TabItem Header="Einstellungen">
+			<ScrollViewer>
+				<Border Padding="24" Background="#FAFAFA" CornerRadius="8" Margin="8">
+					<StackPanel Spacing="24">
+					<!-- Server Configuration Section -->
+					<Border Background="White" CornerRadius="6" Padding="20" BoxShadow="0 2 8 0 #10000000">
+						<StackPanel Spacing="16">
+							<TextBlock Text="Server-Konfiguration" FontWeight="SemiBold" Foreground="#2D2D2D"/>
+							
+							<!-- Server Port -->
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="120"/>
+									<ColumnDefinition Width="16"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Text="Port:" VerticalAlignment="Center" FontWeight="Medium" Foreground="#4D4D4D"/>
+								<TextBox Grid.Column="2" 
+								         Text="{Binding ServerPort}" 
+								         IsEnabled="{Binding !IsServerRunning}"
+								         Width="100"
+								         HorizontalAlignment="Left"
+								         Padding="8,6"
+								         CornerRadius="4"
+								         BorderThickness="1"
+								         BorderBrush="#D1D1D1"/>
+							</Grid>
+
+							<TextBlock Text="Datenbank-Konfiguration" FontWeight="SemiBold" Foreground="#2D2D2D"/>
+							
+							<!-- Database Provider -->
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="120"/>
+									<ColumnDefinition Width="16"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Text="Typ:" VerticalAlignment="Center" FontWeight="Medium" Foreground="#4D4D4D"/>
+								<ComboBox Grid.Column="2" 
+								          ItemsSource="{Binding DatabaseProviders}" 
+								          SelectedItem="{Binding SelectedDatabaseProvider}" 
+								          IsEnabled="{Binding !IsServerRunning}"
+								          HorizontalAlignment="Left"
+								          Width="200"
+								          Padding="8,6"
+								          CornerRadius="4"
+								          BorderThickness="1"
+								          BorderBrush="#D1D1D1"/>
+							</Grid>
+							
+							<!-- Database Host -->
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="120"/>
+									<ColumnDefinition Width="16"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Text="Host:" VerticalAlignment="Center" FontWeight="Medium" Foreground="#4D4D4D"/>
+								<TextBox Grid.Column="2" 
+								         Text="{Binding DatabaseHost}" 
+								         IsEnabled="{Binding !IsServerRunning}"
+								         Width="200"
+								         HorizontalAlignment="Left"
+								         Padding="8,6"
+								         CornerRadius="4"
+								         BorderThickness="1"
+								         BorderBrush="#D1D1D1"/>
+							</Grid>
+							
+							<!-- Database Port -->
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="120"/>
+									<ColumnDefinition Width="16"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Text="Port:" VerticalAlignment="Center" FontWeight="Medium" Foreground="#4D4D4D"/>
+								<TextBox Grid.Column="2" 
+								         Text="{Binding DatabasePort}" 
+								         IsEnabled="{Binding !IsServerRunning}"
+								         Width="200"
+								         HorizontalAlignment="Left"
+								         Padding="8,6"
+								         CornerRadius="4"
+								         BorderThickness="1"
+								         BorderBrush="#D1D1D1"/>
+							</Grid>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="120"/>
+									<ColumnDefinition Width="16"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Text="Benutzer:" VerticalAlignment="Center" FontWeight="Medium" Foreground="#4D4D4D"/>
+								<TextBox Grid.Column="2" 
+								         Text="{Binding DatabaseUsername}" 
+								         IsEnabled="{Binding !IsServerRunning}"
+								         Width="200"
+								         HorizontalAlignment="Left"
+								         Padding="8,6"
+								         CornerRadius="4"
+								         BorderThickness="1"
+								         BorderBrush="#D1D1D1"/>
+							</Grid>
+							
+							<!-- Database Name -->
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="120"/>
+									<ColumnDefinition Width="16"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Text="Datenbank:" VerticalAlignment="Center" FontWeight="Medium" Foreground="#4D4D4D"/>
+								<TextBox Grid.Column="2" 
+								         Text="{Binding DatabaseName}" 
+								         IsEnabled="{Binding !IsServerRunning}"
+								         Width="200"
+								         HorizontalAlignment="Left"
+								         Padding="8,6"
+								         CornerRadius="4"
+								         BorderThickness="1"
+								         BorderBrush="#D1D1D1"/>
+							</Grid>
+						</StackPanel>
+					</Border>
+					</StackPanel>
+				</Border>
+			</ScrollViewer>
 		</TabItem>
 	</TabControl>
 	

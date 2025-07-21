@@ -6,6 +6,7 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <DefineConstants Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(DefineConstants);WINDOWS</DefineConstants>
         
         <!-- MSIX Packaging Configuration -->
         <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
@@ -47,6 +48,7 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.0" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
         
         <!-- MSIX Packaging Tools -->
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />

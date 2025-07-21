@@ -19,6 +19,26 @@ public static class ServerManager
         
         return "maERP.Server";
     }
+
+    private static string? FindSolutionDirectory(string startPath)
+    {
+        var directory = new DirectoryInfo(startPath);
+        
+        while (directory != null)
+        {
+            // Suche nach .sln Dateien oder src-Ordner
+            if (directory.GetFiles("*.sln").Length > 0 || 
+                (directory.GetDirectories("src").Length > 0 && 
+                 Directory.Exists(Path.Combine(directory.FullName, "src", "maERP.Server"))))
+            {
+                return directory.FullName;
+            }
+            
+            directory = directory.Parent;
+        }
+        
+        return null;
+    }
     
     /// <summary>
     /// Startet den maERP.Server als separaten Prozess
@@ -42,8 +62,27 @@ public static class ServerManager
                 
                 if (!File.Exists(serverPath))
                 {
-                    Console.WriteLine($"Server executable not found at: {serverPath}");
-                    return false;
+                    // Alternative: Suche nach Server im übergeordneten src-Verzeichnis
+                    var solutionDir = FindSolutionDirectory(appDirectory);
+                    if (solutionDir != null)
+                    {
+                        var serverProjectPath = Path.Combine(solutionDir, "src", "maERP.Server", "bin", "Debug", "net9.0", GetServerExecutableName());
+                        if (File.Exists(serverProjectPath))
+                        {
+                            serverPath = serverProjectPath;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Server executable not found at: {serverPath}");
+                            Console.WriteLine($"Also tried: {serverProjectPath}");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Server executable not found at: {serverPath}");
+                        return false;
+                    }
                 }
             }
             
