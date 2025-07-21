@@ -26,7 +26,8 @@
       "Bash(dotnet run:*)",
       "Bash(xcodebuild:*)",
       "Bash(rm:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "WebFetch(domain:docs.avaloniaui.net)"
     ],
     "deny": []
   }
