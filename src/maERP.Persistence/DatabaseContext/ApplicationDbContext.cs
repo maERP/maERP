@@ -2,6 +2,7 @@ using maERP.Domain.Entities;
 using maERP.Domain.Entities.Common;
 using maERP.Identity.Configurations;
 using maERP.Persistence.Configurations;
+using maERP.Persistence.Seeders;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
         modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
         modelBuilder.ApplyConfiguration(new GoodsReceiptConfiguration());
+        modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        modelBuilder.ApplyConfiguration(new InvoiceItemConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductSalesChannelConfiguration());
+        modelBuilder.ApplyConfiguration(new ShippingProviderRateConfiguration());
+        
+        modelBuilder.SeedSettings();
     }
 
     public DbSet<AiModel> AiModel { get; set; } = null!;

@@ -29,7 +29,7 @@ builder.Services.AddProblemDetails();
 builder.Logging.AddOpenTelemetry(logging => {
     logging.AddOtlpExporter(options =>
     {
-        options.Endpoint = new Uri("http://maerp.de:4317");
+        options.Endpoint = new Uri(builder.Configuration["Telemetry:Endpoint"] ?? "http://localhost:4317");
         options.Protocol = OtlpExportProtocol.Grpc;
     });
 });
@@ -82,6 +82,7 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingRepository, SettingRepository>();
+builder.Services.AddScoped<ISettingsService, maERP.Persistence.Services.SettingsService>();
 builder.Services.AddScoped<IAiModelRepository, AiModelRepository>();
 builder.Services.AddScoped<IAiPromptRepository, AiPromptRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();

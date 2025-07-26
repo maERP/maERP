@@ -7,7 +7,6 @@ using maERP.Domain.Dtos.Auth;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace maERP.Identity.Services;
@@ -20,11 +19,11 @@ public class AuthService : IAuthService
     
     public AuthService(
         UserManager<ApplicationUser> userManager,
-        IOptions<JwtSettings> jwtSettings,
+        JwtSettings jwtSettings,
         SignInManager<ApplicationUser> signInManager)
     {
         _userManager = userManager;
-        _jwtSettings = jwtSettings.Value;
+        _jwtSettings = jwtSettings;
         _signInManager = signInManager;
     }
     

@@ -23,6 +23,7 @@ public class Product : BaseEntity, IBaseEntity
     public decimal Depth { get; set; }
 
     public int TaxClassId { get; set; }
+    public Manufacturer? Manufacturer { get; set; }
     public TaxClass? TaxClass { get; set; }
 
     public ICollection<ProductSalesChannel>? ProductSalesChannels { get; set; } = [];

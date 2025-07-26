@@ -1,5 +1,6 @@
 ﻿using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Logging;
+using maERP.Application.Contracts.Persistence;
 using maERP.Application.Models.Email;
 using maERP.Infrastructure.Logging;
 using maERP.Infrastructure.PDF;
@@ -13,7 +14,13 @@ public static class InfrastructureServiceRegistration
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+        // Configure EmailSettings from database
+        services.AddSingleton<EmailSettings>(serviceProvider =>
+        {
+            var settingsService = serviceProvider.GetRequiredService<ISettingsService>();
+            return settingsService.GetEmailSettingsAsync().GetAwaiter().GetResult();
+        });
+        
         services.AddScoped<IEmailService, EmailService.EmailService>();
         services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
         

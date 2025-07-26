@@ -40,13 +40,9 @@ namespace maERP.Persistence.Repositories
             {
                 _logger.LogInformation("Adding {Count} missing settings", missingSettings.Count);
 
-                // Get next available ID
-                int nextId = existingSettings.Count > 0 ? existingSettings.Max(s => s.Id) + 1 : 1;
-
-                // Assign IDs to missing settings
+                // Don't assign IDs manually - let the database generate them
                 foreach (var setting in missingSettings)
                 {
-                    setting.Id = nextId++;
                     await _context.Setting.AddAsync(setting);
                 }
 
