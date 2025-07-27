@@ -16,6 +16,7 @@ using maERP.UI.Features.AI.ViewModels;
 using maERP.UI.Features.Administration.ViewModels;
 using maERP.UI.Features.ImportExport.ViewModels;
 using maERP.UI.Features.GoodsReceipts.ViewModels;
+using maERP.UI.Features.Manufacturer.ViewModels;
 
 namespace maERP.UI.Shared.ViewModels;
 
@@ -68,6 +69,9 @@ public partial class MainViewModel : ViewModelBase
     private ImportExportOverviewViewModel? _importExportOverviewViewModel;
     private GoodsReceiptListViewModel? _goodsReceiptListViewModel;
     private GoodsReceiptInputViewModel? _goodsReceiptInputViewModel;
+    private ManufacturerListViewModel? _manufacturerListViewModel;
+    private ManufacturerDetailViewModel? _manufacturerDetailViewModel;
+    private ManufacturerInputViewModel? _manufacturerInputViewModel;
 
     public MainViewModel(IAuthenticationService authenticationService,
                         LoginViewModel loginViewModel,
@@ -140,6 +144,7 @@ public partial class MainViewModel : ViewModelBase
             "Users" => await GetUserListWithRefreshAsync(),
             "ImportExport" => await GetImportExportOverviewViewModelAsync(),
             "GoodsReceipts" => await GetGoodsReceiptListWithRefreshAsync(),
+            "Manufacturers" => await GetManufacturerListWithRefreshAsync(),
             _ => await GetDashboardViewModelAsync()
         };
     }
@@ -810,6 +815,73 @@ public partial class MainViewModel : ViewModelBase
         await listViewModel.RefreshAsync();
         CurrentView = listViewModel;
         SelectedMenuItem = "GoodsReceipts";
+    }
+
+    private async Task<ManufacturerListViewModel> GetManufacturerListViewModelAsync()
+    {
+        if (_manufacturerListViewModel == null)
+        {
+            _manufacturerListViewModel = _serviceProvider.GetRequiredService<ManufacturerListViewModel>();
+            _manufacturerListViewModel.NavigateToManufacturerDetail = NavigateToManufacturerDetail;
+            _manufacturerListViewModel.NavigateToManufacturerCreate = NavigateToCreateManufacturer;
+            await _manufacturerListViewModel.InitializeAsync();
+        }
+        return _manufacturerListViewModel;
+    }
+
+    private async Task<ManufacturerListViewModel> GetManufacturerListWithRefreshAsync()
+    {
+        var listViewModel = await GetManufacturerListViewModelAsync();
+        await listViewModel.RefreshAsync();
+        return listViewModel;
+    }
+
+    public async Task NavigateToManufacturerDetail(int manufacturerId)
+    {
+        if (!IsAuthenticated) return;
+
+        _manufacturerDetailViewModel = _serviceProvider.GetRequiredService<ManufacturerDetailViewModel>();
+        _manufacturerDetailViewModel.GoBackAction = async () => await NavigateToManufacturerList();
+        _manufacturerDetailViewModel.NavigateToEditManufacturer = NavigateToEditManufacturer;
+        await _manufacturerDetailViewModel.InitializeAsync(manufacturerId);
+        
+        CurrentView = _manufacturerDetailViewModel;
+        SelectedMenuItem = "ManufacturerDetail";
+    }
+
+    [RelayCommand]
+    private async Task NavigateToManufacturerList()
+    {
+        var listViewModel = await GetManufacturerListViewModelAsync();
+        await listViewModel.RefreshAsync();
+        CurrentView = listViewModel;
+        SelectedMenuItem = "Manufacturers";
+    }
+
+    public async Task NavigateToCreateManufacturer()
+    {
+        if (!IsAuthenticated) return;
+
+        _manufacturerInputViewModel = _serviceProvider.GetRequiredService<ManufacturerInputViewModel>();
+        _manufacturerInputViewModel.GoBackAction = async () => await NavigateToManufacturerList();
+        _manufacturerInputViewModel.NavigateToManufacturerDetail = NavigateToManufacturerDetail;
+        await _manufacturerInputViewModel.InitializeAsync(0); // 0 for new manufacturer
+        
+        CurrentView = _manufacturerInputViewModel;
+        SelectedMenuItem = "ManufacturerInput";
+    }
+
+    public async Task NavigateToEditManufacturer(int manufacturerId)
+    {
+        if (!IsAuthenticated) return;
+
+        _manufacturerInputViewModel = _serviceProvider.GetRequiredService<ManufacturerInputViewModel>();
+        _manufacturerInputViewModel.GoBackAction = async () => await NavigateToManufacturerDetail(manufacturerId);
+        _manufacturerInputViewModel.NavigateToManufacturerDetail = NavigateToManufacturerDetail;
+        await _manufacturerInputViewModel.InitializeAsync(manufacturerId); // Load existing manufacturer
+        
+        CurrentView = _manufacturerInputViewModel;
+        SelectedMenuItem = "ManufacturerInput";
     }
 
     [RelayCommand]

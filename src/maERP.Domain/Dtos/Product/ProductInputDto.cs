@@ -44,5 +44,7 @@ public class ProductInputDto : IProductInputModel
 
     public int TaxClassId { get; set; } = new();
 
+    public int? ManufacturerId { get; set; }
+
     public List<int> ProductSalesChannel { get; set; } = new();
 }

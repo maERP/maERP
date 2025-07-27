@@ -172,6 +172,26 @@
             </Grid>
           </Border>
           
+          <!-- Manufacturer Section -->
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Padding="20"
+                  IsVisible="{Binding Product.Manufacturer, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <StackPanel Spacing="12">
+              <TextBlock Text="🏭 Hersteller" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                         Margin="0,0,0,4"/>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Name:" FontWeight="SemiBold" Width="140"/>
+                <TextBlock Text="{Binding Product.Manufacturer.Name}" TextWrapping="Wrap"/>
+              </StackPanel>
+            </StackPanel>
+          </Border>
+          
           <!-- Pricing Section -->
           <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
                   BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"

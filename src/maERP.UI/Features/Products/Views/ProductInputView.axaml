@@ -208,7 +208,7 @@
                          Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
               
               <!-- Pricing Fields -->
-              <Grid ColumnDefinitions="*,*,*" ColumnSpacing="20">
+              <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="20">
                 
                 <StackPanel Grid.Column="0" Spacing="4">
                   <TextBlock Text="Verkaufspreis *" FontWeight="SemiBold"/>
@@ -243,6 +243,19 @@
                             </MultiBinding>
                           </TextBlock.Text>
                         </TextBlock>
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="3" Spacing="4">
+                  <TextBlock Text="Hersteller" FontWeight="SemiBold"/>
+                  <ComboBox ItemsSource="{Binding AvailableManufacturers}"
+                            SelectedItem="{Binding SelectedManufacturer}"
+                            HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
                       </DataTemplate>
                     </ComboBox.ItemTemplate>
                   </ComboBox>

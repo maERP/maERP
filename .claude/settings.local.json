@@ -25,9 +25,8 @@
       "Bash(gtimeout:*)",
       "Bash(dotnet run:*)",
       "Bash(xcodebuild:*)",
-      "Bash(rm:*)",
       "Bash(mv:*)",
-      "WebFetch(domain:docs.avaloniaui.net)"
+      "WebFetch(domain:docs.avaloniaui.net)",
     ],
     "deny": []
   }

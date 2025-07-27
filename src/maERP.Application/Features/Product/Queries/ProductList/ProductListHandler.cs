@@ -4,6 +4,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
 using maERP.Application.Specifications;
 using maERP.Domain.Dtos.Product;
+using maERP.Domain.Dtos.Manufacturer;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 
@@ -59,7 +60,14 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
             Description = product.Description,
             Ean = product.Ean,
             Price = product.Price,
-            Msrp = product.Msrp
+            Msrp = product.Msrp,
+            Manufacturer = product.Manufacturer != null ? new ManufacturerListDto
+            {
+                Id = product.Manufacturer.Id,
+                Name = product.Manufacturer.Name,
+                City = product.Manufacturer.City,
+                Country = product.Manufacturer.Country
+            } : null
         };
     }
 }

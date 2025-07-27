@@ -1,0 +1,344 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="maERP.UI.Features.Manufacturer.Views.ManufacturerInputView">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    
+    <!-- Header -->
+    <Border Grid.Row="0" 
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Title -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="{Binding PageTitle}" 
+                     FontSize="28" 
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                     Margin="0,0,0,6"/>
+          <TextBlock Text="Hersteller bearbeiten oder erstellen" 
+                     FontSize="14" 
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+        </StackPanel>
+        
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <Button Content="❌ Abbrechen" 
+                  Command="{Binding CancelCommand}"
+                  Padding="12,8"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
+          <Button Content="💾 Speichern" 
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding !IsSaving}"
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+      
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}" 
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Hersteller wird geladen..." 
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+      
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
+              Background="#FFF3CD" 
+              BorderBrush="#D6B656" 
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="20"
+              Margin="20"
+              VerticalAlignment="Top">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+      
+      <!-- Form Content -->
+      <ScrollViewer IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48">
+        <StackPanel Spacing="24">
+          
+          <!-- Basic Information Section -->
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="🏭 Grundinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+              
+              <!-- Form Fields Grid -->
+              <Grid ColumnDefinitions="*,*" RowDefinitions="Auto" ColumnSpacing="20" RowSpacing="16">
+                
+                <!-- Name Field -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Herstellername *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Name}" 
+                           Watermark="Herstellername eingeben..."/>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Address Information Section -->
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="📍 Adressinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+              
+              <!-- Address Fields Grid -->
+              <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="20" RowSpacing="16">
+                
+                <!-- First Row: Street -->
+                <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Spacing="4">
+                  <TextBlock Text="Straße" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Street}" 
+                           Watermark="Straße eingeben..."/>
+                </StackPanel>
+                
+                <!-- Second Row: City, ZipCode -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Stadt" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding City}" 
+                           Watermark="Stadt eingeben..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="PLZ" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding ZipCode}" 
+                           Watermark="PLZ eingeben..."/>
+                </StackPanel>
+                
+                <!-- Third Row: State, Country -->
+                <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Bundesland" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding State}" 
+                           Watermark="Bundesland eingeben..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="Land" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Country}" 
+                           Watermark="Land eingeben..."/>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Contact Information Section -->
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="📞 Kontaktinformationen" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+              
+              <!-- Contact Fields Grid -->
+              <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="20" RowSpacing="16">
+                
+                <!-- First Row: Phone, Email -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Telefon" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Phone}" 
+                           Watermark="Telefonnummer eingeben..."/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="E-Mail" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Email}" 
+                           Watermark="E-Mail-Adresse eingeben..."/>
+                </StackPanel>
+                
+                <!-- Second Row: Website -->
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="4">
+                  <TextBlock Text="Website" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Website}" 
+                           Watermark="Website URL eingeben..."/>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+          <!-- Branding Section -->
+          <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              
+              <!-- Section Title -->
+              <TextBlock Text="🎨 Branding" 
+                         FontSize="18" 
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+              
+              <!-- Logo Fields -->
+              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="20">
+                
+                <!-- Logo URL Field -->
+                <StackPanel Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Logo URL" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Logo}" 
+                           Watermark="URL zum Hersteller-Logo eingeben..."/>
+                </StackPanel>
+                
+                <!-- Logo Preview -->
+                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Bottom">
+                  <TextBlock Text="Vorschau" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                  <Border CornerRadius="6" 
+                          Background="White"
+                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"
+                          Width="100"
+                          Height="60"
+                          HorizontalAlignment="Center">
+                    <Grid>
+                      <!-- Logo Image -->
+                      <Image Source="{Binding Logo}" 
+                             Stretch="Uniform"
+                             Margin="4"
+                             IsVisible="{Binding Logo, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                      
+                      <!-- Placeholder when no logo -->
+                      <StackPanel IsVisible="{Binding Logo, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center">
+                        <TextBlock Text="🏭" 
+                                   FontSize="24" 
+                                   HorizontalAlignment="Center"
+                                   Opacity="0.3"/>
+                        <TextBlock Text="Kein Logo" 
+                                   FontSize="8"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                   HorizontalAlignment="Center"
+                                   Opacity="0.5"/>
+                      </StackPanel>
+                    </Grid>
+                  </Border>
+                </StackPanel>
+                
+              </Grid>
+              
+            </StackPanel>
+          </Border>
+          
+        </StackPanel>
+      </ScrollViewer>
+      
+    </Grid>
+    
+    <!-- Footer with action buttons -->
+    <Border Grid.Row="2" 
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="20,16"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0">
+      
+      <Grid ColumnDefinitions="*,Auto">
+        
+        <!-- Save Status -->
+        <StackPanel Grid.Column="0" 
+                    Orientation="Horizontal" 
+                    Spacing="8" 
+                    VerticalAlignment="Center">
+          <ProgressBar IsIndeterminate="{Binding IsSaving}" 
+                       IsVisible="{Binding IsSaving}"
+                       Width="20" Height="20"/>
+          <TextBlock Text="Status: Bereit" 
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     IsVisible="{Binding !IsSaving}"/>
+          <TextBlock Text="Status: Wird gespeichert..." 
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     IsVisible="{Binding IsSaving}"/>
+        </StackPanel>
+        
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="1" 
+                    Orientation="Horizontal" 
+                    Spacing="8">
+          
+          <Button Content="❌ Abbrechen" 
+                  Command="{Binding CancelCommand}"
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
+          
+          <Button Content="💾 Speichern" 
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding !IsSaving}"
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+          
+        </StackPanel>
+        
+      </Grid>
+      
+    </Border>
+    
+  </Grid>
+
+</UserControl>

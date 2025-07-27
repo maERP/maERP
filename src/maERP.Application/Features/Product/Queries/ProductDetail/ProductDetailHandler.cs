@@ -1,6 +1,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.Product;
+using maERP.Domain.Dtos.Manufacturer;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 
@@ -83,6 +84,20 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
                 Height = product.Height,
                 Depth = product.Depth,
                 TaxClassId = product.TaxClassId,
+                Manufacturer = product.Manufacturer != null ? new ManufacturerDetailDto
+                {
+                    Id = product.Manufacturer.Id,
+                    Name = product.Manufacturer.Name,
+                    Street = product.Manufacturer.Street,
+                    City = product.Manufacturer.City,
+                    State = product.Manufacturer.State,
+                    Country = product.Manufacturer.Country,
+                    ZipCode = product.Manufacturer.ZipCode,
+                    Phone = product.Manufacturer.Phone,
+                    Email = product.Manufacturer.Email,
+                    Website = product.Manufacturer.Website,
+                    Logo = product.Manufacturer.Logo
+                } : null,
                 // Map related sales channels and stocks
                 ProductSalesChannel = product.ProductSalesChannels?.Select(psc => psc.Id).ToList() ?? new List<int>(),
                 ProductStocks = product.ProductStocks.Select(ps => ps.Id).ToList()

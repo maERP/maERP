@@ -93,6 +93,7 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductSalesChannelRepository, ProductSalesChannelRepository>();
 builder.Services.AddScoped<ISalesChannelRepository, SalesChannelRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<IManufacturerRepository, ManufacturerRepository>();
 builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGoodsReceiptRepository, GoodsReceiptRepository>();

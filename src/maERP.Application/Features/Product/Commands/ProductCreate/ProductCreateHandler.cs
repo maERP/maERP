@@ -84,7 +84,8 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
                 Width = request.Width,
                 Height = request.Height,
                 Depth = request.Depth,
-                TaxClassId = request.TaxClassId
+                TaxClassId = request.TaxClassId,
+                ManufacturerId = request.ManufacturerId
             };
 
             // Add the new product to the database

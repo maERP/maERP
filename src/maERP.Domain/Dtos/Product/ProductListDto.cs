@@ -1,4 +1,6 @@
-﻿namespace maERP.Domain.Dtos.Product;
+using maERP.Domain.Dtos.Manufacturer;
+
+namespace maERP.Domain.Dtos.Product;
 
 public class ProductListDto
 {
@@ -9,4 +11,5 @@ public class ProductListDto
     public string Ean { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public decimal Msrp { get; set; }
+    public ManufacturerListDto? Manufacturer { get; set; }
 }

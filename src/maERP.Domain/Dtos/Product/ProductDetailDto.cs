@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using maERP.Domain.Dtos.Manufacturer;
 
 namespace maERP.Domain.Dtos.Product;
 
@@ -45,6 +46,8 @@ public class ProductDetailDto
     public decimal Depth { get; set; }
 
     public int TaxClassId { get; set; } = new();
+
+    public ManufacturerDetailDto? Manufacturer { get; set; }
 
     public List<int> ProductSalesChannel { get; set; } = new();
     

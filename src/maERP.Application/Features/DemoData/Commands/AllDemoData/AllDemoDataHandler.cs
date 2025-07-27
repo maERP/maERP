@@ -14,13 +14,15 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
     private readonly ICustomerRepository _customerRepository;
     private readonly IOrderRepository _orderRepository;
     private readonly ITaxClassRepository _taxClassRepository;
+    private readonly IManufacturerRepository _manufacturerRepository;
     public AllDemoDataHandler(
         IAppLogger<AllDemoDataHandler> logger,
         IWarehouseRepository warehouseRepository,
         IProductRepository productRepository,
         ICustomerRepository customerRepository,
         IOrderRepository orderRepository,
-        ITaxClassRepository taxClassRepository)
+        ITaxClassRepository taxClassRepository,
+        IManufacturerRepository manufacturerRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
@@ -28,6 +30,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
+        _manufacturerRepository = manufacturerRepository ?? throw new ArgumentNullException(nameof(manufacturerRepository));
     }
 
     public async Task<Result<string>> Handle(AllDemoDataCommand request, CancellationToken cancellationToken)
@@ -63,8 +66,16 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             }
             createdItems.Add($"{customers.Count} customers");
 
+            // Create Manufacturers
+            var manufacturers = GetDemoManufacturers();
+            foreach (var manufacturer in manufacturers)
+            {
+                await _manufacturerRepository.CreateAsync(manufacturer);
+            }
+            createdItems.Add($"{manufacturers.Count} manufacturers");
+
             // Create 20 Products
-            var products = GetDemoProducts(taxClasses);
+            var products = GetDemoProducts(taxClasses, manufacturers);
             foreach (var product in products)
             {
                 await _productRepository.CreateAsync(product);
@@ -246,34 +257,36 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
         };
     }
 
-    private List<Domain.Entities.Product> GetDemoProducts(List<Domain.Entities.TaxClass> taxClasses)
+    private List<Domain.Entities.Product> GetDemoProducts(List<Domain.Entities.TaxClass> taxClasses, List<Domain.Entities.Manufacturer> manufacturers)
     {
         var standardTaxId = taxClasses.First(t => t.TaxRate == 19.0).Id; // Standard VAT
         var reducedTaxId = taxClasses.First(t => t.TaxRate == 7.0).Id;   // Reduced VAT
         var zeroTaxId = taxClasses.First(t => t.TaxRate == 0.0).Id;      // Tax-free
+        
+        var random = new Random(42); // Fixed seed for consistent demo data
 
         return new List<Domain.Entities.Product>
         {
-            new() { Sku = "LAPTOP-001", Name = "Business Laptop Pro", Price = 1299.99m, Msrp = 1499.99m, Weight = 1.8m, TaxClassId = standardTaxId },
-            new() { Sku = "MOUSE-001", Name = "Wireless Mouse Ergonomic", Price = 29.99m, Msrp = 39.99m, Weight = 0.1m, TaxClassId = standardTaxId },
-            new() { Sku = "KEYBOARD-001", Name = "Mechanical Keyboard RGB", Price = 149.99m, Msrp = 199.99m, Weight = 1.2m, TaxClassId = standardTaxId },
-            new() { Sku = "MONITOR-001", Name = "4K Monitor 27 inch", Price = 399.99m, Msrp = 499.99m, Weight = 6.5m, TaxClassId = standardTaxId },
-            new() { Sku = "HEADSET-001", Name = "Noise Cancelling Headset", Price = 199.99m, Msrp = 249.99m, Weight = 0.3m, TaxClassId = standardTaxId },
-            new() { Sku = "CHAIR-001", Name = "Ergonomic Office Chair", Price = 299.99m, Msrp = 399.99m, Weight = 15.0m, TaxClassId = standardTaxId },
-            new() { Sku = "DESK-001", Name = "Standing Desk Electric", Price = 599.99m, Msrp = 799.99m, Weight = 45.0m, TaxClassId = standardTaxId },
-            new() { Sku = "TABLET-001", Name = "Business Tablet 10 inch", Price = 449.99m, Msrp = 549.99m, Weight = 0.5m, TaxClassId = standardTaxId },
-            new() { Sku = "PHONE-001", Name = "Smartphone Business Edition", Price = 799.99m, Msrp = 999.99m, Weight = 0.2m, TaxClassId = standardTaxId },
-            new() { Sku = "PRINTER-001", Name = "Laser Printer Color", Price = 249.99m, Msrp = 299.99m, Weight = 18.0m, TaxClassId = standardTaxId },
-            new() { Sku = "CABLE-001", Name = "USB-C Cable 2m", Price = 19.99m, Msrp = 29.99m, Weight = 0.1m, TaxClassId = standardTaxId },
-            new() { Sku = "SPEAKER-001", Name = "Bluetooth Speaker Portable", Price = 79.99m, Msrp = 99.99m, Weight = 0.8m, TaxClassId = standardTaxId },
-            new() { Sku = "CAMERA-001", Name = "Webcam HD 1080p", Price = 89.99m, Msrp = 119.99m, Weight = 0.3m, TaxClassId = standardTaxId },
-            new() { Sku = "HARDDRIVE-001", Name = "External SSD 1TB", Price = 149.99m, Msrp = 199.99m, Weight = 0.2m, TaxClassId = standardTaxId },
-            new() { Sku = "ROUTER-001", Name = "WiFi Router 6 Gigabit", Price = 199.99m, Msrp = 249.99m, Weight = 1.0m, TaxClassId = standardTaxId },
-            new() { Sku = "LIGHT-001", Name = "LED Desk Lamp Smart", Price = 59.99m, Msrp = 79.99m, Weight = 1.5m, TaxClassId = standardTaxId },
-            new() { Sku = "BAG-001", Name = "Laptop Bag Premium", Price = 89.99m, Msrp = 119.99m, Weight = 0.8m, TaxClassId = standardTaxId },
-            new() { Sku = "DOCK-001", Name = "USB-C Docking Station", Price = 179.99m, Msrp = 229.99m, Weight = 0.6m, TaxClassId = standardTaxId },
-            new() { Sku = "BOOK-001", Name = "Business Management Guide", Price = 29.99m, Msrp = 39.99m, Weight = 0.5m, TaxClassId = reducedTaxId },
-            new() { Sku = "SAMPLE-001", Name = "Free Product Sample", Price = 0.00m, Msrp = 0.00m, Weight = 0.1m, TaxClassId = zeroTaxId }
+            new() { Sku = "LAPTOP-001", Name = "Business Laptop Pro", Price = 1299.99m, Msrp = 1499.99m, Weight = 1.8m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "TechCorp Solutions").Id },
+            new() { Sku = "MOUSE-001", Name = "Wireless Mouse Ergonomic", Price = 29.99m, Msrp = 39.99m, Weight = 0.1m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Digital Devices Inc").Id },
+            new() { Sku = "KEYBOARD-001", Name = "Mechanical Keyboard RGB", Price = 149.99m, Msrp = 199.99m, Weight = 1.2m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Digital Devices Inc").Id },
+            new() { Sku = "MONITOR-001", Name = "4K Monitor 27 inch", Price = 399.99m, Msrp = 499.99m, Weight = 6.5m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Smart Electronics").Id },
+            new() { Sku = "HEADSET-001", Name = "Noise Cancelling Headset", Price = 199.99m, Msrp = 249.99m, Weight = 0.3m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Audio Pro GmbH").Id },
+            new() { Sku = "CHAIR-001", Name = "Ergonomic Office Chair", Price = 299.99m, Msrp = 399.99m, Weight = 15.0m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Office Comfort Ltd").Id },
+            new() { Sku = "DESK-001", Name = "Standing Desk Electric", Price = 599.99m, Msrp = 799.99m, Weight = 45.0m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Office Comfort Ltd").Id },
+            new() { Sku = "TABLET-001", Name = "Business Tablet 10 inch", Price = 449.99m, Msrp = 549.99m, Weight = 0.5m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "TechCorp Solutions").Id },
+            new() { Sku = "PHONE-001", Name = "Smartphone Business Edition", Price = 799.99m, Msrp = 999.99m, Weight = 0.2m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Smart Electronics").Id },
+            new() { Sku = "PRINTER-001", Name = "Laser Printer Color", Price = 249.99m, Msrp = 299.99m, Weight = 18.0m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Print Solutions AG").Id },
+            new() { Sku = "CABLE-001", Name = "USB-C Cable 2m", Price = 19.99m, Msrp = 29.99m, Weight = 0.1m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Digital Devices Inc").Id },
+            new() { Sku = "SPEAKER-001", Name = "Bluetooth Speaker Portable", Price = 79.99m, Msrp = 99.99m, Weight = 0.8m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Audio Pro GmbH").Id },
+            new() { Sku = "CAMERA-001", Name = "Webcam HD 1080p", Price = 89.99m, Msrp = 119.99m, Weight = 0.3m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Smart Electronics").Id },
+            new() { Sku = "HARDDRIVE-001", Name = "External SSD 1TB", Price = 149.99m, Msrp = 199.99m, Weight = 0.2m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "TechCorp Solutions").Id },
+            new() { Sku = "ROUTER-001", Name = "WiFi Router 6 Gigabit", Price = 199.99m, Msrp = 249.99m, Weight = 1.0m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Digital Devices Inc").Id },
+            new() { Sku = "LIGHT-001", Name = "LED Desk Lamp Smart", Price = 59.99m, Msrp = 79.99m, Weight = 1.5m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Office Comfort Ltd").Id },
+            new() { Sku = "BAG-001", Name = "Laptop Bag Premium", Price = 89.99m, Msrp = 119.99m, Weight = 0.8m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "ProCase Manufacturing").Id },
+            new() { Sku = "DOCK-001", Name = "USB-C Docking Station", Price = 179.99m, Msrp = 229.99m, Weight = 0.6m, TaxClassId = standardTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Digital Devices Inc").Id },
+            new() { Sku = "BOOK-001", Name = "Business Management Guide", Price = 29.99m, Msrp = 39.99m, Weight = 0.5m, TaxClassId = reducedTaxId, ManufacturerId = manufacturers.First(m => m.Name == "Knowledge Publishers").Id },
+            new() { Sku = "SAMPLE-001", Name = "Free Product Sample", Price = 0.00m, Msrp = 0.00m, Weight = 0.1m, TaxClassId = zeroTaxId, ManufacturerId = null }
         };
     }
 
@@ -344,6 +357,109 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             new() { TaxRate = 19.0 }, // Standard VAT in Germany
             new() { TaxRate = 7.0 },  // Reduced VAT in Germany
             new() { TaxRate = 0.0 }   // Tax-free
+        };
+    }
+
+    private List<Domain.Entities.Manufacturer> GetDemoManufacturers()
+    {
+        return new List<Domain.Entities.Manufacturer>
+        {
+            new()
+            {
+                Name = "TechCorp Solutions",
+                Street = "Technologiestraße 12",
+                City = "München",
+                State = "Bayern",
+                Country = "Germany",
+                ZipCode = "81829",
+                Phone = "+49 89 12345678",
+                Email = "info@techcorp-solutions.de",
+                Website = "www.techcorp-solutions.de"
+            },
+            new()
+            {
+                Name = "Digital Devices Inc",
+                Street = "Innovation Boulevard 25",
+                City = "Berlin",
+                State = "Berlin",
+                Country = "Germany",
+                ZipCode = "10115",
+                Phone = "+49 30 87654321",
+                Email = "contact@digitaldevices.de",
+                Website = "www.digitaldevices.com"
+            },
+            new()
+            {
+                Name = "Smart Electronics",
+                Street = "Elektronikweg 8",
+                City = "Hamburg",
+                State = "Hamburg",
+                Country = "Germany",
+                ZipCode = "22767",
+                Phone = "+49 40 55567890",
+                Email = "sales@smart-electronics.de",
+                Website = "www.smart-electronics.de"
+            },
+            new()
+            {
+                Name = "Audio Pro GmbH",
+                Street = "Soundstraße 15",
+                City = "Stuttgart",
+                State = "Baden-Württemberg",
+                Country = "Germany",
+                ZipCode = "70173",
+                Phone = "+49 711 33445566",
+                Email = "info@audiopro.de",
+                Website = "www.audiopro.de"
+            },
+            new()
+            {
+                Name = "Office Comfort Ltd",
+                Street = "Büromöbelstraße 42",
+                City = "Köln",
+                State = "Nordrhein-Westfalen",
+                Country = "Germany",
+                ZipCode = "50667",
+                Phone = "+49 221 77889900",
+                Email = "service@officecomfort.de",
+                Website = "www.officecomfort.de"
+            },
+            new()
+            {
+                Name = "Print Solutions AG",
+                Street = "Druckerstraße 99",
+                City = "Frankfurt am Main",
+                State = "Hessen",
+                Country = "Germany",
+                ZipCode = "60311",
+                Phone = "+49 69 11223344",
+                Email = "support@printsolutions.de",
+                Website = "www.printsolutions.de"
+            },
+            new()
+            {
+                Name = "ProCase Manufacturing",
+                Street = "Industrieweg 7",
+                City = "Düsseldorf",
+                State = "Nordrhein-Westfalen",
+                Country = "Germany",
+                ZipCode = "40217",
+                Phone = "+49 211 66778899",
+                Email = "orders@procase.de",
+                Website = "www.procase-manufacturing.de"
+            },
+            new()
+            {
+                Name = "Knowledge Publishers",
+                Street = "Verlagsstraße 3",
+                City = "Leipzig",
+                State = "Sachsen",
+                Country = "Germany",
+                ZipCode = "04109",
+                Phone = "+49 341 99887766",
+                Email = "info@knowledge-publishers.de",
+                Website = "www.knowledge-publishers.de"
+            }
         };
     }
 }

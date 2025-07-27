@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Dtos.SalesChannel;
+using maERP.Domain.Dtos.Manufacturer;
 using maERP.UI.Services;
 using maERP.UI.Shared.ViewModels;
 
@@ -93,6 +94,13 @@ public partial class ProductInputViewModel : ViewModelBase
     private TaxClassListDto? selectedTaxClass;
 
     [ObservableProperty]
+    private int? manufacturerId;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ManufacturerId))]
+    private ManufacturerListDto? selectedManufacturer;
+
+    [ObservableProperty]
     private ObservableCollection<int> productSalesChannelIds = new();
 
     [ObservableProperty]
@@ -110,6 +118,9 @@ public partial class ProductInputViewModel : ViewModelBase
     // Available options for dropdowns
     [ObservableProperty]
     private ObservableCollection<TaxClassListDto> availableTaxClasses = new();
+
+    [ObservableProperty]
+    private ObservableCollection<ManufacturerListDto> availableManufacturers = new();
 
     [ObservableProperty]
     private ObservableCollection<SalesChannelSelectionViewModel> availableSalesChannels = new();
@@ -180,9 +191,16 @@ public partial class ProductInputViewModel : ViewModelBase
                 Height = product.Height;
                 Depth = product.Depth;
                 TaxClassId = product.TaxClassId;
+                ManufacturerId = product.Manufacturer?.Id;
                 
                 // Set selected tax class
                 SelectedTaxClass = AvailableTaxClasses.FirstOrDefault(tc => tc.Id == product.TaxClassId);
+                
+                // Set selected manufacturer
+                if (product.Manufacturer != null)
+                {
+                    SelectedManufacturer = AvailableManufacturers.FirstOrDefault(m => m.Id == product.Manufacturer.Id);
+                }
                 
                 // Load sales channels
                 ProductSalesChannelIds.Clear();
@@ -247,6 +265,7 @@ public partial class ProductInputViewModel : ViewModelBase
                 Height = Height,
                 Depth = Depth,
                 TaxClassId = TaxClassId,
+                ManufacturerId = ManufacturerId,
                 ProductSalesChannel = ProductSalesChannelIds.ToList()
             };
 
@@ -327,6 +346,26 @@ public partial class ProductInputViewModel : ViewModelBase
                 }
             }
 
+            // Load manufacturers
+            var manufacturerResult = await _httpService.GetAsync<List<ManufacturerListDto>>("manufacturers");
+            if (manufacturerResult?.Succeeded == true && manufacturerResult.Data != null)
+            {
+                AvailableManufacturers.Clear();
+                // Add empty option for no manufacturer
+                AvailableManufacturers.Add(new ManufacturerListDto { Id = 0, Name = "--- Kein Hersteller ---", City = "", Country = "" });
+                
+                foreach (var manufacturer in manufacturerResult.Data)
+                {
+                    AvailableManufacturers.Add(manufacturer);
+                }
+                
+                // Set default to no manufacturer if none selected
+                if (ManufacturerId == null || ManufacturerId == 0)
+                {
+                    SelectedManufacturer = AvailableManufacturers.First();
+                }
+            }
+
             // Load sales channels
             var salesChannelResult = await _httpService.GetAsync<List<SalesChannelListDto>>("saleschannels");
             if (salesChannelResult?.Succeeded == true && salesChannelResult.Data != null)
@@ -363,6 +402,8 @@ public partial class ProductInputViewModel : ViewModelBase
         Depth = 0;
         TaxClassId = AvailableTaxClasses.Any() ? AvailableTaxClasses.First().Id : 0;
         SelectedTaxClass = AvailableTaxClasses.FirstOrDefault();
+        ManufacturerId = null;
+        SelectedManufacturer = AvailableManufacturers.FirstOrDefault();
         ProductSalesChannelIds.Clear();
         ErrorMessage = string.Empty;
         
@@ -386,6 +427,18 @@ public partial class ProductInputViewModel : ViewModelBase
         if (value != null)
         {
             TaxClassId = value.Id;
+        }
+    }
+
+    partial void OnSelectedManufacturerChanged(ManufacturerListDto? value)
+    {
+        if (value != null && value.Id > 0)
+        {
+            ManufacturerId = value.Id;
+        }
+        else
+        {
+            ManufacturerId = null;
         }
     }
 

@@ -27,6 +27,8 @@
              xmlns:adminViews="clr-namespace:maERP.UI.Features.Administration.Views"
              xmlns:goodsReceiptVm="clr-namespace:maERP.UI.Features.GoodsReceipts.ViewModels"
              xmlns:goodsReceiptViews="clr-namespace:maERP.UI.Features.GoodsReceipts.Views"
+             xmlns:manufacturerVm="clr-namespace:maERP.UI.Features.Manufacturer.ViewModels"
+             xmlns:manufacturerViews="clr-namespace:maERP.UI.Features.Manufacturer.Views"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="maERP.UI.Shared.Views.MainView"
              x:DataType="vm:MainViewModel"
@@ -150,6 +152,16 @@
             <Button Content="📦 Produkte"
                     Command="{Binding NavigateToMenuItemCommand}"
                     CommandParameter="Products"
+                    Classes="nav-button"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Padding="20,14"
+                    Margin="0,3"
+                    CornerRadius="8"/>
+            
+            <Button Content="🏭 Hersteller"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="Manufacturers"
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
@@ -328,6 +340,19 @@
             <DataTemplate DataType="{x:Type warehouseVm:WarehouseListViewModel}">
               <warehouseViews:WarehouseListView/>
             </DataTemplate>
+            
+            <!-- Manufacturers -->
+            <DataTemplate DataType="{x:Type manufacturerVm:ManufacturerListViewModel}">
+              <manufacturerViews:ManufacturerListView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type manufacturerVm:ManufacturerDetailViewModel}">
+              <manufacturerViews:ManufacturerDetailView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type manufacturerVm:ManufacturerInputViewModel}">
+              <manufacturerViews:ManufacturerInputView/>
+            </DataTemplate>
+            
+            <!-- Warehouses -->
             <DataTemplate DataType="{x:Type warehouseVm:WarehouseDetailViewModel}">
               <warehouseViews:WarehouseDetailView/>
             </DataTemplate>

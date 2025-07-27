@@ -17,4 +17,5 @@ public interface IProductInputModel
     decimal Height { get; }
     decimal Depth { get; }
     int TaxClassId { get; }
+    int? ManufacturerId { get; }
 }
