@@ -91,7 +91,7 @@ public class SettingsCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         await _webApplicationFactory.InitializeDbForTests(
             new List<Setting> {
                 new() {
-                    Id = 44444,
+                    Id = 4444,
                     Key = "TestKey4",
                     Value = "TestValue4"
                 }

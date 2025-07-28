@@ -5,14 +5,14 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 
-public class SalesChannelUpdateQuery : IRequestHandler<SalesChannelUpdateCommand, Result<int>>
+public class SalesChannelUpdateHandler : IRequestHandler<SalesChannelUpdateCommand, Result<int>>
 {
-    private readonly IAppLogger<SalesChannelUpdateQuery> _logger;
+    private readonly IAppLogger<SalesChannelUpdateHandler> _logger;
     private readonly ISalesChannelRepository _salesChannelRepository;
 
 
-    public SalesChannelUpdateQuery(
-        IAppLogger<SalesChannelUpdateQuery> logger,
+    public SalesChannelUpdateHandler(
+        IAppLogger<SalesChannelUpdateHandler> logger,
         ISalesChannelRepository salesChannelRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
