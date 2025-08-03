@@ -13,7 +13,7 @@
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
 		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.1" />
-		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.6" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.7" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\maERP.Domain\maERP.Domain.csproj" />
