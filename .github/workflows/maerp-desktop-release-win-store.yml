@@ -63,6 +63,23 @@ jobs:
         if (!(Get-Command "makeappx.exe" -ErrorAction SilentlyContinue)) {
           Write-Host "Installing Windows SDK..."
           choco install windows-sdk-10-version-2004-all
+          
+          # Add Windows SDK tools to PATH
+          $env:PATH += ";C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64"
+          $env:PATH += ";C:\Program Files (x86)\Windows Kits\10\bin\10.0.20348.0\x64"
+          $env:PATH += ";C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64"
+          
+          # Refresh environment variables
+          [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH, [System.EnvironmentVariableTarget]::Process)
+        }
+        
+        # Find makeappx.exe location
+        $makeappxPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "makeappx.exe" | Select-Object -First 1
+        if ($makeappxPath) {
+          $fullMakeappxPath = "C:\Program Files (x86)\Windows Kits\10\bin\$makeappxPath"
+          Write-Host "Found makeappx.exe at: $fullMakeappxPath"
+        } else {
+          $fullMakeappxPath = "makeappx.exe"
         }
         
         # Create package manifest
@@ -103,13 +120,22 @@ jobs:
         $manifestContent | Out-File -FilePath "./publish/msix/Package.appxmanifest" -Encoding UTF8
         
         # Create MSIX package
-        makeappx.exe pack /d "./publish/msix" /p "./maERP-${{ steps.version.outputs.VERSION }}.msix"
+        & $fullMakeappxPath pack /d "./publish/msix" /p "./maERP-${{ steps.version.outputs.VERSION }}.msix"
 
     - name: Sign MSIX Package
       shell: pwsh
       run: |
+        # Find signtool.exe location
+        $signtoolPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "signtool.exe" | Select-Object -First 1
+        if ($signtoolPath) {
+          $fullSigntoolPath = "C:\Program Files (x86)\Windows Kits\10\bin\$signtoolPath"
+          Write-Host "Found signtool.exe at: $fullSigntoolPath"
+        } else {
+          $fullSigntoolPath = "signtool.exe"
+        }
+        
         # Sign the package
-        signtool.exe sign /f "${{ github.workspace }}\certificate.pfx" /p "${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}" /fd SHA256 "./maERP-${{ steps.version.outputs.VERSION }}.msix"
+        & $fullSigntoolPath sign /f "${{ github.workspace }}\certificate.pfx" /p "${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}" /fd SHA256 "./maERP-${{ steps.version.outputs.VERSION }}.msix"
 
     - name: Install Store CLI
       shell: pwsh
