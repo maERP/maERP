@@ -3,6 +3,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using maERP.Application.Contracts.Services;
 
 namespace maERP.Application.Features.DemoData.Commands.AllDemoData;
 
@@ -15,6 +16,8 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
     private readonly IOrderRepository _orderRepository;
     private readonly ITaxClassRepository _taxClassRepository;
     private readonly IManufacturerRepository _manufacturerRepository;
+    private readonly ITenantContext _tenantContext;
+
     public AllDemoDataHandler(
         IAppLogger<AllDemoDataHandler> logger,
         IWarehouseRepository warehouseRepository,
@@ -22,7 +25,8 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
         ICustomerRepository customerRepository,
         IOrderRepository orderRepository,
         ITaxClassRepository taxClassRepository,
-        IManufacturerRepository manufacturerRepository)
+        IManufacturerRepository manufacturerRepository,
+        ITenantContext tenantContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
@@ -31,6 +35,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
         _manufacturerRepository = manufacturerRepository ?? throw new ArgumentNullException(nameof(manufacturerRepository));
+        _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
     public async Task<Result<string>> Handle(AllDemoDataCommand request, CancellationToken cancellationToken)
@@ -42,10 +47,14 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
 
         try
         {
+            // Set the tenant ID to 1 for creating demo data
+            _tenantContext.SetCurrentTenantId(1);
+            
             // Create Tax Classes (19%, 7%, 0%)
             var taxClasses = GetDemoTaxClasses();
             foreach (var taxClass in taxClasses)
             {
+                taxClass.TenantId = 1; // Explicitly set tenant ID
                 await _taxClassRepository.CreateAsync(taxClass);
             }
             createdItems.Add($"{taxClasses.Count} tax classes");
@@ -54,6 +63,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var warehouses = GetDemoWarehouses();
             foreach (var warehouse in warehouses)
             {
+                warehouse.TenantId = 1; // Explicitly set tenant ID
                 await _warehouseRepository.CreateAsync(warehouse);
             }
             createdItems.Add($"{warehouses.Count} warehouses");
@@ -62,6 +72,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var customers = GetDemoCustomers();
             foreach (var customer in customers)
             {
+                customer.TenantId = 1; // Explicitly set tenant ID
                 await _customerRepository.CreateAsync(customer);
             }
             createdItems.Add($"{customers.Count} customers");
@@ -70,6 +81,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var manufacturers = GetDemoManufacturers();
             foreach (var manufacturer in manufacturers)
             {
+                manufacturer.TenantId = 1; // Explicitly set tenant ID
                 await _manufacturerRepository.CreateAsync(manufacturer);
             }
             createdItems.Add($"{manufacturers.Count} manufacturers");
@@ -78,6 +90,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var products = GetDemoProducts(taxClasses, manufacturers);
             foreach (var product in products)
             {
+                product.TenantId = 1; // Explicitly set tenant ID
                 await _productRepository.CreateAsync(product);
             }
             createdItems.Add($"{products.Count} products");
@@ -86,15 +99,16 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var orders = GetDemoOrders(customers);
             foreach (var order in orders)
             {
+                order.TenantId = 1; // Explicitly set tenant ID
                 await _orderRepository.CreateAsync(order);
             }
             createdItems.Add($"{orders.Count} orders");
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
-            result.Data = $"Successfully created: {string.Join(", ", createdItems)}";
+            result.Data = $"Successfully created: {string.Join(", ", createdItems)} for tenant ID 1";
 
-            _logger.LogInformation("Successfully created all demo data: {Items}", string.Join(", ", createdItems));
+            _logger.LogInformation("Successfully created all demo data for tenant ID 1: {Items}", string.Join(", ", createdItems));
         }
         catch (Exception ex)
         {

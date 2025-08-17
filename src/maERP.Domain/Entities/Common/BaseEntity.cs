@@ -14,9 +14,31 @@ public class BaseEntity
 
     [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
     public DateTime DateModified { get; set; } = DateTime.UtcNow;
+
+    public int? TenantId { get; set; }
+}
+
+public class BaseEntityWithoutTenant
+{
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+
+    [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+    public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+
+    [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+    public DateTime DateModified { get; set; } = DateTime.UtcNow;
 }
 
 public interface IBaseEntity
+{
+    int Id { get; set; }
+    DateTime DateCreated { get; set; }
+    DateTime DateModified { get; set; }
+    int? TenantId { get; set; }
+}
+
+public interface IBaseEntityWithoutTenant
 {
     int Id { get; set; }
     DateTime DateCreated { get; set; }

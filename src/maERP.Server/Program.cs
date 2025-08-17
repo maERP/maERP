@@ -97,6 +97,7 @@ builder.Services.AddScoped<IManufacturerRepository, ManufacturerRepository>();
 builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGoodsReceiptRepository, GoodsReceiptRepository>();
+builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 
 // Register SettingsInitializer service
 builder.Services.AddTransient<SettingsInitializer>();
@@ -169,6 +170,7 @@ else
 }
 
 app.UseAuthentication(); // who are you?
+app.UseMiddleware<maERP.Server.Middleware.TenantMiddleware>(); // set tenant context
 app.UseAuthorization(); // what are you allowed to do?
 
 // Add health check endpoint

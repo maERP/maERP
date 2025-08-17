@@ -1,5 +1,6 @@
 ﻿using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
+using maERP.Application.Contracts.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.Tests;
@@ -13,7 +14,18 @@ public class ApplicationDbContextTests
         var dbOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
 
-        _applicationDbContext = new ApplicationDbContext(dbOptions);
+        var mockTenantContext = new TestTenantContext();
+
+        _applicationDbContext = new ApplicationDbContext(dbOptions, mockTenantContext);
+    }
+
+    private class TestTenantContext : ITenantContext
+    {
+        private int? _tenantId = null;
+
+        public int? GetCurrentTenantId() => _tenantId;
+        public void SetCurrentTenantId(int? tenantId) => _tenantId = tenantId;
+        public bool HasTenant() => _tenantId.HasValue;
     }
 
     [Fact]

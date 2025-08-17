@@ -1,6 +1,7 @@
-﻿using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Persistence;
 using maERP.Application.Exceptions;
 using maERP.Domain.Entities;
+using maERP.Persistence.DatabaseContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,10 +10,14 @@ namespace maERP.Persistence.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ApplicationDbContext _dbContext;
 
-    public UserRepository(UserManager<ApplicationUser> userManager)
+    public UserRepository(
+        UserManager<ApplicationUser> userManager,
+        ApplicationDbContext dbContext)
     {
         _userManager = userManager;
+        _dbContext = dbContext;
     }
 
     public async Task<List<ApplicationUser>> GetAllAsync()
@@ -75,5 +80,133 @@ public class UserRepository : IUserRepository
     {
         var entity = await GetByIdAsync(id);
         return entity != null;
+    }
+    
+    // New methods for managing user-tenant assignments
+    
+    public async Task AssignUserToTenantsAsync(string userId, IEnumerable<int> tenantIds, int? defaultTenantId = null)
+    {
+        // Validate the user exists
+        var user = await _userManager.FindByIdAsync(userId) 
+            ?? throw new NotFoundException("User not found", userId);
+
+        // Set default tenant if specified
+        if (defaultTenantId.HasValue)
+        {
+            user.DefaultTenantId = defaultTenantId;
+            await _userManager.UpdateAsync(user);
+        }
+
+        // Create user-tenant records for each tenant
+        foreach (var tenantId in tenantIds)
+        {
+            // Check if the assignment already exists
+            var existingAssignment = await _dbContext.UserTenant
+                .FirstOrDefaultAsync(ut => ut.UserId == userId && ut.TenantId == tenantId);
+                
+            if (existingAssignment == null)
+            {
+                // Create new assignment
+                var userTenant = new UserTenant
+                {
+                    UserId = userId,
+                    TenantId = tenantId,
+                    IsDefault = defaultTenantId.HasValue && tenantId == defaultTenantId.Value,
+                    DateCreated = DateTime.UtcNow,
+                    DateModified = DateTime.UtcNow
+                };
+                
+                await _dbContext.UserTenant.AddAsync(userTenant);
+            }
+            else if (defaultTenantId.HasValue && tenantId == defaultTenantId.Value && !existingAssignment.IsDefault)
+            {
+                // Update existing assignment to be default if needed
+                existingAssignment.IsDefault = true;
+                existingAssignment.DateModified = DateTime.UtcNow;
+                _dbContext.UserTenant.Update(existingAssignment);
+            }
+        }
+        
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdateUserTenantAssignmentsAsync(string userId, IEnumerable<int> tenantIds, int? defaultTenantId = null)
+    {
+        // Validate the user exists
+        var user = await _userManager.FindByIdAsync(userId)
+            ?? throw new NotFoundException("User not found", userId);
+
+        // Set default tenant if specified
+        if (defaultTenantId.HasValue)
+        {
+            user.DefaultTenantId = defaultTenantId;
+            await _userManager.UpdateAsync(user);
+        }
+
+        // Get current tenant assignments
+        var currentAssignments = await _dbContext.UserTenant
+            .Where(ut => ut.UserId == userId)
+            .ToListAsync();
+
+        // Remove assignments that are not in the new list
+        var tenantsToKeep = tenantIds.ToList();
+        var assignmentsToRemove = currentAssignments
+            .Where(a => !tenantsToKeep.Contains(a.TenantId))
+            .ToList();
+
+        foreach (var assignment in assignmentsToRemove)
+        {
+            _dbContext.UserTenant.Remove(assignment);
+        }
+
+        // Add new assignments
+        foreach (var tenantId in tenantsToKeep)
+        {
+            var existingAssignment = currentAssignments
+                .FirstOrDefault(a => a.TenantId == tenantId);
+                
+            if (existingAssignment == null)
+            {
+                // Create new assignment
+                var userTenant = new UserTenant
+                {
+                    UserId = userId,
+                    TenantId = tenantId,
+                    IsDefault = defaultTenantId.HasValue && tenantId == defaultTenantId.Value,
+                    DateCreated = DateTime.UtcNow,
+                    DateModified = DateTime.UtcNow
+                };
+                
+                await _dbContext.UserTenant.AddAsync(userTenant);
+            }
+            else if (defaultTenantId.HasValue && tenantId == defaultTenantId.Value && !existingAssignment.IsDefault)
+            {
+                // Update existing assignment to be default if needed
+                existingAssignment.IsDefault = true;
+                existingAssignment.DateModified = DateTime.UtcNow;
+            }
+            else if (defaultTenantId.HasValue && tenantId != defaultTenantId.Value && existingAssignment.IsDefault)
+            {
+                // Remove default flag if this is no longer the default
+                existingAssignment.IsDefault = false;
+                existingAssignment.DateModified = DateTime.UtcNow;
+            }
+        }
+        
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<List<UserTenant>> GetUserTenantAssignmentsAsync(string userId)
+    {
+        return await _dbContext.UserTenant
+            .Where(ut => ut.UserId == userId)
+            .Include(ut => ut.Tenant)
+            .ToListAsync();
+    }
+
+    public async Task<bool> IsUserAssignedToTenantAsync(string userId, int tenantId)
+    {
+        return await _dbContext.UserTenant
+            .AnyAsync(ut => ut.UserId == userId && ut.TenantId == tenantId);
     }
 }

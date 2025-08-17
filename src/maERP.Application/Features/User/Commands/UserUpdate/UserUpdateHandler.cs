@@ -1,7 +1,9 @@
 using maERP.Application.Contracts.Logging;
+using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using System.Linq;
 
 namespace maERP.Application.Features.User.Commands.UserUpdate;
 
@@ -16,15 +18,23 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<UserUpdateHandler> _logger;
+    
+    /// <summary>
+    /// Repository for user data operations
+    /// </summary>
+    private readonly IUserRepository _userRepository;
 
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
     /// <param name="logger">Logger for recording operations</param>
+    /// <param name="userRepository">Repository for user data access</param>
     public UserUpdateHandler(
-        IAppLogger<UserUpdateHandler> logger)
+        IAppLogger<UserUpdateHandler> logger,
+        IUserRepository userRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
 
     /// <summary>
@@ -59,24 +69,54 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
 
         try
         {
-            // Manual mapping from command to entity (instead of using AutoMapper)
-            var userToUpdate = new ApplicationUser
+            // First, check if user exists
+            var userExists = await _userRepository.Exists(request.Id);
+            if (!userExists)
             {
-                Id = request.Id,
-                UserName = request.Email,
-                Email = request.Email,
-                DateModified = DateTime.UtcNow
-            };
-
-            // TODO: Update the user in the database
-            // await _userRepository.UpdateAsync(userToUpdate);
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add($"User with ID {request.Id} not found.");
+                return result;
+            }
+            
+            // Get existing user
+            var existingUser = await _userRepository.GetByIdAsync(request.Id);
+            if (existingUser == null)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add($"User with ID {request.Id} not found.");
+                return result;
+            }
+            
+            // Update user properties
+            existingUser.Email = request.Email;
+            existingUser.UserName = request.Email;
+            existingUser.Firstname = request.Firstname;
+            existingUser.Lastname = request.Lastname;
+            existingUser.DefaultTenantId = request.DefaultTenantId;
+            existingUser.DateModified = DateTime.UtcNow;
+            
+            // Update the user in the database
+            await _userRepository.UpdateWithDetailsAsync(existingUser);
+            
+            // Update tenant assignments if provided
+            if (request.TenantIds != null && request.TenantIds.Any())
+            {
+                await _userRepository.UpdateUserTenantAssignmentsAsync(
+                    request.Id,
+                    request.TenantIds,
+                    request.DefaultTenantId);
+                    
+                _logger.LogInformation("Updated tenant assignments for user ID: {Id}", request.Id);
+            }
 
             // Set successful result with the updated user's ID
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
-            result.Data = userToUpdate.Id;
+            result.Data = existingUser.Id;
 
-            _logger.LogInformation("Successfully updated user with ID: {Id}", userToUpdate.Id);
+            _logger.LogInformation("Successfully updated user with ID: {Id}", existingUser.Id);
         }
         catch (Exception ex)
         {

@@ -3,6 +3,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using System.Linq;
 
 namespace maERP.Application.Features.User.Commands.UserCreate;
 
@@ -73,19 +74,47 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
             {
                 UserName = request.Email,
                 Email = request.Email,
+                Firstname = request.Firstname,
+                Lastname = request.Lastname,
+                DefaultTenantId = request.DefaultTenantId,
                 DateCreated = DateTime.UtcNow,
                 DateModified = DateTime.UtcNow
             };
 
             // Add the new user to the database with the provided password
-            await _userRepository.CreateAsync(userToCreate, request.Password);
+            var createResult = await _userRepository.CreateAsync(userToCreate, request.Password);
+            
+            // Check if user creation was successful
+            if (createResult.Any())
+            {
+                // Creation failed, return errors
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.AddRange(createResult.Select(e => e.Description));
+                return result;
+            }
+            
+            // Combine default tenant with additional tenants to assign all at once
+            var allTenantIds = new List<int> { request.DefaultTenantId };
+            if (request.AdditionalTenantIds != null && request.AdditionalTenantIds.Any())
+            {
+                // Add any additional tenants that aren't already included
+                allTenantIds.AddRange(request.AdditionalTenantIds.Where(id => id != request.DefaultTenantId));
+            }
+            
+            // Assign user to tenants
+            await _userRepository.AssignUserToTenantsAsync(
+                userToCreate.Id, 
+                allTenantIds, 
+                request.DefaultTenantId);
 
             // Set successful result with the new user's ID
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
             result.Data = userToCreate.Id;
 
-            _logger.LogInformation("Successfully created user with ID: {Id}", userToCreate.Id);
+            _logger.LogInformation("Successfully created user with ID: {Id} and assigned to {TenantCount} tenants", 
+                userToCreate.Id, allTenantIds.Count);
         }
         catch (Exception ex)
         {

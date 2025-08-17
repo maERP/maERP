@@ -97,7 +97,8 @@ public class AuthService : IAuthService
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? throw new InvalidOperationException()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email ?? throw new InvalidOperationException()),
-                new Claim("uid", user.Id)
+                new Claim("uid", user.Id),
+                new Claim("tenantId", user.DefaultTenantId?.ToString() ?? "0")
             }
             .Union(userClaims)
             .Union(roleClaims);

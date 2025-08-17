@@ -3,13 +3,15 @@ using maERP.Domain.Entities.Common;
 using maERP.Identity.Configurations;
 using maERP.Persistence.Configurations;
 using maERP.Persistence.Seeders;
+using maERP.Application.Contracts.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.DatabaseContext;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ITenantContext tenantContext) : IdentityDbContext<ApplicationUser>(options)
 {
+    private readonly ITenantContext _tenantContext = tenantContext;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -19,6 +21,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+        modelBuilder.ApplyConfiguration(new TenantConfiguration());
+        modelBuilder.ApplyConfiguration(new UserTenantConfiguration());
         modelBuilder.ApplyConfiguration(new CountryConfiguration());
         modelBuilder.ApplyConfiguration(new WarehouseConfiguration());
         modelBuilder.ApplyConfiguration(new ManufacturerConfiguration());
@@ -34,6 +38,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new ShippingProviderRateConfiguration());
         
         modelBuilder.SeedSettings();
+        
+        // Configure global query filters for multi-tenancy
+        ConfigureGlobalFilters(modelBuilder);
     }
 
     public DbSet<AiModel> AiModel { get; set; } = null!;
@@ -60,6 +67,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Warehouse> Warehouse { get; set; } = null!;
     public DbSet<Manufacturer> Manufacturer { get; set; } = null!;
     public DbSet<GoodsReceipt> GoodsReceipt { get; set; } = null!;
+    public DbSet<Tenant> Tenant { get; set; } = null!;
+    public DbSet<UserTenant> UserTenant { get; set; } = null!;
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -70,9 +79,50 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.DateCreated = DateTime.UtcNow;
+                
+                // Set TenantId for new entities if not already set
+                if (entry.Entity.TenantId == null && _tenantContext.HasTenant())
+                {
+                    entry.Entity.TenantId = _tenantContext.GetCurrentTenantId();
+                }
             }
         }
 
         return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void ConfigureGlobalFilters(ModelBuilder modelBuilder)
+    {
+        // Apply global query filter for all entities that inherit from BaseEntity
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                var method = typeof(ApplicationDbContext)
+                    .GetMethod(nameof(GetQueryFilterExpression), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                    ?.MakeGenericMethod(entityType.ClrType);
+
+                var filter = method?.Invoke(this, Array.Empty<object>());
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter((System.Linq.Expressions.LambdaExpression)filter!);
+            }
+        }
+        
+        // Special filter for UserTenant entity since it doesn't inherit from BaseEntity
+        modelBuilder.Entity<UserTenant>().HasQueryFilter(ut => 
+            _tenantContext.GetAssignedTenantIds().Contains(ut.TenantId) || 
+            ut.TenantId == _tenantContext.GetCurrentTenantId());
+    }
+
+    private System.Linq.Expressions.Expression<System.Func<T, bool>> GetQueryFilterExpression<T>()
+        where T : BaseEntity
+    {
+        // Data is accessible if:
+        // 1. The entity is tenant-agnostic (TenantId is null) OR
+        // 2. The entity's tenant matches the current active tenant OR
+        // 3. The entity's tenant is one of the assigned tenants for the current user
+        return entity => 
+            entity.TenantId == null || 
+            entity.TenantId == _tenantContext.GetCurrentTenantId() ||
+            (_tenantContext.GetAssignedTenantIds().Count > 0 && _tenantContext.GetAssignedTenantIds().Contains(entity.TenantId.Value));
     }
 }

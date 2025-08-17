@@ -3,6 +3,8 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace maERP.Application.Features.User.Queries.UserDetail;
 
@@ -63,6 +65,28 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                 _logger.LogWarning("User with ID {Id} not found", request.Id);
                 return result;
             }
+            
+            // Get user tenant assignments
+            var userTenantAssignments = await _userRepository.GetUserTenantAssignmentsAsync(request.Id);
+            var tenantAssignments = new List<UserTenantAssignmentDto>();
+            
+            // Map tenant assignments to DTOs
+            if (userTenantAssignments != null && userTenantAssignments.Any())
+            {
+                foreach (var assignment in userTenantAssignments)
+                {
+                    if (assignment.Tenant != null)
+                    {
+                        tenantAssignments.Add(new UserTenantAssignmentDto
+                        {
+                            TenantId = assignment.TenantId,
+                            TenantName = assignment.Tenant.Name,
+                            TenantCode = assignment.Tenant.TenantCode,
+                            IsDefault = assignment.IsDefault
+                        });
+                    }
+                }
+            }
 
             // Manual mapping from entity to DTO (instead of using AutoMapper)
             var data = new UserDetailDto
@@ -70,7 +94,9 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                 Id = user.Id,
                 Email = user.Email ?? string.Empty,
                 Firstname = user.Firstname,
-                Lastname = user.Lastname
+                Lastname = user.Lastname,
+                DefaultTenantId = user.DefaultTenantId,
+                TenantAssignments = tenantAssignments
             };
 
             // Set successful result with the user details

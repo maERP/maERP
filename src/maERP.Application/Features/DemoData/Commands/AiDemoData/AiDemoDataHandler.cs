@@ -3,6 +3,8 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using maERP.Application.Contracts.Identity;
+using maERP.Application.Contracts.Services;
 
 namespace maERP.Application.Features.DemoData.Commands.AiDemoData;
 
@@ -11,15 +13,18 @@ public class AiDemoDataHandler : IRequestHandler<AiDemoDataCommand, Result<strin
     private readonly IAppLogger<AiDemoDataHandler> _logger;
     private readonly IAiModelRepository _aiModelRepository;
     private readonly IAiPromptRepository _aiPromptRepository;
+    private readonly ITenantContext _tenantContext;
 
     public AiDemoDataHandler(
         IAppLogger<AiDemoDataHandler> logger,
         IAiModelRepository aiModelRepository,
-        IAiPromptRepository aiPromptRepository)
+        IAiPromptRepository aiPromptRepository,
+        ITenantContext tenantContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _aiModelRepository = aiModelRepository ?? throw new ArgumentNullException(nameof(aiModelRepository));
         _aiPromptRepository = aiPromptRepository ?? throw new ArgumentNullException(nameof(aiPromptRepository));
+        _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
     public async Task<Result<string>> Handle(AiDemoDataCommand request, CancellationToken cancellationToken)
@@ -31,10 +36,14 @@ public class AiDemoDataHandler : IRequestHandler<AiDemoDataCommand, Result<strin
 
         try
         {
+            // Set the tenant ID to 1 for creating demo data
+            _tenantContext.SetCurrentTenantId(1);
+            
             // Create AI Models
             var aiModels = GetDemoAiModels();
             foreach (var aiModel in aiModels)
             {
+                aiModel.TenantId = 1; // Explicitly set tenant ID
                 await _aiModelRepository.CreateAsync(aiModel);
             }
             createdItems.Add($"{aiModels.Count} AI models");
@@ -43,15 +52,16 @@ public class AiDemoDataHandler : IRequestHandler<AiDemoDataCommand, Result<strin
             var aiPrompts = GetDemoAiPrompts(aiModels.First().Id);
             foreach (var aiPrompt in aiPrompts)
             {
+                aiPrompt.TenantId = 1; // Explicitly set tenant ID
                 await _aiPromptRepository.CreateAsync(aiPrompt);
             }
             createdItems.Add($"{aiPrompts.Count} AI prompts");
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
-            result.Data = $"Successfully created: {string.Join(", ", createdItems)}";
+            result.Data = $"Successfully created: {string.Join(", ", createdItems)} for tenant ID 1";
 
-            _logger.LogInformation("Successfully created AI demo data: {Items}", string.Join(", ", createdItems));
+            _logger.LogInformation("Successfully created AI demo data for tenant ID 1: {Items}", string.Join(", ", createdItems));
         }
         catch (Exception ex)
         {

@@ -1,6 +1,7 @@
 using System.Text;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
 using maERP.Application.Models.Identity;
 using maERP.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,6 +26,7 @@ public static class IdentityServicesRegistration
 
         services.AddTransient<Application.Contracts.Identity.IAuthService, AuthService>();
         services.AddTransient<Application.Contracts.Identity.IUserService, UserService>();
+        services.AddScoped<ITenantContext, TenantContext>();
 
         services.AddAuthentication(options =>
         {
