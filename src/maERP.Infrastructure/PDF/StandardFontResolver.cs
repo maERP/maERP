@@ -13,14 +13,14 @@ public class StandardFontResolver : IFontResolver
         // You can map any requested font to one of the standard PDF fonts
         // Here we're simplifying by always returning Helvetica
         string fontName = "Helvetica";
-        
+
         if (isBold && isItalic)
             fontName = "Helvetica-BoldOblique";
         else if (isBold)
             fontName = "Helvetica-Bold";
         else if (isItalic)
             fontName = "Helvetica-Oblique";
-            
+
         return new FontResolverInfo(fontName);
     }
 

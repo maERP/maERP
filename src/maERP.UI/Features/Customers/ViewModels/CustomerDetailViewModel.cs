@@ -55,30 +55,30 @@ public partial class CustomerDetailViewModel : ViewModelBase
     public string GetFormattedAddress(CustomerAddressListDto address)
     {
         if (address == null) return string.Empty;
-        
+
         var addressLines = new List<string>();
-        
+
         if (!string.IsNullOrEmpty(address.CompanyName))
             addressLines.Add(address.CompanyName);
-        
+
         if (!string.IsNullOrEmpty(address.Firstname) || !string.IsNullOrEmpty(address.Lastname))
             addressLines.Add($"{address.Firstname} {address.Lastname}".Trim());
-        
+
         if (!string.IsNullOrEmpty(address.Street) || !string.IsNullOrEmpty(address.HouseNr))
             addressLines.Add($"{address.Street} {address.HouseNr}".Trim());
-        
+
         if (!string.IsNullOrEmpty(address.Zip) || !string.IsNullOrEmpty(address.City))
             addressLines.Add($"{address.Zip} {address.City}".Trim());
-        
+
         return string.Join("\n", addressLines);
     }
 
-    public string DefaultDeliveryAddressFormatted => DefaultDeliveryAddress != null 
-        ? GetFormattedAddress(DefaultDeliveryAddress) 
+    public string DefaultDeliveryAddressFormatted => DefaultDeliveryAddress != null
+        ? GetFormattedAddress(DefaultDeliveryAddress)
         : "Keine Standard-Lieferadresse";
 
-    public string DefaultInvoiceAddressFormatted => DefaultInvoiceAddress != null 
-        ? GetFormattedAddress(DefaultInvoiceAddress) 
+    public string DefaultInvoiceAddressFormatted => DefaultInvoiceAddress != null
+        ? GetFormattedAddress(DefaultInvoiceAddress)
         : "Keine Standard-Rechnungsadresse";
 
     public CustomerDetailViewModel(IHttpService httpService, IDebugService debugService)
@@ -164,7 +164,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
     private async Task EditCustomer()
     {
         if (Customer == null || NavigateToEditCustomer == null) return;
-        
+
         await NavigateToEditCustomer(Customer.Id);
     }
 

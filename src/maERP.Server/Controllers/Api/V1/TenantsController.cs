@@ -27,6 +27,7 @@ public class TenantsController(IMediator mediator) : ControllerBase
     /// <param name="orderBy">Order by clause</param>
     /// <returns>Paginated list of tenants</returns>
     [HttpGet]
+    [Authorize(Roles = "Superadmin")]
     public async Task<ActionResult<PaginatedResult<TenantListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
@@ -44,6 +45,7 @@ public class TenantsController(IMediator mediator) : ControllerBase
     /// <param name="id">Tenant ID</param>
     /// <returns>Tenant details</returns>
     [HttpGet("{id}")]
+    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TenantDetailDto>> GetDetails(int id)
@@ -58,6 +60,7 @@ public class TenantsController(IMediator mediator) : ControllerBase
     /// <param name="tenantCreateCommand">Tenant creation data</param>
     /// <returns>Created tenant ID</returns>
     [HttpPost]
+    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Result<int>>> Create(TenantCreateCommand tenantCreateCommand)
@@ -73,6 +76,7 @@ public class TenantsController(IMediator mediator) : ControllerBase
     /// <param name="tenantUpdateCommand">Tenant update data</param>
     /// <returns>Updated tenant ID</returns>
     [HttpPut("{id}")]
+    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -90,6 +94,7 @@ public class TenantsController(IMediator mediator) : ControllerBase
     /// <param name="id">Tenant ID</param>
     /// <returns>No content if successful</returns>
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -98,12 +103,12 @@ public class TenantsController(IMediator mediator) : ControllerBase
     {
         var command = new TenantDeleteCommand(id);
         var response = await mediator.Send(command);
-        
+
         if (response.Succeeded)
         {
             return NoContent();
         }
-        
+
         return StatusCode((int)response.StatusCode, response);
     }
 }

@@ -23,11 +23,11 @@ public class UserCreateDto
     // [JsonIgnore]
     [Compare("Password", ErrorMessage = "Die Passwörter stimmen nicht überein.")]
     public string PasswordConfirm { get; set; } = string.Empty;
-    
+
     // Default tenant ID (required for initial creation)
     [Required]
     public int DefaultTenantId { get; set; }
-    
+
     // Additional tenant assignments
     public List<int> AdditionalTenantIds { get; set; } = new List<int>();
 }

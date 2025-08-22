@@ -65,11 +65,11 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                 _logger.LogWarning("User with ID {Id} not found", request.Id);
                 return result;
             }
-            
+
             // Get user tenant assignments
             var userTenantAssignments = await _userRepository.GetUserTenantAssignmentsAsync(request.Id);
             var tenantAssignments = new List<UserTenantAssignmentDto>();
-            
+
             // Map tenant assignments to DTOs
             if (userTenantAssignments != null && userTenantAssignments.Any())
             {

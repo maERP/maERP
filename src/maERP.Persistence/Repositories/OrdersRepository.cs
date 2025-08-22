@@ -29,7 +29,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .Where(o => o.SalesChannelId == salesChannelId)
             .FirstOrDefaultAsync() ?? null;
     }
-    
+
     public async Task<List<OrderHistory>> GetOrderHistoryAsync(int orderId)
     {
         return await Context.OrderHistory
@@ -43,22 +43,22 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         var order = await Context.Order
             .Where(o => o.Id == orderId)
             .FirstOrDefaultAsync();
-            
+
         if (order == null)
         {
             return false;
         }
-        
+
         // Check if the payment status is completely paid
         if (order.PaymentStatus != PaymentStatus.CompletelyPaid)
         {
             return false;
         }
-        
+
         // Check if an invoice already exists for this order
         var invoiceExists = await Context.Invoice
             .AnyAsync(i => i.OrderId == orderId);
-            
+
         // Return false if invoice already exists
         return !invoiceExists;
     }

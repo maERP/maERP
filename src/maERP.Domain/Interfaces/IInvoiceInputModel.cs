@@ -11,19 +11,19 @@ public interface IInvoiceInputModel
     DateTime InvoiceDate { get; set; }
     int CustomerId { get; set; }
     int? OrderId { get; set; }
-    
+
     decimal Subtotal { get; set; }
     decimal ShippingCost { get; set; }
     decimal TotalTax { get; set; }
     decimal Total { get; set; }
-    
+
     PaymentStatus PaymentStatus { get; set; }
     InvoiceStatus InvoiceStatus { get; set; }
     string PaymentMethod { get; set; }
     string PaymentTransactionId { get; set; }
-    
+
     string Notes { get; set; }
-    
+
     // Invoice Address
     string InvoiceAddressFirstName { get; set; }
     string InvoiceAddressLastName { get; set; }
@@ -33,7 +33,7 @@ public interface IInvoiceInputModel
     string InvoiceAddressCity { get; set; }
     string InvoiceAddressZip { get; set; }
     string InvoiceAddressCountry { get; set; }
-    
+
     // Delivery Address
     string DeliveryAddressFirstName { get; set; }
     string DeliveryAddressLastName { get; set; }

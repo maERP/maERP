@@ -42,10 +42,10 @@ public class DebugService : IDebugService
 
     public void LogError(Exception exception, string? message = null)
     {
-        var errorMessage = message != null 
-            ? $"{message}: {exception.Message}" 
+        var errorMessage = message != null
+            ? $"{message}: {exception.Message}"
             : exception.Message;
-        
+
         LogMessage(DebugLevel.Error, errorMessage);
         Debug.WriteLine($"[ERROR] {errorMessage}");
         Debug.WriteLine($"Stack trace: {exception.StackTrace}");
@@ -56,7 +56,7 @@ public class DebugService : IDebugService
         try
         {
             var timestampedMessage = $"[{DateTime.Now:HH:mm:ss.fff}] {message}";
-            
+
             _debugWindowViewModel?.AddDebugLog(level, message);
             DebugLogAdded?.Invoke(level, timestampedMessage);
         }
@@ -77,13 +77,13 @@ public class DebugService : IDebugService
             {
                 DataContext = _debugWindowViewModel
             };
-            
-            _debugWindow.Closed += (_, _) => 
+
+            _debugWindow.Closed += (_, _) =>
             {
                 _debugWindow = null;
                 _debugWindowViewModel = null;
             };
-            
+
             LogInfo("Debug window initialized");
         }
         catch (Exception ex)
@@ -105,7 +105,7 @@ public class DebugService : IDebugService
             {
                 _debugWindow.Show();
                 _debugWindow.Activate();
-                
+
                 if (!_debugWindow.IsVisible)
                 {
                     _debugWindow.WindowState = WindowState.Normal;

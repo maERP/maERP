@@ -32,7 +32,7 @@ public class UserRepository : IUserRepository
             .AsNoTracking()
             .FirstAsync();
     }
-    
+
     public async Task<IEnumerable<IdentityError>> CreateAsync(ApplicationUser userToCreate, string password)
     {
         userToCreate.PasswordHash = _userManager.PasswordHasher.HashPassword(userToCreate, password);
@@ -46,7 +46,7 @@ public class UserRepository : IUserRepository
 
         return result.Errors;
     }
-    
+
     public async Task<ApplicationUser> UpdateWithDetailsAsync(ApplicationUser userUpdateDto)
     {
         var localUser = await _userManager.FindByIdAsync(userUpdateDto.Id);
@@ -54,7 +54,7 @@ public class UserRepository : IUserRepository
         if (localUser != null)
         {
             userUpdateDto.Email = userUpdateDto.Email?.ToLower();
-            
+
             localUser.Email = userUpdateDto.Email;
             localUser.UserName = userUpdateDto.Email;
             localUser.Firstname = userUpdateDto.Firstname;
@@ -81,13 +81,13 @@ public class UserRepository : IUserRepository
         var entity = await GetByIdAsync(id);
         return entity != null;
     }
-    
+
     // New methods for managing user-tenant assignments
-    
+
     public async Task AssignUserToTenantsAsync(string userId, IEnumerable<int> tenantIds, int? defaultTenantId = null)
     {
         // Validate the user exists
-        var user = await _userManager.FindByIdAsync(userId) 
+        var user = await _userManager.FindByIdAsync(userId)
             ?? throw new NotFoundException("User not found", userId);
 
         // Set default tenant if specified
@@ -103,7 +103,7 @@ public class UserRepository : IUserRepository
             // Check if the assignment already exists
             var existingAssignment = await _dbContext.UserTenant
                 .FirstOrDefaultAsync(ut => ut.UserId == userId && ut.TenantId == tenantId);
-                
+
             if (existingAssignment == null)
             {
                 // Create new assignment
@@ -115,7 +115,7 @@ public class UserRepository : IUserRepository
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow
                 };
-                
+
                 await _dbContext.UserTenant.AddAsync(userTenant);
             }
             else if (defaultTenantId.HasValue && tenantId == defaultTenantId.Value && !existingAssignment.IsDefault)
@@ -126,7 +126,7 @@ public class UserRepository : IUserRepository
                 _dbContext.UserTenant.Update(existingAssignment);
             }
         }
-        
+
         await _dbContext.SaveChangesAsync();
     }
 
@@ -164,7 +164,7 @@ public class UserRepository : IUserRepository
         {
             var existingAssignment = currentAssignments
                 .FirstOrDefault(a => a.TenantId == tenantId);
-                
+
             if (existingAssignment == null)
             {
                 // Create new assignment
@@ -176,7 +176,7 @@ public class UserRepository : IUserRepository
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow
                 };
-                
+
                 await _dbContext.UserTenant.AddAsync(userTenant);
             }
             else if (defaultTenantId.HasValue && tenantId == defaultTenantId.Value && !existingAssignment.IsDefault)
@@ -192,7 +192,7 @@ public class UserRepository : IUserRepository
                 existingAssignment.DateModified = DateTime.UtcNow;
             }
         }
-        
+
         await _dbContext.SaveChangesAsync();
     }
 

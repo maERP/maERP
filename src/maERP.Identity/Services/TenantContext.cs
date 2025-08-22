@@ -26,7 +26,7 @@ public class TenantContext : ITenantContext
     {
         return _currentTenantId.HasValue;
     }
-    
+
     /// <summary>
     /// Gets all tenant IDs assigned to the current user
     /// </summary>
@@ -35,7 +35,7 @@ public class TenantContext : ITenantContext
     {
         return _assignedTenantIds;
     }
-    
+
     /// <summary>
     /// Sets the collection of tenant IDs that the current user can access
     /// </summary>
@@ -43,14 +43,14 @@ public class TenantContext : ITenantContext
     public void SetAssignedTenantIds(IEnumerable<int> tenantIds)
     {
         _assignedTenantIds = new HashSet<int>(tenantIds ?? new List<int>());
-        
+
         // If current tenant is not in the assigned list, reset it
         if (_currentTenantId.HasValue && !_assignedTenantIds.Contains(_currentTenantId.Value))
         {
             _currentTenantId = _assignedTenantIds.Count > 0 ? _assignedTenantIds.First() : null;
         }
     }
-    
+
     /// <summary>
     /// Checks if the user is assigned to a specific tenant
     /// </summary>

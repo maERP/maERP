@@ -36,7 +36,7 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<WarehouseDetailDto>> GetDetails(int id)
-    { 
+    {
         var response = await mediator.Send(new WarehouseDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
     }
@@ -74,12 +74,12 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     {
         var command = new WarehouseDeleteCommand { Id = id, NewWarehouseId = newWarehouseId };
         var response = await mediator.Send(command);
-        
+
         if (response.Succeeded)
         {
             return NoContent();
         }
-        
+
         return StatusCode((int)response.StatusCode, response);
     }
 }

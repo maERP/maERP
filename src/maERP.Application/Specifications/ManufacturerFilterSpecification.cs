@@ -12,8 +12,8 @@ namespace maERP.Application.Specifications
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = m => (m.Name.Contains(searchString) || 
-                               m.City.Contains(searchString) || 
+                Criteria = m => (m.Name.Contains(searchString) ||
+                               m.City.Contains(searchString) ||
                                m.Country.Contains(searchString));
             }
             else

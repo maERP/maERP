@@ -21,19 +21,19 @@ public static class SettingsSeeder
             new Setting { Id = 11, Key = "Company.Iban", Value = "DE89 3704 0044 0532 0130 00" },
             new Setting { Id = 12, Key = "Company.Bic", Value = "MUSTDEXXX" },
             new Setting { Id = 13, Key = "Company.LogoPath", Value = "" },
-            
+
             // JWT Settings
             new Setting { Id = 14, Key = "Jwt.Key", Value = "CHANGE_TO_YOUR_VERY_SECRET_JWT_SIGNING_KEY" },
             new Setting { Id = 15, Key = "Jwt.Issuer", Value = "maERP.Server" },
             new Setting { Id = 16, Key = "Jwt.Audience", Value = "maERP.Client" },
             new Setting { Id = 17, Key = "Jwt.DurationInMinutes", Value = "60" },
             new Setting { Id = 18, Key = "Jwt.RefreshTokenExpireDays", Value = "7" },
-            
+
             // Email Settings
             new Setting { Id = 19, Key = "Email.ApiKey", Value = "Sendgrid-Key" },
             new Setting { Id = 20, Key = "Email.FromAddress", Value = "no-reply@martin-andrich.de" },
             new Setting { Id = 21, Key = "Email.FromName", Value = "maERP" },
-            
+
             // Telemetry Settings
             new Setting { Id = 22, Key = "Telemetry.Endpoint", Value = "http://localhost:4317" },
             new Setting { Id = 23, Key = "Telemetry.ServiceName", Value = "maERP.Server" }

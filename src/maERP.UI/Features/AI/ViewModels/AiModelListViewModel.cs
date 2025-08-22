@@ -152,7 +152,7 @@ public partial class AiModelListViewModel : ViewModelBase
     private void OpenAiModelDetails(AiModelListDto? aiModel)
     {
         if (aiModel == null || NavigateToAiModelDetail == null) return;
-        
+
         SelectedAiModel = aiModel;
         NavigateToAiModelDetail(aiModel.Id);
     }

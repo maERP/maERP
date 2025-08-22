@@ -215,7 +215,7 @@ public partial class OrderInputViewModel : ViewModelBase
     public async Task InitializeAsync(int orderId = 0)
     {
         OrderId = orderId;
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -246,7 +246,7 @@ public partial class OrderInputViewModel : ViewModelBase
             else if (result.Succeeded && result.Data != null)
             {
                 var order = result.Data;
-                
+
                 // Map order data to form fields
                 SalesChannelId = order.SalesChannelId;
                 RemoteOrderId = order.RemoteOrderId;
@@ -284,7 +284,7 @@ public partial class OrderInputViewModel : ViewModelBase
                 InvoiceAddressZip = order.InvoiceAddressZip;
                 InvoiceAddressCountry = order.InvoiceAddressCountry;
                 DateOrdered = order.DateOrdered;
-                
+
                 // Load order items
                 OrderItems.Clear();
                 if (order.OrderItems != null)
@@ -378,7 +378,7 @@ public partial class OrderInputViewModel : ViewModelBase
             else if (result.Succeeded)
             {
                 _debugService.LogInfo($"Order {(IsEditMode ? "updated" : "created")} successfully");
-                
+
                 if (IsEditMode && NavigateToOrderDetail != null)
                 {
                     await NavigateToOrderDetail(OrderId);
@@ -461,14 +461,14 @@ public partial class OrderInputViewModel : ViewModelBase
         InvoiceAddressCountry = string.Empty;
         DateOrdered = DateTime.Now;
         ErrorMessage = string.Empty;
-        
+
         ClearErrors();
     }
 
     private bool ValidateForm()
     {
         ValidateAllProperties();
-        
+
         if (HasErrors)
         {
             ErrorMessage = "Bitte korrigieren Sie die Eingabefehler";
@@ -550,7 +550,7 @@ public partial class OrderInputViewModel : ViewModelBase
         if (item == null) return;
 
         OrderItems.Remove(item);
-        
+
         if (SelectedOrderItem == item)
         {
             CancelOrderItemEdit();

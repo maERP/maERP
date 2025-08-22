@@ -19,27 +19,27 @@ public class UserUpdateCommand : IRequest<Result<string>>
     /// Updated email address for the user
     /// </summary>
     public string Email { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// First name of the user
     /// </summary>
     public string Firstname { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Last name of the user
     /// </summary>
     public string Lastname { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Password for the user account (if updating)
     /// </summary>
     public string Password { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Default tenant ID for the user
     /// </summary>
     public int? DefaultTenantId { get; set; }
-    
+
     /// <summary>
     /// List of tenant IDs this user should be assigned to
     /// </summary>

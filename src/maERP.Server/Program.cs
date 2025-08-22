@@ -19,14 +19,15 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
-using Serilog; 
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Logging.AddOpenTelemetry(logging => {
+builder.Logging.AddOpenTelemetry(logging =>
+{
     logging.AddOtlpExporter(options =>
     {
         options.Endpoint = new Uri(builder.Configuration["Telemetry:Endpoint"] ?? "http://localhost:4317");
@@ -98,6 +99,7 @@ builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGoodsReceiptRepository, GoodsReceiptRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
+builder.Services.AddScoped<IUserTenantRepository, UserTenantRepository>();
 
 // Register SettingsInitializer service
 builder.Services.AddTransient<SettingsInitializer>();
@@ -109,7 +111,7 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var dbOptions = scope.ServiceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-    
+
     if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
     {
         app.Logger.LogInformation("Applying pending migrations for {Provider} database", dbOptions.Provider);
@@ -133,10 +135,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Web}/{action=Index}/{id?}");
 
-if(app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 {
     app.MapControllers().AllowAnonymous();
-}    
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -166,7 +168,7 @@ else
     });
 
     app.UseSerilogRequestLogging();
-    app.MapControllers();    
+    app.MapControllers();
 }
 
 app.UseAuthentication(); // who are you?

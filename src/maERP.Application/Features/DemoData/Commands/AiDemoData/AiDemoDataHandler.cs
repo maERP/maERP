@@ -38,7 +38,7 @@ public class AiDemoDataHandler : IRequestHandler<AiDemoDataCommand, Result<strin
         {
             // Set the tenant ID to 1 for creating demo data
             _tenantContext.SetCurrentTenantId(1);
-            
+
             // Create AI Models
             var aiModels = GetDemoAiModels();
             foreach (var aiModel in aiModels)

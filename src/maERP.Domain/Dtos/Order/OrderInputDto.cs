@@ -18,7 +18,7 @@ public class OrderInputDto : IOrderInputModel
     public PaymentStatus PaymentStatus { get; set; }
     public string PaymentProvider { get; set; } = string.Empty;
     public string PaymentTransactionId { get; set; } = string.Empty;
-    
+
     public string CustomerNote { get; set; } = string.Empty;
     public string InternalNote { get; set; } = string.Empty;
 

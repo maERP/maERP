@@ -55,7 +55,7 @@ public class CustomerCsvExportHandler : IRequestHandler<CustomerCsvExportQuery, 
             // Generate CSV content
             using var memoryStream = new MemoryStream();
             using var writer = new StreamWriter(memoryStream, Encoding.UTF8);
-            
+
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = true,
@@ -121,7 +121,7 @@ public class CustomerCsvExportHandler : IRequestHandler<CustomerCsvExportQuery, 
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = exportResult;
 
-            _logger.LogInformation("CSV export completed successfully. Exported {Count} customers, file size: {Size} bytes", 
+            _logger.LogInformation("CSV export completed successfully. Exported {Count} customers, file size: {Size} bytes",
                 customers.Count, exportResult.CsvData.Length);
         }
         catch (Exception ex)

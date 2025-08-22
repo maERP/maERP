@@ -37,7 +37,7 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
 
         var httpResponseMessage = await httpClient.PostAsJsonAsync(url, product);
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
-        
+
         Assert.True(httpResponseMessage.IsSuccessStatusCode);
         Assert.NotNull(result);
         Assert.True(result.Succeeded);
@@ -115,7 +115,7 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
 
         var httpResponseMessage = await httpClient.PutAsJsonAsync(url, product);
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
-        
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.NotNull(result);
         Assert.True(result.Succeeded);
@@ -138,7 +138,7 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
         });
 
         var response = await httpClient.DeleteAsync(url);
-        
+
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 
@@ -151,7 +151,7 @@ public class ProductCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
 
         var response = await httpClient.GetAsync(url);
         var result = await response.Content.ReadFromJsonAsync<Result>();
-        
+
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         Assert.NotNull(result);
         Assert.False(result.Succeeded);

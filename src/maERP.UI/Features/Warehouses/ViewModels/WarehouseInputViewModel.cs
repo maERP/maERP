@@ -137,7 +137,7 @@ public partial class WarehouseInputViewModel : ViewModelBase
             {
                 // Update existing warehouse
                 var result = await _httpService.PutAsync<WarehouseInputDto, int>($"warehouses/{Id}", warehouseDto);
-                
+
                 if (result == null)
                 {
                     ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
@@ -158,7 +158,7 @@ public partial class WarehouseInputViewModel : ViewModelBase
             {
                 // Create new warehouse
                 var result = await _httpService.PostAsync<WarehouseInputDto, WarehouseDetailDto>("warehouses", warehouseDto);
-                
+
                 if (result == null)
                 {
                     ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";

@@ -36,9 +36,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
         modelBuilder.ApplyConfiguration(new ProductSalesChannelConfiguration());
         modelBuilder.ApplyConfiguration(new ShippingProviderRateConfiguration());
-        
+
         modelBuilder.SeedSettings();
-        
+
         // Configure global query filters for multi-tenancy
         ConfigureGlobalFilters(modelBuilder);
     }
@@ -79,7 +79,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.DateCreated = DateTime.UtcNow;
-                
+
                 // Set TenantId for new entities if not already set
                 if (entry.Entity.TenantId == null && _tenantContext.HasTenant())
                 {
@@ -106,10 +106,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 modelBuilder.Entity(entityType.ClrType).HasQueryFilter((System.Linq.Expressions.LambdaExpression)filter!);
             }
         }
-        
+
         // Special filter for UserTenant entity since it doesn't inherit from BaseEntity
-        modelBuilder.Entity<UserTenant>().HasQueryFilter(ut => 
-            _tenantContext.GetAssignedTenantIds().Contains(ut.TenantId) || 
+        modelBuilder.Entity<UserTenant>().HasQueryFilter(ut =>
+            _tenantContext.GetAssignedTenantIds().Contains(ut.TenantId) ||
             ut.TenantId == _tenantContext.GetCurrentTenantId());
     }
 
@@ -120,8 +120,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         // 1. The entity is tenant-agnostic (TenantId is null) OR
         // 2. The entity's tenant matches the current active tenant OR
         // 3. The entity's tenant is one of the assigned tenants for the current user
-        return entity => 
-            entity.TenantId == null || 
+        return entity =>
+            entity.TenantId == null ||
             entity.TenantId == _tenantContext.GetCurrentTenantId() ||
             (_tenantContext.GetAssignedTenantIds().Count > 0 && _tenantContext.GetAssignedTenantIds().Contains(entity.TenantId.Value));
     }

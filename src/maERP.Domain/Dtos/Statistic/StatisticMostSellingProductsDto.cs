@@ -15,4 +15,4 @@ public class StatisticMostSellingProductsDto
     public List<MostSellingProductItem> TopProductsThisMonth { get; set; } = new();
     public List<MostSellingProductItem> TopProductsThisYear { get; set; } = new();
     public List<MostSellingProductItem> TopProductsAllTime { get; set; } = new();
-} 
+}

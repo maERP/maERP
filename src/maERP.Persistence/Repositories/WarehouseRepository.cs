@@ -9,7 +9,7 @@ public class WarehouseRepository : GenericRepository<Warehouse>, IWarehouseRepos
     public WarehouseRepository(ApplicationDbContext context) : base(context)
     {
     }
-    
+
     /*
     public bool IsUnique(string name)
     {

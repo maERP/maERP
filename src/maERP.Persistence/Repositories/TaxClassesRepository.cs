@@ -10,7 +10,7 @@ public class TaxClassRepository : GenericRepository<TaxClass>, ITaxClassReposito
     public TaxClassRepository(ApplicationDbContext context) : base(context)
     {
     }
-    
+
     public async Task<TaxClass?> GetByTaxRateAsync(double taxRate)
     {
         // ReSharper disable once CompareOfFloatsByEqualityOperator

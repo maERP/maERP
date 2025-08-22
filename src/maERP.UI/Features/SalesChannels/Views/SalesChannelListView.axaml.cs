@@ -11,7 +11,7 @@ public partial class SalesChannelListView : UserControl
     {
         InitializeComponent();
     }
-    
+
     private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e)
     {
         if (DataContext is SalesChannelListViewModel viewModel && viewModel.SelectedSalesChannel != null)

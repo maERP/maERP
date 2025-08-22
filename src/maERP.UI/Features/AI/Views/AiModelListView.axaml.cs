@@ -11,7 +11,7 @@ public partial class AiModelListView : UserControl
     {
         InitializeComponent();
     }
-    
+
     private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e)
     {
         if (DataContext is AiModelListViewModel viewModel && viewModel.SelectedAiModel != null)

@@ -99,9 +99,9 @@ public partial class SalesChannelInputViewModel : ViewModelBase
     public async Task InitializeAsync(int salesChannelId = 0)
     {
         SalesChannelId = salesChannelId;
-        
+
         await LoadWarehousesAsync();
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -126,7 +126,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
                 {
                     AvailableWarehouses.Add(warehouse);
                 }
-                
+
                 // Set default warehouse if creating new sales channel
                 if (!IsEditMode && AvailableWarehouses.Any())
                 {
@@ -160,7 +160,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
             else if (result.Succeeded && result.Data != null)
             {
                 var salesChannel = result.Data;
-                
+
                 // Map sales channel data to form fields
                 Name = salesChannel.Name;
                 SalesChannelType = salesChannel.SalesChannelType;
@@ -242,7 +242,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
             else if (result.Succeeded)
             {
                 _debugService.LogInfo($"Sales channel {(IsEditMode ? "updated" : "created")} successfully");
-                
+
                 if (IsEditMode && NavigateToSalesChannelDetail != null)
                 {
                     await NavigateToSalesChannelDetail(SalesChannelId);
@@ -320,14 +320,14 @@ public partial class SalesChannelInputViewModel : ViewModelBase
         SelectedWarehouses.Clear();
         SelectedWarehouse = null;
         ErrorMessage = string.Empty;
-        
+
         ClearErrors();
     }
 
     private bool ValidateForm()
     {
         ValidateAllProperties();
-        
+
         if (HasErrors)
         {
             ErrorMessage = "Bitte korrigieren Sie die Eingabefehler";

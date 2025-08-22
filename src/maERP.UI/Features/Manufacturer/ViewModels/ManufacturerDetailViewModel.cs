@@ -40,13 +40,13 @@ public partial class ManufacturerDetailViewModel : ViewModelBase
 
     // Computed properties for better display
     public bool HasName => Manufacturer != null && !string.IsNullOrEmpty(Manufacturer.Name);
-    public bool HasAddress => Manufacturer != null && 
-        (!string.IsNullOrEmpty(Manufacturer.Street) || 
-         !string.IsNullOrEmpty(Manufacturer.City) || 
+    public bool HasAddress => Manufacturer != null &&
+        (!string.IsNullOrEmpty(Manufacturer.Street) ||
+         !string.IsNullOrEmpty(Manufacturer.City) ||
          !string.IsNullOrEmpty(Manufacturer.Country));
-    public bool HasContactInfo => Manufacturer != null && 
-        (!string.IsNullOrEmpty(Manufacturer.Phone) || 
-         !string.IsNullOrEmpty(Manufacturer.Email) || 
+    public bool HasContactInfo => Manufacturer != null &&
+        (!string.IsNullOrEmpty(Manufacturer.Phone) ||
+         !string.IsNullOrEmpty(Manufacturer.Email) ||
          !string.IsNullOrEmpty(Manufacturer.Website));
 
     public ManufacturerDetailViewModel(IHttpService httpService, IDialogService dialogService, IDebugService debugService)
@@ -123,7 +123,7 @@ public partial class ManufacturerDetailViewModel : ViewModelBase
     private async Task EditManufacturer()
     {
         if (Manufacturer == null || NavigateToEditManufacturer == null) return;
-        
+
         await NavigateToEditManufacturer(Manufacturer.Id);
     }
 
@@ -195,10 +195,10 @@ public partial class ManufacturerDetailViewModel : ViewModelBase
 
         try
         {
-            var url = website.StartsWith("http://") || website.StartsWith("https://") 
-                ? website 
+            var url = website.StartsWith("http://") || website.StartsWith("https://")
+                ? website
                 : $"https://{website}";
-            
+
             Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             _debugService.LogInfo($"Opened website {url}");
         }
@@ -214,9 +214,9 @@ public partial class ManufacturerDetailViewModel : ViewModelBase
         try
         {
             if (Manufacturer == null) return false;
-            
+
             var message = $"M\u00f6chten Sie den Hersteller '{Manufacturer.Name}' wirklich l\u00f6schen?\n\nDieser Vorgang kann nicht r\u00fcckg\u00e4ngig gemacht werden.";
-            
+
             return await _dialogService.ShowConfirmationDialogAsync(
                 "Hersteller l\u00f6schen",
                 message,

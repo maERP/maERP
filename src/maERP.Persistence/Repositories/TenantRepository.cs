@@ -8,7 +8,7 @@ namespace maERP.Persistence.Repositories;
 public class TenantRepository : ITenantRepository
 {
     private readonly ApplicationDbContext _context;
-    
+
     public TenantRepository(ApplicationDbContext context)
     {
         _context = context;
@@ -52,7 +52,7 @@ public class TenantRepository : ITenantRepository
                 .Include(t => t.UserTenants)
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
-        
+
         return await _context.Tenant
             .Include(t => t.UserTenants)
             .FirstOrDefaultAsync(t => t.Id == id);
@@ -66,12 +66,12 @@ public class TenantRepository : ITenantRepository
     public async Task<bool> IsUniqueAsync(Tenant entity, int? id = null)
     {
         var query = _context.Tenant.AsQueryable();
-        
+
         if (id.HasValue)
         {
             query = query.Where(t => t.Id != id.Value);
         }
-        
+
         return !await query.AnyAsync(t => t.TenantCode == entity.TenantCode);
     }
 
@@ -81,17 +81,17 @@ public class TenantRepository : ITenantRepository
             .Include(t => t.UserTenants)
             .FirstOrDefaultAsync(t => t.TenantCode == tenantCode);
     }
-    
+
     public async Task<bool> TenantCodeExistsAsync(string tenantCode)
     {
         return await _context.Tenant.AnyAsync(t => t.TenantCode == tenantCode);
     }
-    
+
     public async Task<bool> TenantCodeExistsAsync(string tenantCode, int excludeId)
     {
         return await _context.Tenant.AnyAsync(t => t.TenantCode == tenantCode && t.Id != excludeId);
     }
-    
+
     public async Task<IEnumerable<Tenant>> GetActivTenantsAsync()
     {
         return await _context.Tenant

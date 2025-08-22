@@ -145,7 +145,7 @@ public partial class WarehouseListViewModel : ViewModelBase
     private void ViewWarehouseDetails(WarehouseListDto? warehouse)
     {
         if (warehouse == null || NavigateToWarehouseDetail == null) return;
-        
+
         SelectedWarehouse = warehouse;
         NavigateToWarehouseDetail(warehouse.Id);
     }
@@ -154,7 +154,7 @@ public partial class WarehouseListViewModel : ViewModelBase
     private async Task CreateNewWarehouse()
     {
         if (NavigateToWarehouseCreate == null) return;
-        
+
         await NavigateToWarehouseCreate();
     }
 

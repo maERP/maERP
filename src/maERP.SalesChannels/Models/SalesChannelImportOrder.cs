@@ -13,12 +13,12 @@ public class SalesChannelImportOrder
 
     [Required]
     public OrderStatus Status { get; set; }
-    
+
     // Kundeninformationen
     public SalesChannelImportCustomer? Customer { get; set; }
     public SalesChannelImportCustomerAddress BillingAddress { get; set; } = new();
     public SalesChannelImportCustomerAddress ShippingAddress { get; set; } = new();
-    
+
     // Bestellpositionen (durch OrderItems ersetzen, da es im Repository verwendet wird)
     public ICollection<SalesChannelImportOrderItem> OrderItems { get; set; } = new List<SalesChannelImportOrderItem>();
 

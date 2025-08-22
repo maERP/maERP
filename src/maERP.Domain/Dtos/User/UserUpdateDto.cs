@@ -21,10 +21,10 @@ public class UserUpdateDto
     [JsonIgnore]
     [Compare("Password", ErrorMessage = "Die Passwörter stimmen nicht überein.")]
     public string PasswordConfirm { get; set; } = string.Empty;
-    
+
     // Default tenant for the user
     public int? DefaultTenantId { get; set; }
-    
+
     // List of tenant IDs this user should be assigned to
     public List<int> TenantIds { get; set; } = new List<int>();
 }

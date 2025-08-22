@@ -76,7 +76,7 @@ public class WooCommerceProductImportTask : IHostedService
                 {
                     foreach (var remoteProduct in remoteProducts)
                     {
-                        if(remoteProduct.sku == null || remoteProduct.sku.Length == 0)
+                        if (remoteProduct.sku == null || remoteProduct.sku.Length == 0)
                         {
                             _logger.LogInformation($"Product {remoteProduct.name} has no SKU, skipping...");
                             continue;
@@ -100,7 +100,7 @@ public class WooCommerceProductImportTask : IHostedService
                 _logger.LogError(ex, $"Error while importing products from {salesChannel.Name} (ID: {salesChannel.Id})");
             }
         }
-        
+
         await Task.Delay(new TimeSpan(0, 0, 5)); // 5 second delay
     }
 }

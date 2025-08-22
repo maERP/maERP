@@ -29,7 +29,7 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
 
     public async Task<bool> SalesChannelIsUniqueAsync(SalesChannel salesChannel, int? id = null)
     {
-        if(id == null)
+        if (id == null)
         {
             return await Context.SalesChannel
                 .AnyAsync(s => s.Name == salesChannel.Name) ? false : true;

@@ -49,7 +49,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
         {
             // Set the tenant ID to 1 for creating demo data
             _tenantContext.SetCurrentTenantId(1);
-            
+
             // Create Tax Classes (19%, 7%, 0%)
             var taxClasses = GetDemoTaxClasses();
             foreach (var taxClass in taxClasses)
@@ -276,7 +276,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
         var standardTaxId = taxClasses.First(t => t.TaxRate == 19.0).Id; // Standard VAT
         var reducedTaxId = taxClasses.First(t => t.TaxRate == 7.0).Id;   // Reduced VAT
         var zeroTaxId = taxClasses.First(t => t.TaxRate == 0.0).Id;      // Tax-free
-        
+
         var random = new Random(42); // Fixed seed for consistent demo data
 
         return new List<Domain.Entities.Product>

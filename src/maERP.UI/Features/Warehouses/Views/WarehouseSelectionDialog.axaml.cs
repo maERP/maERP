@@ -7,7 +7,7 @@ namespace maERP.UI.Features.Warehouses.Views;
 public partial class WarehouseSelectionDialog : Window
 {
     public WarehouseSelectionDialogViewModel? ViewModel => DataContext as WarehouseSelectionDialogViewModel;
-    
+
     public bool DialogResult { get; private set; }
     public int? SelectedWarehouseId => ViewModel?.SelectedWarehouseId;
 

@@ -11,7 +11,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
     {
 
     }
-    
+
     public async Task<Customer?> GetCustomerWithDetails(int id)
     {
         return await Context.Customer
@@ -21,21 +21,21 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
             .AsSplitQuery()
             .FirstOrDefaultAsync() ?? null;
     }
-    
+
     public async Task<Customer?> GetCustomerByEmailAsync(string email)
     {
         return await Context.Customer
             .Where(x => x.Email == email)
             .FirstOrDefaultAsync() ?? null;
     }
-    
+
     public async Task<Customer?> GetCustomerByRemoteCustomerIdAsync(int salesChannelId, string remoteCustomerId)
     {
         return await Context.Customer
             .Where(x => x.CustomerSalesChannels!.Any(y => y.SalesChannelId == salesChannelId && y.RemoteCustomerId == remoteCustomerId))
             .FirstOrDefaultAsync() ?? null;
     }
-    
+
     public async Task AddCustomerToSalesChannelAsync(int customerId, int salesChannelId, string remoteCustomerId)
     {
         var customerSalesChannel = new CustomerSalesChannel
@@ -44,12 +44,12 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
             SalesChannelId = salesChannelId,
             RemoteCustomerId = remoteCustomerId
         };
-        
+
         await Context.CustomerSalesChannel.AddAsync(customerSalesChannel);
         await Context.SaveChangesAsync();
         Console.WriteLine("saved");
     }
-    
+
     public async Task<ICollection<CustomerAddress>> GetCustomerAddressByCustomerIdAsync(int customerId)
     {
         return await Context.CustomerAddress

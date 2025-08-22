@@ -14,28 +14,28 @@ public class ManufacturerConfiguration : IEntityTypeConfiguration<Manufacturer>
 
         builder.Property(m => m.Street)
             .HasMaxLength(255);
-            
+
         builder.Property(m => m.City)
             .HasMaxLength(255);
-            
+
         builder.Property(m => m.State)
             .HasMaxLength(255);
-            
+
         builder.Property(m => m.Country)
             .HasMaxLength(255);
-            
+
         builder.Property(m => m.ZipCode)
             .HasMaxLength(20);
-            
+
         builder.Property(m => m.Phone)
             .HasMaxLength(50);
-            
+
         builder.Property(m => m.Email)
             .HasMaxLength(255);
-            
+
         builder.Property(m => m.Website)
             .HasMaxLength(500);
-            
+
         builder.Property(m => m.Logo)
             .HasMaxLength(500);
 

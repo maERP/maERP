@@ -83,7 +83,7 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
 
             // Add the new user to the database with the provided password
             var createResult = await _userRepository.CreateAsync(userToCreate, request.Password);
-            
+
             // Check if user creation was successful
             if (createResult.Any())
             {
@@ -93,7 +93,7 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
                 result.Messages.AddRange(createResult.Select(e => e.Description));
                 return result;
             }
-            
+
             // Combine default tenant with additional tenants to assign all at once
             var allTenantIds = new List<int> { request.DefaultTenantId };
             if (request.AdditionalTenantIds != null && request.AdditionalTenantIds.Any())
@@ -101,11 +101,11 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
                 // Add any additional tenants that aren't already included
                 allTenantIds.AddRange(request.AdditionalTenantIds.Where(id => id != request.DefaultTenantId));
             }
-            
+
             // Assign user to tenants
             await _userRepository.AssignUserToTenantsAsync(
-                userToCreate.Id, 
-                allTenantIds, 
+                userToCreate.Id,
+                allTenantIds,
                 request.DefaultTenantId);
 
             // Set successful result with the new user's ID
@@ -113,7 +113,7 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
             result.StatusCode = ResultStatusCode.Created;
             result.Data = userToCreate.Id;
 
-            _logger.LogInformation("Successfully created user with ID: {Id} and assigned to {TenantCount} tenants", 
+            _logger.LogInformation("Successfully created user with ID: {Id} and assigned to {TenantCount} tenants",
                 userToCreate.Id, allTenantIds.Count);
         }
         catch (Exception ex)

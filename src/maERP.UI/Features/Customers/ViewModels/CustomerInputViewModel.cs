@@ -134,7 +134,7 @@ public partial class CustomerInputViewModel : ViewModelBase
     public async Task InitializeAsync(int customerId = 0)
     {
         CustomerId = customerId;
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -165,7 +165,7 @@ public partial class CustomerInputViewModel : ViewModelBase
             else if (result.Succeeded && result.Data != null)
             {
                 var customer = result.Data;
-                
+
                 // Map customer data to form fields
                 Firstname = customer.Firstname;
                 Lastname = customer.Lastname;
@@ -177,7 +177,7 @@ public partial class CustomerInputViewModel : ViewModelBase
                 Note = customer.Note;
                 CustomerStatus = customer.CustomerStatus;
                 DateEnrollment = customer.DateEnrollment;
-                
+
                 // Load addresses
                 CustomerAddresses.Clear();
                 if (customer.CustomerAddresses != null)
@@ -245,7 +245,7 @@ public partial class CustomerInputViewModel : ViewModelBase
             else if (result.Succeeded)
             {
                 _debugService.LogInfo($"Customer {(IsEditMode ? "updated" : "created")} successfully");
-                
+
                 if (IsEditMode && NavigateToCustomerDetail != null)
                 {
                     await NavigateToCustomerDetail(CustomerId);
@@ -302,14 +302,14 @@ public partial class CustomerInputViewModel : ViewModelBase
         DateEnrollment = DateTimeOffset.Now;
         CustomerAddresses.Clear();
         ErrorMessage = string.Empty;
-        
+
         ClearErrors();
     }
 
     private bool ValidateForm()
     {
         ValidateAllProperties();
-        
+
         if (HasErrors)
         {
             ErrorMessage = "Bitte korrigieren Sie die Eingabefehler";
@@ -325,7 +325,7 @@ public partial class CustomerInputViewModel : ViewModelBase
         IsAddingAddress = true;
         IsEditingAddress = false;
         ClearAddressForm();
-        
+
         // Pre-fill with customer data if available
         if (!string.IsNullOrEmpty(Firstname) || !string.IsNullOrEmpty(Lastname))
         {
@@ -445,7 +445,7 @@ public partial class CustomerInputViewModel : ViewModelBase
         if (address == null) return;
 
         CustomerAddresses.Remove(address);
-        
+
         if (SelectedAddress == address)
         {
             CancelAddressEdit();

@@ -123,7 +123,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
     private async Task EditWarehouse()
     {
         if (Warehouse == null || NavigateToEditWarehouse == null) return;
-        
+
         await NavigateToEditWarehouse(Warehouse.Id);
     }
 
@@ -211,11 +211,11 @@ public partial class WarehouseDetailViewModel : ViewModelBase
         try
         {
             if (Warehouse == null) return false;
-            
-            var message = HasProductStocks 
+
+            var message = HasProductStocks
                 ? $"Möchten Sie das Lager '{Warehouse.Name}' wirklich löschen?\n\nEs enthält {TotalProducts} Produkte, die umverteilt werden."
                 : $"Möchten Sie das Lager '{Warehouse.Name}' wirklich löschen?";
-            
+
             return await _dialogService.ShowConfirmationDialogAsync(
                 "Lager löschen",
                 message,

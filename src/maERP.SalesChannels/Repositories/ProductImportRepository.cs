@@ -36,7 +36,7 @@ public class ProductImportRepository : IProductImportRepository
 
         if (existingProduct == null)
         {
-            _logger.LogInformation("Product {0} does not exist, creating Product and SalesChannel", importProduct.Sku);   
+            _logger.LogInformation("Product {0} does not exist, creating Product and SalesChannel", importProduct.Sku);
 
             var newProduct = new Product
             {
@@ -52,7 +52,7 @@ public class ProductImportRepository : IProductImportRepository
                     {
                         SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId) ?? throw new NotFoundException("SalesChannel {0} not found", salesChannelId),
                         SalesChannelId = salesChannelId,
-                        RemoteProductId = importProduct.RemoteProductId, 
+                        RemoteProductId = importProduct.RemoteProductId,
                         Price = importProduct.Price
                     }
                 ],
@@ -60,7 +60,7 @@ public class ProductImportRepository : IProductImportRepository
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now
             };
-            
+
             await _productRepository.CreateAsync(newProduct);
             _logger.LogInformation("Product {0} created", importProduct.Sku);
         }
@@ -69,18 +69,18 @@ public class ProductImportRepository : IProductImportRepository
             _logger.LogInformation("Product {0} already exists, check for SalesChannel", existingProduct.Sku);
             bool somethingChanged = false;
             bool salesChannelExist = false;
-            
-            if(existingProduct.ProductSalesChannels != null)
+
+            if (existingProduct.ProductSalesChannels != null)
             {
                 salesChannelExist = existingProduct.ProductSalesChannels.Any(s => s.SalesChannelId == salesChannelId);
             }
 
             // TODO update price when salesChannelExist is true
-            if(!salesChannelExist)
+            if (!salesChannelExist)
             {
                 _logger.LogInformation("Creating SalesChannel entry for Product {0}", importProduct.Sku);
 
-                existingProduct.ProductSalesChannels = 
+                existingProduct.ProductSalesChannels =
                 [
                     new ProductSalesChannel
                     {
@@ -90,7 +90,7 @@ public class ProductImportRepository : IProductImportRepository
                         Price = importProduct.Price
                     }
                 ];
-                
+
                 somethingChanged = true;
             }
 

@@ -56,18 +56,18 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         Context.Entry(entity).State = EntityState.Modified;
         await Context.SaveChangesAsync();
     }
-    
+
     public async Task DeleteAsync(T entity)
     {
         Context.Remove(entity);
         await Context.SaveChangesAsync();
     }
-    
+
     public async Task<bool> ExistsAsync(int id)
     {
         return await Context.Set<T>().AsNoTracking().AnyAsync(e => e.Id == id);
     }
-    
+
     public async Task<bool> IsUniqueAsync(T entity, int? id = null)
     {
         var type = typeof(T);
@@ -81,12 +81,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
             var constant = Expression.Constant(value);
             var equalityExpression = Expression.Equal(propertyExpression, constant);
             var lambda = Expression.Lambda<Func<T, bool>>(equalityExpression, parameter);
-        
+
             if (value != null && value.GetType().IsClass)
             {
                 continue;
             }
-            
+
             // Exclude entity with provided id
             if (id.HasValue)
             {
@@ -95,11 +95,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
                 var idConstant = Expression.Constant(id.Value);
                 var idEqualityExpression = Expression.NotEqual(idPropertyExpression, idConstant);
                 var idLambda = Expression.Lambda<Func<T, bool>>(idEqualityExpression, parameter);
-            
+
                 var combinedExpression = Expression.AndAlso(lambda.Body, idLambda.Body);
                 lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, lambda.Parameters);
             }
-            
+
             if (!string.IsNullOrEmpty(value?.ToString()) && await Context.Set<T>().AnyAsync(lambda))
             {
                 return false;

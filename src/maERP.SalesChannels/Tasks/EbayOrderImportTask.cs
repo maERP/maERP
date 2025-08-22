@@ -83,7 +83,7 @@ public class EbayOrderImportTask : IHostedService
             {
                 // OAuth-Token holen
                 string accessToken = await authHelper.GetAccessTokenAsync(salesChannel);
-                
+
                 while (hasMoreOrders)
                 {
                     var client = new HttpClient();
@@ -214,9 +214,9 @@ public class EbayOrderImportTask : IHostedService
                         }
 
                         offset += limit;
-                        
+
                         _logger.LogInformation($"Import Orders: {requestUrl} (offset {offset})");
-                        
+
                         // API-Ratenbegrenzung beachten
                         await Task.Delay(new TimeSpan(0, 0, 1));
                     }
@@ -237,7 +237,7 @@ public class EbayOrderImportTask : IHostedService
 
     private EbayAddress GetShippingAddress(EbayOrderResponse ordersResponse)
     {
-        if (ordersResponse.FulfillmentStartInstructions != null && 
+        if (ordersResponse.FulfillmentStartInstructions != null &&
             ordersResponse.FulfillmentStartInstructions.Length > 0 &&
             ordersResponse.FulfillmentStartInstructions[0].ShippingStep != null)
         {
@@ -251,14 +251,14 @@ public class EbayOrderImportTask : IHostedService
         // In einer echten Anwendung würde man hier die Versandkosten aus den eBay-Daten extrahieren
         // Da die Versandkosten in der aktuellen API-Struktur nicht direkt verfügbar sind,
         // berechnen wir sie als Differenz zwischen Gesamtpreis und Zwischensumme
-        if (ordersResponse.PricingSummary != null && 
+        if (ordersResponse.PricingSummary != null &&
             ordersResponse.PricingSummary.Total != null &&
             ordersResponse.PricingSummary.Subtotal != null)
         {
             decimal total = ordersResponse.PricingSummary.Total.Value;
             decimal subtotal = ordersResponse.PricingSummary.Subtotal.Value;
             decimal taxAmount = ordersResponse.PricingSummary.TotalTaxAmount?.Value ?? 0m;
-            
+
             return Math.Max(0, total - subtotal - taxAmount);
         }
         return 0m;
@@ -286,4 +286,4 @@ public class EbayOrderImportTask : IHostedService
             _ => PaymentStatus.Unknown
         };
     }
-} 
+}

@@ -11,7 +11,7 @@ public partial class ManufacturerListView : UserControl
     {
         InitializeComponent();
     }
-    
+
     private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e)
     {
         if (DataContext is ManufacturerListViewModel viewModel && viewModel.SelectedManufacturer != null)

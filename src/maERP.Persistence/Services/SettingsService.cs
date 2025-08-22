@@ -19,9 +19,9 @@ public class SettingsService : ISettingsService
     public Task<JwtSettings> GetJwtSettingsAsync()
     {
         var settings = _settingRepository.Entities.Where(s => s.Key.StartsWith("Jwt.")).ToList();
-        
+
         var jwtSettings = new JwtSettings();
-        
+
         foreach (var setting in settings)
         {
             switch (setting.Key)
@@ -52,9 +52,9 @@ public class SettingsService : ISettingsService
     public Task<EmailSettings> GetEmailSettingsAsync()
     {
         var settings = _settingRepository.Entities.Where(s => s.Key.StartsWith("Email.")).ToList();
-        
+
         var emailSettings = new EmailSettings();
-        
+
         foreach (var setting in settings)
         {
             switch (setting.Key)
@@ -77,9 +77,9 @@ public class SettingsService : ISettingsService
     public Task<TelemetrySettings> GetTelemetrySettingsAsync()
     {
         var settings = _settingRepository.Entities.Where(s => s.Key.StartsWith("Telemetry.")).ToList();
-        
+
         var telemetrySettings = new TelemetrySettings();
-        
+
         foreach (var setting in settings)
         {
             switch (setting.Key)

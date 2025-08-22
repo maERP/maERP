@@ -15,16 +15,16 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
 {
     private readonly ILogger<InvoiceRepository> _logger;
     private readonly IPdfService _pdfService;
-    
+
     public InvoiceRepository(ApplicationDbContext context, ILogger<InvoiceRepository> logger, IPdfService pdfService) : base(context)
     {
         _logger = logger;
         _pdfService = pdfService;
     }
-    
+
     // You can add invoice-specific repository methods here if needed in the future
     // For example:
-    
+
     /// <summary>
     /// Gets an invoice with all related details including customer and invoice items
     /// </summary>
@@ -40,7 +40,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
             .AsSplitQuery()
             .FirstOrDefaultAsync();
     }
-    
+
     /// <summary>
     /// Gets invoices for a specific customer
     /// </summary>
@@ -52,7 +52,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
             .Where(x => x.CustomerId == customerId)
             .ToListAsync();
     }
-    
+
     /// <summary>
     /// Gets invoices by their status
     /// </summary>
@@ -64,7 +64,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
             .Where(x => x.InvoiceStatus == status)
             .ToListAsync();
     }
-    
+
     /// <summary>
     /// Creates an invoice from an order, including all invoice items from order items
     /// </summary>
@@ -73,7 +73,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
     public async Task<Invoice> CreateInvoiceFromOrderAsync(Order order)
     {
         _logger.LogInformation("Creating invoice for order with ID: {Id}", order.Id);
-        
+
         try
         {
             // Rechnung erstellen
@@ -92,7 +92,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
                 PaymentMethod = order.PaymentMethod,
                 PaymentTransactionId = order.PaymentTransactionId,
                 Notes = $"Automatisch erstellte Rechnung für Bestellung {order.Id}",
-                
+
                 // Rechnungsadresse
                 InvoiceAddressFirstName = order.InvoiceAddressFirstName,
                 InvoiceAddressLastName = order.InvoiceAddressLastName,
@@ -102,7 +102,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
                 InvoiceAddressCity = order.InvoiceAddressCity,
                 InvoiceAddressZip = order.InvoiceAddressZip,
                 InvoiceAddressCountry = order.InvoiceAddressCountry,
-                
+
                 // Lieferadresse
                 DeliveryAddressFirstName = order.DeliveryAddressFirstName,
                 DeliveryAddressLastName = order.DeliveryAddressLastName,
@@ -113,7 +113,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
                 DeliveryAddressZip = order.DeliverAddressZip,
                 DeliveryAddressCountry = order.DeliveryAddressCountry
             };
-            
+
             // Rechnungspositionen aus OrderItems erstellen
             if (order.OrderItems != null)
             {
@@ -130,18 +130,18 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
                         //Total = orderItem.Total,
                         //Notes = orderItem.Notes
                     };
-                    
+
                     invoice.InvoiceItems.Add(invoiceItem);
                 }
             }
-            
+
             // Rechnung in der Datenbank speichern
             var createdInvoice = await this.CreateAsync(invoice);
-            
+
             // PDF-Rechnung erstellen
             string outputPath = $"Invoices/INV-{DateTime.Now:yyyyMMdd}-{order.Id}.pdf";
             _pdfService.GenerateInvoice(invoice, outputPath);
-            
+
             _logger.LogInformation("Successfully created invoice for order ID: {Id}", order.Id);
             return invoice;
         }

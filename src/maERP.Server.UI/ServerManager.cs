@@ -16,30 +16,30 @@ public static class ServerManager
         {
             return "maERP.Server.exe";
         }
-        
+
         return "maERP.Server";
     }
 
     private static string? FindSolutionDirectory(string startPath)
     {
         var directory = new DirectoryInfo(startPath);
-        
+
         while (directory != null)
         {
             // Suche nach .sln Dateien oder src-Ordner
-            if (directory.GetFiles("*.sln").Length > 0 || 
-                (directory.GetDirectories("src").Length > 0 && 
+            if (directory.GetFiles("*.sln").Length > 0 ||
+                (directory.GetDirectories("src").Length > 0 &&
                  Directory.Exists(Path.Combine(directory.FullName, "src", "maERP.Server"))))
             {
                 return directory.FullName;
             }
-            
+
             directory = directory.Parent;
         }
-        
+
         return null;
     }
-    
+
     /// <summary>
     /// Startet den maERP.Server als separaten Prozess
     /// </summary>
@@ -54,12 +54,12 @@ public static class ServerManager
             // Pfad zum Server-Binary finden
             var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
             var serverPath = Path.Combine(appDirectory, "Server", GetServerExecutableName());
-            
+
             if (!File.Exists(serverPath))
             {
                 // Alternative: Suche im Unterverzeichnis
                 serverPath = Path.Combine(appDirectory, "maERP.Server", GetServerExecutableName());
-                
+
                 if (!File.Exists(serverPath))
                 {
                     // Alternative: Suche nach Server im übergeordneten src-Verzeichnis
@@ -85,7 +85,7 @@ public static class ServerManager
                     }
                 }
             }
-            
+
             // Server-Prozess konfigurieren
             var startInfo = new ProcessStartInfo
             {
@@ -97,39 +97,39 @@ public static class ServerManager
                 CreateNoWindow = true,
                 WorkingDirectory = Path.GetDirectoryName(serverPath)
             };
-            
+
             // Umgebungsvariablen setzen
             startInfo.EnvironmentVariables["ASPNETCORE_ENVIRONMENT"] = "Production";
             startInfo.EnvironmentVariables["ASPNETCORE_URLS"] = $"http://localhost:{port}";
-            
+
             // Datenbankeinstellungen als Umgebungsvariablen setzen
             if (!string.IsNullOrEmpty(databaseProvider))
             {
                 startInfo.EnvironmentVariables["DatabaseConfig__Provider"] = databaseProvider;
             }
-            
+
             if (!string.IsNullOrEmpty(connectionString) && !string.IsNullOrEmpty(databaseProvider))
             {
                 startInfo.EnvironmentVariables[$"DatabaseConfig__ConnectionStrings__{databaseProvider}"] = connectionString;
             }
-            
+
             _serverProcess = Process.Start(startInfo);
-            
+
             if (_serverProcess == null)
             {
                 Console.WriteLine("Failed to start server process");
                 return false;
             }
-            
+
             // Warten bis Server bereit ist
             await Task.Delay(2000);
-            
+
             if (_serverProcess.HasExited)
             {
                 Console.WriteLine($"Server process exited prematurely with code: {_serverProcess.ExitCode}");
                 return false;
             }
-            
+
             Console.WriteLine($"maERP.Server started successfully on port {port}");
             return true;
         }
@@ -139,7 +139,7 @@ public static class ServerManager
             return false;
         }
     }
-    
+
     /// <summary>
     /// Stoppt den Server-Prozess
     /// </summary>
@@ -164,7 +164,7 @@ public static class ServerManager
             _serverProcess = null;
         }
     }
-    
+
     /// <summary>
     /// Prüft ob der Server läuft
     /// </summary>
@@ -172,7 +172,7 @@ public static class ServerManager
     {
         return _serverProcess != null && !_serverProcess.HasExited;
     }
-    
+
     /// <summary>
     /// Ermittelt die Server-URL
     /// </summary>

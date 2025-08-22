@@ -10,7 +10,7 @@ public interface IUserRepository
     Task<IEnumerable<IdentityError>> CreateAsync(ApplicationUser userToCreate, string password);
     Task<ApplicationUser> UpdateWithDetailsAsync(ApplicationUser userUpdateDto);
     Task<bool> Exists(string id);
-    
+
     // New methods for managing user-tenant assignments
     Task AssignUserToTenantsAsync(string userId, IEnumerable<int> tenantIds, int? defaultTenantId = null);
     Task UpdateUserTenantAssignmentsAsync(string userId, IEnumerable<int> tenantIds, int? defaultTenantId = null);

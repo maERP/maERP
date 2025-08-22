@@ -68,7 +68,7 @@ public partial class AiModelInputViewModel : ViewModelBase
     public async Task InitializeAsync(int aiModelId = 0)
     {
         AiModelId = aiModelId;
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -157,7 +157,7 @@ public partial class AiModelInputViewModel : ViewModelBase
             else if (result.Succeeded)
             {
                 _debugService.LogInfo($"AI model {(IsEditMode ? "updated" : "created")} successfully");
-                
+
                 if (IsEditMode && NavigateToAiModelDetail != null)
                 {
                     await NavigateToAiModelDetail(result.Data);

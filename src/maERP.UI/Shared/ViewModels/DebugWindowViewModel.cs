@@ -32,7 +32,7 @@ public partial class DebugWindowViewModel : ViewModelBase
         {
             LogCount = DebugLogs.Count;
             StatusText = $"Last update: {DateTime.Now:HH:mm:ss}";
-            
+
             if (AutoScroll)
             {
                 ScrollToBottomRequested?.Invoke();
@@ -59,12 +59,12 @@ public partial class DebugWindowViewModel : ViewModelBase
     public void AddDebugLog(DebugLevel level, string message)
     {
         var entry = new DebugLogEntry(level, message, DateTime.Now);
-        
+
         if (DebugLogs.Count > 1000)
         {
             DebugLogs.RemoveAt(0);
         }
-        
+
         DebugLogs.Add(entry);
     }
 
@@ -89,7 +89,7 @@ public class DebugLogEntry
         Level = level.ToString().ToUpper();
         Message = message;
         Timestamp = timestamp;
-        
+
         LevelBrush = level switch
         {
             DebugLevel.Debug => new SolidColorBrush(Color.FromArgb(40, 128, 128, 128)),
@@ -98,7 +98,7 @@ public class DebugLogEntry
             DebugLevel.Error => new SolidColorBrush(Color.FromArgb(40, 220, 53, 69)),
             _ => new SolidColorBrush(Color.FromArgb(40, 128, 128, 128))
         };
-        
+
         LevelForeground = level switch
         {
             DebugLevel.Debug => new SolidColorBrush(Color.FromRgb(128, 128, 128)),

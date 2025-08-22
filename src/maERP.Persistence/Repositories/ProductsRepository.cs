@@ -11,7 +11,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
 
     }
-    
+
     public async Task<Product?> GetBySkuAsync(string sku)
     {
         return await Context.Product.Include(ps => ps.ProductSalesChannels).FirstOrDefaultAsync(p => p.Sku == sku);
@@ -29,7 +29,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
     public async Task<bool> UpdateStockAsync(int productId, int warehouseId, int newStock)
     {
         var productStock = await Context.ProductStock.FirstOrDefaultAsync(ps => ps.ProductId == productId && ps.WarehouseId == warehouseId);
-        
+
         if (productStock == null)
         {
             return false;

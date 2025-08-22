@@ -25,7 +25,7 @@ public class ImportExportController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<Result<CustomerCsvImportResult>>> ImportCustomersCsv(
-        IFormFile csvFile, 
+        IFormFile csvFile,
         bool updateExisting = false)
     {
         var command = new CustomerCsvImportCommand

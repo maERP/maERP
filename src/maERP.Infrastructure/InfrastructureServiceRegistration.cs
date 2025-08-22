@@ -20,10 +20,10 @@ public static class InfrastructureServiceRegistration
             var settingsService = serviceProvider.GetRequiredService<ISettingsService>();
             return settingsService.GetEmailSettingsAsync().GetAwaiter().GetResult();
         });
-        
+
         services.AddScoped<IEmailService, EmailService.EmailService>();
         services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
-        
+
         // services.Configure<PdfOptions>(configuration.GetSection("PdfOptions"));
         services.AddScoped<IPdfService, PdfService>();
 

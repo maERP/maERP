@@ -74,7 +74,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
     {
         AiPromptId = aiPromptId;
         await LoadAiModelsAsync();
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -192,7 +192,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
             else if (result.Succeeded)
             {
                 _debugService.LogInfo($"AI prompt {(IsEditMode ? "updated" : "created")} successfully");
-                
+
                 if (IsEditMode && NavigateToAiPromptDetail != null)
                 {
                     await NavigateToAiPromptDetail(AiPromptId);

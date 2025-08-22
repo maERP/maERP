@@ -10,10 +10,10 @@ public class InvoiceItemConfiguration : IEntityTypeConfiguration<InvoiceItem>
     {
         builder.Property(e => e.UnitPrice)
             .HasPrecision(18, 2);
-            
+
         builder.Property(e => e.TotalPrice)
             .HasPrecision(18, 2);
-            
+
         builder.Property(e => e.TaxAmount)
             .HasPrecision(18, 2);
     }

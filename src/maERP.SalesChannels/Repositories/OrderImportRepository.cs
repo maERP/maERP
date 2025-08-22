@@ -36,7 +36,7 @@ public class OrderImportRepository : IOrderImportRepository
         if (existingOrder == null)
         {
             _logger.LogInformation("Order {0}: does not exist, create order...", importOrder.RemoteOrderId);
-            
+
             // try to find customer in sales channel
             var customer = await _customerRepository.GetCustomerByRemoteCustomerIdAsync(salesChannel.Id, importOrder.RemoteCustomerId);
 
@@ -52,9 +52,9 @@ public class OrderImportRepository : IOrderImportRepository
                     _logger.LogInformation("CustomerSalesChannel added for Customer {0} ", customer.Id);
                 }
             }
-            
+
             // when still not found, create new customer
-            if(customer == null)
+            if (customer == null)
             {
                 var newCustomer = new Customer
                 {
@@ -73,19 +73,19 @@ public class OrderImportRepository : IOrderImportRepository
                 await _customerRepository.CreateAsync(newCustomer);
                 _logger.LogInformation("Customer {0} created", importOrder.Customer?.Email);
                 customer = newCustomer;
-                
+
                 await _customerRepository.AddCustomerToSalesChannelAsync(newCustomer.Id, salesChannel.Id, importOrder.RemoteCustomerId);
                 _logger.LogInformation("CustomerSalesChannel added for Customer {0} ", customer.Id);
             }
 
             int billingAddressId = 0;
-            int shippingAddressId = 0; 
+            int shippingAddressId = 0;
             var customerAddresses = await _customerRepository.GetCustomerAddressByCustomerIdAsync(customer.Id);
 
             Country? billingAddressCountry = await MapCountryFromStringAsync(importOrder.BillingAddress.Country);
             Country? shippingAddressCountry = await MapCountryFromStringAsync(importOrder.ShippingAddress.Country);
 
-            if(billingAddressCountry == null)
+            if (billingAddressCountry == null)
             {
                 _logger.LogError("Order {0}: Cannot import, country {1} not found", importOrder.RemoteOrderId, importOrder.BillingAddress.Country);
                 return;
@@ -108,7 +108,7 @@ public class OrderImportRepository : IOrderImportRepository
                 {
                     billingAddressId = address.Id;
                 }
-                
+
                 if (address.Firstname == importOrder.ShippingAddress.Firstname &&
                     address.Lastname == importOrder.ShippingAddress.Lastname &&
                     address.CompanyName == importOrder.ShippingAddress.CompanyName &&
@@ -118,8 +118,8 @@ public class OrderImportRepository : IOrderImportRepository
                 {
                     shippingAddressId = address.Id;
                 }
-                
-                if(billingAddressId > 0 && shippingAddressId > 0)
+
+                if (billingAddressId > 0 && shippingAddressId > 0)
                 {
                     break;
                 }
@@ -140,11 +140,11 @@ public class OrderImportRepository : IOrderImportRepository
                     Country = billingAddressCountry,
                     CountryId = billingAddressCountry.Id
                 };
-                
+
                 await _customerRepository.AddCustomerAddressAsync(newAddress);
             }
-            
-            if(shippingAddressId > 0 && shippingAddressId != billingAddressId)
+
+            if (shippingAddressId > 0 && shippingAddressId != billingAddressId)
             {
                 var newAddress = new CustomerAddress
                 {
@@ -159,7 +159,7 @@ public class OrderImportRepository : IOrderImportRepository
                     Country = shippingAddressCountry,
                     CountryId = shippingAddressCountry.Id,
                 };
-                
+
                 await _customerRepository.AddCustomerAddressAsync(newAddress);
             }
 
@@ -203,7 +203,7 @@ public class OrderImportRepository : IOrderImportRepository
             {
                 foreach (var item in importOrder.OrderItems)
                 {
-                    if(String.IsNullOrEmpty(item.Sku))
+                    if (String.IsNullOrEmpty(item.Sku))
                     {
                         _logger.LogError("Order {0}: Cannot import, product has empty SKU", importOrder.RemoteOrderId);
                         return;
@@ -219,7 +219,7 @@ public class OrderImportRepository : IOrderImportRepository
                         TaxRate = item.TaxRate
                     };
 
-                    if(product != null)
+                    if (product != null)
                     {
                         newOrderItem.ProductId = product.Id;
                         _logger.LogInformation("Order {0}: Add Item {1}", importOrder.RemoteOrderId, item.Name);
@@ -255,14 +255,14 @@ public class OrderImportRepository : IOrderImportRepository
             await _orderRepository.CreateAsync(newOrder);
             _logger.LogInformation("Order {0}: created", importOrder.RemoteOrderId);
 
-            if(salesChannel.ImportProducts == false)
+            if (salesChannel.ImportProducts == false)
             {
-               _logger.LogInformation("Order {0}: SalesChannel product import is disabled, updating Stock", importOrder.RemoteOrderId);
+                _logger.LogInformation("Order {0}: SalesChannel product import is disabled, updating Stock", importOrder.RemoteOrderId);
 
                 foreach (var orderItem in newOrder.OrderItems)
                 {
                     Product product = await _productRepository.GetWithDetailsAsync(orderItem.ProductId) ?? throw new Exception("OrderImportRepository: Product not found");
-                    
+
                     // Use first warehouse of sales channel for stock update
                     var warehouse = salesChannel.Warehouses?.FirstOrDefault();
                     if (warehouse != null)
@@ -291,18 +291,18 @@ public class OrderImportRepository : IOrderImportRepository
             _logger.LogInformation("Order {0}: already exists, check for changes", existingOrder.RemoteOrderId);
             bool somethingChanged = false;
 
-            if(existingOrder.Status != importOrder.Status)
+            if (existingOrder.Status != importOrder.Status)
             {
                 somethingChanged = true;
                 _logger.LogInformation("Order {0}: Status updated, new status is {1}", importOrder.RemoteOrderId, importOrder.Status);
             }
 
-            if(existingOrder.PaymentStatus != importOrder.PaymentStatus)
+            if (existingOrder.PaymentStatus != importOrder.PaymentStatus)
             {
                 somethingChanged = true;
                 _logger.LogInformation("Order {0}: PaymentStatus updated, new status is {1}", importOrder.RemoteOrderId, importOrder.PaymentStatus);
             }
- 
+
             // TODO: implement check for changed shipping status
 
             if (somethingChanged)

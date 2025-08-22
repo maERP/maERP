@@ -49,12 +49,12 @@ public class InvoicesController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetPdf(int id)
     {
         var response = await mediator.Send(new InvoicePdfQuery { Id = id });
-        
+
         if (!response.Succeeded)
         {
             return StatusCode((int)response.StatusCode, response);
         }
-        
+
         return File(response.Data, "application/pdf", $"Rechnung_{id}.pdf");
     }
 

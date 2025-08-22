@@ -11,7 +11,7 @@ public partial class WarehouseListView : UserControl
     {
         InitializeComponent();
     }
-    
+
     private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e)
     {
         if (DataContext is WarehouseListViewModel viewModel && viewModel.SelectedWarehouse != null)

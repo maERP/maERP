@@ -92,7 +92,7 @@ public partial class ManufacturerInputViewModel : ViewModelBase
     public async Task InitializeAsync(int manufacturerId = 0)
     {
         ManufacturerId = manufacturerId;
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -160,7 +160,7 @@ public partial class ManufacturerInputViewModel : ViewModelBase
         try
         {
             var dto = CreateDtoFromForm();
-            
+
             if (IsEditMode)
             {
                 // Update existing manufacturer
@@ -174,7 +174,7 @@ public partial class ManufacturerInputViewModel : ViewModelBase
                 else if (result.Succeeded)
                 {
                     _debugService.LogInfo($"Successfully updated manufacturer {ManufacturerId}");
-                    
+
                     if (NavigateToManufacturerDetail != null)
                     {
                         await NavigateToManufacturerDetail(ManufacturerId);
@@ -203,7 +203,7 @@ public partial class ManufacturerInputViewModel : ViewModelBase
                 else if (result.Succeeded && result.Data != null)
                 {
                     _debugService.LogInfo($"Successfully created manufacturer {result.Data.Id}");
-                    
+
                     if (NavigateToManufacturerDetail != null)
                     {
                         await NavigateToManufacturerDetail(result.Data.Id);

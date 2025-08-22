@@ -29,17 +29,17 @@ public partial class App : Application
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            
+
             _mainWindow = new MainWindow
             {
                 DataContext = new MainWindowViewModel(),
             };
-            
+
             desktop.MainWindow = _mainWindow;
-            
+
             // Create system tray icon
             CreateTrayIcon();
-            
+
             // Platform-specific startup behavior
             if (OperatingSystem.IsMacOS())
             {
@@ -70,15 +70,15 @@ public partial class App : Application
         };
 
         var menu = new NativeMenu();
-        
+
         var showItem = new NativeMenuItem("Show Window");
         showItem.Click += (sender, args) => ShowMainWindow();
-        
+
         var hideItem = new NativeMenuItem("Hide Window");
         hideItem.Click += (sender, args) => HideMainWindow();
-        
+
         var separatorItem = new NativeMenuItemSeparator();
-        
+
         var exitItem = new NativeMenuItem("Exit");
         exitItem.Click += (sender, args) => ExitApplication();
 
@@ -88,7 +88,7 @@ public partial class App : Application
         menu.Add(exitItem);
 
         _trayIcon.Menu = menu;
-        
+
         // Double-click to show/hide window
         _trayIcon.Clicked += (sender, args) => ToggleMainWindow();
     }

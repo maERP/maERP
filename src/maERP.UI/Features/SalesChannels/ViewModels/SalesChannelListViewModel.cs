@@ -145,7 +145,7 @@ public partial class SalesChannelListViewModel : ViewModelBase
     private async Task ViewSalesChannelDetails(SalesChannelListDto? salesChannel)
     {
         if (salesChannel == null || NavigateToSalesChannelDetail == null) return;
-        
+
         SelectedSalesChannel = salesChannel;
         await NavigateToSalesChannelDetail(salesChannel.Id);
     }
@@ -154,7 +154,7 @@ public partial class SalesChannelListViewModel : ViewModelBase
     private async Task CreateSalesChannel()
     {
         if (NavigateToSalesChannelInput == null) return;
-        
+
         await NavigateToSalesChannelInput(0); // 0 indicates create new
     }
 

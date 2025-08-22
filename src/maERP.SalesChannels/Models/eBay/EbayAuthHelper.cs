@@ -27,23 +27,23 @@ public class EbayAuthHelper
         {
             var client = new HttpClient();
             string tokenUrl = "https://api.ebay.com/identity/v1/oauth2/token";
-            
+
             var request = new HttpRequestMessage(HttpMethod.Post, tokenUrl);
             request.Headers.Authorization = new AuthenticationHeaderValue(
-                "Basic", 
+                "Basic",
                 Convert.ToBase64String(Encoding.UTF8.GetBytes($"{salesChannel.Username}:{salesChannel.Password}"))
             );
-            
+
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "grant_type", "client_credentials" },
                 { "scope", "https://api.ebay.com/oauth/api_scope" }
             });
-            
+
             request.Content = content;
-            
+
             var response = await client.SendAsync(request);
-            
+
             if (response.IsSuccessStatusCode)
             {
                 string result = await response.Content.ReadAsStringAsync();
@@ -68,10 +68,10 @@ public class EbayTokenResponse
 {
     [JsonPropertyName("access_token")]
     public string AccessToken { get; set; }
-    
+
     [JsonPropertyName("expires_in")]
     public int ExpiresIn { get; set; }
-    
+
     [JsonPropertyName("token_type")]
     public string TokenType { get; set; }
-} 
+}

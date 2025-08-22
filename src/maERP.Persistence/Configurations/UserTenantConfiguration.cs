@@ -9,7 +9,7 @@ public class UserTenantConfiguration : IEntityTypeConfiguration<UserTenant>
     public void Configure(EntityTypeBuilder<UserTenant> builder)
     {
         builder.HasKey(ut => new { ut.UserId, ut.TenantId });
-        
+
         builder.HasOne(ut => ut.User)
             .WithMany(u => u.UserTenants)
             .HasForeignKey(ut => ut.UserId)
@@ -19,7 +19,7 @@ public class UserTenantConfiguration : IEntityTypeConfiguration<UserTenant>
             .WithMany(t => t.UserTenants)
             .HasForeignKey(ut => ut.TenantId)
             .OnDelete(DeleteBehavior.Cascade);
-            
+
         builder.Property(ut => ut.IsDefault).HasDefaultValue(false);
     }
 }

@@ -26,7 +26,7 @@ public class GoodsReceiptCreateHandler : IRequestHandler<GoodsReceiptCreateComma
 
     public async Task<Result<int>> Handle(GoodsReceiptCreateCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Creating new goods receipt for Product ID: {ProductId}, Quantity: {Quantity}", 
+        _logger.LogInformation("Creating new goods receipt for Product ID: {ProductId}, Quantity: {Quantity}",
             request.ProductId, request.Quantity);
 
         var result = new Result<int>();
@@ -92,7 +92,7 @@ public class GoodsReceiptCreateHandler : IRequestHandler<GoodsReceiptCreateComma
         {
             // Get existing product stock or create new one
             var existingStock = await _goodsReceiptRepository.GetProductStockAsync(productId, warehouseId);
-            
+
             if (existingStock != null)
             {
                 existingStock.Stock += quantity;
@@ -109,7 +109,7 @@ public class GoodsReceiptCreateHandler : IRequestHandler<GoodsReceiptCreateComma
                 await _goodsReceiptRepository.CreateProductStockAsync(newStock);
             }
 
-            _logger.LogInformation("Updated product stock for Product ID: {ProductId}, Warehouse ID: {WarehouseId}, Added Quantity: {Quantity}", 
+            _logger.LogInformation("Updated product stock for Product ID: {ProductId}, Warehouse ID: {WarehouseId}, Added Quantity: {Quantity}",
                 productId, warehouseId, quantity);
         }
         catch (Exception ex)

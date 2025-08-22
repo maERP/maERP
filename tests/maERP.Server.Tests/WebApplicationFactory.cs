@@ -12,7 +12,7 @@ public class MaErpWebApplicationFactory<TStartup> : WebApplicationFactory<TStart
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
-        
+
         builder.ConfigureServices(
             // ReSharper disable once AsyncVoidLambda
             async services =>
@@ -21,12 +21,12 @@ public class MaErpWebApplicationFactory<TStartup> : WebApplicationFactory<TStart
                 var descriptors = services.Where(
                     d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>)
                         || d.ServiceType == typeof(ApplicationDbContext)).ToList();
-                
+
                 foreach (var descriptor in descriptors)
                 {
                     services.Remove(descriptor);
                 }
-                
+
                 services.AddDbContext<ApplicationDbContext>(
                     options =>
                     {

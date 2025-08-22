@@ -57,11 +57,11 @@ public partial class UserInputViewModel : ViewModelBase
     public bool IsEditMode => !string.IsNullOrEmpty(UserId);
     public string PageTitle => IsEditMode ? "Benutzer bearbeiten" : "Neuen Benutzer erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
-    public string FullName => !string.IsNullOrEmpty(Firstname) && !string.IsNullOrEmpty(Lastname) 
-        ? $"{Firstname} {Lastname}" 
+    public string FullName => !string.IsNullOrEmpty(Firstname) && !string.IsNullOrEmpty(Lastname)
+        ? $"{Firstname} {Lastname}"
         : "Neuer Benutzer";
     public bool IsPasswordRequired => !IsEditMode;
-    public string PasswordHint => IsEditMode 
+    public string PasswordHint => IsEditMode
         ? "Lassen Sie die Passwort-Felder leer, um das Passwort nicht zu ändern"
         : "Passwort muss mindestens 8 Zeichen haben";
 
@@ -77,7 +77,7 @@ public partial class UserInputViewModel : ViewModelBase
     public async Task InitializeAsync(string userId = "")
     {
         UserId = userId;
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -113,7 +113,7 @@ public partial class UserInputViewModel : ViewModelBase
                 Email = user.Email;
                 Password = string.Empty;
                 PasswordConfirm = string.Empty;
-                
+
                 OnPropertyChanged(nameof(FullName));
                 _debugService.LogInfo($"Loaded user {UserId} for editing");
             }
@@ -165,7 +165,7 @@ public partial class UserInputViewModel : ViewModelBase
                 else if (result.Succeeded)
                 {
                     _debugService.LogInfo($"User {UserId} updated successfully");
-                    
+
                     if (NavigateToUserDetail != null)
                     {
                         await NavigateToUserDetail(result.Data);
@@ -202,7 +202,7 @@ public partial class UserInputViewModel : ViewModelBase
                 else if (result.Succeeded)
                 {
                     _debugService.LogInfo($"User created successfully");
-                    
+
                     if (NavigateToUserDetail != null)
                     {
                         await NavigateToUserDetail(result.Data);

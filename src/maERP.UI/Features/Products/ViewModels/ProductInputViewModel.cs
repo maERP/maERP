@@ -141,9 +141,9 @@ public partial class ProductInputViewModel : ViewModelBase
     public async Task InitializeAsync(int productId = 0)
     {
         ProductId = productId;
-        
+
         await LoadDropdownDataAsync();
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -174,7 +174,7 @@ public partial class ProductInputViewModel : ViewModelBase
             else if (result.Succeeded && result.Data != null)
             {
                 var product = result.Data;
-                
+
                 // Map product data to form fields
                 Sku = product.Sku;
                 Name = product.Name;
@@ -192,16 +192,16 @@ public partial class ProductInputViewModel : ViewModelBase
                 Depth = product.Depth;
                 TaxClassId = product.TaxClassId;
                 ManufacturerId = product.Manufacturer?.Id;
-                
+
                 // Set selected tax class
                 SelectedTaxClass = AvailableTaxClasses.FirstOrDefault(tc => tc.Id == product.TaxClassId);
-                
+
                 // Set selected manufacturer
                 if (product.Manufacturer != null)
                 {
                     SelectedManufacturer = AvailableManufacturers.FirstOrDefault(m => m.Id == product.Manufacturer.Id);
                 }
-                
+
                 // Load sales channels
                 ProductSalesChannelIds.Clear();
                 if (product.ProductSalesChannel != null)
@@ -211,7 +211,7 @@ public partial class ProductInputViewModel : ViewModelBase
                         ProductSalesChannelIds.Add(id);
                     }
                 }
-                
+
                 // Update sales channel selections
                 foreach (var salesChannelVm in AvailableSalesChannels)
                 {
@@ -281,7 +281,7 @@ public partial class ProductInputViewModel : ViewModelBase
             else if (result.Succeeded)
             {
                 _debugService.LogInfo($"Product {(IsEditMode ? "updated" : "created")} successfully");
-                
+
                 if (IsEditMode && NavigateToProductDetail != null)
                 {
                     await NavigateToProductDetail(ProductId);
@@ -337,7 +337,7 @@ public partial class ProductInputViewModel : ViewModelBase
                 {
                     AvailableTaxClasses.Add(taxClass);
                 }
-                
+
                 // Set default tax class if available
                 if (AvailableTaxClasses.Any() && TaxClassId == 0)
                 {
@@ -353,12 +353,12 @@ public partial class ProductInputViewModel : ViewModelBase
                 AvailableManufacturers.Clear();
                 // Add empty option for no manufacturer
                 AvailableManufacturers.Add(new ManufacturerListDto { Id = 0, Name = "--- Kein Hersteller ---", City = "", Country = "" });
-                
+
                 foreach (var manufacturer in manufacturerResult.Data)
                 {
                     AvailableManufacturers.Add(manufacturer);
                 }
-                
+
                 // Set default to no manufacturer if none selected
                 if (ManufacturerId == null || ManufacturerId == 0)
                 {
@@ -406,14 +406,14 @@ public partial class ProductInputViewModel : ViewModelBase
         SelectedManufacturer = AvailableManufacturers.FirstOrDefault();
         ProductSalesChannelIds.Clear();
         ErrorMessage = string.Empty;
-        
+
         ClearErrors();
     }
 
     private bool ValidateForm()
     {
         ValidateAllProperties();
-        
+
         if (HasErrors)
         {
             ErrorMessage = "Bitte korrigieren Sie die Eingabefehler";
@@ -446,7 +446,7 @@ public partial class ProductInputViewModel : ViewModelBase
     private void ToggleSalesChannel(SalesChannelSelectionViewModel salesChannelVm)
     {
         salesChannelVm.IsSelected = !salesChannelVm.IsSelected;
-        
+
         if (salesChannelVm.IsSelected)
         {
             if (!ProductSalesChannelIds.Contains(salesChannelVm.SalesChannel.Id))

@@ -123,7 +123,7 @@ public class Shopware5OrderImportTask : IHostedService
                         {
                             _logger.LogInformation("Import Order {0}", remoteOrder.id.ToString());
 
-                            if(remoteOrder.orderStatusId == -1)
+                            if (remoteOrder.orderStatusId == -1)
                             {
                                 _logger.LogInformation("Import Order {0} skip order because cancelled in sales channel", remoteOrder.id.ToString());
                                 continue;

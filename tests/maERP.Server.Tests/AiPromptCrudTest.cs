@@ -33,7 +33,7 @@ public class AiPromptCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
 
         var httpResponseMessage = await httpClient.PostAsJsonAsync(url, aiPrompt);
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
-        
+
         Assert.True(httpResponseMessage.IsSuccessStatusCode);
         Assert.NotNull(result);
         Assert.True(result.Succeeded);
@@ -75,7 +75,7 @@ public class AiPromptCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         });
 
         var result = await httpClient.GetFromJsonAsync<Result<AiPromptDetailDto>>(url);
-        
+
         Assert.NotNull(result);
         Assert.True(result.Succeeded);
         Assert.True(result.Data.PromptText.Length > 0);

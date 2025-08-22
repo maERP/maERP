@@ -18,7 +18,7 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
     /// Logger for recording handler operations
     /// </summary>
     private readonly IAppLogger<UserUpdateHandler> _logger;
-    
+
     /// <summary>
     /// Repository for user data operations
     /// </summary>
@@ -78,7 +78,7 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
                 result.Messages.Add($"User with ID {request.Id} not found.");
                 return result;
             }
-            
+
             // Get existing user
             var existingUser = await _userRepository.GetByIdAsync(request.Id);
             if (existingUser == null)
@@ -88,7 +88,7 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
                 result.Messages.Add($"User with ID {request.Id} not found.");
                 return result;
             }
-            
+
             // Update user properties
             existingUser.Email = request.Email;
             existingUser.UserName = request.Email;
@@ -96,10 +96,10 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
             existingUser.Lastname = request.Lastname;
             existingUser.DefaultTenantId = request.DefaultTenantId;
             existingUser.DateModified = DateTime.UtcNow;
-            
+
             // Update the user in the database
             await _userRepository.UpdateWithDetailsAsync(existingUser);
-            
+
             // Update tenant assignments if provided
             if (request.TenantIds != null && request.TenantIds.Any())
             {
@@ -107,7 +107,7 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
                     request.Id,
                     request.TenantIds,
                     request.DefaultTenantId);
-                    
+
                 _logger.LogInformation("Updated tenant assignments for user ID: {Id}", request.Id);
             }
 

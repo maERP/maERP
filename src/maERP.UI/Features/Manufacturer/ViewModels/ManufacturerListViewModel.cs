@@ -146,7 +146,7 @@ public partial class ManufacturerListViewModel : ViewModelBase
     private async Task ViewManufacturerDetails(ManufacturerListDto? manufacturer)
     {
         if (manufacturer == null || NavigateToManufacturerDetail == null) return;
-        
+
         SelectedManufacturer = manufacturer;
         await NavigateToManufacturerDetail(manufacturer.Id);
     }
@@ -155,7 +155,7 @@ public partial class ManufacturerListViewModel : ViewModelBase
     private async Task CreateNewManufacturer()
     {
         if (NavigateToManufacturerCreate == null) return;
-        
+
         await NavigateToManufacturerCreate();
     }
 

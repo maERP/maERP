@@ -23,10 +23,10 @@ public class StatisticsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<Result<StatisticOrderDto>>> OrderStatistic()
     {
         var result = await mediator.Send(new StatisticOrderQuery());
-        
+
         if (!result.Succeeded)
             return StatusCode((int)result.StatusCode, result);
-            
+
         return Ok(result);
     }
 
@@ -35,34 +35,34 @@ public class StatisticsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<Result<StatisticProductDto>>> ProductStatistic()
     {
         var result = await mediator.Send(new StatisticProductQuery());
-        
+
         if (!result.Succeeded)
             return StatusCode((int)result.StatusCode, result);
-            
+
         return Ok(result);
     }
-    
+
     // GET: api/v1/<StatisticsController>
     [HttpGet("OrderCustomerChart")]
     public async Task<ActionResult<Result<StatisticOrderCustomerChartResponse>>> OrderCustomerChart()
     {
         var result = await mediator.Send(new StatisticOrderCustomerChartQuery());
-        
+
         if (!result.Succeeded)
             return StatusCode((int)result.StatusCode, result);
-            
+
         return Ok(result);
     }
-    
+
     // GET: api/v1/<StatisticsController>
     [HttpGet("SalesStatistic")]
     public async Task<ActionResult<Result<StatisticSalesDto>>> SalesStatistic()
     {
         var result = await mediator.Send(new StatisticSalesQuery());
-        
+
         if (!result.Succeeded)
             return StatusCode((int)result.StatusCode, result);
-            
+
         return Ok(result);
     }
 
@@ -71,10 +71,10 @@ public class StatisticsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<Result<StatisticMostSellingProductsDto>>> MostSellingProducts()
     {
         var result = await mediator.Send(new StatisticMostSellingProductsQuery());
-        
+
         if (!result.Succeeded)
             return StatusCode((int)result.StatusCode, result);
-            
+
         return Ok(result);
     }
 }

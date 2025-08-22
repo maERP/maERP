@@ -73,14 +73,14 @@ public class WooCommerceOrderImportTask : IHostedService
             var remoteOrders = await wc.Order.GetAll();
 
             if (remoteOrders.Count > 0)
-            { 
+            {
                 foreach (var remoteOrder in remoteOrders)
                 {
                     // WooCommerce does not provide a subtotal
                     decimal subtotal = remoteOrder.total ?? 0;
                     subtotal -= remoteOrder.total_tax ?? 0;
                     subtotal -= remoteOrder.shipping_total ?? 0;
-                    
+
                     var salesChannelImportOrder = new SalesChannelImportOrder
                     {
                         RemoteOrderId = remoteOrder.id.ToString(),
@@ -106,7 +106,7 @@ public class WooCommerceOrderImportTask : IHostedService
                             Phone = remoteOrder.billing.phone,
                             DateEnrollment = remoteOrder.date_created_gmt ?? DateTime.UtcNow
                         },
-                        
+
                         BillingAddress = new SalesChannelImportCustomerAddress
                         {
                             Firstname = remoteOrder.billing.first_name,
@@ -117,8 +117,8 @@ public class WooCommerceOrderImportTask : IHostedService
                             Zip = remoteOrder.billing.postcode,
                             Country = remoteOrder.billing.country
                         },
-                        
-                        ShippingAddress = new SalesChannelImportCustomerAddress 
+
+                        ShippingAddress = new SalesChannelImportCustomerAddress
                         {
                             Firstname = remoteOrder.shipping.first_name,
                             Lastname = remoteOrder.shipping.last_name,
@@ -126,7 +126,7 @@ public class WooCommerceOrderImportTask : IHostedService
                             Street = remoteOrder.shipping.address_1,
                             City = remoteOrder.shipping.city,
                             Zip = remoteOrder.shipping.postcode,
-                            Country = remoteOrder.shipping.country 
+                            Country = remoteOrder.shipping.country
                         }
                     };
 

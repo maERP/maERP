@@ -36,7 +36,7 @@ public class ManufacturersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ManufacturerDetailDto>> GetDetails(int id)
-    { 
+    {
         var response = await mediator.Send(new ManufacturerDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
     }
@@ -74,12 +74,12 @@ public class ManufacturersController(IMediator mediator) : ControllerBase
     {
         var command = new ManufacturerDeleteCommand { Id = id };
         var response = await mediator.Send(command);
-        
+
         if (response.Succeeded)
         {
             return NoContent();
         }
-        
+
         return StatusCode((int)response.StatusCode, response);
     }
 }

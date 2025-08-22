@@ -139,7 +139,7 @@ public partial class AiModelDetailViewModel : ViewModelBase
     private async Task EditAiModel()
     {
         if (AiModel == null || NavigateToEditAiModel == null) return;
-        
+
         await NavigateToEditAiModel(AiModel.Id);
     }
 }

@@ -20,6 +20,12 @@ public class RoleConfiguration : IEntityTypeConfiguration<IdentityRole>
                 Id = "cbc43a8e-f7bb-4445-baaf-1add431ffbbf",
                 Name = "Administrator",
                 NormalizedName = "ADMINISTRATOR"
+            },
+            new IdentityRole
+            {
+                Id = "abc43a7e-f7bb-4447-baaf-1add431ddbdf",
+                Name = "Superadmin",
+                NormalizedName = "SUPERADMIN"
             }
         );
     }

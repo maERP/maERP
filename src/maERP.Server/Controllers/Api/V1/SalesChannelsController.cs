@@ -37,7 +37,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SalesChannelDetailDto>> GetDetails(int id)
     {
-        var response = await mediator.Send(new SalesChannelDetailQuery { Id = id }); 
+        var response = await mediator.Send(new SalesChannelDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
     }
 
@@ -50,7 +50,7 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
         var response = await mediator.Send(salesChannelCreateCommand);
         return StatusCode((int)response.StatusCode, response);
     }
-    
+
     // PUT: api/v1/<SalesChannelsController>/5
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

@@ -152,7 +152,7 @@ public partial class TaxClassListViewModel : ViewModelBase
     private async Task ViewTaxClassDetails(TaxClassListDto? taxClass)
     {
         if (taxClass == null || NavigateToTaxClassDetail == null) return;
-        
+
         SelectedTaxClass = taxClass;
         await NavigateToTaxClassDetail(taxClass.Id);
     }

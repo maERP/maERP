@@ -35,12 +35,12 @@ public partial class ProductDetailViewModel : ViewModelBase
     public Func<int, Task>? NavigateToProductInput { get; set; }
 
     // Computed properties for better display
-    public string DisplayName => Product.UseOptimized && !string.IsNullOrEmpty(Product.NameOptimized) 
-        ? Product.NameOptimized 
+    public string DisplayName => Product.UseOptimized && !string.IsNullOrEmpty(Product.NameOptimized)
+        ? Product.NameOptimized
         : Product?.Name ?? string.Empty;
 
-    public string DisplayDescription => Product.UseOptimized && !string.IsNullOrEmpty(Product.DescriptionOptimized) 
-        ? Product.DescriptionOptimized 
+    public string DisplayDescription => Product.UseOptimized && !string.IsNullOrEmpty(Product.DescriptionOptimized)
+        ? Product.DescriptionOptimized
         : Product?.Description ?? string.Empty;
 
     public bool HasDescription => !string.IsNullOrEmpty(DisplayDescription);
@@ -64,13 +64,13 @@ public partial class ProductDetailViewModel : ViewModelBase
         get
         {
             if (Product == null) return string.Empty;
-            
+
             var dimensions = new List<string>();
-            
+
             if (Product.Width > 0) dimensions.Add($"B: {Product.Width:F1} cm");
             if (Product.Height > 0) dimensions.Add($"H: {Product.Height:F1} cm");
             if (Product.Depth > 0) dimensions.Add($"T: {Product.Depth:F1} cm");
-            
+
             return dimensions.Any() ? string.Join(" × ", dimensions) : "Keine Angaben";
         }
     }

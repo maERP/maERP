@@ -93,20 +93,20 @@ public class EbayProductImportTask : IHostedService
                     {
                         string result = await response.Content.ReadAsStringAsync();
                         var inventoryItems = JsonSerializer.Deserialize<EbayInventoryItemResponse>(result);
-                        
+
                         total = inventoryItems.Total;
-                        
+
                         foreach (var item in inventoryItems.InventoryItems)
                         {
                             // Zweiter Schritt: Angebotsinformationen abrufen
                             string offerUrl = $"{salesChannel.Url}/sell/inventory/v1/offer?sku={item.Sku}";
                             var offerResponse = await client.GetAsync(offerUrl);
-                            
+
                             if (offerResponse.IsSuccessStatusCode)
                             {
                                 string offerResult = await offerResponse.Content.ReadAsStringAsync();
                                 var offers = JsonSerializer.Deserialize<EbayOfferResponse>(offerResult);
-                                
+
                                 if (offers.Offers != null && offers.Offers.Length > 0)
                                 {
                                     var offer = offers.Offers[0]; // Erstes Angebot nehmen
@@ -114,28 +114,28 @@ public class EbayProductImportTask : IHostedService
                                     {
                                         Name = item.Product.Title,
                                         Sku = item.Sku,
-                                        Ean = item.Product.Ean != null && item.Product.Ean.Length > 0 
-                                            ? item.Product.Ean[0] 
+                                        Ean = item.Product.Ean != null && item.Product.Ean.Length > 0
+                                            ? item.Product.Ean[0]
                                             : string.Empty,
                                         Price = offer.PricingSummary.Price.Value,
                                         TaxRate = 19, // Standard-Steuersatz
                                         Description = item.Product.Description ?? string.Empty
                                     };
-                                    
+
                                     if (importProduct.Description.Length > 4000)
                                     {
                                         importProduct.Description = importProduct.Description.Substring(0, 4000);
                                     }
-                                    
+
                                     await productImportRepository.ImportOrUpdateFromSalesChannel(salesChannel.Id, importProduct);
                                 }
                             }
                         }
-                        
+
                         offset += limit;
-                        
+
                         _logger.LogInformation($"Import Products: {requestUrl} (max {total} Products)");
-                        
+
                         await Task.Delay(new TimeSpan(0, 0, 1));
                     }
                     else
@@ -158,4 +158,4 @@ public class EbayProductImportTask : IHostedService
             }
         }
     }
-} 
+}

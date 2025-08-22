@@ -145,7 +145,7 @@ public partial class ProductListViewModel : ViewModelBase
     private async Task ViewProductDetails(ProductListDto? product)
     {
         if (product == null || NavigateToProductDetail == null) return;
-        
+
         SelectedProduct = product;
         await NavigateToProductDetail(product.Id);
     }

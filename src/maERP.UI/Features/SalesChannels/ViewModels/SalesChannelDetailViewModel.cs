@@ -37,10 +37,10 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
     public bool HasUrl => SalesChannel != null && !string.IsNullOrEmpty(SalesChannel.Url);
     public bool HasUsername => SalesChannel != null && !string.IsNullOrEmpty(SalesChannel.Username);
     public bool HasPassword => SalesChannel != null && !string.IsNullOrEmpty(SalesChannel.Password);
-    
+
     // Connection properties
     public bool HasConnectionInfo => HasUrl && HasUsername;
-    
+
     // Import/Export capabilities
     public bool HasImportCapabilities => SalesChannel != null && (SalesChannel.ImportProducts || SalesChannel.ImportCustomers || SalesChannel.ImportOrders);
     public bool HasExportCapabilities => SalesChannel != null && (SalesChannel.ExportProducts || SalesChannel.ExportCustomers || SalesChannel.ExportOrders);
@@ -51,7 +51,7 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
     {
         SalesChannelType.PointOfSale => "📍 Point of Sale",
         SalesChannelType.Shopware5 => "🛒 Shopware 5",
-        SalesChannelType.Shopware6 => "🛒 Shopware 6", 
+        SalesChannelType.Shopware6 => "🛒 Shopware 6",
         SalesChannelType.WooCommerce => "🛍️ WooCommerce",
         SalesChannelType.eBay => "🏪 eBay",
         _ => SalesChannel?.SalesChannelType.ToString() ?? "Unbekannt"
@@ -62,7 +62,7 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
         SalesChannelType.PointOfSale => "📍",
         SalesChannelType.Shopware5 => "🛒",
         SalesChannelType.Shopware6 => "🛒",
-        SalesChannelType.WooCommerce => "🛍️", 
+        SalesChannelType.WooCommerce => "🛍️",
         SalesChannelType.eBay => "🏪",
         _ => "🔗"
     };
@@ -150,7 +150,7 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
     private async Task EditSalesChannel()
     {
         if (SalesChannelId <= 0 || NavigateToSalesChannelInput == null) return;
-        
+
         await NavigateToSalesChannelInput(SalesChannelId);
     }
 }

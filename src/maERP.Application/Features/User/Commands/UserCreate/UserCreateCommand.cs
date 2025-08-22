@@ -19,22 +19,22 @@ public class UserCreateCommand : IRequest<Result<string>>
     /// Password for the new user account
     /// </summary>
     public string Password { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// First name of the user
     /// </summary>
     public string Firstname { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Last name of the user
     /// </summary>
     public string Lastname { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// Default tenant ID for the user
     /// </summary>
     public int DefaultTenantId { get; set; }
-    
+
     /// <summary>
     /// Additional tenant IDs to assign to this user
     /// </summary>

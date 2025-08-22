@@ -35,7 +35,7 @@ public partial class TaxClassDetailViewModel : ViewModelBase
 
     // Computed properties for better display
     public string TaxRateFormatted => TaxClass?.TaxRate.ToString("F2") + " %" ?? "0,00 %";
-    
+
     public string TaxRateDescription => TaxClass?.TaxRate switch
     {
         0.0 => "Steuerfreie Waren und Dienstleistungen",
@@ -130,7 +130,7 @@ public partial class TaxClassDetailViewModel : ViewModelBase
     private async Task EditTaxClass()
     {
         if (TaxClass == null || NavigateToEditTaxClass == null) return;
-        
+
         await NavigateToEditTaxClass(TaxClass.Id);
     }
 }

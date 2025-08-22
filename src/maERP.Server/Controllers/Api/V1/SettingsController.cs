@@ -36,7 +36,7 @@ public class SettingsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SettingDetailDto>> GetDetails(int id)
-    { 
+    {
         var response = await mediator.Send(new SettingDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
     }

@@ -110,7 +110,7 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
 
         var httpResponseMessage = await httpClient.PutAsJsonAsync(url, customer);
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
-        
+
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
         Assert.NotNull(result);
         Assert.True(result.Succeeded);
@@ -133,7 +133,7 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         });
 
         var response = await httpClient.DeleteAsync(url);
-        
+
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 
@@ -145,7 +145,7 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         await _webApplicationFactory.InitializeDbForTests();
 
         HttpResponseMessage response = await httpClient.GetAsync(url);
-        
+
         // We should still get OK status code from the API
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 

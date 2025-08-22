@@ -11,7 +11,7 @@ public partial class TaxClassListView : UserControl
     {
         InitializeComponent();
     }
-    
+
     private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e)
     {
         if (DataContext is TaxClassListViewModel viewModel && viewModel.SelectedTaxClass != null)

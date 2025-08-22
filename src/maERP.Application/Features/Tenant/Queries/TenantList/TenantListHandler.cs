@@ -20,7 +20,7 @@ public class TenantListHandler : IRequestHandler<TenantListQuery, PaginatedResul
         _logger = logger;
         _tenantRepository = tenantRepository;
     }
-    
+
     public async Task<PaginatedResult<TenantListDto>> Handle(TenantListQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("TenantListHandler.Handle: Retrieving tenants.");

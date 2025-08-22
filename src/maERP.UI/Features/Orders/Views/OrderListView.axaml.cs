@@ -11,7 +11,7 @@ public partial class OrderListView : UserControl
     {
         InitializeComponent();
     }
-    
+
     private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e)
     {
         if (DataContext is OrderListViewModel viewModel && viewModel.SelectedOrder != null)

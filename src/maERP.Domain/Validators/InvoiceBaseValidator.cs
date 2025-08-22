@@ -15,10 +15,10 @@ public class InvoiceBaseValidator<T> : AbstractValidator<T> where T : IInvoiceIn
         // Basic invoice validation
         RuleFor(x => x.InvoiceNumber)
             .NotEmpty().WithMessage("Die Rechnungsnummer darf nicht leer sein.");
-            
+
         RuleFor(x => x.InvoiceDate)
             .NotEmpty().WithMessage("Das Rechnungsdatum darf nicht leer sein.");
-            
+
         RuleFor(x => x.CustomerId)
             .GreaterThan(0).WithMessage("Bitte wählen Sie einen Kunden aus.");
 

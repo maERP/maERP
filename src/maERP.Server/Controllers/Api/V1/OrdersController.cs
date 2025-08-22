@@ -102,7 +102,7 @@ public class OrdersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult> Update(int id, OrderUpdateCommand orderUpdateCommand)
     {
         orderUpdateCommand.Id = id;
-        var response =await mediator.Send(orderUpdateCommand);
+        var response = await mediator.Send(orderUpdateCommand);
         return StatusCode((int)response.StatusCode, response);
     }
 

@@ -16,4 +16,4 @@ public class OrderHistory : BaseEntity, IBaseEntity
     public string? ShippingStatusNew { get; set; }
     public string Description { get; set; } = string.Empty;
     public bool IsSystemGenerated { get; set; }
-} 
+}

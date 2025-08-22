@@ -37,7 +37,7 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
 
         var httpResponseMessage = await httpClient.PostAsJsonAsync(url, aiModel);
         var result = await httpResponseMessage.Content.ReadFromJsonAsync<Result<int>>();
-        
+
         Assert.True(httpResponseMessage.IsSuccessStatusCode);
         Assert.NotNull(result);
         Assert.True(result.Succeeded);
@@ -81,7 +81,7 @@ public class AiModelCrudTest : IClassFixture<MaErpWebApplicationFactory<Program>
         });
 
         var result = await httpClient.GetFromJsonAsync<Result<AiModelDetailDto>>(url);
-        
+
         Assert.NotNull(result);
         Assert.True(result.Succeeded);
         Assert.True(result.Data.Name.Length > 0);

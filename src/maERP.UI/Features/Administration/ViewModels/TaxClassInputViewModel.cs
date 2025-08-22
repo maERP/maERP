@@ -53,7 +53,7 @@ public partial class TaxClassInputViewModel : ViewModelBase
     public async Task InitializeAsync(int taxClassId = 0)
     {
         TaxClassId = taxClassId;
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -132,7 +132,7 @@ public partial class TaxClassInputViewModel : ViewModelBase
             else if (result.Succeeded)
             {
                 _debugService.LogInfo($"Tax class {(IsEditMode ? "updated" : "created")} successfully");
-                
+
                 if (IsEditMode && NavigateToTaxClassDetail != null)
                 {
                     await NavigateToTaxClassDetail(result.Data);

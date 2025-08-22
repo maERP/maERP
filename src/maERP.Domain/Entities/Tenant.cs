@@ -24,7 +24,7 @@ public class Tenant : BaseEntityWithoutTenant, IBaseEntityWithoutTenant
 
     // Users with this tenant as their default tenant
     public ICollection<ApplicationUser>? DefaultForUsers { get; set; }
-    
+
     // Collection of user-tenant associations
     public ICollection<UserTenant>? UserTenants { get; set; }
 }

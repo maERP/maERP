@@ -4,6 +4,9 @@ using maERP.Application.Features.User.Commands.UserDelete;
 using maERP.Application.Features.User.Commands.UserUpdate;
 using maERP.Application.Features.User.Queries.UserDetail;
 using maERP.Application.Features.User.Queries.UserList;
+using maERP.Application.Features.UserTenant.Commands.AssignUserToTenant;
+using maERP.Application.Features.UserTenant.Commands.RemoveUserFromTenant;
+using maERP.Application.Features.UserTenant.Queries.GetUserTenants;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
@@ -81,5 +84,67 @@ public class UsersController : ControllerBase
         var command = new UserDeleteCommand { Id = id };
         await _mediator.Send(command);
         return NoContent();
+    }
+
+    /// <summary>
+    /// Get tenant assignments for a specific user
+    /// </summary>
+    /// <param name="id">User ID</param>
+    /// <returns>List of tenant assignments for the user</returns>
+    [HttpGet("{id}/tenants")]
+    [Authorize(Roles = "Superadmin")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Result<List<UserTenantAssignmentDto>>>> GetUserTenants(string id)
+    {
+        var response = await _mediator.Send(new GetUserTenantsQuery(id));
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    /// <summary>
+    /// Assign a user to a tenant
+    /// </summary>
+    /// <param name="id">User ID</param>
+    /// <param name="command">Assignment command</param>
+    /// <returns>Assignment ID</returns>
+    [HttpPost("{id}/tenants")]
+    [Authorize(Roles = "Superadmin")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Result<int>>> AssignUserToTenant(string id, AssignUserToTenantCommand command)
+    {
+        command.UserId = id;
+        var response = await _mediator.Send(command);
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    /// <summary>
+    /// Remove a user from a tenant
+    /// </summary>
+    /// <param name="id">User ID</param>
+    /// <param name="tenantId">Tenant ID</param>
+    /// <returns>No content if successful</returns>
+    [HttpDelete("{id}/tenants/{tenantId}")]
+    [Authorize(Roles = "Superadmin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> RemoveUserFromTenant(string id, int tenantId)
+    {
+        var command = new RemoveUserFromTenantCommand
+        {
+            UserId = id,
+            TenantId = tenantId
+        };
+        
+        var response = await _mediator.Send(command);
+        
+        if (response.Succeeded)
+        {
+            return NoContent();
+        }
+
+        return StatusCode((int)response.StatusCode, response);
     }
 }

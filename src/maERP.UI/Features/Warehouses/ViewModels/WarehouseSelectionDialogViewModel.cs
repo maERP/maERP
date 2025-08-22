@@ -30,13 +30,13 @@ public partial class WarehouseSelectionDialogViewModel : ViewModelBase
         AvailableWarehouses = warehouses ?? new List<WarehouseListDto>();
         Title = dialogTitle;
         Message = dialogMessage;
-        
+
         // Auto-select first warehouse if only one available
         if (AvailableWarehouses.Count == 1)
         {
             SelectedWarehouse = AvailableWarehouses.First();
         }
-        
+
         OnPropertyChanged(nameof(IsValidSelection));
     }
 

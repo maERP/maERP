@@ -146,7 +146,7 @@ public partial class OrderListViewModel : ViewModelBase
     private async Task ViewOrderDetails(OrderListDto? order)
     {
         if (order == null || NavigateToOrderDetail == null) return;
-        
+
         SelectedOrder = order;
         await NavigateToOrderDetail(order.Id);
     }

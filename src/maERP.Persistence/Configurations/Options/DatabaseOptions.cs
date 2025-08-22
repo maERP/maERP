@@ -8,7 +8,7 @@ public class DatabaseOptions
     public string ConnectionString { get; set; } = string.Empty;
     public Dictionary<string, string> ConnectionStringExamples { get; set; } = new();
 
-    public string GetConnectionString() => string.IsNullOrEmpty(ConnectionString) 
-        ? throw new InvalidOperationException("No connection string configured") 
+    public string GetConnectionString() => string.IsNullOrEmpty(ConnectionString)
+        ? throw new InvalidOperationException("No connection string configured")
         : ConnectionString;
 }
