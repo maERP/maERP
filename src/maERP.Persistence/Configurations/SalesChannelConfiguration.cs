@@ -7,13 +7,13 @@ namespace maERP.Persistence.Configurations;
 
 public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
 {
-    public void Configure(EntityTypeBuilder<SalesChannel> modelBuilder)
+    public void Configure(EntityTypeBuilder<SalesChannel> builder)
     {
-        modelBuilder.HasMany(sc => sc.Warehouses)
+        builder.HasMany(sc => sc.Warehouses)
             .WithMany(w => w.SalesChannels)
             .UsingEntity(j => j.ToTable("SalesChannelWarehouses"));
 
-        modelBuilder.HasData(
+        builder.HasData(
             new SalesChannel
             {
                 Id = 1,
@@ -31,7 +31,7 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
             }
         );
 
-        modelBuilder.Property(q => q.Name)
+        builder.Property(q => q.Name)
             .IsRequired()
             .HasMaxLength(100);
     }

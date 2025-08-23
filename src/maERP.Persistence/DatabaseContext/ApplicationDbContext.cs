@@ -5,6 +5,7 @@ using maERP.Persistence.Configurations;
 using maERP.Persistence.Seeders;
 using maERP.Application.Contracts.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.DatabaseContext;
@@ -15,6 +16,42 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // Map ASP.NET Identity tables to custom names
+        modelBuilder.Entity<ApplicationUser>().ToTable("user");
+        modelBuilder.Entity<IdentityRole>().ToTable("role");
+        modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("role_claim");
+        modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("user_claim");
+        modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("user_login");
+        modelBuilder.Entity<IdentityUserRole<string>>().ToTable("user_role");
+        modelBuilder.Entity<IdentityUserToken<string>>().ToTable("user_token");
+        
+        modelBuilder.Entity<AiModel>().ToTable("ai_model");
+        modelBuilder.Entity<AiPrompt>().ToTable("ai_prompt");
+        modelBuilder.Entity<Country>().ToTable("country");
+        modelBuilder.Entity<Customer>().ToTable("customer");
+        modelBuilder.Entity<CustomerAddress>().ToTable("customer_address");
+        modelBuilder.Entity<CustomerSalesChannel>().ToTable("customer_saleschannel");
+        modelBuilder.Entity<GoodsReceipt>().ToTable("goods_receipt");
+        modelBuilder.Entity<Invoice>().ToTable("invoice");
+        modelBuilder.Entity<InvoiceItem>().ToTable("invoice_item");
+        modelBuilder.Entity<Manufacturer>().ToTable("manufacturer");
+        modelBuilder.Entity<Order>().ToTable("order");
+        modelBuilder.Entity<OrderHistory>().ToTable("order_history");
+        modelBuilder.Entity<OrderItem>().ToTable("order_item");
+        modelBuilder.Entity<OrderItemSerialNumber>().ToTable("order_item_serialnumber");
+        modelBuilder.Entity<Product>().ToTable("product");
+        modelBuilder.Entity<ProductSalesChannel>().ToTable("product_saleschannel");
+        modelBuilder.Entity<ProductStock>().ToTable("product_stock");
+        modelBuilder.Entity<SalesChannel>().ToTable("saleschannel");
+        modelBuilder.Entity<Setting>().ToTable("setting");
+        modelBuilder.Entity<Shipping>().ToTable("shipping");
+        modelBuilder.Entity<ShippingProvider>().ToTable("shipping_provider");
+        modelBuilder.Entity<ShippingProviderRate>().ToTable("shipping_provider_rate");
+        modelBuilder.Entity<TaxClass>().ToTable("tax_class");
+        modelBuilder.Entity<Tenant>().ToTable("tenant");
+        modelBuilder.Entity<UserTenant>().ToTable("user_tenant");
+        modelBuilder.Entity<Warehouse>().ToTable("warehouse");
 
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(MaErpIdentityDbContext).Assembly);

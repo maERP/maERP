@@ -6,9 +6,9 @@ namespace maERP.Persistence.Configurations;
 
 public class TaxClassConfiguration : IEntityTypeConfiguration<TaxClass>
 {
-    public void Configure(EntityTypeBuilder<TaxClass> modelBuilder)
+    public void Configure(EntityTypeBuilder<TaxClass> builder)
     {
-        modelBuilder.HasData(
+        builder.HasData(
             new TaxClass
             {
                 Id = 1,
@@ -26,7 +26,7 @@ public class TaxClassConfiguration : IEntityTypeConfiguration<TaxClass>
             }
         );
 
-        modelBuilder.Property(q => q.TaxRate)
+        builder.Property(q => q.TaxRate)
             .IsRequired();
     }
 }

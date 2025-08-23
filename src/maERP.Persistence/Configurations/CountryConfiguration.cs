@@ -6,9 +6,9 @@ namespace maERP.Persistence.Configurations;
 
 public class CountryConfiguration : IEntityTypeConfiguration<Country>
 {
-    public void Configure(EntityTypeBuilder<Country> modelBuilder)
+    public void Configure(EntityTypeBuilder<Country> builder)
     {
-        modelBuilder.HasData(
+        builder.HasData(
             new Country { Id = 1, CountryCode = "DE", Name = "Germany" },
             new Country { Id = 2, CountryCode = "AT", Name = "Austria" },
             new Country { Id = 3, CountryCode = "CH", Name = "Switzerland" },
@@ -131,7 +131,7 @@ public class CountryConfiguration : IEntityTypeConfiguration<Country>
             new Country { Id = 120, CountryCode = "ZW", Name = "Zimbabwe" }
         );
 
-        modelBuilder.Property(q => q.Name)
+        builder.Property(q => q.Name)
             .IsRequired()
             .HasMaxLength(100);
     }

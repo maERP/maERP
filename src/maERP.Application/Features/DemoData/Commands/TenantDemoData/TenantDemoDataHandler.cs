@@ -3,7 +3,7 @@ using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 using maERP.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity; 
 using TenantEntity = maERP.Domain.Entities.Tenant;
 using UserTenantEntity = maERP.Domain.Entities.UserTenant;
 
@@ -61,55 +61,41 @@ public class TenantDemoDataHandler : IRequestHandler<TenantDemoDataCommand, Resu
 
             var tenant2Id = await _tenantRepository.CreateAsync(tenant2);
 
-            // Find users by email addresses
-            var adminUser = await _userManager.FindByEmailAsync("admin@localhost.com");
-            var regularUser = await _userManager.FindByEmailAsync("user@localhost.com");
-
-            var usersToAssign = new List<ApplicationUser>();
-            if (adminUser != null) usersToAssign.Add(adminUser);
-            if (regularUser != null) usersToAssign.Add(regularUser);
+            // Find all existing users
+            var usersToAssign = await _userManager.Users.ToListAsync(cancellationToken);
 
             if (!usersToAssign.Any())
             {
-                return Result<string>.Fail("No users found with emails admin@localhost.com or user@localhost.com");
+                return Result<string>.Fail("No users found to assign to demo tenants.");
             }
 
-            // Assign found users to both tenants
+            // Assign all users to ALL tenants (including the newly created demo tenants)
+            var allTenantIds = await _tenantRepository.Entities
+                .Select(t => t.Id)
+                .ToListAsync(cancellationToken);
+
             foreach (var user in usersToAssign)
             {
-                // Assign to first tenant
-                var existingUserTenant1 = await _userTenantRepository.Entities
-                    .FirstOrDefaultAsync(ut => ut.UserId == user.Id && ut.TenantId == tenant1Id, cancellationToken);
-
-                if (existingUserTenant1 == null)
+                foreach (var tenantId in allTenantIds)
                 {
-                    var userTenant1 = new UserTenantEntity
-                    {
-                        UserId = user.Id,
-                        TenantId = tenant1Id,
-                        IsDefault = false
-                    };
-                    await _userTenantRepository.CreateAsync(userTenant1);
-                }
+                    var existingUserTenant = await _userTenantRepository.Entities
+                        .FirstOrDefaultAsync(ut => ut.UserId == user.Id && ut.TenantId == tenantId, cancellationToken);
 
-                // Assign to second tenant
-                var existingUserTenant2 = await _userTenantRepository.Entities
-                    .FirstOrDefaultAsync(ut => ut.UserId == user.Id && ut.TenantId == tenant2Id, cancellationToken);
-
-                if (existingUserTenant2 == null)
-                {
-                    var userTenant2 = new UserTenantEntity
+                    if (existingUserTenant == null)
                     {
-                        UserId = user.Id,
-                        TenantId = tenant2Id,
-                        IsDefault = false
-                    };
-                    await _userTenantRepository.CreateAsync(userTenant2);
+                        var userTenant = new UserTenantEntity
+                        {
+                            UserId = user.Id,
+                            TenantId = tenantId,
+                            IsDefault = false
+                        };
+                        await _userTenantRepository.CreateAsync(userTenant);
+                    }
                 }
             }
 
             var assignedEmails = string.Join(", ", usersToAssign.Select(u => u.Email));
-            return Result<string>.Success($"Two demo tenants created and assigned to users: {assignedEmails}");
+            return Result<string>.Success($"Two demo tenants created. Assigned all users to all tenants: {assignedEmails}");
         }
         catch (Exception ex)
         {

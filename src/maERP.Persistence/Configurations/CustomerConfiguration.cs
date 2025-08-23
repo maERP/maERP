@@ -7,11 +7,11 @@ namespace maERP.Persistence.Configurations;
 
 public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 {
-    public void Configure(EntityTypeBuilder<Customer> modelBuilder)
+    public void Configure(EntityTypeBuilder<Customer> builder)
     {
         // DateEnrollment is now DateTimeOffset and works consistently across all database providers
 
-        modelBuilder.HasData(
+        builder.HasData(
             new Customer
             {
                 Id = 1,

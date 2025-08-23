@@ -7,9 +7,9 @@ namespace maERP.Persistence.Configurations;
 
 public class AiModelConfiguration : IEntityTypeConfiguration<AiModel>
 {
-    public void Configure(EntityTypeBuilder<AiModel> modelBuilder)
+    public void Configure(EntityTypeBuilder<AiModel> builder)
     {
-        modelBuilder.HasData(
+        builder.HasData(
             new AiModel
             {
                 Id = 1,
@@ -21,7 +21,7 @@ public class AiModelConfiguration : IEntityTypeConfiguration<AiModel>
             }
         );
 
-        modelBuilder.Property(q => q.Name)
+        builder.Property(q => q.Name)
             .IsRequired()
             .HasMaxLength(100);
     }

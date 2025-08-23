@@ -6,9 +6,9 @@ namespace maERP.Persistence.Configurations;
 
 public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
 {
-    public void Configure(EntityTypeBuilder<Tenant> modelBuilder)
+    public void Configure(EntityTypeBuilder<Tenant> builder)
     {
-        modelBuilder.HasData(
+        builder.HasData(
             new Tenant
             {
                 Id = 1,
@@ -20,25 +20,25 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
             }
         );
 
-        modelBuilder.Property(q => q.Name)
+        builder.Property(q => q.Name)
             .IsRequired()
             .HasMaxLength(100);
 
-        modelBuilder.Property(q => q.TenantCode)
+        builder.Property(q => q.TenantCode)
             .IsRequired()
             .HasMaxLength(50);
 
-        modelBuilder.HasIndex(q => q.TenantCode)
+        builder.HasIndex(q => q.TenantCode)
             .IsUnique();
 
-        modelBuilder.Property(q => q.Description)
+        builder.Property(q => q.Description)
             .HasMaxLength(500);
 
-        modelBuilder.Property(q => q.ContactEmail)
+        builder.Property(q => q.ContactEmail)
             .HasMaxLength(200);
 
         // Configure relationship with ApplicationUser through UserTenants
-        modelBuilder.HasMany(t => t.UserTenants)
+        builder.HasMany(t => t.UserTenants)
             .WithOne(ut => ut.Tenant)
             .HasForeignKey(ut => ut.TenantId)
             .OnDelete(DeleteBehavior.Cascade);

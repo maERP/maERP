@@ -6,9 +6,9 @@ namespace maERP.Persistence.Configurations;
 
 public class WarehouseConfiguration : IEntityTypeConfiguration<Warehouse>
 {
-    public void Configure(EntityTypeBuilder<Warehouse> modelBuilder)
+    public void Configure(EntityTypeBuilder<Warehouse> builder)
     {
-        modelBuilder.HasData(
+        builder.HasData(
             new Warehouse
             {
                 Id = 1,
@@ -16,7 +16,7 @@ public class WarehouseConfiguration : IEntityTypeConfiguration<Warehouse>
             }
         );
 
-        modelBuilder.Property(q => q.Name)
+        builder.Property(q => q.Name)
             .IsRequired()
             .HasMaxLength(100);
     }
