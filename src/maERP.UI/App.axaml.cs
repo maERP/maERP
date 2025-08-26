@@ -37,10 +37,8 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
 
-        // Register HttpClient and global HttpService
-        services.AddHttpClient<IHttpService, HttpService>();
-
-        // Register services
+        // Register HttpClient and services
+        services.AddHttpClient<HttpService>();
         services.AddSingleton<IHttpService, HttpService>();
         services.AddSingleton<ITenantService, TenantService>();
         services.AddSingleton<IAuthenticationService, AuthenticationService>();

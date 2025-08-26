@@ -17,6 +17,7 @@ public class HttpService : IHttpService
     private readonly IDebugService _debugService;
     private string? _token;
     private string? _serverUrl;
+    private int? _currentTenantId;
     private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
     {
         PropertyNameCaseInsensitive = true,
@@ -32,6 +33,21 @@ public class HttpService : IHttpService
     public string? ServerUrl => _serverUrl;
     public string? Token => _token;
     public bool IsAuthenticated => !string.IsNullOrEmpty(_token);
+
+    public void SetCurrentTenant(int? tenantId)
+    {
+        _currentTenantId = tenantId;
+        UpdateTenantHeader();
+    }
+
+    private void UpdateTenantHeader()
+    {
+        _httpClient.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        if (_currentTenantId.HasValue)
+        {
+            _httpClient.DefaultRequestHeaders.Add("X-Tenant-Id", _currentTenantId.Value.ToString());
+        }
+    }
 
     public async Task<LoginResponseDto> LoginAsync(string email, string password, string serverUrl)
     {
@@ -101,7 +117,9 @@ public class HttpService : IHttpService
     {
         _token = null;
         _serverUrl = null;
+        _currentTenantId = null;
         _httpClient.DefaultRequestHeaders.Authorization = null;
+        _httpClient.DefaultRequestHeaders.Remove("X-Tenant-Id");
         return Task.CompletedTask;
     }
 

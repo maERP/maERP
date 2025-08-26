@@ -22,10 +22,14 @@ public class ApplicationDbContextTests
     private class TestTenantContext : ITenantContext
     {
         private int? _tenantId = null;
+        private HashSet<int> _assignedTenantIds = new HashSet<int>();
 
         public int? GetCurrentTenantId() => _tenantId;
         public void SetCurrentTenantId(int? tenantId) => _tenantId = tenantId;
         public bool HasTenant() => _tenantId.HasValue;
+        public IReadOnlyCollection<int> GetAssignedTenantIds() => _assignedTenantIds;
+        public void SetAssignedTenantIds(IEnumerable<int> tenantIds) => _assignedTenantIds = new HashSet<int>(tenantIds ?? new List<int>());
+        public bool IsAssignedToTenant(int tenantId) => _assignedTenantIds.Contains(tenantId);
     }
 
     [Fact]

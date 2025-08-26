@@ -12,13 +12,45 @@ public partial class TenantSelectorViewModel : ViewModelBase
 {
     private readonly ITenantService _tenantService;
 
-    [ObservableProperty]
-    private TenantListDto? selectedTenant;
+    private TenantListDto? _selectedTenant;
+
+    public TenantListDto? SelectedTenant
+    {
+        get => _selectedTenant;
+        set
+        {
+            if (SetProperty(ref _selectedTenant, value) && value != null && value.Id != _tenantService.CurrentTenant?.Id)
+            {
+                // Switch tenant and navigate to dashboard
+                _ = SwitchTenantAndNavigateAsync(value);
+            }
+        }
+    }
+
+    private async Task SwitchTenantAndNavigateAsync(TenantListDto tenant)
+    {
+        try
+        {
+            await _tenantService.SwitchTenantAsync(tenant.Id);
+            
+            if (NavigateToMenuItem != null)
+            {
+                await NavigateToMenuItem("Dashboard");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log error or show to user
+            System.Diagnostics.Debug.WriteLine($"Error switching tenant: {ex.Message}");
+        }
+    }
 
     [ObservableProperty]
     private bool isVisible;
 
     public ObservableCollection<TenantListDto> AvailableTenants => _tenantService.AvailableTenants;
+
+    public Func<string, Task>? NavigateToMenuItem { get; set; }
 
     public TenantSelectorViewModel(ITenantService tenantService)
     {
@@ -36,14 +68,6 @@ public partial class TenantSelectorViewModel : ViewModelBase
         IsVisible = AvailableTenants.Count > 1;
     }
 
-    [RelayCommand]
-    private async Task SelectTenantAsync(TenantListDto? tenant)
-    {
-        if (tenant != null && tenant.Id != SelectedTenant?.Id)
-        {
-            await _tenantService.SwitchTenantAsync(tenant.Id);
-        }
-    }
 
     public void UpdateVisibility()
     {

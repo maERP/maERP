@@ -153,13 +153,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     private System.Linq.Expressions.Expression<System.Func<T, bool>> GetQueryFilterExpression<T>()
         where T : BaseEntity
     {
-        // Data is accessible if:
+        // SECURITY: Data is accessible ONLY if:
         // 1. The entity is tenant-agnostic (TenantId is null) OR
-        // 2. The entity's tenant matches the current active tenant OR
-        // 3. The entity's tenant is one of the assigned tenants for the current user
+        // 2. The entity's tenant matches the current active tenant
+        // NOTE: Removed access to all assigned tenants for security - only current tenant allowed
         return entity =>
             entity.TenantId == null ||
-            entity.TenantId == _tenantContext.GetCurrentTenantId() ||
-            (_tenantContext.GetAssignedTenantIds().Count > 0 && _tenantContext.GetAssignedTenantIds().Contains(entity.TenantId.Value));
+            entity.TenantId == _tenantContext.GetCurrentTenantId();
     }
 }

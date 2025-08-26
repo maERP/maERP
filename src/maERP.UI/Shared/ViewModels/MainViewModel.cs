@@ -93,6 +93,9 @@ public partial class MainViewModel : ViewModelBase
         TenantSelectorViewModel = tenantSelectorViewModel;
 
         LoginViewModel.OnLoginSuccessful += OnLoginSuccessful;
+        
+        // Set up navigation for tenant selector
+        TenantSelectorViewModel.NavigateToMenuItem = NavigateToMenuItem;
 
         _ = InitializeAsync();
     }

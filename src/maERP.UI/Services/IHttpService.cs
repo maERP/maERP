@@ -12,6 +12,7 @@ public interface IHttpService
 
     Task<LoginResponseDto> LoginAsync(string email, string password, string serverUrl);
     Task LogoutAsync();
+    void SetCurrentTenant(int? tenantId);
 
     Task<PaginatedResult<T>?> GetPaginatedAsync<T>(string endpoint, int pageNumber = 0, int pageSize = 50, string searchString = "", string orderBy = "");
     Task<Result<T>?> GetAsync<T>(string endpoint);
