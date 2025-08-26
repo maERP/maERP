@@ -76,7 +76,6 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
                 Email = request.Email,
                 Firstname = request.Firstname,
                 Lastname = request.Lastname,
-                DefaultTenantId = request.DefaultTenantId,
                 DateCreated = DateTime.UtcNow,
                 DateModified = DateTime.UtcNow
             };

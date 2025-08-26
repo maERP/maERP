@@ -90,13 +90,6 @@ public class UserRepository : IUserRepository
         var user = await _userManager.FindByIdAsync(userId)
             ?? throw new NotFoundException("User not found", userId);
 
-        // Set default tenant if specified
-        if (defaultTenantId.HasValue)
-        {
-            user.DefaultTenantId = defaultTenantId;
-            await _userManager.UpdateAsync(user);
-        }
-
         // Create user-tenant records for each tenant
         foreach (var tenantId in tenantIds)
         {
@@ -135,13 +128,6 @@ public class UserRepository : IUserRepository
         // Validate the user exists
         var user = await _userManager.FindByIdAsync(userId)
             ?? throw new NotFoundException("User not found", userId);
-
-        // Set default tenant if specified
-        if (defaultTenantId.HasValue)
-        {
-            user.DefaultTenantId = defaultTenantId;
-            await _userManager.UpdateAsync(user);
-        }
 
         // Get current tenant assignments
         var currentAssignments = await _dbContext.UserTenant

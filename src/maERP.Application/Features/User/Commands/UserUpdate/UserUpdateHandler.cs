@@ -94,7 +94,6 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
             existingUser.UserName = request.Email;
             existingUser.Firstname = request.Firstname;
             existingUser.Lastname = request.Lastname;
-            existingUser.DefaultTenantId = request.DefaultTenantId;
             existingUser.DateModified = DateTime.UtcNow;
 
             // Update the user in the database

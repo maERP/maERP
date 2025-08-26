@@ -3,33 +3,38 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using maERP.Application.Contracts.Identity;
+using maERP.Application.Contracts.Persistence;
 using maERP.Application.Models.Identity;
 using maERP.Domain.Dtos.Auth;
 using maERP.Domain.Dtos.Tenant;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace maERP.Identity.Services;
 
-public class AuthService : IAuthService
+public class AuthService : maERP.Application.Contracts.Identity.IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JwtSettings _jwtSettings;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IUserTenantService _userTenantService;
+    private readonly IUserTenantRepository _userTenantRepository;
 
     public AuthService(
         UserManager<ApplicationUser> userManager,
         JwtSettings jwtSettings,
         SignInManager<ApplicationUser> signInManager,
-        IUserTenantService userTenantService)
+        IUserTenantService userTenantService,
+        IUserTenantRepository userTenantRepository)
     {
         _userManager = userManager;
         _jwtSettings = jwtSettings;
         _signInManager = signInManager;
         _userTenantService = userTenantService;
+        _userTenantRepository = userTenantRepository;
     }
 
     public async Task<Result<LoginResponseDto>> Login(AuthRequest request)
@@ -51,7 +56,13 @@ public class AuthService : IAuthService
         // Load user's available tenants
         var availableTenants = await _userTenantService.GetUserTenantsAsync(user.Id);
 
-        var jwtSecurityToken = await GenerateToken(user, availableTenants);
+        // Get the default tenant ID from UserTenant relationship
+        var defaultTenantId = await _userTenantRepository.Entities
+            .Where(ut => ut.UserId == user.Id && ut.IsDefault)
+            .Select(ut => (int?)ut.TenantId)
+            .FirstOrDefaultAsync();
+
+        var jwtSecurityToken = await GenerateToken(user, availableTenants, defaultTenantId);
 
         var response = new LoginResponseDto()
         {
@@ -60,7 +71,7 @@ public class AuthService : IAuthService
             Succeeded = true,
             Message = "Anmeldung erfolgreich.",
             AvailableTenants = availableTenants,
-            CurrentTenantId = user.DefaultTenantId
+            CurrentTenantId = defaultTenantId
         };
 
         return Result<LoginResponseDto>.Success(response);
@@ -94,7 +105,7 @@ public class AuthService : IAuthService
         return Result<RegistrationResponse>.Fail(ResultStatusCode.BadRequest, $"Registrierung fehlgeschlagen. {stringBuilder}");
     }
 
-    private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user, List<TenantListDto> availableTenants)
+    private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user, List<TenantListDto> availableTenants, int? defaultTenantId)
     {
         var userClaims = await _userManager.GetClaimsAsync(user);
         var roles = await _userManager.GetRolesAsync(user);
@@ -116,7 +127,7 @@ public class AuthService : IAuthService
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email ?? throw new InvalidOperationException()),
                 new Claim("uid", user.Id),
-                new Claim("tenantId", user.DefaultTenantId?.ToString() ?? "0"),
+                new Claim("tenantId", defaultTenantId?.ToString() ?? "0"),
                 new Claim("availableTenants", tenantsClaim)
             }
             .Union(userClaims)

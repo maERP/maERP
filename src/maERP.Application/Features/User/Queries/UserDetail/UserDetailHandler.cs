@@ -95,7 +95,6 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                 Email = user.Email ?? string.Empty,
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
-                DefaultTenantId = user.DefaultTenantId,
                 TenantAssignments = tenantAssignments
             };
 

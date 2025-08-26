@@ -10,8 +10,6 @@ public class UserDetailDto
     public string Password { get; set; } = string.Empty;
     public string PasswordConfirm { get; set; } = string.Empty;
 
-    public int? DefaultTenantId { get; set; }
-
     // Collection of tenant assignments
     public ICollection<UserTenantAssignmentDto> TenantAssignments { get; set; } = new List<UserTenantAssignmentDto>();
 }
