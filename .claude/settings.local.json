@@ -27,6 +27,11 @@
       "Bash(xcodebuild:*)",
       "Bash(mv:*)",
       "WebFetch(domain:docs.avaloniaui.net)",
+      "mcp__postgres__execute_sql",
+      "mcp__postgres__list_schemas",
+      "mcp__postgres__list_objects",
+      "mcp__mysql__list_tables",
+      "mcp__mysql__connect_db"
     ],
     "deny": []
   }

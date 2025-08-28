@@ -99,6 +99,15 @@ dotnet format --verify-no-changes
 dotnet format
 ```
 
+### Available MCP-Server
+- Github
+- Git
+- postgres: postgres db operations
+- browserstack: website testing
+- fetch: fetching web content
+- puppeteer
+- time: time zones and conversions
+
 ## Important Notes
 
 - All comments should be in English

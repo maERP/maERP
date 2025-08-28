@@ -34,6 +34,13 @@ public class TenantService : ITenantService
             ? AvailableTenants.FirstOrDefault(t => t.Id == tenantId.Value)
             : AvailableTenants.FirstOrDefault();
 
+        // If no specific tenant was requested and no tenant was found, 
+        // and we have available tenants, select the first one
+        if (tenant == null && !tenantId.HasValue && AvailableTenants.Any())
+        {
+            tenant = AvailableTenants.First();
+        }
+
         if (CurrentTenant?.Id != tenant?.Id)
         {
             CurrentTenant = tenant;

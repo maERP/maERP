@@ -1,10 +1,12 @@
 using System.Net;
 using System.Net.Http.Json;
+using maERP.Application.Contracts.Services;
 using maERP.Application.Features.Customer.Commands.CustomerCreate;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace maERP.Server.Tests;
 
@@ -25,6 +27,12 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
         await _webApplicationFactory.InitializeDbForTests();
+        
+        // Set tenant context for the test
+        using var scope = _webApplicationFactory.Services.CreateScope();
+        var tenantContext = (TestTenantContext)scope.ServiceProvider.GetRequiredService<ITenantContext>();
+        tenantContext.SetTestTenant(1);
+        
         var customer = new CustomerCreateCommand()
         {
             Firstname = "Customer Firstname",
@@ -45,12 +53,19 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
     public async Task GetAll(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
+        
+        // Set tenant context for the test
+        using var scope = _webApplicationFactory.Services.CreateScope();
+        var tenantContext = (TestTenantContext)scope.ServiceProvider.GetRequiredService<ITenantContext>();
+        tenantContext.SetTestTenant(1);
+        
         await _webApplicationFactory.InitializeDbForTests(
             new List<Customer> {
                 new() {
                     Id = 1,
                     Firstname = "Customer 2 Firstname",
-                    Lastname = "Customer 2 Lastname"
+                    Lastname = "Customer 2 Lastname",
+                    TenantId = 1
                 }
         });
 
@@ -68,12 +83,19 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
     public async Task GetDetail(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
+        
+        // Set tenant context for the test
+        using var scope = _webApplicationFactory.Services.CreateScope();
+        var tenantContext = (TestTenantContext)scope.ServiceProvider.GetRequiredService<ITenantContext>();
+        tenantContext.SetTestTenant(1);
+        
         await _webApplicationFactory.InitializeDbForTests(
             new List<Customer> {
                 new() {
                     Id = 3,
                     Firstname = "Customer 3 Firstname",
-                    Lastname = "Customer 3 Lastname"
+                    Lastname = "Customer 3 Lastname",
+                    TenantId = 1
                 }
         });
 
@@ -93,12 +115,18 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
 
+        // Set tenant context for the test
+        using var scope = _webApplicationFactory.Services.CreateScope();
+        var tenantContext = (TestTenantContext)scope.ServiceProvider.GetRequiredService<ITenantContext>();
+        tenantContext.SetTestTenant(1);
+
         await _webApplicationFactory.InitializeDbForTests(
             new List<Customer> {
                 new() {
                     Id = 4,
                     Firstname = "Customer 4 Firstname",
-                    Lastname = "Customer 4 Lastname"
+                    Lastname = "Customer 4 Lastname",
+                    TenantId = 1
                 }
         });
 
@@ -123,12 +151,19 @@ public class CustomerCrudTest : IClassFixture<MaErpWebApplicationFactory<Program
     public async Task Delete(string url)
     {
         HttpClient httpClient = _webApplicationFactory.CreateClient();
+        
+        // Set tenant context for the test
+        using var scope = _webApplicationFactory.Services.CreateScope();
+        var tenantContext = (TestTenantContext)scope.ServiceProvider.GetRequiredService<ITenantContext>();
+        tenantContext.SetTestTenant(1);
+        
         await _webApplicationFactory.InitializeDbForTests(
             new List<Customer> {
                 new() {
                     Id = 5,
                     Firstname = "Customer 5 Firstname",
-                    Lastname = "Customer 5 Lastname"
+                    Lastname = "Customer 5 Lastname",
+                    TenantId = 1
                 }
         });
 
