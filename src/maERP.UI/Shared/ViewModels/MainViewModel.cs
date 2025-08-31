@@ -93,7 +93,7 @@ public partial class MainViewModel : ViewModelBase
         TenantSelectorViewModel = tenantSelectorViewModel;
 
         LoginViewModel.OnLoginSuccessful += OnLoginSuccessful;
-        
+
         // Set up navigation for tenant selector
         TenantSelectorViewModel.NavigateToMenuItem = NavigateToMenuItem;
 
@@ -139,11 +139,11 @@ public partial class MainViewModel : ViewModelBase
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(_authenticationService.Token);
-            
+
             var roleClaims = jwtToken.Claims.Where(c => c.Type == "role" || c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").ToList();
-            
+
             IsSuperadmin = roleClaims.Any(c => c.Value.Equals("Superadmin", StringComparison.OrdinalIgnoreCase));
-            
+
             _debugService.LogInfo($"Superadmin permission: {IsSuperadmin}");
         }
         catch (Exception ex)

@@ -15,25 +15,25 @@ public static class JwtTokenParser
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(token);
-            
+
             // Log alle verfügbaren Claims zu Debug-Zwecken
             Console.WriteLine("JWT Claims:");
             foreach (var claim in jwtToken.Claims)
             {
                 Console.WriteLine($"  {claim.Type}: {claim.Value}");
             }
-            
+
             var tenantsClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "availableTenants")?.Value;
-            
+
             if (!string.IsNullOrEmpty(tenantsClaim))
             {
                 Console.WriteLine($"Found tenantsClaim: {tenantsClaim}");
                 var tenantsFromToken = JsonSerializer.Deserialize<List<TenantInfo>>(tenantsClaim);
-                return tenantsFromToken?.Select(t => new TenantListDto 
-                { 
-                    Id = t.Id, 
-                    Name = t.Name, 
-                    TenantCode = t.TenantCode 
+                return tenantsFromToken?.Select(t => new TenantListDto
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    TenantCode = t.TenantCode
                 }).ToList() ?? new List<TenantListDto>();
             }
             else
@@ -45,19 +45,19 @@ public static class JwtTokenParser
         {
             Console.WriteLine($"JWT parsing error: {ex.Message}");
         }
-        
+
         return new List<TenantListDto>();
     }
-    
+
     public static int? ExtractCurrentTenantId(string token)
     {
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(token);
-            
+
             var tenantIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "tenantId")?.Value;
-            
+
             if (!string.IsNullOrEmpty(tenantIdClaim) && int.TryParse(tenantIdClaim, out int tenantId))
             {
                 return tenantId == 0 ? null : tenantId;
@@ -67,10 +67,10 @@ public static class JwtTokenParser
         {
             // Ignore parsing errors
         }
-        
+
         return null;
     }
-    
+
     private class TenantInfo
     {
         public int Id { get; set; }

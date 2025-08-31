@@ -31,7 +31,7 @@ public class AuthenticationService : IAuthenticationService
         if (result.Succeeded && result.AvailableTenants != null)
         {
             _tenantService.SetAvailableTenants(result.AvailableTenants);
-            
+
             // If no current tenant is set, automatically select the first available tenant
             var tenantIdToSet = result.CurrentTenantId ?? result.AvailableTenants.FirstOrDefault()?.Id;
             _tenantService.SetCurrentTenant(tenantIdToSet);

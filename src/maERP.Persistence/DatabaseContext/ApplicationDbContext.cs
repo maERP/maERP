@@ -25,7 +25,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("user_login");
         modelBuilder.Entity<IdentityUserRole<string>>().ToTable("user_role");
         modelBuilder.Entity<IdentityUserToken<string>>().ToTable("user_token");
-        
+
         modelBuilder.Entity<AiModel>().ToTable("ai_model");
         modelBuilder.Entity<AiPrompt>().ToTable("ai_prompt");
         modelBuilder.Entity<Country>().ToTable("country");
@@ -76,8 +76,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.SeedSettings();
 
-        // Configure global query filters for multi-tenancy
-        ConfigureGlobalFilters(modelBuilder);
+        // Configure global query filters for multi-tenancy (disabled in testing environment)
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Testing")
+        {
+            ConfigureGlobalFilters(modelBuilder);
+        }
     }
 
     public DbSet<AiModel> AiModel { get; set; } = null!;

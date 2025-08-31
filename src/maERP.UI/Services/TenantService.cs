@@ -44,10 +44,10 @@ public class TenantService : ITenantService
         if (CurrentTenant?.Id != tenant?.Id)
         {
             CurrentTenant = tenant;
-            
+
             // Inform HttpService about the tenant change
             _httpService.SetCurrentTenant(tenant?.Id);
-            
+
             TenantChanged?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -58,10 +58,10 @@ public class TenantService : ITenantService
         if (tenant != null && CurrentTenant?.Id != tenantId)
         {
             CurrentTenant = tenant;
-            
+
             // Inform HttpService about the tenant switch
             _httpService.SetCurrentTenant(tenantId);
-            
+
             TenantChanged?.Invoke(this, EventArgs.Empty);
         }
 

@@ -49,6 +49,23 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
 
         var result = new Result<CustomerDetailDto>();
 
+        // Validate incoming data
+        var validator = new CustomerDetailValidator();
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+        if (!validationResult.IsValid)
+        {
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.BadRequest;
+            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+
+            _logger.LogWarning("Validation errors in query request for {0}: {1}",
+                nameof(CustomerDetailQuery),
+                string.Join(", ", result.Messages));
+
+            return result;
+        }
+
         try
         {
             // Retrieve customer with all related details from the repository

@@ -1,5 +1,6 @@
 using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
 using maERP.Persistence.DatabaseContext;
@@ -16,7 +17,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
     private readonly ILogger<InvoiceRepository> _logger;
     private readonly IPdfService _pdfService;
 
-    public InvoiceRepository(ApplicationDbContext context, ILogger<InvoiceRepository> logger, IPdfService pdfService) : base(context)
+    public InvoiceRepository(ApplicationDbContext context, ITenantContext tenantContext, ILogger<InvoiceRepository> logger, IPdfService pdfService) : base(context, tenantContext)
     {
         _logger = logger;
         _pdfService = pdfService;

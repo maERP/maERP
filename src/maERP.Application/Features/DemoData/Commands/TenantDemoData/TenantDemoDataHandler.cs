@@ -3,7 +3,7 @@ using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 using maERP.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity; 
+using Microsoft.AspNetCore.Identity;
 using TenantEntity = maERP.Domain.Entities.Tenant;
 using UserTenantEntity = maERP.Domain.Entities.UserTenant;
 

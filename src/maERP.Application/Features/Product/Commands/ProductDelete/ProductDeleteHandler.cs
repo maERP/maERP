@@ -43,20 +43,36 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result
 
         try
         {
-            // Create entity to delete
-            var productToDelete = new Domain.Entities.Product
+            // Get entity from database first
+            var productToDelete = await _productRepository.GetByIdAsync(request.Id);
+
+            if (productToDelete == null)
             {
-                Id = request.Id
-            };
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Product not found");
+
+                _logger.LogWarning("Product with ID: {Id} not found for deletion", request.Id);
+                return result;
+            }
 
             // Delete from database
             await _productRepository.DeleteAsync(productToDelete);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.NoContent;
             result.Data = productToDelete.Id;
 
             _logger.LogInformation("Successfully deleted product with ID: {Id}", productToDelete.Id);
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
+        {
+            // Handle concurrent deletion - product was already deleted by another request
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.NotFound;
+            result.Messages.Add("Product not found");
+
+            _logger.LogWarning("Product with ID: {Id} was deleted by another request: {Message}", request.Id, ex.Message);
         }
         catch (Exception ex)
         {

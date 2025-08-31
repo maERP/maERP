@@ -15,29 +15,22 @@ public class AuthController(IAuthService authenticationService) : ControllerBase
 {
     [HttpPost("login")]
     [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<LoginResponseDto>> Login(AuthRequest request)
     {
         var result = await authenticationService.Login(request);
-
-        if (!result.Succeeded)
-        {
-            return StatusCode((int)result.StatusCode, result.Messages);
-        }
-
-        return Ok(result.Data);
+        return StatusCode((int)result.StatusCode, result);
     }
 
     [HttpPost("register")]
     [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
     {
         var result = await authenticationService.Register(request);
-
-        if (!result.Succeeded)
-        {
-            return StatusCode((int)result.StatusCode, result.Messages);
-        }
-
-        return Ok(result.Data);
+        return StatusCode((int)result.StatusCode, result);
     }
 }

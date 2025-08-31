@@ -32,7 +32,7 @@ public partial class TenantSelectorViewModel : ViewModelBase
         try
         {
             await _tenantService.SwitchTenantAsync(tenant.Id);
-            
+
             if (NavigateToMenuItem != null)
             {
                 await NavigateToMenuItem("Dashboard");

@@ -40,6 +40,7 @@ public class CustomerCreateValidator : CustomerBaseValidator<CustomerCreateComma
         var customer = new Domain.Entities.Customer
         {
             Firstname = command.Firstname,
+            Lastname = command.Lastname
         };
 
         return await _customerRepository.IsUniqueAsync(customer);

@@ -74,12 +74,6 @@ public class ManufacturersController(IMediator mediator) : ControllerBase
     {
         var command = new ManufacturerDeleteCommand { Id = id };
         var response = await mediator.Send(command);
-
-        if (response.Succeeded)
-        {
-            return NoContent();
-        }
-
         return StatusCode((int)response.StatusCode, response);
     }
 }

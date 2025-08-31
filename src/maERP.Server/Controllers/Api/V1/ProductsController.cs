@@ -20,6 +20,8 @@ public class ProductsController(IMediator mediator) : ControllerBase
 {
     // GET: api/v1/<ProductsController>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginatedResult<ProductListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
@@ -45,7 +47,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<int>> Create(ProductCreateCommand productCreateCommand)
+    public async Task<ActionResult<ProductDetailDto>> Create(ProductCreateCommand productCreateCommand)
     {
         var response = await mediator.Send(productCreateCommand);
         return StatusCode((int)response.StatusCode, response);
@@ -59,6 +61,12 @@ public class ProductsController(IMediator mediator) : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Update(int id, ProductUpdateCommand productUpdateCommand)
     {
+        // Validate ID consistency between URL and body if ID is provided in body and differs
+        if (productUpdateCommand.Id != 0 && productUpdateCommand.Id != id)
+        {
+            return BadRequest($"ID in URL ({id}) must match ID in request body ({productUpdateCommand.Id})");
+        }
+
         productUpdateCommand.Id = id;
         var response = await mediator.Send(productUpdateCommand);
         return StatusCode((int)response.StatusCode, response);
@@ -68,11 +76,12 @@ public class ProductsController(IMediator mediator) : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(int id)
     {
         var command = new ProductDeleteCommand { Id = id };
-        await mediator.Send(command);
-        return NoContent();
+        var response = await mediator.Send(command);
+        return StatusCode((int)response.StatusCode, response);
     }
 }

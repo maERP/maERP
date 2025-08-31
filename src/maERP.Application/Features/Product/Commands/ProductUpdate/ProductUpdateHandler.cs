@@ -31,7 +31,17 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.BadRequest;
+
+            // Check if the validation error is about product not found
+            if (validationResult.Errors.Any(e => e.ErrorMessage.Contains("Product not found")))
+            {
+                result.StatusCode = ResultStatusCode.NotFound;
+            }
+            else
+            {
+                result.StatusCode = ResultStatusCode.BadRequest;
+            }
+
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
 
             _logger.LogWarning("Validation errors in update request for {0}: {1}",

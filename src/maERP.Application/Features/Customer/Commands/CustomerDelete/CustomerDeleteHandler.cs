@@ -44,20 +44,36 @@ public class CustomerDeleteHandler : IRequestHandler<CustomerDeleteCommand, Resu
 
         try
         {
-            // Create entity to delete
-            var customerToDelete = new Domain.Entities.Customer
+            // Get entity from database first
+            var customerToDelete = await _customerRepository.GetByIdAsync(request.Id);
+
+            if (customerToDelete == null)
             {
-                Id = request.Id
-            };
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Customer not found");
+
+                _logger.LogWarning("Customer with ID: {Id} not found for deletion", request.Id);
+                return result;
+            }
 
             // Delete from database
             await _customerRepository.DeleteAsync(customerToDelete);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.NoContent;
             result.Data = customerToDelete.Id;
 
             _logger.LogInformation("Successfully deleted customer with ID: {Id}", customerToDelete.Id);
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
+        {
+            // Handle concurrent deletion - customer was already deleted by another request
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.NotFound;
+            result.Messages.Add("Customer not found");
+
+            _logger.LogWarning("Customer with ID: {Id} was deleted by another request: {Message}", request.Id, ex.Message);
         }
         catch (Exception ex)
         {

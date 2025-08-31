@@ -21,7 +21,7 @@ public class ProductUpdateValidator : ProductBaseValidator<ProductUpdateCommand>
             .NotEmpty().WithMessage("{PropertyName} is required.");
 
         RuleFor(p => p)
-            .MustAsync(ProductExists).WithMessage("Product does not exist.");
+            .MustAsync(ProductExists).WithMessage("Product not found");
     }
 
     private async Task<bool> ProductExists(ProductUpdateCommand command, CancellationToken cancellationToken)

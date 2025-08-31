@@ -33,7 +33,17 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.BadRequest;
+
+            // Check if the validation error is about customer not found
+            if (validationResult.Errors.Any(e => e.ErrorMessage.Contains("Customer not found")))
+            {
+                result.StatusCode = ResultStatusCode.NotFound;
+            }
+            else
+            {
+                result.StatusCode = ResultStatusCode.BadRequest;
+            }
+
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
 
             _logger.LogWarning("Validation errors in update request for {0}: {1}",

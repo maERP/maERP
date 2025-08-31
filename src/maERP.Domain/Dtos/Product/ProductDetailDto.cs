@@ -16,19 +16,19 @@ public class ProductDetailDto
     public string Name { get; set; } = string.Empty;
 
     [StringLength(255)]
-    public string NameOptimized { get; set; } = string.Empty;
+    public string? NameOptimized { get; set; }
 
     [StringLength(32)]
-    public string Ean { get; set; } = string.Empty;
+    public string? Ean { get; set; }
 
     [StringLength(32)]
-    public string Asin { get; set; } = string.Empty;
+    public string? Asin { get; set; }
 
     [StringLength(64000)]
-    public string Description { get; set; } = string.Empty;
+    public string? Description { get; set; }
 
     [StringLength(64000)]
-    public string DescriptionOptimized { get; set; } = string.Empty;
+    public string? DescriptionOptimized { get; set; }
 
     public bool UseOptimized { get; set; }
 

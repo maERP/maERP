@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
 using maERP.Domain.Entities.Common;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
@@ -9,15 +10,37 @@ namespace maERP.Persistence.Repositories;
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
     protected readonly ApplicationDbContext Context;
+    protected readonly ITenantContext TenantContext;
 
-    public GenericRepository(ApplicationDbContext context)
+    public GenericRepository(ApplicationDbContext context, ITenantContext tenantContext)
     {
         Context = context;
+        TenantContext = tenantContext;
     }
 
     public IQueryable<TCt> GetContext<TCt>() where TCt : class => Context.Set<TCt>();
 
-    public IQueryable<T> Entities => Context.Set<T>();
+    public IQueryable<T> Entities
+    {
+        get
+        {
+            IQueryable<T> query = Context.Set<T>();
+            var currentTenantId = TenantContext.GetCurrentTenantId();
+
+            // Apply tenant filtering - only return entities for current tenant or tenant-agnostic entities
+            if (currentTenantId.HasValue)
+            {
+                query = query.Where(x => x.TenantId == null || x.TenantId == currentTenantId.Value);
+            }
+            else
+            {
+                // If no tenant is set, only return tenant-agnostic entities
+                query = query.Where(x => x.TenantId == null);
+            }
+            
+            return query;
+        }
+    }
 
     public void Attach(T entity)
     {
@@ -38,17 +61,34 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task<ICollection<T>> GetAllAsync()
     {
-        return await Context.Set<T>().AsNoTracking().ToListAsync();
+        var query = Context.Set<T>().AsQueryable();
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        if (currentTenantId.HasValue)
+        {
+            // Apply manual tenant filtering for both production and test environments
+            query = query.Where(x => x.TenantId == null || x.TenantId == currentTenantId.Value);
+        }
+        return await query.AsNoTracking().ToListAsync();
     }
 
     public async Task<T?> GetByIdAsync(int id, bool asNoTracking = false)
     {
-        if (asNoTracking)
+        var query = Context.Set<T>().AsQueryable();
+
+        // Apply manual tenant filtering in tests if TenantContext is available
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        if (currentTenantId.HasValue)
         {
-            return await Context.Set<T>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            // Manual tenant filtering for both production and test environments
+            query = query.Where(x => x.TenantId == null || x.TenantId == currentTenantId.Value);
         }
 
-        return await Context.Set<T>().FirstOrDefaultAsync(x => x.Id == id);
+        if (asNoTracking)
+        {
+            return await query.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        return await query.FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task UpdateAsync(T entity)
@@ -65,26 +105,66 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task<bool> ExistsAsync(int id)
     {
-        return await Context.Set<T>().AsNoTracking().AnyAsync(e => e.Id == id);
+        var query = Context.Set<T>().AsQueryable();
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        if (currentTenantId.HasValue)
+        {
+            // Apply manual tenant filtering for both production and test environments
+            query = query.Where(x => x.TenantId == null || x.TenantId == currentTenantId.Value);
+        }
+        return await query.AsNoTracking().AnyAsync(e => e.Id == id);
     }
 
-    public async Task<bool> IsUniqueAsync(T entity, int? id = null)
+    public virtual async Task<bool> IsUniqueAsync(T entity, int? id = null)
     {
         var type = typeof(T);
         var properties = type.GetProperties();
+        var currentTenantId = TenantContext.GetCurrentTenantId();
 
         foreach (var property in properties)
         {
-            var parameter = Expression.Parameter(type, "e");
-            var propertyExpression = Expression.Property(parameter, property);
-            var value = property.GetValue(entity);
-            var constant = Expression.Constant(value);
-            var equalityExpression = Expression.Equal(propertyExpression, constant);
-            var lambda = Expression.Lambda<Func<T, bool>>(equalityExpression, parameter);
-
-            if (value != null && value.GetType().IsClass)
+            // Skip TenantId, DateCreated, DateModified and Id properties for uniqueness check
+            if (property.Name == "TenantId" || property.Name == "DateCreated" ||
+                property.Name == "DateModified" || property.Name == "Id")
             {
                 continue;
+            }
+
+            var value = property.GetValue(entity);
+
+            // Skip null values and complex types (except string)
+            if (value == null || (value.GetType().IsClass && value.GetType() != typeof(string)))
+            {
+                continue;
+            }
+
+            // Skip empty strings
+            if (string.IsNullOrEmpty(value?.ToString()))
+            {
+                continue;
+            }
+
+            var parameter = Expression.Parameter(type, "e");
+            var propertyExpression = Expression.Property(parameter, property);
+            var constant = Expression.Constant(value, property.PropertyType);
+            var equalityExpression = Expression.Equal(propertyExpression, constant);
+
+            // Build the base lambda expression
+            var lambda = Expression.Lambda<Func<T, bool>>(equalityExpression, parameter);
+
+            // Add tenant isolation
+            if (currentTenantId.HasValue)
+            {
+                var tenantProperty = type.GetProperty("TenantId");
+                if (tenantProperty != null)
+                {
+                    var tenantPropertyExpression = Expression.Property(parameter, tenantProperty);
+                    var tenantConstant = Expression.Constant(currentTenantId.Value, typeof(int?));
+                    var tenantEqualityExpression = Expression.Equal(tenantPropertyExpression, tenantConstant);
+
+                    var combinedExpression = Expression.AndAlso(equalityExpression, tenantEqualityExpression);
+                    lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, parameter);
+                }
             }
 
             // Exclude entity with provided id
@@ -94,13 +174,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
                 var idPropertyExpression = Expression.Property(parameter, idProperty!);
                 var idConstant = Expression.Constant(id.Value);
                 var idEqualityExpression = Expression.NotEqual(idPropertyExpression, idConstant);
-                var idLambda = Expression.Lambda<Func<T, bool>>(idEqualityExpression, parameter);
 
-                var combinedExpression = Expression.AndAlso(lambda.Body, idLambda.Body);
+                var combinedExpression = Expression.AndAlso(lambda.Body, idEqualityExpression);
                 lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, lambda.Parameters);
             }
 
-            if (!string.IsNullOrEmpty(value?.ToString()) && await Context.Set<T>().AnyAsync(lambda))
+            if (await Context.Set<T>().AnyAsync(lambda))
             {
                 return false;
             }

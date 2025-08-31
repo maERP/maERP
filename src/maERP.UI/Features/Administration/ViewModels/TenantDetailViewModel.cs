@@ -49,7 +49,7 @@ public partial class TenantDetailViewModel : ViewModelBase
         _httpService = httpService;
         _debugService = debugService;
         _authenticationService = authenticationService;
-        
+
         CheckSuperadminPermissions();
     }
 
@@ -118,11 +118,11 @@ public partial class TenantDetailViewModel : ViewModelBase
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(_authenticationService.Token);
-            
+
             var roleClaims = jwtToken.Claims.Where(c => c.Type == "role" || c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").ToList();
-            
+
             CanManageTenants = roleClaims.Any(c => c.Value.Equals("Superadmin", StringComparison.OrdinalIgnoreCase));
-            
+
             _debugService.LogInfo($"Tenant management permission: {CanManageTenants}");
         }
         catch (Exception ex)

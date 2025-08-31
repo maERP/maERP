@@ -1,4 +1,5 @@
 ﻿using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
 using maERP.Application.Exceptions;
 using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
@@ -8,7 +9,7 @@ namespace maERP.Persistence.Repositories;
 
 public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesChannelRepository
 {
-    public SalesChannelRepository(ApplicationDbContext context) : base(context)
+    public SalesChannelRepository(ApplicationDbContext context, ITenantContext tenantContext) : base(context, tenantContext)
     {
 
     }

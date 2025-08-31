@@ -61,7 +61,7 @@ public partial class UserDetailViewModel : ViewModelBase
         _httpService = httpService;
         _debugService = debugService;
         _authenticationService = authenticationService;
-        
+
         // Check if current user can manage tenants (Superadmin)
         CheckTenantManagementPermissions();
     }
@@ -71,7 +71,7 @@ public partial class UserDetailViewModel : ViewModelBase
         UserId = userId;
         await LoadUserAsync();
         await LoadUserTenantsAsync();
-        
+
         if (CanManageTenants)
         {
             await LoadAvailableTenantsAsync();
@@ -180,16 +180,16 @@ public partial class UserDetailViewModel : ViewModelBase
             if (result != null && result.Succeeded && result.Data != null)
             {
                 AvailableTenants.Clear();
-                
+
                 // Only show tenants that are not already assigned to the user
                 var assignedTenantIds = UserTenants.Select(ut => ut.TenantId).ToHashSet();
                 var unassignedTenants = result.Data.Where(t => !assignedTenantIds.Contains(t.Id));
-                
+
                 foreach (var tenant in unassignedTenants)
                 {
                     AvailableTenants.Add(tenant);
                 }
-                
+
                 _debugService.LogInfo($"Loaded {AvailableTenants.Count} available tenants");
             }
             else
@@ -217,7 +217,7 @@ public partial class UserDetailViewModel : ViewModelBase
 
         try
         {
-            var command = new 
+            var command = new
             {
                 TenantId = tenant.Id,
                 IsDefault = false
@@ -300,7 +300,7 @@ public partial class UserDetailViewModel : ViewModelBase
 
         try
         {
-            var command = new 
+            var command = new
             {
                 TenantId = assignment.TenantId,
                 IsDefault = true
@@ -336,7 +336,7 @@ public partial class UserDetailViewModel : ViewModelBase
     {
         await LoadUserAsync();
         await LoadUserTenantsAsync();
-        
+
         if (CanManageTenants)
         {
             await LoadAvailableTenantsAsync();

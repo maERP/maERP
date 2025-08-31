@@ -74,12 +74,6 @@ public class WarehousesController(IMediator mediator) : ControllerBase
     {
         var command = new WarehouseDeleteCommand { Id = id, NewWarehouseId = newWarehouseId };
         var response = await mediator.Send(command);
-
-        if (response.Succeeded)
-        {
-            return NoContent();
-        }
-
         return StatusCode((int)response.StatusCode, response);
     }
 }

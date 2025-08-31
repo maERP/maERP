@@ -84,7 +84,7 @@ public class HttpService : IHttpService
                     authResponse.AvailableTenants = JwtTokenParser.ExtractAvailableTenants(_token);
                     _debugService.LogInfo($"Extracted from JWT - AvailableTenants Count: {authResponse.AvailableTenants.Count}");
                 }
-                
+
                 // Falls CurrentTenantId nicht gesetzt ist, versuche es aus dem JWT Token zu extrahieren
                 if (authResponse.CurrentTenantId == null)
                 {

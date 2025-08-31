@@ -142,14 +142,8 @@ public class UsersController : ControllerBase
             UserId = id,
             TenantId = tenantId
         };
-        
-        var response = await _mediator.Send(command);
-        
-        if (response.Succeeded)
-        {
-            return NoContent();
-        }
 
+        var response = await _mediator.Send(command);
         return StatusCode((int)response.StatusCode, response);
     }
 }
