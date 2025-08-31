@@ -3,19 +3,20 @@ using maERP.Domain.Enums;
 using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
 
 namespace maERP.Server.Tests.Infrastructure;
 
 public static class TestDataSeeder
 {
-    private static readonly HashSet<int> _seededContexts = new();
+    private static readonly ConcurrentDictionary<int, bool> _seededContexts = new();
 
     public static async Task SeedTestDataAsync(ApplicationDbContext context, ITenantContext? tenantContext = null)
     {
         // Use context hash code to track seeded contexts
         var contextId = context.GetHashCode();
 
-        if (_seededContexts.Contains(contextId))
+        if (_seededContexts.ContainsKey(contextId))
         {
             return; // Already seeded
         }
@@ -35,7 +36,7 @@ public static class TestDataSeeder
                 SeedAiModels(context, tenantContext);
                 await context.SaveChangesAsync();
 
-                _seededContexts.Add(contextId);
+                _seededContexts.TryAdd(contextId, true);
             }
         }
         finally

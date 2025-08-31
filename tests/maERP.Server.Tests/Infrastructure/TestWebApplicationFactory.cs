@@ -34,10 +34,12 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
 
             // Use a database name per test class to avoid conflicts but share within each test class
             var testDatabaseName = Environment.GetEnvironmentVariable("TEST_DB_NAME") ?? "TestDb_" + Guid.NewGuid();
-            services.AddDbContext<ApplicationDbContext>((container, options) =>
+            
+            // Ensure DbContext is created per request with proper tenant context injection
+            services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
             {
                 options.UseInMemoryDatabase(testDatabaseName);
-            });
+            }, ServiceLifetime.Scoped);
 
             // Remove existing authentication services
             var authServiceDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IAuthenticationService));
@@ -62,8 +64,8 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             if (tenantContextDescriptor != null)
                 services.Remove(tenantContextDescriptor);
 
-            // Register TestTenantContext as singleton but ensure proper request isolation through AsyncLocal  
-            services.AddSingleton<ITenantContext, TestTenantContext>();
+            // Register TestTenantContext as scoped to ensure per-request isolation
+            services.AddScoped<ITenantContext, TestTenantContext>();
         });
 
         builder.UseEnvironment("Testing");

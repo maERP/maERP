@@ -18,9 +18,11 @@ public abstract class BaseIntegrationTest : IClassFixture<TestWebApplicationFact
 
     protected BaseIntegrationTest(TestWebApplicationFactory<Program> factory)
     {
-        // Set a unique database name for this test class to ensure isolation
+        // Set a unique database name per test INSTANCE to ensure complete isolation
         var testClassName = GetType().Name;
-        var testDbName = $"TestDb_{testClassName}_{Guid.NewGuid()}";
+        var testMethodName = System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name ?? "Unknown";
+        var uniqueId = Guid.NewGuid().ToString("N")[..8]; // Short unique ID
+        var testDbName = $"TestDb_{testClassName}_{uniqueId}_{Thread.CurrentThread.ManagedThreadId}";
         Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
 
         Factory = factory;
