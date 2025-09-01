@@ -9,13 +9,19 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
 {
     private readonly IAppLogger<ProductUpdateHandler> _logger;
     private readonly IProductRepository _productRepository;
+    private readonly ITaxClassRepository _taxClassRepository;
+    private readonly IManufacturerRepository _manufacturerRepository;
 
     public ProductUpdateHandler(
         IAppLogger<ProductUpdateHandler> logger,
-        IProductRepository productRepository)
+        IProductRepository productRepository,
+        ITaxClassRepository taxClassRepository,
+        IManufacturerRepository manufacturerRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+        _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
+        _manufacturerRepository = manufacturerRepository ?? throw new ArgumentNullException(nameof(manufacturerRepository));
     }
 
     public async Task<Result<int>> Handle(ProductUpdateCommand request, CancellationToken cancellationToken)
@@ -25,15 +31,22 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
         var result = new Result<int>();
 
         // Validate incoming data
-        var validator = new ProductUpdateValidator(_productRepository);
+        var validator = new ProductUpdateValidator(_productRepository, _taxClassRepository, _manufacturerRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
 
+            // Check if the validation error is about invalid ID (0 or negative)
+            if (validationResult.Errors.Any(e => e.PropertyName == "Id" && 
+                (e.ErrorMessage.Contains("must be greater than 0") || 
+                 e.ErrorMessage.Contains("is required"))))
+            {
+                result.StatusCode = ResultStatusCode.BadRequest;
+            }
             // Check if the validation error is about product not found
-            if (validationResult.Errors.Any(e => e.ErrorMessage.Contains("Product not found")))
+            else if (validationResult.Errors.Any(e => e.ErrorMessage.Contains("Product not found")))
             {
                 result.StatusCode = ResultStatusCode.NotFound;
             }
@@ -53,27 +66,36 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
 
         try
         {
-            // Manuelles Mapping statt AutoMapper
-            var productToUpdate = new Domain.Entities.Product
+            // Load existing product from database
+            var productToUpdate = await _productRepository.GetByIdAsync(request.Id);
+
+            if (productToUpdate == null)
             {
-                Id = request.Id,
-                Sku = request.Sku,
-                Name = request.Name,
-                NameOptimized = request.NameOptimized,
-                Ean = request.Ean,
-                Asin = request.Asin,
-                Description = request.Description,
-                DescriptionOptimized = request.DescriptionOptimized,
-                UseOptimized = request.UseOptimized,
-                Price = request.Price,
-                Msrp = request.Msrp,
-                Weight = request.Weight,
-                Width = request.Width,
-                Height = request.Height,
-                Depth = request.Depth,
-                TaxClassId = request.TaxClassId,
-                ManufacturerId = request.ManufacturerId
-            };
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Product not found.");
+                
+                _logger.LogWarning("Product with ID {Id} not found for update", request.Id);
+                return result;
+            }
+
+            // Update properties
+            productToUpdate.Sku = request.Sku;
+            productToUpdate.Name = request.Name;
+            productToUpdate.NameOptimized = request.NameOptimized;
+            productToUpdate.Ean = request.Ean;
+            productToUpdate.Asin = request.Asin;
+            productToUpdate.Description = request.Description;
+            productToUpdate.DescriptionOptimized = request.DescriptionOptimized;
+            productToUpdate.UseOptimized = request.UseOptimized;
+            productToUpdate.Price = request.Price;
+            productToUpdate.Msrp = request.Msrp;
+            productToUpdate.Weight = request.Weight;
+            productToUpdate.Width = request.Width;
+            productToUpdate.Height = request.Height;
+            productToUpdate.Depth = request.Depth;
+            productToUpdate.TaxClassId = request.TaxClassId;
+            productToUpdate.ManufacturerId = request.ManufacturerId;
 
             // Update in database
             await _productRepository.UpdateAsync(productToUpdate);

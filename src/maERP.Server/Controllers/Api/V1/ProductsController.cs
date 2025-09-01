@@ -64,7 +64,8 @@ public class ProductsController(IMediator mediator) : ControllerBase
         // Validate ID consistency between URL and body if ID is provided in body and differs
         if (productUpdateCommand.Id != 0 && productUpdateCommand.Id != id)
         {
-            return BadRequest($"ID in URL ({id}) must match ID in request body ({productUpdateCommand.Id})");
+            var errorResponse = await Result<int>.FailAsync($"ID in URL ({id}) must match ID in request body ({productUpdateCommand.Id})");
+            return BadRequest(errorResponse);
         }
 
         productUpdateCommand.Id = id;

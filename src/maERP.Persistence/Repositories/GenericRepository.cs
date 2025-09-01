@@ -93,7 +93,15 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task UpdateAsync(T entity)
     {
-        Context.Entry(entity).State = EntityState.Modified;
+        // Force all properties to be updated by detaching any existing tracked entity
+        // and then using Update which will mark all properties as modified
+        var tracked = Context.ChangeTracker.Entries<T>().FirstOrDefault(e => e.Entity.Id == entity.Id);
+        if (tracked != null)
+        {
+            Context.Entry(tracked.Entity).State = EntityState.Detached;
+        }
+        
+        Context.Update(entity);
         await Context.SaveChangesAsync();
     }
 
