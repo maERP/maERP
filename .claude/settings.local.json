@@ -30,7 +30,8 @@
       "Bash(do echo \"Processing $file\")",
       "Bash(done)",
       "mcp__ref__ref_search_documentation",
-      "mcp__ref__ref_read_url"
+      "mcp__ref__ref_read_url",
+      "Bash(dir \"D:\\martin-andrich.de\\maERP\\src\\maERP.Application\\Features\\Product\\Commands\\ProductCreate\"\")"
     ],
     "deny": []
   }

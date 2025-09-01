@@ -121,9 +121,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 entry.Entity.DateCreated = DateTime.UtcNow;
 
                 // Set TenantId for new entities if not already set
-                if (entry.Entity.TenantId == null && _tenantContext.HasTenant())
+                if (entry.Entity.TenantId == null)
                 {
-                    entry.Entity.TenantId = _tenantContext.GetCurrentTenantId();
+                    var currentTenantId = _tenantContext.GetCurrentTenantId();
+                    if (currentTenantId.HasValue)
+                    {
+                        entry.Entity.TenantId = currentTenantId.Value;
+                    }
                 }
             }
         }
