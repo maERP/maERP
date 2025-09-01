@@ -23,16 +23,32 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
     private readonly IProductRepository _productRepository;
 
     /// <summary>
+    /// Repository for tax class data operations
+    /// </summary>
+    private readonly ITaxClassRepository _taxClassRepository;
+
+    /// <summary>
+    /// Repository for manufacturer data operations
+    /// </summary>
+    private readonly IManufacturerRepository _manufacturerRepository;
+
+    /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
     /// <param name="logger">Logger for recording operations</param>
     /// <param name="productRepository">Repository for product data access</param>
+    /// <param name="taxClassRepository">Repository for tax class data access</param>
+    /// <param name="manufacturerRepository">Repository for manufacturer data access</param>
     public ProductCreateHandler(
         IAppLogger<ProductCreateHandler> logger,
-        IProductRepository productRepository)
+        IProductRepository productRepository,
+        ITaxClassRepository taxClassRepository,
+        IManufacturerRepository manufacturerRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+        _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
+        _manufacturerRepository = manufacturerRepository ?? throw new ArgumentNullException(nameof(manufacturerRepository));
     }
 
     /// <summary>
@@ -48,7 +64,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
         var result = new Result<int>();
 
         // Validate incoming data
-        var validator = new ProductCreateValidator(_productRepository);
+        var validator = new ProductCreateValidator(_productRepository, _taxClassRepository, _manufacturerRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         // If validation fails, return a bad request result with validation error messages

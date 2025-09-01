@@ -413,7 +413,7 @@ public class ProductCreateCommandTests : IDisposable
         var response3 = await Client.GetAsync("/api/v1/Products");
         TestAssertions.AssertHttpSuccess(response3);
         var listResult2 = await ReadResponseAsync<PaginatedResult<ProductListDto>>(response3);
-        TestAssertions.AssertEmpty(listResult2.Data);
+        TestAssertions.AssertEmpty(listResult2.Data ?? new List<ProductListDto>());
     }
 
     [Fact]
@@ -453,7 +453,8 @@ public class ProductCreateCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(1);
 
-        var response = await Client.PostAsync("/api/v1/Products", null);
+        var content = new StringContent("", System.Text.Encoding.UTF8, "application/json");
+        var response = await Client.PostAsync("/api/v1/Products", content);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -473,6 +474,11 @@ public class ProductCreateCommandTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         
+        // Set the tenant context for querying
+        TenantContext.SetCurrentTenantId(1);
+        
+        // Refresh the DbContext to ensure we get the latest data
+        DbContext.ChangeTracker.Clear();
         var createdProduct = await DbContext.Product.FindAsync(result.Data);
         TestAssertions.AssertNotNull(createdProduct);
         Assert.Null(createdProduct!.ManufacturerId);

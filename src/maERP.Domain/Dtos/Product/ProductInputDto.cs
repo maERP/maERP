@@ -7,11 +7,9 @@ public class ProductInputDto : IProductInputModel
 {
     public int Id { get; set; }
 
-    [Required]
     [StringLength(255)]
     public string Sku { get; set; } = string.Empty;
 
-    [Required]
     [StringLength(255)]
     public string Name { get; set; } = string.Empty;
 
@@ -32,7 +30,6 @@ public class ProductInputDto : IProductInputModel
 
     public bool UseOptimized { get; set; }
 
-    [Required]
     public decimal Price { get; set; }
 
     public decimal Msrp { get; set; }

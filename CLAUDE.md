@@ -131,3 +131,4 @@ dotnet format
 - IMPORTANT: on layout changes, always look if there is a similar layout and write consistent code
 - When implementing new features or functions, YOU MUST look if there is a similar feature or function and write consistent code
 - Tests are using own Factory-Instances instead of shared Fixtures
+- Don't use FluentAssertions
