@@ -7,6 +7,7 @@ using maERP.Domain.Dtos.Product;
 using maERP.Domain.Dtos.Manufacturer;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.Product.Queries.ProductList;
 
@@ -32,6 +33,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
         if (request.OrderBy.Any() != true)
         {
             var products = await _productRepository.Entities
+               .Include(p => p.Manufacturer)
                .Specify(orderFilterSpec)
                .Select(p => MapToProductListDto(p))
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
@@ -42,6 +44,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
         var ordering = string.Join(",", request.OrderBy);
 
         var orderedProducts = await _productRepository.Entities
+            .Include(p => p.Manufacturer)
             .Specify(orderFilterSpec)
             .OrderBy(ordering)
             .Select(p => MapToProductListDto(p))

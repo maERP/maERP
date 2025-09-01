@@ -41,6 +41,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
         return await query
             .Include(ps => ps.ProductSalesChannels)
             .Include(ps => ps.ProductStocks)
+            .Include(ps => ps.Manufacturer)
             .AsSplitQuery()
             .FirstOrDefaultAsync();
     }

@@ -52,7 +52,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
         try
         {
             // Retrieve product with all related details from the repository
-            var product = await _productRepository.GetByIdAsync(request.Id, true);
+            var product = await _productRepository.GetWithDetailsAsync(request.Id);
 
             // If product not found, return a not found result
             if (product == null)
