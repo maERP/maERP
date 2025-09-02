@@ -1,38 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(rg:*)",
-      "Bash(grep:*)",
-      "Bash(./create-migrations.sh:*)",
-      "Bash(bash:*)",
-      "Bash(dotnet ef migrations add:*)",
-      "Bash(dotnet build:*)",
-      "Bash(ls:*)",
-      "Bash(docker run:*)",
-      "Bash(wget:*)",
-      "Bash(sudo dpkg:*)",
-      "Bash(sudo apt-get:*)",
-      "Bash(sudo apt-get install:*)",
-      "Bash(find:*)",
-      "Bash(dotnet clean:*)",
-      "Bash(cat:*)",
-      "Bash(dotnet test:*)",
-      "Bash(mkdir:*)",
-      "Bash(dotnet ef database update:*)",
-      "Bash(dotnet format:*)",
-      "Bash(sed:*)",
-      "Bash(timeout:*)",
-      "Bash(gtimeout:*)",
-      "Bash(dotnet run:*)",
-      "Bash(xcodebuild:*)",
-      "Bash(mv:*)",
-      "Bash(for:*)",
-      "Bash(do echo \"Processing $file\")",
-      "Bash(done)",
-      "mcp__ref__ref_search_documentation",
-      "mcp__ref__ref_read_url",
-      "Bash(dir \"D:\\martin-andrich.de\\maERP\\src\\maERP.Application\\Features\\Product\\Commands\\ProductCreate\"\")"
+      "Bash(dotnet test:*)"
     ],
-    "deny": []
+    "deny": [],
+    "ask": []
   }
 }

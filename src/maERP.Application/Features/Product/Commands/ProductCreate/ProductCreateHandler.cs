@@ -70,24 +70,19 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
     {
         _logger.LogInformation("Creating new product with SKU: {Sku}, Name: {Name}", request.Sku, request.Name);
 
-        var result = new Result<int>();
-
         // Validate incoming data
         var validator = new ProductCreateValidator(_productRepository, _taxClassRepository, _manufacturerRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        // If validation fails, return a bad request result with validation error messages
+        // If validation fails, return a Problem Details result with validation error messages
         if (!validationResult.IsValid)
         {
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.BadRequest;
-            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-
+            var validationErrors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            
             _logger.LogWarning("Validation errors in create request for {0}: {1}",
-                nameof(ProductCreateCommand),
-                string.Join(", ", result.Messages));
+                nameof(ProductCreateCommand), validationErrors);
 
-            return result;
+            return Result<int>.Fail(ResultStatusCode.BadRequest, validationErrors);
         }
 
         try
@@ -96,11 +91,9 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
             var currentTenantId = _tenantContext.GetCurrentTenantId();
             if (!currentTenantId.HasValue)
             {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.BadRequest;
-                result.Messages.Add("Tenant context is not set. Cannot create product without tenant information.");
                 _logger.LogError("Attempted to create product without tenant context");
-                return result;
+                return Result<int>.Fail(ResultStatusCode.BadRequest, 
+                    "Tenant context is not set. Cannot create product without tenant information.");
             }
 
             // Manual mapping instead of using AutoMapper
@@ -128,23 +121,19 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
             // Add the new product to the database
             await _productRepository.CreateAsync(productToCreate);
 
-            // Set successful result with the new product ID
-            result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Created;
-            result.Data = productToCreate.Id;
-
             _logger.LogInformation("Successfully created product with ID: {Id}", productToCreate.Id);
+            
+            var result = Result<int>.Success(productToCreate.Id);
+            result.StatusCode = ResultStatusCode.Created;
+            return result;
         }
         catch (Exception ex)
         {
             // Handle any exceptions during product creation
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.InternalServerError;
-            result.Messages.Add($"An error occurred while creating the product: {ex.Message}");
-
             _logger.LogError("Error creating product: {Message}", ex.Message);
+            
+            return Result<int>.Fail(ResultStatusCode.InternalServerError, 
+                $"An error occurred while creating the product: {ex.Message}");
         }
-
-        return result;
     }
 }

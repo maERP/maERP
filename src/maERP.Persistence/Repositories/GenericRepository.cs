@@ -108,6 +108,13 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task DeleteAsync(T entity)
     {
+        // Ensure the entity is tracked before deletion
+        var entry = Context.Entry(entity);
+        if (entry.State == EntityState.Detached)
+        {
+            Context.Set<T>().Attach(entity);
+        }
+        
         Context.Remove(entity);
         await Context.SaveChangesAsync();
     }

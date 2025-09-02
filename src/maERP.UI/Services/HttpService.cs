@@ -67,7 +67,8 @@ public class HttpService : IHttpService
 
             var loginUrl = $"{_serverUrl}/api/v1/auth/login";
             var response = await _httpClient.PostAsync(loginUrl, content);
-            var authResponse = await response.Content.ReadFromJsonAsync<LoginResponseDto>(_jsonOptions);
+            var httpResult = await response.Content.ReadFromJsonAsync<Result<LoginResponseDto>>(_jsonOptions);
+            var authResponse = httpResult?.Data;
 
             if (authResponse?.Token != null)
             {
@@ -94,14 +95,12 @@ public class HttpService : IHttpService
 
                 return authResponse;
             }
-            else
+
+            return new LoginResponseDto
             {
-                return new LoginResponseDto
-                {
-                    Succeeded = false,
-                    Message = $"Login failed with status: {response.StatusCode}"
-                };
-            }
+                Succeeded = false,
+                Message = $"Login failed with status: {response.StatusCode}"
+            };
         }
         catch (Exception ex)
         {

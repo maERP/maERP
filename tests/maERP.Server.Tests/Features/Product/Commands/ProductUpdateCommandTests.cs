@@ -87,26 +87,44 @@ public class ProductUpdateCommandTests : IDisposable
                     TenantId = 1
                 };
 
-                var manufacturer1 = new maERP.Domain.Entities.Manufacturer
+                // Check if manufacturers already exist - use IgnoreQueryFilters to see all data
+                var existingManufacturer1 = await DbContext.Manufacturer
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(m => m.Id == 1);
+                var existingManufacturer2 = await DbContext.Manufacturer
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(m => m.Id == 2);
+                
+                if (existingManufacturer1 == null)
                 {
-                    Id = 1,
-                    Name = "Test Manufacturer 1",
-                    City = "Test City",
-                    Country = "Test Country",
-                    TenantId = 1
-                };
+                    var manufacturer1 = new maERP.Domain.Entities.Manufacturer
+                    {
+                        Id = 1,
+                        Name = "Test Manufacturer 1",
+                        City = "Test City",
+                        Country = "Test Country",
+                        TenantId = 1
+                    };
+                    DbContext.Manufacturer.Add(manufacturer1);
+                }
 
-                var manufacturer2 = new maERP.Domain.Entities.Manufacturer
+                if (existingManufacturer2 == null)
                 {
-                    Id = 2,
-                    Name = "Test Manufacturer 2",
-                    City = "Test City 2",
-                    Country = "Test Country 2",
-                    TenantId = 1
-                };
+                    var manufacturer2 = new maERP.Domain.Entities.Manufacturer
+                    {
+                        Id = 2,
+                        Name = "Test Manufacturer 2",
+                        City = "Test City 2",
+                        Country = "Test Country 2",
+                        TenantId = 1
+                    };
+                    DbContext.Manufacturer.Add(manufacturer2);
+                }
 
                 DbContext.TaxClass.Add(taxClass);
-                DbContext.Manufacturer.AddRange(manufacturer1, manufacturer2);
+                
+                // Save manufacturers and tax class before adding products
+                await DbContext.SaveChangesAsync();
 
                 var product1 = new maERP.Domain.Entities.Product
                 {
@@ -208,6 +226,12 @@ public class ProductUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
+        
+        // Clear the change tracker to force reload from database
+        DbContext.ChangeTracker.Clear();
+        
+        // Set tenant context for database query
+        TenantContext.SetCurrentTenantId(1);
         
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
@@ -382,6 +406,12 @@ public class ProductUpdateCommandTests : IDisposable
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         
+        // Clear the change tracker to force reload from database
+        DbContext.ChangeTracker.Clear();
+        
+        // Set tenant context for database query
+        TenantContext.SetCurrentTenantId(1);
+        
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
         TestAssertions.AssertEqual(updateDto.NameOptimized, updatedProduct!.NameOptimized);
@@ -395,6 +425,9 @@ public class ProductUpdateCommandTests : IDisposable
     {
         var productId = await SeedTestDataAsync();
         SetTenantHeader(1);
+        
+        // Set tenant context for database query
+        TenantContext.SetCurrentTenantId(1);
         
         // Get original values
         var originalProduct = await DbContext.Product.AsNoTracking().FirstAsync(p => p.Id == productId);
@@ -420,6 +453,12 @@ public class ProductUpdateCommandTests : IDisposable
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         
+        // Clear the change tracker to force reload from database
+        DbContext.ChangeTracker.Clear();
+        
+        // Set tenant context for database query
+        TenantContext.SetCurrentTenantId(1);
+        
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
         TestAssertions.AssertEqual("Only Name Updated", updatedProduct!.Name);
@@ -439,6 +478,12 @@ public class ProductUpdateCommandTests : IDisposable
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         
+        // Clear the change tracker to force reload from database
+        DbContext.ChangeTracker.Clear();
+        
+        // Set tenant context for database query
+        TenantContext.SetCurrentTenantId(1);
+        
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
         Assert.Null(updatedProduct!.ManufacturerId);
@@ -449,14 +494,37 @@ public class ProductUpdateCommandTests : IDisposable
     {
         var productId = await SeedTestDataAsync();
         SetTenantHeader(1);
+        
+        // Clear change tracker to avoid tracking conflicts
+        DbContext.ChangeTracker.Clear();
+        
+        // Verify manufacturer 2 exists - use IgnoreQueryFilters to see it
+        var manufacturer2 = await DbContext.Manufacturer
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.Id == 2 && m.TenantId == 1);
+        TestAssertions.AssertNotNull(manufacturer2);
+        
         var updateDto = CreateUpdateProductDto(productId);
         updateDto.ManufacturerId = 2; // Change to different manufacturer
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
+        // Check for validation errors
+        if (response.StatusCode != HttpStatusCode.OK)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            Assert.Fail($"Response: {response.StatusCode}, Content: {content}");
+        }
+        
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         
-        var updatedProduct = await DbContext.Product.FindAsync(productId);
+        // Clear tracking to force reload from database
+        DbContext.ChangeTracker.Clear();
+        
+        var updatedProduct = await DbContext.Product
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(p => p.Id == productId);
         TestAssertions.AssertNotNull(updatedProduct);
         TestAssertions.AssertEqual(2, updatedProduct!.ManufacturerId);
     }
@@ -474,13 +542,16 @@ public class ProductUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
 
+        // Clear the change tracker to force reload from database
+        DbContext.ChangeTracker.Clear();
+
         // Verify product was updated in tenant 1
-        var productInTenant1 = await DbContext.Product.FirstOrDefaultAsync(p => p.Id == productId && p.TenantId == 1);
+        var productInTenant1 = await DbContext.Product.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.Id == productId && p.TenantId == 1);
         TestAssertions.AssertNotNull(productInTenant1);
         TestAssertions.AssertEqual("Updated in Tenant 1", productInTenant1!.Name);
 
         // Verify product in tenant 2 remains unchanged
-        var productInTenant2 = await DbContext.Product.FirstOrDefaultAsync(p => p.TenantId == 2);
+        var productInTenant2 = await DbContext.Product.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.TenantId == 2);
         if (productInTenant2 != null)
         {
             TestAssertions.AssertNotEqual("Updated in Tenant 1", productInTenant2.Name);
@@ -527,10 +598,10 @@ public class ProductUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Microsoft.AspNetCore.Mvc.ProblemDetails>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertNotEmpty(result.Messages);
+        TestAssertions.AssertEqual("Invalid Request", result.Title);
+        TestAssertions.AssertEqual($"ID in URL ({productId}) must match ID in request body (999)", result.Detail);
     }
 
     [Fact]

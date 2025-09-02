@@ -28,40 +28,24 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
     {
         _logger.LogInformation("Updating product with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
-
         // Validate incoming data
         var validator = new ProductUpdateValidator(_productRepository, _taxClassRepository, _manufacturerRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
         {
-            result.Succeeded = false;
-
-            // Check if the validation error is about invalid ID (0 or negative)
-            if (validationResult.Errors.Any(e => e.PropertyName == "Id" && 
-                (e.ErrorMessage.Contains("must be greater than 0") || 
-                 e.ErrorMessage.Contains("is required"))))
-            {
-                result.StatusCode = ResultStatusCode.BadRequest;
-            }
-            // Check if the validation error is about product not found
-            else if (validationResult.Errors.Any(e => e.ErrorMessage.Contains("Product not found")))
-            {
-                result.StatusCode = ResultStatusCode.NotFound;
-            }
-            else
-            {
-                result.StatusCode = ResultStatusCode.BadRequest;
-            }
-
-            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-
+            var validationErrors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            
             _logger.LogWarning("Validation errors in update request for {0}: {1}",
-                nameof(ProductUpdateCommand),
-                string.Join(", ", result.Messages));
+                nameof(ProductUpdateCommand), validationErrors);
 
-            return result;
+            // Check if the validation error is about product not found
+            if (validationResult.Errors.Any(e => e.ErrorMessage.Contains("Product not found")))
+            {
+                return Result<int>.Fail(ResultStatusCode.NotFound, validationErrors);
+            }
+            
+            return Result<int>.Fail(ResultStatusCode.BadRequest, validationErrors);
         }
 
         try
@@ -71,12 +55,8 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
 
             if (productToUpdate == null)
             {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add("Product not found.");
-                
                 _logger.LogWarning("Product with ID {Id} not found for update", request.Id);
-                return result;
+                return Result<int>.Fail(ResultStatusCode.NotFound, "Product not found.");
             }
 
             // Update properties
@@ -100,21 +80,16 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
             // Update in database
             await _productRepository.UpdateAsync(productToUpdate);
 
-            result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
-            result.Data = productToUpdate.Id;
-
             _logger.LogInformation("Successfully updated product with ID: {Id}", productToUpdate.Id);
+            
+            return Result<int>.Success(productToUpdate.Id);
         }
         catch (Exception ex)
         {
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.InternalServerError;
-            result.Messages.Add($"An error occurred while updating the product: {ex.Message}");
-
             _logger.LogError("Error updating product: {Message}", ex.Message);
+            
+            return Result<int>.Fail(ResultStatusCode.InternalServerError,
+                $"An error occurred while updating the product: {ex.Message}");
         }
-
-        return result;
     }
 }

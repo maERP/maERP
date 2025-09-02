@@ -16,13 +16,6 @@ public static class JwtTokenParser
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(token);
 
-            // Log alle verfügbaren Claims zu Debug-Zwecken
-            Console.WriteLine("JWT Claims:");
-            foreach (var claim in jwtToken.Claims)
-            {
-                Console.WriteLine($"  {claim.Type}: {claim.Value}");
-            }
-
             var tenantsClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "availableTenants")?.Value;
 
             if (!string.IsNullOrEmpty(tenantsClaim))

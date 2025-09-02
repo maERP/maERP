@@ -7,6 +7,7 @@ using maERP.Application.Features.Customer.Queries.CustomerList;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using maERP.Server.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +31,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
         }
 
         var response = await mediator.Send(new CustomerListQuery(pageNumber, pageSize, searchString, orderBy));
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // GET: api/v1/<CustomersController>/5
@@ -40,7 +41,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<CustomerDetailDto>> GetDetails(int id)
     {
         var response = await mediator.Send(new CustomerDetailQuery { Id = id });
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // POST: api/v1/<CustomersController>
@@ -50,7 +51,7 @@ public class CustomersController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<CustomerDetailDto>> Create(CustomerCreateCommand customerCreateCommand)
     {
         var response = await mediator.Send(customerCreateCommand);
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // PUT: api/v1/<CustomersController>/5
@@ -64,12 +65,18 @@ public class CustomersController(IMediator mediator) : ControllerBase
         // Validate ID consistency between URL and body if ID is provided in body and differs
         if (customerUpdateCommand.Id != 0 && customerUpdateCommand.Id != id)
         {
-            return BadRequest($"ID in URL ({id}) must match ID in request body ({customerUpdateCommand.Id})");
+            var errorResponse = ProblemDetailsResult.BadRequest(
+                "Invalid Request", 
+                $"ID in URL ({id}) must match ID in request body ({customerUpdateCommand.Id})",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                $"/api/v1/customers/{id}"
+            );
+            return errorResponse.ToActionResult();
         }
 
         customerUpdateCommand.Id = id;
         var response = await mediator.Send(customerUpdateCommand);
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // DELETE: api/v1/<CustomerController>/5
@@ -82,6 +89,6 @@ public class CustomersController(IMediator mediator) : ControllerBase
     {
         var command = new CustomerDeleteCommand { Id = id };
         var response = await mediator.Send(command);
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 }

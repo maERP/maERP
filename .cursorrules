@@ -99,15 +99,6 @@ dotnet format --verify-no-changes
 dotnet format
 ```
 
-### Available MCP-Server
-- Github
-- Git
-- postgres: postgres db operations
-- browserstack: website testing
-- fetch: fetching web content
-- puppeteer
-- time: time zones and conversions
-
 ## Important Notes
 
 - All comments should be in English
@@ -136,6 +127,9 @@ dotnet format
 - when implementing new features, always consider the security implications of the solution
 - when adding new axaml files, proof if the DataTemplate neeed to be added to MainView.axaml
 - IMPORTANT: data isolation of tenants must always be ensured. In most cases with global EF Core query filters.
-- IMPORTANT: when implementing new layouts, always heavily think about the user experience and usability 
+- IMPORTANT: when implementing new layouts, always heavily think about the user experience and usability
 - IMPORTANT: on layout changes, always look if there is a similar layout and write consistent code
 - When implementing new features or functions, YOU MUST look if there is a similar feature or function and write consistent code
+- Tests are using own Factory-Instances instead of shared Fixtures
+- Don't use FluentAssertions
+- Use RFC 7807 for problem details

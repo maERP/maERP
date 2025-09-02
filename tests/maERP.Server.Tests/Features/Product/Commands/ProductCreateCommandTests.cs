@@ -460,14 +460,6 @@ public class ProductCreateCommandTests : IDisposable
                 $"Failed to create product for tenant 2. Expected: Created, Got: {createResponse2.StatusCode}, Error: {errorContent2}");
         }
         
-        // Debug: Check what was actually created
-        var result2 = await ReadResponseAsync<Result<int>>(createResponse2);
-        
-        // Debug: Query database directly to see the actual tenant IDs
-        // First, let's check if products are created
-        Console.WriteLine($"Create response 1 status: {createResponse1.StatusCode}");
-        Console.WriteLine($"Create response 2 status: {createResponse2.StatusCode}");
-        
         TenantContext.SetCurrentTenantId(null); // Clear tenant filter to see all products
         DbContext.ChangeTracker.Clear();
         
@@ -476,9 +468,6 @@ public class ProductCreateCommandTests : IDisposable
             .IgnoreQueryFilters(); // Ignore all query filters
         var allProducts = await allProductsQuery.ToListAsync();
         
-        var debugInfo = string.Join(", ", allProducts.Select(p => $"SKU={p.Sku}, TenantId={p.TenantId}"));
-        Console.WriteLine($"All products in DB: {debugInfo}");
-        Console.WriteLine($"Total products count: {allProducts.Count}");
         
         // Check if both products were created with correct tenant IDs
         var product1InDb = allProducts.FirstOrDefault(p => p.Sku.StartsWith("TENANT1-"));
@@ -486,7 +475,7 @@ public class ProductCreateCommandTests : IDisposable
         
         if (product1InDb == null || product2InDb == null)
         {
-            TestAssertions.AssertTrue(false, $"Products not created properly. All products in DB: {debugInfo}");
+            TestAssertions.AssertTrue(false, $"Products not created properly.");
         }
         
         TestAssertions.AssertEqual(1, product1InDb!.TenantId);
@@ -495,19 +484,6 @@ public class ProductCreateCommandTests : IDisposable
         // Verify tenant 1 sees its product - use fresh client to avoid header conflicts
         using var tenant1Client = Factory.CreateClient();
         tenant1Client.DefaultRequestHeaders.Add("X-Tenant-Id", "1");
-        
-        // Add a small delay to ensure transaction is committed and data is available
-        await Task.Delay(5000);
-        
-        // Force garbage collection to ensure any cached contexts are cleared
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        
-        // Make multiple requests to bypass any HTTP-level caching
-        var warmupResponse = await tenant1Client.GetAsync("/api/v1/Products?t=" + DateTimeOffset.UtcNow.Ticks);
-        await warmupResponse.Content.ReadAsStringAsync();
-        
-        // await Task.Delay(100); // Small additional delay
         
         var listResponse1 = await tenant1Client.GetAsync("/api/v1/Products?t=" + DateTimeOffset.UtcNow.Ticks);
         TestAssertions.AssertHttpSuccess(listResponse1);
@@ -523,19 +499,6 @@ public class ProductCreateCommandTests : IDisposable
         // Verify tenant 2 sees its product - use fresh client to avoid header conflicts
         using var tenant2Client = Factory.CreateClient();
         tenant2Client.DefaultRequestHeaders.Add("X-Tenant-Id", "2");
-        
-        // Add a small delay to ensure transaction is committed and data is available
-        //await Task.Delay(5000);
-        
-        // Force garbage collection to ensure any cached contexts are cleared
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        
-        // Make multiple requests to bypass any HTTP-level caching
-        var warmupResponse2 = await tenant2Client.GetAsync("/api/v1/Products?t=" + DateTimeOffset.UtcNow.Ticks);
-        await warmupResponse2.Content.ReadAsStringAsync();
-        
-        //await Task.Delay(1000); // Small additional delay
         
         var listResponse2 = await tenant2Client.GetAsync("/api/v1/Products?t=" + DateTimeOffset.UtcNow.Ticks);
         TestAssertions.AssertHttpSuccess(listResponse2);

@@ -22,23 +22,18 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result
     {
         _logger.LogInformation("Deleting product with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
-
         // Validate incoming data
         var validator = new ProductDeleteValidator(_productRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
         {
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.BadRequest;
-            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-
+            var validationErrors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            
             _logger.LogWarning("Validation errors in delete request for {0}: {1}",
-                nameof(ProductDeleteCommand),
-                string.Join(", ", result.Messages));
+                nameof(ProductDeleteCommand), validationErrors);
 
-            return result;
+            return Result<int>.Fail(ResultStatusCode.BadRequest, validationErrors);
         }
 
         try
@@ -48,41 +43,32 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result
 
             if (productToDelete == null)
             {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add("Product not found");
-
                 _logger.LogWarning("Product with ID: {Id} not found for deletion", request.Id);
-                return result;
+                return Result<int>.Fail(ResultStatusCode.NotFound, "Product not found");
             }
 
             // Delete from database
             await _productRepository.DeleteAsync(productToDelete);
 
-            result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.NoContent;
-            result.Data = productToDelete.Id;
-
             _logger.LogInformation("Successfully deleted product with ID: {Id}", productToDelete.Id);
+            
+            var result = Result<int>.Success(productToDelete.Id);
+            result.StatusCode = ResultStatusCode.NoContent;
+            return result;
         }
         catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
         {
             // Handle concurrent deletion - product was already deleted by another request
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.NotFound;
-            result.Messages.Add("Product not found");
-
             _logger.LogWarning("Product with ID: {Id} was deleted by another request: {Message}", request.Id, ex.Message);
+            
+            return Result<int>.Fail(ResultStatusCode.NotFound, "Product not found");
         }
         catch (Exception ex)
         {
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.InternalServerError;
-            result.Messages.Add($"An error occurred while deleting the product: {ex.Message}");
-
             _logger.LogError("Error deleting product: {Message}", ex.Message);
+            
+            return Result<int>.Fail(ResultStatusCode.InternalServerError,
+                $"An error occurred while deleting the product: {ex.Message}");
         }
-
-        return result;
     }
 }

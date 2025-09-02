@@ -162,7 +162,7 @@ else
             };
 
         context.Response.Headers[HeaderNames.Vary] =
-            new[] { "Accept-Encoding" };
+            new[] { "Accept-Encoding", "X-Tenant-Id" };
 
         await next();
     });

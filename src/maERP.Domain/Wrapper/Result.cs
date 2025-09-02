@@ -83,6 +83,11 @@ public class Result<T> : Result, IResult<T>
         return new Result<T> { StatusCode = status, Succeeded = false, Messages = new List<string> { message } };
     }
 
+    public static Result<T> Fail(ResultStatusCode status, List<string> messages)
+    {
+        return new Result<T> { StatusCode = status, Succeeded = false, Messages = messages };
+    }
+
     public new static Result<T> Fail(List<string> messages)
     {
         return new Result<T> { Succeeded = false, Messages = messages };
@@ -104,6 +109,11 @@ public class Result<T> : Result, IResult<T>
     public static Task<Result<T>> FailAsync(ResultStatusCode status, string message)
     {
         return Task.FromResult(Fail(status, message));
+    }
+
+    public static Task<Result<T>> FailAsync(ResultStatusCode status, List<string> messages)
+    {
+        return Task.FromResult(Fail(status, messages));
     }
 
     public new static Task<Result<T>> FailAsync(List<string> messages)

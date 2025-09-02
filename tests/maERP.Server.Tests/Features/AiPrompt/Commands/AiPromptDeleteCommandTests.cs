@@ -1,0 +1,452 @@
+using System.Net;
+using System.Text.Json;
+using maERP.Domain.Wrapper;
+using maERP.Server.Tests.Infrastructure;
+using maERP.Persistence.DatabaseContext;
+using maERP.Application.Contracts.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
+
+namespace maERP.Server.Tests.Features.AiPrompt.Commands;
+
+public class AiPromptDeleteCommandTests : IDisposable
+{
+    protected readonly TestWebApplicationFactory<Program> Factory;
+    protected readonly HttpClient Client;
+    protected readonly ApplicationDbContext DbContext;
+    protected readonly ITenantContext TenantContext;
+    protected readonly IServiceScope Scope;
+
+    public AiPromptDeleteCommandTests()
+    {
+        var uniqueId = Guid.NewGuid().ToString("N")[..8];
+        var testDbName = $"TestDb_AiPromptDeleteCommandTests_{uniqueId}";
+        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
+
+        Factory = new TestWebApplicationFactory<Program>();
+        Client = Factory.CreateClient();
+
+        Scope = Factory.Services.CreateScope();
+        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
+
+        DbContext.Database.EnsureCreated();
+
+        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetCurrentTenantId(null);
+    }
+
+    protected void SetTenantHeader(int tenantId)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
+    }
+
+    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
+    {
+        var content = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+        return result ?? throw new InvalidOperationException("Failed to deserialize response");
+    }
+
+    private async Task<(int tenant1PromptId, int tenant2PromptId)> SeedTestDataAsync()
+    {
+        var hasData = await DbContext.AiPrompt.IgnoreQueryFilters().AnyAsync();
+        if (!hasData)
+        {
+            await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        }
+
+        // Get prompt IDs for both tenants
+        var tenant1PromptId = await DbContext.AiPrompt.IgnoreQueryFilters()
+            .Where(p => p.TenantId == 1)
+            .Select(p => p.Id)
+            .FirstAsync();
+
+        var tenant2PromptId = await DbContext.AiPrompt.IgnoreQueryFilters()
+            .Where(p => p.TenantId == 2)
+            .Select(p => p.Id)
+            .FirstAsync();
+
+        return (tenant1PromptId, tenant2PromptId);
+    }
+
+    public void Dispose()
+    {
+        Scope?.Dispose();
+        Client?.Dispose();
+        Factory?.Dispose();
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_WithValidId_ShouldReturnNoContent()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_WithValidId_ShouldRemoveFromDatabase()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Verify prompt exists before deletion
+        var getResponseBefore = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        TestAssertions.AssertHttpSuccess(getResponseBefore);
+
+        // Act
+        var deleteResponse = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+        // Verify prompt no longer exists
+        var getResponseAfter = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        TestAssertions.AssertHttpStatusCode(getResponseAfter, HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_WithNonExistentId_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Act
+        var response = await Client.DeleteAsync("/api/v1/AiPrompts/999");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_WithWrongTenant_ShouldReturnNotFound()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SetTenantHeader(2); // Prompt belongs to tenant 1, accessing with tenant 2
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+
+        // Verify prompt still exists in tenant 1
+        SetTenantHeader(1);
+        var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        TestAssertions.AssertHttpSuccess(getResponse);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_WithoutTenantHeader_ShouldReturnNotFound()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+
+        // Act (no tenant header set)
+        var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+
+        // Verify prompt still exists in tenant 1
+        SetTenantHeader(1);
+        var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        TestAssertions.AssertHttpSuccess(getResponse);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_WithInvalidTenantHeader_ShouldReturnNotFound()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SetTenantHeader(999); // Invalid tenant
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_TenantIsolation_ShouldOnlyDeleteInCorrectTenant()
+    {
+        // Arrange
+        var (tenant1PromptId, tenant2PromptId) = await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Act - Delete prompt in tenant 1
+        var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+
+        // Verify prompt was deleted in tenant 1
+        var getResponseTenant1 = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        TestAssertions.AssertHttpStatusCode(getResponseTenant1, HttpStatusCode.NotFound);
+
+        // Verify prompt still exists in tenant 2
+        SetTenantHeader(2);
+        var getResponseTenant2 = await Client.GetAsync($"/api/v1/AiPrompts/{tenant2PromptId}");
+        TestAssertions.AssertHttpSuccess(getResponseTenant2);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_WithZeroId_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Act
+        var response = await Client.DeleteAsync("/api/v1/AiPrompts/0");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_WithNegativeId_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Act
+        var response = await Client.DeleteAsync("/api/v1/AiPrompts/-1");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_WithStringId_ShouldReturnBadRequest()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Act
+        var response = await Client.DeleteAsync("/api/v1/AiPrompts/abc");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_AlreadyDeleted_ShouldReturnNotFound()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Delete the prompt first time
+        var firstDeleteResponse = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, firstDeleteResponse.StatusCode);
+
+        // Act - Try to delete again
+        var secondDeleteResponse = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, secondDeleteResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_MultiplePromptsInSameTenant_ShouldDeleteOnlySpecified()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Get all prompts in tenant 1 before deletion
+        var getPromptsBeforeResponse = await Client.GetAsync("/api/v1/AiPrompts");
+        var promptsBeforeResult = await ReadResponseAsync<PaginatedResult<Domain.Dtos.AiPrompt.AiPromptListDto>>(getPromptsBeforeResponse);
+        var promptsCountBefore = promptsBeforeResult?.Data?.Count ?? 0;
+
+        // Act - Delete one specific prompt
+        var deleteResponse = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+        // Verify only one prompt was deleted
+        var getPromptsAfterResponse = await Client.GetAsync("/api/v1/AiPrompts");
+        var promptsAfterResult = await ReadResponseAsync<PaginatedResult<Domain.Dtos.AiPrompt.AiPromptListDto>>(getPromptsAfterResponse);
+        var promptsCountAfter = promptsAfterResult?.Data?.Count ?? 0;
+
+        TestAssertions.AssertEqual(promptsCountBefore - 1, promptsCountAfter);
+
+        // Verify specific prompt was deleted
+        var getDeletedPromptResponse = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        TestAssertions.AssertHttpStatusCode(getDeletedPromptResponse, HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_ResponseHeadersAndContent_ShouldBeCorrect()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+        
+        // Verify response has no content
+        var content = await response.Content.ReadAsStringAsync();
+        TestAssertions.AssertTrue(string.IsNullOrEmpty(content));
+        
+        // Verify content length is 0
+        TestAssertions.AssertEqual(0, response.Content.Headers.ContentLength ?? 0);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_ConcurrentDeletes_ShouldHandleCorrectly()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Act - Multiple concurrent delete requests
+        var tasks = new List<Task<HttpResponseMessage>>();
+        for (int i = 0; i < 3; i++)
+        {
+            tasks.Add(Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}"));
+        }
+
+        var responses = await Task.WhenAll(tasks);
+
+        // Assert - Only one should succeed with NoContent, others should be NotFound
+        var noContentResponses = responses.Where(r => r.StatusCode == HttpStatusCode.NoContent).ToList();
+        var notFoundResponses = responses.Where(r => r.StatusCode == HttpStatusCode.NotFound).ToList();
+
+        TestAssertions.AssertEqual(1, noContentResponses.Count);
+        TestAssertions.AssertEqual(2, notFoundResponses.Count);
+
+        // Verify prompt is deleted
+        var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        TestAssertions.AssertHttpStatusCode(getResponse, HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_AfterDeletion_ListShouldNotContainPrompt()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Get initial list
+        var getListBeforeResponse = await Client.GetAsync("/api/v1/AiPrompts");
+        var listBeforeResult = await ReadResponseAsync<PaginatedResult<Domain.Dtos.AiPrompt.AiPromptListDto>>(getListBeforeResponse);
+        var initialPrompts = listBeforeResult?.Data ?? new List<Domain.Dtos.AiPrompt.AiPromptListDto>();
+
+        // Verify prompt exists in list
+        var promptExistsInList = initialPrompts.Any(p => p.Id == tenant1PromptId);
+        TestAssertions.AssertTrue(promptExistsInList);
+
+        // Act - Delete the prompt
+        var deleteResponse = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+        // Assert - Verify prompt is not in list anymore
+        var getListAfterResponse = await Client.GetAsync("/api/v1/AiPrompts");
+        var listAfterResult = await ReadResponseAsync<PaginatedResult<Domain.Dtos.AiPrompt.AiPromptListDto>>(getListAfterResponse);
+        var finalPrompts = listAfterResult?.Data ?? new List<Domain.Dtos.AiPrompt.AiPromptListDto>();
+
+        var promptStillInList = finalPrompts.Any(p => p.Id == tenant1PromptId);
+        TestAssertions.AssertFalse(promptStillInList);
+    }
+
+    [Theory]
+    [InlineData("0")]
+    [InlineData("-1")]
+    [InlineData("abc")]
+    [InlineData("")]
+    public async Task DeleteAiPrompt_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_WithExtremelyLargeId_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{int.MaxValue}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_ResponseTime_ShouldBeReasonable()
+    {
+        // Arrange
+        var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SetTenantHeader(1);
+        var startTime = DateTime.UtcNow;
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        var endTime = DateTime.UtcNow;
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+        var responseTime = endTime - startTime;
+        TestAssertions.AssertTrue(responseTime.TotalSeconds < 5); // Should respond within 5 seconds
+    }
+
+    [Fact]
+    public async Task DeleteAiPrompt_DatabaseConsistency_ShouldMaintainIntegrity()
+    {
+        // Arrange
+        var (tenant1PromptId, tenant2PromptId) = await SeedTestDataAsync();
+        SetTenantHeader(1);
+
+        // Get initial counts
+        var initialCountT1 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == 1);
+        var initialCountT2 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == 2);
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+
+        // Verify counts after deletion
+        var finalCountT1 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == 1);
+        var finalCountT2 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == 2);
+
+        TestAssertions.AssertEqual(initialCountT1 - 1, finalCountT1);
+        TestAssertions.AssertEqual(initialCountT2, finalCountT2); // Tenant 2 count should remain unchanged
+    }
+}

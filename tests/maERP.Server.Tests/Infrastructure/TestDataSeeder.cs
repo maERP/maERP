@@ -28,12 +28,14 @@ public static class TestDataSeeder
         try
         {
             var hasData = await context.Tenant.IgnoreQueryFilters().AnyAsync() ||
-                          await context.AiModel.IgnoreQueryFilters().AnyAsync();
+                          await context.AiModel.IgnoreQueryFilters().AnyAsync() ||
+                          await context.AiPrompt.IgnoreQueryFilters().AnyAsync();
 
             if (!hasData)
             {
                 SeedTenants(context, tenantContext);
                 SeedAiModels(context, tenantContext);
+                SeedAiPrompts(context, tenantContext);
                 await context.SaveChangesAsync();
 
                 _seededContexts.TryAdd(contextId, true);
@@ -112,5 +114,43 @@ public static class TestDataSeeder
         };
 
         context.AiModel.AddRange(aiModel1Tenant1, aiModel2Tenant1, aiModel1Tenant2);
+    }
+
+    private static void SeedAiPrompts(ApplicationDbContext context, ITenantContext? tenantContext)
+    {
+        var aiPrompt1Tenant1 = new AiPrompt
+        {
+            Id = 1,
+            AiModelId = 1,
+            Identifier = "Test Prompt 1 Tenant 1",
+            PromptText = "This is a test prompt for tenant 1",
+            TenantId = 1,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var aiPrompt2Tenant1 = new AiPrompt
+        {
+            Id = 2,
+            AiModelId = 2,
+            Identifier = "Test Prompt 2 Tenant 1",
+            PromptText = "This is another test prompt for tenant 1",
+            TenantId = 1,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var aiPrompt1Tenant2 = new AiPrompt
+        {
+            Id = 3,
+            AiModelId = 3,
+            Identifier = "Test Prompt 1 Tenant 2",
+            PromptText = "This is a test prompt for tenant 2",
+            TenantId = 2,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        context.AiPrompt.AddRange(aiPrompt1Tenant1, aiPrompt2Tenant1, aiPrompt1Tenant2);
     }
 }
