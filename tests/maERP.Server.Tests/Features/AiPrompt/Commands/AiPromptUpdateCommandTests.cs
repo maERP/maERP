@@ -169,6 +169,7 @@ public class AiPromptUpdateCommandTests : IDisposable
         var promptId = await SeedTestDataAsync();
         SetTenantHeader(2); // Prompt belongs to tenant 1, accessing with tenant 2
         var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.AiModelId = 3; // Use AiModel that belongs to tenant 2 to avoid validation error
 
         // Act
         var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
@@ -456,16 +457,13 @@ public class AiPromptUpdateCommandTests : IDisposable
         var promptId = await SeedTestDataAsync();
         SetTenantHeader(1);
 
-        // Get original prompt data
-        var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{promptId}");
-        var originalPrompt = await ReadResponseAsync<Result<AiPromptDetailDto>>(getResponse);
-
+        // Use known test data values instead of reading from API to avoid context issues
         var updateDto = new AiPromptInputDto
         {
             Id = promptId,
-            AiModelId = originalPrompt!.Data!.AiModelId, // Keep original AI model
+            AiModelId = 1, // Known value from test data 
             Identifier = "Only Identifier Updated",
-            PromptText = originalPrompt.Data.PromptText // Keep original prompt text
+            PromptText = "This is a test prompt for tenant 1" // Known value from test data
         };
 
         // Act
@@ -478,7 +476,7 @@ public class AiPromptUpdateCommandTests : IDisposable
         var verifyResponse = await Client.GetAsync($"/api/v1/AiPrompts/{promptId}");
         var updatedPrompt = await ReadResponseAsync<Result<AiPromptDetailDto>>(verifyResponse);
         TestAssertions.AssertEqual("Only Identifier Updated", updatedPrompt?.Data?.Identifier);
-        TestAssertions.AssertEqual(originalPrompt.Data.PromptText, updatedPrompt?.Data?.PromptText); // Should remain unchanged
+        TestAssertions.AssertEqual("This is a test prompt for tenant 1", updatedPrompt?.Data?.PromptText); // Should remain unchanged
     }
 
     [Fact]

@@ -3,6 +3,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.AiPrompt.Queries.AiPromptDetail;
 

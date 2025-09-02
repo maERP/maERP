@@ -25,7 +25,7 @@ public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Resu
         var result = new Result<int>();
 
         // Validate incoming data
-        var validator = new AiPromptDeleteValidator(_aIPromptRepository);
+        var validator = new AiPromptDeleteValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
@@ -43,20 +43,35 @@ public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Resu
 
         try
         {
-            // Create entity to delete
-            var aIPromptToDelete = new Domain.Entities.AiPrompt
+            // Get entity from database first
+            var aIPromptToDelete = await _aIPromptRepository.GetByIdAsync(request.Id);
+
+            if (aIPromptToDelete == null)
             {
-                Id = request.Id
-            };
+                _logger.LogWarning("AI prompt with ID: {Id} not found for deletion", request.Id);
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("AI prompt not found");
+                return result;
+            }
 
             // Delete from database
             await _aIPromptRepository.DeleteAsync(aIPromptToDelete);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.NoContent;
             result.Data = aIPromptToDelete.Id;
 
             _logger.LogInformation("Successfully deleted AI prompt with ID: {Id}", aIPromptToDelete.Id);
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
+        {
+            // Handle concurrent deletion - prompt was already deleted by another request
+            _logger.LogWarning("AI prompt with ID: {Id} was deleted by another request: {Message}", request.Id, ex.Message);
+            
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.NotFound;
+            result.Messages.Add("AI prompt not found");
         }
         catch (Exception ex)
         {

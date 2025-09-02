@@ -163,10 +163,10 @@ public class ProductDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Products/{productId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
-        TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(productId, result.Data);
+        
+        // NoContent responses should have empty body as per HTTP specification
+        var content = await response.Content.ReadAsStringAsync();
+        TestAssertions.AssertTrue(string.IsNullOrEmpty(content), "NoContent response should have empty body");
     }
 
     [Fact]
@@ -346,11 +346,18 @@ public class ProductDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Products/{productId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
-        TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(productId, result.Data);
-        TestAssertions.AssertNotNull(result.Messages);
+        
+        // For NoContent responses, the body should be empty as per HTTP specification
+        var content = await response.Content.ReadAsStringAsync();
+        TestAssertions.AssertTrue(string.IsNullOrEmpty(content), "NoContent response should have empty body");
+        
+        // Verify the product was actually deleted by checking it no longer exists
+        using var verifyScope = Factory.Services.CreateScope();
+        var verifyDbContext = verifyScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var deletedProduct = await verifyDbContext.Product
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(p => p.Id == productId);
+        Assert.Null(deletedProduct);
     }
 
     [Fact]

@@ -74,22 +74,49 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task<T?> GetByIdAsync(int id, bool asNoTracking = false)
     {
-        var query = Context.Set<T>().AsQueryable();
+        // Always start with ignoring query filters to ensure fresh database reads
+        // especially important after DELETE operations in tests
+        var query = Context.Set<T>().IgnoreQueryFilters().AsQueryable();
 
-        // Apply manual tenant filtering in tests if TenantContext is available
+        // Apply manual tenant filtering - crucial for multi-tenant scenarios
         var currentTenantId = TenantContext.GetCurrentTenantId();
         if (currentTenantId.HasValue)
         {
             // Manual tenant filtering for both production and test environments
             query = query.Where(x => x.TenantId == null || x.TenantId == currentTenantId.Value);
         }
-
-        if (asNoTracking)
+        else
         {
-            return await query.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            // If no tenant context, only return tenant-agnostic entities
+            query = query.Where(x => x.TenantId == null);
         }
 
-        return await query.FirstOrDefaultAsync(x => x.Id == id);
+        // Apply id filter
+        query = query.Where(x => x.Id == id);
+
+        // Always use AsNoTracking to ensure fresh database reads, especially after deletions
+        if (asNoTracking)
+        {
+            return await query.AsNoTracking().FirstOrDefaultAsync();
+        }
+        else
+        {
+            // For tracking entities, still use AsNoTracking to get fresh data, then attach
+            var result = await query.AsNoTracking().FirstOrDefaultAsync();
+            if (result != null)
+            {
+                // Clear any potentially stale tracked entities with the same ID
+                var trackedEntity = Context.ChangeTracker.Entries<T>()
+                    .FirstOrDefault(e => e.Entity.Id == id);
+                if (trackedEntity != null)
+                {
+                    Context.Entry(trackedEntity.Entity).State = EntityState.Detached;
+                }
+                
+                Context.Attach(result);
+            }
+            return result;
+        }
     }
 
     public async Task UpdateAsync(T entity)
@@ -108,15 +135,35 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task DeleteAsync(T entity)
     {
-        // Ensure the entity is tracked before deletion
-        var entry = Context.Entry(entity);
-        if (entry.State == EntityState.Detached)
+        // First verify the entity exists and belongs to the current tenant
+        var existingEntity = await Context.Set<T>().IgnoreQueryFilters()
+            .FirstOrDefaultAsync(e => e.Id == entity.Id);
+        
+        if (existingEntity == null)
         {
-            Context.Set<T>().Attach(entity);
+            throw new InvalidOperationException($"Entity with ID {entity.Id} not found for deletion");
         }
         
-        Context.Remove(entity);
+        // Verify tenant isolation for security
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        if (currentTenantId.HasValue && existingEntity.TenantId != null && existingEntity.TenantId != currentTenantId)
+        {
+            throw new UnauthorizedAccessException($"Cannot delete entity from different tenant");
+        }
+        
+        // Remove the existing entity (not the passed-in entity which may be incomplete)
+        Context.Remove(existingEntity);
         await Context.SaveChangesAsync();
+        
+        // Clear all tracked entities to ensure fresh reads from database
+        Context.ChangeTracker.Clear();
+        
+        // Force garbage collection in InMemory database scenarios  
+        if (Context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
     }
 
     public async Task<bool> ExistsAsync(int id)

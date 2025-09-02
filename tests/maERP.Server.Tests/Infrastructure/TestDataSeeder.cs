@@ -29,11 +29,15 @@ public static class TestDataSeeder
         {
             var hasData = await context.Tenant.IgnoreQueryFilters().AnyAsync() ||
                           await context.AiModel.IgnoreQueryFilters().AnyAsync() ||
-                          await context.AiPrompt.IgnoreQueryFilters().AnyAsync();
+                          await context.AiPrompt.IgnoreQueryFilters().AnyAsync() ||
+                          await context.TaxClass.IgnoreQueryFilters().AnyAsync() ||
+                          await context.Warehouse.IgnoreQueryFilters().AnyAsync();
 
             if (!hasData)
             {
                 SeedTenants(context, tenantContext);
+                SeedTaxClasses(context, tenantContext);
+                SeedWarehouses(context, tenantContext);
                 SeedAiModels(context, tenantContext);
                 SeedAiPrompts(context, tenantContext);
                 await context.SaveChangesAsync();
@@ -70,6 +74,88 @@ public static class TestDataSeeder
         };
 
         context.Tenant.AddRange(tenant1, tenant2);
+    }
+
+    private static void SeedTaxClasses(ApplicationDbContext context, ITenantContext? tenantContext)
+    {
+        var taxClass1Tenant1 = new TaxClass
+        {
+            Id = 1,
+            TaxRate = 19.0, // 19% VAT for tenant 1
+            TenantId = 1,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var taxClass2Tenant1 = new TaxClass
+        {
+            Id = 2,
+            TaxRate = 7.0, // 7% reduced VAT for tenant 1
+            TenantId = 1,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var taxClass1Tenant2 = new TaxClass
+        {
+            Id = 3,
+            TaxRate = 20.0, // 20% VAT for tenant 2
+            TenantId = 2,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var taxClass2Tenant2 = new TaxClass
+        {
+            Id = 4,
+            TaxRate = 10.0, // 10% reduced VAT for tenant 2
+            TenantId = 2,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        context.TaxClass.AddRange(taxClass1Tenant1, taxClass2Tenant1, taxClass1Tenant2, taxClass2Tenant2);
+    }
+
+    private static void SeedWarehouses(ApplicationDbContext context, ITenantContext? tenantContext)
+    {
+        var warehouse1Tenant1 = new Warehouse
+        {
+            Id = 1,
+            Name = "Main Warehouse Tenant 1",
+            TenantId = 1,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var warehouse2Tenant1 = new Warehouse
+        {
+            Id = 2,
+            Name = "Secondary Warehouse Tenant 1",
+            TenantId = 1,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var warehouse1Tenant2 = new Warehouse
+        {
+            Id = 3,
+            Name = "Main Warehouse Tenant 2",
+            TenantId = 2,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var warehouse2Tenant2 = new Warehouse
+        {
+            Id = 4,
+            Name = "Secondary Warehouse Tenant 2",
+            TenantId = 2,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        context.Warehouse.AddRange(warehouse1Tenant1, warehouse2Tenant1, warehouse1Tenant2, warehouse2Tenant2);
     }
 
     private static void SeedAiModels(ApplicationDbContext context, ITenantContext? tenantContext)

@@ -17,6 +17,12 @@ public static class ResultExtensions
     /// <returns>An ActionResult with appropriate HTTP status code and response body</returns>
     public static ActionResult ToActionResult<T>(this Result<T> result)
     {
+        // For NoContent responses, return empty content
+        if (result.StatusCode == ResultStatusCode.NoContent)
+        {
+            return new StatusCodeResult((int)result.StatusCode);
+        }
+        
         return new ObjectResult(result)
         {
             StatusCode = (int)result.StatusCode
@@ -30,6 +36,12 @@ public static class ResultExtensions
     /// <returns>An ActionResult with appropriate HTTP status code and response body</returns>
     public static ActionResult ToActionResult(this Domain.Wrapper.IResult result)
     {
+        // For NoContent responses, return empty content
+        if (result.StatusCode == ResultStatusCode.NoContent)
+        {
+            return new StatusCodeResult((int)result.StatusCode);
+        }
+        
         return new ObjectResult(result)
         {
             StatusCode = (int)result.StatusCode

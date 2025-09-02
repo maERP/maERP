@@ -36,9 +36,12 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             var testDatabaseName = Environment.GetEnvironmentVariable("TEST_DB_NAME") ?? "TestDb_" + Guid.NewGuid();
             
             // Ensure DbContext is created per request with proper tenant context injection
+            // Use Singleton for DbContextOptions to ensure the same InMemory database instance is used across all requests
             services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
             {
                 options.UseInMemoryDatabase(testDatabaseName);
+                // Ensure sensitive data logging is disabled for performance
+                options.EnableSensitiveDataLogging(false);
             }, ServiceLifetime.Scoped);
 
             // Remove existing authentication services
@@ -64,10 +67,14 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             if (tenantContextDescriptor != null)
                 services.Remove(tenantContextDescriptor);
 
-            // Register TestTenantContext as scoped to ensure per-request isolation
-            services.AddScoped<ITenantContext, TestTenantContext>();
+            // Register TestTenantContext as singleton to ensure the same instance is used across all requests
+            // This is crucial for Global Query Filters to work correctly in tests
+            services.AddSingleton<ITenantContext, TestTenantContext>();
         });
 
         builder.UseEnvironment("Testing");
+        
+        // Ensure the environment variable is set for ApplicationDbContext
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
     }
 }

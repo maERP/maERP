@@ -11,5 +11,7 @@ public class AiPromptBaseValidator<T> : AbstractValidator<T> where T : IAiPrompt
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull()
             .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
+
+
     }
 }
