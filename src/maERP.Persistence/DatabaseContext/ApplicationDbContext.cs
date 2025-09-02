@@ -76,11 +76,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.SeedSettings();
 
-        // Configure global query filters for multi-tenancy (disabled in testing environment)
-        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Testing")
-        {
-            ConfigureGlobalFilters(modelBuilder);
-        }
+        // Configure global query filters for multi-tenancy
+        // IMPORTANT: Always apply global filters to ensure tenant isolation, even in tests
+        ConfigureGlobalFilters(modelBuilder);
     }
 
     public DbSet<AiModel> AiModel { get; set; } = null!;

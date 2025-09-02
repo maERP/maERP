@@ -27,6 +27,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
             IQueryable<T> query = Context.Set<T>();
             var currentTenantId = TenantContext.GetCurrentTenantId();
 
+
             // Apply tenant filtering - only return entities for current tenant or tenant-agnostic entities
             if (currentTenantId.HasValue)
             {

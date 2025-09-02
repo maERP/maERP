@@ -19,7 +19,6 @@ public class TenantMiddleware
         var user = context.User;
         var isTestEnvironment = context.RequestServices.GetService<IWebHostEnvironment>()?.EnvironmentName == "Testing";
 
-
         // Check if X-Tenant-Id header is present
         if (context.Request.Headers.TryGetValue("X-Tenant-Id", out var tenantHeader))
         {

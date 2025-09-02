@@ -1,5 +1,6 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 
@@ -33,22 +34,30 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
     private readonly IManufacturerRepository _manufacturerRepository;
 
     /// <summary>
+    /// Tenant context for handling multi-tenancy
+    /// </summary>
+    private readonly ITenantContext _tenantContext;
+
+    /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
     /// <param name="logger">Logger for recording operations</param>
     /// <param name="productRepository">Repository for product data access</param>
     /// <param name="taxClassRepository">Repository for tax class data access</param>
     /// <param name="manufacturerRepository">Repository for manufacturer data access</param>
+    /// <param name="tenantContext">Tenant context for multi-tenancy</param>
     public ProductCreateHandler(
         IAppLogger<ProductCreateHandler> logger,
         IProductRepository productRepository,
         ITaxClassRepository taxClassRepository,
-        IManufacturerRepository manufacturerRepository)
+        IManufacturerRepository manufacturerRepository,
+        ITenantContext tenantContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
         _manufacturerRepository = manufacturerRepository ?? throw new ArgumentNullException(nameof(manufacturerRepository));
+        _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
     /// <summary>
@@ -83,6 +92,17 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
 
         try
         {
+            // Get current tenant ID for proper data isolation
+            var currentTenantId = _tenantContext.GetCurrentTenantId();
+            if (!currentTenantId.HasValue)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Tenant context is not set. Cannot create product without tenant information.");
+                _logger.LogError("Attempted to create product without tenant context");
+                return result;
+            }
+
             // Manual mapping instead of using AutoMapper
             var productToCreate = new Domain.Entities.Product
             {
@@ -101,7 +121,8 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
                 Height = request.Height,
                 Depth = request.Depth,
                 TaxClassId = request.TaxClassId,
-                ManufacturerId = request.ManufacturerId
+                ManufacturerId = request.ManufacturerId,
+                TenantId = currentTenantId.Value // Explicitly set TenantId for data isolation
             };
 
             // Add the new product to the database

@@ -36,6 +36,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
                .Include(p => p.Manufacturer)
                .Specify(orderFilterSpec)
                .Select(p => MapToProductListDto(p))
+               .AsNoTracking() // Ensure no EF caching
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
 
             return products;
@@ -48,6 +49,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
             .Specify(orderFilterSpec)
             .OrderBy(ordering)
             .Select(p => MapToProductListDto(p))
+            .AsNoTracking() // Ensure no EF caching
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
 
         return orderedProducts;
