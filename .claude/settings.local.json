@@ -4,7 +4,11 @@
       "Bash(dotnet test:*)",
       "Bash(find:*)",
       "Bash(dotnet build:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(dotnet format:*)",
+      "Bash(for:*)",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

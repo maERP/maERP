@@ -43,6 +43,11 @@ public class AiPromptDeleteCommandTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
     {
         var content = await response.Content.ReadAsStringAsync();
@@ -192,7 +197,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
-        SetTenantHeader(999); // Invalid tenant
+        SetInvalidTenantHeader();
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
@@ -414,12 +419,9 @@ public class AiPromptDeleteCommandTests : IDisposable
             .AnyAsync(p => p.Id == tenant1PromptId);
         TestAssertions.AssertFalse(entityExistsAfterDelete, $"Entity {tenant1PromptId} should be deleted but still exists in database after manual check");
 
-        // Create a fresh HTTP client to ensure no cached context
-        using var freshClient = Factory.CreateClient();
-        freshClient.DefaultRequestHeaders.Add("X-Tenant-Id", "1");
-
-        // Assert - Verify prompt cannot be retrieved anymore
-        var getResponseAfter = await freshClient.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
+        // Assert - Verify prompt cannot be retrieved anymore using the same client
+        // Using the same client ensures scope consistency in InMemory database tests
+        var getResponseAfter = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
         TestAssertions.AssertHttpStatusCode(getResponseAfter, HttpStatusCode.NotFound);
     }
 

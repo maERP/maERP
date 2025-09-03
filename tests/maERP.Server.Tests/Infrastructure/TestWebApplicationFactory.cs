@@ -36,7 +36,6 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             var testDatabaseName = Environment.GetEnvironmentVariable("TEST_DB_NAME") ?? "TestDb_" + Guid.NewGuid();
             
             // Ensure DbContext is created per request with proper tenant context injection
-            // Use Singleton for DbContextOptions to ensure the same InMemory database instance is used across all requests
             services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
             {
                 options.UseInMemoryDatabase(testDatabaseName);

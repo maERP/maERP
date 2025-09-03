@@ -44,6 +44,11 @@ public class WarehouseUpdateCommandTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     protected async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
     {
         var json = JsonSerializer.Serialize(value);
@@ -150,7 +155,7 @@ public class WarehouseUpdateCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(999);
+        SetInvalidTenantHeader();
         var updateDto = CreateValidUpdateDto();
 
         // Act

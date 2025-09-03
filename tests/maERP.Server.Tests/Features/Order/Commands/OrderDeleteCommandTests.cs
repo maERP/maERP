@@ -50,6 +50,11 @@ public class OrderDeleteCommandTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     private async Task SeedOrderTestDataAsync()
     {
         var currentTenant = TenantContext.GetCurrentTenantId();
@@ -331,12 +336,11 @@ public class OrderDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteOrder_InvalidTenantHeader_ShouldReturnNoContent()
+    public async Task DeleteOrder_WithInvalidTenantHeader_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
         
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", "invalid");
+        SetInvalidTenantHeader();
         
         var response = await Client.DeleteAsync("/api/v1/Orders/1");
         

@@ -44,6 +44,11 @@ public class AiPromptCreateCommandTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
     {
         var json = JsonSerializer.Serialize(value);
@@ -268,7 +273,7 @@ public class AiPromptCreateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateAiPrompt_WithoutTenantHeader_ShouldReturnCreated()
+    public async Task CreateAiPrompt_WithoutTenantHeader_ShouldReturnUnauthorized()
     {
         // Arrange
         await SeedTestDataAsync();
@@ -278,7 +283,7 @@ public class AiPromptCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/AiPrompts", promptDto);
 
         // Assert
-        TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -286,7 +291,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(999); // Invalid tenant - but might still create
+        SetInvalidTenantHeader();
         var promptDto = CreateValidAiPromptDto();
 
         // Act

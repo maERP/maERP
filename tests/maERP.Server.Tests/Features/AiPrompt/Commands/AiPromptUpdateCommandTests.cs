@@ -44,6 +44,11 @@ public class AiPromptUpdateCommandTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
     {
         var json = JsonSerializer.Serialize(value);
@@ -326,7 +331,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(999); // Invalid tenant
+        SetInvalidTenantHeader();
         var updateDto = CreateUpdateAiPromptDto(promptId);
 
         // Act

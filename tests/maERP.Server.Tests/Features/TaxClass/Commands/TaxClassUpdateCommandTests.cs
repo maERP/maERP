@@ -45,6 +45,11 @@ public class TaxClassUpdateCommandTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     protected async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
     {
         var json = JsonSerializer.Serialize(value);
@@ -151,7 +156,7 @@ public class TaxClassUpdateCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(999);
+        SetInvalidTenantHeader();
         var updateDto = CreateValidUpdateDto();
 
         // Act

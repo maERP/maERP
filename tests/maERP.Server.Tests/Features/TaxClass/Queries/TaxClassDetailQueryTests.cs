@@ -43,6 +43,11 @@ public class TaxClassDetailQueryTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
     {
         var content = await response.Content.ReadAsStringAsync();
@@ -126,7 +131,7 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(999); // Invalid tenant
+        SetInvalidTenantHeader();
 
         // Act
         var response = await Client.GetAsync("/api/v1/TaxClasses/1");

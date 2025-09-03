@@ -46,6 +46,11 @@ public class AiPromptDetailQueryTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
     {
         var content = await response.Content.ReadAsStringAsync();
@@ -130,7 +135,7 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(999); // Invalid tenant
+        SetInvalidTenantHeader();
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts/1");
@@ -230,7 +235,7 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange - Use a tenant that doesn't exist in seeded data
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(999); // Non-existent tenant
+        SetInvalidTenantHeader();
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts/1");
@@ -286,8 +291,6 @@ public class AiPromptDetailQueryTests : IDisposable
     [Theory]
     [InlineData("0")]
     [InlineData("-1")]
-    [InlineData("abc")]
-    [InlineData("")]
     public async Task GetAiPromptById_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
     {
         // Arrange
@@ -300,6 +303,23 @@ public class AiPromptDetailQueryTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+    }
+
+    [Theory]
+    [InlineData("abc")]
+    [InlineData("")]
+    public async Task GetAiPromptById_WithUnparseableTenantHeaderValue_ShouldReturnUnauthorized(string unparseableTenantId)
+    {
+        // Arrange
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        Client.DefaultRequestHeaders.Add("X-Tenant-Id", unparseableTenantId);
+
+        // Act
+        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+
+        // Assert
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
     }
 
     [Fact]

@@ -155,14 +155,20 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         Context.Remove(existingEntity);
         await Context.SaveChangesAsync();
         
-        // Clear all tracked entities to ensure fresh reads from database
-        Context.ChangeTracker.Clear();
-        
-        // Force garbage collection in InMemory database scenarios  
+        // For InMemory database scenarios, ensure the deletion is immediately visible across all scopes
+        // This is essential for tests where multiple HttpClients access the same InMemory database
         if (Context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
         {
+            // Clear change tracker to ensure fresh reads
+            Context.ChangeTracker.Clear();
+            
+            // Force immediate garbage collection for InMemory database synchronization
             GC.Collect();
             GC.WaitForPendingFinalizers();
+            GC.Collect();
+            
+            // Additional synchronization: Force a dummy query to refresh the InMemory database state
+            await Context.Set<T>().IgnoreQueryFilters().Where(x => x.Id == -999).FirstOrDefaultAsync();
         }
     }
 

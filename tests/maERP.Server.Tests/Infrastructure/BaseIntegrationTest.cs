@@ -46,6 +46,11 @@ public abstract class BaseIntegrationTest : IClassFixture<TestWebApplicationFact
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     protected void ClearTenantHeader()
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");

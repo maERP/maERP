@@ -54,6 +54,13 @@ public class TenantMiddleware
                     }
                 }
             }
+            else
+            {
+                // X-Tenant-Id header present but not parseable as integer
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsync("X-Tenant-Id header must be a valid integer");
+                return;
+            }
         }
         else
         {
@@ -72,6 +79,13 @@ public class TenantMiddleware
                         tenantContext.SetCurrentTenantId(claimTenantId);
                     }
                 }
+            }
+            else
+            {
+                // For unauthenticated requests without X-Tenant-Id header, return Unauthorized
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsync("X-Tenant-Id header is required for this request");
+                return;
             }
         }
         await _next(context);

@@ -43,6 +43,11 @@ public class WarehouseDetailQueryTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
     {
         var content = await response.Content.ReadAsStringAsync();
@@ -126,7 +131,7 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(999); // Invalid tenant
+        SetInvalidTenantHeader();
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses/1");
@@ -435,7 +440,7 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange - Use a tenant that doesn't exist in seeded data
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(999); // Non-existent tenant
+        SetInvalidTenantHeader();
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses/1");

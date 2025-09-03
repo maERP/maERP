@@ -49,6 +49,11 @@ public class AiModelDeleteCommandTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
     }
 
+    protected void SetInvalidTenantHeader()
+    {
+        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+    }
+
     protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
     {
         var json = JsonSerializer.Serialize(value);
@@ -259,7 +264,7 @@ public class AiModelDeleteCommandTests : IDisposable
         SetTenantHeader(1);
         var createdId = await CreateTestAiModel();
 
-        SetTenantHeader(999); // Invalid tenant
+        SetInvalidTenantHeader();
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/AiModels/{createdId}");
