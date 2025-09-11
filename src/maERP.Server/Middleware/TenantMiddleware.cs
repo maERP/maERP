@@ -19,6 +19,15 @@ public class TenantMiddleware
         var user = context.User;
         var isTestEnvironment = context.RequestServices.GetService<IWebHostEnvironment>()?.EnvironmentName == "Testing";
 
+        // Skip tenant validation for auth endpoints (login, register)
+        var path = context.Request.Path.Value?.ToLower();
+        var isAuthEndpoint = path != null && (path.EndsWith("/auth/login") || path.EndsWith("/auth/register"));
+        if (isAuthEndpoint)
+        {
+            await _next(context);
+            return;
+        }
+
         // Check if X-Tenant-Id header is present
         if (context.Request.Headers.TryGetValue("X-Tenant-Id", out var tenantHeader))
         {

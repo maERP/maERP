@@ -182,22 +182,23 @@ public class AiPromptCreateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateAiPrompt_WithEmptyPromptText_ShouldReturnCreated()
+    public async Task CreateAiPrompt_WithEmptyPromptText_ShouldReturnBadRequest()
     {
         // Arrange
         await SeedTestDataAsync();
         SetTenantHeader(1);
         var promptDto = CreateValidAiPromptDto();
-        promptDto.PromptText = string.Empty; // Only Identifier is validated, not PromptText
+        promptDto.PromptText = string.Empty; // PromptText is required and must not be empty
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/AiPrompts", promptDto);
 
         // Assert
-        TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var result = await ReadResponseAsync<Result<int>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
     }
 
     [Fact]
@@ -430,7 +431,7 @@ public class AiPromptCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        
+
         // When Identifier is null, ASP.NET Core model binding returns ProblemDetails (RFC 7807)
         // instead of our custom Result<T> format
         var content = await response.Content.ReadAsStringAsync();
