@@ -152,7 +152,7 @@ public class AssignUserToTenantCommandTests : IDisposable
         }
     }
 
-    private AssignUserToTenantCommand CreateValidAssignCommand(string userId, int tenantId, bool isDefault = false)
+    private AssignUserToTenantCommand CreateValidAssignCommand(string userId, Guid tenantId, bool isDefault = false)
     {
         return new AssignUserToTenantCommand
         {
@@ -173,7 +173,7 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_WithValidData_ShouldSucceed()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        var command = CreateValidAssignCommand(userId1, 1);
+        var command = CreateValidAssignCommand(userId1, TenantConstants.TestTenant1Id);
 
         var response = await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command);
 
@@ -190,7 +190,7 @@ public class AssignUserToTenantCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var nonExistentUserId = Guid.NewGuid().ToString();
-        var command = CreateValidAssignCommand(nonExistentUserId, 1);
+        var command = CreateValidAssignCommand(nonExistentUserId, TenantConstants.TestTenant1Id);
 
         var response = await PostAsJsonAsync($"/api/v1/Users/{nonExistentUserId}/tenants", command);
 
@@ -205,7 +205,8 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_WithNonExistentTenant_ShouldFail()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        var command = CreateValidAssignCommand(userId1, 999);
+        var nonExistentTenantId = Guid.NewGuid();
+        var command = CreateValidAssignCommand(userId1, nonExistentTenantId);
 
         var response = await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command);
 
@@ -220,7 +221,7 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_WithExistingAssignment_ShouldFail()
     {
         var (_, userId2, _) = await SeedTestDataAsync();
-        var command = CreateValidAssignCommand(userId2, 1);
+        var command = CreateValidAssignCommand(userId2, TenantConstants.TestTenant1Id);
 
         var response = await PostAsJsonAsync($"/api/v1/Users/{userId2}/tenants", command);
 
@@ -235,14 +236,14 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_WithDefaultFlag_ShouldUpdateExistingDefaults()
     {
         var (_, userId2, _) = await SeedTestDataAsync();
-        
+
         // First assign to tenant 2 as default
-        var command1 = CreateValidAssignCommand(userId2, 2, true);
+        var command1 = CreateValidAssignCommand(userId2, TenantConstants.TestTenant2Id, true);
         var response1 = await PostAsJsonAsync($"/api/v1/Users/{userId2}/tenants", command1);
         TestAssertions.AssertHttpStatusCode(response1, HttpStatusCode.Created);
 
         // Then assign to tenant 3 as default - should remove default from tenant 2
-        var command2 = CreateValidAssignCommand(userId2, 3, true);
+        var command2 = CreateValidAssignCommand(userId2, TenantConstants.TestTenant3Id, true);
         var response2 = await PostAsJsonAsync($"/api/v1/Users/{userId2}/tenants", command2);
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.Created);
 
@@ -250,17 +251,17 @@ public class AssignUserToTenantCommandTests : IDisposable
         var assignments = await DbContext.UserTenant
             .Where(ut => ut.UserId == userId2)
             .ToListAsync();
-        
+
         var defaultAssignments = assignments.Where(a => a.IsDefault).ToList();
         TestAssertions.AssertEqual(1, defaultAssignments.Count);
-        TestAssertions.AssertEqual(3, defaultAssignments[0].TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant3Id, defaultAssignments[0].TenantId);
     }
 
     [Fact]
     public async Task AssignUserToTenant_WithInvalidUserId_ShouldFail()
     {
         await SeedTestDataAsync();
-        var command = CreateValidAssignCommand("", 1);
+        var command = CreateValidAssignCommand("", TenantConstants.TestTenant1Id);
 
         var response = await PostAsJsonAsync("/api/v1/Users/invalid-user-id/tenants", command);
 
@@ -271,7 +272,7 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_WithInvalidTenantId_ShouldFail()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        var command = CreateValidAssignCommand(userId1, 0);
+        var command = CreateValidAssignCommand(userId1, Guid.Empty);
 
         var response = await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command);
 
@@ -282,18 +283,18 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_DatabasePersistence_ShouldSaveCorrectly()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        var command = CreateValidAssignCommand(userId1, 2, true);
+        var command = CreateValidAssignCommand(userId1, TenantConstants.TestTenant2Id, true);
 
         var response = await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command);
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
-        
+
         var dbAssignment = await DbContext.UserTenant
             .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant2Id);
-        
+
         TestAssertions.AssertNotNull(dbAssignment);
         TestAssertions.AssertEqual(userId1, dbAssignment!.UserId);
-        TestAssertions.AssertEqual(2, dbAssignment.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, dbAssignment.TenantId);
         TestAssertions.AssertTrue(dbAssignment.IsDefault);
         TestAssertions.AssertTrue(dbAssignment.DateCreated > DateTime.MinValue);
         TestAssertions.AssertTrue(dbAssignment.DateModified > DateTime.MinValue);
@@ -303,19 +304,19 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_MultipleAssignments_ShouldAllowMultipleNonDefaultTenants()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        
+
         // Assign to tenant 1 (non-default)
-        var command1 = CreateValidAssignCommand(userId1, 1, false);
+        var command1 = CreateValidAssignCommand(userId1, TenantConstants.TestTenant1Id, false);
         var response1 = await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command1);
         TestAssertions.AssertHttpStatusCode(response1, HttpStatusCode.Created);
 
         // Assign to tenant 2 (non-default)
-        var command2 = CreateValidAssignCommand(userId1, 2, false);
+        var command2 = CreateValidAssignCommand(userId1, TenantConstants.TestTenant2Id, false);
         var response2 = await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command2);
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.Created);
 
         // Assign to tenant 3 (default)
-        var command3 = CreateValidAssignCommand(userId1, 3, true);
+        var command3 = CreateValidAssignCommand(userId1, TenantConstants.TestTenant3Id, true);
         var response3 = await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command3);
         TestAssertions.AssertHttpStatusCode(response3, HttpStatusCode.Created);
 
@@ -325,20 +326,20 @@ public class AssignUserToTenantCommandTests : IDisposable
 
         TestAssertions.AssertEqual(3, assignments.Count);
         TestAssertions.AssertEqual(1, assignments.Count(a => a.IsDefault));
-        TestAssertions.AssertEqual(3, assignments.First(a => a.IsDefault).TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant3Id, assignments.First(a => a.IsDefault).TenantId);
     }
 
     [Fact]
     public async Task AssignUserToTenant_TenantIsolation_ShouldNotAffectOtherTenantData()
     {
         var (userId1, userId2, _) = await SeedTestDataAsync();
-        
+
         // User1 assigned to tenant 1
-        var command1 = CreateValidAssignCommand(userId1, 1, true);
+        var command1 = CreateValidAssignCommand(userId1, TenantConstants.TestTenant1Id, true);
         await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command1);
 
         // User2 assigned to tenant 2  
-        var command2 = CreateValidAssignCommand(userId2, 2, true);
+        var command2 = CreateValidAssignCommand(userId2, TenantConstants.TestTenant2Id, true);
         await PostAsJsonAsync($"/api/v1/Users/{userId2}/tenants", command2);
 
         // Verify isolation - each user should only see their own assignments
@@ -352,25 +353,25 @@ public class AssignUserToTenantCommandTests : IDisposable
 
         // User1 should have assignment to tenant 1 only
         TestAssertions.AssertEqual(1, user1Assignments.Count);
-        TestAssertions.AssertEqual(1, user1Assignments[0].TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, user1Assignments[0].TenantId);
 
         // User2 should have assignments to tenant 1 (existing) and tenant 2 (new)
         TestAssertions.AssertEqual(2, user2Assignments.Count);
-        TestAssertions.AssertContains(1, user2Assignments.Select(a => a.TenantId));
-        TestAssertions.AssertContains(2, user2Assignments.Select(a => a.TenantId));
+        TestAssertions.AssertContains<Guid>(TenantConstants.TestTenant1Id, user2Assignments.Select(a => a.TenantId));
+        TestAssertions.AssertContains<Guid>(TenantConstants.TestTenant2Id, user2Assignments.Select(a => a.TenantId));
     }
 
     [Fact]
     public async Task AssignUserToTenant_ResponseFormat_ShouldHaveCorrectStructure()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        var command = CreateValidAssignCommand(userId1, 1);
+        var command = CreateValidAssignCommand(userId1, TenantConstants.TestTenant1Id);
 
         var response = await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command);
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
         var result = await ReadResponseAsync<Result<int>>(response);
-        
+
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertNotNull(result.Messages);
@@ -383,16 +384,16 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_WithMismatchedUserIdInUrlAndCommand_ShouldUseUrlId()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        var command = CreateValidAssignCommand("different-user-id", 1);
+        var command = CreateValidAssignCommand("different-user-id", TenantConstants.TestTenant1Id);
 
         var response = await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command);
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
-        
+
         // Verify the assignment was created for the user ID from the URL, not the command
         var dbAssignment = await DbContext.UserTenant
             .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant1Id);
-        
+
         TestAssertions.AssertNotNull(dbAssignment);
         TestAssertions.AssertEqual(userId1, dbAssignment!.UserId);
     }
@@ -401,7 +402,7 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_JsonSerialization_ShouldHandleCorrectly()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        var command = CreateValidAssignCommand(userId1, 1, true);
+        var command = CreateValidAssignCommand(userId1, TenantConstants.TestTenant1Id, true);
 
         var json = JsonSerializer.Serialize(command);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(json));
@@ -416,8 +417,8 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_ConcurrentRequests_ShouldHandleGracefully()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        var command1 = CreateValidAssignCommand(userId1, 1);
-        var command2 = CreateValidAssignCommand(userId1, 1); // Same assignment
+        var command1 = CreateValidAssignCommand(userId1, TenantConstants.TestTenant1Id);
+        var command2 = CreateValidAssignCommand(userId1, TenantConstants.TestTenant1Id); // Same assignment
 
         // Execute both requests concurrently
         var task1 = PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command1);
@@ -437,18 +438,18 @@ public class AssignUserToTenantCommandTests : IDisposable
     public async Task AssignUserToTenant_WithTenantHeader_ShouldNotAffectAssignment()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        SetTenantHeader(2);
-        
-        var command = CreateValidAssignCommand(userId1, 1);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+
+        var command = CreateValidAssignCommand(userId1, TenantConstants.TestTenant1Id);
         var response = await PostAsJsonAsync($"/api/v1/Users/{userId1}/tenants", command);
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
-        
+
         // Verify assignment was created for the tenant in the command, not the header
         var dbAssignment = await DbContext.UserTenant
             .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant1Id);
-        
+
         TestAssertions.AssertNotNull(dbAssignment);
-        TestAssertions.AssertEqual(1, dbAssignment!.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, dbAssignment!.TenantId);
     }
 }

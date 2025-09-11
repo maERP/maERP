@@ -92,21 +92,21 @@ public class SettingDetailQueryTests : IDisposable
                 {
                     Key = "test.detail.tenant2",
                     Value = "detail_value2",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var setting2Tenant2 = new maERP.Domain.Entities.Setting
                 {
                     Key = "test.config.tenant2",
                     Value = "config_value2",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var setting3Tenant2 = new maERP.Domain.Entities.Setting
                 {
                     Key = "test.special.tenant2",
                     Value = "special_value",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Setting.AddRange(setting1Tenant1, setting2Tenant1, setting3Tenant1,
@@ -131,7 +131,7 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithValidIdAndTenant_ShouldReturnSettingDetail()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Get tenant 1 settings to find an ID
         var listResponse = await Client.GetAsync("/api/v1/Settings");
@@ -155,9 +155,9 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Settings/999999");
+        var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
@@ -170,7 +170,7 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Get a tenant 1 setting ID
         var listResponse = await Client.GetAsync("/api/v1/Settings");
@@ -179,7 +179,7 @@ public class SettingDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(tenant1Setting);
 
         // Try to access it with tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response = await Client.GetAsync($"/api/v1/Settings/{tenant1Setting!.Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -193,7 +193,7 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithoutTenantHeader_ShouldReturnNotFound()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Get a tenant 1 setting ID
         var listResponse = await Client.GetAsync("/api/v1/Settings");
@@ -216,7 +216,7 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithValidId_ShouldIncludeAllSettingFields()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Get a tenant 1 setting
         var listResponse = await Client.GetAsync("/api/v1/Settings");
@@ -230,7 +230,7 @@ public class SettingDetailQueryTests : IDisposable
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var setting = result.Data!;
         TestAssertions.AssertEqual(tenant1Setting.Id, setting.Id);
         TestAssertions.AssertEqual("test.config.tenant1", setting.Key);
@@ -243,7 +243,7 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithTenant2Setting_ShouldReturnCorrectSetting()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         // Get a tenant 2 setting
         var listResponse = await Client.GetAsync("/api/v1/Settings");
@@ -266,7 +266,7 @@ public class SettingDetailQueryTests : IDisposable
     [Fact]
     public async Task GetSettingDetail_WithInvalidId_ShouldReturnBadRequest()
     {
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings/invalid");
 
@@ -277,9 +277,9 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithZeroId_ShouldReturnNotFound()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Settings/0");
+        var response = await Client.GetAsync($"/api/v1/Settings/{Guid.Empty}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
@@ -292,9 +292,9 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithNegativeId_ShouldReturnNotFound()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Settings/-1");
+        var response = await Client.GetAsync("/api/v1/Settings/invalid-guid");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
@@ -307,9 +307,9 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
-        var response = await Client.GetAsync("/api/v1/Settings/1");
+        var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
@@ -322,9 +322,9 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Settings/1");
+        var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
@@ -338,9 +338,9 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Settings/999");
+        var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
@@ -355,9 +355,9 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithLargeId_ShouldHandleGracefully()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Settings/2147483647");
+        var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
@@ -371,24 +371,24 @@ public class SettingDetailQueryTests : IDisposable
     {
         await SeedSettingTestDataAsync();
 
-        SetTenantHeader(1);
-        var response1 = await Client.GetAsync("/api/v1/Settings/4");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response1 = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1.StatusCode);
 
-        var response2 = await Client.GetAsync("/api/v1/Settings/5");
+        var response2 = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
 
-        var response3 = await Client.GetAsync("/api/v1/Settings/6");
+        var response3 = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response3.StatusCode);
 
-        SetTenantHeader(2);
-        var response4 = await Client.GetAsync("/api/v1/Settings/1");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response4 = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response4.StatusCode);
 
-        var response5 = await Client.GetAsync("/api/v1/Settings/2");
+        var response5 = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response5.StatusCode);
 
-        var response6 = await Client.GetAsync("/api/v1/Settings/3");
+        var response6 = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response6.StatusCode);
     }
 
@@ -396,18 +396,24 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithBooleanValue_ShouldReturnStringValue()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Settings/3");
+        // Get a boolean setting dynamically
+        var listResponse = await Client.GetAsync("/api/v1/Settings");
+        var listResult = await ReadResponseAsync<PaginatedResult<SettingListDto>>(listResponse);
+        var booleanSetting = listResult.Data?.FirstOrDefault(s => s.Key == "test.boolean.tenant1");
+        TestAssertions.AssertNotNull(booleanSetting);
+
+        var response = await Client.GetAsync($"/api/v1/Settings/{booleanSetting!.Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var setting = result.Data!;
-        TestAssertions.AssertEqual(3, setting.Id);
-        TestAssertions.AssertEqual("notifications.email", setting.Key);
+        TestAssertions.AssertEqual(booleanSetting.Id, setting.Id);
+        TestAssertions.AssertEqual("test.boolean.tenant1", setting.Key);
         TestAssertions.AssertEqual("true", setting.Value);
     }
 
@@ -415,53 +421,65 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithLanguageCodeValue_ShouldReturnCorrectValue()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.GetAsync("/api/v1/Settings/5");
+        // Get a tenant 2 setting dynamically
+        var listResponse = await Client.GetAsync("/api/v1/Settings");
+        var listResult = await ReadResponseAsync<PaginatedResult<SettingListDto>>(listResponse);
+        var configSetting = listResult.Data?.FirstOrDefault(s => s.Key == "test.config.tenant2");
+        TestAssertions.AssertNotNull(configSetting);
+
+        var response = await Client.GetAsync($"/api/v1/Settings/{configSetting!.Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var setting = result.Data!;
-        TestAssertions.AssertEqual(5, setting.Id);
-        TestAssertions.AssertEqual("app.language", setting.Key);
-        TestAssertions.AssertEqual("de-DE", setting.Value);
+        TestAssertions.AssertEqual(configSetting.Id, setting.Id);
+        TestAssertions.AssertEqual("test.config.tenant2", setting.Key);
+        TestAssertions.AssertEqual("config_value2", setting.Value);
     }
 
     [Fact]
     public async Task GetSettingDetail_WithComplexKey_ShouldReturnCorrectSetting()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.GetAsync("/api/v1/Settings/6");
+        // Get a special setting dynamically
+        var listResponse = await Client.GetAsync("/api/v1/Settings");
+        var listResult = await ReadResponseAsync<PaginatedResult<SettingListDto>>(listResponse);
+        var specialSetting = listResult.Data?.FirstOrDefault(s => s.Key == "test.special.tenant2");
+        TestAssertions.AssertNotNull(specialSetting);
+
+        var response = await Client.GetAsync($"/api/v1/Settings/{specialSetting!.Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var setting = result.Data!;
-        TestAssertions.AssertEqual(6, setting.Id);
-        TestAssertions.AssertEqual("notifications.sms", setting.Key);
-        TestAssertions.AssertEqual("false", setting.Value);
+        TestAssertions.AssertEqual(specialSetting.Id, setting.Id);
+        TestAssertions.AssertEqual("test.special.tenant2", setting.Key);
+        TestAssertions.AssertEqual("special_value", setting.Value);
     }
 
     [Fact]
     public async Task GetSettingDetail_WithCompleteSettingData_ShouldMapAllFields()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Settings/1");
+        var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
         var setting = result.Data!;
 
-        TestAssertions.AssertTrue(setting.Id > 0);
+        TestAssertions.AssertNotEqual(Guid.Empty, setting.Id);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(setting.Key));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(setting.Value));
     }
@@ -471,19 +489,19 @@ public class SettingDetailQueryTests : IDisposable
     {
         await SeedSettingTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Settings/1");
         TestAssertions.AssertHttpSuccess(response1);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Settings/1");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response3 = await Client.GetAsync("/api/v1/Settings/4");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response3.StatusCode);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response4 = await Client.GetAsync("/api/v1/Settings/4");
         TestAssertions.AssertHttpSuccess(response4);
     }
@@ -492,10 +510,10 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithNullTenant_ShouldReturnNotFound()
     {
         await SeedSettingTestDataAsync();
-        
+
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
 
-        var response = await Client.GetAsync("/api/v1/Settings/1");
+        var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<SettingDetailDto>>(response);
@@ -508,11 +526,11 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithEmptyTenant_ShouldReturnNotFound()
     {
         await SeedSettingTestDataAsync();
-        
+
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", string.Empty);
 
-        var response = await Client.GetAsync("/api/v1/Settings/1");
+        var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
@@ -522,27 +540,36 @@ public class SettingDetailQueryTests : IDisposable
     {
         await SeedSettingTestDataAsync();
 
-        var tenant1Ids = new[] { 1, 2, 3 };
-        var tenant2Ids = new[] { 4, 5, 6 };
+        // Get tenant 1 settings
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var listResponse1 = await Client.GetAsync("/api/v1/Settings");
+        var listResult1 = await ReadResponseAsync<PaginatedResult<SettingListDto>>(listResponse1);
+        var tenant1Ids = listResult1.Data?.Select(s => s.Id).ToArray() ?? new Guid[0];
+
+        // Get tenant 2 settings
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var listResponse2 = await Client.GetAsync("/api/v1/Settings");
+        var listResult2 = await ReadResponseAsync<PaginatedResult<SettingListDto>>(listResponse2);
+        var tenant2Ids = listResult2.Data?.Select(s => s.Id).ToArray() ?? new Guid[0];
 
         foreach (var id in tenant1Ids)
         {
-            SetTenantHeader(1);
+            SetTenantHeader(TenantConstants.TestTenant1Id);
             var response = await Client.GetAsync($"/api/v1/Settings/{id}");
             TestAssertions.AssertHttpSuccess(response);
 
-            SetTenantHeader(2);
+            SetTenantHeader(TenantConstants.TestTenant2Id);
             response = await Client.GetAsync($"/api/v1/Settings/{id}");
             TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         foreach (var id in tenant2Ids)
         {
-            SetTenantHeader(2);
+            SetTenantHeader(TenantConstants.TestTenant2Id);
             var response = await Client.GetAsync($"/api/v1/Settings/{id}");
             TestAssertions.AssertHttpSuccess(response);
 
-            SetTenantHeader(1);
+            SetTenantHeader(TenantConstants.TestTenant1Id);
             response = await Client.GetAsync($"/api/v1/Settings/{id}");
             TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         }

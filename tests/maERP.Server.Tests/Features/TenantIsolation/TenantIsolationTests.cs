@@ -7,6 +7,7 @@ using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.TenantIsolation;
 
@@ -68,7 +69,7 @@ public class TenantIsolationTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(999); // Non-existent tenant
+        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels");
@@ -87,9 +88,9 @@ public class TenantIsolationTests : IDisposable
     {
         // Arrange - Seed test data
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        
+
         // Act - Call with tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response = await Client.GetAsync("/api/v1/AiModels");
         var result = await ReadResponseAsync<PaginatedResult<AiModelListDto>>(response);
 
@@ -100,7 +101,7 @@ public class TenantIsolationTests : IDisposable
 
         // Verify tenant 1 gets exactly its data (2 models)
         TestAssertions.AssertEqual(2, result.Data?.Count ?? 0);
-        
+
         // Verify the actual data belongs to tenant 1
         var modelNames = result.Data?.Select(x => x.Name).ToList() ?? new List<string>();
         TestAssertions.AssertTrue(modelNames.Contains("ChatGPT-4O Tenant 1"));
@@ -113,9 +114,9 @@ public class TenantIsolationTests : IDisposable
     {
         // Arrange - Seed test data
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        
+
         // Act - Call with tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response = await Client.GetAsync("/api/v1/AiModels");
         var result = await ReadResponseAsync<PaginatedResult<AiModelListDto>>(response);
 
@@ -126,7 +127,7 @@ public class TenantIsolationTests : IDisposable
 
         // Verify tenant 2 gets exactly its data (1 model)
         TestAssertions.AssertEqual(1, result.Data?.Count ?? 0);
-        
+
         // Verify the actual data belongs to tenant 2
         var modelNames = result.Data?.Select(x => x.Name).ToList() ?? new List<string>();
         TestAssertions.AssertTrue(modelNames.Contains("ChatGPT-4O Tenant 2"));

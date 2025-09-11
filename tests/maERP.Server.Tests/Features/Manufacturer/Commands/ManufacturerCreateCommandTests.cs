@@ -19,6 +19,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Manufacturer1Id = Guid.NewGuid();
 
     public ManufacturerCreateCommandTests()
     {
@@ -43,7 +44,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         Task.Delay(10).Wait();
     }
 
@@ -81,7 +82,7 @@ public class ManufacturerCreateCommandTests : IDisposable
 
                 var existingManufacturer = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 1,
+                    Id = Manufacturer1Id,
                     Name = "Existing Manufacturer",
                     Street = "123 Existing St",
                     City = "Existing City",
@@ -129,16 +130,16 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithValidData_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
@@ -156,7 +157,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithEmptyName_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Name = "";
@@ -164,7 +165,7 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -174,7 +175,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithNullName_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Name = null!;
@@ -182,7 +183,7 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -192,7 +193,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithDuplicateName_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Name = "Existing Manufacturer";
@@ -200,7 +201,7 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -210,7 +211,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithInvalidEmail_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Email = "invalid-email-format";
@@ -218,7 +219,7 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -228,7 +229,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithInvalidWebsite_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Website = "not-a-valid-url";
@@ -236,7 +237,7 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -246,7 +247,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithMinimalData_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = new ManufacturerInputDto
         {
@@ -258,17 +259,17 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
     public async Task CreateManufacturer_WithLongName_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Name = new string('A', 256);
@@ -276,7 +277,7 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -286,7 +287,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithTenant1_ShouldBeIsolatedFromTenant2()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Name = "Tenant 1 Manufacturer";
@@ -294,20 +295,20 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertTrue(result.Succeeded);
         var manufacturerId = result.Data;
 
         var manufacturer = await DbContext.Manufacturer.FindAsync(manufacturerId);
         TestAssertions.AssertNotNull(manufacturer);
-        TestAssertions.AssertEqual(1, manufacturer!.TenantId);
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant1Id, manufacturer!.TenantId!.Value);
     }
 
     [Fact]
     public async Task CreateManufacturer_WithTenant2_ShouldBeIsolatedFromTenant1()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Name = "Tenant 2 Manufacturer";
@@ -315,13 +316,13 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertTrue(result.Succeeded);
         var manufacturerId = result.Data;
 
         var manufacturer = await DbContext.Manufacturer.FindAsync(manufacturerId);
         TestAssertions.AssertNotNull(manufacturer);
-        TestAssertions.AssertEqual(2, manufacturer!.TenantId);
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant2Id, manufacturer!.TenantId!.Value);
     }
 
     [Fact]
@@ -332,11 +333,11 @@ public class ManufacturerCreateCommandTests : IDisposable
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Name = "Cross Tenant Manufacturer";
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
         TestAssertions.AssertEqual(HttpStatusCode.Created, response1.StatusCode);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
         TestAssertions.AssertEqual(HttpStatusCode.Created, response2.StatusCode);
 
@@ -350,7 +351,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithValidGermanData_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = new ManufacturerInputDto
         {
@@ -368,17 +369,17 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
     public async Task CreateManufacturer_WithNonExistentTenant_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
 
         var manufacturerInput = CreateValidManufacturerInput();
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
@@ -390,7 +391,7 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithSpecialCharactersInName_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Name = "Manufacturer & Co. - Special Chars™";
@@ -398,17 +399,17 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
     public async Task CreateManufacturer_WithValidPhoneFormats_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Name = "Phone Test Manufacturer";
@@ -417,34 +418,34 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
     public async Task CreateManufacturer_ResponseStructure_ShouldHaveCorrectFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Messages);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
     public async Task CreateManufacturer_WithEmptyOptionalFields_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = new ManufacturerInputDto
         {
@@ -463,10 +464,10 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
@@ -477,12 +478,12 @@ public class ManufacturerCreateCommandTests : IDisposable
         var manufacturerInput = CreateValidManufacturerInput();
         manufacturerInput.Name = "Tenant Isolation Test";
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
-        var result1 = await ReadResponseAsync<Result<int>>(response1);
+        var result1 = await ReadResponseAsync<Result<Guid>>(response1);
         var manufacturer1Id = result1.Data;
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var manufacturer1FromTenant2 = await DbContext.Manufacturer
             .Where(m => m.Id == manufacturer1Id)
             .FirstOrDefaultAsync();
@@ -494,13 +495,13 @@ public class ManufacturerCreateCommandTests : IDisposable
     public async Task CreateManufacturer_WithCompleteValidData_ShouldCreateWithAllFields()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var manufacturerInput = CreateValidManufacturerInput();
         var response = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         var manufacturerId = result.Data;
 
         var createdManufacturer = await DbContext.Manufacturer.FindAsync(manufacturerId);
@@ -515,6 +516,6 @@ public class ManufacturerCreateCommandTests : IDisposable
         TestAssertions.AssertEqual(manufacturerInput.Email, createdManufacturer.Email);
         TestAssertions.AssertEqual(manufacturerInput.Website, createdManufacturer.Website);
         TestAssertions.AssertEqual(manufacturerInput.Logo, createdManufacturer.Logo);
-        TestAssertions.AssertEqual(1, createdManufacturer.TenantId);
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant1Id, createdManufacturer.TenantId!.Value);
     }
 }

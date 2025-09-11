@@ -9,6 +9,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Tenant.Commands;
 
@@ -63,12 +64,12 @@ public class TenantUpdateCommandTests : IDisposable
 
         try
         {
-            var existingTenant = await DbContext.Tenant.FirstOrDefaultAsync(t => t.Id == 1);
+            var existingTenant = await DbContext.Tenant.FirstOrDefaultAsync(t => t.Id == TenantConstants.TestTenant1Id);
             if (existingTenant == null)
             {
                 var tenant = new maERP.Domain.Entities.Tenant
                 {
-                    Id = 1,
+                    Id = TenantConstants.TestTenant1Id,
                     Name = "Original Tenant",
                     TenantCode = "ORIG001",
                     Description = "Original description",
@@ -88,11 +89,11 @@ public class TenantUpdateCommandTests : IDisposable
         }
     }
 
-    private TenantUpdateCommand CreateValidUpdateCommand(int id = 1)
+    private TenantUpdateCommand CreateValidUpdateCommand(Guid? id = null)
     {
         return new TenantUpdateCommand
         {
-            Id = id,
+            Id = id ?? TenantConstants.TestTenant1Id,
             Name = "Updated Tenant",
             TenantCode = "UPD001",
             Description = "Updated description",
@@ -114,7 +115,7 @@ public class TenantUpdateCommandTests : IDisposable
         await SeedTestTenantAsync();
         var command = CreateValidUpdateCommand();
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -125,7 +126,7 @@ public class TenantUpdateCommandTests : IDisposable
         await SeedTestTenantAsync();
         var command = CreateValidUpdateCommand();
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -136,7 +137,7 @@ public class TenantUpdateCommandTests : IDisposable
         await SeedTestTenantAsync();
         var command = CreateValidUpdateCommand();
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         // Since we don't have proper auth setup, we expect Unauthorized rather than OK
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -146,9 +147,10 @@ public class TenantUpdateCommandTests : IDisposable
     public async Task UpdateTenant_WithNonExistentId_ShouldReturnNotFoundWhenAuthenticated()
     {
         await SeedTestTenantAsync();
-        var command = CreateValidUpdateCommand(999);
+        var nonExistentId = Guid.NewGuid();
+        var command = CreateValidUpdateCommand(nonExistentId);
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/999", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{nonExistentId}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -160,7 +162,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.Name = "";
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -172,7 +174,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.TenantCode = "";
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -184,7 +186,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.ContactEmail = "invalid-email";
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -196,7 +198,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.Name = new string('A', 101); // Exceeds 100 character limit
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -208,7 +210,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.TenantCode = new string('A', 51); // Exceeds 50 character limit
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -220,7 +222,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.Description = new string('A', 501); // Exceeds 500 character limit
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -232,7 +234,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.ContactEmail = new string('A', 190) + "@test.com"; // Exceeds 200 character limit
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -243,7 +245,7 @@ public class TenantUpdateCommandTests : IDisposable
         await SeedTestTenantAsync();
         var command = CreateValidUpdateCommand();
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertNotEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
     }
@@ -251,7 +253,7 @@ public class TenantUpdateCommandTests : IDisposable
     [Fact]
     public async Task UpdateTenant_OnlyPutMethod_ShouldRejectPostRequests()
     {
-        var response = await Client.PostAsync("/api/v1/Tenants/1", new StringContent(""));
+        var response = await Client.PostAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", new StringContent(""));
 
         TestAssertions.AssertEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
     }
@@ -260,10 +262,10 @@ public class TenantUpdateCommandTests : IDisposable
     public async Task UpdateTenant_WithMismatchedId_ShouldHandleCorrectly()
     {
         await SeedTestTenantAsync();
-        var command = CreateValidUpdateCommand(1);
+        var command = CreateValidUpdateCommand(TenantConstants.TestTenant1Id);
 
-        // URL ID is 2, but command ID is 1
-        var response = await PutAsJsonAsync("/api/v1/Tenants/2", command);
+        // URL ID is TestTenant2Id, but command ID is TestTenant1Id
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant2Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -272,9 +274,9 @@ public class TenantUpdateCommandTests : IDisposable
     public async Task UpdateTenant_WithZeroId_ShouldReturnBadRequest()
     {
         await SeedTestTenantAsync();
-        var command = CreateValidUpdateCommand(0);
+        var command = CreateValidUpdateCommand(Guid.Empty);
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/0", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{Guid.Empty}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -283,11 +285,11 @@ public class TenantUpdateCommandTests : IDisposable
     public async Task UpdateTenant_WithNegativeId_ShouldReturnBadRequest()
     {
         await SeedTestTenantAsync();
-        var command = CreateValidUpdateCommand(-1);
+        var command = CreateValidUpdateCommand();
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/-1", command);
+        var response = await PutAsJsonAsync("/api/v1/Tenants/invalid-guid", command);
 
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -297,7 +299,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.IsActive = false;
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -309,7 +311,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.Description = "";
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -321,7 +323,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.ContactEmail = "";
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -332,7 +334,7 @@ public class TenantUpdateCommandTests : IDisposable
         await SeedTestTenantAsync();
         var command = CreateValidUpdateCommand();
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden);
     }
@@ -343,7 +345,7 @@ public class TenantUpdateCommandTests : IDisposable
         await SeedTestTenantAsync();
         var command = CreateValidUpdateCommand();
 
-        var response = await PutAsJsonAsync("/api/v2/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v2/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -354,7 +356,7 @@ public class TenantUpdateCommandTests : IDisposable
         await SeedTestTenantAsync();
         var command = CreateValidUpdateCommand();
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden);
     }
@@ -365,7 +367,7 @@ public class TenantUpdateCommandTests : IDisposable
         await SeedTestTenantAsync();
         var command = CreateValidUpdateCommand();
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertNotEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
@@ -376,7 +378,7 @@ public class TenantUpdateCommandTests : IDisposable
         await SeedTestTenantAsync();
         var command = CreateValidUpdateCommand();
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertTrue(response.Content.Headers.ContentType?.MediaType?.Contains("application/json") ?? false ||
                                  response.StatusCode == HttpStatusCode.Unauthorized);
@@ -392,7 +394,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.Name = name;
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -407,7 +409,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.TenantCode = tenantCode;
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -419,7 +421,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.Name = "Updated & Company Ltd.";
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -431,7 +433,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.Name = "Üpdätëd Téñánt";
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -446,7 +448,7 @@ public class TenantUpdateCommandTests : IDisposable
         var command = CreateValidUpdateCommand();
         command.ContactEmail = email;
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/1", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -455,9 +457,10 @@ public class TenantUpdateCommandTests : IDisposable
     public async Task UpdateTenant_WithLargeId_ShouldHandleCorrectly()
     {
         await SeedTestTenantAsync();
-        var command = CreateValidUpdateCommand(2147483647);
+        var largeId = new Guid("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF");
+        var command = CreateValidUpdateCommand(largeId);
 
-        var response = await PutAsJsonAsync("/api/v1/Tenants/2147483647", command);
+        var response = await PutAsJsonAsync($"/api/v1/Tenants/{largeId}", command);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }

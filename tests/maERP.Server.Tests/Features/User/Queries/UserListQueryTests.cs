@@ -257,7 +257,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithValidTenant_ShouldReturnUserList()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users");
 
@@ -288,7 +288,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithPagination_ShouldReturnCorrectPage()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users?pageNumber=1&pageSize=2");
 
@@ -308,7 +308,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithLargePage_ShouldReturnAllUsers()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users?pageNumber=1&pageSize=100");
 
@@ -325,7 +325,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithSecondPage_ShouldReturnRemainingUsers()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users?pageNumber=2&pageSize=3");
 
@@ -342,7 +342,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithOrdering_ShouldReturnOrderedResults()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users?orderBy=firstname");
 
@@ -364,7 +364,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithMultipleOrderBy_ShouldApplyOrdering()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users?orderBy=lastname,firstname");
 
@@ -380,7 +380,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithTenant2_ShouldReturnOnlyTenant2Users()
     {
         var (tenant1UserIds, tenant2UserIds) = await SeedUserListTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var response = await Client.GetAsync("/api/v1/Users");
 
@@ -402,7 +402,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_ResponseStructure_ShouldHaveCorrectFormat()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users");
 
@@ -422,7 +422,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_UserFields_ShouldIncludeAllRequiredFields()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users");
 
@@ -446,20 +446,20 @@ public class UserListQueryTests : IDisposable
     {
         var (tenant1UserIds, tenant2UserIds) = await SeedUserListTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Users");
         var result1 = await ReadResponseAsync<PaginatedResult<UserListDto>>(response1);
-        
+
         foreach (var user in result1.Data!)
         {
             TestAssertions.AssertContains(user.Id, tenant1UserIds);
             TestAssertions.AssertDoesNotContain(user.Id, tenant2UserIds);
         }
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Users");
         var result2 = await ReadResponseAsync<PaginatedResult<UserListDto>>(response2);
-        
+
         foreach (var user in result2.Data!)
         {
             TestAssertions.AssertContains(user.Id, tenant2UserIds);
@@ -471,7 +471,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithNonExistentTenant_ShouldReturnEmptyList()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync("/api/v1/Users");
 
@@ -488,7 +488,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithInvalidPageNumber_ShouldReturnFirstPage()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users?pageNumber=0&pageSize=5");
 
@@ -504,7 +504,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithInvalidPageSize_ShouldUseDefaultPageSize()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users?pageNumber=1&pageSize=0");
 
@@ -520,7 +520,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithVeryLargePageSize_ShouldHandleGracefully()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users?pageNumber=1&pageSize=10000");
 
@@ -537,7 +537,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithInvalidOrderBy_ShouldReturnUnorderedResults()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users?orderBy=invalidfield");
 
@@ -552,7 +552,7 @@ public class UserListQueryTests : IDisposable
     [Fact]
     public async Task GetUserList_WithEmptyDatabase_ShouldReturnEmptyList()
     {
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users");
 
@@ -570,7 +570,7 @@ public class UserListQueryTests : IDisposable
     public async Task GetUserList_WithDateOrdering_ShouldOrderByDateCreated()
     {
         await SeedUserListTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users?orderBy=dateCreated");
 

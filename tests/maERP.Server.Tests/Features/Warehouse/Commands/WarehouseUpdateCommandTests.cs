@@ -7,6 +7,7 @@ using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using maERP.Domain.Constants;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.Warehouse.Commands;
@@ -46,7 +47,7 @@ public class WarehouseUpdateCommandTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
@@ -66,10 +67,10 @@ public class WarehouseUpdateCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    private async Task<int> CreateTestWarehouseAsync(int tenantId, string name = "Test Warehouse")
+    private async Task<Guid> CreateTestWarehouseAsync(Guid tenantId, string name = "Test Warehouse")
     {
         TenantContext.SetCurrentTenantId(tenantId);
-        
+
         var warehouse = new maERP.Domain.Entities.Warehouse
         {
             Name = name,
@@ -80,7 +81,7 @@ public class WarehouseUpdateCommandTests : IDisposable
 
         DbContext.Warehouse.Add(warehouse);
         await DbContext.SaveChangesAsync();
-        
+
         TenantContext.SetCurrentTenantId(null);
         return warehouse.Id;
     }
@@ -114,8 +115,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1, "Original Name");
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Original Name");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateValidUpdateDto("Updated Name");
 
         // Act
@@ -123,7 +124,7 @@ public class WarehouseUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(warehouseId, result.Data);
@@ -139,7 +140,7 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
         var updateDto = CreateValidUpdateDto();
 
         // Act
@@ -154,7 +155,7 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
         SetInvalidTenantHeader();
         var updateDto = CreateValidUpdateDto();
 
@@ -170,8 +171,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(2); // Different tenant
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Different tenant
         var updateDto = CreateValidUpdateDto();
 
         // Act
@@ -186,7 +187,7 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateValidUpdateDto();
 
         // Act
@@ -201,8 +202,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new WarehouseInputDto { Name = "" };
 
         // Act
@@ -219,8 +220,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new WarehouseInputDto { Name = null! };
 
         // Act
@@ -237,8 +238,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new WarehouseInputDto { Name = "   " };
 
         // Act
@@ -253,12 +254,12 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId1 = await CreateTestWarehouseAsync(1, "Tenant 1 Original");
-        var warehouseId2 = await CreateTestWarehouseAsync(2, "Tenant 2 Original");
+        var warehouseId1 = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Tenant 1 Original");
+        var warehouseId2 = await CreateTestWarehouseAsync(TenantConstants.TestTenant2Id, "Tenant 2 Original");
         var updateDto = CreateValidUpdateDto("Updated Name");
 
         // Act - Update tenant 1's warehouse
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await PutAsJsonAsync($"/api/v1/Warehouses/{warehouseId1}", updateDto);
 
         // Try to update tenant 2's warehouse from tenant 1
@@ -269,7 +270,7 @@ public class WarehouseUpdateCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
 
         // Verify tenant 2's warehouse was not modified
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId2}");
         var getResult = await ReadResponseAsync<Result<WarehouseDetailDto>>(getResponse);
         TestAssertions.AssertEqual("Tenant 2 Original", getResult.Data!.Name); // Original value
@@ -280,8 +281,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var longName = new string('B', 100) + " Updated";
         var updateDto = new WarehouseInputDto { Name = longName };
 
@@ -290,7 +291,7 @@ public class WarehouseUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        
+
         // Verify the update
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId}");
         var getResult = await ReadResponseAsync<Result<WarehouseDetailDto>>(getResponse);
@@ -302,8 +303,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var specialName = "Updated Warehouse #2 & Co. (Secondary)";
         var updateDto = new WarehouseInputDto { Name = specialName };
 
@@ -312,7 +313,7 @@ public class WarehouseUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        
+
         // Verify the update
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId}");
         var getResult = await ReadResponseAsync<Result<WarehouseDetailDto>>(getResponse);
@@ -324,8 +325,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1, "Original Name");
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Original Name");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Perform concurrent updates
         var tasks = new List<Task<HttpResponseMessage>>();
@@ -358,7 +359,7 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
         var updateDto = CreateValidUpdateDto();
@@ -375,8 +376,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await PutAsJsonAsync<WarehouseInputDto?>($"/api/v1/Warehouses/{warehouseId}", null);
@@ -390,8 +391,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1, "Original");
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Original");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Update multiple times
         var response1 = await PutAsJsonAsync($"/api/v1/Warehouses/{warehouseId}", new WarehouseInputDto { Name = "First Update" });
@@ -414,8 +415,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateValidUpdateDto();
         var startTime = DateTime.UtcNow;
 
@@ -434,8 +435,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateValidUpdateDto();
 
         // Act
@@ -443,8 +444,8 @@ public class WarehouseUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
-        
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(ResultStatusCode.Ok, result.StatusCode);
@@ -457,8 +458,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var unicodeName = "Aktualisiertes Lager Berlin 🏢";
         var updateDto = new WarehouseInputDto { Name = unicodeName };
 
@@ -467,7 +468,7 @@ public class WarehouseUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        
+
         // Verify the update
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId}");
         var getResult = await ReadResponseAsync<Result<WarehouseDetailDto>>(getResponse);
@@ -479,8 +480,8 @@ public class WarehouseUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new WarehouseInputDto { Name = "  Trimmed Update  " };
 
         // Act
@@ -488,7 +489,7 @@ public class WarehouseUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        
+
         // Verify the name is stored (possibly trimmed based on business rules)
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId}");
         var getResult = await ReadResponseAsync<Result<WarehouseDetailDto>>(getResponse);
@@ -501,8 +502,8 @@ public class WarehouseUpdateCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         var originalName = "Same Name Test";
-        var warehouseId = await CreateTestWarehouseAsync(1, originalName);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, originalName);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new WarehouseInputDto { Name = originalName };
 
         // Act
@@ -510,7 +511,7 @@ public class WarehouseUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        
+
         // Verify the name remains the same
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId}");
         var getResult = await ReadResponseAsync<Result<WarehouseDetailDto>>(getResponse);

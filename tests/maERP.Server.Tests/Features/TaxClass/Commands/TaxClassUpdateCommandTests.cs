@@ -9,6 +9,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.TaxClass.Commands;
 
@@ -47,7 +48,7 @@ public class TaxClassUpdateCommandTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
@@ -67,10 +68,10 @@ public class TaxClassUpdateCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    private async Task<int> CreateTestTaxClassAsync(int tenantId, double taxRate = 19.0)
+    private async Task<Guid> CreateTestTaxClassAsync(Guid tenantId, double taxRate = 19.0)
     {
         TenantContext.SetCurrentTenantId(tenantId);
-        
+
         var taxClass = new Domain.Entities.TaxClass
         {
             TaxRate = taxRate,
@@ -81,7 +82,7 @@ public class TaxClassUpdateCommandTests : IDisposable
 
         DbContext.TaxClass.Add(taxClass);
         await DbContext.SaveChangesAsync();
-        
+
         TenantContext.SetCurrentTenantId(null);
         return taxClass.Id;
     }
@@ -115,8 +116,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1, 19.0);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 19.0);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateValidUpdateDto(25.0);
 
         // Act
@@ -124,7 +125,7 @@ public class TaxClassUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(taxClassId, result.Data);
@@ -140,7 +141,7 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
         var updateDto = CreateValidUpdateDto();
 
         // Act
@@ -155,7 +156,7 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
         SetInvalidTenantHeader();
         var updateDto = CreateValidUpdateDto();
 
@@ -171,8 +172,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(2); // Different tenant
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Different tenant
         var updateDto = CreateValidUpdateDto();
 
         // Act
@@ -187,11 +188,11 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateValidUpdateDto();
 
         // Act
-        var response = await PutAsJsonAsync("/api/v1/TaxClasses/999", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/TaxClasses/{Guid.NewGuid()}", updateDto);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -202,8 +203,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new TaxClassInputDto { TaxRate = -5.0 };
 
         // Act
@@ -220,8 +221,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new TaxClassInputDto { TaxRate = 150.0 };
 
         // Act
@@ -238,8 +239,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1, 19.0);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 19.0);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new TaxClassInputDto { TaxRate = 0.0 };
 
         // Act
@@ -247,7 +248,7 @@ public class TaxClassUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertTrue(result.Succeeded);
 
         // Verify the update
@@ -261,12 +262,12 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId1 = await CreateTestTaxClassAsync(1, 19.0);
-        var taxClassId2 = await CreateTestTaxClassAsync(2, 20.0);
+        var taxClassId1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 19.0);
+        var taxClassId2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id, 20.0);
         var updateDto = CreateValidUpdateDto(30.0);
 
         // Act - Update tenant 1's tax class
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId1}", updateDto);
 
         // Try to update tenant 2's tax class from tenant 1
@@ -277,7 +278,7 @@ public class TaxClassUpdateCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
 
         // Verify tenant 2's tax class was not modified
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var getResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
         var getResult = await ReadResponseAsync<Result<TaxClassDetailDto>>(getResponse);
         TestAssertions.AssertEqual(20.0, getResult.Data!.TaxRate); // Original value
@@ -288,8 +289,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new TaxClassInputDto { TaxRate = 19.75 };
 
         // Act
@@ -297,7 +298,7 @@ public class TaxClassUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        
+
         // Verify precision is maintained
         var getResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
         var getResult = await ReadResponseAsync<Result<TaxClassDetailDto>>(getResponse);
@@ -309,8 +310,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1, 10.0);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 10.0);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Perform concurrent updates
         var tasks = new List<Task<HttpResponseMessage>>();
@@ -343,7 +344,7 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
         var updateDto = CreateValidUpdateDto();
@@ -360,8 +361,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await PutAsJsonAsync<TaxClassInputDto?>($"/api/v1/TaxClasses/{taxClassId}", null);
@@ -375,8 +376,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new TaxClassInputDto { TaxRate = 100.0 };
 
         // Act
@@ -384,7 +385,7 @@ public class TaxClassUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertTrue(result.Succeeded);
     }
 
@@ -393,8 +394,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1, 10.0);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 10.0);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Update multiple times
         var response1 = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId}", new TaxClassInputDto { TaxRate = 15.0 });
@@ -417,8 +418,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateValidUpdateDto();
         var startTime = DateTime.UtcNow;
 
@@ -437,8 +438,8 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateValidUpdateDto();
 
         // Act
@@ -446,8 +447,8 @@ public class TaxClassUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
-        
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(ResultStatusCode.Ok, result.StatusCode);

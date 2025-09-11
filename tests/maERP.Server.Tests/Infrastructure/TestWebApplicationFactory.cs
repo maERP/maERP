@@ -34,7 +34,7 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
 
             // Use a database name per test class to avoid conflicts but share within each test class
             var testDatabaseName = Environment.GetEnvironmentVariable("TEST_DB_NAME") ?? "TestDb_" + Guid.NewGuid();
-            
+
             // Ensure DbContext is created per request with proper tenant context injection
             services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
             {
@@ -72,7 +72,7 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
         });
 
         builder.UseEnvironment("Testing");
-        
+
         // Ensure the environment variable is set for ApplicationDbContext
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
     }

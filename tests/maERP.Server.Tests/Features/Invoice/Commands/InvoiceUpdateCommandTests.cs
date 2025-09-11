@@ -19,6 +19,10 @@ public class InvoiceUpdateCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Customer1Id = Guid.NewGuid();
+    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly Guid Invoice1Id = Guid.NewGuid();
+    private static readonly Guid Invoice2Id = Guid.NewGuid();
 
     public InvoiceUpdateCommandTests()
     {
@@ -43,7 +47,7 @@ public class InvoiceUpdateCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         Task.Delay(10).Wait();
     }
 
@@ -78,7 +82,7 @@ public class InvoiceUpdateCommandTests : IDisposable
 
                 var customer1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -87,7 +91,7 @@ public class InvoiceUpdateCommandTests : IDisposable
 
                 var customer2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
@@ -98,11 +102,11 @@ public class InvoiceUpdateCommandTests : IDisposable
 
                 var invoice1Tenant1 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 1,
+                    Id = Invoice1Id,
                     InvoiceNumber = "INV-001",
                     InvoiceDate = DateTime.Now.AddDays(-10),
-                    CustomerId = 1,
-                    OrderId = 1001,
+                    CustomerId = Customer1Id,
+                    OrderId = Guid.NewGuid(),
                     Subtotal = 100.00m,
                     ShippingCost = 10.00m,
                     TotalTax = 19.00m,
@@ -122,16 +126,16 @@ public class InvoiceUpdateCommandTests : IDisposable
 
                 var invoice2Tenant2 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 2,
+                    Id = Invoice2Id,
                     InvoiceNumber = "INV-T2-001",
                     InvoiceDate = DateTime.Now.AddDays(-5),
-                    CustomerId = 2,
+                    CustomerId = Customer2Id,
                     Subtotal = 200.00m,
                     TotalTax = 38.00m,
                     Total = 238.00m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.CompletelyPaid,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Sent,
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Invoice.AddRange(invoice1Tenant1, invoice2Tenant2);
@@ -149,11 +153,11 @@ public class InvoiceUpdateCommandTests : IDisposable
     {
         return new InvoiceInputDto
         {
-            Id = 1,
+            Id = Invoice1Id,
             InvoiceNumber = "INV-001-UPDATED",
             InvoiceDate = DateTime.Now,
-            CustomerId = 1,
-            OrderId = 1001,
+            CustomerId = Customer1Id,
+            OrderId = Guid.NewGuid(),
             Subtotal = 150.00m,
             ShippingCost = 15.00m,
             TotalTax = 28.50m,
@@ -182,18 +186,18 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithValidData_ShouldReturnUpdatedInvoiceId()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(1, result.Data);
+        TestAssertions.AssertEqual(Invoice1Id, result.Data);
 
-        var updatedInvoice = await DbContext.Invoice.FindAsync(1);
+        var updatedInvoice = await DbContext.Invoice.FindAsync(Invoice1Id);
         TestAssertions.AssertNotNull(updatedInvoice);
         TestAssertions.AssertEqual("INV-001-UPDATED", updatedInvoice!.InvoiceNumber);
         TestAssertions.AssertEqual(150.00m, updatedInvoice.Subtotal);
@@ -205,30 +209,31 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
-        updateDto.Id = 999;
+        var nonExistentId = Guid.NewGuid();
+        updateDto.Id = nonExistentId;
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/999", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{nonExistentId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertEqual(0, result.Data);
+        TestAssertions.AssertEqual(Guid.Empty, result.Data);
     }
 
     [Fact]
     public async Task UpdateInvoice_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var updateDto = CreateUpdateInvoiceDto();
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -239,7 +244,7 @@ public class InvoiceUpdateCommandTests : IDisposable
         await SeedTestDataAsync();
         var updateDto = CreateUpdateInvoiceDto();
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -248,18 +253,18 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithMissingRequiredFields_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new InvoiceInputDto
         {
-            Id = 1,
+            Id = Invoice1Id,
             // Missing required fields
             Notes = "Incomplete update"
         };
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -269,14 +274,14 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithDuplicateInvoiceNumber_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
         updateDto.InvoiceNumber = "INV-T2-001"; // Duplicate from different invoice
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -286,14 +291,14 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_TenantIsolation_ShouldNotAccessOtherTenantInvoices()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
-        updateDto.Id = 2; // Invoice from tenant 2
+        updateDto.Id = Invoice2Id; // Invoice from tenant 2
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/2", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice2Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -302,14 +307,14 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithNonExistentCustomerId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
-        updateDto.CustomerId = 999; // Non-existent customer
+        updateDto.CustomerId = Guid.NewGuid(); // Non-existent customer
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -319,14 +324,14 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithCustomerFromDifferentTenant_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
-        updateDto.CustomerId = 2; // Customer from tenant 2
+        updateDto.CustomerId = Customer2Id; // Customer from tenant 2
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -335,14 +340,14 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithInvalidAmounts_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
         updateDto.Total = -100.00m; // Negative total
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -352,14 +357,14 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithFutureInvoiceDate_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
         updateDto.InvoiceDate = DateTime.Now.AddDays(30); // Future date
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -369,7 +374,7 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithUpdatedAddressDetails_ShouldUpdateSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
         updateDto.InvoiceAddressCompanyName = "Updated Company";
         updateDto.InvoiceAddressPhone = "+9876543210";
@@ -378,14 +383,14 @@ public class InvoiceUpdateCommandTests : IDisposable
         updateDto.DeliveryAddressStreet = "789 New Delivery St";
         updateDto.DeliveryAddressCity = "New Delivery City";
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
 
-        var updatedInvoice = await DbContext.Invoice.FindAsync(1);
+        var updatedInvoice = await DbContext.Invoice.FindAsync(Invoice1Id);
         TestAssertions.AssertNotNull(updatedInvoice);
         TestAssertions.AssertEqual("Updated Company", updatedInvoice!.InvoiceAddressCompanyName);
         TestAssertions.AssertEqual("+9876543210", updatedInvoice.InvoiceAddressPhone);
@@ -397,12 +402,12 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithNonExistentTenant_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
         var updateDto = CreateUpdateInvoiceDto();
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest || 
+        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest ||
                                  response.StatusCode == HttpStatusCode.NotFound ||
                                  response.StatusCode == HttpStatusCode.InternalServerError);
     }
@@ -411,14 +416,14 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithMismatchedIdInUrlAndBody_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
-        updateDto.Id = 2; // Different from URL
+        updateDto.Id = Invoice2Id; // Different from URL
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -428,16 +433,16 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(1, result.Data);
+        TestAssertions.AssertEqual(Invoice1Id, result.Data);
         TestAssertions.AssertNotNull(result.Messages);
         TestAssertions.AssertEqual(ResultStatusCode.Ok, result.StatusCode);
     }
@@ -446,13 +451,13 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        var updateDto = new InvoiceInputDto { Id = 1 }; // Invalid/incomplete update
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = new InvoiceInputDto { Id = Invoice1Id }; // Invalid/incomplete update
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotNull(result.Messages);
@@ -464,14 +469,14 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithEmptyInvoiceNumber_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
         updateDto.InvoiceNumber = ""; // Empty invoice number
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -481,17 +486,17 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_ShouldPreserveOriginalCreationData()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var originalInvoice = await DbContext.Invoice.FindAsync(1);
+        var originalInvoice = await DbContext.Invoice.FindAsync(Invoice1Id);
         var originalCreatedDate = originalInvoice!.DateCreated;
         var originalTenantId = originalInvoice.TenantId;
 
         var updateDto = CreateUpdateInvoiceDto();
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertHttpSuccess(response);
-        var updatedInvoice = await DbContext.Invoice.FindAsync(1);
+        var updatedInvoice = await DbContext.Invoice.FindAsync(Invoice1Id);
         TestAssertions.AssertNotNull(updatedInvoice);
         TestAssertions.AssertEqual(originalCreatedDate, updatedInvoice!.DateCreated);
         TestAssertions.AssertEqual(originalTenantId, updatedInvoice.TenantId);
@@ -502,14 +507,14 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithLongInvoiceNumber_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
         updateDto.InvoiceNumber = new string('B', 1000); // Very long invoice number
 
-        var response = await PutAsJsonAsync("/api/v1/Invoices/1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Invoices/{Invoice1Id}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -519,7 +524,7 @@ public class InvoiceUpdateCommandTests : IDisposable
     public async Task UpdateInvoice_WithInvalidId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateInvoiceDto();
 
         var response = await PutAsJsonAsync("/api/v1/Invoices/invalid", updateDto);

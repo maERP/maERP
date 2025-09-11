@@ -19,6 +19,10 @@ public class ProductCreateCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid TaxClass1Id = Guid.NewGuid();
+    private static readonly Guid TaxClass2Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer1Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer2Id = Guid.NewGuid();
 
     public ProductCreateCommandTests()
     {
@@ -43,7 +47,7 @@ public class ProductCreateCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         // Force a small delay to ensure header is set properly
         Task.Delay(10).Wait();
     }
@@ -87,35 +91,35 @@ public class ProductCreateCommandTests : IDisposable
                 // Seed data for Tenant 1
                 var taxClass1 = new maERP.Domain.Entities.TaxClass
                 {
-                    Id = 1,
+                    Id = TaxClass1Id,
                     TaxRate = 19.0,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var manufacturer1 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 1,
+                    Id = Manufacturer1Id,
                     Name = "Test Manufacturer T1",
                     City = "Test City",
                     Country = "Test Country",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 // Seed data for Tenant 2
                 var taxClass2 = new maERP.Domain.Entities.TaxClass
                 {
-                    Id = 2,
+                    Id = TaxClass2Id,
                     TaxRate = 19.0,
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var manufacturer2 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 2,
+                    Id = Manufacturer2Id,
                     Name = "Test Manufacturer T2",
                     City = "Test City",
                     Country = "Test Country",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.TaxClass.Add(taxClass1);
@@ -144,8 +148,8 @@ public class ProductCreateCommandTests : IDisposable
             Width = 10.0m,
             Height = 5.0m,
             Depth = 15.0m,
-            TaxClassId = 1,
-            ManufacturerId = 1,
+            TaxClassId = TaxClass1Id,
+            ManufacturerId = Manufacturer1Id,
             UseOptimized = false
         };
     }
@@ -161,33 +165,33 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithValidData_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
     public async Task CreateProduct_WithValidData_ShouldPersistInDatabase()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
-        
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
+
         // Verify through API that product exists
         var getResponse = await Client.GetAsync($"/api/v1/Products/{result.Data}");
         TestAssertions.AssertHttpSuccess(getResponse);
@@ -202,7 +206,7 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithMissingRequiredFields_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = new ProductInputDto
         {
             // Missing required fields Sku, Name, Price
@@ -212,7 +216,7 @@ public class ProductCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -222,8 +226,8 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithDuplicateSku_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Create first product
         var firstProduct = CreateValidProductDto();
         await PostAsJsonAsync("/api/v1/Products", firstProduct);
@@ -235,7 +239,7 @@ public class ProductCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Products", duplicateProduct);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -257,13 +261,13 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithNonExistentTenant_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
         var productDto = CreateValidProductDto();
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         // Should still try to create but may fail validation or return error
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest || 
+        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest ||
                                  response.StatusCode == HttpStatusCode.NotFound ||
                                  response.StatusCode == HttpStatusCode.InternalServerError);
     }
@@ -272,14 +276,14 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithInvalidTaxClassId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
-        productDto.TaxClassId = 999; // Non-existent tax class
+        productDto.TaxClassId = Guid.NewGuid(); // Non-existent tax class
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -289,14 +293,14 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithInvalidManufacturerId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
-        productDto.ManufacturerId = 999; // Non-existent manufacturer
+        productDto.ManufacturerId = Guid.NewGuid(); // Non-existent manufacturer
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -306,14 +310,14 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithNegativePrice_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
         productDto.Price = -10.00m;
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -323,14 +327,14 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithTooLongSku_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
         productDto.Sku = new string('A', 256); // Exceeds 255 character limit
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        // ASP.NET Core model validation returns different format than Result<int>
+        // ASP.NET Core model validation returns different format than Result<Guid>
         var responseContent = await response.Content.ReadAsStringAsync();
         TestAssertions.AssertTrue(responseContent.Contains("validation errors") || responseContent.Contains("Sku"));
     }
@@ -339,14 +343,14 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithTooLongName_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
         productDto.Name = new string('A', 256); // Exceeds 255 character limit
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        // ASP.NET Core model validation returns different format than Result<int>
+        // ASP.NET Core model validation returns different format than Result<Guid>
         var responseContent = await response.Content.ReadAsStringAsync();
         TestAssertions.AssertTrue(responseContent.Contains("validation errors") || responseContent.Contains("Name"));
     }
@@ -355,7 +359,7 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithOptionalFields_ShouldCreateSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
         productDto.NameOptimized = "Optimized Name";
         productDto.DescriptionOptimized = "Optimized Description";
@@ -366,11 +370,11 @@ public class ProductCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
-        
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
+
         // Verify through API that product exists with optional fields
         var getResponse = await Client.GetAsync($"/api/v1/Products/{result.Data}");
         TestAssertions.AssertHttpSuccess(getResponse);
@@ -386,29 +390,29 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithMinimalRequiredData_ShouldCreateSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = new ProductInputDto
         {
             Sku = "MINIMAL-001",
             Name = "Minimal Product",
             Price = 1.00m,
-            TaxClassId = 1
+            TaxClassId = TaxClass1Id
         };
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
     public async Task CreateProduct_WithMaxValidStringLengths_ShouldCreateSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
         productDto.Sku = new string('A', 255); // Max allowed length
         productDto.Name = new string('B', 255); // Max allowed length
@@ -418,7 +422,7 @@ public class ProductCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
     }
@@ -432,84 +436,84 @@ public class ProductCreateCommandTests : IDisposable
         var product1Dto = CreateValidProductDto();
         product1Dto.Sku = $"TENANT1-{Guid.NewGuid():N}";
         product1Dto.Name = "Product for Tenant 1";
-        product1Dto.TaxClassId = 1;
-        product1Dto.ManufacturerId = 1;
-        
+        product1Dto.TaxClassId = TaxClass1Id;
+        product1Dto.ManufacturerId = Manufacturer1Id;
+
         var product2Dto = CreateValidProductDto();
         product2Dto.Sku = $"TENANT2-{Guid.NewGuid():N}";
         product2Dto.Name = "Product for Tenant 2";
-        product2Dto.TaxClassId = 2;
-        product2Dto.ManufacturerId = 2;
+        product2Dto.TaxClassId = TaxClass2Id;
+        product2Dto.ManufacturerId = Manufacturer2Id;
 
         // Create product in tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createResponse1 = await PostAsJsonAsync("/api/v1/Products", product1Dto);
         if (createResponse1.StatusCode != HttpStatusCode.Created)
         {
             var errorContent1 = await createResponse1.Content.ReadAsStringAsync();
-            TestAssertions.AssertTrue(false, 
+            TestAssertions.AssertTrue(false,
                 $"Failed to create product for tenant 1. Expected: Created, Got: {createResponse1.StatusCode}, Error: {errorContent1}");
         }
-        
+
         // Create product in tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var createResponse2 = await PostAsJsonAsync("/api/v1/Products", product2Dto);
         if (createResponse2.StatusCode != HttpStatusCode.Created)
         {
             var errorContent2 = await createResponse2.Content.ReadAsStringAsync();
-            TestAssertions.AssertTrue(false, 
+            TestAssertions.AssertTrue(false,
                 $"Failed to create product for tenant 2. Expected: Created, Got: {createResponse2.StatusCode}, Error: {errorContent2}");
         }
-        
+
         TenantContext.SetCurrentTenantId(null); // Clear tenant filter to see all products
         DbContext.ChangeTracker.Clear();
-        
+
         // Try to query without any filters to see everything
         var allProductsQuery = DbContext.Set<Domain.Entities.Product>()
             .IgnoreQueryFilters(); // Ignore all query filters
         var allProducts = await allProductsQuery.ToListAsync();
-        
-        
+
+
         // Check if both products were created with correct tenant IDs
         var product1InDb = allProducts.FirstOrDefault(p => p.Sku.StartsWith("TENANT1-"));
         var product2InDb = allProducts.FirstOrDefault(p => p.Sku.StartsWith("TENANT2-"));
-        
+
         if (product1InDb == null || product2InDb == null)
         {
             TestAssertions.AssertTrue(false, $"Products not created properly.");
         }
-        
-        TestAssertions.AssertEqual(1, product1InDb!.TenantId);
-        TestAssertions.AssertEqual(2, product2InDb!.TenantId);
+
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant1Id, product1InDb!.TenantId!.Value);
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant2Id, product2InDb!.TenantId!.Value);
 
         // Verify tenant 1 sees its product - use fresh client to avoid header conflicts
         using var tenant1Client = Factory.CreateClient();
-        tenant1Client.DefaultRequestHeaders.Add("X-Tenant-Id", "1");
-        
+        tenant1Client.DefaultRequestHeaders.Add("X-Tenant-Id", TenantConstants.TestTenant1Id.ToString());
+
         var listResponse1 = await tenant1Client.GetAsync("/api/v1/Products?t=" + DateTimeOffset.UtcNow.Ticks);
         TestAssertions.AssertHttpSuccess(listResponse1);
         var list1 = await ReadResponseAsync<PaginatedResult<ProductListDto>>(listResponse1);
         var tenant1HasProduct = list1.Data?.Any(p => p.Sku.StartsWith("TENANT1-")) ?? false;
         var tenant1SeesOtherProduct = list1.Data?.Any(p => p.Sku.StartsWith("TENANT2-")) ?? false;
-        
-        TestAssertions.AssertTrue(tenant1HasProduct, 
+
+        TestAssertions.AssertTrue(tenant1HasProduct,
             $"Tenant 1 should see its own product. Found products: {string.Join(", ", list1.Data?.Select(p => p.Sku) ?? new string[0])}");
-        TestAssertions.AssertFalse(tenant1SeesOtherProduct, 
+        TestAssertions.AssertFalse(tenant1SeesOtherProduct,
             "Tenant 1 should not see Tenant 2's products");
 
         // Verify tenant 2 sees its product - use fresh client to avoid header conflicts
         using var tenant2Client = Factory.CreateClient();
-        tenant2Client.DefaultRequestHeaders.Add("X-Tenant-Id", "2");
-        
+        tenant2Client.DefaultRequestHeaders.Add("X-Tenant-Id", TenantConstants.TestTenant2Id.ToString());
+
         var listResponse2 = await tenant2Client.GetAsync("/api/v1/Products?t=" + DateTimeOffset.UtcNow.Ticks);
         TestAssertions.AssertHttpSuccess(listResponse2);
         var list2 = await ReadResponseAsync<PaginatedResult<ProductListDto>>(listResponse2);
         var tenant2HasProduct = list2.Data?.Any(p => p.Sku.StartsWith("TENANT2-")) ?? false;
         var tenant2SeesOtherProduct = list2.Data?.Any(p => p.Sku.StartsWith("TENANT1-")) ?? false;
-        
-        TestAssertions.AssertTrue(tenant2HasProduct, 
+
+        TestAssertions.AssertTrue(tenant2HasProduct,
             $"Tenant 2 should see its own product. Found products: {string.Join(", ", list2.Data?.Select(p => p.Sku) ?? new string[0])}");
-        TestAssertions.AssertFalse(tenant2SeesOtherProduct, 
+        TestAssertions.AssertFalse(tenant2SeesOtherProduct,
             "Tenant 2 should not see Tenant 1's products");
     }
 
@@ -517,17 +521,17 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_ResponseStructure_ShouldHaveCorrectFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
         TestAssertions.AssertNotNull(result.Messages);
     }
 
@@ -535,7 +539,7 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithInvalidJson_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var invalidJson = "{ invalid json }";
         var content = new StringContent(invalidJson, System.Text.Encoding.UTF8, "application/json");
@@ -548,7 +552,7 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithEmptyBody_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var content = new StringContent("", System.Text.Encoding.UTF8, "application/json");
         var response = await Client.PostAsync("/api/v1/Products", content);
@@ -560,20 +564,20 @@ public class ProductCreateCommandTests : IDisposable
     public async Task CreateProduct_WithNullManufacturerId_ShouldCreateSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var productDto = CreateValidProductDto();
         productDto.ManufacturerId = null; // Should be optional
 
         var response = await PostAsJsonAsync("/api/v1/Products", productDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         // Set the tenant context for querying
         TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
-        
+
         // Refresh the DbContext to ensure we get the latest data
         DbContext.ChangeTracker.Clear();
         var createdProduct = await DbContext.Product.FindAsync(result.Data);

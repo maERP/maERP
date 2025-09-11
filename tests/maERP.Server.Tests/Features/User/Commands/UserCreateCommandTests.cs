@@ -44,7 +44,7 @@ public class UserCreateCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         // Force a small delay to ensure header is set properly
         Task.Delay(10).Wait();
     }
@@ -135,10 +135,10 @@ public class UserCreateCommandTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(result.Data));
-        
+
         // Verify through API that user exists
         var getResponse = await Client.GetAsync($"/api/v1/Users/{result.Data}");
-        
+
         // Users endpoint requires Superadmin role, so it might return Forbidden
         // But if we get the user, verify the data matches
         if (getResponse.StatusCode == HttpStatusCode.OK)
@@ -176,7 +176,7 @@ public class UserCreateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        
+
         // Create first user
         var firstUser = CreateValidUserCommand();
         await PostAsJsonAsync("/api/v1/Users", firstUser);
@@ -303,7 +303,7 @@ public class UserCreateCommandTests : IDisposable
         var userTenants = await DbContext.UserTenant
             .Where(ut => ut.UserId == result.Data)
             .ToListAsync();
-        
+
         TestAssertions.AssertEqual(2, userTenants.Count);
         TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == TenantConstants.TestTenant1Id && ut.IsDefault));
         TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == TenantConstants.TestTenant2Id && !ut.IsDefault));
@@ -400,11 +400,11 @@ public class UserCreateCommandTests : IDisposable
             .ToListAsync();
 
         TestAssertions.AssertEqual(1, user1Tenants.Count);
-        TestAssertions.AssertEqual(1, user1Tenants.First().TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, user1Tenants.First().TenantId);
         TestAssertions.AssertTrue(user1Tenants.First().IsDefault);
 
         TestAssertions.AssertEqual(1, user2Tenants.Count);
-        TestAssertions.AssertEqual(2, user2Tenants.First().TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, user2Tenants.First().TenantId);
         TestAssertions.AssertTrue(user2Tenants.First().IsDefault);
     }
 
@@ -528,19 +528,19 @@ public class UserCreateCommandTests : IDisposable
 
         // Should either succeed by deduplicating or return validation error
         TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.Created || response.StatusCode == HttpStatusCode.BadRequest);
-        
+
         if (response.StatusCode == HttpStatusCode.Created)
         {
             var result = await ReadResponseAsync<Result<string>>(response);
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertTrue(result.Succeeded);
-            
+
             // Verify tenant assignments - should not have duplicates
             TenantContext.SetCurrentTenantId(null);
             var userTenants = await DbContext.UserTenant
                 .Where(ut => ut.UserId == result.Data)
                 .ToListAsync();
-            
+
             var distinctTenants = userTenants.Select(ut => ut.TenantId).Distinct().ToList();
             TestAssertions.AssertEqual(userTenants.Count, distinctTenants.Count);
         }

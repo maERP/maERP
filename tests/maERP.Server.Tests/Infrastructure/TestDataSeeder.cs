@@ -81,7 +81,7 @@ public static class TestDataSeeder
     {
         var taxClass1Tenant1 = new TaxClass
         {
-            Id = 1,
+            Id = Guid.Parse("00000001-0001-0001-0001-000000000001"),
             TaxRate = 19.0, // 19% VAT for tenant 1
             TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
@@ -90,7 +90,7 @@ public static class TestDataSeeder
 
         var taxClass2Tenant1 = new TaxClass
         {
-            Id = 2,
+            Id = Guid.Parse("00000002-0002-0002-0002-000000000002"),
             TaxRate = 7.0, // 7% reduced VAT for tenant 1
             TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
@@ -99,7 +99,7 @@ public static class TestDataSeeder
 
         var taxClass1Tenant2 = new TaxClass
         {
-            Id = 3,
+            Id = Guid.Parse("00000003-0003-0003-0003-000000000003"),
             TaxRate = 20.0, // 20% VAT for tenant 2
             TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
@@ -108,7 +108,7 @@ public static class TestDataSeeder
 
         var taxClass2Tenant2 = new TaxClass
         {
-            Id = 4,
+            Id = Guid.Parse("00000004-0004-0004-0004-000000000004"),
             TaxRate = 10.0, // 10% reduced VAT for tenant 2
             TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
@@ -122,7 +122,7 @@ public static class TestDataSeeder
     {
         var warehouse1Tenant1 = new Warehouse
         {
-            Id = 1,
+            Id = Guid.Parse("10000001-0001-0001-0001-000000000001"),
             Name = "Main Warehouse Tenant 1",
             TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
@@ -131,7 +131,7 @@ public static class TestDataSeeder
 
         var warehouse2Tenant1 = new Warehouse
         {
-            Id = 2,
+            Id = Guid.Parse("10000002-0002-0002-0002-000000000002"),
             Name = "Secondary Warehouse Tenant 1",
             TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
@@ -140,7 +140,7 @@ public static class TestDataSeeder
 
         var warehouse1Tenant2 = new Warehouse
         {
-            Id = 3,
+            Id = Guid.Parse("10000003-0003-0003-0003-000000000003"),
             Name = "Main Warehouse Tenant 2",
             TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
@@ -149,7 +149,7 @@ public static class TestDataSeeder
 
         var warehouse2Tenant2 = new Warehouse
         {
-            Id = 4,
+            Id = Guid.Parse("10000004-0004-0004-0004-000000000004"),
             Name = "Secondary Warehouse Tenant 2",
             TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
@@ -163,7 +163,7 @@ public static class TestDataSeeder
     {
         var aiModel1Tenant1 = new AiModel
         {
-            Id = 1,
+            Id = Guid.Parse("20000001-0001-0001-0001-000000000001"),
             Name = "ChatGPT-4O Tenant 1",
             AiModelType = AiModelType.ChatGpt4O,
             ApiUrl = "https://api.openai.com",
@@ -176,7 +176,7 @@ public static class TestDataSeeder
 
         var aiModel2Tenant1 = new AiModel
         {
-            Id = 2,
+            Id = Guid.Parse("20000002-0002-0002-0002-000000000002"),
             Name = "Claude 3.5 Tenant 1",
             AiModelType = AiModelType.Claude35,
             ApiUrl = "https://api.anthropic.com",
@@ -189,7 +189,7 @@ public static class TestDataSeeder
 
         var aiModel1Tenant2 = new AiModel
         {
-            Id = 3,
+            Id = Guid.Parse("20000003-0003-0003-0003-000000000003"),
             Name = "ChatGPT-4O Tenant 2",
             AiModelType = AiModelType.ChatGpt4O,
             ApiUrl = "https://api.openai.com",
@@ -207,8 +207,8 @@ public static class TestDataSeeder
     {
         var aiPrompt1Tenant1 = new AiPrompt
         {
-            Id = 1,
-            AiModelId = 1,
+            Id = Guid.Parse("30000001-0001-0001-0001-000000000001"),
+            AiModelId = Guid.Parse("20000001-0001-0001-0001-000000000001"),
             Identifier = "Test Prompt 1 Tenant 1",
             PromptText = "This is a test prompt for tenant 1",
             TenantId = TenantConstants.TestTenant1Id,
@@ -218,8 +218,8 @@ public static class TestDataSeeder
 
         var aiPrompt2Tenant1 = new AiPrompt
         {
-            Id = 2,
-            AiModelId = 2,
+            Id = Guid.Parse("30000002-0002-0002-0002-000000000002"),
+            AiModelId = Guid.Parse("20000002-0002-0002-0002-000000000002"),
             Identifier = "Test Prompt 2 Tenant 1",
             PromptText = "This is another test prompt for tenant 1",
             TenantId = TenantConstants.TestTenant1Id,
@@ -229,8 +229,8 @@ public static class TestDataSeeder
 
         var aiPrompt1Tenant2 = new AiPrompt
         {
-            Id = 3,
-            AiModelId = 3,
+            Id = Guid.Parse("30000003-0003-0003-0003-000000000003"),
+            AiModelId = Guid.Parse("20000003-0003-0003-0003-000000000003"),
             Identifier = "Test Prompt 1 Tenant 2",
             PromptText = "This is a test prompt for tenant 2",
             TenantId = TenantConstants.TestTenant2Id,

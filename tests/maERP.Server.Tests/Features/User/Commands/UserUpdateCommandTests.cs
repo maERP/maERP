@@ -44,7 +44,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         // Force a small delay to ensure header is set properly
         Task.Delay(10).Wait();
     }
@@ -192,7 +192,7 @@ public class UserUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify through database that user was updated
         TenantContext.SetCurrentTenantId(null);
         DbContext.ChangeTracker.Clear();
@@ -247,12 +247,12 @@ public class UserUpdateCommandTests : IDisposable
         await SeedTestDataAsync();
         var (userId1, userId2) = await SeedUsersAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        
+
         // Get the email of the second user
         TenantContext.SetCurrentTenantId(null);
         var user2 = await DbContext.Users.FindAsync(userId2);
         TestAssertions.AssertNotNull(user2);
-        
+
         // Try to update first user with second user's email
         var updateCommand = CreateValidUpdateCommand(userId1);
         updateCommand.Email = user2!.Email!;
@@ -296,7 +296,7 @@ public class UserUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify password hash was updated (we can't verify exact password due to hashing)
         TenantContext.SetCurrentTenantId(null);
         DbContext.ChangeTracker.Clear();
@@ -336,13 +336,13 @@ public class UserUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify tenant assignments were updated
         TenantContext.SetCurrentTenantId(null);
         var userTenants = await DbContext.UserTenant
             .Where(ut => ut.UserId == userId1)
             .ToListAsync();
-        
+
         TestAssertions.AssertEqual(2, userTenants.Count);
         TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == TenantConstants.TestTenant1Id && ut.IsDefault));
         TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == TenantConstants.TestTenant2Id && !ut.IsDefault));
@@ -388,7 +388,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, userId2) = await SeedUsersAsync();
-        
+
         // Try to update tenant 2's user from tenant 1 context
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId2);
@@ -397,7 +397,7 @@ public class UserUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId2}", updateCommand);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        
+
         // Verify user was not updated
         TenantContext.SetCurrentTenantId(null);
         var user = await DbContext.Users.FindAsync(userId2);
@@ -443,19 +443,19 @@ public class UserUpdateCommandTests : IDisposable
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        
+
         // Get original password hash
         TenantContext.SetCurrentTenantId(null);
         var originalUser = await DbContext.Users.FindAsync(userId1);
         var originalPasswordHash = originalUser!.PasswordHash;
-        
+
         var updateCommand = CreateValidUpdateCommand(userId1);
         updateCommand.Password = ""; // Empty password should not update
 
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify password hash was not changed
         DbContext.ChangeTracker.Clear();
         var updatedUser = await DbContext.Users.FindAsync(userId1);
@@ -476,7 +476,7 @@ public class UserUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify special characters were preserved
         TenantContext.SetCurrentTenantId(null);
         DbContext.ChangeTracker.Clear();

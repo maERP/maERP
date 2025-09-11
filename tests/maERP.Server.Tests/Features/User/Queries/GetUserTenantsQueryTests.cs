@@ -124,7 +124,7 @@ public class GetUserTenantsQueryTests : IDisposable
                     new() { UserId = user2.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = true },
                     
                     // User 3: Assigned to tenant 3 only, default is tenant 3
-                    new() { UserId = user3.Id, TenantId = 3, IsDefault = true }
+                    new() { UserId = user3.Id, TenantId = TenantConstants.TestTenant3Id, IsDefault = true }
                 };
 
                 DbContext.UserTenant.AddRange(userTenantAssignments);
@@ -185,8 +185,8 @@ public class GetUserTenantsQueryTests : IDisposable
         TestAssertions.AssertEqual(2, result.Data.Count);
 
         var tenantIds = result.Data.Select(t => t.TenantId).OrderBy(id => id).ToList();
-        TestAssertions.AssertEqual(1, tenantIds[0]);
-        TestAssertions.AssertEqual(2, tenantIds[1]);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, tenantIds[0]);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, tenantIds[1]);
     }
 
     [Fact]
@@ -202,7 +202,7 @@ public class GetUserTenantsQueryTests : IDisposable
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(1, result.Data.Count);
-        TestAssertions.AssertEqual(2, result.Data[0].TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, result.Data[0].TenantId);
         TestAssertions.AssertTrue(result.Data[0].IsDefault);
     }
 
@@ -264,7 +264,7 @@ public class GetUserTenantsQueryTests : IDisposable
 
         foreach (var tenant in result.Data)
         {
-            TestAssertions.AssertTrue(tenant.TenantId > 0);
+            TestAssertions.AssertTrue(tenant.TenantId != Guid.Empty);
             TestAssertions.AssertFalse(string.IsNullOrEmpty(tenant.TenantName));
             TestAssertions.AssertFalse(string.IsNullOrEmpty(tenant.TenantCode));
             // IsDefault can be true or false, both are valid
@@ -286,7 +286,7 @@ public class GetUserTenantsQueryTests : IDisposable
 
         var defaultTenants = result.Data.Where(t => t.IsDefault).ToList();
         TestAssertions.AssertEqual(1, defaultTenants.Count); // Only one default tenant
-        TestAssertions.AssertEqual(1, defaultTenants[0].TenantId); // Tenant 1 is default for User 1
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, defaultTenants[0].TenantId); // Tenant 1 is default for User 1
     }
 
     [Fact]
@@ -323,13 +323,13 @@ public class GetUserTenantsQueryTests : IDisposable
         var response2 = await Client.GetAsync($"/api/v1/Users/{userId2}/tenants");
         var result2 = await ReadResponseAsync<Result<List<UserTenantAssignmentDto>>>(response2);
         TestAssertions.AssertEqual(1, result2.Data!.Count);
-        TestAssertions.AssertEqual(2, result2.Data[0].TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, result2.Data[0].TenantId);
 
         // Test User 3 (tenant 3)
         var response3 = await Client.GetAsync($"/api/v1/Users/{userId3}/tenants");
         var result3 = await ReadResponseAsync<Result<List<UserTenantAssignmentDto>>>(response3);
         TestAssertions.AssertEqual(1, result3.Data!.Count);
-        TestAssertions.AssertEqual(3, result3.Data[0].TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant3Id, result3.Data[0].TenantId);
     }
 
     [Fact]
@@ -353,13 +353,13 @@ public class GetUserTenantsQueryTests : IDisposable
         var user3TenantIds = result3.Data!.Select(t => t.TenantId).ToList();
 
         // Verify user 1 and user 2 have overlapping tenants (tenant 2)
-        TestAssertions.AssertContains(2, user1TenantIds);
-        TestAssertions.AssertContains(2, user2TenantIds);
+        TestAssertions.AssertContains(TenantConstants.TestTenant2Id, user1TenantIds);
+        TestAssertions.AssertContains(TenantConstants.TestTenant2Id, user2TenantIds);
 
         // Verify user 3 has unique tenant
-        TestAssertions.AssertContains(3, user3TenantIds);
-        TestAssertions.AssertDoesNotContain(3, user1TenantIds);
-        TestAssertions.AssertDoesNotContain(3, user2TenantIds);
+        TestAssertions.AssertContains(TenantConstants.TestTenant3Id, user3TenantIds);
+        TestAssertions.AssertDoesNotContain(TenantConstants.TestTenant3Id, user1TenantIds);
+        TestAssertions.AssertDoesNotContain(TenantConstants.TestTenant3Id, user2TenantIds);
     }
 
     [Fact]
@@ -398,7 +398,7 @@ public class GetUserTenantsQueryTests : IDisposable
     public async Task GetUserTenants_WithTenantHeader_ShouldStillReturnAllUserTenants()
     {
         var (userId1, _, _) = await SeedUserTenantTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync($"/api/v1/Users/{userId1}/tenants");
 
@@ -407,12 +407,12 @@ public class GetUserTenantsQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        
+
         // Should return all tenants for the user, not just the one in the header
         TestAssertions.AssertEqual(2, result.Data.Count);
         var tenantIds = result.Data.Select(t => t.TenantId).OrderBy(id => id).ToList();
-        TestAssertions.AssertEqual(1, tenantIds[0]);
-        TestAssertions.AssertEqual(2, tenantIds[1]);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, tenantIds[0]);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, tenantIds[1]);
     }
 
     [Fact]
@@ -446,7 +446,7 @@ public class GetUserTenantsQueryTests : IDisposable
         {
             PropertyNameCaseInsensitive = true
         });
-        
+
         TestAssertions.AssertNotNull(result);
         if (result != null)
         {

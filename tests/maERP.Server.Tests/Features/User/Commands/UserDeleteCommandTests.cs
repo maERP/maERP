@@ -43,7 +43,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         // Force a small delay to ensure header is set properly
         Task.Delay(10).Wait();
     }
@@ -186,12 +186,12 @@ public class UserDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify user was deleted from database
         TenantContext.SetCurrentTenantId(null);
         var deletedUser = await DbContext.Users.FindAsync(userId1);
         Assert.Null(deletedUser);
-        
+
         // Verify tenant assignments were also deleted
         var userTenants = await DbContext.UserTenant
             .Where(ut => ut.UserId == userId1)
@@ -239,13 +239,13 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, userId2, _) = await SeedUsersAsync();
-        
+
         // Try to delete tenant 2's user from tenant 1 context
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId2}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        
+
         // Verify user was not deleted
         TenantContext.SetCurrentTenantId(null);
         var user = await DbContext.Users.FindAsync(userId2);
@@ -261,7 +261,7 @@ public class UserDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        
+
         // Verify user was not deleted
         TenantContext.SetCurrentTenantId(null);
         var user = await DbContext.Users.FindAsync(userId1);
@@ -278,7 +278,7 @@ public class UserDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        
+
         // Verify user was not deleted
         TenantContext.SetCurrentTenantId(null);
         var user = await DbContext.Users.FindAsync(userId1);
@@ -290,7 +290,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _, _) = await SeedUsersAsync();
-        
+
         // Add user to multiple tenants
         TenantContext.SetCurrentTenantId(null);
         var additionalTenant = new UserTenant
@@ -301,16 +301,16 @@ public class UserDeleteCommandTests : IDisposable
         };
         DbContext.UserTenant.Add(additionalTenant);
         await DbContext.SaveChangesAsync();
-        
+
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify user was deleted from database
         var deletedUser = await DbContext.Users.FindAsync(userId1);
         Assert.Null(deletedUser);
-        
+
         // Verify all tenant assignments were deleted
         var userTenants = await DbContext.UserTenant
             .Where(ut => ut.UserId == userId1)
@@ -361,11 +361,11 @@ public class UserDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify user and all related tenant assignments were deleted
         var deletedUser = await DbContext.Users.FindAsync(userId1);
         Assert.Null(deletedUser);
-        
+
         var remainingTenants = await DbContext.UserTenant
             .Where(ut => ut.UserId == userId1)
             .ToListAsync();
@@ -435,7 +435,7 @@ public class UserDeleteCommandTests : IDisposable
 
         TestAssertions.AssertEqual(1, successCount);
         TestAssertions.AssertEqual(1, notFoundCount);
-        
+
         // Verify user is deleted
         TenantContext.SetCurrentTenantId(null);
         var deletedUser = await DbContext.Users.FindAsync(userId1);
@@ -482,14 +482,14 @@ public class UserDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify counts decreased by expected amounts
         var finalUserCount = await DbContext.Users.CountAsync();
         var finalTenantAssignmentCount = await DbContext.UserTenant.CountAsync();
-        
+
         TestAssertions.AssertEqual(initialUserCount - 1, finalUserCount);
         TestAssertions.AssertTrue(finalTenantAssignmentCount < initialTenantAssignmentCount);
-        
+
         // Verify no orphaned tenant assignments exist for the deleted user
         var orphanedAssignments = await DbContext.UserTenant
             .Where(ut => ut.UserId == userId1)

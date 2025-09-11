@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Enums;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.SalesChannel.Queries;
 
@@ -44,7 +45,7 @@ public class SalesChannelListQueryTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         Task.Delay(10).Wait();
     }
 
@@ -70,10 +71,16 @@ public class SalesChannelListQueryTests : IDisposable
             {
                 await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
+                // Test Entity IDs
+                var TestSalesChannel1Id = new Guid("11111111-1111-1111-1111-111111111111");
+                var TestSalesChannel2Id = new Guid("22222222-2222-2222-2222-222222222222");
+                var TestSalesChannel3Id = new Guid("33333333-3333-3333-3333-333333333333");
+                var TestSalesChannel4Id = new Guid("44444444-4444-4444-4444-444444444444");
+
                 // Seed SalesChannels for Tenant 1
                 var salesChannel1_1 = new maERP.Domain.Entities.SalesChannel
                 {
-                    Id = 1,
+                    Id = TestSalesChannel1Id,
                     Type = SalesChannelType.WooCommerce,
                     Name = "WooCommerce Store T1",
                     Url = "https://store1.example.com",
@@ -85,12 +92,12 @@ public class SalesChannelListQueryTests : IDisposable
                     ExportCustomers = false,
                     ImportOrders = true,
                     ExportOrders = false,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var salesChannel1_2 = new maERP.Domain.Entities.SalesChannel
                 {
-                    Id = 2,
+                    Id = TestSalesChannel2Id,
                     Type = SalesChannelType.Shopware6,
                     Name = "Shopware Store T1",
                     Url = "https://shopware1.example.com",
@@ -102,13 +109,13 @@ public class SalesChannelListQueryTests : IDisposable
                     ExportCustomers = true,
                     ImportOrders = false,
                     ExportOrders = true,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 // Seed SalesChannels for Tenant 2
                 var salesChannel2_1 = new maERP.Domain.Entities.SalesChannel
                 {
-                    Id = 3,
+                    Id = TestSalesChannel3Id,
                     Type = SalesChannelType.eBay,
                     Name = "eBay Store T2",
                     Url = "https://ebay.example.com",
@@ -120,12 +127,12 @@ public class SalesChannelListQueryTests : IDisposable
                     ExportCustomers = false,
                     ImportOrders = true,
                     ExportOrders = true,
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var salesChannel2_2 = new maERP.Domain.Entities.SalesChannel
                 {
-                    Id = 4,
+                    Id = TestSalesChannel4Id,
                     Type = SalesChannelType.WooCommerce,
                     Name = "WooCommerce Store T2",
                     Url = "https://store2.example.com",
@@ -137,7 +144,7 @@ public class SalesChannelListQueryTests : IDisposable
                     ExportCustomers = false,
                     ImportOrders = false,
                     ExportOrders = false,
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.SalesChannel.AddRange(salesChannel1_1, salesChannel1_2, salesChannel2_1, salesChannel2_2);
@@ -161,7 +168,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithValidTenant_ShouldReturnSuccess()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels");
 
@@ -189,12 +196,12 @@ public class SalesChannelListQueryTests : IDisposable
 
         // Test Tenant 1 isolation
         using var tenant1Client = Factory.CreateClient();
-        tenant1Client.DefaultRequestHeaders.Add("X-Tenant-Id", "1");
-        
+        tenant1Client.DefaultRequestHeaders.Add("X-Tenant-Id", TenantConstants.TestTenant1Id.ToString());
+
         var response1 = await tenant1Client.GetAsync("/api/v1/SalesChannels");
         TestAssertions.AssertEqual(HttpStatusCode.OK, response1.StatusCode);
         var result1 = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response1);
-        
+
         TestAssertions.AssertNotNull(result1?.Data);
         TestAssertions.AssertEqual(2, result1.Data!.Count);
         TestAssertions.AssertTrue(result1.Data!.Any(s => s.Name == "WooCommerce Store T1"));
@@ -203,12 +210,12 @@ public class SalesChannelListQueryTests : IDisposable
 
         // Test Tenant 2 isolation
         using var tenant2Client = Factory.CreateClient();
-        tenant2Client.DefaultRequestHeaders.Add("X-Tenant-Id", "2");
-        
+        tenant2Client.DefaultRequestHeaders.Add("X-Tenant-Id", TenantConstants.TestTenant2Id.ToString());
+
         var response2 = await tenant2Client.GetAsync("/api/v1/SalesChannels");
         TestAssertions.AssertEqual(HttpStatusCode.OK, response2.StatusCode);
         var result2 = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response2);
-        
+
         TestAssertions.AssertNotNull(result2?.Data);
         TestAssertions.AssertEqual(2, result2.Data!.Count);
         TestAssertions.AssertTrue(result2.Data!.Any(s => s.Name == "eBay Store T2"));
@@ -220,7 +227,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithPagination_ShouldReturnCorrectPage()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels?PageNumber=1&PageSize=1");
 
@@ -238,7 +245,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithSearchString_ShouldFilterResults()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels?SearchString=WooCommerce");
 
@@ -254,7 +261,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithEmptySearchString_ShouldReturnAllResults()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels?SearchString=");
 
@@ -269,7 +276,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithNonExistentSearch_ShouldReturnEmptyResults()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels?SearchString=NonExistent");
 
@@ -284,7 +291,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithOrderBy_ShouldReturnOrderedResults()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels?OrderBy=Name desc");
 
@@ -301,7 +308,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithMultipleOrderBy_ShouldReturnOrderedResults()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels?OrderBy=SalesChannelType,Name");
 
@@ -316,7 +323,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_ResponseStructure_ShouldHaveCorrectFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels");
 
@@ -326,11 +333,11 @@ public class SalesChannelListQueryTests : IDisposable
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertNotNull(result.Messages);
-        
+
         if (result.Data!.Any())
         {
             var firstChannel = result.Data!.First();
-            TestAssertions.AssertTrue(firstChannel.Id > 0);
+            TestAssertions.AssertNotEqual(Guid.Empty, firstChannel.Id);
             TestAssertions.AssertNotNull(firstChannel.Name);
             TestAssertions.AssertNotNull(firstChannel.Url);
             TestAssertions.AssertNotNull(firstChannel.Username);
@@ -342,7 +349,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithInvalidPageNumber_ShouldReturnEmptyResults()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels?PageNumber=999&PageSize=10");
 
@@ -358,7 +365,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithLargePageSize_ShouldReturnAllResults()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels?PageSize=1000");
 
@@ -373,7 +380,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithZeroPageSize_ShouldUseDefaultPageSize()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels?PageSize=0");
 
@@ -388,13 +395,13 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_WithNonExistentTenant_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync("/api/v1/SalesChannels");
 
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest || 
+        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest ||
                                  response.StatusCode == HttpStatusCode.OK);
-        
+
         if (response.StatusCode == HttpStatusCode.OK)
         {
             var result = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response);
@@ -407,23 +414,23 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_VerifyDtoProperties_ShouldContainAllExpectedFields()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response);
         TestAssertions.AssertNotNull(result?.Data);
-        
+
         if (result.Data!.Any())
         {
             var channel = result.Data!.First();
-            TestAssertions.AssertTrue(channel.Id > 0);
+            TestAssertions.AssertNotEqual(Guid.Empty, channel.Id);
             TestAssertions.AssertNotNull(channel.Name);
             TestAssertions.AssertNotNull(channel.Url);
             TestAssertions.AssertNotNull(channel.Username);
             TestAssertions.AssertNotNull(channel.Warehouses);
-            
+
             // Verify boolean flags are properly mapped
             TestAssertions.AssertTrue(channel.ImportProducts == true || channel.ImportProducts == false);
             TestAssertions.AssertTrue(channel.ExportProducts || !channel.ExportProducts);
@@ -438,7 +445,7 @@ public class SalesChannelListQueryTests : IDisposable
     public async Task GetSalesChannelsList_CaseSensitiveSearch_ShouldWork()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/SalesChannels?SearchString=woocommerce");
 
@@ -446,7 +453,7 @@ public class SalesChannelListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         // Should find WooCommerce regardless of case
         TestAssertions.AssertTrue(result.Data.Count >= 0);
     }

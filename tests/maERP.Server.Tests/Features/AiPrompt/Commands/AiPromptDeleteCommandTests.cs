@@ -46,7 +46,7 @@ public class AiPromptDeleteCommandTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
@@ -59,7 +59,7 @@ public class AiPromptDeleteCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    private async Task<(int tenant1PromptId, int tenant2PromptId)> SeedTestDataAsync()
+    private async Task<(Guid tenant1PromptId, Guid tenant2PromptId)> SeedTestDataAsync()
     {
         var hasData = await DbContext.AiPrompt.IgnoreQueryFilters().AnyAsync();
         if (!hasData)
@@ -93,7 +93,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
@@ -107,14 +107,14 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Get all prompt IDs for tenant 1 to ensure we have at least one
         var tenant1PromptIds = await DbContext.AiPrompt.IgnoreQueryFilters()
             .Where(p => p.TenantId == TenantConstants.TestTenant1Id)
             .Select(p => p.Id)
             .ToListAsync();
-        
+
         TestAssertions.AssertTrue(tenant1PromptIds.Any(), "No prompts found for tenant 1");
         var promptIdToDelete = tenant1PromptIds.First();
 
@@ -132,13 +132,13 @@ public class AiPromptDeleteCommandTests : IDisposable
         var remainingPromptsCount = await DbContext.AiPrompt.IgnoreQueryFilters()
             .Where(p => p.TenantId == TenantConstants.TestTenant1Id)
             .CountAsync();
-            
+
         TestAssertions.AssertEqual(tenant1PromptIds.Count - 1, remainingPromptsCount);
-        
+
         // Verify the specific prompt ID no longer exists in database
         var deletedPromptExists = await DbContext.AiPrompt.IgnoreQueryFilters()
             .AnyAsync(p => p.Id == promptIdToDelete);
-            
+
         TestAssertions.AssertFalse(deletedPromptExists, $"Prompt {promptIdToDelete} should be deleted but still exists in database");
     }
 
@@ -147,7 +147,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync("/api/v1/AiPrompts/999");
@@ -161,7 +161,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
-        SetTenantHeader(2); // Prompt belongs to tenant 1, accessing with tenant 2
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Prompt belongs to tenant 1, accessing with tenant 2
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
@@ -170,7 +170,7 @@ public class AiPromptDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
 
         // Verify prompt still exists in tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
         TestAssertions.AssertHttpSuccess(getResponse);
     }
@@ -188,7 +188,7 @@ public class AiPromptDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
 
         // Verify prompt still exists in tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
         TestAssertions.AssertHttpSuccess(getResponse);
     }
@@ -212,7 +212,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         var (tenant1PromptId, tenant2PromptId) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Delete prompt in tenant 1
         var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
@@ -225,7 +225,7 @@ public class AiPromptDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(getResponseTenant1, HttpStatusCode.NotFound);
 
         // Verify prompt still exists in tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var getResponseTenant2 = await Client.GetAsync($"/api/v1/AiPrompts/{tenant2PromptId}");
         TestAssertions.AssertHttpSuccess(getResponseTenant2);
     }
@@ -235,7 +235,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync("/api/v1/AiPrompts/0");
@@ -249,7 +249,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync("/api/v1/AiPrompts/-1");
@@ -263,7 +263,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync("/api/v1/AiPrompts/abc");
@@ -277,7 +277,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Delete the prompt first time
         var firstDeleteResponse = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
@@ -295,7 +295,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange - Ensure clean start by seeding data
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Get all prompt IDs for tenant 1
         var tenant1PromptIds = await DbContext.AiPrompt.IgnoreQueryFilters()
@@ -303,10 +303,10 @@ public class AiPromptDeleteCommandTests : IDisposable
             .Select(p => p.Id)
             .OrderBy(p => p)
             .ToListAsync();
-        
+
         // Ensure we have multiple prompts
         TestAssertions.AssertTrue(tenant1PromptIds.Count > 1, $"Expected multiple prompts in tenant 1, but found {tenant1PromptIds.Count}");
-        
+
         var promptIdToDelete = tenant1PromptIds.First();
         var promptsCountBefore = tenant1PromptIds.Count;
 
@@ -328,7 +328,7 @@ public class AiPromptDeleteCommandTests : IDisposable
 
         // Verify the count is reduced by exactly 1
         TestAssertions.AssertEqual(promptsCountBefore - 1, promptsCountAfter);
-        
+
         // Verify the deleted prompt is not in the list
         var remainingPromptIds = promptsAfterResult?.Data?.Select(p => p.Id).ToList() ?? new List<Guid>();
         TestAssertions.AssertFalse(remainingPromptIds.Contains(promptIdToDelete), "Deleted prompt should not be in the list");
@@ -339,24 +339,24 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify response has no content
         var content = await response.Content.ReadAsStringAsync();
         if (!string.IsNullOrEmpty(content))
         {
             TestAssertions.AssertTrue(false, $"Expected empty content but got: '{content}' (length: {content.Length})");
         }
-        
+
         // For NoContent responses, either content should be empty OR content-length should be 0
         // Some HTTP implementations may return empty string vs null
-        TestAssertions.AssertTrue(string.IsNullOrEmpty(content) || response.Content.Headers.ContentLength == 0, 
+        TestAssertions.AssertTrue(string.IsNullOrEmpty(content) || response.Content.Headers.ContentLength == 0,
             $"Response should have no content. Content: '{content}', ContentLength: {response.Content.Headers.ContentLength}");
     }
 
@@ -365,7 +365,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Multiple concurrent delete requests
         var tasks = new List<Task<HttpResponseMessage>>();
@@ -393,7 +393,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Verify prompt exists before deletion
         var getResponseBefore = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
@@ -450,7 +450,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{int.MaxValue}");
@@ -464,7 +464,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var startTime = DateTime.UtcNow;
 
         // Act
@@ -482,7 +482,7 @@ public class AiPromptDeleteCommandTests : IDisposable
     {
         // Arrange
         var (tenant1PromptId, tenant2PromptId) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Get initial counts
         var initialCountT1 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == TenantConstants.TestTenant1Id);

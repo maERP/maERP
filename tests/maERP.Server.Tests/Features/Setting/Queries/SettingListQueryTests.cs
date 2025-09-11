@@ -92,17 +92,17 @@ public class SettingListQueryTests : IDisposable
                 {
                     Key = "test.setting.tenant2",
                     Value = "value2",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var setting2Tenant2 = new maERP.Domain.Entities.Setting
                 {
                     Key = "test.search.tenant2",
                     Value = "findable",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
-                DbContext.Setting.AddRange(setting1Tenant1, setting2Tenant1, setting3Tenant1, 
+                DbContext.Setting.AddRange(setting1Tenant1, setting2Tenant1, setting3Tenant1,
                                          setting1Tenant2, setting2Tenant2);
                 await DbContext.SaveChangesAsync();
             }
@@ -124,7 +124,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithValidTenant_ShouldReturnTenantData()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings");
 
@@ -139,7 +139,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithDifferentTenant_ShouldReturnOnlyThatTenantData()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var response = await Client.GetAsync("/api/v1/Settings");
 
@@ -148,7 +148,7 @@ public class SettingListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertTrue(result.Data?.Any(s => s.Key.Contains("tenant2")) ?? false);
-        
+
         var tenant1Settings = result.Data?.Where(s => s.Key.Contains("tenant1")).ToList();
         TestAssertions.AssertEmpty(tenant1Settings ?? new List<SettingListDto>());
     }
@@ -164,7 +164,7 @@ public class SettingListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<SettingListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
-        
+
         // Without tenant header, we should get system settings (null TenantId)
         var tenantSpecificSettings = result.Data?.Where(s => s.Key.Contains("tenant")).ToList();
         TestAssertions.AssertEmpty(tenantSpecificSettings ?? new List<SettingListDto>());
@@ -174,7 +174,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithPagination_ShouldRespectPageSize()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?pageNumber=0&pageSize=2");
 
@@ -190,7 +190,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithPaginationSecondPage_ShouldReturnSecondPageData()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?pageNumber=1&pageSize=2");
 
@@ -205,7 +205,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithSearchString_ShouldFilterResults()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?searchString=test.search");
 
@@ -214,7 +214,7 @@ public class SettingListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertTrue(result.Data?.Any(s => s.Key == "test.search.tenant1") ?? false);
-        
+
         var keys = result.Data?.Select(s => s.Key).ToList();
         TestAssertions.AssertTrue(keys?.All(k => k.Contains("test.search")) ?? false);
     }
@@ -223,7 +223,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithSearchStringNoMatch_ShouldReturnEmpty()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?searchString=nonexistent");
 
@@ -238,7 +238,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithOrderByKey_ShouldReturnOrderedResults()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?orderBy=Key");
 
@@ -247,7 +247,7 @@ public class SettingListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertTrue(result.Data?.Count > 0);
-        
+
         // Verify ordering - keys should be in ascending order
         var keys = result.Data?.Select(x => x.Key).ToList();
         var sortedKeys = keys?.OrderBy(k => k).ToList();
@@ -258,7 +258,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithOrderByKeyDescending_ShouldReturnDescOrderedResults()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?orderBy=Key desc");
 
@@ -267,7 +267,7 @@ public class SettingListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertTrue(result.Data?.Count > 0);
-        
+
         // Verify descending ordering
         var keys = result.Data?.Select(x => x.Key).ToList();
         var sortedKeysDesc = keys?.OrderByDescending(k => k).ToList();
@@ -278,7 +278,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithOrderByValue_ShouldReturnValueOrderedResults()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?orderBy=Value");
 
@@ -287,7 +287,7 @@ public class SettingListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertTrue(result.Data?.Count > 0);
-        
+
         // Verify value ordering
         var values = result.Data?.Select(x => x.Value).ToList();
         var sortedValues = values?.OrderBy(v => v).ToList();
@@ -298,7 +298,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithInvalidPageNumber_ShouldReturnEmptyResults()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?pageNumber=10&pageSize=10");
 
@@ -314,7 +314,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithZeroPageSize_ShouldUseDefaultPageSize()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?pageSize=0");
 
@@ -328,7 +328,7 @@ public class SettingListQueryTests : IDisposable
     [Fact]
     public async Task GetSettings_WithNegativePageNumber_ShouldHandleGracefully()
     {
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync("/api/v1/Settings?pageNumber=-1");
 
@@ -343,7 +343,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithNonExistentTenant_ShouldReturnOnlyNonTenantSettings()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync("/api/v1/Settings");
 
@@ -351,7 +351,7 @@ public class SettingListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<SettingListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
-        
+
         // With non-existent tenant, we should not get any tenant-specific settings
         var tenantSpecificSettings = result.Data?.Where(s => s.Key.Contains("tenant")).ToList();
         TestAssertions.AssertEmpty(tenantSpecificSettings ?? new List<SettingListDto>());
@@ -361,7 +361,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_ResponseStructure_ShouldContainRequiredFields()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings");
 
@@ -373,7 +373,7 @@ public class SettingListQueryTests : IDisposable
 
         var firstSetting = result.Data?.First();
         TestAssertions.AssertNotNull(firstSetting);
-        TestAssertions.AssertTrue(firstSetting!.Id > 0);
+        TestAssertions.AssertNotEqual(Guid.Empty, firstSetting!.Id);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstSetting.Key));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstSetting.Value));
     }
@@ -382,7 +382,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithSpecificKeySearch_ShouldFilterByKey()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?searchString=test.theme.tenant1");
 
@@ -397,7 +397,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithValueSearch_ShouldFilterByValue()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?searchString=searchable");
 
@@ -412,7 +412,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithCaseInsensitiveSearch_ShouldReturnResults()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?searchString=TENANT1");
 
@@ -427,7 +427,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithPartialKeySearch_ShouldReturnMatchingResults()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?searchString=test.theme");
 
@@ -442,7 +442,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithEmptySearchString_ShouldReturnAllResults()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?searchString=");
 
@@ -459,11 +459,11 @@ public class SettingListQueryTests : IDisposable
     {
         await SeedSettingTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Settings");
         var result1 = await ReadResponseAsync<PaginatedResult<SettingListDto>>(response1);
-        
-        SetTenantHeader(2);
+
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Settings");
         var result2 = await ReadResponseAsync<PaginatedResult<SettingListDto>>(response2);
 
@@ -481,7 +481,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithMultipleOrderBy_ShouldRespectMultipleSorting()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?orderBy=Key,Value");
 
@@ -496,7 +496,7 @@ public class SettingListQueryTests : IDisposable
     public async Task GetSettings_WithComplexSearch_ShouldFilterCorrectly()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Settings?searchString=test.setting&pageSize=1&orderBy=Key");
 

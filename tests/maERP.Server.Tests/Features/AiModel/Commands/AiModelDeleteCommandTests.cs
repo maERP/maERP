@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
@@ -51,7 +52,7 @@ public class AiModelDeleteCommandTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
@@ -71,7 +72,7 @@ public class AiModelDeleteCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    protected async Task<int> CreateTestAiModel(string name = "Test Model", AiModelType aiModelType = AiModelType.ChatGpt4O)
+    protected async Task<Guid> CreateTestAiModel(string name = "Test Model", AiModelType aiModelType = AiModelType.ChatGpt4O)
     {
         var createCommand = new AiModelInputDto
         {
@@ -83,7 +84,7 @@ public class AiModelDeleteCommandTests : IDisposable
 
         var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         return result.Data;
     }
 
@@ -98,7 +99,7 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_WithValidId_ShouldReturnNoContent()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         // Act
@@ -112,10 +113,10 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_WithNonExistentId_ShouldReturnNoContent()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.DeleteAsync("/api/v1/AiModels/999");
+        var response = await Client.DeleteAsync("/api/v1/AiModels/99999999-9999-9999-9999-999999999999");
 
         // Assert - DELETE is idempotent, returns NoContent even if resource doesn't exist
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NoContent);
@@ -125,10 +126,10 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_WithZeroId_ShouldReturnNoContent()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.DeleteAsync("/api/v1/AiModels/0");
+        var response = await Client.DeleteAsync("/api/v1/AiModels/00000000-0000-0000-0000-000000000000");
 
         // Assert - DELETE is idempotent, returns NoContent
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NoContent);
@@ -138,7 +139,7 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_WithNegativeId_ShouldReturnNoContent()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync("/api/v1/AiModels/-1");
@@ -151,7 +152,7 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_WithStringId_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync("/api/v1/AiModels/abc");
@@ -164,9 +165,9 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_MultipleDifferentModels_ShouldDeleteAll()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var modelIds = new List<Guid>();
-        
+
         for (int i = 0; i < 5; i++)
         {
             var modelId = await CreateTestAiModel($"Model {i}");
@@ -185,7 +186,7 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_SameIdTwice_ShouldSucceedBothTimes()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         // Act - First delete should succeed
@@ -203,7 +204,7 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_AfterDeletion_ShouldNotBeAccessible()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         // Act - Delete the model
@@ -221,10 +222,10 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_WithDifferentTenants_ShouldIsolateDeletion()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var tenant1ModelId = await CreateTestAiModel("Tenant 1 Model");
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var tenant2ModelId = await CreateTestAiModel("Tenant 2 Model");
 
         // Act - Try to delete tenant 1's model from tenant 2 context
@@ -234,7 +235,7 @@ public class AiModelDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NoContent);
 
         // Verify tenant 1 model still exists by switching back to tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var getResponse = await Client.GetAsync($"/api/v1/AiModels/{tenant1ModelId}");
         TestAssertions.AssertHttpSuccess(getResponse);
     }
@@ -243,7 +244,7 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_WithoutTenantHeader_ShouldHandleGracefully()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         // Remove tenant header
@@ -253,7 +254,7 @@ public class AiModelDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/AiModels/{createdId}");
 
         // Assert - Should handle gracefully (could succeed or fail based on business logic)
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.NoContent || 
+        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.NoContent ||
                                  response.StatusCode == HttpStatusCode.BadRequest);
     }
 
@@ -261,7 +262,7 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_WithInvalidTenantHeader_ShouldReturnNoContent()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         SetInvalidTenantHeader();
@@ -277,7 +278,7 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_ConcurrentDeletions_ShouldHandleCorrectly()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var modelIds = new List<Guid>();
         for (int i = 0; i < 3; i++)
         {
@@ -300,7 +301,7 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_AllAiModelTypes_ShouldDeleteSuccessfully()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var aiModelTypes = new[] { AiModelType.Ollama, AiModelType.VLlm, AiModelType.LmStudio, AiModelType.ChatGpt4O, AiModelType.Claude35 };
         var modelIds = new List<Guid>();
 
@@ -317,7 +318,7 @@ public class AiModelDeleteCommandTests : IDisposable
 
             var createResponse = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
             TestAssertions.AssertHttpStatusCode(createResponse, HttpStatusCode.Created);
-            var result = await ReadResponseAsync<Result<int>>(createResponse);
+            var result = await ReadResponseAsync<Result<Guid>>(createResponse);
             modelIds.Add(result.Data);
         }
 
@@ -333,7 +334,7 @@ public class AiModelDeleteCommandTests : IDisposable
     public async Task DeleteAiModel_CreatedWithDifferentAuth_ShouldDelete()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Create model with API key
         var apiKeyModel = new AiModelInputDto
@@ -345,7 +346,7 @@ public class AiModelDeleteCommandTests : IDisposable
         };
 
         var createResponse1 = await Client.PostAsJsonAsync("/api/v1/AiModels", apiKeyModel);
-        var result1 = await ReadResponseAsync<Result<int>>(createResponse1);
+        var result1 = await ReadResponseAsync<Result<Guid>>(createResponse1);
         var apiKeyModelId = result1.Data;
 
         // Create model with username/password
@@ -359,7 +360,7 @@ public class AiModelDeleteCommandTests : IDisposable
         };
 
         var createResponse2 = await Client.PostAsJsonAsync("/api/v1/AiModels", userPassModel);
-        var result2 = await ReadResponseAsync<Result<int>>(createResponse2);
+        var result2 = await ReadResponseAsync<Result<Guid>>(createResponse2);
         var userPassModelId = result2.Data;
 
         // Act - Delete both models

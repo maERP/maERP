@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -68,7 +69,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels");
@@ -86,7 +87,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels");
@@ -122,7 +123,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels?pageNumber=0&pageSize=1");
@@ -142,7 +143,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels?pageNumber=1&pageSize=1");
@@ -162,7 +163,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels?searchString=ChatGPT");
@@ -181,7 +182,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels?searchString=NonexistentModel");
@@ -199,7 +200,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels?orderBy=Name");
@@ -210,7 +211,7 @@ public class AiModelListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(2, result.Data?.Count ?? 0);
-        
+
         var names = result.Data?.Select(x => x.Name).ToList();
         TestAssertions.AssertEqual("ChatGPT-4O Tenant 1", names?[0]);
         TestAssertions.AssertEqual("Claude 3.5 Tenant 1", names?[1]);
@@ -221,7 +222,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels?orderBy=Name desc");
@@ -232,7 +233,7 @@ public class AiModelListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(2, result.Data?.Count ?? 0);
-        
+
         var names = result.Data?.Select(x => x.Name).ToList();
         TestAssertions.AssertEqual("Claude 3.5 Tenant 1", names?[0]);
         TestAssertions.AssertEqual("ChatGPT-4O Tenant 1", names?[1]);
@@ -243,7 +244,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels?orderBy=AiModelType,Name");
@@ -261,7 +262,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels?pageNumber=10&pageSize=10");
@@ -280,7 +281,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels?pageSize=0");
@@ -297,7 +298,7 @@ public class AiModelListQueryTests : IDisposable
     public async Task GetAiModels_WithNegativePageNumber_ShouldHandleGracefully()
     {
         // Arrange
-        SetTenantHeader(999); // Non-existent tenant to avoid conflicts
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant to avoid conflicts
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels?pageNumber=-1");
@@ -316,7 +317,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange - Use a tenant that doesn't exist in seeded data
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(999); // Non-existent tenant
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels");
@@ -336,7 +337,7 @@ public class AiModelListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels");
@@ -350,7 +351,7 @@ public class AiModelListQueryTests : IDisposable
 
         var firstModel = result.Data?.First();
         TestAssertions.AssertNotNull(firstModel);
-        TestAssertions.AssertTrue(firstModel!.Id > 0);
+        TestAssertions.AssertTrue(firstModel!.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstModel.Name));
         TestAssertions.AssertTrue(firstModel.NCtx > 0);
         TestAssertions.AssertTrue(firstModel.AiModelType >= 0);

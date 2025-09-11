@@ -15,6 +15,12 @@ namespace maERP.Server.Tests.Features.Customer.Queries;
 
 public class CustomerDetailQueryTests : IDisposable
 {
+    // Customer ID constants for tests
+    private static readonly Guid Customer1Id = new("11111111-1111-1111-1111-000000000001");
+    private static readonly Guid Customer2Id = new("11111111-1111-1111-1111-000000000002");
+    private static readonly Guid Customer3Id = new("22222222-2222-2222-2222-000000000003");
+    private static readonly Guid CustomerAddress1Id = new("11111111-1111-1111-1111-0000000000a1");
+    private static readonly Guid CustomerAddress2Id = new("11111111-1111-1111-1111-0000000000a2");
     protected readonly TestWebApplicationFactory<Program> Factory;
     protected readonly HttpClient Client;
     protected readonly ApplicationDbContext DbContext;
@@ -70,7 +76,7 @@ public class CustomerDetailQueryTests : IDisposable
 
                 var customer1Tenant1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     CompanyName = "Test Company 1",
@@ -86,7 +92,7 @@ public class CustomerDetailQueryTests : IDisposable
 
                 var customer2Tenant1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     CompanyName = "Test Company 2",
@@ -102,7 +108,7 @@ public class CustomerDetailQueryTests : IDisposable
 
                 var customer3Tenant2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 3,
+                    Id = Customer3Id,
                     Firstname = "Bob",
                     Lastname = "Wilson",
                     CompanyName = "Tenant 2 Company",
@@ -113,13 +119,13 @@ public class CustomerDetailQueryTests : IDisposable
                     Note = "Test customer for tenant 2",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-15),
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var customerAddress1 = new maERP.Domain.Entities.CustomerAddress
                 {
-                    Id = 1,
-                    CustomerId = 1,
+                    Id = CustomerAddress1Id,
+                    CustomerId = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     CompanyName = "Test Company 1",
@@ -134,8 +140,8 @@ public class CustomerDetailQueryTests : IDisposable
 
                 var customerAddress2 = new maERP.Domain.Entities.CustomerAddress
                 {
-                    Id = 2,
-                    CustomerId = 2,
+                    Id = CustomerAddress2Id,
+                    CustomerId = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     CompanyName = "Test Company 2",
@@ -170,16 +176,16 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithValidIdAndTenant_ShouldReturnCustomerDetail()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/1");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(1, result.Data!.Id);
+        TestAssertions.AssertEqual(Customer1Id, result.Data!.Id);
         TestAssertions.AssertEqual("John", result.Data.Firstname);
         TestAssertions.AssertEqual("Doe", result.Data.Lastname);
         TestAssertions.AssertEqual("Test Company 1", result.Data.CompanyName);
@@ -189,9 +195,9 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/999");
+        var response = await Client.GetAsync("/api/v1/Customers/99999999-9999-9999-9999-999999999999");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -204,9 +210,9 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/1");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -220,7 +226,7 @@ public class CustomerDetailQueryTests : IDisposable
     {
         await SeedCustomerTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Customers/1");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -233,17 +239,17 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithValidId_ShouldIncludeAllCustomerFields()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/1");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var customer = result.Data!;
-        TestAssertions.AssertEqual(1, customer.Id);
+        TestAssertions.AssertEqual(Customer1Id, customer.Id);
         TestAssertions.AssertEqual("John", customer.Firstname);
         TestAssertions.AssertEqual("Doe", customer.Lastname);
         TestAssertions.AssertEqual("Test Company 1", customer.CompanyName);
@@ -260,21 +266,21 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithCustomerAddresses_ShouldIncludeAddressDetails()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/1");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var customer = result.Data!;
         TestAssertions.AssertNotNull(customer.CustomerAddresses);
         TestAssertions.AssertEqual(1, customer.CustomerAddresses.Count);
-        
+
         var address = customer.CustomerAddresses.First();
-        TestAssertions.AssertEqual(1, address.Id);
+        TestAssertions.AssertEqual(CustomerAddress1Id, address.Id);
         TestAssertions.AssertEqual("John", address.Firstname);
         TestAssertions.AssertEqual("Doe", address.Lastname);
         TestAssertions.AssertEqual("123 Main St", address.Street);
@@ -289,16 +295,16 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithTenant2Customer_ShouldReturnCorrectCustomer()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/3");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer3Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(3, result.Data!.Id);
+        TestAssertions.AssertEqual(Customer3Id, result.Data!.Id);
         TestAssertions.AssertEqual("Bob", result.Data.Firstname);
         TestAssertions.AssertEqual("Wilson", result.Data.Lastname);
         TestAssertions.AssertEqual("Tenant 2 Company", result.Data.CompanyName);
@@ -307,7 +313,7 @@ public class CustomerDetailQueryTests : IDisposable
     [Fact]
     public async Task GetCustomerDetail_WithInvalidId_ShouldReturnBadRequest()
     {
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers/invalid");
 
@@ -318,9 +324,9 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithZeroId_ShouldReturnBadRequest()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/0");
+        var response = await Client.GetAsync("/api/v1/Customers/00000000-0000-0000-0000-000000000000");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -333,9 +339,9 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithNegativeId_ShouldReturnBadRequest()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/-1");
+        var response = await Client.GetAsync("/api/v1/Customers/invalid");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -348,17 +354,17 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithInactiveCustomer_ShouldReturnCorrectly()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/2");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer2Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var customer = result.Data!;
-        TestAssertions.AssertEqual(2, customer.Id);
+        TestAssertions.AssertEqual(Customer2Id, customer.Id);
         TestAssertions.AssertEqual("Jane", customer.Firstname);
         TestAssertions.AssertEqual("Smith", customer.Lastname);
         TestAssertions.AssertEqual(CustomerStatus.Inactive, customer.CustomerStatus);
@@ -368,9 +374,9 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(new Guid("99999999-9999-9999-9999-999999999999"));
 
-        var response = await Client.GetAsync("/api/v1/Customers/1");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -383,9 +389,9 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/1");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -399,9 +405,9 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/999");
+        var response = await Client.GetAsync("/api/v1/Customers/99999999-9999-9999-9999-999999999999");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -416,9 +422,9 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithLargeId_ShouldHandleGracefully()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/2147483647");
+        var response = await Client.GetAsync("/api/v1/Customers/99999999-9999-9999-9999-999999999998");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -432,15 +438,15 @@ public class CustomerDetailQueryTests : IDisposable
     {
         await SeedCustomerTestDataAsync();
 
-        SetTenantHeader(1);
-        var response1 = await Client.GetAsync("/api/v1/Customers/3");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response1 = await Client.GetAsync($"/api/v1/Customers/{Customer3Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1.StatusCode);
 
-        SetTenantHeader(2);
-        var response2 = await Client.GetAsync("/api/v1/Customers/1");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response2 = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
 
-        var response3 = await Client.GetAsync("/api/v1/Customers/2");
+        var response3 = await Client.GetAsync($"/api/v1/Customers/{Customer2Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response3.StatusCode);
     }
 
@@ -448,9 +454,9 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithNullCustomerAddresses_ShouldReturnEmptyList()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/3");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer3Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -464,15 +470,15 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_WithCompleteCustomerData_ShouldMapAllFields()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/1");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
         var customer = result.Data!;
 
-        TestAssertions.AssertTrue(customer.Id > 0);
+        TestAssertions.AssertTrue(customer.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(customer.Firstname));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(customer.Lastname));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(customer.CompanyName));
@@ -489,15 +495,15 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_MultipleAddresses_ShouldReturnAllAddresses()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/2");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer2Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var customer = result.Data!;
         TestAssertions.AssertNotNull(customer.CustomerAddresses);
         TestAssertions.AssertEqual(1, customer.CustomerAddresses.Count);
@@ -507,9 +513,9 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_ValidDateEnrollment_ShouldHaveCorrectDateFormat()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Customers/1");
+        var response = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
@@ -523,14 +529,14 @@ public class CustomerDetailQueryTests : IDisposable
     public async Task GetCustomerDetail_CustomerStatus_ShouldReturnCorrectEnum()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response1 = await Client.GetAsync("/api/v1/Customers/1");
+        var response1 = await Client.GetAsync($"/api/v1/Customers/{Customer1Id}");
         TestAssertions.AssertHttpSuccess(response1);
         var result1 = await ReadResponseAsync<Result<CustomerDetailDto>>(response1);
         TestAssertions.AssertEqual(CustomerStatus.Active, result1.Data!.CustomerStatus);
 
-        var response2 = await Client.GetAsync("/api/v1/Customers/2");
+        var response2 = await Client.GetAsync($"/api/v1/Customers/{Customer2Id}");
         TestAssertions.AssertHttpSuccess(response2);
         var result2 = await ReadResponseAsync<Result<CustomerDetailDto>>(response2);
         TestAssertions.AssertEqual(CustomerStatus.Inactive, result2.Data!.CustomerStatus);

@@ -18,6 +18,13 @@ public class ManufacturerDeleteCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Manufacturer1Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer2Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer3Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer4Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer5Id = Guid.NewGuid();
+    private static readonly Guid TaxClass1Id = Guid.NewGuid();
+    private static readonly Guid Product1Id = Guid.NewGuid();
 
     public ManufacturerDeleteCommandTests()
     {
@@ -42,7 +49,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         Task.Delay(10).Wait();
     }
 
@@ -70,7 +77,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
 
                 var manufacturer1 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 1,
+                    Id = Manufacturer1Id,
                     Name = "Deletable Manufacturer 1",
                     Street = "123 Delete St",
                     City = "Delete City",
@@ -80,7 +87,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
 
                 var manufacturer2 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 2,
+                    Id = Manufacturer2Id,
                     Name = "Deletable Manufacturer 2",
                     City = "Another Delete City",
                     Country = "Delete Country",
@@ -89,7 +96,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
 
                 var manufacturer3Tenant2 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 3,
+                    Id = Manufacturer3Id,
                     Name = "Tenant 2 Deletable Manufacturer",
                     City = "T2 Delete City",
                     Country = "T2 Country",
@@ -98,7 +105,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
 
                 var manufacturer4Tenant2 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 4,
+                    Id = Manufacturer4Id,
                     Name = "Another T2 Deletable Manufacturer",
                     City = "Another T2 City",
                     Country = "T2 Country",
@@ -107,7 +114,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
 
                 var manufacturerWithProducts = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 5,
+                    Id = Manufacturer5Id,
                     Name = "Manufacturer With Products",
                     City = "Products City",
                     Country = "Products Country",
@@ -115,29 +122,29 @@ public class ManufacturerDeleteCommandTests : IDisposable
                 };
 
                 DbContext.Manufacturer.AddRange(
-                    manufacturer1, 
-                    manufacturer2, 
-                    manufacturer3Tenant2, 
+                    manufacturer1,
+                    manufacturer2,
+                    manufacturer3Tenant2,
                     manufacturer4Tenant2,
                     manufacturerWithProducts
                 );
 
                 var taxClass = new maERP.Domain.Entities.TaxClass
                 {
-                    Id = 1,
+                    Id = TaxClass1Id,
                     TaxRate = 19.0,
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var product = new maERP.Domain.Entities.Product
                 {
-                    Id = 1,
+                    Id = Product1Id,
                     Sku = "TEST-001",
                     Name = "Test Product",
                     Description = "Product linked to manufacturer",
                     Price = 99.99m,
-                    ManufacturerId = 5,
-                    TaxClassId = 1,
+                    ManufacturerId = Manufacturer5Id,
+                    TaxClassId = TaxClass1Id,
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
@@ -165,7 +172,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
@@ -175,7 +182,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -186,10 +193,10 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/999");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -201,10 +208,10 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -215,14 +222,14 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var manufacturerBefore = await DbContext.Manufacturer.FindAsync(2);
+        var manufacturerBefore = await DbContext.Manufacturer.FindAsync(Manufacturer2Id);
         TestAssertions.AssertNotNull(manufacturerBefore);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/2");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer2Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
-        var manufacturerAfter = await DbContext.Manufacturer.FindAsync(2);
+        var manufacturerAfter = await DbContext.Manufacturer.FindAsync(Manufacturer2Id);
         Assert.Null(manufacturerAfter);
     }
 
@@ -232,10 +239,10 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/5");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer5Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -247,13 +254,13 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
-        var deletedManufacturer = await DbContext.Manufacturer.FindAsync(1);
+        var deletedManufacturer = await DbContext.Manufacturer.FindAsync(Manufacturer1Id);
         Assert.Null(deletedManufacturer);
 
-        var tenant2Manufacturer = await DbContext.Manufacturer.FindAsync(3);
+        var tenant2Manufacturer = await DbContext.Manufacturer.FindAsync(Manufacturer3Id);
         TestAssertions.AssertNotNull(tenant2Manufacturer);
         TestAssertions.AssertEqual("Tenant 2 Deletable Manufacturer", tenant2Manufacturer!.Name);
         TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, tenant2Manufacturer.TenantId);
@@ -265,11 +272,11 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/3");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer3Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
-        var deletedManufacturer = await DbContext.Manufacturer.FindAsync(3);
+        var deletedManufacturer = await DbContext.Manufacturer.FindAsync(Manufacturer3Id);
         Assert.Null(deletedManufacturer);
     }
 
@@ -279,7 +286,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(Guid.NewGuid());
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -290,10 +297,10 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/0");
+        var response = await Client.DeleteAsync("/api/v1/Manufacturers/00000000-0000-0000-0000-000000000000");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -304,10 +311,10 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/-1");
+        var response = await Client.DeleteAsync("/api/v1/Manufacturers/invalid-guid");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -325,8 +332,8 @@ public class ManufacturerDeleteCommandTests : IDisposable
         var response2 = await Client.DeleteAsync("/api/v1/Manufacturers/1");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
 
-        var manufacturer1 = await DbContext.Manufacturer.FindAsync(1);
-        var manufacturer3 = await DbContext.Manufacturer.FindAsync(3);
+        var manufacturer1 = await DbContext.Manufacturer.FindAsync(Manufacturer1Id);
+        var manufacturer3 = await DbContext.Manufacturer.FindAsync(Manufacturer3Id);
         TestAssertions.AssertNotNull(manufacturer1);
         TestAssertions.AssertNotNull(manufacturer3);
     }
@@ -343,8 +350,8 @@ public class ManufacturerDeleteCommandTests : IDisposable
         var response2 = await Client.DeleteAsync("/api/v1/Manufacturers/2");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response2.StatusCode);
 
-        var manufacturer1 = await DbContext.Manufacturer.FindAsync(1);
-        var manufacturer2 = await DbContext.Manufacturer.FindAsync(2);
+        var manufacturer1 = await DbContext.Manufacturer.FindAsync(Manufacturer1Id);
+        var manufacturer2 = await DbContext.Manufacturer.FindAsync(Manufacturer2Id);
         Assert.Null(manufacturer1);
         Assert.Null(manufacturer2);
     }
@@ -371,14 +378,14 @@ public class ManufacturerDeleteCommandTests : IDisposable
         var originalCount = await DbContext.Manufacturer.CountAsync(m => m.TenantId == TenantConstants.TestTenant1Id);
         TestAssertions.AssertEqual(3, originalCount);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
         var remainingCount = await DbContext.Manufacturer.CountAsync(m => m.TenantId == TenantConstants.TestTenant1Id);
         TestAssertions.AssertEqual(2, remainingCount);
 
-        var manufacturer2 = await DbContext.Manufacturer.FindAsync(2);
-        var manufacturer5 = await DbContext.Manufacturer.FindAsync(5);
+        var manufacturer2 = await DbContext.Manufacturer.FindAsync(Manufacturer2Id);
+        var manufacturer5 = await DbContext.Manufacturer.FindAsync(Manufacturer5Id);
         TestAssertions.AssertNotNull(manufacturer2);
         TestAssertions.AssertNotNull(manufacturer5);
     }
@@ -389,10 +396,10 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/999");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotNull(result.Messages);
@@ -405,7 +412,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/invalid");
+        var response = await Client.DeleteAsync("/api/v1/Manufacturers/invalid-guid");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -416,10 +423,10 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/2147483647");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -433,7 +440,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
         var tenant2CountBefore = await DbContext.Manufacturer.CountAsync(m => m.TenantId == TenantConstants.TestTenant2Id);
 
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
         var tenant1CountAfter = await DbContext.Manufacturer.CountAsync(m => m.TenantId == TenantConstants.TestTenant1Id);
@@ -449,13 +456,13 @@ public class ManufacturerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var manufacturerBefore = await DbContext.Manufacturer.FindAsync(5);
+        var manufacturerBefore = await DbContext.Manufacturer.FindAsync(Manufacturer5Id);
         TestAssertions.AssertNotNull(manufacturerBefore);
 
-        var response = await Client.DeleteAsync("/api/v1/Manufacturers/5");
+        var response = await Client.DeleteAsync($"/api/v1/Manufacturers/{Manufacturer5Id}");
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var manufacturerAfter = await DbContext.Manufacturer.FindAsync(5);
+        var manufacturerAfter = await DbContext.Manufacturer.FindAsync(Manufacturer5Id);
         TestAssertions.AssertNotNull(manufacturerAfter);
         TestAssertions.AssertEqual(manufacturerBefore!.Name, manufacturerAfter!.Name);
     }

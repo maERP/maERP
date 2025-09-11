@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -65,7 +66,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses");
@@ -98,7 +99,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses");
@@ -112,7 +113,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses?pageNumber=1&pageSize=5");
@@ -132,7 +133,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses?searchString=Main");
@@ -142,7 +143,7 @@ public class WarehouseListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         // Verify that results contain the search string
         if (result.Data.Any())
         {
@@ -155,7 +156,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses?orderBy=Name");
@@ -165,7 +166,7 @@ public class WarehouseListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         // Verify ordering
         if (result.Data.Count > 1)
         {
@@ -183,12 +184,12 @@ public class WarehouseListQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Act - Get data for tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Warehouses");
         var result1 = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response1);
 
         // Act - Get data for tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Warehouses");
         var result2 = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response2);
 
@@ -197,7 +198,7 @@ public class WarehouseListQueryTests : IDisposable
         TestAssertions.AssertHttpSuccess(response2);
         TestAssertions.AssertNotNull(result1);
         TestAssertions.AssertNotNull(result2);
-        
+
         // Ensure IDs don't overlap between tenants
         var tenant1Ids = result1.Data.Select(w => w.Id).ToList();
         var tenant2Ids = result2.Data.Select(w => w.Id).ToList();
@@ -209,7 +210,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses?pageNumber=1&pageSize=1000");
@@ -227,7 +228,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses?pageNumber=999&pageSize=10");
@@ -245,7 +246,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses?pageNumber=1&pageSize=0");
@@ -263,7 +264,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses?pageNumber=-1&pageSize=10");
@@ -281,7 +282,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses?pageNumber=1&pageSize=5");
@@ -303,7 +304,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var tasks = Enumerable.Range(1, 5)
@@ -345,7 +346,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses?orderBy=Name,Id");
@@ -362,7 +363,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var responseWithoutSearch = await Client.GetAsync("/api/v1/Warehouses");
@@ -371,7 +372,7 @@ public class WarehouseListQueryTests : IDisposable
         // Assert
         var resultWithoutSearch = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(responseWithoutSearch);
         var resultWithEmptySearch = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(responseWithEmptySearch);
-        
+
         TestAssertions.AssertEqual(resultWithoutSearch.TotalCount, resultWithEmptySearch.TotalCount);
     }
 
@@ -382,14 +383,14 @@ public class WarehouseListQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // First request with tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Warehouses");
         var result1 = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response1);
         TestAssertions.AssertHttpSuccess(response1);
         var tenant1Count = result1.TotalCount;
 
         // Switch to tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Warehouses");
         var result2 = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response2);
         TestAssertions.AssertHttpSuccess(response2);
@@ -398,7 +399,7 @@ public class WarehouseListQueryTests : IDisposable
         // Assert - Different tenants should have different data
         TestAssertions.AssertNotNull(result1);
         TestAssertions.AssertNotNull(result2);
-        
+
         // Verify no ID overlap
         if (result1.Data.Any() && result2.Data.Any())
         {
@@ -413,7 +414,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var startTime = DateTime.UtcNow;
 
         // Act
@@ -431,7 +432,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses?searchString=%25%20OR%201%3D1");
@@ -448,7 +449,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses");
@@ -458,11 +459,11 @@ public class WarehouseListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         // Verify all warehouses have valid data
         foreach (var warehouse in result.Data)
         {
-            TestAssertions.AssertTrue(warehouse.Id > 0);
+            TestAssertions.AssertNotEqual(Guid.Empty, warehouse.Id);
             TestAssertions.AssertFalse(string.IsNullOrWhiteSpace(warehouse.Name));
         }
     }
@@ -472,7 +473,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Search with different cases
         var response1 = await Client.GetAsync("/api/v1/Warehouses?searchString=MAIN");
@@ -493,7 +494,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Search for part of warehouse name
         var response = await Client.GetAsync("/api/v1/Warehouses?searchString=Warehouse");
@@ -503,7 +504,7 @@ public class WarehouseListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         // Should find warehouses containing "Warehouse" in the name
         if (result.Data.Any())
         {
@@ -516,7 +517,7 @@ public class WarehouseListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses");
@@ -526,11 +527,11 @@ public class WarehouseListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         // Verify all warehouse IDs are valid
         foreach (var warehouse in result.Data)
         {
-            TestAssertions.AssertTrue(warehouse.Id > 0);
+            TestAssertions.AssertNotEqual(Guid.Empty, warehouse.Id);
         }
     }
 }

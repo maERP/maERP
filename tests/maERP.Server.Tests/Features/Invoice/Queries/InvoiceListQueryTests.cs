@@ -19,6 +19,11 @@ public class InvoiceListQueryTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Customer1Id = Guid.NewGuid();
+    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly Guid Invoice1Id = Guid.NewGuid();
+    private static readonly Guid Invoice2Id = Guid.NewGuid();
+    private static readonly Guid Invoice3Id = Guid.NewGuid();
 
     public InvoiceListQueryTests()
     {
@@ -69,7 +74,7 @@ public class InvoiceListQueryTests : IDisposable
 
                 var customer1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -78,21 +83,21 @@ public class InvoiceListQueryTests : IDisposable
 
                 var customer2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Customer.AddRange(customer1, customer2);
 
                 var invoice1Tenant1 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 1,
+                    Id = Invoice1Id,
                     InvoiceNumber = "INV-001",
                     InvoiceDate = DateTime.Now.AddDays(-10),
-                    CustomerId = 1,
+                    CustomerId = Customer1Id,
                     Subtotal = 100.00m,
                     TotalTax = 19.00m,
                     Total = 119.00m,
@@ -103,10 +108,10 @@ public class InvoiceListQueryTests : IDisposable
 
                 var invoice2Tenant1 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 2,
+                    Id = Invoice2Id,
                     InvoiceNumber = "INV-002",
                     InvoiceDate = DateTime.Now.AddDays(-5),
-                    CustomerId = 1,
+                    CustomerId = Customer1Id,
                     Subtotal = 200.00m,
                     TotalTax = 38.00m,
                     Total = 238.00m,
@@ -117,16 +122,16 @@ public class InvoiceListQueryTests : IDisposable
 
                 var invoice3Tenant2 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 3,
+                    Id = Invoice3Id,
                     InvoiceNumber = "INV-T2-001",
                     InvoiceDate = DateTime.Now.AddDays(-3),
-                    CustomerId = 2,
+                    CustomerId = Customer2Id,
                     Subtotal = 150.00m,
                     TotalTax = 28.50m,
                     Total = 178.50m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.Invoiced,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Sent,
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Invoice.AddRange(invoice1Tenant1, invoice2Tenant1, invoice3Tenant2);
@@ -150,7 +155,7 @@ public class InvoiceListQueryTests : IDisposable
     public async Task GetInvoiceList_WithValidTenant_ShouldReturnInvoiceList()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices");
 
@@ -182,7 +187,7 @@ public class InvoiceListQueryTests : IDisposable
     public async Task GetInvoiceList_WithWrongTenant_ShouldReturnEmptyList()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync("/api/v1/Invoices");
 
@@ -199,7 +204,7 @@ public class InvoiceListQueryTests : IDisposable
     {
         await SeedInvoiceTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Invoices");
         var result1 = await ReadResponseAsync<PaginatedResult<InvoiceListDto>>(response1);
         TestAssertions.AssertNotNull(result1);
@@ -207,7 +212,7 @@ public class InvoiceListQueryTests : IDisposable
         TestAssertions.AssertEqual(2, result1.Data.Count);
         TestAssertions.AssertTrue(result1.Data.All(i => i.InvoiceNumber.StartsWith("INV-")));
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Invoices");
         var result2 = await ReadResponseAsync<PaginatedResult<InvoiceListDto>>(response2);
         TestAssertions.AssertNotNull(result2);
@@ -220,7 +225,7 @@ public class InvoiceListQueryTests : IDisposable
     public async Task GetInvoiceList_WithPagination_ShouldReturnCorrectPage()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices?pageNumber=1&pageSize=1");
 
@@ -239,7 +244,7 @@ public class InvoiceListQueryTests : IDisposable
     public async Task GetInvoiceList_WithSearchString_ShouldFilterResults()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices?searchString=INV-002");
 
@@ -255,7 +260,7 @@ public class InvoiceListQueryTests : IDisposable
     public async Task GetInvoiceList_WithSorting_ShouldReturnSortedResults()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices?orderBy=InvoiceNumber desc");
 
@@ -272,7 +277,7 @@ public class InvoiceListQueryTests : IDisposable
     public async Task GetInvoiceList_WithInvalidPageNumber_ShouldReturnBadRequest()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices?pageNumber=0");
 
@@ -283,7 +288,7 @@ public class InvoiceListQueryTests : IDisposable
     public async Task GetInvoiceList_WithInvalidPageSize_ShouldReturnBadRequest()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices?pageSize=0");
 
@@ -294,7 +299,7 @@ public class InvoiceListQueryTests : IDisposable
     public async Task GetInvoiceList_WithLargePageSize_ShouldHandleGracefully()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices?pageSize=1000");
 
@@ -309,7 +314,7 @@ public class InvoiceListQueryTests : IDisposable
     public async Task GetInvoiceList_ShouldIncludeAllRequiredFields()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices");
 
@@ -317,12 +322,12 @@ public class InvoiceListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<InvoiceListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var invoice = result.Data.First();
-        TestAssertions.AssertTrue(invoice.Id > 0);
+        TestAssertions.AssertTrue(invoice.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(invoice.InvoiceNumber));
         TestAssertions.AssertTrue(invoice.InvoiceDate != default);
-        TestAssertions.AssertTrue(invoice.CustomerId > 0);
+        TestAssertions.AssertTrue(invoice.CustomerId != Guid.Empty);
         TestAssertions.AssertTrue(invoice.Total > 0);
         TestAssertions.AssertNotNull(invoice.PaymentStatus);
         TestAssertions.AssertNotNull(invoice.InvoiceStatus);
@@ -337,12 +342,12 @@ public class InvoiceListQueryTests : IDisposable
         var tenant1Invoices = new List<InvoiceListDto>();
         var tenant2Invoices = new List<InvoiceListDto>();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Invoices");
         var result1 = await ReadResponseAsync<PaginatedResult<InvoiceListDto>>(response1);
         if (result1.Succeeded) tenant1Invoices.AddRange(result1.Data);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Invoices");
         var result2 = await ReadResponseAsync<PaginatedResult<InvoiceListDto>>(response2);
         if (result2.Succeeded) tenant2Invoices.AddRange(result2.Data);
@@ -357,7 +362,7 @@ public class InvoiceListQueryTests : IDisposable
     public async Task GetInvoiceList_ResponseStructure_ShouldHaveCorrectPaginationMetadata()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices?pageNumber=1&pageSize=1");
 

@@ -19,6 +19,11 @@ public class ManufacturerListQueryTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Manufacturer1Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer2Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer3Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer4Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer5Id = Guid.NewGuid();
 
     public ManufacturerListQueryTests()
     {
@@ -69,7 +74,7 @@ public class ManufacturerListQueryTests : IDisposable
 
                 var manufacturer1Tenant1 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 1,
+                    Id = Manufacturer1Id,
                     Name = "Alpha Manufacturing",
                     Street = "123 Industrial Blvd",
                     City = "New York",
@@ -85,7 +90,7 @@ public class ManufacturerListQueryTests : IDisposable
 
                 var manufacturer2Tenant1 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 2,
+                    Id = Manufacturer2Id,
                     Name = "Beta Industries",
                     Street = "456 Commerce St",
                     City = "Los Angeles",
@@ -100,7 +105,7 @@ public class ManufacturerListQueryTests : IDisposable
 
                 var manufacturer3Tenant1 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 3,
+                    Id = Manufacturer3Id,
                     Name = "Gamma Corp",
                     City = "Chicago",
                     Country = "USA",
@@ -109,27 +114,27 @@ public class ManufacturerListQueryTests : IDisposable
 
                 var manufacturer4Tenant2 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 4,
+                    Id = Manufacturer4Id,
                     Name = "Delta Systems",
                     City = "Berlin",
                     Country = "Germany",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var manufacturer5Tenant2 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 5,
+                    Id = Manufacturer5Id,
                     Name = "Echo Solutions",
                     City = "Munich",
                     Country = "Germany",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Manufacturer.AddRange(
-                    manufacturer1Tenant1, 
-                    manufacturer2Tenant1, 
-                    manufacturer3Tenant1, 
-                    manufacturer4Tenant2, 
+                    manufacturer1Tenant1,
+                    manufacturer2Tenant1,
+                    manufacturer3Tenant1,
+                    manufacturer4Tenant2,
                     manufacturer5Tenant2
                 );
                 await DbContext.SaveChangesAsync();
@@ -152,7 +157,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithValidTenant_ShouldReturnTenantData()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers");
 
@@ -167,7 +172,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithDifferentTenant_ShouldReturnOnlyThatTenantData()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers");
 
@@ -198,7 +203,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithPagination_ShouldRespectPageSize()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?pageNumber=0&pageSize=2");
 
@@ -215,7 +220,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithPaginationSecondPage_ShouldReturnSecondPageData()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?pageNumber=1&pageSize=2");
 
@@ -232,7 +237,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithSearchString_ShouldFilterResults()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?searchString=Alpha");
 
@@ -248,7 +253,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithSearchStringNoMatch_ShouldReturnEmpty()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?searchString=NonexistentManufacturer");
 
@@ -263,7 +268,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithOrderByName_ShouldReturnOrderedResults()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?orderBy=Name");
 
@@ -272,7 +277,7 @@ public class ManufacturerListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(3, result.Data?.Count ?? 0);
-        
+
         var names = result.Data?.Select(x => x.Name).ToList();
         TestAssertions.AssertEqual("Alpha Manufacturing", names?[0]);
         TestAssertions.AssertEqual("Beta Industries", names?[1]);
@@ -283,7 +288,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithOrderByNameDescending_ShouldReturnDescOrderedResults()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?orderBy=Name desc");
 
@@ -292,7 +297,7 @@ public class ManufacturerListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(3, result.Data?.Count ?? 0);
-        
+
         var names = result.Data?.Select(x => x.Name).ToList();
         TestAssertions.AssertEqual("Gamma Corp", names?[0]);
         TestAssertions.AssertEqual("Beta Industries", names?[1]);
@@ -303,7 +308,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithOrderByCity_ShouldReturnCityOrderedResults()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?orderBy=City");
 
@@ -318,7 +323,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithMultipleOrderBy_ShouldRespectMultipleSorting()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?orderBy=Country,Name");
 
@@ -333,7 +338,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithInvalidPageNumber_ShouldReturnEmptyResults()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?pageNumber=10&pageSize=10");
 
@@ -349,7 +354,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithZeroPageSize_ShouldUseDefaultPageSize()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?pageSize=0");
 
@@ -363,7 +368,7 @@ public class ManufacturerListQueryTests : IDisposable
     [Fact]
     public async Task GetManufacturers_WithNegativePageNumber_ShouldHandleGracefully()
     {
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?pageNumber=-1");
 
@@ -378,7 +383,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithNonExistentTenant_ShouldReturnEmptyPaginatedResult()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
 
         var response = await Client.GetAsync("/api/v1/Manufacturers");
 
@@ -395,7 +400,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_ResponseStructure_ShouldContainRequiredFields()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers");
 
@@ -407,7 +412,7 @@ public class ManufacturerListQueryTests : IDisposable
 
         var firstManufacturer = result.Data?.First();
         TestAssertions.AssertNotNull(firstManufacturer);
-        TestAssertions.AssertTrue(firstManufacturer!.Id > 0);
+        TestAssertions.AssertTrue(firstManufacturer!.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstManufacturer.Name));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstManufacturer.City));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstManufacturer.Country));
@@ -417,7 +422,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithSearchByCity_ShouldFilterResults()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?searchString=New York");
 
@@ -433,7 +438,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithSearchByCountry_ShouldFilterResults()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?searchString=USA");
 
@@ -448,7 +453,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithCaseInsensitiveSearch_ShouldReturnResults()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?searchString=alpha");
 
@@ -464,7 +469,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithPartialNameSearch_ShouldReturnMatchingResults()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?searchString=Beta");
 
@@ -480,7 +485,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithEmptySearchString_ShouldReturnAllResults()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?searchString=");
 
@@ -496,14 +501,14 @@ public class ManufacturerListQueryTests : IDisposable
     {
         await SeedManufacturerTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Manufacturers");
         var result1 = await ReadResponseAsync<PaginatedResult<ManufacturerListDto>>(response1);
         TestAssertions.AssertEqual(3, result1.Data?.Count ?? 0);
         TestAssertions.AssertFalse(result1.Data?.Any(m => m.Name == "Delta Systems") ?? true);
         TestAssertions.AssertFalse(result1.Data?.Any(m => m.Name == "Echo Solutions") ?? true);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Manufacturers");
         var result2 = await ReadResponseAsync<PaginatedResult<ManufacturerListDto>>(response2);
         TestAssertions.AssertEqual(2, result2.Data?.Count ?? 0);
@@ -516,7 +521,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithComplexSearch_ShouldFilterCorrectly()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?searchString=Industries");
 

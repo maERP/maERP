@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
@@ -73,7 +74,7 @@ public class AiModelUpdateCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    protected async Task<int> CreateTestAiModel(string name = "Test Model", AiModelType aiModelType = AiModelType.ChatGpt4O)
+    protected async Task<Guid> CreateTestAiModel(string name = "Test Model", AiModelType aiModelType = AiModelType.ChatGpt4O)
     {
         var createCommand = new AiModelInputDto
         {
@@ -85,7 +86,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         return result.Data;
     }
 
@@ -100,7 +101,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithValidData_ShouldReturnOk()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         var updateCommand = new AiModelInputDto
@@ -116,7 +117,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(createdId, result.Data);
@@ -126,7 +127,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithUsernamePassword_ShouldReturnOk()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         var updateCommand = new AiModelInputDto
@@ -143,7 +144,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(createdId, result.Data);
@@ -153,7 +154,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithNonExistentId_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = new AiModelInputDto
         {
             Name = "Non-existent Model",
@@ -167,7 +168,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("not found") || m.Contains("AiModel")));
@@ -177,7 +178,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithEmptyName_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         var updateCommand = new AiModelInputDto
@@ -193,7 +194,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("Name")));
@@ -203,7 +204,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithTooLongName_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         var updateCommand = new AiModelInputDto
@@ -219,7 +220,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("50 characters")));
@@ -229,7 +230,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithInvalidAiModelType_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         var updateCommand = new AiModelInputDto
@@ -245,7 +246,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("Ai Model Type")));
@@ -255,7 +256,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithoutAuthentication_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         var updateCommand = new AiModelInputDto
@@ -271,7 +272,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("ApiKey") || m.Contains("ApiUsername")));
@@ -281,7 +282,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithTooShortApiKey_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         var updateCommand = new AiModelInputDto
@@ -297,7 +298,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("Api Key") && m.Contains("10 characters")));
@@ -307,7 +308,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithIncompleteUsernamePassword_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         var updateCommand = new AiModelInputDto
@@ -323,7 +324,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("ApiPassword")));
@@ -333,7 +334,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithDuplicateName_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var firstId = await CreateTestAiModel("First Model");
         var secondId = await CreateTestAiModel("Second Model");
 
@@ -350,7 +351,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("already exists")));
@@ -360,7 +361,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithSameName_ShouldReturnOk()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel("Same Name Model");
 
         var updateCommand = new AiModelInputDto
@@ -376,7 +377,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert - Should succeed because it's updating the same model
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
     }
@@ -385,7 +386,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithAllAiModelTypes_ShouldReturnOk()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
         var aiModelTypes = new[] { AiModelType.Ollama, AiModelType.VLlm, AiModelType.LmStudio, AiModelType.ChatGpt4O, AiModelType.Claude35 };
 
@@ -404,7 +405,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
             // Assert
             TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
-            var result = await ReadResponseAsync<Result<int>>(response);
+            var result = await ReadResponseAsync<Result<Guid>>(response);
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertTrue(result.Succeeded);
             TestAssertions.AssertEqual(createdId, result.Data);
@@ -415,7 +416,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithZeroId_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = new AiModelInputDto
         {
             Name = "Updated Model",
@@ -429,7 +430,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -438,7 +439,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithNegativeId_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = new AiModelInputDto
         {
             Name = "Updated Model",
@@ -452,7 +453,7 @@ public class AiModelUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -461,7 +462,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithStringId_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = new AiModelInputDto
         {
             Name = "Updated Model",
@@ -481,7 +482,7 @@ public class AiModelUpdateCommandTests : IDisposable
     public async Task UpdateAiModel_WithoutTenantHeader_ShouldHandleGracefully()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         // Remove tenant header

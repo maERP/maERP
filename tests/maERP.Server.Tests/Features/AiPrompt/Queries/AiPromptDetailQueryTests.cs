@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -48,7 +49,7 @@ public class AiPromptDetailQueryTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
@@ -73,10 +74,10 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -84,7 +85,7 @@ public class AiPromptDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(1, result.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(Guid.Parse("30000001-0001-0001-0001-000000000001"), result.Data?.Id ?? Guid.Empty);
         TestAssertions.AssertTrue(!string.IsNullOrEmpty(result.Data?.Identifier));
         TestAssertions.AssertTrue(!string.IsNullOrEmpty(result.Data?.PromptText));
     }
@@ -94,10 +95,10 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(2); // Try to access tenant 1's prompt with tenant 2 header
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Try to access tenant 1's prompt with tenant 2 header
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -108,10 +109,10 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/999");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/99999999-9999-9999-9999-999999999999");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -124,7 +125,7 @@ public class AiPromptDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -138,7 +139,7 @@ public class AiPromptDetailQueryTests : IDisposable
         SetInvalidTenantHeader();
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -149,10 +150,10 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/0");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/00000000-0000-0000-0000-000000000000");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -163,7 +164,7 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts/-1");
@@ -177,10 +178,10 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -190,8 +191,8 @@ public class AiPromptDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result.Data);
 
         var prompt = result.Data;
-        TestAssertions.AssertTrue(prompt!.Id > 0);
-        TestAssertions.AssertTrue(prompt.AiModelId > 0);
+        TestAssertions.AssertTrue(prompt!.Id != Guid.Empty);
+        TestAssertions.AssertTrue(prompt.AiModelId != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(prompt.Identifier));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(prompt.PromptText));
     }
@@ -201,10 +202,10 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         // Act - Assuming test data contains a prompt with ID 3 for tenant 2
-        var response = await Client.GetAsync("/api/v1/AiPrompts/3");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000003-0003-0003-0003-000000000003");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -212,7 +213,7 @@ public class AiPromptDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(3, result.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(Guid.Parse("30000003-0003-0003-0003-000000000003"), result.Data?.Id ?? Guid.Empty);
         TestAssertions.AssertTrue(result.Data?.Identifier.Contains("Tenant 2") ?? false);
     }
 
@@ -221,7 +222,7 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts/abc");
@@ -238,7 +239,7 @@ public class AiPromptDetailQueryTests : IDisposable
         SetInvalidTenantHeader();
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -249,10 +250,10 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var tasks = Enumerable.Range(1, 5).Select(_ => Client.GetAsync("/api/v1/AiPrompts/1")).ToArray();
+        var tasks = Enumerable.Range(1, 5).Select(_ => Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001")).ToArray();
         var responses = await Task.WhenAll(tasks);
 
         // Assert
@@ -263,7 +264,7 @@ public class AiPromptDetailQueryTests : IDisposable
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertTrue(result.Succeeded);
             TestAssertions.AssertNotNull(result.Data);
-            TestAssertions.AssertEqual(1, result.Data?.Id ?? 0);
+            TestAssertions.AssertEqual(Guid.Parse("30000001-0001-0001-0001-000000000001"), result.Data?.Id ?? Guid.Empty);
         }
     }
 
@@ -274,15 +275,15 @@ public class AiPromptDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Test tenant 1 can access prompt 1
-        SetTenantHeader(1);
-        var response1 = await Client.GetAsync("/api/v1/AiPrompts/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response1 = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
         TestAssertions.AssertHttpSuccess(response1);
         var result1 = await ReadResponseAsync<Result<AiPromptDetailDto>>(response1);
         TestAssertions.AssertTrue(result1.Data?.Identifier.Contains("Tenant 1") ?? false);
 
         // Test tenant 2 can access prompt 3
-        SetTenantHeader(2);
-        var response3 = await Client.GetAsync("/api/v1/AiPrompts/3");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response3 = await Client.GetAsync("/api/v1/AiPrompts/30000003-0003-0003-0003-000000000003");
         TestAssertions.AssertHttpSuccess(response3);
         var result3 = await ReadResponseAsync<Result<AiPromptDetailDto>>(response3);
         TestAssertions.AssertTrue(result3.Data?.Identifier.Contains("Tenant 2") ?? false);
@@ -299,7 +300,7 @@ public class AiPromptDetailQueryTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -316,7 +317,7 @@ public class AiPromptDetailQueryTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", unparseableTenantId);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
@@ -329,13 +330,13 @@ public class AiPromptDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Try to access tenant 1's prompt with tenant 2 header
-        SetTenantHeader(2);
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
 
         // Try to access tenant 2's prompt with tenant 1 header
-        SetTenantHeader(1);
-        var response2 = await Client.GetAsync("/api/v1/AiPrompts/3");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response2 = await Client.GetAsync("/api/v1/AiPrompts/30000003-0003-0003-0003-000000000003");
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
     }
 
@@ -344,10 +345,10 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/2"); // Second prompt for tenant 1
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000002-0002-0002-0002-000000000002"); // Second prompt for tenant 1
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -355,7 +356,7 @@ public class AiPromptDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(2, result.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(Guid.Parse("30000002-0002-0002-0002-000000000002"), result.Data?.Id ?? Guid.Empty);
         TestAssertions.AssertTrue(result.Data?.Identifier.Contains("Tenant 1") ?? false);
     }
 
@@ -364,10 +365,10 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -382,10 +383,10 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/999");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/99999999-9999-9999-9999-999999999999");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -396,11 +397,11 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var startTime = DateTime.UtcNow;
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiPrompts/1");
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
         var endTime = DateTime.UtcNow;
 
         // Assert
@@ -414,19 +415,25 @@ public class AiPromptDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act & Assert for multiple valid IDs
-        foreach (var id in new[] { 1, 2 })
+        var testIds = new[]
         {
-            var response = await Client.GetAsync($"/api/v1/AiPrompts/{id}");
+            ("30000001-0001-0001-0001-000000000001", Guid.Parse("30000001-0001-0001-0001-000000000001")),
+            ("30000002-0002-0002-0002-000000000002", Guid.Parse("30000002-0002-0002-0002-000000000002"))
+        };
+
+        foreach (var (urlId, expectedId) in testIds)
+        {
+            var response = await Client.GetAsync($"/api/v1/AiPrompts/{urlId}");
             TestAssertions.AssertHttpSuccess(response);
-            
+
             var result = await ReadResponseAsync<Result<AiPromptDetailDto>>(response);
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertTrue(result.Succeeded);
             TestAssertions.AssertNotNull(result.Data);
-            TestAssertions.AssertEqual(id, result.Data?.Id ?? 0);
+            TestAssertions.AssertEqual(expectedId, result.Data?.Id ?? Guid.Empty);
         }
     }
 }

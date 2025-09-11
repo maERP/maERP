@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -46,7 +47,7 @@ public class AiPromptCreateCommandTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
@@ -79,7 +80,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         return new AiPromptInputDto
         {
-            AiModelId = 1, // From test data seeder
+            AiModelId = Guid.Parse("00000001-0001-0001-0004-000000000001"), // From test data seeder
             Identifier = "Test Prompt Create",
             PromptText = "This is a test prompt for creation"
         };
@@ -97,7 +98,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
 
         // Act
@@ -116,7 +117,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
 
         // Act
@@ -144,7 +145,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = new AiPromptInputDto
         {
             // Missing required fields
@@ -166,7 +167,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
         promptDto.Identifier = string.Empty;
 
@@ -186,7 +187,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
         promptDto.PromptText = string.Empty; // PromptText is required and must not be empty
 
@@ -206,9 +207,9 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
-        promptDto.AiModelId = 999; // Non-existent AI model - but validation might not check this
+        promptDto.AiModelId = Guid.Parse("99999999-9999-9999-9999-999999999999"); // Non-existent AI model - but validation might not check this
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/AiPrompts", promptDto);
@@ -225,7 +226,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
 
         // Create first prompt
@@ -252,7 +253,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
 
         // Act
@@ -268,7 +269,7 @@ public class AiPromptCreateCommandTests : IDisposable
         TestAssertions.AssertHttpSuccess(getResponse);
 
         // Switch to tenant 2 and verify prompt is not accessible
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var getResponseTenant2 = await Client.GetAsync($"/api/v1/AiPrompts/{result.Data}");
         TestAssertions.AssertHttpStatusCode(getResponseTenant2, HttpStatusCode.NotFound);
     }
@@ -307,9 +308,9 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var promptDto = CreateValidAiPromptDto();
-        promptDto.AiModelId = 1; // AI Model belongs to tenant 1, but creating in tenant 2 - validation may not check this
+        promptDto.AiModelId = Guid.Parse("00000001-0001-0001-0001-000000000001"); // AI Model belongs to tenant 1, but creating in tenant 2 - validation may not check this
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/AiPrompts", promptDto);
@@ -326,7 +327,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
         promptDto.Identifier = new string('A', 50); // Maximum allowed length
 
@@ -345,7 +346,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
         promptDto.Identifier = new string('A', 51); // Exceeds maximum length of 50
 
@@ -365,7 +366,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
         promptDto.PromptText = new string('B', 1000); // Long prompt text
 
@@ -384,7 +385,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
 
         // Act
@@ -405,7 +406,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var invalidJson = "{ invalid json }";
         var content = new StringContent(invalidJson, System.Text.Encoding.UTF8, "application/json");
@@ -422,7 +423,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
         promptDto.Identifier = null!;
 
@@ -445,7 +446,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
         promptDto.PromptText = null!; // Null values cause model binding issues
 
@@ -461,9 +462,9 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
-        promptDto.AiModelId = 0; // Only Identifier is validated, not AiModelId
+        promptDto.AiModelId = Guid.Empty; // Only Identifier is validated, not AiModelId
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/AiPrompts", promptDto);
@@ -480,9 +481,9 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var promptDto = CreateValidAiPromptDto();
-        promptDto.AiModelId = -1; // Only Identifier is validated, not AiModelId
+        promptDto.AiModelId = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"); // Invalid Guid - Only Identifier is validated, not AiModelId
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/AiPrompts", promptDto);
@@ -499,7 +500,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act & Assert
         for (int i = 1; i <= 3; i++)
@@ -523,7 +524,7 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var tasks = new List<Task<HttpResponseMessage>>();
         for (int i = 1; i <= 5; i++)

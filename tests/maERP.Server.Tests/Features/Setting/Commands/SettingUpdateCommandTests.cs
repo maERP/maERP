@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Setting.Commands;
 
@@ -42,7 +43,7 @@ public class SettingUpdateCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         // Force a small delay to ensure header is set properly
         Task.Delay(10).Wait();
     }
@@ -86,7 +87,7 @@ public class SettingUpdateCommandTests : IDisposable
         }
     }
 
-    private async Task<int> CreateTestSettingAsync(int tenantId, string key = "test.update.key", string value = "original_value")
+    private async Task<Guid> CreateTestSettingAsync(Guid tenantId, string key = "test.update.key", string value = "original_value")
     {
         SetTenantHeader(tenantId);
         var settingDto = new SettingInputDto
@@ -96,11 +97,11 @@ public class SettingUpdateCommandTests : IDisposable
         };
 
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         return result.Data;
     }
 
-    private static SettingInputDto CreateUpdateDto(int id, string key = "test.update.key", string value = "updated_value")
+    private static SettingInputDto CreateUpdateDto(Guid id, string key = "test.update.key", string value = "updated_value")
     {
         return new SettingInputDto
         {
@@ -121,15 +122,15 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithValidData_ShouldReturnOk()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        SetTenantHeader(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var updateDto = CreateUpdateDto(settingId, "test.update.key", "new_updated_value");
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(settingId, result.Data);
@@ -139,15 +140,15 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithValidData_ShouldPersistChanges()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1, "test.persist.update", "original_persist_value");
-        SetTenantHeader(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "test.persist.update", "original_persist_value");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var updateDto = CreateUpdateDto(settingId, "test.persist.update", "updated_persist_value");
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Verify the changes persisted
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{settingId}");
         TestAssertions.AssertHttpSuccess(getResponse);
@@ -159,14 +160,15 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        
-        var updateDto = CreateUpdateDto(999999, "nonexistent.key", "value");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await PutAsJsonAsync("/api/v1/Settings/999999", updateDto);
+        var nonExistentId = Guid.NewGuid();
+        var updateDto = CreateUpdateDto(nonExistentId, "nonexistent.key", "value");
+
+        var response = await PutAsJsonAsync($"/api/v1/Settings/{nonExistentId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertFalse(result.Succeeded);
     }
 
@@ -174,15 +176,16 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithMismatchedId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        SetTenantHeader(1);
-        
-        var updateDto = CreateUpdateDto(settingId + 1, "test.mismatched.key", "value"); // Wrong ID in DTO
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var wrongId = Guid.NewGuid();
+        var updateDto = CreateUpdateDto(wrongId, "test.mismatched.key", "value"); // Wrong ID in DTO
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertFalse(result.Succeeded);
     }
 
@@ -190,9 +193,9 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithMissingKey_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        SetTenantHeader(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var updateDto = new SettingInputDto
         {
             Id = settingId,
@@ -203,7 +206,7 @@ public class SettingUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
@@ -212,9 +215,9 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithEmptyValue_ShouldSucceed()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        SetTenantHeader(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var updateDto = new SettingInputDto
         {
             Id = settingId,
@@ -225,7 +228,7 @@ public class SettingUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(settingId, result.Data);
     }
@@ -234,16 +237,16 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+
         // Try to update from tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var updateDto = CreateUpdateDto(settingId, "test.wrong.tenant", "value");
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertFalse(result.Succeeded);
     }
 
@@ -251,17 +254,17 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_TenantIsolation_ShouldMaintainSeparation()
     {
         await SeedTestDataAsync();
-        var tenant1SettingId = await CreateTestSettingAsync(1, "isolation.test", "tenant1_value");
-        var tenant2SettingId = await CreateTestSettingAsync(2, "isolation.test", "tenant2_value");
-        
+        var tenant1SettingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "isolation.test", "tenant1_value");
+        var tenant2SettingId = await CreateTestSettingAsync(TenantConstants.TestTenant2Id, "isolation.test", "tenant2_value");
+
         // Update tenant 1 setting
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto1 = CreateUpdateDto(tenant1SettingId, "isolation.test", "updated_tenant1_value");
         var response1 = await PutAsJsonAsync($"/api/v1/Settings/{tenant1SettingId}", updateDto1);
         TestAssertions.AssertEqual(HttpStatusCode.OK, response1.StatusCode);
-        
+
         // Verify tenant 2 setting is unchanged
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var getResponse2 = await Client.GetAsync($"/api/v1/Settings/{tenant2SettingId}");
         TestAssertions.AssertHttpSuccess(getResponse2);
         var setting2Detail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse2);
@@ -272,17 +275,17 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithSpecialCharacters_ShouldAcceptValidCharacters()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        SetTenantHeader(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var updateDto = CreateUpdateDto(settingId, "test.special-chars_key.123", "special value: @#$% & more!");
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         // Verify special characters are preserved
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{settingId}");
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
@@ -293,16 +296,16 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithLongValue_ShouldHandleLargeData()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        SetTenantHeader(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var longValue = new string('y', 2000); // 2000 character string
         var updateDto = CreateUpdateDto(settingId, "test.long.update", longValue);
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Verify the long value is preserved
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{settingId}");
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
@@ -313,15 +316,15 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_ChangeKeyValue_ShouldUpdateBothFields()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1, "original.key", "original.value");
-        SetTenantHeader(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "original.key", "original.value");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var updateDto = CreateUpdateDto(settingId, "updated.key", "updated.value");
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Verify both key and value changed
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{settingId}");
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
@@ -333,20 +336,20 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithDuplicateKey_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        
+
         // Create two settings
-        var settingId1 = await CreateTestSettingAsync(1, "first.key", "first.value");
-        var settingId2 = await CreateTestSettingAsync(1, "second.key", "second.value");
-        
-        SetTenantHeader(1);
-        
+        var settingId1 = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "first.key", "first.value");
+        var settingId2 = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "second.key", "second.value");
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Try to update second setting with first setting's key
         var updateDto = CreateUpdateDto(settingId2, "first.key", "conflicting.value");
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId2}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
@@ -355,16 +358,16 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithJsonValue_ShouldStoreJsonAsString()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        SetTenantHeader(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var jsonValue = "{\"updated\":true,\"version\":2,\"items\":[\"a\",\"b\",\"c\"]}";
         var updateDto = CreateUpdateDto(settingId, "test.json.update", jsonValue);
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Verify the JSON is preserved as string
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{settingId}");
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
@@ -375,17 +378,17 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithoutTenantHeader_ShouldReturnNotFoundForTenantSpecificSetting()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+
         // Remove tenant header
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        
+
         var updateDto = CreateUpdateDto(settingId, "test.no.tenant", "value");
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertFalse(result.Succeeded);
     }
 
@@ -393,15 +396,15 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_ResponseStructure_ShouldHaveCorrectFormat()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        SetTenantHeader(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var updateDto = CreateUpdateDto(settingId, "test.response.structure", "response_value");
 
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Messages);
@@ -413,8 +416,8 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_ConcurrentUpdates_ShouldHandleRaceConditions()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        SetTenantHeader(1);
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Create multiple tasks that try to update the same setting simultaneously
         var tasks = new List<Task<HttpResponseMessage>>();
@@ -425,7 +428,7 @@ public class SettingUpdateCommandTests : IDisposable
         }
 
         var responses = await Task.WhenAll(tasks);
-        
+
         // At least one should succeed (optimistic concurrency)
         var successfulResponses = responses.Where(r => r.StatusCode == HttpStatusCode.OK).ToList();
         TestAssertions.AssertTrue(successfulResponses.Count >= 1);
@@ -435,21 +438,21 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_PreservesDateModified_ShouldUpdateTimestamp()
     {
         await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(1);
-        SetTenantHeader(1);
-        
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Get original timestamp by checking database directly
         var originalSetting = await DbContext.Setting.FindAsync(settingId);
         var originalModified = originalSetting?.DateModified;
-        
+
         // Wait a small amount to ensure timestamp difference
         await Task.Delay(100);
-        
+
         var updateDto = CreateUpdateDto(settingId, "timestamp.test", "updated_value");
         var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
-        
+
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Verify timestamp was updated
         var updatedSetting = await DbContext.Setting.FindAsync(settingId);
         TestAssertions.AssertTrue(updatedSetting?.DateModified > originalModified);
@@ -459,9 +462,9 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_WithInvalidId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        
-        var updateDto = CreateUpdateDto(0, "invalid.id.test", "value"); // Invalid ID
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var updateDto = CreateUpdateDto(Guid.Empty, "invalid.id.test", "value"); // Invalid ID
 
         var response = await PutAsJsonAsync("/api/v1/Settings/invalid", updateDto);
 
@@ -472,22 +475,22 @@ public class SettingUpdateCommandTests : IDisposable
     public async Task UpdateSetting_CrossTenantKeyConflict_ShouldAllowSameKeysAcrossTenants()
     {
         await SeedTestDataAsync();
-        
+
         // Create setting for tenant 1
-        var setting1Id = await CreateTestSettingAsync(1, "cross.tenant.key", "tenant1_value");
-        
+        var setting1Id = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "cross.tenant.key", "tenant1_value");
+
         // Create setting for tenant 2 with same key
-        var setting2Id = await CreateTestSettingAsync(2, "cross.tenant.key", "tenant2_value");
-        
+        var setting2Id = await CreateTestSettingAsync(TenantConstants.TestTenant2Id, "cross.tenant.key", "tenant2_value");
+
         // Update tenant 1 setting - should succeed even though tenant 2 has same key
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateDto(setting1Id, "cross.tenant.key", "updated_tenant1_value");
         var response = await PutAsJsonAsync($"/api/v1/Settings/{setting1Id}", updateDto);
-        
+
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Verify tenant 2 setting is unaffected
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{setting2Id}");
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
         TestAssertions.AssertEqual("tenant2_value", settingDetail.Data!.Value);

@@ -21,6 +21,13 @@ public class OrderDeleteCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Customer1Id = Guid.NewGuid();
+    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly Guid Customer3Id = Guid.NewGuid();
+    private static readonly Guid Order1Id = Guid.NewGuid();
+    private static readonly Guid Order2Id = Guid.NewGuid();
+    private static readonly Guid Order3Id = Guid.NewGuid();
+    private static readonly Guid Order10Id = Guid.NewGuid();
 
     public OrderDeleteCommandTests()
     {
@@ -33,8 +40,11 @@ public class OrderDeleteCommandTests : IDisposable
         Scope = Factory.Services.CreateScope();
         DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-        
+
         DbContext.Database.EnsureCreated();
+
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
+        TenantContext.SetCurrentTenantId(null);
     }
 
     public void Dispose()
@@ -53,7 +63,7 @@ public class OrderDeleteCommandTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
     }
 
     private async Task SeedOrderTestDataAsync()
@@ -69,29 +79,29 @@ public class OrderDeleteCommandTests : IDisposable
                 // Create customers for both tenants
                 var customer1Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
-                
+
                 var customer2Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
-                
+
                 var customer1Tenant2 = new Domain.Entities.Customer
                 {
-                    Id = 3,
+                    Id = Customer3Id,
                     Firstname = "Bob",
                     Lastname = "Wilson",
                     Email = "bob.wilson@test.com",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Customer.AddRange(customer1Tenant1, customer2Tenant1, customer1Tenant2);
@@ -100,8 +110,8 @@ public class OrderDeleteCommandTests : IDisposable
                 // Create some test orders
                 var order1 = new Domain.Entities.Order
                 {
-                    Id = 1,
-                    CustomerId = 1,
+                    Id = Order1Id,
+                    CustomerId = Customer1Id,
                     Status = OrderStatus.Pending,
                     PaymentStatus = PaymentStatus.Unknown,
                     Total = 100.00m,
@@ -110,13 +120,13 @@ public class OrderDeleteCommandTests : IDisposable
                     InvoiceAddressLastName = "Doe",
                     InvoiceAddressCity = "Test City",
                     InvoiceAddressCountry = "Germany",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var order2 = new Domain.Entities.Order
                 {
-                    Id = 2,
-                    CustomerId = 2,
+                    Id = Order2Id,
+                    CustomerId = Customer2Id,
                     Status = OrderStatus.ReadyForDelivery,
                     PaymentStatus = PaymentStatus.CompletelyPaid,
                     Total = 200.00m,
@@ -125,13 +135,13 @@ public class OrderDeleteCommandTests : IDisposable
                     InvoiceAddressLastName = "Smith",
                     InvoiceAddressCity = "Test City",
                     InvoiceAddressCountry = "Germany",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var order3 = new Domain.Entities.Order
                 {
-                    Id = 3,
-                    CustomerId = 3,
+                    Id = Order3Id,
+                    CustomerId = Customer3Id,
                     Status = OrderStatus.Completed,
                     PaymentStatus = PaymentStatus.CompletelyPaid,
                     Total = 300.00m,
@@ -140,7 +150,7 @@ public class OrderDeleteCommandTests : IDisposable
                     InvoiceAddressLastName = "Wilson",
                     InvoiceAddressCity = "Test City",
                     InvoiceAddressCountry = "Germany",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Order.AddRange(order1, order2, order3);
@@ -157,10 +167,10 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_WithValidId_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
-        var response = await Client.DeleteAsync("/api/v1/Orders/1");
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var response = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
+
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 
@@ -168,13 +178,13 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_WithValidId_ShouldRemoveOrderFromDatabase()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
-        var deleteResponse = await Client.DeleteAsync("/api/v1/Orders/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var deleteResponse = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
-        
+
         // Verify order is removed
-        var getResponse = await Client.GetAsync("/api/v1/Orders/1");
+        var getResponse = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
 
@@ -182,18 +192,18 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_TenantIsolation_ShouldNotDeleteCrossTenantOrders()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Try to delete order from tenant 2 - this should succeed but not actually delete
         // because the handler won't find it due to tenant filtering
-        var response = await Client.DeleteAsync("/api/v1/Orders/3");
-        
+        var response = await Client.DeleteAsync($"/api/v1/Orders/{Order3Id}");
+
         // The controller returns NoContent regardless of whether the order was found/deleted
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify the order still exists in tenant 2
-        SetTenantHeader(2);
-        var getResponse = await Client.GetAsync("/api/v1/Orders/3");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var getResponse = await Client.GetAsync($"/api/v1/Orders/{Order3Id}");
         TestAssertions.AssertEqual(HttpStatusCode.OK, getResponse.StatusCode);
     }
 
@@ -201,11 +211,11 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_WithNonExistentId_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Non-existent order - controller still returns NoContent
-        var response = await Client.DeleteAsync("/api/v1/Orders/99999");
-        
+        var response = await Client.DeleteAsync($"/api/v1/Orders/{Guid.NewGuid()}");
+
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 
@@ -213,10 +223,10 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_WithZeroId_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
-        var response = await Client.DeleteAsync("/api/v1/Orders/0");
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var response = await Client.DeleteAsync($"/api/v1/Orders/{Guid.Empty}");
+
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 
@@ -224,10 +234,10 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_WithNegativeId_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
-        var response = await Client.DeleteAsync("/api/v1/Orders/-1");
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var response = await Client.DeleteAsync($"/api/v1/Orders/{Guid.NewGuid()}");
+
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 
@@ -235,9 +245,9 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_WithoutTenantHeader_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
-        
-        var response = await Client.DeleteAsync("/api/v1/Orders/1");
-        
+
+        var response = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
+
         // Without tenant header, still returns NoContent due to controller implementation
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
@@ -246,14 +256,14 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_MultipleOrders_ShouldOnlyDeleteSpecified()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Delete order 1
-        var deleteResponse = await Client.DeleteAsync("/api/v1/Orders/1");
+        var deleteResponse = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
-        
+
         // Order 2 should still exist
-        var getResponse = await Client.GetAsync("/api/v1/Orders/2");
+        var getResponse = await Client.GetAsync($"/api/v1/Orders/{Order2Id}");
         TestAssertions.AssertEqual(HttpStatusCode.OK, getResponse.StatusCode);
     }
 
@@ -261,20 +271,20 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_DifferentTenants_ShouldMaintainIsolation()
     {
         await SeedOrderTestDataAsync();
-        
+
         // Delete from tenant 1
-        SetTenantHeader(1);
-        var deleteResponse = await Client.DeleteAsync("/api/v1/Orders/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var deleteResponse = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
-        
+
         // Verify tenant 2's order still exists
-        SetTenantHeader(2);
-        var getResponse = await Client.GetAsync("/api/v1/Orders/3");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var getResponse = await Client.GetAsync($"/api/v1/Orders/{Order3Id}");
         TestAssertions.AssertEqual(HttpStatusCode.OK, getResponse.StatusCode);
-        
+
         // Verify tenant 1's order is gone
-        SetTenantHeader(1);
-        var deletedResponse = await Client.GetAsync("/api/v1/Orders/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var deletedResponse = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, deletedResponse.StatusCode);
     }
 
@@ -282,17 +292,17 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_ConcurrentDeletion_ShouldReturnNoContentForBoth()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Both deletions return NoContent as the controller doesn't check result
-        var response1 = await Client.DeleteAsync("/api/v1/Orders/1");
+        var response1 = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response1.StatusCode);
-        
-        var response2 = await Client.DeleteAsync("/api/v1/Orders/1");
+
+        var response2 = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response2.StatusCode);
-        
+
         // Verify order is actually deleted
-        var getResponse = await Client.GetAsync("/api/v1/Orders/1");
+        var getResponse = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
 
@@ -300,14 +310,14 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_WithDifferentOrderStatuses_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Delete pending order
-        var response1 = await Client.DeleteAsync("/api/v1/Orders/1");
+        var response1 = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response1.StatusCode);
-        
+
         // Delete ready for delivery order
-        var response2 = await Client.DeleteAsync("/api/v1/Orders/2");
+        var response2 = await Client.DeleteAsync($"/api/v1/Orders/{Order2Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response2.StatusCode);
     }
 
@@ -315,24 +325,24 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_MultiTenantScenario_ShouldRespectTenantBoundaries()
     {
         await SeedOrderTestDataAsync();
-        
+
         // Delete order in tenant 1
-        SetTenantHeader(1);
-        var deleteResponse = await Client.DeleteAsync("/api/v1/Orders/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var deleteResponse = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
-        
+
         // Verify other tenant 1 order still exists
-        var getResponseT1 = await Client.GetAsync("/api/v1/Orders/2");
+        var getResponseT1 = await Client.GetAsync($"/api/v1/Orders/{Order2Id}");
         TestAssertions.AssertEqual(HttpStatusCode.OK, getResponseT1.StatusCode);
-        
+
         // Verify tenant 2 order still exists
-        SetTenantHeader(2);
-        var getResponseT2 = await Client.GetAsync("/api/v1/Orders/3");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var getResponseT2 = await Client.GetAsync($"/api/v1/Orders/{Order3Id}");
         TestAssertions.AssertEqual(HttpStatusCode.OK, getResponseT2.StatusCode);
-        
+
         // Verify deleted order is gone
-        SetTenantHeader(1);
-        var getDeletedResponse = await Client.GetAsync("/api/v1/Orders/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var getDeletedResponse = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getDeletedResponse.StatusCode);
     }
 
@@ -340,11 +350,11 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_WithInvalidTenantHeader_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
-        
+
         SetInvalidTenantHeader();
-        
-        var response = await Client.DeleteAsync("/api/v1/Orders/1");
-        
+
+        var response = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
+
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 
@@ -352,12 +362,12 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_EmptyTenantHeader_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
-        
+
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", "");
-        
-        var response = await Client.DeleteAsync("/api/v1/Orders/1");
-        
+
+        var response = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
+
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 
@@ -365,18 +375,18 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_OrderIdempotency_MultipleDeletesShouldBehaveConsistently()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // First delete
-        var response1 = await Client.DeleteAsync("/api/v1/Orders/1");
+        var response1 = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response1.StatusCode);
-        
+
         // Second delete - still returns NoContent
-        var response2 = await Client.DeleteAsync("/api/v1/Orders/1");
+        var response2 = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response2.StatusCode);
-        
+
         // Verify order is gone
-        var getResponse = await Client.GetAsync("/api/v1/Orders/1");
+        var getResponse = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
 
@@ -384,10 +394,10 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_LargeOrderId_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
-        var response = await Client.DeleteAsync($"/api/v1/Orders/{int.MaxValue}");
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var response = await Client.DeleteAsync($"/api/v1/Orders/{Guid.NewGuid()}");
+
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 
@@ -395,22 +405,22 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_VerifyActualDeletion_DatabaseShouldNotContainOrder()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Verify order exists before deletion
-        var getBeforeResponse = await Client.GetAsync("/api/v1/Orders/1");
+        var getBeforeResponse = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.OK, getBeforeResponse.StatusCode);
-        
+
         // Delete the order
-        var deleteResponse = await Client.DeleteAsync("/api/v1/Orders/1");
+        var deleteResponse = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
-        
+
         // Add a small delay to ensure async operations complete
         await Task.Delay(100);
-        
+
         // Verify order no longer exists - check what status we actually get
-        var getAfterResponse = await Client.GetAsync("/api/v1/Orders/1");
-        
+        var getAfterResponse = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
+
         // For now, let's just accept that the delete API behavior may not immediately reflect in GET
         // This could be due to database transaction scoping, caching, or other factors
         // The important thing is that the delete operation reports success
@@ -422,15 +432,15 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_WithComplexOrderData_ShouldDeleteSuccessfully()
     {
         await SeedOrderTestDataAsync();
-        
+
         // Create a more complex order
         var currentTenant = TenantContext.GetCurrentTenantId();
         TenantContext.SetCurrentTenantId(null);
-        
+
         var complexOrder = new Domain.Entities.Order
         {
-            Id = 10,
-            CustomerId = 1,
+            Id = Order10Id,
+            CustomerId = Customer1Id,
             Status = OrderStatus.ReadyForDelivery,
             PaymentStatus = PaymentStatus.CompletelyPaid,
             PaymentMethod = "Credit Card",
@@ -451,21 +461,21 @@ public class OrderDeleteCommandTests : IDisposable
             DeliveryAddressLastName = "Doe",
             DeliveryAddressCity = "Test City",
             DeliveryAddressCountry = "Germany",
-            TenantId = 1
+            TenantId = TenantConstants.TestTenant1Id
         };
-        
+
         DbContext.Order.Add(complexOrder);
         await DbContext.SaveChangesAsync();
-        
+
         TenantContext.SetCurrentTenantId(currentTenant);
-        
-        SetTenantHeader(1);
-        var response = await Client.DeleteAsync("/api/v1/Orders/10");
-        
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response = await Client.DeleteAsync($"/api/v1/Orders/{Order10Id}");
+
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // Verify complex order was deleted
-        var getResponse = await Client.GetAsync("/api/v1/Orders/10");
+        var getResponse = await Client.GetAsync($"/api/v1/Orders/{Order10Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
 
@@ -473,19 +483,19 @@ public class OrderDeleteCommandTests : IDisposable
     public async Task DeleteOrder_BatchOperations_ShouldHandleMultipleDeletes()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Delete multiple orders
-        var response1 = await Client.DeleteAsync("/api/v1/Orders/1");
-        var response2 = await Client.DeleteAsync("/api/v1/Orders/2");
-        
+        var response1 = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
+        var response2 = await Client.DeleteAsync($"/api/v1/Orders/{Order2Id}");
+
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response1.StatusCode);
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response2.StatusCode);
-        
+
         // Verify both orders are deleted
-        var getResponse1 = await Client.GetAsync("/api/v1/Orders/1");
-        var getResponse2 = await Client.GetAsync("/api/v1/Orders/2");
-        
+        var getResponse1 = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
+        var getResponse2 = await Client.GetAsync($"/api/v1/Orders/{Order2Id}");
+
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse1.StatusCode);
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse2.StatusCode);
     }

@@ -20,6 +20,13 @@ public class ProductUpdateCommandTests : IDisposable
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
 
+    // Test Entity IDs
+    private static readonly Guid TestTaxClassId = new("11111111-1111-1111-1111-111111111111");
+    private static readonly Guid TestManufacturer1Id = new("22222222-2222-2222-2222-222222222222");
+    private static readonly Guid TestManufacturer2Id = new("33333333-3333-3333-3333-333333333333");
+    private static readonly Guid TestProduct1Id = new("44444444-4444-4444-4444-444444444444");
+    private static readonly Guid TestProduct2Id = new("55555555-5555-5555-5555-555555555555");
+
     public ProductUpdateCommandTests()
     {
         var uniqueId = Guid.NewGuid().ToString("N")[..8];
@@ -69,7 +76,7 @@ public class ProductUpdateCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    private async Task<int> SeedTestDataAsync()
+    private async Task<Guid> SeedTestDataAsync()
     {
         var currentTenant = TenantContext.GetCurrentTenantId();
         TenantContext.SetCurrentTenantId(null);
@@ -83,28 +90,28 @@ public class ProductUpdateCommandTests : IDisposable
 
                 var taxClass = new maERP.Domain.Entities.TaxClass
                 {
-                    Id = 1,
+                    Id = TestTaxClassId,
                     TaxRate = 19.0,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 // Check if manufacturers already exist - use IgnoreQueryFilters to see all data
                 var existingManufacturer1 = await DbContext.Manufacturer
                     .IgnoreQueryFilters()
-                    .FirstOrDefaultAsync(m => m.Id == 1);
+                    .FirstOrDefaultAsync(m => m.Id == TestManufacturer1Id);
                 var existingManufacturer2 = await DbContext.Manufacturer
                     .IgnoreQueryFilters()
-                    .FirstOrDefaultAsync(m => m.Id == 2);
-                
+                    .FirstOrDefaultAsync(m => m.Id == TestManufacturer2Id);
+
                 if (existingManufacturer1 == null)
                 {
                     var manufacturer1 = new maERP.Domain.Entities.Manufacturer
                     {
-                        Id = 1,
+                        Id = TestManufacturer1Id,
                         Name = "Test Manufacturer 1",
                         City = "Test City",
                         Country = "Test Country",
-                        TenantId = 1
+                        TenantId = TenantConstants.TestTenant1Id
                     };
                     DbContext.Manufacturer.Add(manufacturer1);
                 }
@@ -113,23 +120,23 @@ public class ProductUpdateCommandTests : IDisposable
                 {
                     var manufacturer2 = new maERP.Domain.Entities.Manufacturer
                     {
-                        Id = 2,
+                        Id = TestManufacturer2Id,
                         Name = "Test Manufacturer 2",
                         City = "Test City 2",
                         Country = "Test Country 2",
-                        TenantId = 1
+                        TenantId = TenantConstants.TestTenant1Id
                     };
                     DbContext.Manufacturer.Add(manufacturer2);
                 }
 
                 DbContext.TaxClass.Add(taxClass);
-                
+
                 // Save manufacturers and tax class before adding products
                 await DbContext.SaveChangesAsync();
 
                 var product1 = new maERP.Domain.Entities.Product
                 {
-                    Id = 1,
+                    Id = TestProduct1Id,
                     Sku = "TEST-UPDATE-001",
                     Name = "Test Product for Update",
                     Description = "Original description",
@@ -139,34 +146,34 @@ public class ProductUpdateCommandTests : IDisposable
                     Width = 8.0m,
                     Height = 4.0m,
                     Depth = 12.0m,
-                    TaxClassId = 1,
-                    ManufacturerId = 1,
+                    TaxClassId = TestTaxClassId,
+                    ManufacturerId = TestManufacturer1Id,
                     UseOptimized = false,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var product2 = new maERP.Domain.Entities.Product
                 {
-                    Id = 2,
+                    Id = TestProduct2Id,
                     Sku = "TEST-UPDATE-002",
                     Name = "Another Test Product",
                     Description = "Another description",
                     Price = 100.00m,
                     Msrp = 150.00m,
-                    TaxClassId = 1,
-                    ManufacturerId = 2,
+                    TaxClassId = TestTaxClassId,
+                    ManufacturerId = TestManufacturer2Id,
                     UseOptimized = false,
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Product.AddRange(product1, product2);
                 await DbContext.SaveChangesAsync();
 
-                return product1.Id;
+                return TestProduct1Id;
             }
 
             var existingProduct = await DbContext.Product.FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
-            return existingProduct?.Id ?? 1;
+            return existingProduct?.Id ?? TestProduct1Id;
         }
         finally
         {
@@ -174,7 +181,7 @@ public class ProductUpdateCommandTests : IDisposable
         }
     }
 
-    private ProductInputDto CreateUpdateProductDto(int id)
+    private ProductInputDto CreateUpdateProductDto(Guid id)
     {
         return new ProductInputDto
         {
@@ -188,8 +195,8 @@ public class ProductUpdateCommandTests : IDisposable
             Width = 10.0m,
             Height = 5.0m,
             Depth = 15.0m,
-            TaxClassId = 1,
-            ManufacturerId = 1,
+            TaxClassId = TestTaxClassId,
+            ManufacturerId = TestManufacturer1Id,
             UseOptimized = true
         };
     }
@@ -205,13 +212,13 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithValidData_ShouldReturnOk()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateProductDto(productId);
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(productId, result.Data);
@@ -221,19 +228,19 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithValidData_ShouldUpdateInDatabase()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateProductDto(productId);
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Clear the change tracker to force reload from database
         DbContext.ChangeTracker.Clear();
-        
+
         // Set tenant context for database query
         TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
-        
+
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
         TestAssertions.AssertEqual(updateDto.Sku, updatedProduct!.Sku);
@@ -247,13 +254,14 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        var updateDto = CreateUpdateProductDto(999);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateProductDto(Guid.NewGuid());
 
-        var response = await PutAsJsonAsync("/api/v1/Products/999", updateDto);
+        var nonExistentId = Guid.NewGuid();
+        var response = await PutAsJsonAsync($"/api/v1/Products/{nonExistentId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -263,23 +271,23 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithWrongTenant_ShouldReturnNotFound()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(2); // Product belongs to tenant 1, accessing with tenant 2
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Product belongs to tenant 1, accessing with tenant 2
         var updateDto = CreateUpdateProductDto(productId);
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
-    
+
     [Fact]
     public async Task UpdateProduct_WithMissingRequiredFields_ShouldReturnBadRequest()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new ProductInputDto
         {
             Id = productId,
@@ -290,7 +298,7 @@ public class ProductUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -300,12 +308,12 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithDuplicateSku_ShouldReturnBadRequest()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Get the SKU of another product
         var anotherProduct = await DbContext.Product
-            .FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant1Id&& p.Id != productId);
-        
+            .FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant1Id && p.Id != productId);
+
         if (anotherProduct != null)
         {
             var updateDto = CreateUpdateProductDto(productId);
@@ -314,7 +322,7 @@ public class ProductUpdateCommandTests : IDisposable
             var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
             TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-            var result = await ReadResponseAsync<Result<int>>(response);
+            var result = await ReadResponseAsync<Result<Guid>>(response);
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertFalse(result.Succeeded);
             TestAssertions.AssertNotEmpty(result.Messages);
@@ -325,14 +333,14 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithInvalidTaxClassId_ShouldReturnBadRequest()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateProductDto(productId);
-        updateDto.TaxClassId = 999; // Non-existent tax class
+        updateDto.TaxClassId = Guid.NewGuid(); // Non-existent tax class
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -342,14 +350,14 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithInvalidManufacturerId_ShouldReturnBadRequest()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateProductDto(productId);
-        updateDto.ManufacturerId = 999; // Non-existent manufacturer
+        updateDto.ManufacturerId = Guid.NewGuid(); // Non-existent manufacturer
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -359,14 +367,14 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithNegativePrice_ShouldReturnBadRequest()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateProductDto(productId);
         updateDto.Price = -10.00m;
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -376,14 +384,14 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithTooLongSku_ShouldReturnBadRequest()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateProductDto(productId);
         updateDto.Sku = new string('A', 256); // Exceeds 255 character limit
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        
+
         // When model validation fails, ASP.NET Core returns a ValidationProblemDetails response
         // instead of our custom Result<int> format
         var responseContent = await response.Content.ReadAsStringAsync();
@@ -396,7 +404,7 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithOptionalFields_ShouldUpdateSuccessfully()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateProductDto(productId);
         updateDto.NameOptimized = "Updated Optimized Name";
         updateDto.DescriptionOptimized = "Updated Optimized Description";
@@ -406,13 +414,13 @@ public class ProductUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Clear the change tracker to force reload from database
         DbContext.ChangeTracker.Clear();
-        
+
         // Set tenant context for database query
         TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
-        
+
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
         TestAssertions.AssertEqual(updateDto.NameOptimized, updatedProduct!.NameOptimized);
@@ -425,14 +433,14 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_PartialUpdate_ShouldUpdateOnlyProvidedFields()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Set tenant context for database query
         TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
-        
+
         // Get original values
         var originalProduct = await DbContext.Product.AsNoTracking().FirstAsync(p => p.Id == productId);
-        
+
         var updateDto = new ProductInputDto
         {
             Id = productId,
@@ -453,13 +461,13 @@ public class ProductUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Clear the change tracker to force reload from database
         DbContext.ChangeTracker.Clear();
-        
+
         // Set tenant context for database query
         TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
-        
+
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
         TestAssertions.AssertEqual("Only Name Updated", updatedProduct!.Name);
@@ -471,20 +479,20 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithNullManufacturerId_ShouldUpdateSuccessfully()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateProductDto(productId);
         updateDto.ManufacturerId = null; // Remove manufacturer
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Clear the change tracker to force reload from database
         DbContext.ChangeTracker.Clear();
-        
+
         // Set tenant context for database query
         TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
-        
+
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
         Assert.Null(updatedProduct!.ManufacturerId);
@@ -494,20 +502,20 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_ChangeManufacturer_ShouldUpdateSuccessfully()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         // Clear change tracker to avoid tracking conflicts
         DbContext.ChangeTracker.Clear();
-        
+
         // Verify manufacturer 2 exists - use IgnoreQueryFilters to see it
         var manufacturer2 = await DbContext.Manufacturer
             .IgnoreQueryFilters()
             .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.Id == 2 && m.TenantId == TenantConstants.TestTenant1Id);
+            .FirstOrDefaultAsync(m => m.Id == TestManufacturer2Id && m.TenantId == TenantConstants.TestTenant1Id);
         TestAssertions.AssertNotNull(manufacturer2);
-        
+
         var updateDto = CreateUpdateProductDto(productId);
-        updateDto.ManufacturerId = 2; // Change to different manufacturer
+        updateDto.ManufacturerId = TestManufacturer2Id; // Change to different manufacturer
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
@@ -517,29 +525,29 @@ public class ProductUpdateCommandTests : IDisposable
             var content = await response.Content.ReadAsStringAsync();
             Assert.Fail($"Response: {response.StatusCode}, Content: {content}");
         }
-        
+
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        
+
         // Clear tracking to force reload from database
         DbContext.ChangeTracker.Clear();
-        
+
         var updatedProduct = await DbContext.Product
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(p => p.Id == productId);
         TestAssertions.AssertNotNull(updatedProduct);
-        TestAssertions.AssertEqual(2, updatedProduct!.ManufacturerId);
+        TestAssertions.AssertEqual(TestManufacturer2Id, updatedProduct!.ManufacturerId);
     }
 
     [Fact]
     public async Task UpdateProduct_TenantIsolation_ShouldOnlyUpdateInCorrectTenant()
     {
         var productId = await SeedTestDataAsync();
-        
+
         // Update product in tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateProductDto(productId);
         updateDto.Name = "Updated in Tenant 1";
-        
+
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
 
@@ -563,13 +571,13 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_ResponseStructure_ShouldHaveCorrectFormat()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateProductDto(productId);
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(productId, result.Data);
@@ -580,7 +588,7 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithInvalidJson_ShouldReturnBadRequest()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var invalidJson = "{ invalid json }";
         var content = new StringContent(invalidJson, System.Text.Encoding.UTF8, "application/json");
@@ -593,8 +601,9 @@ public class ProductUpdateCommandTests : IDisposable
     public async Task UpdateProduct_WithMismatchedIds_ShouldReturnBadRequest()
     {
         var productId = await SeedTestDataAsync();
-        SetTenantHeader(1);
-        var updateDto = CreateUpdateProductDto(999); // Different ID in DTO than in URL
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var mismatchedId = Guid.NewGuid();
+        var updateDto = CreateUpdateProductDto(mismatchedId); // Different ID in DTO than in URL
 
         var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
 
@@ -602,17 +611,17 @@ public class ProductUpdateCommandTests : IDisposable
         var result = await ReadResponseAsync<Microsoft.AspNetCore.Mvc.ProblemDetails>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertEqual("Invalid Request", result.Title);
-        TestAssertions.AssertEqual($"ID in URL ({productId}) must match ID in request body (999)", result.Detail);
+        TestAssertions.AssertEqual($"ID in URL ({productId}) must match ID in request body ({mismatchedId})", result.Detail);
     }
 
     [Fact]
     public async Task UpdateProduct_WithZeroId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        var updateDto = CreateUpdateProductDto(0);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateProductDto(Guid.Empty);
 
-        var response = await PutAsJsonAsync("/api/v1/Products/0", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/Products/{Guid.Empty}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -48,7 +49,7 @@ public class AiModelDetailQueryTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
@@ -73,10 +74,10 @@ public class AiModelDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels/1");
+        var response = await Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -84,7 +85,7 @@ public class AiModelDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(1, result.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(Guid.Parse("20000001-0001-0001-0001-000000000001"), result.Data?.Id ?? Guid.Empty);
         TestAssertions.AssertEqual("ChatGPT-4O Tenant 1", result.Data?.Name);
         TestAssertions.AssertEqual((uint)4096, result.Data?.NCtx ?? 0);
     }
@@ -94,10 +95,10 @@ public class AiModelDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(2); // Try to access tenant 1's model with tenant 2 header
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Try to access tenant 1's model with tenant 2 header
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels/1");
+        var response = await Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -108,10 +109,10 @@ public class AiModelDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels/999");
+        var response = await Client.GetAsync("/api/v1/AiModels/99999999-9999-9999-9999-999999999999");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -124,7 +125,7 @@ public class AiModelDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels/1");
+        var response = await Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -138,7 +139,7 @@ public class AiModelDetailQueryTests : IDisposable
         SetInvalidTenantHeader();
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels/1");
+        var response = await Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -149,10 +150,10 @@ public class AiModelDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels/0");
+        var response = await Client.GetAsync("/api/v1/AiModels/00000000-0000-0000-0000-000000000000");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -163,7 +164,7 @@ public class AiModelDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels/-1");
@@ -177,10 +178,10 @@ public class AiModelDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels/1");
+        var response = await Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -190,7 +191,7 @@ public class AiModelDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result.Data);
 
         var model = result.Data;
-        TestAssertions.AssertTrue(model.Id > 0);
+        TestAssertions.AssertTrue(model.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(model.Name));
         TestAssertions.AssertTrue(model.NCtx > 0);
         TestAssertions.AssertNotNull(model.ApiKey);
@@ -203,10 +204,10 @@ public class AiModelDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels/3");
+        var response = await Client.GetAsync("/api/v1/AiModels/20000003-0003-0003-0003-000000000003");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -214,7 +215,7 @@ public class AiModelDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(3, result.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(Guid.Parse("20000003-0003-0003-0003-000000000003"), result.Data?.Id ?? Guid.Empty);
         TestAssertions.AssertEqual("ChatGPT-4O Tenant 2", result.Data?.Name);
     }
 
@@ -223,7 +224,7 @@ public class AiModelDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels/abc");
@@ -237,10 +238,10 @@ public class AiModelDetailQueryTests : IDisposable
     {
         // Arrange - Use a tenant that doesn't exist in seeded data
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(999); // Non-existent tenant
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels/1");
+        var response = await Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -251,10 +252,10 @@ public class AiModelDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var tasks = Enumerable.Range(1, 5).Select(_ => Client.GetAsync("/api/v1/AiModels/1")).ToArray();
+        var tasks = Enumerable.Range(1, 5).Select(_ => Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001")).ToArray();
         var responses = await Task.WhenAll(tasks);
 
         // Assert
@@ -265,7 +266,7 @@ public class AiModelDetailQueryTests : IDisposable
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertTrue(result.Succeeded);
             TestAssertions.AssertNotNull(result.Data);
-            TestAssertions.AssertEqual(1, result.Data?.Id ?? 0);
+            TestAssertions.AssertEqual(Guid.Parse("20000001-0001-0001-0001-000000000001"), result.Data?.Id ?? Guid.Empty);
         }
     }
 
@@ -276,15 +277,15 @@ public class AiModelDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Test tenant 1 can access model 1
-        SetTenantHeader(1);
-        var response1 = await Client.GetAsync("/api/v1/AiModels/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response1 = await Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001");
         TestAssertions.AssertHttpSuccess(response1);
         var result1 = await ReadResponseAsync<Result<AiModelDetailDto>>(response1);
         TestAssertions.AssertEqual("ChatGPT-4O Tenant 1", result1.Data?.Name);
 
         // Test tenant 2 can access model 3
-        SetTenantHeader(2);
-        var response3 = await Client.GetAsync("/api/v1/AiModels/3");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response3 = await Client.GetAsync("/api/v1/AiModels/20000003-0003-0003-0003-000000000003");
         TestAssertions.AssertHttpSuccess(response3);
         var result3 = await ReadResponseAsync<Result<AiModelDetailDto>>(response3);
         TestAssertions.AssertEqual("ChatGPT-4O Tenant 2", result3.Data?.Name);
@@ -303,7 +304,7 @@ public class AiModelDetailQueryTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/AiModels/1");
+        var response = await Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);

@@ -19,6 +19,10 @@ public class InvoiceCreateCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Customer1Id = Guid.NewGuid();
+    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly Guid Order1Id = Guid.NewGuid();
+    private static readonly Guid Order2Id = Guid.NewGuid();
 
     public InvoiceCreateCommandTests()
     {
@@ -43,7 +47,7 @@ public class InvoiceCreateCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         Task.Delay(10).Wait();
     }
 
@@ -78,7 +82,7 @@ public class InvoiceCreateCommandTests : IDisposable
 
                 var customer1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -87,7 +91,7 @@ public class InvoiceCreateCommandTests : IDisposable
 
                 var customer2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
@@ -98,15 +102,15 @@ public class InvoiceCreateCommandTests : IDisposable
 
                 var order1 = new maERP.Domain.Entities.Order
                 {
-                    Id = 1001,
-                    CustomerId = 1,
+                    Id = Order1Id,
+                    CustomerId = Customer1Id,
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var order2 = new maERP.Domain.Entities.Order
                 {
-                    Id = 1002,
-                    CustomerId = 2,
+                    Id = Order2Id,
+                    CustomerId = Customer2Id,
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
@@ -127,8 +131,8 @@ public class InvoiceCreateCommandTests : IDisposable
         {
             InvoiceNumber = $"INV-{DateTime.Now.Ticks}",
             InvoiceDate = DateTime.Now,
-            CustomerId = 1,
-            OrderId = 1001,
+            CustomerId = Customer1Id,
+            OrderId = Order1Id,
             Subtotal = 100.00m,
             ShippingCost = 10.00m,
             TotalTax = 19.00m,
@@ -156,7 +160,7 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithValidData_ShouldReturnCreatedInvoiceId()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
@@ -170,14 +174,14 @@ public class InvoiceCreateCommandTests : IDisposable
         var createdInvoice = await DbContext.Invoice.FindAsync(result.Data);
         TestAssertions.AssertNotNull(createdInvoice);
         TestAssertions.AssertEqual(invoiceDto.InvoiceNumber, createdInvoice!.InvoiceNumber);
-        TestAssertions.AssertEqual(1, createdInvoice.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, createdInvoice.TenantId);
     }
 
     [Fact]
     public async Task CreateInvoice_WithMissingRequiredFields_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = new InvoiceInputDto
         {
             // Missing required fields like InvoiceNumber, CustomerId, etc.
@@ -197,8 +201,8 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithDuplicateInvoiceNumber_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var firstInvoice = CreateValidInvoiceDto();
         await PostAsJsonAsync("/api/v1/Invoices", firstInvoice);
 
@@ -218,9 +222,9 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithNonExistentCustomerId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
-        invoiceDto.CustomerId = 999; // Non-existent customer
+        invoiceDto.CustomerId = Guid.NewGuid(); // Non-existent customer
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
@@ -246,12 +250,12 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithNonExistentTenant_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
         var invoiceDto = CreateValidInvoiceDto();
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest || 
+        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest ||
                                  response.StatusCode == HttpStatusCode.NotFound ||
                                  response.StatusCode == HttpStatusCode.InternalServerError);
     }
@@ -260,9 +264,9 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_TenantIsolation_ShouldNotAccessOtherTenantCustomers()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
-        invoiceDto.CustomerId = 2; // Customer from tenant 2
+        invoiceDto.CustomerId = Customer2Id; // Customer from tenant 2
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
@@ -276,7 +280,7 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithInvalidInvoiceNumber_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
         invoiceDto.InvoiceNumber = ""; // Empty invoice number
 
@@ -293,7 +297,7 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithNegativeAmounts_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
         invoiceDto.Total = -100.00m; // Negative total
 
@@ -310,7 +314,7 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithFutureInvoiceDate_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
         invoiceDto.InvoiceDate = DateTime.Now.AddDays(30); // Future date
 
@@ -327,7 +331,7 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithCompleteAddressDetails_ShouldCreateSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
         invoiceDto.InvoiceAddressCompanyName = "Test Company";
         invoiceDto.InvoiceAddressPhone = "+1234567890";
@@ -356,17 +360,17 @@ public class InvoiceCreateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoice1 = CreateValidInvoiceDto();
         invoice1.InvoiceNumber = "INV-T1-001";
-        invoice1.CustomerId = 1;
+        invoice1.CustomerId = Customer1Id;
         var response1 = await PostAsJsonAsync("/api/v1/Invoices", invoice1);
         TestAssertions.AssertEqual(HttpStatusCode.Created, response1.StatusCode);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var invoice2 = CreateValidInvoiceDto();
         invoice2.InvoiceNumber = "INV-T2-001";
-        invoice2.CustomerId = 2;
+        invoice2.CustomerId = Customer2Id;
         var response2 = await PostAsJsonAsync("/api/v1/Invoices", invoice2);
         TestAssertions.AssertEqual(HttpStatusCode.Created, response2.StatusCode);
 
@@ -378,8 +382,8 @@ public class InvoiceCreateCommandTests : IDisposable
 
         TestAssertions.AssertNotNull(createdInvoice1);
         TestAssertions.AssertNotNull(createdInvoice2);
-        TestAssertions.AssertEqual(1, createdInvoice1!.TenantId);
-        TestAssertions.AssertEqual(2, createdInvoice2!.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, createdInvoice1!.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, createdInvoice2!.TenantId);
         TestAssertions.AssertNotEqual(createdInvoice1.Id, createdInvoice2.Id);
     }
 
@@ -387,9 +391,9 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithInvalidOrderId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
-        invoiceDto.OrderId = 999; // Non-existent order
+        invoiceDto.OrderId = Guid.NewGuid(); // Non-existent order
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
@@ -404,9 +408,9 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithValidOrderFromDifferentTenant_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
-        invoiceDto.OrderId = 1002; // Order from tenant 2
+        invoiceDto.OrderId = Order2Id; // Order from tenant 2
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
@@ -420,7 +424,7 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
@@ -438,7 +442,7 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = new InvoiceInputDto(); // Invalid/empty invoice
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
@@ -457,7 +461,7 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithLongInvoiceNumber_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
         invoiceDto.InvoiceNumber = new string('A', 1000); // Very long invoice number
 
@@ -474,7 +478,7 @@ public class InvoiceCreateCommandTests : IDisposable
     public async Task CreateInvoice_WithSpecialCharactersInInvoiceNumber_ShouldHandleCorrectly()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
         invoiceDto.InvoiceNumber = "INV-#@$%-001";
 
@@ -482,7 +486,7 @@ public class InvoiceCreateCommandTests : IDisposable
 
         var result = await ReadResponseAsync<Result<int>>(response);
         TestAssertions.AssertNotNull(result);
-        
+
         if (result.Succeeded)
         {
             TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);

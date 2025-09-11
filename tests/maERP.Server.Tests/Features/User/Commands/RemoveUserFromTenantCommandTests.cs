@@ -120,11 +120,11 @@ public class RemoveUserFromTenantCommandTests : IDisposable
                     // User1: Assigned to tenants 1 (default), 2, 3
                     new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant1Id, IsDefault = true, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
                     new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = false, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
-                    new() { UserId = user1.Id, TenantId = 3, IsDefault = false, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
+                    new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant3Id, IsDefault = false, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
                     
                     // User2: Assigned to tenant 2 (default) and 3
                     new() { UserId = user2.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = true, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
-                    new() { UserId = user2.Id, TenantId = 3, IsDefault = false, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
+                    new() { UserId = user2.Id, TenantId = TenantConstants.TestTenant3Id, IsDefault = false, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
                     
                     // User3: Assigned to tenant 1 only (default)
                     new() { UserId = user3.Id, TenantId = TenantConstants.TestTenant1Id, IsDefault = true, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow }
@@ -163,7 +163,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
     {
         var (userId1, _, _) = await SeedTestDataAsync();
 
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
         var result = await ReadResponseAsync<Result<bool>>(response);
@@ -178,8 +178,9 @@ public class RemoveUserFromTenantCommandTests : IDisposable
     {
         var (userId1, _, _) = await SeedTestDataAsync();
 
-        // Try to remove user1 from tenant 999 (doesn't exist)
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/999");
+        // Try to remove user1 from tenant (doesn't exist)
+        var nonExistentTenantId = Guid.NewGuid();
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{nonExistentTenantId}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
         var result = await ReadResponseAsync<Result<bool>>(response);
@@ -194,7 +195,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         await SeedTestDataAsync();
         var nonExistentUserId = Guid.NewGuid().ToString();
 
-        var response = await Client.DeleteAsync($"/api/v1/Users/{nonExistentUserId}/tenants/1");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{nonExistentUserId}/tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
         var result = await ReadResponseAsync<Result<bool>>(response);
@@ -213,7 +214,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
             .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant2Id);
         TestAssertions.AssertNotNull(assignmentBefore);
 
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
 
         // Verify assignment is removed from database
@@ -228,7 +229,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         var (userId1, _, _) = await SeedTestDataAsync();
 
         // Remove the default tenant assignment (tenant 1 for user1)
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/1");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
         var result = await ReadResponseAsync<Result<bool>>(response);
@@ -243,7 +244,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         var (userId1, userId2, userId3) = await SeedTestDataAsync();
 
         // Remove user1 from tenant 2
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
 
         // Verify user2 and user3 assignments are unaffected
@@ -256,7 +257,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
 
         TestAssertions.AssertEqual(2, user2Assignments.Count); // Should still have tenants 2, 3
         TestAssertions.AssertEqual(1, user3Assignments.Count); // Should still have tenant 1
-        
+
         // User2 should still be in tenant 2
         TestAssertions.AssertTrue(user2Assignments.Any(a => a.TenantId == TenantConstants.TestTenant2Id));
     }
@@ -267,11 +268,11 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         var (userId1, _, _) = await SeedTestDataAsync();
 
         // Remove user1 from tenant 2
-        var response1 = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
+        var response1 = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
         TestAssertions.AssertHttpStatusCode(response1, HttpStatusCode.OK);
 
         // Remove user1 from tenant 3
-        var response2 = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/3");
+        var response2 = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant3Id}");
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.OK);
 
         // Verify user1 now only has tenant 1
@@ -280,7 +281,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
             .ToListAsync();
 
         TestAssertions.AssertEqual(1, remainingAssignments.Count);
-        TestAssertions.AssertEqual(1, remainingAssignments[0].TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, remainingAssignments[0].TenantId);
         TestAssertions.AssertTrue(remainingAssignments[0].IsDefault);
     }
 
@@ -290,13 +291,13 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         var (userId1, _, _) = await SeedTestDataAsync();
 
         // First removal should succeed
-        var response1 = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
+        var response1 = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
         TestAssertions.AssertHttpStatusCode(response1, HttpStatusCode.OK);
 
         // Second removal should fail
-        var response2 = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
+        var response2 = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.BadRequest);
-        
+
         var result = await ReadResponseAsync<Result<bool>>(response2);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
@@ -308,7 +309,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
     {
         var (userId1, _, _) = await SeedTestDataAsync();
 
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/0");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{Guid.Empty}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
     }
@@ -318,11 +319,11 @@ public class RemoveUserFromTenantCommandTests : IDisposable
     {
         var (userId1, _, _) = await SeedTestDataAsync();
 
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
         var result = await ReadResponseAsync<Result<bool>>(response);
-        
+
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertNotNull(result.Messages);
@@ -336,8 +337,8 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         var (userId1, _, _) = await SeedTestDataAsync();
 
         // Try to remove the same assignment concurrently
-        var task1 = Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
-        var task2 = Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
+        var task1 = Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
+        var task2 = Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
 
         var responses = await Task.WhenAll(task1, task2);
 
@@ -353,16 +354,16 @@ public class RemoveUserFromTenantCommandTests : IDisposable
     public async Task RemoveUserFromTenant_WithTenantHeader_ShouldNotAffectOperation()
     {
         var (userId1, _, _) = await SeedTestDataAsync();
-        SetTenantHeader(3);
+        SetTenantHeader(TenantConstants.TestTenant3Id);
 
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
-        
+
         // Verify the assignment was removed regardless of the tenant header
         var assignment = await DbContext.UserTenant
             .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant2Id);
-        
+
         // Assignment should be removed (would be null, but we test that it's not found)
         var assignmentExists = await DbContext.UserTenant
             .AnyAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant2Id);
@@ -379,7 +380,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         var user2BeforeCount = await DbContext.UserTenant.CountAsync(ut => ut.UserId == userId2);
 
         // Remove user1 from tenant 3
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/3");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant3Id}");
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
 
         // Verify counts
@@ -395,7 +396,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
     {
         var (userId1, _, _) = await SeedTestDataAsync();
 
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/-1");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/invalid-guid");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
     }
@@ -406,7 +407,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         var (_, _, userId3) = await SeedTestDataAsync();
 
         // User3 only has one assignment to tenant 1
-        var response = await Client.DeleteAsync($"/api/v1/Users/{userId3}/tenants/1");
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId3}/tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.OK);
 
@@ -424,15 +425,15 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         var (userId1, _, _) = await SeedTestDataAsync();
 
         // Try with POST (should fail)
-        var postResponse = await Client.PostAsync($"/api/v1/Users/{userId1}/tenants/2", new StringContent(""));
+        var postResponse = await Client.PostAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}", new StringContent(""));
         TestAssertions.AssertHttpStatusCode(postResponse, HttpStatusCode.MethodNotAllowed);
 
         // Try with PUT (should fail)  
-        var putResponse = await Client.PutAsync($"/api/v1/Users/{userId1}/tenants/2", new StringContent(""));
+        var putResponse = await Client.PutAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}", new StringContent(""));
         TestAssertions.AssertHttpStatusCode(putResponse, HttpStatusCode.MethodNotAllowed);
 
         // DELETE should work
-        var deleteResponse = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
+        var deleteResponse = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/{TenantConstants.TestTenant2Id}");
         TestAssertions.AssertHttpStatusCode(deleteResponse, HttpStatusCode.OK);
     }
 }

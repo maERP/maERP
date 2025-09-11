@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -45,7 +46,7 @@ public class WarehouseDetailQueryTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
@@ -70,10 +71,10 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -81,7 +82,7 @@ public class WarehouseDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(1, result.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(Guid.Parse("10000001-0001-0001-0001-000000000001"), result.Data?.Id ?? Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(result.Data?.Name));
     }
 
@@ -90,10 +91,10 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(2); // Try to access tenant 1's warehouse with tenant 2 header
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Try to access tenant 1's warehouse with tenant 2 header
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -104,10 +105,10 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/999");
+        var response = await Client.GetAsync("/api/v1/Warehouses/99999999-9999-9999-9999-999999999999");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -120,7 +121,7 @@ public class WarehouseDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -134,7 +135,7 @@ public class WarehouseDetailQueryTests : IDisposable
         SetInvalidTenantHeader();
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -145,10 +146,10 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/0");
+        var response = await Client.GetAsync("/api/v1/Warehouses/00000000-0000-0000-0000-000000000000");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -159,7 +160,7 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses/-1");
@@ -173,10 +174,10 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -186,7 +187,7 @@ public class WarehouseDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result.Data);
 
         var warehouse = result.Data;
-        TestAssertions.AssertTrue(warehouse!.Id > 0);
+        TestAssertions.AssertNotEqual(Guid.Empty, warehouse!.Id);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(warehouse.Name));
         TestAssertions.AssertTrue(warehouse.ProductCount >= 0);
     }
@@ -196,10 +197,10 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         // Act - Assuming test data contains a warehouse with ID 3 for tenant 2
-        var response = await Client.GetAsync("/api/v1/Warehouses/3");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000003-0003-0003-0003-000000000003");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -207,7 +208,7 @@ public class WarehouseDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(3, result.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(Guid.Parse("10000003-0003-0003-0003-000000000003"), result.Data?.Id ?? Guid.Empty);
         TestAssertions.AssertTrue(result.Data?.Name.Contains("Tenant 2") ?? false);
     }
 
@@ -216,7 +217,7 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses/abc");
@@ -232,13 +233,13 @@ public class WarehouseDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Try to access tenant 1's warehouse with tenant 2 header
-        SetTenantHeader(2);
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
 
         // Try to access tenant 2's warehouse with tenant 1 header
-        SetTenantHeader(1);
-        var response2 = await Client.GetAsync("/api/v1/Warehouses/3");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response2 = await Client.GetAsync("/api/v1/Warehouses/10000003-0003-0003-0003-000000000003");
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
     }
 
@@ -247,10 +248,10 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var tasks = Enumerable.Range(1, 5).Select(_ => Client.GetAsync("/api/v1/Warehouses/1")).ToArray();
+        var tasks = Enumerable.Range(1, 5).Select(_ => Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001")).ToArray();
         var responses = await Task.WhenAll(tasks);
 
         // Assert
@@ -261,7 +262,7 @@ public class WarehouseDetailQueryTests : IDisposable
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertTrue(result.Succeeded);
             TestAssertions.AssertNotNull(result.Data);
-            TestAssertions.AssertEqual(1, result.Data?.Id ?? 0);
+            TestAssertions.AssertEqual(Guid.Parse("10000001-0001-0001-0001-000000000001"), result.Data?.Id ?? Guid.Empty);
         }
     }
 
@@ -278,7 +279,7 @@ public class WarehouseDetailQueryTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -289,10 +290,10 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -307,11 +308,11 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var startTime = DateTime.UtcNow;
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
         var endTime = DateTime.UtcNow;
 
         // Assert
@@ -325,19 +326,23 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act & Assert for multiple valid IDs
-        foreach (var id in new[] { 1, 2 })
+        var testIds = new[] { 
+            ("10000001-0001-0001-0001-000000000001", Guid.Parse("10000001-0001-0001-0001-000000000001")),
+            ("10000002-0002-0002-0002-000000000002", Guid.Parse("10000002-0002-0002-0002-000000000002"))
+        };
+        foreach (var (idString, expectedGuid) in testIds)
         {
-            var response = await Client.GetAsync($"/api/v1/Warehouses/{id}");
+            var response = await Client.GetAsync($"/api/v1/Warehouses/{idString}");
             TestAssertions.AssertHttpSuccess(response);
-            
+
             var result = await ReadResponseAsync<Result<WarehouseDetailDto>>(response);
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertTrue(result.Succeeded);
             TestAssertions.AssertNotNull(result.Data);
-            TestAssertions.AssertEqual(id, result.Data?.Id ?? 0);
+            TestAssertions.AssertEqual(expectedGuid, result.Data?.Id ?? Guid.Empty);
         }
     }
 
@@ -348,33 +353,33 @@ public class WarehouseDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // First request with tenant 1
-        SetTenantHeader(1);
-        var response1 = await Client.GetAsync("/api/v1/Warehouses/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response1 = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
         TestAssertions.AssertHttpSuccess(response1);
         var result1 = await ReadResponseAsync<Result<WarehouseDetailDto>>(response1);
-        TestAssertions.AssertEqual(1, result1.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(Guid.Parse("10000001-0001-0001-0001-000000000001"), result1.Data?.Id ?? Guid.Empty);
 
         // Switch to tenant 2 and try accessing same ID (should fail)
-        SetTenantHeader(2);
-        var response2 = await Client.GetAsync("/api/v1/Warehouses/1");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response2 = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
 
         // Access tenant 2's warehouse
-        var response3 = await Client.GetAsync("/api/v1/Warehouses/3");
+        var response3 = await Client.GetAsync("/api/v1/Warehouses/10000003-0003-0003-0003-000000000003");
         TestAssertions.AssertHttpSuccess(response3);
         var result3 = await ReadResponseAsync<Result<WarehouseDetailDto>>(response3);
-        TestAssertions.AssertEqual(3, result3.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(Guid.Parse("10000003-0003-0003-0003-000000000003"), result3.Data?.Id ?? Guid.Empty);
     }
 
     [Fact]
-    public async Task GetWarehouseById_WithMaxIntId_ShouldReturnNotFound()
+    public async Task GetWarehouseById_WithNonExistentGuid_ShouldReturnNotFound()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync($"/api/v1/Warehouses/{int.MaxValue}");
+        var response = await Client.GetAsync("/api/v1/Warehouses/ffffffff-ffff-ffff-ffff-ffffffffffff");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -385,10 +390,10 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1%20OR%201=1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001%20OR%201=1");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -399,17 +404,17 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<WarehouseDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
-        
+
         // ProductCount should be non-negative
         TestAssertions.AssertTrue(result.Data!.ProductCount >= 0);
     }
@@ -421,15 +426,15 @@ public class WarehouseDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Test tenant 1 can access warehouse 1
-        SetTenantHeader(1);
-        var response1 = await Client.GetAsync("/api/v1/Warehouses/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response1 = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
         TestAssertions.AssertHttpSuccess(response1);
         var result1 = await ReadResponseAsync<Result<WarehouseDetailDto>>(response1);
         TestAssertions.AssertTrue(result1.Data?.Name.Contains("Tenant 1") ?? false);
 
         // Test tenant 2 can access warehouse 3
-        SetTenantHeader(2);
-        var response3 = await Client.GetAsync("/api/v1/Warehouses/3");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response3 = await Client.GetAsync("/api/v1/Warehouses/10000003-0003-0003-0003-000000000003");
         TestAssertions.AssertHttpSuccess(response3);
         var result3 = await ReadResponseAsync<Result<WarehouseDetailDto>>(response3);
         TestAssertions.AssertTrue(result3.Data?.Name.Contains("Tenant 2") ?? false);
@@ -443,7 +448,7 @@ public class WarehouseDetailQueryTests : IDisposable
         SetInvalidTenantHeader();
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -454,10 +459,10 @@ public class WarehouseDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/Warehouses/1");
+        var response = await Client.GetAsync("/api/v1/Warehouses/10000001-0001-0001-0001-000000000001");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);

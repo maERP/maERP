@@ -18,6 +18,15 @@ public class InvoiceDeleteCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Customer1Id = Guid.NewGuid();
+    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly Guid Invoice1Id = Guid.NewGuid();
+    private static readonly Guid Invoice2Id = Guid.NewGuid();
+    private static readonly Guid Invoice3Id = Guid.NewGuid();
+    private static readonly Guid Invoice4Id = Guid.NewGuid();
+    private static readonly Guid InvoiceItem1Id = Guid.NewGuid();
+    private static readonly Guid InvoiceItem2Id = Guid.NewGuid();
+    private static readonly Guid Product1Id = Guid.NewGuid();
 
     public InvoiceDeleteCommandTests()
     {
@@ -42,7 +51,7 @@ public class InvoiceDeleteCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         Task.Delay(10).Wait();
     }
 
@@ -70,7 +79,7 @@ public class InvoiceDeleteCommandTests : IDisposable
 
                 var customer1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -79,7 +88,7 @@ public class InvoiceDeleteCommandTests : IDisposable
 
                 var customer2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
@@ -90,11 +99,11 @@ public class InvoiceDeleteCommandTests : IDisposable
 
                 var invoice1Tenant1 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 1,
+                    Id = Invoice1Id,
                     InvoiceNumber = "INV-001",
                     InvoiceDate = DateTime.Now.AddDays(-10),
-                    CustomerId = 1,
-                    OrderId = 1001,
+                    CustomerId = Customer1Id,
+                    OrderId = Guid.NewGuid(),
                     Subtotal = 100.00m,
                     ShippingCost = 10.00m,
                     TotalTax = 19.00m,
@@ -106,10 +115,10 @@ public class InvoiceDeleteCommandTests : IDisposable
 
                 var invoice2Tenant1 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 2,
+                    Id = Invoice2Id,
                     InvoiceNumber = "INV-002",
                     InvoiceDate = DateTime.Now.AddDays(-8),
-                    CustomerId = 1,
+                    CustomerId = Customer1Id,
                     Subtotal = 200.00m,
                     TotalTax = 38.00m,
                     Total = 238.00m,
@@ -120,24 +129,24 @@ public class InvoiceDeleteCommandTests : IDisposable
 
                 var invoice3Tenant2 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 3,
+                    Id = Invoice3Id,
                     InvoiceNumber = "INV-T2-001",
                     InvoiceDate = DateTime.Now.AddDays(-5),
-                    CustomerId = 2,
+                    CustomerId = Customer2Id,
                     Subtotal = 150.00m,
                     TotalTax = 28.50m,
                     Total = 178.50m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.Invoiced,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Created,
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var invoice4WithItems = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 4,
+                    Id = Invoice4Id,
                     InvoiceNumber = "INV-003",
                     InvoiceDate = DateTime.Now.AddDays(-3),
-                    CustomerId = 1,
+                    CustomerId = Customer1Id,
                     Subtotal = 300.00m,
                     TotalTax = 57.00m,
                     Total = 357.00m,
@@ -150,9 +159,9 @@ public class InvoiceDeleteCommandTests : IDisposable
 
                 var invoiceItem1 = new maERP.Domain.Entities.InvoiceItem
                 {
-                    Id = 1,
-                    InvoiceId = 4,
-                    ProductId = 1,
+                    Id = InvoiceItem1Id,
+                    InvoiceId = Invoice4Id,
+                    ProductId = Product1Id,
                     Name = "Test Product",
                     UnitPrice = 100.00m,
                     TenantId = TenantConstants.TestTenant1Id
@@ -160,9 +169,9 @@ public class InvoiceDeleteCommandTests : IDisposable
 
                 var invoiceItem2 = new maERP.Domain.Entities.InvoiceItem
                 {
-                    Id = 2,
-                    InvoiceId = 4,
-                    ProductId = 1,
+                    Id = InvoiceItem2Id,
+                    InvoiceId = Invoice4Id,
+                    ProductId = Product1Id,
                     Name = "Another Product",
                     UnitPrice = 200.00m,
                     TenantId = TenantConstants.TestTenant1Id
@@ -190,17 +199,17 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_WithValidIdAndTenant_ShouldReturnDeletedInvoiceId()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/1");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(1, result.Data);
+        TestAssertions.AssertEqual(Invoice1Id, result.Data);
 
-        var deletedInvoice = await DbContext.Invoice.FindAsync(1);
+        var deletedInvoice = await DbContext.Invoice.FindAsync(Invoice1Id);
         Assert.Null(deletedInvoice);
     }
 
@@ -208,27 +217,28 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/999");
+        var nonExistentId = Guid.NewGuid();
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{nonExistentId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertEqual(0, result.Data);
+        TestAssertions.AssertEqual(Guid.Empty, result.Data);
     }
 
     [Fact]
     public async Task DeleteInvoice_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/1");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -238,10 +248,10 @@ public class InvoiceDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/1");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -250,41 +260,41 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_TenantIsolation_ShouldNotDeleteOtherTenantInvoices()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/3");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice3Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
 
-        var invoice3 = await DbContext.Invoice.FindAsync(3);
+        var invoice3 = await DbContext.Invoice.FindAsync(Invoice3Id);
         TestAssertions.AssertNotNull(invoice3);
-        TestAssertions.AssertEqual(2, invoice3!.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, invoice3!.TenantId);
     }
 
     [Fact]
     public async Task DeleteInvoice_WithInvoiceItems_ShouldDeleteInvoiceAndItems()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var itemsBeforeDelete = await DbContext.InvoiceItem.Where(i => i.InvoiceId == 4).CountAsync();
+        var itemsBeforeDelete = await DbContext.InvoiceItem.Where(i => i.InvoiceId == Invoice4Id).CountAsync();
         TestAssertions.AssertEqual(2, itemsBeforeDelete);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/4");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice4Id}");
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(4, result.Data);
+        TestAssertions.AssertEqual(Invoice4Id, result.Data);
 
-        var deletedInvoice = await DbContext.Invoice.FindAsync(4);
+        var deletedInvoice = await DbContext.Invoice.FindAsync(Invoice4Id);
         Assert.Null(deletedInvoice);
 
-        var itemsAfterDelete = await DbContext.InvoiceItem.Where(i => i.InvoiceId == 4).CountAsync();
+        var itemsAfterDelete = await DbContext.InvoiceItem.Where(i => i.InvoiceId == Invoice4Id).CountAsync();
         TestAssertions.AssertEqual(0, itemsAfterDelete);
     }
 
@@ -292,17 +302,17 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_WithPaidStatus_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/2");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice2Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
 
-        var invoice2 = await DbContext.Invoice.FindAsync(2);
+        var invoice2 = await DbContext.Invoice.FindAsync(Invoice2Id);
         TestAssertions.AssertNotNull(invoice2);
     }
 
@@ -310,7 +320,7 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_WithInvalidId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Invoices/invalid");
 
@@ -321,12 +331,12 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_WithZeroId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Invoices/0");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -335,7 +345,7 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_WithNegativeId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Invoices/-1");
 
@@ -346,11 +356,11 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_WithNonExistentTenant_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/1");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest || 
+        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest ||
                                  response.StatusCode == HttpStatusCode.NotFound ||
                                  response.StatusCode == HttpStatusCode.InternalServerError);
     }
@@ -359,35 +369,35 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_ShouldNotAffectOtherTenantInvoices()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var invoicesBeforeDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant2Id).CountAsync();
         TestAssertions.AssertEqual(1, invoicesBeforeDelete);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/1");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
         TestAssertions.AssertHttpSuccess(response);
 
         var invoicesAfterDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant2Id).CountAsync();
         TestAssertions.AssertEqual(1, invoicesAfterDelete);
 
-        var tenant2Invoice = await DbContext.Invoice.FindAsync(3);
+        var tenant2Invoice = await DbContext.Invoice.FindAsync(Invoice3Id);
         TestAssertions.AssertNotNull(tenant2Invoice);
-        TestAssertions.AssertEqual(2, tenant2Invoice!.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, tenant2Invoice!.TenantId);
     }
 
     [Fact]
     public async Task DeleteInvoice_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/1");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(1, result.Data);
+        TestAssertions.AssertEqual(Invoice1Id, result.Data);
         TestAssertions.AssertNotNull(result.Messages);
         TestAssertions.AssertEqual(ResultStatusCode.Ok, result.StatusCode);
     }
@@ -396,15 +406,16 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/999");
+        var nonExistentId = Guid.NewGuid();
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{nonExistentId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertEqual(0, result.Data);
+        TestAssertions.AssertEqual(Guid.Empty, result.Data);
         TestAssertions.AssertNotNull(result.Messages);
         TestAssertions.AssertNotEmpty(result.Messages);
         TestAssertions.AssertEqual(ResultStatusCode.NotFound, result.StatusCode);
@@ -414,7 +425,7 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_MultipleDeletionAttempts_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var firstDeleteResponse = await Client.DeleteAsync("/api/v1/Invoices/1");
         TestAssertions.AssertHttpSuccess(firstDeleteResponse);
@@ -431,12 +442,12 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_WithLargeId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Invoices/2147483647");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -449,8 +460,8 @@ public class InvoiceDeleteCommandTests : IDisposable
         var tenant1InvoicesBeforeDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant1Id).CountAsync();
         var tenant2InvoicesBeforeDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant2Id).CountAsync();
 
-        SetTenantHeader(1);
-        var response = await Client.DeleteAsync("/api/v1/Invoices/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
         TestAssertions.AssertHttpSuccess(response);
 
         var tenant1InvoicesAfterDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant1Id).CountAsync();
@@ -464,17 +475,17 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_WithDraftStatus_ShouldDeleteSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/1");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(1, result.Data);
+        TestAssertions.AssertEqual(Invoice1Id, result.Data);
 
-        var deletedInvoice = await DbContext.Invoice.FindAsync(1);
+        var deletedInvoice = await DbContext.Invoice.FindAsync(Invoice1Id);
         Assert.Null(deletedInvoice);
     }
 
@@ -482,16 +493,16 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_CascadeDelete_ShouldRemoveRelatedEntities()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var invoiceItemsCount = await DbContext.InvoiceItem.Where(i => i.InvoiceId == 4).CountAsync();
+        var invoiceItemsCount = await DbContext.InvoiceItem.Where(i => i.InvoiceId == Invoice4Id).CountAsync();
         TestAssertions.AssertTrue(invoiceItemsCount > 0);
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/4");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice4Id}");
 
         TestAssertions.AssertHttpSuccess(response);
 
-        var remainingItemsCount = await DbContext.InvoiceItem.Where(i => i.InvoiceId == 4).CountAsync();
+        var remainingItemsCount = await DbContext.InvoiceItem.Where(i => i.InvoiceId == Invoice4Id).CountAsync();
         TestAssertions.AssertEqual(0, remainingItemsCount);
     }
 
@@ -499,23 +510,23 @@ public class InvoiceDeleteCommandTests : IDisposable
     public async Task DeleteInvoice_ShouldNotAffectOtherInvoicesInSameTenant()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var tenant1InvoicesBeforeDelete = await DbContext.Invoice
-            .Where(i => i.TenantId == TenantConstants.TestTenant1Id&& i.Id != 1)
+            .Where(i => i.TenantId == TenantConstants.TestTenant1Id && i.Id != Invoice1Id)
             .CountAsync();
 
-        var response = await Client.DeleteAsync("/api/v1/Invoices/1");
+        var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
         TestAssertions.AssertHttpSuccess(response);
 
         var tenant1InvoicesAfterDelete = await DbContext.Invoice
-            .Where(i => i.TenantId == TenantConstants.TestTenant1Id&& i.Id != 1)
+            .Where(i => i.TenantId == TenantConstants.TestTenant1Id && i.Id != Invoice1Id)
             .CountAsync();
 
         TestAssertions.AssertEqual(tenant1InvoicesBeforeDelete, tenant1InvoicesAfterDelete);
 
-        var invoice2 = await DbContext.Invoice.FindAsync(2);
+        var invoice2 = await DbContext.Invoice.FindAsync(Invoice2Id);
         TestAssertions.AssertNotNull(invoice2);
-        TestAssertions.AssertEqual(1, invoice2!.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, invoice2!.TenantId);
     }
 }

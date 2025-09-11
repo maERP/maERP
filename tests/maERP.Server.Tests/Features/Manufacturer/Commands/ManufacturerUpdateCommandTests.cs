@@ -19,6 +19,10 @@ public class ManufacturerUpdateCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Manufacturer1Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer2Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer3Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer4Id = Guid.NewGuid();
 
     public ManufacturerUpdateCommandTests()
     {
@@ -43,7 +47,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         Task.Delay(10).Wait();
     }
 
@@ -81,7 +85,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
 
                 var manufacturer1 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 1,
+                    Id = Manufacturer1Id,
                     Name = "Original Manufacturer 1",
                     Street = "123 Original St",
                     City = "Original City",
@@ -97,7 +101,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
 
                 var manufacturer2 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 2,
+                    Id = Manufacturer2Id,
                     Name = "Original Manufacturer 2",
                     Street = "456 Original Ave",
                     City = "Different City",
@@ -107,20 +111,20 @@ public class ManufacturerUpdateCommandTests : IDisposable
 
                 var manufacturer3Tenant2 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 3,
+                    Id = Manufacturer3Id,
                     Name = "Tenant 2 Manufacturer",
                     City = "Tenant 2 City",
                     Country = "Tenant 2 Country",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var manufacturer4Tenant2 = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 4,
+                    Id = Manufacturer4Id,
                     Name = "Another Tenant 2 Manufacturer",
                     City = "Another City T2",
                     Country = "Tenant 2 Country",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Manufacturer.AddRange(manufacturer1, manufacturer2, manufacturer3Tenant2, manufacturer4Tenant2);
@@ -137,7 +141,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
     {
         return new ManufacturerInputDto
         {
-            Id = 1,
+            Id = Manufacturer1Id,
             Name = "Updated Manufacturer Name",
             Street = "789 Updated Blvd",
             City = "Updated City",
@@ -162,16 +166,16 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithValidData_ShouldReturnOk()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(1, result.Data);
+        TestAssertions.AssertEqual<Guid>(Manufacturer1Id, result.Data);
     }
 
     [Fact]
@@ -180,7 +184,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
         await SeedTestDataAsync();
 
         var updateInput = CreateUpdateManufacturerInput();
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -189,13 +193,13 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/999", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Guid.NewGuid()}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -205,15 +209,15 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var updateInput = CreateUpdateManufacturerInput();
-        updateInput.Id = 1;
+        updateInput.Id = Manufacturer1Id;
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -223,15 +227,15 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithEmptyName_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
         updateInput.Name = "";
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -241,15 +245,15 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithNullName_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
         updateInput.Name = null!;
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -259,15 +263,15 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithDuplicateNameInSameTenant_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
         updateInput.Name = "Original Manufacturer 2";
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -277,15 +281,15 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithSameName_ShouldReturnOk()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
         updateInput.Name = "Original Manufacturer 1";
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
     }
@@ -294,15 +298,15 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithInvalidEmail_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
         updateInput.Email = "invalid-email-format";
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -312,15 +316,15 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithInvalidWebsite_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
         updateInput.Website = "not-a-valid-url";
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -330,15 +334,15 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithLongName_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
         updateInput.Name = new string('A', 256);
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -348,54 +352,54 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_TenantIsolation_ShouldUpdateOnlyOwnTenantData()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var updatedManufacturer = await DbContext.Manufacturer.FindAsync(1);
+        var updatedManufacturer = await DbContext.Manufacturer.FindAsync(Manufacturer1Id);
         TestAssertions.AssertNotNull(updatedManufacturer);
         TestAssertions.AssertEqual("Updated Manufacturer Name", updatedManufacturer!.Name);
-        TestAssertions.AssertEqual(1, updatedManufacturer.TenantId);
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant1Id, updatedManufacturer.TenantId!.Value);
 
-        var tenant2Manufacturer = await DbContext.Manufacturer.FindAsync(3);
+        var tenant2Manufacturer = await DbContext.Manufacturer.FindAsync(Manufacturer3Id);
         TestAssertions.AssertNotNull(tenant2Manufacturer);
         TestAssertions.AssertEqual("Tenant 2 Manufacturer", tenant2Manufacturer!.Name);
-        TestAssertions.AssertEqual(2, tenant2Manufacturer.TenantId);
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant2Id, tenant2Manufacturer.TenantId!.Value);
     }
 
     [Fact]
     public async Task UpdateManufacturer_WithTenant2Data_ShouldUpdateCorrectly()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var updateInput = new ManufacturerInputDto
         {
-            Id = 3,
+            Id = Manufacturer3Id,
             Name = "Updated Tenant 2 Manufacturer",
             City = "Updated T2 City",
             Country = "Updated T2 Country"
         };
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/3", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer3Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(3, result.Data);
+        TestAssertions.AssertEqual<Guid>(Manufacturer3Id, result.Data);
     }
 
     [Fact]
     public async Task UpdateManufacturer_WithNonExistentTenant_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
 
         var updateInput = CreateUpdateManufacturerInput();
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -404,21 +408,21 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithPartialUpdate_ShouldUpdateOnlyProvidedFields()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = new ManufacturerInputDto
         {
-            Id = 1,
+            Id = Manufacturer1Id,
             Name = "Partially Updated Name",
             City = "Original City",
             Country = "Original Country"
         };
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var updatedManufacturer = await DbContext.Manufacturer.FindAsync(1);
+        var updatedManufacturer = await DbContext.Manufacturer.FindAsync(Manufacturer1Id);
         TestAssertions.AssertNotNull(updatedManufacturer);
         TestAssertions.AssertEqual("Partially Updated Name", updatedManufacturer!.Name);
         TestAssertions.AssertEqual("123 Original St", updatedManufacturer.Street);
@@ -428,11 +432,11 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithClearingOptionalFields_ShouldUpdateCorrectly()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = new ManufacturerInputDto
         {
-            Id = 1,
+            Id = Manufacturer1Id,
             Name = "Updated Name Only",
             City = "Original City",
             Country = "Original Country",
@@ -445,11 +449,11 @@ public class ManufacturerUpdateCommandTests : IDisposable
             Logo = ""
         };
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var updatedManufacturer = await DbContext.Manufacturer.FindAsync(1);
+        var updatedManufacturer = await DbContext.Manufacturer.FindAsync(Manufacturer1Id);
         TestAssertions.AssertNotNull(updatedManufacturer);
         TestAssertions.AssertEqual("Updated Name Only", updatedManufacturer!.Name);
         TestAssertions.AssertEqual("", updatedManufacturer.Street);
@@ -460,28 +464,28 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_ResponseStructure_ShouldHaveCorrectFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Messages);
-        TestAssertions.AssertEqual(1, result.Data);
+        TestAssertions.AssertEqual<Guid>(Manufacturer1Id, result.Data);
     }
 
     [Fact]
     public async Task UpdateManufacturer_WithGermanData_ShouldUpdateCorrectly()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = new ManufacturerInputDto
         {
-            Id = 1,
+            Id = Manufacturer1Id,
             Name = "Deutsche Aktualisierte Fertigung",
             Street = "Neue Industriestraße 99",
             City = "Hamburg",
@@ -493,13 +497,13 @@ public class ManufacturerUpdateCommandTests : IDisposable
             Website = "https://aktualisiert-fertigung.de"
         };
 
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertTrue(result.Succeeded);
 
-        var updatedManufacturer = await DbContext.Manufacturer.FindAsync(1);
+        var updatedManufacturer = await DbContext.Manufacturer.FindAsync(Manufacturer1Id);
         TestAssertions.AssertEqual("Deutsche Aktualisierte Fertigung", updatedManufacturer!.Name);
         TestAssertions.AssertEqual("Hamburg", updatedManufacturer.City);
         TestAssertions.AssertEqual("Deutschland", updatedManufacturer.Country);
@@ -510,14 +514,14 @@ public class ManufacturerUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateInput1 = CreateUpdateManufacturerInput();
         var response1 = await PutAsJsonAsync("/api/v1/Manufacturers/3", updateInput1);
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1.StatusCode);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var updateInput2 = CreateUpdateManufacturerInput();
-        updateInput2.Id = 1;
+        updateInput2.Id = Manufacturer1Id;
         var response2 = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput2);
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
     }
@@ -526,14 +530,14 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithCompleteValidData_ShouldUpdateAllFields()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput);
+        var response = await PutAsJsonAsync($"/api/v1/Manufacturers/{Manufacturer1Id}", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var updatedManufacturer = await DbContext.Manufacturer.FindAsync(1);
+        var updatedManufacturer = await DbContext.Manufacturer.FindAsync(Manufacturer1Id);
         TestAssertions.AssertNotNull(updatedManufacturer);
         TestAssertions.AssertEqual(updateInput.Name, updatedManufacturer!.Name);
         TestAssertions.AssertEqual(updateInput.Street, updatedManufacturer.Street);
@@ -545,20 +549,20 @@ public class ManufacturerUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual(updateInput.Email, updatedManufacturer.Email);
         TestAssertions.AssertEqual(updateInput.Website, updatedManufacturer.Website);
         TestAssertions.AssertEqual(updateInput.Logo, updatedManufacturer.Logo);
-        TestAssertions.AssertEqual(1, updatedManufacturer.TenantId);
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant1Id, updatedManufacturer.TenantId!.Value);
     }
 
     [Fact]
     public async Task UpdateManufacturer_WithZeroId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/0", updateInput);
+        var response = await PutAsJsonAsync("/api/v1/Manufacturers/00000000-0000-0000-0000-000000000000", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -567,13 +571,13 @@ public class ManufacturerUpdateCommandTests : IDisposable
     public async Task UpdateManufacturer_WithNegativeId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var updateInput = CreateUpdateManufacturerInput();
-        var response = await PutAsJsonAsync("/api/v1/Manufacturers/-1", updateInput);
+        var response = await PutAsJsonAsync("/api/v1/Manufacturers/invalid-guid", updateInput);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -583,10 +587,10 @@ public class ManufacturerUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateInput1 = new ManufacturerInputDto
         {
-            Id = 1,
+            Id = Manufacturer1Id,
             Name = "Cross Tenant Name",
             City = "City 1",
             Country = "Country 1"
@@ -594,10 +598,10 @@ public class ManufacturerUpdateCommandTests : IDisposable
         var response1 = await PutAsJsonAsync("/api/v1/Manufacturers/1", updateInput1);
         TestAssertions.AssertEqual(HttpStatusCode.OK, response1.StatusCode);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var updateInput2 = new ManufacturerInputDto
         {
-            Id = 3,
+            Id = Manufacturer3Id,
             Name = "Cross Tenant Name",
             City = "City 2",
             Country = "Country 2"
@@ -605,12 +609,12 @@ public class ManufacturerUpdateCommandTests : IDisposable
         var response2 = await PutAsJsonAsync("/api/v1/Manufacturers/3", updateInput2);
         TestAssertions.AssertEqual(HttpStatusCode.OK, response2.StatusCode);
 
-        var manufacturer1 = await DbContext.Manufacturer.FindAsync(1);
-        var manufacturer3 = await DbContext.Manufacturer.FindAsync(3);
+        var manufacturer1 = await DbContext.Manufacturer.FindAsync(Manufacturer1Id);
+        var manufacturer3 = await DbContext.Manufacturer.FindAsync(Manufacturer3Id);
 
         TestAssertions.AssertEqual("Cross Tenant Name", manufacturer1!.Name);
         TestAssertions.AssertEqual("Cross Tenant Name", manufacturer3!.Name);
-        TestAssertions.AssertEqual(1, manufacturer1.TenantId);
-        TestAssertions.AssertEqual(2, manufacturer3.TenantId);
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant1Id, manufacturer1.TenantId!.Value);
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant2Id, manufacturer3.TenantId!.Value);
     }
 }

@@ -66,9 +66,12 @@ public class InvoicePdfQueryTests : IDisposable
             {
                 await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
+                var customer1Id = Guid.NewGuid();
+                var customer2Id = Guid.NewGuid();
+
                 var customer1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -77,18 +80,20 @@ public class InvoicePdfQueryTests : IDisposable
 
                 var customer2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Customer.AddRange(customer1, customer2);
 
+                var product1Id = Guid.NewGuid();
+
                 var product1 = new maERP.Domain.Entities.Product
                 {
-                    Id = 1,
+                    Id = product1Id,
                     Sku = "TEST-001",
                     Name = "Test Product 1",
                     Price = 100.00m,
@@ -97,13 +102,16 @@ public class InvoicePdfQueryTests : IDisposable
 
                 DbContext.Product.Add(product1);
 
+                var invoice1Id = Guid.NewGuid();
+                var orderId = Guid.NewGuid();
+
                 var invoice1Tenant1 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 1,
+                    Id = invoice1Id,
                     InvoiceNumber = "INV-001",
                     InvoiceDate = DateTime.Now.AddDays(-10),
-                    CustomerId = 1,
-                    OrderId = 1001,
+                    CustomerId = customer1Id,
+                    OrderId = orderId,
                     Subtotal = 200.00m,
                     ShippingCost = 10.00m,
                     TotalTax = 38.00m,
@@ -123,27 +131,29 @@ public class InvoicePdfQueryTests : IDisposable
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
+                var invoice2Id = Guid.NewGuid();
+
                 var invoice2Tenant2 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 2,
+                    Id = invoice2Id,
                     InvoiceNumber = "INV-T2-001",
                     InvoiceDate = DateTime.Now.AddDays(-5),
-                    CustomerId = 2,
+                    CustomerId = customer2Id,
                     Subtotal = 100.00m,
                     TotalTax = 19.00m,
                     Total = 119.00m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.CompletelyPaid,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Sent,
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Invoice.AddRange(invoice1Tenant1, invoice2Tenant2);
 
                 var invoiceItem1 = new maERP.Domain.Entities.InvoiceItem
                 {
-                    Id = 1,
-                    InvoiceId = 1,
-                    ProductId = 1,
+                    Id = Guid.NewGuid(),
+                    InvoiceId = invoice1Id,
+                    ProductId = product1Id,
                     Name = "Test Product 1",
                     UnitPrice = 100.00m,
                     TenantId = TenantConstants.TestTenant1Id
@@ -153,7 +163,7 @@ public class InvoicePdfQueryTests : IDisposable
 
                 var setting1 = new maERP.Domain.Entities.Setting
                 {
-                    Id = 1,
+                    Id = Guid.NewGuid(),
                     Key = "CompanyName",
                     Value = "Test Company Ltd",
                     TenantId = TenantConstants.TestTenant1Id
@@ -161,7 +171,7 @@ public class InvoicePdfQueryTests : IDisposable
 
                 var setting2 = new maERP.Domain.Entities.Setting
                 {
-                    Id = 2,
+                    Id = Guid.NewGuid(),
                     Key = "CompanyAddress",
                     Value = "123 Business St",
                     TenantId = TenantConstants.TestTenant1Id
@@ -189,7 +199,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithValidIdAndTenant_ShouldReturnPdfBytes()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/1/pdf");
 
@@ -205,7 +215,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/999/pdf");
 
@@ -220,7 +230,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/1/pdf");
 
@@ -249,7 +259,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithValidPdf_ShouldReturnValidByteArray()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/1/pdf");
 
@@ -264,7 +274,7 @@ public class InvoicePdfQueryTests : IDisposable
     [Fact]
     public async Task GetInvoicePdf_WithInvalidId_ShouldReturnBadRequest()
     {
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/invalid/pdf");
 
@@ -275,7 +285,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithZeroId_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/0/pdf");
 
@@ -290,7 +300,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithNegativeId_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/-1/pdf");
 
@@ -305,7 +315,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithTenant2Invoice_ShouldReturnCorrectPdf()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/2/pdf");
 
@@ -321,7 +331,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync("/api/v1/Invoices/1/pdf");
 
@@ -337,11 +347,11 @@ public class InvoicePdfQueryTests : IDisposable
     {
         await SeedInvoiceTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Invoices/2/pdf");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1.StatusCode);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Invoices/1/pdf");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
     }
@@ -350,7 +360,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/1/pdf");
 
@@ -366,7 +376,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/999/pdf");
 
@@ -383,7 +393,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithLargeId_ShouldHandleGracefully()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/2147483647/pdf");
 
@@ -398,7 +408,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_ShouldGenerateValidPdfHeader()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/1/pdf");
 
@@ -407,10 +417,10 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        
+
         var pdfBytes = result.Data;
         TestAssertions.AssertTrue(pdfBytes.Length >= 4);
-        
+
         var header = System.Text.Encoding.ASCII.GetString(pdfBytes, 0, 4);
         TestAssertions.AssertEqual("%PDF", header);
     }
@@ -419,7 +429,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_MultipleRequests_ShouldReturnConsistentResults()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response1 = await Client.GetAsync("/api/v1/Invoices/1/pdf");
         var response2 = await Client.GetAsync("/api/v1/Invoices/1/pdf");
@@ -442,7 +452,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithCompanySettings_ShouldUseSettingsInPdf()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/1/pdf");
 
@@ -458,7 +468,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithCompleteInvoiceData_ShouldGenerateCompletePdf()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/1/pdf");
 
@@ -467,7 +477,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        
+
         var pdfSize = result.Data.Length;
         TestAssertions.AssertTrue(pdfSize > 0);
     }
@@ -476,7 +486,7 @@ public class InvoicePdfQueryTests : IDisposable
     public async Task GetInvoicePdf_WithMinimalInvoiceData_ShouldStillGeneratePdf()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/2/pdf");
 

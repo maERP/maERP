@@ -21,6 +21,12 @@ public class OrderDetailQueryTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Customer1Id = Guid.NewGuid();
+    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly Guid Order1Id = Guid.NewGuid();
+    private static readonly Guid Order2Id = Guid.NewGuid();
+    private static readonly Guid SalesChannel1Id = Guid.NewGuid();
+    private static readonly Guid SalesChannel2Id = Guid.NewGuid();
 
     public OrderDetailQueryTests()
     {
@@ -72,20 +78,20 @@ public class OrderDetailQueryTests : IDisposable
                 // Create customers for both tenants
                 var customer1Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer1Tenant2 = new Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Customer2Id,
                     Firstname = "Bob",
                     Lastname = "Johnson",
                     Email = "bob.johnson@test.com",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Customer.AddRange(customer1Tenant1, customer1Tenant2);
@@ -93,9 +99,9 @@ public class OrderDetailQueryTests : IDisposable
                 // Create detailed order for tenant 1
                 var order1Tenant1 = new Domain.Entities.Order
                 {
-                    Id = 1,
-                    CustomerId = 1,
-                    SalesChannelId = 1,
+                    Id = Order1Id,
+                    CustomerId = Customer1Id,
+                    SalesChannelId = SalesChannel1Id,
                     RemoteOrderId = "ORDER-001",
                     Status = OrderStatus.Processing,
                     PaymentStatus = PaymentStatus.CompletelyPaid,
@@ -120,15 +126,15 @@ public class OrderDetailQueryTests : IDisposable
                     Total = 175.00m,
                     CustomerNote = "Please deliver to front door",
                     DateOrdered = DateTime.UtcNow.AddDays(-5),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 // Create detailed order for tenant 2
                 var order1Tenant2 = new Domain.Entities.Order
                 {
-                    Id = 2,
-                    CustomerId = 2,
-                    SalesChannelId = 2,
+                    Id = Order2Id,
+                    CustomerId = Customer2Id,
+                    SalesChannelId = SalesChannel2Id,
                     RemoteOrderId = "ORDER-002",
                     Status = OrderStatus.ReadyForDelivery,
                     PaymentStatus = PaymentStatus.Invoiced,
@@ -153,7 +159,7 @@ public class OrderDetailQueryTests : IDisposable
                     Total = 242.00m,
                     CustomerNote = "Call before delivery",
                     DateOrdered = DateTime.UtcNow.AddDays(-3),
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Order.AddRange(order1Tenant1, order1Tenant2);
@@ -177,15 +183,15 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithValidIdAndTenant_ShouldReturnOrderDetail()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/1");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<OrderDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(1, result.Data!.Id);
+        TestAssertions.AssertEqual<Guid>(Order1Id, result.Data!.Id);
         TestAssertions.AssertEqual("John", result.Data.InvoiceAddressFirstName);
     }
 
@@ -193,9 +199,9 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithValidIdButDifferentTenant_ShouldReturnNotFound()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/2");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order2Id}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
@@ -204,9 +210,9 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithInvalidId_ShouldReturnNotFound()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/999");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Guid.NewGuid()}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
@@ -216,7 +222,7 @@ public class OrderDetailQueryTests : IDisposable
     {
         await SeedOrderDetailTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Orders/1");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
@@ -225,9 +231,9 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
-        var response = await Client.GetAsync("/api/v1/Orders/1");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
@@ -236,9 +242,9 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_ResponseStructure_ShouldContainAllRequiredFields()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/1");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<OrderDetailDto>>(response);
@@ -246,8 +252,8 @@ public class OrderDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result.Data);
 
         var order = result.Data!;
-        TestAssertions.AssertEqual(1, order.Id);
-        TestAssertions.AssertEqual(1, order.CustomerId);
+        TestAssertions.AssertEqual<Guid>(Order1Id, order.Id);
+        TestAssertions.AssertEqual<Guid>(Customer1Id, order.CustomerId);
         TestAssertions.AssertEqual(OrderStatus.Processing, order.Status);
         TestAssertions.AssertEqual(PaymentStatus.CompletelyPaid, order.PaymentStatus);
         TestAssertions.AssertEqual("Credit Card", order.PaymentMethod);
@@ -258,9 +264,9 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithPaymentInformation_ShouldReturnPaymentDetails()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/1");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<OrderDetailDto>>(response);
@@ -278,9 +284,9 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithAddressInformation_ShouldReturnAddressDetails()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/1");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<OrderDetailDto>>(response);
@@ -299,9 +305,9 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithPriceBreakdown_ShouldReturnPriceDetails()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/1");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<OrderDetailDto>>(response);
@@ -319,9 +325,9 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithCustomerNote_ShouldReturnNote()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/1");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<OrderDetailDto>>(response);
@@ -336,23 +342,23 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_TenantIsolation_ShouldNotAccessCrossTenantData()
     {
         await SeedOrderDetailTestDataAsync();
-        
+
         // Verify tenant 1 can access its order
-        SetTenantHeader(1);
-        var responseTenant1 = await Client.GetAsync("/api/v1/Orders/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var responseTenant1 = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertHttpSuccess(responseTenant1);
-        
+
         // Verify tenant 1 cannot access tenant 2's order
-        var responseTenant1ToTenant2 = await Client.GetAsync("/api/v1/Orders/2");
+        var responseTenant1ToTenant2 = await Client.GetAsync($"/api/v1/Orders/{Order2Id}");
         TestAssertions.AssertHttpStatusCode(responseTenant1ToTenant2, HttpStatusCode.NotFound);
-        
+
         // Verify tenant 2 can access its order
-        SetTenantHeader(2);
-        var responseTenant2 = await Client.GetAsync("/api/v1/Orders/2");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var responseTenant2 = await Client.GetAsync($"/api/v1/Orders/{Order2Id}");
         TestAssertions.AssertHttpSuccess(responseTenant2);
-        
+
         // Verify tenant 2 cannot access tenant 1's order
-        var responseTenant2ToTenant1 = await Client.GetAsync("/api/v1/Orders/1");
+        var responseTenant2ToTenant1 = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertHttpStatusCode(responseTenant2ToTenant1, HttpStatusCode.NotFound);
     }
 
@@ -360,9 +366,9 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithRemoteOrderId_ShouldReturnRemoteId()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/1");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<OrderDetailDto>>(response);
@@ -371,16 +377,16 @@ public class OrderDetailQueryTests : IDisposable
 
         var order = result.Data!;
         TestAssertions.AssertEqual("ORDER-001", order.RemoteOrderId);
-        TestAssertions.AssertEqual(1, order.SalesChannelId);
+        TestAssertions.AssertEqual<Guid?>(SalesChannel1Id, order.SalesChannelId);
     }
 
     [Fact]
     public async Task GetOrderDetail_WithZeroId_ShouldReturnNotFound()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/0");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Guid.Empty}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
@@ -389,9 +395,9 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithNegativeId_ShouldReturnNotFound()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Orders/-1");
+        var response = await Client.GetAsync($"/api/v1/Orders/{Guid.NewGuid()}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
@@ -400,16 +406,16 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithDifferentTenantOrders_ShouldReturnCorrectOrderData()
     {
         await SeedOrderDetailTestDataAsync();
-        
+
         // Get tenant 1 order
-        SetTenantHeader(1);
-        var responseTenant1 = await Client.GetAsync("/api/v1/Orders/1");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var responseTenant1 = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
         TestAssertions.AssertHttpSuccess(responseTenant1);
         var resultTenant1 = await ReadResponseAsync<Result<OrderDetailDto>>(responseTenant1);
-        
+
         // Get tenant 2 order
-        SetTenantHeader(2);
-        var responseTenant2 = await Client.GetAsync("/api/v1/Orders/2");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var responseTenant2 = await Client.GetAsync($"/api/v1/Orders/{Order2Id}");
         TestAssertions.AssertHttpSuccess(responseTenant2);
         var resultTenant2 = await ReadResponseAsync<Result<OrderDetailDto>>(responseTenant2);
 

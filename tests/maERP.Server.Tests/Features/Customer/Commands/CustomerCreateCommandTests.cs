@@ -44,7 +44,7 @@ public class CustomerCreateCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         Task.Delay(10).Wait();
     }
 
@@ -82,7 +82,7 @@ public class CustomerCreateCommandTests : IDisposable
 
                 var existingCustomer = new maERP.Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Guid.NewGuid(),
                     Firstname = "Existing",
                     Lastname = "Customer",
                     CompanyName = "Existing Company",
@@ -134,29 +134,29 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithValidData_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
     public async Task CreateCustomer_WithValidData_ShouldSaveToDatabase()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
 
         var createdCustomer = await DbContext.Customer.FindAsync(result.Data);
         TestAssertions.AssertNotNull(createdCustomer);
@@ -164,7 +164,7 @@ public class CustomerCreateCommandTests : IDisposable
         TestAssertions.AssertEqual("Doe", createdCustomer.Lastname);
         TestAssertions.AssertEqual("Test Company", createdCustomer.CompanyName);
         TestAssertions.AssertEqual("john.doe@testcompany.com", createdCustomer.Email);
-        TestAssertions.AssertEqual(1, createdCustomer.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, createdCustomer.TenantId);
     }
 
     [Fact]
@@ -182,14 +182,14 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithInvalidTenant_ShouldStillCreateWithCorrectTenant()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
 
         var customerData = CreateValidCustomerInputDto();
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         if (response.StatusCode == HttpStatusCode.Created)
         {
-            var result = await ReadResponseAsync<Result<int>>(response);
+            var result = await ReadResponseAsync<Result<Guid>>(response);
             var createdCustomer = await DbContext.Customer.FindAsync(result.Data);
             TestAssertions.AssertNotNull(createdCustomer);
         }
@@ -199,15 +199,15 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithEmptyFirstname_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         customerData.Firstname = "";
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -217,15 +217,15 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithEmptyLastname_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         customerData.Lastname = "";
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -235,15 +235,15 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithInvalidEmail_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         customerData.Email = "invalid-email";
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -253,16 +253,16 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithDuplicateData_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         customerData.Firstname = "Existing";
         customerData.Lastname = "Customer";
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -273,11 +273,11 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithLongFirstname_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         customerData.Firstname = new string('A', 256); // Assuming max length is 255
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
@@ -287,15 +287,15 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithInvalidWebsite_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         customerData.Website = "invalid-url";
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -305,7 +305,7 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithMinimalRequiredFields_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = new CustomerInputDto
         {
@@ -314,29 +314,29 @@ public class CustomerCreateCommandTests : IDisposable
             CustomerStatus = CustomerStatus.Active,
             DateEnrollment = DateTimeOffset.UtcNow
         };
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
     public async Task CreateCustomer_WithInactiveStatus_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         customerData.CustomerStatus = CustomerStatus.Inactive;
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
 
@@ -348,15 +348,15 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithFutureEnrollmentDate_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         customerData.DateEnrollment = DateTimeOffset.UtcNow.AddDays(30);
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
 
@@ -368,30 +368,30 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_TenantIsolation_ShouldCreateInCorrectTenant()
     {
         await SeedTestDataAsync();
-        
+
         var customerDataT1 = CreateValidCustomerInputDto();
         customerDataT1.Firstname = "Tenant1";
-        
+
         var customerDataT2 = CreateValidCustomerInputDto();
         customerDataT2.Firstname = "Tenant2";
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var responseT1 = await PostAsJsonAsync("/api/v1/Customers", customerDataT1);
         TestAssertions.AssertEqual(HttpStatusCode.Created, responseT1.StatusCode);
-        var resultT1 = await ReadResponseAsync<Result<int>>(responseT1);
+        var resultT1 = await ReadResponseAsync<Result<Guid>>(responseT1);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var responseT2 = await PostAsJsonAsync("/api/v1/Customers", customerDataT2);
         TestAssertions.AssertEqual(HttpStatusCode.Created, responseT2.StatusCode);
-        var resultT2 = await ReadResponseAsync<Result<int>>(responseT2);
+        var resultT2 = await ReadResponseAsync<Result<Guid>>(responseT2);
 
         var customerT1 = await DbContext.Customer.FindAsync(resultT1.Data);
         var customerT2 = await DbContext.Customer.FindAsync(resultT2.Data);
 
         TestAssertions.AssertNotNull(customerT1);
         TestAssertions.AssertNotNull(customerT2);
-        TestAssertions.AssertEqual(1, customerT1!.TenantId);
-        TestAssertions.AssertEqual(2, customerT2!.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, customerT1!.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, customerT2!.TenantId);
         TestAssertions.AssertEqual("Tenant1", customerT1.Firstname);
         TestAssertions.AssertEqual("Tenant2", customerT2.Firstname);
     }
@@ -400,7 +400,7 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithNullJson_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await PostAsJsonAsync("/api/v1/Customers", (CustomerInputDto)null!);
 
@@ -411,7 +411,7 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithMalformedJson_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var malformedJson = "{firstname: 'John', lastname: 'Doe'}"; // Missing quotes
         var content = new StringContent(malformedJson, System.Text.Encoding.UTF8, "application/json");
@@ -424,16 +424,16 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
         TestAssertions.AssertNotNull(result.Messages);
     }
 
@@ -441,18 +441,18 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         customerData.Firstname = ""; // Force validation error
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertEqual(0, result.Data);
+        TestAssertions.AssertEqual(Guid.Empty, result.Data);
         TestAssertions.AssertNotNull(result.Messages);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
@@ -461,18 +461,18 @@ public class CustomerCreateCommandTests : IDisposable
     public async Task CreateCustomer_WithUnicodeCharacters_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerData = CreateValidCustomerInputDto();
         customerData.Firstname = "José";
         customerData.Lastname = "García";
         customerData.CompanyName = "Ñueva Compañía";
         customerData.Note = "Müller & Søn";
-        
+
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertTrue(result.Succeeded);
 
         var createdCustomer = await DbContext.Customer.FindAsync(result.Data);

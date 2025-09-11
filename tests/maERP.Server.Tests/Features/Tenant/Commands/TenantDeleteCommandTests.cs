@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using maERP.Application.Features.Tenant.Commands.TenantDelete;
+using maERP.Domain.Constants;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
 using maERP.Persistence.DatabaseContext;
@@ -55,12 +56,12 @@ public class TenantDeleteCommandTests : IDisposable
 
         try
         {
-            var existingTenant1 = await DbContext.Tenant.FirstOrDefaultAsync(t => t.Id == 1);
+            var existingTenant1 = await DbContext.Tenant.FirstOrDefaultAsync(t => t.Id == TenantConstants.TestTenant1Id);
             if (existingTenant1 == null)
             {
                 var tenant1 = new maERP.Domain.Entities.Tenant
                 {
-                    Id = 1,
+                    Id = TenantConstants.TestTenant1Id,
                     Name = "Deletable Tenant",
                     TenantCode = "DEL001",
                     Description = "A tenant that can be deleted",
@@ -72,7 +73,7 @@ public class TenantDeleteCommandTests : IDisposable
 
                 var tenant2 = new maERP.Domain.Entities.Tenant
                 {
-                    Id = 2,
+                    Id = TenantConstants.TestTenant2Id,
                     Name = "Another Tenant",
                     TenantCode = "DEL002",
                     Description = "Another tenant for testing",
@@ -276,8 +277,8 @@ public class TenantDeleteCommandTests : IDisposable
     }
 
     [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
+    [InlineData("00000001-0001-0001-0001-000000000001")]
+    [InlineData("00000002-0002-0002-0002-000000000002")]
     public async Task DeleteTenant_WithDifferentValidIds_ShouldReturnUnauthorized(Guid tenantId)
     {
         await SeedTestTenantsAsync();
@@ -288,9 +289,9 @@ public class TenantDeleteCommandTests : IDisposable
     }
 
     [Theory]
-    [InlineData(-1)]
-    [InlineData(-100)]
-    [InlineData(-2147483648)]
+    [InlineData("ffffffff-ffff-ffff-ffff-ffffffffffff")]
+    [InlineData("00000000-0000-0000-0000-000000000000")]
+    [InlineData("invalid-guid-string")]
     public async Task DeleteTenant_WithNegativeIds_ShouldReturnUnauthorized(Guid tenantId)
     {
         await SeedTestTenantsAsync();

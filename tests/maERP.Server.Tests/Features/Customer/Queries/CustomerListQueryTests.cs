@@ -70,7 +70,7 @@ public class CustomerListQueryTests : IDisposable
 
                 var customer1Tenant1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Guid.Parse("40000001-0001-0001-0001-000000000001"),
                     Firstname = "Alice",
                     Lastname = "Johnson",
                     CompanyName = "Alpha Company",
@@ -86,7 +86,7 @@ public class CustomerListQueryTests : IDisposable
 
                 var customer2Tenant1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Guid.Parse("40000002-0002-0002-0002-000000000002"),
                     Firstname = "Bob",
                     Lastname = "Smith",
                     CompanyName = "Beta Corporation",
@@ -102,7 +102,7 @@ public class CustomerListQueryTests : IDisposable
 
                 var customer3Tenant1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 3,
+                    Id = Guid.Parse("40000003-0003-0003-0003-000000000003"),
                     Firstname = "Charlie",
                     Lastname = "Brown",
                     CompanyName = "Gamma Enterprise",
@@ -118,7 +118,7 @@ public class CustomerListQueryTests : IDisposable
 
                 var customer4Tenant2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 4,
+                    Id = Guid.Parse("40000004-0004-0004-0004-000000000004"),
                     Firstname = "David",
                     Lastname = "Wilson",
                     CompanyName = "Delta Company",
@@ -129,12 +129,12 @@ public class CustomerListQueryTests : IDisposable
                     Note = "Customer for tenant 2",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-5),
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var customer5Tenant2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 5,
+                    Id = Guid.Parse("40000005-0005-0005-0005-000000000005"),
                     Firstname = "Eve",
                     Lastname = "Davis",
                     CompanyName = "Epsilon Ltd",
@@ -145,14 +145,14 @@ public class CustomerListQueryTests : IDisposable
                     Note = "Another customer for tenant 2",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-15),
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Customer.AddRange(
-                    customer1Tenant1, 
-                    customer2Tenant1, 
-                    customer3Tenant1, 
-                    customer4Tenant2, 
+                    customer1Tenant1,
+                    customer2Tenant1,
+                    customer3Tenant1,
+                    customer4Tenant2,
                     customer5Tenant2);
                 await DbContext.SaveChangesAsync();
             }
@@ -174,7 +174,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithValidTenant_ShouldReturnTenantData()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers");
 
@@ -189,7 +189,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithDifferentTenant_ShouldReturnOnlyThatTenantData()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var response = await Client.GetAsync("/api/v1/Customers");
 
@@ -198,7 +198,7 @@ public class CustomerListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(2, result.Data?.Count ?? 0);
-        TestAssertions.AssertTrue(result.Data?.All(c => c.Id >= 4) ?? false);
+        TestAssertions.AssertTrue(result.Data?.All(c => c.Id == Guid.Parse("40000004-0004-0004-0004-000000000004") || c.Id == Guid.Parse("40000005-0005-0005-0005-000000000005")) ?? false);
     }
 
     [Fact]
@@ -219,7 +219,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithPagination_ShouldRespectPageSize()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?pageNumber=0&pageSize=2");
 
@@ -236,7 +236,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithPaginationSecondPage_ShouldReturnSecondPageData()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?pageNumber=1&pageSize=2");
 
@@ -253,7 +253,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithSearchStringFirstname_ShouldFilterResults()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?searchString=Alice");
 
@@ -269,7 +269,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithSearchStringLastname_ShouldFilterResults()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?searchString=Brown");
 
@@ -286,7 +286,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithSearchStringNoMatch_ShouldReturnEmpty()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?searchString=NonexistentCustomer");
 
@@ -301,7 +301,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithOrderByFirstname_ShouldReturnOrderedResults()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?orderBy=Firstname");
 
@@ -310,7 +310,7 @@ public class CustomerListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(3, result.Data?.Count ?? 0);
-        
+
         var names = result.Data?.Select(x => x.Firstname).ToList();
         TestAssertions.AssertEqual("Alice", names?[0]);
         TestAssertions.AssertEqual("Bob", names?[1]);
@@ -321,7 +321,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithOrderByLastnameDescending_ShouldReturnDescOrderedResults()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?orderBy=Lastname desc");
 
@@ -330,7 +330,7 @@ public class CustomerListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(3, result.Data?.Count ?? 0);
-        
+
         var names = result.Data?.Select(x => x.Lastname).ToList();
         TestAssertions.AssertEqual("Smith", names?[0]);
         TestAssertions.AssertEqual("Johnson", names?[1]);
@@ -341,7 +341,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithOrderByDateEnrollment_ShouldReturnDateOrderedResults()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?orderBy=DateEnrollment");
 
@@ -350,7 +350,7 @@ public class CustomerListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(3, result.Data?.Count ?? 0);
-        
+
         var dates = result.Data?.Select(x => x.DateEnrollment).ToList();
         TestAssertions.AssertTrue(dates?[0] <= dates?[1]);
         TestAssertions.AssertTrue(dates?[1] <= dates?[2]);
@@ -360,7 +360,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithMultipleOrderBy_ShouldRespectMultipleSorting()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?orderBy=Lastname,Firstname");
 
@@ -375,7 +375,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithInvalidPageNumber_ShouldReturnEmptyResults()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?pageNumber=10&pageSize=10");
 
@@ -391,7 +391,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithZeroPageSize_ShouldUseDefaultPageSize()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?pageSize=0");
 
@@ -405,7 +405,7 @@ public class CustomerListQueryTests : IDisposable
     [Fact]
     public async Task GetCustomers_WithNegativePageNumber_ShouldHandleGracefully()
     {
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync("/api/v1/Customers?pageNumber=-1");
 
@@ -420,7 +420,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithNonExistentTenant_ShouldReturnEmptyPaginatedResult()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync("/api/v1/Customers");
 
@@ -437,7 +437,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_ResponseStructure_ShouldContainRequiredFields()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers");
 
@@ -449,7 +449,7 @@ public class CustomerListQueryTests : IDisposable
 
         var firstCustomer = result.Data?.First();
         TestAssertions.AssertNotNull(firstCustomer);
-        TestAssertions.AssertTrue(firstCustomer!.Id > 0);
+        TestAssertions.AssertTrue(firstCustomer!.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstCustomer.Firstname));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstCustomer.Lastname));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstCustomer.FullName));
@@ -460,7 +460,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithCaseInsensitiveSearch_ShouldReturnResults()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?searchString=alice");
 
@@ -476,7 +476,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithPartialSearch_ShouldReturnMatchingResults()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?searchString=Jo");
 
@@ -493,7 +493,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithEmptySearchString_ShouldReturnAllResults()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?searchString=");
 
@@ -509,26 +509,26 @@ public class CustomerListQueryTests : IDisposable
     {
         await SeedCustomerTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Customers");
         TestAssertions.AssertHttpSuccess(response1);
         var result1 = await ReadResponseAsync<PaginatedResult<CustomerListDto>>(response1);
         TestAssertions.AssertEqual(3, result1.Data?.Count ?? 0);
-        TestAssertions.AssertTrue(result1.Data?.All(c => c.Id <= 3) ?? false);
+        TestAssertions.AssertTrue(result1.Data?.All(c => c.Id == Guid.Parse("40000001-0001-0001-0001-000000000001") || c.Id == Guid.Parse("40000002-0002-0002-0002-000000000002") || c.Id == Guid.Parse("40000003-0003-0003-0003-000000000003")) ?? false);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Customers");
         TestAssertions.AssertHttpSuccess(response2);
         var result2 = await ReadResponseAsync<PaginatedResult<CustomerListDto>>(response2);
         TestAssertions.AssertEqual(2, result2.Data?.Count ?? 0);
-        TestAssertions.AssertTrue(result2.Data?.All(c => c.Id >= 4) ?? false);
+        TestAssertions.AssertTrue(result2.Data?.All(c => c.Id == Guid.Parse("40000004-0004-0004-0004-000000000004") || c.Id == Guid.Parse("40000005-0005-0005-0005-000000000005")) ?? false);
     }
 
     [Fact]
     public async Task GetCustomers_FullNameProperty_ShouldBeConcatenatedCorrectly()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?searchString=Alice");
 
@@ -537,7 +537,7 @@ public class CustomerListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(1, result.Data?.Count ?? 0);
-        
+
         var customer = result.Data?.First();
         TestAssertions.AssertEqual("Alice Johnson", customer!.FullName);
     }
@@ -546,7 +546,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_DefaultSorting_ShouldReturnConsistentOrder()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers");
 
@@ -561,7 +561,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_PaginationMetadata_ShouldBeCorrect()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?pageNumber=0&pageSize=2");
 
@@ -580,7 +580,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_LargePageSize_ShouldReturnAllAvailableResults()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?pageSize=1000");
 

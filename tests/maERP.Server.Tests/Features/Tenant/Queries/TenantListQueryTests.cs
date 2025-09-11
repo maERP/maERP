@@ -61,7 +61,7 @@ public class TenantListQueryTests : IDisposable
             {
                 var tenant1 = new maERP.Domain.Entities.Tenant
                 {
-                    Id = 1,
+                    Id = TenantConstants.TestTenant1Id,
                     Name = "Alpha Tenant",
                     TenantCode = "ALPHA",
                     Description = "First alphabetically sorted tenant",
@@ -73,7 +73,7 @@ public class TenantListQueryTests : IDisposable
 
                 var tenant2 = new maERP.Domain.Entities.Tenant
                 {
-                    Id = 2,
+                    Id = TenantConstants.TestTenant2Id,
                     Name = "Beta Corporation",
                     TenantCode = "BETA",
                     Description = "Second test tenant for beta testing",
@@ -85,7 +85,7 @@ public class TenantListQueryTests : IDisposable
 
                 var tenant3 = new maERP.Domain.Entities.Tenant
                 {
-                    Id = 3,
+                    Id = TenantConstants.TestTenant3Id,
                     Name = "Gamma Solutions",
                     TenantCode = "GAMMA",
                     Description = "Third tenant for gamma solutions",

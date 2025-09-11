@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
@@ -77,7 +78,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithValidApiKey_ShouldReturnCreated()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = "Test AI Model",
@@ -101,7 +102,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithValidUsernamePassword_ShouldReturnCreated()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = "Test AI Model Username",
@@ -126,7 +127,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithAllAiModelTypes_ShouldReturnCreated()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var aiModelTypes = new[] { AiModelType.Ollama, AiModelType.VLlm, AiModelType.LmStudio, AiModelType.ChatGpt4O, AiModelType.Claude35 };
 
         for (int i = 0; i < aiModelTypes.Length; i++)
@@ -155,7 +156,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithEmptyName_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = "",
@@ -179,7 +180,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithTooLongName_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = new string('A', 51), // 51 characters, exceeds 50 limit
@@ -203,7 +204,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithInvalidAiModelType_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = "Test AI Model",
@@ -227,7 +228,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithoutAuthentication_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = "Test AI Model",
@@ -251,7 +252,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithTooShortApiKey_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = "Test AI Model",
@@ -275,7 +276,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithIncompleteUsernamePassword_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = "Test AI Model",
@@ -299,7 +300,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithDuplicateName_ShouldReturnBadRequest()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = "Duplicate Name Model",
@@ -336,12 +337,12 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Create model in tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
         TestAssertions.AssertHttpStatusCode(response1, HttpStatusCode.Created);
 
         // Act - Create model with same name in tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert - Should succeed because different tenants
@@ -375,7 +376,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithInvalidTenantHeader_ShouldHandleGracefully()
     {
         // Arrange
-        SetTenantHeader(999); // Invalid tenant
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Invalid tenant
         var createCommand = new AiModelInputDto
         {
             Name = "Invalid Tenant Model",
@@ -398,7 +399,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithZeroNCtx_ShouldReturnCreated()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = "Zero NCtx Model",
@@ -421,7 +422,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithLargeNCtx_ShouldReturnCreated()
     {
         // Arrange
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var createCommand = new AiModelInputDto
         {
             Name = "Large NCtx Model",

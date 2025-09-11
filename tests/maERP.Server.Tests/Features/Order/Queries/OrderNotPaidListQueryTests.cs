@@ -21,6 +21,16 @@ public class OrderNotPaidListQueryTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Customer1Id = Guid.NewGuid();
+    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly Guid Customer3Id = Guid.NewGuid();
+    private static readonly Guid Order1Id = Guid.NewGuid();
+    private static readonly Guid Order2Id = Guid.NewGuid();
+    private static readonly Guid Order3Id = Guid.NewGuid();
+    private static readonly Guid Order4Id = Guid.NewGuid();
+    private static readonly Guid Order5Id = Guid.NewGuid();
+    private static readonly Guid Order6Id = Guid.NewGuid();
+    private static readonly Guid Order7Id = Guid.NewGuid();
 
     public OrderNotPaidListQueryTests()
     {
@@ -72,29 +82,29 @@ public class OrderNotPaidListQueryTests : IDisposable
                 // Create customers for both tenants
                 var customer1Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer2Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer1Tenant2 = new Domain.Entities.Customer
                 {
-                    Id = 3,
+                    Id = Customer3Id,
                     Firstname = "Bob",
                     Lastname = "Johnson",
                     Email = "bob.johnson@test.com",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Customer.AddRange(customer1Tenant1, customer2Tenant1, customer1Tenant2);
@@ -102,100 +112,100 @@ public class OrderNotPaidListQueryTests : IDisposable
                 // Create orders for tenant 1 - mix of paid and unpaid, different statuses
                 var notPaidOrder1Tenant1 = new Domain.Entities.Order
                 {
-                    Id = 1,
-                    CustomerId = 1,
+                    Id = Order1Id,
+                    CustomerId = Customer1Id,
                     Status = OrderStatus.Processing,
                     PaymentStatus = PaymentStatus.Invoiced,
                     InvoiceAddressFirstName = "John",
                     InvoiceAddressLastName = "Doe",
                     Total = 199.99m,
                     DateOrdered = DateTime.UtcNow.AddDays(-5),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var notPaidOrder2Tenant1 = new Domain.Entities.Order
                 {
-                    Id = 2,
-                    CustomerId = 2,
+                    Id = Order2Id,
+                    CustomerId = Customer2Id,
                     Status = OrderStatus.ReadyForDelivery,
                     PaymentStatus = PaymentStatus.PartiallyPaid,
                     InvoiceAddressFirstName = "Jane",
                     InvoiceAddressLastName = "Smith",
                     Total = 299.99m,
                     DateOrdered = DateTime.UtcNow.AddDays(-3),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var notPaidOrder3Tenant1 = new Domain.Entities.Order
                 {
-                    Id = 3,
-                    CustomerId = 1,
+                    Id = Order3Id,
+                    CustomerId = Customer1Id,
                     Status = OrderStatus.Pending,
                     PaymentStatus = PaymentStatus.FirstReminder,
                     InvoiceAddressFirstName = "John",
                     InvoiceAddressLastName = "Doe",
                     Total = 89.99m,
                     DateOrdered = DateTime.UtcNow.AddDays(-10),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 // This should NOT appear in not paid list (already paid)
                 var paidOrderTenant1 = new Domain.Entities.Order
                 {
-                    Id = 4,
-                    CustomerId = 1,
+                    Id = Order4Id,
+                    CustomerId = Customer1Id,
                     Status = OrderStatus.Processing,
                     PaymentStatus = PaymentStatus.CompletelyPaid,
                     InvoiceAddressFirstName = "John",
                     InvoiceAddressLastName = "Doe",
                     Total = 149.99m,
                     DateOrdered = DateTime.UtcNow.AddDays(-1),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 // This should NOT appear in not paid list (already shipped/completed)
                 var completedOrderTenant1 = new Domain.Entities.Order
                 {
-                    Id = 5,
-                    CustomerId = 2,
+                    Id = Order5Id,
+                    CustomerId = Customer2Id,
                     Status = OrderStatus.Completed,
                     PaymentStatus = PaymentStatus.Invoiced,
                     InvoiceAddressFirstName = "Jane",
                     InvoiceAddressLastName = "Smith",
                     Total = 79.99m,
                     DateOrdered = DateTime.UtcNow.AddDays(-2),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 // Create orders for tenant 2
                 var notPaidOrder1Tenant2 = new Domain.Entities.Order
                 {
-                    Id = 6,
-                    CustomerId = 3,
+                    Id = Order6Id,
+                    CustomerId = Customer3Id,
                     Status = OrderStatus.Processing,
                     PaymentStatus = PaymentStatus.SecondReminder,
                     InvoiceAddressFirstName = "Bob",
                     InvoiceAddressLastName = "Johnson",
                     Total = 249.99m,
                     DateOrdered = DateTime.UtcNow.AddDays(-7),
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var notPaidOrder2Tenant2 = new Domain.Entities.Order
                 {
-                    Id = 7,
-                    CustomerId = 3,
+                    Id = Order7Id,
+                    CustomerId = Customer3Id,
                     Status = OrderStatus.OnHold,
                     PaymentStatus = PaymentStatus.ReviewNecessary,
                     InvoiceAddressFirstName = "Bob",
                     InvoiceAddressLastName = "Johnson",
                     Total = 349.99m,
                     DateOrdered = DateTime.UtcNow.AddDays(-4),
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Order.AddRange(
-                    notPaidOrder1Tenant1, notPaidOrder2Tenant1, notPaidOrder3Tenant1, 
+                    notPaidOrder1Tenant1, notPaidOrder2Tenant1, notPaidOrder3Tenant1,
                     paidOrderTenant1, completedOrderTenant1,
                     notPaidOrder1Tenant2, notPaidOrder2Tenant2);
                 await DbContext.SaveChangesAsync();
@@ -218,7 +228,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_WithValidTenant_ShouldReturnOnlyNotPaidShippableOrders()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid");
 
@@ -233,7 +243,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_WithDifferentTenant_ShouldReturnOnlyThatTenantData()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid");
 
@@ -263,7 +273,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_ShouldExcludeCompletelyPaidOrders()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid");
 
@@ -274,14 +284,14 @@ public class OrderNotPaidListQueryTests : IDisposable
 
         // Should not include the completely paid order (ID 4)
         var orderIds = result.Data?.Select(o => o.Id).ToList();
-        TestAssertions.AssertDoesNotContain(4, orderIds ?? new List<Guid>());
+        TestAssertions.AssertDoesNotContain(Order4Id, orderIds ?? new List<Guid>());
     }
 
     [Fact]
     public async Task GetOrdersNotPaid_ShouldExcludeCompletedOrders()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid");
 
@@ -292,14 +302,14 @@ public class OrderNotPaidListQueryTests : IDisposable
 
         // Should not include the completed order (ID 5) even if not paid
         var orderIds = result.Data?.Select(o => o.Id).ToList();
-        TestAssertions.AssertDoesNotContain(5, orderIds ?? new List<Guid>());
+        TestAssertions.AssertDoesNotContain(Order5Id, orderIds ?? new List<Guid>());
     }
 
     [Fact]
     public async Task GetOrdersNotPaid_WithPagination_ShouldRespectPageSize()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid?pageNumber=0&pageSize=2");
 
@@ -316,7 +326,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_WithOrderByTotal_ShouldReturnOrderedResults()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid?orderBy=Total");
 
@@ -325,7 +335,7 @@ public class OrderNotPaidListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(3, result.Data?.Count ?? 0);
-        
+
         var totals = result.Data?.Select(x => x.Total).ToList();
         TestAssertions.AssertEqual(89.99m, totals?[0]);
         TestAssertions.AssertEqual(199.99m, totals?[1]);
@@ -336,7 +346,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_WithOrderByTotalDescending_ShouldReturnDescOrderedResults()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid?orderBy=Total desc");
 
@@ -345,7 +355,7 @@ public class OrderNotPaidListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(3, result.Data?.Count ?? 0);
-        
+
         var totals = result.Data?.Select(x => x.Total).ToList();
         TestAssertions.AssertEqual(299.99m, totals?[0]);
         TestAssertions.AssertEqual(199.99m, totals?[1]);
@@ -356,7 +366,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_WithNonExistentTenant_ShouldReturnEmptyPaginatedResult()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid");
 
@@ -372,7 +382,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_ResponseStructure_ShouldContainRequiredFields()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid");
 
@@ -384,7 +394,7 @@ public class OrderNotPaidListQueryTests : IDisposable
 
         var firstOrder = result.Data?.First();
         TestAssertions.AssertNotNull(firstOrder);
-        TestAssertions.AssertTrue(firstOrder!.Id > 0);
+        TestAssertions.AssertTrue(firstOrder!.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.InvoiceAddressFirstName));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.Status));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.PaymentStatus));
@@ -395,7 +405,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_ShouldIncludeVariousNotPaidStatuses()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid");
 
@@ -414,7 +424,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_ShouldIncludeOnlyShippableOrderStatuses()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid");
 
@@ -427,7 +437,7 @@ public class OrderNotPaidListQueryTests : IDisposable
         TestAssertions.AssertContains("Processing", orderStatuses ?? new List<string>());
         TestAssertions.AssertContains("ReadyForDelivery", orderStatuses ?? new List<string>());
         TestAssertions.AssertContains("Pending", orderStatuses ?? new List<string>());
-        
+
         // Should not contain completed orders
         TestAssertions.AssertDoesNotContain("Completed", orderStatuses ?? new List<string>());
     }
@@ -436,15 +446,15 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_TenantIsolation_ShouldNotLeakDataBetweenTenants()
     {
         await SeedOrderNotPaidTestDataAsync();
-        
+
         // Test tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var responseTenant1 = await Client.GetAsync("/api/v1/Orders/not-paid");
         TestAssertions.AssertHttpSuccess(responseTenant1);
         var resultTenant1 = await ReadResponseAsync<PaginatedResult<OrderListDto>>(responseTenant1);
-        
+
         // Test tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var responseTenant2 = await Client.GetAsync("/api/v1/Orders/not-paid");
         TestAssertions.AssertHttpSuccess(responseTenant2);
         var resultTenant2 = await ReadResponseAsync<PaginatedResult<OrderListDto>>(responseTenant2);
@@ -454,7 +464,7 @@ public class OrderNotPaidListQueryTests : IDisposable
         TestAssertions.AssertNotNull(resultTenant2?.Data);
         TestAssertions.AssertEqual(3, resultTenant1?.Data?.Count ?? 0);
         TestAssertions.AssertEqual(2, resultTenant2?.Data?.Count ?? 0);
-        
+
         // Ensure no data overlap
         var tenant1Names = resultTenant1?.Data?.Select(o => o.InvoiceAddressFirstName).Distinct().ToList();
         var tenant2Names = resultTenant2?.Data?.Select(o => o.InvoiceAddressFirstName).Distinct().ToList();
@@ -468,7 +478,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_WithInvalidPageNumber_ShouldReturnEmptyResults()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid?pageNumber=10&pageSize=10");
 
@@ -484,7 +494,7 @@ public class OrderNotPaidListQueryTests : IDisposable
     public async Task GetOrdersNotPaid_WithOrderByDateOrdered_ShouldReturnDateOrderedResults()
     {
         await SeedOrderNotPaidTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Orders/not-paid?orderBy=DateOrdered");
 

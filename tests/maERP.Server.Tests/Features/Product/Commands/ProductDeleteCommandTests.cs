@@ -18,6 +18,11 @@ public class ProductDeleteCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid TaxClass1Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer1Id = Guid.NewGuid();
+    private static readonly Guid Product1Id = Guid.NewGuid();
+    private static readonly Guid Product2Id = Guid.NewGuid();
+    private static readonly Guid Product3Id = Guid.NewGuid();
 
     public ProductDeleteCommandTests()
     {
@@ -54,7 +59,7 @@ public class ProductDeleteCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    private async Task<(int tenant1ProductId, int tenant2ProductId)> SeedTestDataAsync()
+    private async Task<(Guid tenant1ProductId, Guid tenant2ProductId)> SeedTestDataAsync()
     {
         var currentTenant = TenantContext.GetCurrentTenantId();
         TenantContext.SetCurrentTenantId(null);
@@ -68,18 +73,18 @@ public class ProductDeleteCommandTests : IDisposable
 
                 var taxClass = new maERP.Domain.Entities.TaxClass
                 {
-                    Id = 1,
+                    Id = TaxClass1Id,
                     TaxRate = 19.0,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var manufacturer = new maERP.Domain.Entities.Manufacturer
                 {
-                    Id = 1,
+                    Id = Manufacturer1Id,
                     Name = "Test Manufacturer",
                     City = "Test City",
                     Country = "Test Country",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.TaxClass.Add(taxClass);
@@ -87,7 +92,7 @@ public class ProductDeleteCommandTests : IDisposable
 
                 var product1 = new maERP.Domain.Entities.Product
                 {
-                    Id = 1,
+                    Id = Product1Id,
                     Sku = "TEST-DELETE-001",
                     Name = "Test Product for Deletion",
                     Description = "Product to be deleted",
@@ -97,38 +102,38 @@ public class ProductDeleteCommandTests : IDisposable
                     Width = 8.0m,
                     Height = 4.0m,
                     Depth = 12.0m,
-                    TaxClassId = 1,
-                    ManufacturerId = 1,
+                    TaxClassId = TaxClass1Id,
+                    ManufacturerId = Manufacturer1Id,
                     UseOptimized = false,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var product2 = new maERP.Domain.Entities.Product
                 {
-                    Id = 2,
+                    Id = Product2Id,
                     Sku = "TEST-DELETE-002",
                     Name = "Another Test Product",
                     Description = "Another product for testing",
                     Price = 100.00m,
                     Msrp = 150.00m,
-                    TaxClassId = 1,
-                    ManufacturerId = 1,
+                    TaxClassId = TaxClass1Id,
+                    ManufacturerId = Manufacturer1Id,
                     UseOptimized = false,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var product3 = new maERP.Domain.Entities.Product
                 {
-                    Id = 3,
+                    Id = Product3Id,
                     Sku = "TEST-DELETE-003",
                     Name = "Tenant 2 Product",
                     Description = "Product in tenant 2",
                     Price = 75.00m,
                     Msrp = 100.00m,
-                    TaxClassId = 1,
-                    ManufacturerId = 1,
+                    TaxClassId = TaxClass1Id,
+                    ManufacturerId = Manufacturer1Id,
                     UseOptimized = false,
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Product.AddRange(product1, product2, product3);
@@ -139,8 +144,8 @@ public class ProductDeleteCommandTests : IDisposable
 
             var tenant1Product = await DbContext.Product.FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
             var tenant2Product = await DbContext.Product.FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant2Id);
-            
-            return (tenant1Product?.Id ?? 1, tenant2Product?.Id ?? 3);
+
+            return (tenant1Product?.Id ?? Product1Id, tenant2Product?.Id ?? Product3Id);
         }
         finally
         {
@@ -159,12 +164,12 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_WithValidId_ShouldReturnNoContent()
     {
         var (productId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Products/{productId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // NoContent responses should have empty body as per HTTP specification
         var content = await response.Content.ReadAsStringAsync();
         TestAssertions.AssertTrue(string.IsNullOrEmpty(content), "NoContent response should have empty body");
@@ -174,7 +179,7 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_WithValidId_ShouldRemoveFromDatabase()
     {
         var (productId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Verify product exists before deletion
         var productBefore = await DbContext.Product
@@ -189,7 +194,7 @@ public class ProductDeleteCommandTests : IDisposable
         // Create a new scope to get fresh data from database
         using var verifyScope = Factory.Services.CreateScope();
         var verifyDbContext = verifyScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        
+
         // Verify product is deleted from database
         var productAfter = await verifyDbContext.Product
             .IgnoreQueryFilters()
@@ -201,12 +206,12 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Products/999");
+        var response = await Client.DeleteAsync($"/api/v1/Products/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -216,12 +221,12 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_WithWrongTenant_ShouldReturnNotFound()
     {
         var (productId, _) = await SeedTestDataAsync();
-        SetTenantHeader(2); // Product belongs to tenant 1, accessing with tenant 2
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Product belongs to tenant 1, accessing with tenant 2
 
         var response = await Client.DeleteAsync($"/api/v1/Products/{productId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -252,9 +257,9 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_WithZeroId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Products/0");
+        var response = await Client.DeleteAsync($"/api/v1/Products/{Guid.Empty}");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -263,9 +268,9 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_WithNegativeId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Products/-1");
+        var response = await Client.DeleteAsync($"/api/v1/Products/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -274,7 +279,7 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_WithInvalidId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Products/invalid");
 
@@ -285,7 +290,7 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_TwiceWithSameId_ShouldReturnNotFoundSecondTime()
     {
         var (productId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // First deletion should succeed
         var response1 = await Client.DeleteAsync($"/api/v1/Products/{productId}");
@@ -294,8 +299,8 @@ public class ProductDeleteCommandTests : IDisposable
         // Second deletion should return NotFound
         var response2 = await Client.DeleteAsync($"/api/v1/Products/{productId}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
-        
-        var result = await ReadResponseAsync<Result<int>>(response2);
+
+        var result = await ReadResponseAsync<Result<Guid>>(response2);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -312,18 +317,18 @@ public class ProductDeleteCommandTests : IDisposable
         var countBefore = await dbContextBefore.Product.IgnoreQueryFilters().CountAsync();
 
         // Delete product in tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response = await Client.DeleteAsync($"/api/v1/Products/{tenant1ProductId}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
         // Create a new scope to get fresh data from database without tenant context
         using var verifyScope = Factory.Services.CreateScope();
         var verifyDbContext = verifyScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        
+
         // Count products after deletion
         var countAfter = await verifyDbContext.Product.IgnoreQueryFilters().CountAsync();
         TestAssertions.AssertEqual(countBefore - 1, countAfter);
-        
+
         // Verify product is deleted from tenant 1 (check directly without tenant filter)
         var deletedProduct = await verifyDbContext.Product
             .IgnoreQueryFilters()
@@ -335,23 +340,23 @@ public class ProductDeleteCommandTests : IDisposable
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(p => p.Id == tenant2ProductId);
         TestAssertions.AssertNotNull(tenant2Product);
-        TestAssertions.AssertEqual(2, tenant2Product!.TenantId);
+        TestAssertions.AssertEqual<Guid>(TenantConstants.TestTenant2Id, tenant2Product!.TenantId!.Value);
     }
 
     [Fact]
     public async Task DeleteProduct_ResponseStructure_ShouldHaveCorrectFormat()
     {
         var (productId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Products/{productId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
-        
+
         // For NoContent responses, the body should be empty as per HTTP specification
         var content = await response.Content.ReadAsStringAsync();
         TestAssertions.AssertTrue(string.IsNullOrEmpty(content), "NoContent response should have empty body");
-        
+
         // Verify the product was actually deleted by checking it no longer exists
         using var verifyScope = Factory.Services.CreateScope();
         var verifyDbContext = verifyScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -365,7 +370,7 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_MultipleProductsInTenant_ShouldDeleteOnlySpecified()
     {
         var (productId1, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Set tenant context for database queries
         TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
@@ -380,17 +385,17 @@ public class ProductDeleteCommandTests : IDisposable
         using var verifyScope = Factory.Services.CreateScope();
         var verifyDbContext = verifyScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var verifyTenantContext = verifyScope.ServiceProvider.GetRequiredService<ITenantContext>();
-        
+
         // Set tenant context for verification
         verifyTenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
-        
+
         // Verify only one product was deleted
         var productsAfterCount = await verifyDbContext.Product.CountAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
         TestAssertions.AssertEqual(productsBeforeCount - 1, productsAfterCount);
 
         // Reset tenant context to check if product is really deleted
         verifyTenantContext.SetCurrentTenantId(null);
-        
+
         // Verify the specific product was deleted
         var deletedProduct = await verifyDbContext.Product.FindAsync(productId1);
         Assert.Null(deletedProduct);
@@ -400,12 +405,12 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_WithLargeId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Products/2147483647");
+        var response = await Client.DeleteAsync($"/api/v1/Products/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -415,7 +420,7 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_ConcurrentDeletion_ShouldHandleGracefully()
     {
         var (productId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Simulate concurrent deletion by directly deleting from database
         var productToDelete = await DbContext.Product.FindAsync(productId);
@@ -429,7 +434,7 @@ public class ProductDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Products/{productId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -441,12 +446,12 @@ public class ProductDeleteCommandTests : IDisposable
         var (tenant1ProductId, tenant2ProductId) = await SeedTestDataAsync();
 
         // Try to delete tenant 2 product while authenticated as tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.DeleteAsync($"/api/v1/Products/{tenant2ProductId}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1.StatusCode);
 
         // Try to delete tenant 1 product while authenticated as tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.DeleteAsync($"/api/v1/Products/{tenant1ProductId}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
 
@@ -461,12 +466,12 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_ErrorResponseStructure_ShouldHaveCorrectFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Products/999");
+        var response = await Client.DeleteAsync($"/api/v1/Products/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotNull(result.Messages);
@@ -477,12 +482,12 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_ValidateProductDoesNotExistInListAfterDeletion()
     {
         var (productId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Get initial count of products
         var initialListResponse = await Client.GetAsync("/api/v1/Products");
         TestAssertions.AssertHttpSuccess(initialListResponse);
-        
+
         // Delete the product
         var deleteResponse = await Client.DeleteAsync($"/api/v1/Products/{productId}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
@@ -492,36 +497,36 @@ public class ProductDeleteCommandTests : IDisposable
 
         // Create a new client to ensure fresh request
         using var newClient = Factory.CreateClient();
-        newClient.DefaultRequestHeaders.Add("X-Tenant-Id", "1");
-        
+        newClient.DefaultRequestHeaders.Add("X-Tenant-Id", TenantConstants.TestTenant1Id.ToString());
+
         // Try to get the product list and verify deleted product is not there
         var listResponse = await newClient.GetAsync("/api/v1/Products");
         TestAssertions.AssertHttpSuccess(listResponse);
-        
+
         var content = await listResponse.Content.ReadAsStringAsync();
-        
+
         // Parse the JSON to properly check if the product exists
         using var doc = JsonDocument.Parse(content);
         var root = doc.RootElement;
-        
+
         bool productFound = false;
         if (root.TryGetProperty("data", out var dataProperty) && dataProperty.ValueKind == JsonValueKind.Array)
         {
             foreach (var item in dataProperty.EnumerateArray())
             {
-                if (item.TryGetProperty("id", out var idProp) && idProp.GetInt32() == productId)
+                if (item.TryGetProperty("id", out var idProp) && Guid.TryParse(idProp.GetString(), out var parsedId) && parsedId == productId)
                 {
                     productFound = true;
                     break;
                 }
-                else if (item.TryGetProperty("Id", out var idPropCapital) && idPropCapital.GetInt32() == productId)
+                else if (item.TryGetProperty("Id", out var idPropCapital) && Guid.TryParse(idPropCapital.GetString(), out var parsedIdCapital) && parsedIdCapital == productId)
                 {
                     productFound = true;
                     break;
                 }
             }
         }
-        
+
         TestAssertions.AssertFalse(productFound, $"Product with ID {productId} should not be in the list after deletion");
     }
 
@@ -529,7 +534,7 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_ValidateProductNotFoundInDetailAfterDeletion()
     {
         var (productId, _) = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Delete the product
         var deleteResponse = await Client.DeleteAsync($"/api/v1/Products/{productId}");

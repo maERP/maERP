@@ -61,7 +61,7 @@ public class TenantDetailQueryTests : IDisposable
             {
                 var tenant1 = new maERP.Domain.Entities.Tenant
                 {
-                    Id = 1,
+                    Id = TenantConstants.TestTenant1Id,
                     Name = "Tenant One",
                     TenantCode = "TEN001",
                     Description = "First test tenant",
@@ -73,7 +73,7 @@ public class TenantDetailQueryTests : IDisposable
 
                 var tenant2 = new maERP.Domain.Entities.Tenant
                 {
-                    Id = 2,
+                    Id = TenantConstants.TestTenant2Id,
                     Name = "Tenant Two",
                     TenantCode = "TEN002",
                     Description = "Second test tenant",
@@ -85,7 +85,7 @@ public class TenantDetailQueryTests : IDisposable
 
                 var tenant3 = new maERP.Domain.Entities.Tenant
                 {
-                    Id = 3,
+                    Id = TenantConstants.TestTenant3Id,
                     Name = "Tenant Three",
                     TenantCode = "TEN003",
                     Description = "Third test tenant with longer description to test field handling",
@@ -117,7 +117,7 @@ public class TenantDetailQueryTests : IDisposable
     {
         await SeedTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Tenants/1");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -127,7 +127,8 @@ public class TenantDetailQueryTests : IDisposable
     {
         await SeedTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Tenants/999");
+        var nonExistentId = Guid.NewGuid();
+        var response = await Client.GetAsync($"/api/v1/Tenants/{nonExistentId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -145,7 +146,7 @@ public class TenantDetailQueryTests : IDisposable
     {
         await SeedTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Tenants/0");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{Guid.Empty}");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -155,9 +156,9 @@ public class TenantDetailQueryTests : IDisposable
     {
         await SeedTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Tenants/-1");
+        var response = await Client.GetAsync("/api/v1/Tenants/invalid-guid");
 
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -165,7 +166,8 @@ public class TenantDetailQueryTests : IDisposable
     {
         await SeedTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Tenants/2147483647");
+        var largeId = new Guid("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{largeId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -173,7 +175,7 @@ public class TenantDetailQueryTests : IDisposable
     [Fact]
     public async Task GetTenantDetail_EndpointExists_ShouldNotReturnNotFoundForValidPath()
     {
-        var response = await Client.GetAsync("/api/v1/Tenants/1");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertNotEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
@@ -183,7 +185,7 @@ public class TenantDetailQueryTests : IDisposable
     {
         await SeedTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Tenants/1");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -191,7 +193,7 @@ public class TenantDetailQueryTests : IDisposable
     [Fact]
     public async Task GetTenantDetail_ApiVersioned_ShouldRespondToV1Route()
     {
-        var response = await Client.GetAsync("/api/v1/Tenants/1");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden);
     }
@@ -199,7 +201,7 @@ public class TenantDetailQueryTests : IDisposable
     [Fact]
     public async Task GetTenantDetail_WrongApiVersion_ShouldReturnBadRequest()
     {
-        var response = await Client.GetAsync("/api/v2/Tenants/1");
+        var response = await Client.GetAsync($"/api/v2/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -209,7 +211,7 @@ public class TenantDetailQueryTests : IDisposable
     {
         await SeedTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Tenants/1");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -219,7 +221,7 @@ public class TenantDetailQueryTests : IDisposable
     {
         await SeedTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Tenants/1");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -235,7 +237,7 @@ public class TenantDetailQueryTests : IDisposable
     [Fact]
     public async Task TenantDetailEndpoint_HttpGetMethod_ShouldAcceptGetRequests()
     {
-        var response = await Client.GetAsync("/api/v1/Tenants/1");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertNotEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
     }
@@ -243,7 +245,7 @@ public class TenantDetailQueryTests : IDisposable
     [Fact]
     public async Task TenantDetailEndpoint_OnlyGetMethod_ShouldRejectPostRequests()
     {
-        var response = await Client.PostAsync("/api/v1/Tenants/1", new StringContent(""));
+        var response = await Client.PostAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", new StringContent(""));
 
         TestAssertions.AssertEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
     }
@@ -253,7 +255,7 @@ public class TenantDetailQueryTests : IDisposable
     {
         await SeedTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Tenants/1");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertTrue(response.Content.Headers.ContentType?.MediaType?.Contains("application/json") ?? false ||
                                  response.StatusCode == HttpStatusCode.Unauthorized);
@@ -262,7 +264,7 @@ public class TenantDetailQueryTests : IDisposable
     [Fact]
     public async Task TenantDetail_ControllerRouting_ShouldRouteToCorrectController()
     {
-        var response = await Client.GetAsync("/api/v1/Tenants/1");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertNotEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
@@ -272,7 +274,7 @@ public class TenantDetailQueryTests : IDisposable
     {
         await SeedTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Tenants/1");
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
         TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden);
     }

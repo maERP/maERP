@@ -7,6 +7,7 @@ using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using maERP.Domain.Constants;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.Warehouse.Commands;
@@ -46,7 +47,7 @@ public class WarehouseDeleteCommandTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
@@ -59,10 +60,10 @@ public class WarehouseDeleteCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    private async Task<int> CreateTestWarehouseAsync(int tenantId, string name = "Test Warehouse")
+    private async Task<Guid> CreateTestWarehouseAsync(Guid tenantId, string name = "Test Warehouse")
     {
         TenantContext.SetCurrentTenantId(tenantId);
-        
+
         var warehouse = new maERP.Domain.Entities.Warehouse
         {
             Name = name,
@@ -73,7 +74,7 @@ public class WarehouseDeleteCommandTests : IDisposable
 
         DbContext.Warehouse.Add(warehouse);
         await DbContext.SaveChangesAsync();
-        
+
         TenantContext.SetCurrentTenantId(null);
         return warehouse.Id;
     }
@@ -99,15 +100,15 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(warehouseId, result.Data);
@@ -122,7 +123,7 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId}");
@@ -136,7 +137,7 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
         SetInvalidTenantHeader();
 
         // Act
@@ -151,8 +152,8 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(2); // Different tenant
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Different tenant
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId}");
@@ -161,7 +162,7 @@ public class WarehouseDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
 
         // Verify warehouse still exists for tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId}");
         TestAssertions.AssertHttpSuccess(getResponse);
     }
@@ -171,7 +172,7 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync("/api/v1/Warehouses/999");
@@ -185,13 +186,13 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId1 = await CreateTestWarehouseAsync(1, "Tenant 1 Warehouse");
-        var warehouseId2 = await CreateTestWarehouseAsync(2, "Tenant 2 Warehouse");
+        var warehouseId1 = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Tenant 1 Warehouse");
+        var warehouseId2 = await CreateTestWarehouseAsync(TenantConstants.TestTenant2Id, "Tenant 2 Warehouse");
 
         // Act - Delete tenant 1's warehouse
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId1}");
-        
+
         // Try to delete tenant 2's warehouse from tenant 1
         var response2 = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId2}");
 
@@ -200,7 +201,7 @@ public class WarehouseDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
 
         // Verify tenant 2's warehouse still exists
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId2}");
         TestAssertions.AssertHttpSuccess(getResponse);
     }
@@ -210,8 +211,8 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Delete twice
         var response1 = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId}");
@@ -227,8 +228,8 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Try to delete concurrently
         var task1 = Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId}");
@@ -240,7 +241,7 @@ public class WarehouseDeleteCommandTests : IDisposable
         // Assert - Only one should succeed
         var successCount = responses.Count(r => r.IsSuccessStatusCode);
         TestAssertions.AssertTrue(successCount >= 1); // At least one should succeed
-        
+
         // Verify deletion
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId}");
         TestAssertions.AssertHttpStatusCode(getResponse, HttpStatusCode.NotFound);
@@ -255,7 +256,7 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
 
@@ -271,7 +272,7 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync("/api/v1/Warehouses/0");
@@ -285,7 +286,7 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync("/api/v1/Warehouses/-1");
@@ -299,7 +300,7 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync("/api/v1/Warehouses/abc");
@@ -313,8 +314,8 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var startTime = DateTime.UtcNow;
 
         // Act
@@ -332,16 +333,16 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
-        
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(ResultStatusCode.Ok, result.StatusCode);
@@ -354,24 +355,24 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId1 = await CreateTestWarehouseAsync(1, "Warehouse 1");
-        var warehouseId2 = await CreateTestWarehouseAsync(1, "Warehouse 2");
-        var warehouseId3 = await CreateTestWarehouseAsync(1, "Warehouse 3");
-        SetTenantHeader(1);
+        var warehouseId1 = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Warehouse 1");
+        var warehouseId2 = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Warehouse 2");
+        var warehouseId3 = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Warehouse 3");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Delete middle one
         var response = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId2}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        
+
         // Verify only the correct one was deleted
         var getResponse1 = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId1}");
         TestAssertions.AssertHttpSuccess(getResponse1);
-        
+
         var getResponse2 = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId2}");
         TestAssertions.AssertHttpStatusCode(getResponse2, HttpStatusCode.NotFound);
-        
+
         var getResponse3 = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId3}");
         TestAssertions.AssertHttpSuccess(getResponse3);
     }
@@ -381,16 +382,16 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId1 = await CreateTestWarehouseAsync(1, "Tenant 1 Warehouse");
-        var warehouseId2 = await CreateTestWarehouseAsync(2, "Tenant 2 Warehouse");
+        var warehouseId1 = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Tenant 1 Warehouse");
+        var warehouseId2 = await CreateTestWarehouseAsync(TenantConstants.TestTenant2Id, "Tenant 2 Warehouse");
 
         // Act - Start with tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var canAccessOwn = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId1}");
         TestAssertions.AssertHttpSuccess(canAccessOwn);
 
         // Switch to tenant 2 and delete their warehouse
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var deleteResponse = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId2}");
         TestAssertions.AssertHttpSuccess(deleteResponse);
 
@@ -399,7 +400,7 @@ public class WarehouseDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(deleteOtherResponse, HttpStatusCode.NotFound);
 
         // Verify tenant 1's warehouse still exists
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var stillExists = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId1}");
         TestAssertions.AssertHttpSuccess(stillExists);
     }
@@ -409,7 +410,7 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/Warehouses/{int.MaxValue}");
@@ -423,11 +424,11 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1, "Warehouse with Dependencies");
-        
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Warehouse with Dependencies");
+
         // Note: Depending on business rules, this might fail or succeed with cascade
         // Adjust test based on actual implementation
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId}");
@@ -444,8 +445,8 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId = await CreateTestWarehouseAsync(1, "To Be Deleted");
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "To Be Deleted");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Verify warehouse exists in list before deletion
         var listBefore = await Client.GetAsync("/api/v1/Warehouses");
@@ -469,8 +470,8 @@ public class WarehouseDeleteCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         var specialName = "Lager #1 & Co. (Spëciäl)";
-        var warehouseId = await CreateTestWarehouseAsync(1, specialName);
-        SetTenantHeader(1);
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, specialName);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Verify warehouse exists first
         var getBeforeResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId}");
@@ -483,7 +484,7 @@ public class WarehouseDeleteCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(deleteResponse);
-        
+
         // Verify deletion
         var getAfterResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId}");
         TestAssertions.AssertHttpStatusCode(getAfterResponse, HttpStatusCode.NotFound);
@@ -494,22 +495,22 @@ public class WarehouseDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var warehouseId1 = await CreateTestWarehouseAsync(1, "Tenant 1 Warehouse");
-        var warehouseId2 = await CreateTestWarehouseAsync(2, "Tenant 2 Warehouse");
+        var warehouseId1 = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Tenant 1 Warehouse");
+        var warehouseId2 = await CreateTestWarehouseAsync(TenantConstants.TestTenant2Id, "Tenant 2 Warehouse");
 
         // Get initial counts for both tenants
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var list1Before = await Client.GetAsync("/api/v1/Warehouses");
         var list1BeforeResult = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(list1Before);
         var count1Before = list1BeforeResult.TotalCount;
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var list2Before = await Client.GetAsync("/api/v1/Warehouses");
         var list2BeforeResult = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(list2Before);
         var count2Before = list2BeforeResult.TotalCount;
 
         // Act - Delete from tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var deleteResponse = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId1}");
         TestAssertions.AssertHttpSuccess(deleteResponse);
 
@@ -518,11 +519,11 @@ public class WarehouseDeleteCommandTests : IDisposable
         var list1AfterResult = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(list1After);
         TestAssertions.AssertEqual(count1Before - 1, list1AfterResult.TotalCount);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var list2After = await Client.GetAsync("/api/v1/Warehouses");
         var list2AfterResult = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(list2After);
         TestAssertions.AssertEqual(count2Before, list2AfterResult.TotalCount); // Unchanged
-        
+
         // Tenant 2's warehouse should still exist
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId2}");
         TestAssertions.AssertHttpSuccess(getResponse);

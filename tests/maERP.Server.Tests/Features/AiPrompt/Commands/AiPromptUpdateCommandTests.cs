@@ -47,7 +47,7 @@ public class AiPromptUpdateCommandTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
@@ -74,7 +74,7 @@ public class AiPromptUpdateCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    private async Task<int> SeedTestDataAsync()
+    private async Task<Guid> SeedTestDataAsync()
     {
         var hasData = await DbContext.AiPrompt.IgnoreQueryFilters().AnyAsync();
         if (!hasData)
@@ -85,15 +85,15 @@ public class AiPromptUpdateCommandTests : IDisposable
         // Return the ID of the first prompt for tenant 1
         var prompt = await DbContext.AiPrompt.IgnoreQueryFilters()
             .FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
-        return prompt?.Id ?? 1;
+        return prompt?.Id ?? Guid.Parse("00000001-0001-0001-0005-000000000001");
     }
 
-    private AiPromptInputDto CreateUpdateAiPromptDto(int id)
+    private AiPromptInputDto CreateUpdateAiPromptDto(Guid id)
     {
         return new AiPromptInputDto
         {
             Id = id,
-            AiModelId = 1,
+            AiModelId = Guid.Parse("00000001-0001-0001-0004-000000000001"),
             Identifier = "Updated Test Prompt",
             PromptText = "This is an updated test prompt"
         };
@@ -111,7 +111,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
 
         // Act
@@ -119,7 +119,7 @@ public class AiPromptUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(promptId, result.Data);
@@ -130,7 +130,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
 
         // Act
@@ -154,15 +154,15 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        var updateDto = CreateUpdateAiPromptDto(999);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(Guid.Parse("99999999-9999-9999-9999-999999999999"));
 
         // Act
-        var response = await PutAsJsonAsync("/api/v1/AiPrompts/999", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{updateDto.Id}", updateDto);
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -173,16 +173,16 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(2); // Prompt belongs to tenant 1, accessing with tenant 2
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Prompt belongs to tenant 1, accessing with tenant 2
         var updateDto = CreateUpdateAiPromptDto(promptId);
-        updateDto.AiModelId = 3; // Use AiModel that belongs to tenant 2 to avoid validation error
+        updateDto.AiModelId = Guid.Parse("00000001-0001-0001-0004-000000000003"); // Use AiModel that belongs to tenant 2 to avoid validation error
 
         // Act
         var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -193,7 +193,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = new AiPromptInputDto
         {
             Id = promptId,
@@ -205,7 +205,7 @@ public class AiPromptUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -216,7 +216,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
         updateDto.Identifier = string.Empty;
 
@@ -225,7 +225,7 @@ public class AiPromptUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -236,7 +236,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
         updateDto.PromptText = string.Empty;
 
@@ -245,7 +245,7 @@ public class AiPromptUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -256,16 +256,16 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
-        updateDto.AiModelId = 999; // Non-existent AI model
+        updateDto.AiModelId = Guid.NewGuid(); // Non-existent AI model
 
         // Act
         var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -276,16 +276,16 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
-        updateDto.AiModelId = 3; // AI Model belongs to tenant 2
+        updateDto.AiModelId = Guid.Parse("00000001-0001-0001-0004-000000000003"); // AI Model belongs to tenant 2
 
         // Act
         var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -296,7 +296,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Get identifier of another prompt from test data
         var updateDto = CreateUpdateAiPromptDto(promptId);
@@ -307,7 +307,7 @@ public class AiPromptUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -347,7 +347,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
         updateDto.Identifier = "Updated in Tenant 1";
 
@@ -364,7 +364,7 @@ public class AiPromptUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual("Updated in Tenant 1", promptDetail?.Data?.Identifier);
 
         // Verify prompt is not accessible from tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var getResponseTenant2 = await Client.GetAsync($"/api/v1/AiPrompts/{promptId}");
         TestAssertions.AssertHttpStatusCode(getResponseTenant2, HttpStatusCode.NotFound);
     }
@@ -374,7 +374,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
 
         // Act
@@ -382,7 +382,7 @@ public class AiPromptUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(promptId, result.Data);
@@ -395,7 +395,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var invalidJson = "{ invalid json }";
         var content = new StringContent(invalidJson, System.Text.Encoding.UTF8, "application/json");
@@ -412,8 +412,9 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
-        var updateDto = CreateUpdateAiPromptDto(999); // Different ID in DTO than in URL
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var nonMatchingId = Guid.NewGuid();
+        var updateDto = CreateUpdateAiPromptDto(nonMatchingId); // Different ID in DTO than in URL
 
         // Act
         var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
@@ -423,7 +424,7 @@ public class AiPromptUpdateCommandTests : IDisposable
         var result = await ReadResponseAsync<Microsoft.AspNetCore.Mvc.ProblemDetails>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertEqual("Invalid Request", result.Title);
-        TestAssertions.AssertEqual($"ID in URL ({promptId}) must match ID in request body (999)", result.Detail);
+        TestAssertions.AssertEqual($"ID in URL ({promptId}) must match ID in request body ({nonMatchingId})", result.Detail);
     }
 
     [Fact]
@@ -431,11 +432,11 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        var updateDto = CreateUpdateAiPromptDto(0);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(Guid.Empty);
 
         // Act
-        var response = await PutAsJsonAsync("/api/v1/AiPrompts/0", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{Guid.Empty}", updateDto);
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
@@ -446,11 +447,12 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
-        var updateDto = CreateUpdateAiPromptDto(-1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var negativeId = Guid.NewGuid();
+        var updateDto = CreateUpdateAiPromptDto(negativeId);
 
         // Act
-        var response = await PutAsJsonAsync("/api/v1/AiPrompts/-1", updateDto);
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{negativeId}", updateDto);
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -461,13 +463,13 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Use known test data values instead of reading from API to avoid context issues
         var updateDto = new AiPromptInputDto
         {
             Id = promptId,
-            AiModelId = 1, // Known value from test data 
+            AiModelId = Guid.Parse("00000001-0001-0001-0004-000000000001"), // Known value from test data 
             Identifier = "Only Identifier Updated",
             PromptText = "This is a test prompt for tenant 1" // Known value from test data
         };
@@ -490,9 +492,9 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
-        updateDto.AiModelId = 2; // Change to different AI model (still in tenant 1)
+        updateDto.AiModelId = Guid.Parse("00000001-0001-0001-0004-000000000002"); // Change to different AI model (still in tenant 1)
 
         // Act
         var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
@@ -503,7 +505,7 @@ public class AiPromptUpdateCommandTests : IDisposable
         // Verify AI model was updated
         var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{promptId}");
         var promptDetail = await ReadResponseAsync<Result<AiPromptDetailDto>>(getResponse);
-        TestAssertions.AssertEqual(2, promptDetail?.Data?.AiModelId);
+        TestAssertions.AssertEqual(Guid.Parse("00000001-0001-0001-0004-000000000002"), promptDetail?.Data?.AiModelId);
     }
 
     [Fact]
@@ -511,7 +513,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
         updateDto.Identifier = new string('A', 256); // Exceeds maximum length
 
@@ -527,7 +529,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateDto = CreateUpdateAiPromptDto(promptId);
         updateDto.PromptText = new string('B', 2000); // Long prompt text
 
@@ -536,7 +538,7 @@ public class AiPromptUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
     }
@@ -546,7 +548,7 @@ public class AiPromptUpdateCommandTests : IDisposable
     {
         // Arrange
         var promptId = await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var tasks = new List<Task<HttpResponseMessage>>();
         for (int i = 1; i <= 3; i++)

@@ -7,6 +7,7 @@ using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.TaxClass.Queries;
 
@@ -45,7 +46,7 @@ public class TaxClassDetailQueryTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
@@ -70,10 +71,16 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1");
+        // Get a tax class ID dynamically
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -81,7 +88,7 @@ public class TaxClassDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(1, result.Data?.Id ?? 0);
+        TestAssertions.AssertNotEqual(Guid.Empty, result.Data!.Id);
         TestAssertions.AssertTrue(result.Data?.TaxRate >= 0);
     }
 
@@ -90,10 +97,16 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(2); // Try to access tenant 1's tax class with tenant 2 header
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Try to access tenant 1's tax class with tenant 2 header
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1");
+        // Get a tax class ID dynamically
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -104,10 +117,10 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/999");
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{Guid.NewGuid()}");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -120,7 +133,13 @@ public class TaxClassDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1");
+        // Get a tax class ID dynamically
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -134,7 +153,13 @@ public class TaxClassDetailQueryTests : IDisposable
         SetInvalidTenantHeader();
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1");
+        // Get a tax class ID dynamically
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -145,10 +170,10 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/0");
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{Guid.Empty}");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -159,10 +184,10 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/-1");
+        var response = await Client.GetAsync("/api/v1/TaxClasses/invalid-guid");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -173,10 +198,16 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1");
+        // Get a tax class ID dynamically
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -186,7 +217,7 @@ public class TaxClassDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result.Data);
 
         var taxClass = result.Data;
-        TestAssertions.AssertTrue(taxClass!.Id > 0);
+        TestAssertions.AssertNotEqual(Guid.Empty, taxClass!.Id);
         TestAssertions.AssertTrue(taxClass.TaxRate >= 0);
         TestAssertions.AssertTrue(taxClass.TaxRate <= 100); // Assuming tax rate is percentage
     }
@@ -196,10 +227,16 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        // Act - Assuming test data contains a tax class with ID 3 for tenant 2
-        var response = await Client.GetAsync("/api/v1/TaxClasses/3");
+        // Get a tenant 2 tax class ID
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var tenant2TaxClass = listResult.Data?.FirstOrDefault();
+        TestAssertions.AssertNotNull(tenant2TaxClass);
+
+        // Act
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{tenant2TaxClass!.Id}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -207,7 +244,7 @@ public class TaxClassDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(3, result.Data?.Id ?? 0);
+        TestAssertions.AssertNotEqual(Guid.Empty, result.Data!.Id);
     }
 
     [Fact]
@@ -215,10 +252,10 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/abc");
+        var response = await Client.GetAsync("/api/v1/TaxClasses/invalid-guid");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -231,13 +268,27 @@ public class TaxClassDetailQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Try to access tenant 1's tax class with tenant 2 header
-        SetTenantHeader(2);
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        // Get a tax class ID dynamically
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
 
         // Try to access tenant 2's tax class with tenant 1 header
-        SetTenantHeader(1);
-        var response2 = await Client.GetAsync("/api/v1/TaxClasses/3");
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        // Try to access a tenant 2 tax class from tenant 1 (should fail)
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var tenant2ListResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var tenant2ListResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(tenant2ListResponse);
+        var tenant2TaxClassId = tenant2ListResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(tenant2TaxClassId);
+        
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response2 = await Client.GetAsync($"/api/v1/TaxClasses/{tenant2TaxClassId}");
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
     }
 
@@ -246,10 +297,16 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var tasks = Enumerable.Range(1, 5).Select(_ => Client.GetAsync("/api/v1/TaxClasses/1")).ToArray();
+        // Get a tax class ID to test with
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var tasks = Enumerable.Range(1, 5).Select(_ => Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}")).ToArray();
         var responses = await Task.WhenAll(tasks);
 
         // Assert
@@ -260,7 +317,7 @@ public class TaxClassDetailQueryTests : IDisposable
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertTrue(result.Succeeded);
             TestAssertions.AssertNotNull(result.Data);
-            TestAssertions.AssertEqual(1, result.Data?.Id ?? 0);
+            TestAssertions.AssertNotEqual(Guid.Empty, result.Data!.Id);
         }
     }
 
@@ -277,7 +334,13 @@ public class TaxClassDetailQueryTests : IDisposable
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1");
+        // Get a tax class ID dynamically
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -288,10 +351,16 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1");
+        // Get a tax class ID dynamically
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -306,11 +375,17 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var startTime = DateTime.UtcNow;
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1");
+        // Get a tax class ID dynamically
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
         var endTime = DateTime.UtcNow;
 
         // Assert
@@ -324,14 +399,19 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act & Assert for multiple valid IDs
-        foreach (var id in new[] { 1, 2 })
+        // Get available tax class IDs for tenant 1
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassIds = listResult.Data?.Take(2).Select(tc => tc.Id).ToArray() ?? new Guid[0];
+        
+        foreach (var id in taxClassIds)
         {
             var response = await Client.GetAsync($"/api/v1/TaxClasses/{id}");
             TestAssertions.AssertHttpSuccess(response);
-            
+
             var result = await ReadResponseAsync<Result<TaxClassDetailDto>>(response);
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertTrue(result.Succeeded);
@@ -346,23 +426,33 @@ public class TaxClassDetailQueryTests : IDisposable
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
-        // First request with tenant 1
-        SetTenantHeader(1);
-        var response1 = await Client.GetAsync("/api/v1/TaxClasses/1");
+        // First request with tenant 1 - get a tax class ID dynamically
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var listResponse1 = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult1 = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse1);
+        var tenant1TaxClassId = listResult1.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(tenant1TaxClassId);
+
+        var response1 = await Client.GetAsync($"/api/v1/TaxClasses/{tenant1TaxClassId}");
         TestAssertions.AssertHttpSuccess(response1);
         var result1 = await ReadResponseAsync<Result<TaxClassDetailDto>>(response1);
-        TestAssertions.AssertEqual(1, result1.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(tenant1TaxClassId, result1.Data?.Id);
 
         // Switch to tenant 2 and try accessing same ID (should fail)
-        SetTenantHeader(2);
-        var response2 = await Client.GetAsync("/api/v1/TaxClasses/1");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response2 = await Client.GetAsync($"/api/v1/TaxClasses/{tenant1TaxClassId}");
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
 
-        // Access tenant 2's tax class
-        var response3 = await Client.GetAsync("/api/v1/TaxClasses/3");
+        // Access tenant 2's tax class - get a tenant 2 tax class ID dynamically
+        var listResponse2 = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult2 = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse2);
+        var tenant2TaxClassId = listResult2.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(tenant2TaxClassId);
+
+        var response3 = await Client.GetAsync($"/api/v1/TaxClasses/{tenant2TaxClassId}");
         TestAssertions.AssertHttpSuccess(response3);
         var result3 = await ReadResponseAsync<Result<TaxClassDetailDto>>(response3);
-        TestAssertions.AssertEqual(3, result3.Data?.Id ?? 0);
+        TestAssertions.AssertEqual(tenant2TaxClassId, result3.Data?.Id);
     }
 
     [Fact]
@@ -370,10 +460,10 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync($"/api/v1/TaxClasses/{int.MaxValue}");
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{Guid.NewGuid()}");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -384,10 +474,10 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1%20OR%201=1");
+        var response = await Client.GetAsync("/api/v1/TaxClasses/invalid%20OR%201=1");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -398,17 +488,23 @@ public class TaxClassDetailQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.GetAsync("/api/v1/TaxClasses/1");
+        // Get a tax class ID dynamically
+        var listResponse = await Client.GetAsync("/api/v1/TaxClasses");
+        var listResult = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(listResponse);
+        var taxClassId = listResult.Data?.FirstOrDefault()?.Id;
+        TestAssertions.AssertNotNull(taxClassId);
+
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<TaxClassDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
-        
+
         // Tax rate should be within valid range (0-100 for percentage)
         TestAssertions.AssertTrue(result.Data!.TaxRate >= 0);
         TestAssertions.AssertTrue(result.Data.TaxRate <= 100);

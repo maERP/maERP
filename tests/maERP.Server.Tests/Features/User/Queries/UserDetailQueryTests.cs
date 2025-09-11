@@ -161,7 +161,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithValidIdAndTenant_ShouldReturnUserDetail()
     {
         var (userId1, _, _) = await SeedUserTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
 
@@ -180,7 +180,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedUserTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var nonExistentId = Guid.NewGuid().ToString();
         var response = await Client.GetAsync($"/api/v1/Users/{nonExistentId}");
@@ -196,7 +196,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithWrongTenant_ShouldReturnNotFound()
     {
         var (_, _, userId3) = await SeedUserTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync($"/api/v1/Users/{userId3}");
 
@@ -225,7 +225,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithValidId_ShouldIncludeAllUserFields()
     {
         var (userId1, _, _) = await SeedUserTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
 
@@ -233,7 +233,7 @@ public class UserDetailQueryTests : IDisposable
         var result = await ReadResponseAsync<Result<UserDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var user = result.Data!;
         TestAssertions.AssertEqual(userId1, user.Id);
         TestAssertions.AssertEqual("user1@tenant1.com", user.Email);
@@ -246,7 +246,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithTenantAssignments_ShouldIncludeTenantDetails()
     {
         var (userId1, _, _) = await SeedUserTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
 
@@ -254,13 +254,13 @@ public class UserDetailQueryTests : IDisposable
         var result = await ReadResponseAsync<Result<UserDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var tenantAssignments = result.Data!.TenantAssignments;
         TestAssertions.AssertNotNull(tenantAssignments);
         TestAssertions.AssertNotEmpty(tenantAssignments);
-        
+
         var assignment = tenantAssignments.First();
-        TestAssertions.AssertEqual(1, assignment.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, assignment.TenantId);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(assignment.TenantName));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(assignment.TenantCode));
         TestAssertions.AssertTrue(assignment.IsDefault);
@@ -270,7 +270,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithTenant2User_ShouldReturnCorrectUser()
     {
         var (_, _, userId3) = await SeedUserTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var response = await Client.GetAsync($"/api/v1/Users/{userId3}");
 
@@ -287,7 +287,7 @@ public class UserDetailQueryTests : IDisposable
     [Fact]
     public async Task GetUserDetail_WithInvalidId_ShouldReturnBadRequest()
     {
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users/invalid-id");
 
@@ -297,7 +297,7 @@ public class UserDetailQueryTests : IDisposable
     [Fact]
     public async Task GetUserDetail_WithEmptyId_ShouldReturnBadRequest()
     {
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Users/");
 
@@ -308,7 +308,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithNonExistentTenant_ShouldReturnNotFound()
     {
         var (userId1, _, _) = await SeedUserTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
 
@@ -323,7 +323,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         var (userId1, _, _) = await SeedUserTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
 
@@ -339,7 +339,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedUserTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var nonExistentId = Guid.NewGuid().ToString();
         var response = await Client.GetAsync($"/api/v1/Users/{nonExistentId}");
@@ -358,11 +358,11 @@ public class UserDetailQueryTests : IDisposable
     {
         var (userId1, userId2, userId3) = await SeedUserTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync($"/api/v1/Users/{userId3}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1.StatusCode);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync($"/api/v1/Users/{userId1}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
 
@@ -374,7 +374,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithUserWithoutTenantAssignments_ShouldReturnEmptyAssignmentsList()
     {
         var (userId1, _, _) = await SeedUserTestDataAsync();
-        
+
         TenantContext.SetCurrentTenantId(null);
         var userTenantAssignment = await DbContext.UserTenant.FirstOrDefaultAsync(ut => ut.UserId == userId1);
         if (userTenantAssignment != null)
@@ -383,7 +383,7 @@ public class UserDetailQueryTests : IDisposable
             await DbContext.SaveChangesAsync();
         }
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -393,7 +393,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithMultipleTenantAssignments_ShouldReturnAllAssignments()
     {
         var (userId1, _, _) = await SeedUserTestDataAsync();
-        
+
         TenantContext.SetCurrentTenantId(null);
         var additionalAssignment = new UserTenant
         {
@@ -404,30 +404,30 @@ public class UserDetailQueryTests : IDisposable
         DbContext.UserTenant.Add(additionalAssignment);
         await DbContext.SaveChangesAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<UserDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var tenantAssignments = result.Data!.TenantAssignments;
         TestAssertions.AssertNotNull(tenantAssignments);
         TestAssertions.AssertEqual(2, tenantAssignments.Count);
-        
+
         var defaultAssignment = tenantAssignments.First(ta => ta.IsDefault);
-        TestAssertions.AssertEqual(1, defaultAssignment.TenantId);
-        
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, defaultAssignment.TenantId);
+
         var nonDefaultAssignment = tenantAssignments.First(ta => !ta.IsDefault);
-        TestAssertions.AssertEqual(2, nonDefaultAssignment.TenantId);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, nonDefaultAssignment.TenantId);
     }
 
     [Fact]
     public async Task GetUserDetail_ShouldNotIncludePasswordFields()
     {
         var (userId1, _, _) = await SeedUserTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
 
@@ -435,7 +435,7 @@ public class UserDetailQueryTests : IDisposable
         var result = await ReadResponseAsync<Result<UserDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var user = result.Data!;
         TestAssertions.AssertEqual(string.Empty, user.Password);
         TestAssertions.AssertEqual(string.Empty, user.PasswordConfirm);
@@ -445,7 +445,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithLongUserId_ShouldHandleGracefully()
     {
         await SeedUserTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var longUserId = new string('a', 500);
         var response = await Client.GetAsync($"/api/v1/Users/{longUserId}");
@@ -461,7 +461,7 @@ public class UserDetailQueryTests : IDisposable
     public async Task GetUserDetail_WithSpecialCharactersInId_ShouldHandleGracefully()
     {
         await SeedUserTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var specialId = "user@#$%^&*()";
         var response = await Client.GetAsync($"/api/v1/Users/{Uri.EscapeDataString(specialId)}");

@@ -14,6 +14,13 @@ namespace maERP.Server.Tests.Features.Customer.Commands;
 
 public class CustomerDeleteCommandTests : IDisposable
 {
+    // Test customer IDs - using consistent GUIDs for reproducible tests
+    private static readonly Guid Customer1Id = Guid.Parse("c1111111-1111-1111-1111-111111111111");
+    private static readonly Guid Customer2Id = Guid.Parse("c2222222-2222-2222-2222-222222222222");
+    private static readonly Guid Customer3Id = Guid.Parse("c3333333-3333-3333-3333-333333333333");
+    private static readonly Guid Customer4Id = Guid.Parse("c4444444-4444-4444-4444-444444444444");
+    private static readonly Guid Customer5Id = Guid.Parse("c5555555-5555-5555-5555-555555555555");
+    private static readonly Guid CustomerAddressId = Guid.Parse("ca111111-1111-1111-1111-111111111111");
     protected readonly TestWebApplicationFactory<Program> Factory;
     protected readonly HttpClient Client;
     protected readonly ApplicationDbContext DbContext;
@@ -43,7 +50,7 @@ public class CustomerDeleteCommandTests : IDisposable
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-        
+
         Task.Delay(10).Wait();
     }
 
@@ -71,7 +78,7 @@ public class CustomerDeleteCommandTests : IDisposable
 
                 var customer1Tenant1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     CompanyName = "Test Company 1",
@@ -87,7 +94,7 @@ public class CustomerDeleteCommandTests : IDisposable
 
                 var customer2Tenant1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     CompanyName = "Test Company 2",
@@ -103,7 +110,7 @@ public class CustomerDeleteCommandTests : IDisposable
 
                 var customer3Tenant2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 3,
+                    Id = Customer3Id,
                     Firstname = "Bob",
                     Lastname = "Wilson",
                     CompanyName = "Tenant 2 Company",
@@ -114,12 +121,12 @@ public class CustomerDeleteCommandTests : IDisposable
                     Note = "Customer for tenant 2",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-15),
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 var customer4Inactive = new maERP.Domain.Entities.Customer
                 {
-                    Id = 4,
+                    Id = Customer4Id,
                     Firstname = "Alice",
                     Lastname = "Brown",
                     CompanyName = "Inactive Company",
@@ -136,7 +143,7 @@ public class CustomerDeleteCommandTests : IDisposable
                 // Add customer with addresses to test cascade deletion
                 var customer5WithAddresses = new maERP.Domain.Entities.Customer
                 {
-                    Id = 5,
+                    Id = Customer5Id,
                     Firstname = "Charlie",
                     Lastname = "Davis",
                     CompanyName = "Address Company",
@@ -152,8 +159,8 @@ public class CustomerDeleteCommandTests : IDisposable
 
                 var customerAddress = new maERP.Domain.Entities.CustomerAddress
                 {
-                    Id = 1,
-                    CustomerId = 5,
+                    Id = CustomerAddressId,
+                    CustomerId = Customer5Id,
                     Firstname = "Charlie",
                     Lastname = "Davis",
                     CompanyName = "Address Company",
@@ -188,9 +195,9 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_WithValidId_ShouldReturnNoContent()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
@@ -199,16 +206,16 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_WithValidId_ShouldRemoveFromDatabase()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var customerBefore = await DbContext.Customer.FindAsync(1);
+        var customerBefore = await DbContext.Customer.FindAsync(Customer1Id);
         TestAssertions.AssertNotNull(customerBefore);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
-        var customerAfter = await DbContext.Customer.FindAsync(1);
+        var customerAfter = await DbContext.Customer.FindAsync(Customer1Id);
         Assert.Null(customerAfter);
     }
 
@@ -216,9 +223,9 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/999");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<int>>(response);
@@ -231,12 +238,12 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var customerExists = await DbContext.Customer.AnyAsync(c => c.Id == 1);
+        var customerExists = await DbContext.Customer.AnyAsync(c => c.Id == Customer1Id);
         TestAssertions.AssertTrue(customerExists);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<int>>(response);
@@ -244,7 +251,7 @@ public class CustomerDeleteCommandTests : IDisposable
         TestAssertions.AssertFalse(result.Succeeded);
 
         // Verify customer still exists
-        var customerStillExists = await DbContext.Customer.AnyAsync(c => c.Id == 1);
+        var customerStillExists = await DbContext.Customer.AnyAsync(c => c.Id == Customer1Id);
         TestAssertions.AssertTrue(customerStillExists);
     }
 
@@ -253,7 +260,7 @@ public class CustomerDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -262,9 +269,9 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_WithZeroId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/0");
+        var response = await Client.DeleteAsync("/api/v1/Customers/00000000-0000-0000-0000-000000000000");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -273,9 +280,9 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_WithNegativeId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/-1");
+        var response = await Client.DeleteAsync("/api/v1/Customers/invalid-guid");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -284,7 +291,7 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_WithInvalidId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Customers/invalid");
 
@@ -295,9 +302,9 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_WithLargeId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/2147483647");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
@@ -306,13 +313,13 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_InactiveCustomer_ShouldDeleteSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/4");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer4Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
-        var deletedCustomer = await DbContext.Customer.FindAsync(4);
+        var deletedCustomer = await DbContext.Customer.FindAsync(Customer4Id);
         Assert.Null(deletedCustomer);
     }
 
@@ -320,19 +327,19 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_WithAddresses_ShouldDeleteCascade()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var addressesBefore = await DbContext.CustomerAddress.Where(ca => ca.CustomerId == 5).CountAsync();
+        var addressesBefore = await DbContext.CustomerAddress.Where(ca => ca.CustomerId == Customer5Id).CountAsync();
         TestAssertions.AssertTrue(addressesBefore > 0);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/5");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer5Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
-        var customerAfter = await DbContext.Customer.FindAsync(5);
+        var customerAfter = await DbContext.Customer.FindAsync(Customer5Id);
         Assert.Null(customerAfter);
 
-        var addressesAfter = await DbContext.CustomerAddress.Where(ca => ca.CustomerId == 5).CountAsync();
+        var addressesAfter = await DbContext.CustomerAddress.Where(ca => ca.CustomerId == Customer5Id).CountAsync();
         TestAssertions.AssertEqual(0, addressesAfter);
     }
 
@@ -340,32 +347,32 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_TenantIsolation_ShouldOnlyDeleteOwnTenantData()
     {
         await SeedTestDataAsync();
-        
+
         // Verify both customers exist
-        var customer1Exists = await DbContext.Customer.AnyAsync(c => c.Id == 1 && c.TenantId == TenantConstants.TestTenant1Id);
-        var customer3Exists = await DbContext.Customer.AnyAsync(c => c.Id == 3 && c.TenantId == TenantConstants.TestTenant2Id);
+        var customer1Exists = await DbContext.Customer.AnyAsync(c => c.Id == Customer1Id && c.TenantId == TenantConstants.TestTenant1Id);
+        var customer3Exists = await DbContext.Customer.AnyAsync(c => c.Id == Customer3Id && c.TenantId == TenantConstants.TestTenant2Id);
         TestAssertions.AssertTrue(customer1Exists);
         TestAssertions.AssertTrue(customer3Exists);
 
         // Try to delete tenant 1's customer while being tenant 2
-        SetTenantHeader(2);
-        var response1 = await Client.DeleteAsync("/api/v1/Customers/1");
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response1 = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1.StatusCode);
 
         // Verify customer 1 still exists
-        customer1Exists = await DbContext.Customer.AnyAsync(c => c.Id == 1);
+        customer1Exists = await DbContext.Customer.AnyAsync(c => c.Id == Customer1Id);
         TestAssertions.AssertTrue(customer1Exists);
 
         // Verify tenant 2 can delete its own customer
-        var response3 = await Client.DeleteAsync("/api/v1/Customers/3");
+        var response3 = await Client.DeleteAsync($"/api/v1/Customers/{Customer3Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response3.StatusCode);
 
         // Verify customer 3 is deleted
-        customer3Exists = await DbContext.Customer.AnyAsync(c => c.Id == 3);
+        customer3Exists = await DbContext.Customer.AnyAsync(c => c.Id == Customer3Id);
         TestAssertions.AssertFalse(customer3Exists);
 
         // Verify customer 1 still exists
-        customer1Exists = await DbContext.Customer.AnyAsync(c => c.Id == 1);
+        customer1Exists = await DbContext.Customer.AnyAsync(c => c.Id == Customer1Id);
         TestAssertions.AssertTrue(customer1Exists);
     }
 
@@ -373,22 +380,22 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_MultipleCustomersInTenant_ShouldOnlyDeleteSpecified()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerCountBefore = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant1Id).CountAsync();
         TestAssertions.AssertTrue(customerCountBefore > 1);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
         var customerCountAfter = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant1Id).CountAsync();
         TestAssertions.AssertEqual(customerCountBefore - 1, customerCountAfter);
 
-        var deletedCustomer = await DbContext.Customer.FindAsync(1);
+        var deletedCustomer = await DbContext.Customer.FindAsync(Customer1Id);
         Assert.Null(deletedCustomer);
 
-        var otherCustomer = await DbContext.Customer.FindAsync(2);
+        var otherCustomer = await DbContext.Customer.FindAsync(Customer2Id);
         TestAssertions.AssertNotNull(otherCustomer);
     }
 
@@ -396,10 +403,10 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_ConcurrentDelete_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response1Task = Client.DeleteAsync("/api/v1/Customers/1");
-        var response2Task = Client.DeleteAsync("/api/v1/Customers/1");
+        var response1Task = Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
+        var response2Task = Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
         var responses = await Task.WhenAll(response1Task, response2Task);
 
@@ -410,7 +417,7 @@ public class CustomerDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(1, successCount);
         TestAssertions.AssertEqual(1, notFoundCount);
 
-        var customerExists = await DbContext.Customer.AnyAsync(c => c.Id == 1);
+        var customerExists = await DbContext.Customer.AnyAsync(c => c.Id == Customer1Id);
         TestAssertions.AssertFalse(customerExists);
     }
 
@@ -418,9 +425,9 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/999");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<int>>(response);
@@ -434,13 +441,13 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_NonExistentTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var customerStillExists = await DbContext.Customer.AnyAsync(c => c.Id == 1);
+        var customerStillExists = await DbContext.Customer.AnyAsync(c => c.Id == Customer1Id);
         TestAssertions.AssertTrue(customerStillExists);
     }
 
@@ -448,14 +455,14 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_AlreadyDeletedCustomer_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // First deletion
-        var response1 = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response1 = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response1.StatusCode);
 
         // Second deletion attempt
-        var response2 = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response2 = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
 
         var result = await ReadResponseAsync<Result<int>>(response2);
@@ -468,15 +475,15 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_DatabaseConstraintViolation_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // This test assumes there might be foreign key constraints
         // that prevent deletion in some scenarios
-        var response = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
         // Should either succeed or return a proper error
         TestAssertions.AssertTrue(
-            response.StatusCode == HttpStatusCode.NoContent || 
+            response.StatusCode == HttpStatusCode.NoContent ||
             response.StatusCode == HttpStatusCode.BadRequest ||
             response.StatusCode == HttpStatusCode.Conflict
         );
@@ -494,13 +501,13 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_ValidateDataIntegrityAfterDeletion()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var initialCount = await DbContext.Customer.CountAsync();
         var initialTenant1Count = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant1Id).CountAsync();
         var initialTenant2Count = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant2Id).CountAsync();
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
         var finalCount = await DbContext.Customer.CountAsync();
@@ -516,24 +523,24 @@ public class CustomerDeleteCommandTests : IDisposable
     public async Task DeleteCustomer_VerifyAuditTrailOrSoftDelete()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var customerBefore = await DbContext.Customer.AsNoTracking().FirstAsync(c => c.Id == 1);
+        var customerBefore = await DbContext.Customer.AsNoTracking().FirstAsync(c => c.Id == Customer1Id);
         TestAssertions.AssertNotNull(customerBefore);
 
-        var response = await Client.DeleteAsync("/api/v1/Customers/1");
+        var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
         // If implementing soft delete, verify the record is marked as deleted
         // If hard delete, verify it's completely removed
         var customerAfter = await DbContext.Customer
             .IgnoreQueryFilters() // In case soft delete uses query filters
-            .FirstOrDefaultAsync(c => c.Id == 1);
+            .FirstOrDefaultAsync(c => c.Id == Customer1Id);
 
         if (customerAfter == null)
         {
             // Hard delete - customer should be completely removed
-            var customerExists = await DbContext.Customer.AnyAsync(c => c.Id == 1);
+            var customerExists = await DbContext.Customer.AnyAsync(c => c.Id == Customer1Id);
             TestAssertions.AssertFalse(customerExists);
         }
         else

@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.TaxClass.Commands;
 
@@ -46,7 +47,7 @@ public class TaxClassDeleteCommandTests : IDisposable
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
@@ -59,10 +60,10 @@ public class TaxClassDeleteCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
-    private async Task<int> CreateTestTaxClassAsync(int tenantId, double taxRate = 19.0)
+    private async Task<Guid> CreateTestTaxClassAsync(Guid tenantId, double taxRate = 19.0)
     {
         TenantContext.SetCurrentTenantId(tenantId);
-        
+
         var taxClass = new Domain.Entities.TaxClass
         {
             TaxRate = taxRate,
@@ -73,20 +74,20 @@ public class TaxClassDeleteCommandTests : IDisposable
 
         DbContext.TaxClass.Add(taxClass);
         await DbContext.SaveChangesAsync();
-        
+
         TenantContext.SetCurrentTenantId(null);
         return taxClass.Id;
     }
 
-    private async Task<int> CreateTestProductWithTaxClassAsync(int tenantId, int taxClassId)
+    private async Task<Guid> CreateTestProductWithTaxClassAsync(Guid tenantId, Guid taxClassId)
     {
         TenantContext.SetCurrentTenantId(tenantId);
-        
+
         var product = new maERP.Domain.Entities.Product
         {
             Name = "Test Product",
             Sku = $"TEST-{Guid.NewGuid().ToString()[..8]}",
-            ManufacturerId = 1, // Assuming exists from seed data
+            ManufacturerId = Guid.NewGuid(), // Test manufacturer ID
             TaxClassId = taxClassId,
             TenantId = tenantId,
             DateCreated = DateTime.UtcNow,
@@ -95,7 +96,7 @@ public class TaxClassDeleteCommandTests : IDisposable
 
         DbContext.Product.Add(product);
         await DbContext.SaveChangesAsync();
-        
+
         TenantContext.SetCurrentTenantId(null);
         return product.Id;
     }
@@ -121,15 +122,15 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(taxClassId, result.Data);
@@ -144,7 +145,7 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
@@ -158,7 +159,7 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
         SetInvalidTenantHeader();
 
         // Act
@@ -173,8 +174,8 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(2); // Different tenant
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Different tenant
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
@@ -183,7 +184,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
 
         // Verify tax class still exists for tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var getResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
         TestAssertions.AssertHttpSuccess(getResponse);
     }
@@ -193,10 +194,10 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.DeleteAsync("/api/v1/TaxClasses/999");
+        var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{Guid.NewGuid()}");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -207,13 +208,13 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId1 = await CreateTestTaxClassAsync(1, 19.0);
-        var taxClassId2 = await CreateTestTaxClassAsync(2, 20.0);
+        var taxClassId1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 19.0);
+        var taxClassId2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id, 20.0);
 
         // Act - Delete tenant 1's tax class
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId1}");
-        
+
         // Try to delete tenant 2's tax class from tenant 1
         var response2 = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId2}");
 
@@ -222,7 +223,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
 
         // Verify tenant 2's tax class still exists
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var getResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
         TestAssertions.AssertHttpSuccess(getResponse);
     }
@@ -232,12 +233,12 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+
         // Create a product that uses this tax class
         // Note: Depending on business rules, this might fail or succeed with cascade
         // Adjust test based on actual implementation
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
@@ -254,8 +255,8 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Delete twice
         var response1 = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
@@ -271,8 +272,8 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Try to delete concurrently
         var task1 = Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
@@ -284,7 +285,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         // Assert - Only one should succeed
         var successCount = responses.Count(r => r.IsSuccessStatusCode);
         TestAssertions.AssertTrue(successCount >= 1); // At least one should succeed
-        
+
         // Verify deletion
         var getResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
         TestAssertions.AssertHttpStatusCode(getResponse, HttpStatusCode.NotFound);
@@ -299,7 +300,7 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
 
@@ -315,10 +316,10 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.DeleteAsync("/api/v1/TaxClasses/0");
+        var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{Guid.Empty}");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -329,10 +330,10 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.DeleteAsync("/api/v1/TaxClasses/-1");
+        var response = await Client.DeleteAsync("/api/v1/TaxClasses/invalid-guid");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
@@ -343,10 +344,10 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.DeleteAsync("/api/v1/TaxClasses/abc");
+        var response = await Client.DeleteAsync("/api/v1/TaxClasses/invalid-guid");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -357,8 +358,8 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var startTime = DateTime.UtcNow;
 
         // Act
@@ -376,16 +377,16 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(1);
-        SetTenantHeader(1);
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
-        
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(ResultStatusCode.Ok, result.StatusCode);
@@ -398,24 +399,24 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId1 = await CreateTestTaxClassAsync(1, 19.0);
-        var taxClassId2 = await CreateTestTaxClassAsync(1, 7.0);
-        var taxClassId3 = await CreateTestTaxClassAsync(1, 0.0);
-        SetTenantHeader(1);
+        var taxClassId1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 19.0);
+        var taxClassId2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 7.0);
+        var taxClassId3 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 0.0);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act - Delete middle one
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId2}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        
+
         // Verify only the correct one was deleted
         var getResponse1 = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId1}");
         TestAssertions.AssertHttpSuccess(getResponse1);
-        
+
         var getResponse2 = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
         TestAssertions.AssertHttpStatusCode(getResponse2, HttpStatusCode.NotFound);
-        
+
         var getResponse3 = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId3}");
         TestAssertions.AssertHttpSuccess(getResponse3);
     }
@@ -425,16 +426,16 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId1 = await CreateTestTaxClassAsync(1);
-        var taxClassId2 = await CreateTestTaxClassAsync(2);
+        var taxClassId1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        var taxClassId2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id);
 
         // Act - Start with tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var canAccessOwn = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId1}");
         TestAssertions.AssertHttpSuccess(canAccessOwn);
 
         // Switch to tenant 2 and delete their tax class
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var deleteResponse = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId2}");
         TestAssertions.AssertHttpSuccess(deleteResponse);
 
@@ -443,7 +444,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(deleteOtherResponse, HttpStatusCode.NotFound);
 
         // Verify tenant 1's tax class still exists
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var stillExists = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId1}");
         TestAssertions.AssertHttpSuccess(stillExists);
     }
@@ -453,10 +454,10 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
-        var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{int.MaxValue}");
+        var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{Guid.NewGuid()}");
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);

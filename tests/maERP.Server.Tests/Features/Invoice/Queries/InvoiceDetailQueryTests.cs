@@ -19,6 +19,15 @@ public class InvoiceDetailQueryTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
+    private static readonly Guid Customer1Id = Guid.NewGuid();
+    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly Guid Product1Id = Guid.NewGuid();
+    private static readonly Guid Product2Id = Guid.NewGuid();
+    private static readonly Guid Invoice1Id = Guid.NewGuid();
+    private static readonly Guid Invoice2Id = Guid.NewGuid();
+    private static readonly Guid InvoiceItem1Id = Guid.NewGuid();
+    private static readonly Guid InvoiceItem2Id = Guid.NewGuid();
+    private static readonly Guid Order1Id = Guid.NewGuid();
 
     public InvoiceDetailQueryTests()
     {
@@ -69,7 +78,7 @@ public class InvoiceDetailQueryTests : IDisposable
 
                 var customer1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 1,
+                    Id = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -78,18 +87,18 @@ public class InvoiceDetailQueryTests : IDisposable
 
                 var customer2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = 2,
+                    Id = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Customer.AddRange(customer1, customer2);
 
                 var product1 = new maERP.Domain.Entities.Product
                 {
-                    Id = 1,
+                    Id = Product1Id,
                     Sku = "TEST-001",
                     Name = "Test Product 1",
                     Price = 100.00m,
@@ -98,8 +107,8 @@ public class InvoiceDetailQueryTests : IDisposable
 
                 var product2 = new maERP.Domain.Entities.Product
                 {
-                    Id = 2,
-                    Sku = "TEST-002", 
+                    Id = Product2Id,
+                    Sku = "TEST-002",
                     Name = "Test Product 2",
                     Price = 50.00m,
                     TenantId = TenantConstants.TestTenant1Id
@@ -109,11 +118,11 @@ public class InvoiceDetailQueryTests : IDisposable
 
                 var invoice1Tenant1 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 1,
+                    Id = Invoice1Id,
                     InvoiceNumber = "INV-001",
                     InvoiceDate = DateTime.Now.AddDays(-10),
-                    CustomerId = 1,
-                    OrderId = 1001,
+                    CustomerId = Customer1Id,
+                    OrderId = Order1Id,
                     Subtotal = 200.00m,
                     ShippingCost = 10.00m,
                     TotalTax = 38.00m,
@@ -141,25 +150,25 @@ public class InvoiceDetailQueryTests : IDisposable
 
                 var invoice2Tenant2 = new maERP.Domain.Entities.Invoice
                 {
-                    Id = 2,
+                    Id = Invoice2Id,
                     InvoiceNumber = "INV-T2-001",
                     InvoiceDate = DateTime.Now.AddDays(-5),
-                    CustomerId = 2,
+                    CustomerId = Customer2Id,
                     Subtotal = 100.00m,
                     TotalTax = 19.00m,
                     Total = 119.00m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.CompletelyPaid,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Sent,
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Invoice.AddRange(invoice1Tenant1, invoice2Tenant2);
 
                 var invoiceItem1 = new maERP.Domain.Entities.InvoiceItem
                 {
-                    Id = 1,
-                    InvoiceId = 1,
-                    ProductId = 1,
+                    Id = InvoiceItem1Id,
+                    InvoiceId = Invoice1Id,
+                    ProductId = Product1Id,
                     Name = "Test Product 1",
                     UnitPrice = 100.00m,
                     TenantId = TenantConstants.TestTenant1Id
@@ -167,9 +176,9 @@ public class InvoiceDetailQueryTests : IDisposable
 
                 var invoiceItem2 = new maERP.Domain.Entities.InvoiceItem
                 {
-                    Id = 2,
-                    InvoiceId = 1,
-                    ProductId = 1,
+                    Id = InvoiceItem2Id,
+                    InvoiceId = Invoice1Id,
+                    ProductId = Product1Id,
                     Name = "Test Product 1 (Second Item)",
                     UnitPrice = 100.00m,
                     TenantId = TenantConstants.TestTenant1Id
@@ -197,16 +206,16 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_WithValidIdAndTenant_ShouldReturnInvoiceDetail()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/1");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(1, result.Data!.Id);
+        TestAssertions.AssertEqual<Guid>(Invoice1Id, result.Data!.Id);
         TestAssertions.AssertEqual("INV-001", result.Data.InvoiceNumber);
         TestAssertions.AssertEqual("John Doe", result.Data.CustomerName);
     }
@@ -215,7 +224,7 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/999");
 
@@ -230,9 +239,9 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/1");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
@@ -246,7 +255,7 @@ public class InvoiceDetailQueryTests : IDisposable
     {
         await SeedInvoiceTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Invoices/1");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
@@ -259,23 +268,23 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_ShouldIncludeAllBasicFields()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/1");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var invoice = result.Data!;
-        TestAssertions.AssertEqual(1, invoice.Id);
+        TestAssertions.AssertEqual<Guid>(Invoice1Id, invoice.Id);
         TestAssertions.AssertEqual("INV-001", invoice.InvoiceNumber);
         TestAssertions.AssertTrue(invoice.InvoiceDate != default);
-        TestAssertions.AssertEqual(1, invoice.CustomerId);
+        TestAssertions.AssertEqual<Guid>(Customer1Id, invoice.CustomerId);
         TestAssertions.AssertEqual("John Doe", invoice.CustomerName);
-        TestAssertions.AssertEqual(1001, invoice.OrderId);
-        TestAssertions.AssertEqual("1001", invoice.OrderNumber);
+        TestAssertions.AssertEqual<Guid?>(Order1Id, invoice.OrderId);
+        TestAssertions.AssertEqual(Order1Id.ToString(), invoice.OrderNumber);
         TestAssertions.AssertEqual(200.00m, invoice.Subtotal);
         TestAssertions.AssertEqual(10.00m, invoice.ShippingCost);
         TestAssertions.AssertEqual(38.00m, invoice.TotalTax);
@@ -290,23 +299,23 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_ShouldIncludeInvoiceItems()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/1");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var invoice = result.Data!;
         TestAssertions.AssertNotNull(invoice.InvoiceItems);
         TestAssertions.AssertEqual(2, invoice.InvoiceItems.Count);
-        
+
         var firstItem = invoice.InvoiceItems.First();
-        TestAssertions.AssertTrue(firstItem.Id > 0);
-        TestAssertions.AssertEqual(1, firstItem.InvoiceId);
-        TestAssertions.AssertEqual(1, firstItem.ProductId);
+        TestAssertions.AssertTrue(firstItem.Id != Guid.Empty);
+        TestAssertions.AssertEqual<Guid>(Invoice1Id, firstItem.InvoiceId);
+        TestAssertions.AssertEqual<Guid?>(Product1Id, firstItem.ProductId);
         TestAssertions.AssertEqual("Test Product 1", firstItem.Name);
         TestAssertions.AssertEqual(100.00m, firstItem.UnitPrice);
     }
@@ -315,15 +324,15 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_ShouldIncludeInvoiceAddressDetails()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/1");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var invoice = result.Data!;
         TestAssertions.AssertEqual("John", invoice.InvoiceAddressFirstName);
         TestAssertions.AssertEqual("Doe", invoice.InvoiceAddressLastName);
@@ -339,15 +348,15 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_ShouldIncludeDeliveryAddressDetails()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/1");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var invoice = result.Data!;
         TestAssertions.AssertEqual("John", invoice.DeliveryAddressFirstName);
         TestAssertions.AssertEqual("Doe", invoice.DeliveryAddressLastName);
@@ -361,16 +370,16 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_WithTenant2Invoice_ShouldReturnCorrectInvoice()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/2");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice2Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEqual(2, result.Data!.Id);
+        TestAssertions.AssertEqual<Guid>(Invoice2Id, result.Data!.Id);
         TestAssertions.AssertEqual("INV-T2-001", result.Data.InvoiceNumber);
         TestAssertions.AssertEqual("Jane Smith", result.Data.CustomerName);
     }
@@ -378,7 +387,7 @@ public class InvoiceDetailQueryTests : IDisposable
     [Fact]
     public async Task GetInvoiceDetail_WithInvalidId_ShouldReturnBadRequest()
     {
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/invalid");
 
@@ -389,7 +398,7 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_WithZeroId_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/0");
 
@@ -404,7 +413,7 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_WithNegativeId_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/-1");
 
@@ -419,9 +428,9 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
-        var response = await Client.GetAsync("/api/v1/Invoices/1");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
@@ -434,9 +443,9 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/1");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
@@ -450,7 +459,7 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/999");
 
@@ -467,7 +476,7 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_WithLargeId_ShouldHandleGracefully()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/2147483647");
 
@@ -483,11 +492,11 @@ public class InvoiceDetailQueryTests : IDisposable
     {
         await SeedInvoiceTestDataAsync();
 
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Invoices/2");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1.StatusCode);
 
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Invoices/1");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
     }
@@ -496,17 +505,17 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_WithMinimalInvoiceData_ShouldReturnCorrectly()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/2");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice2Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var invoice = result.Data!;
-        TestAssertions.AssertEqual(2, invoice.Id);
+        TestAssertions.AssertEqual<Guid>(Invoice2Id, invoice.Id);
         TestAssertions.AssertEqual("INV-T2-001", invoice.InvoiceNumber);
         TestAssertions.AssertNotNull(invoice.InvoiceItems);
         TestAssertions.AssertEmpty(invoice.InvoiceItems);
@@ -516,15 +525,15 @@ public class InvoiceDetailQueryTests : IDisposable
     public async Task GetInvoiceDetail_ShouldIncludeTimestamps()
     {
         await SeedInvoiceTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/1");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        
+
         var invoice = result.Data!;
         TestAssertions.AssertTrue(invoice.CreatedDate != default);
         TestAssertions.AssertTrue(invoice.LastModifiedDate != default);

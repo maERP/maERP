@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -68,7 +69,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts");
@@ -86,7 +87,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts");
@@ -122,7 +123,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?pageNumber=0&pageSize=1");
@@ -142,7 +143,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?pageNumber=1&pageSize=1");
@@ -162,7 +163,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?searchString=Prompt");
@@ -181,7 +182,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?searchString=NonexistentPrompt");
@@ -199,7 +200,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?orderBy=Identifier");
@@ -210,7 +211,7 @@ public class AiPromptListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(2, result.Data?.Count ?? 0);
-        
+
         var identifiers = result.Data?.Select(x => x.Identifier).ToList();
         TestAssertions.AssertTrue(string.Compare(identifiers?[0], identifiers?[1], StringComparison.Ordinal) <= 0);
     }
@@ -220,7 +221,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?orderBy=Identifier desc");
@@ -231,7 +232,7 @@ public class AiPromptListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(2, result.Data?.Count ?? 0);
-        
+
         var identifiers = result.Data?.Select(x => x.Identifier).ToList();
         TestAssertions.AssertTrue(string.Compare(identifiers?[0], identifiers?[1], StringComparison.Ordinal) >= 0);
     }
@@ -241,7 +242,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?orderBy=DateCreated,Identifier");
@@ -259,7 +260,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?pageNumber=10&pageSize=10");
@@ -278,7 +279,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?pageSize=0");
@@ -295,7 +296,7 @@ public class AiPromptListQueryTests : IDisposable
     public async Task GetAiPrompts_WithNegativePageNumber_ShouldHandleGracefully()
     {
         // Arrange
-        SetTenantHeader(999); // Non-existent tenant to avoid conflicts
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant to avoid conflicts
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?pageNumber=-1");
@@ -313,7 +314,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange - Use a tenant that doesn't exist in seeded data
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(999); // Non-existent tenant
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts");
@@ -333,7 +334,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts");
@@ -347,7 +348,7 @@ public class AiPromptListQueryTests : IDisposable
 
         var firstPrompt = result.Data?.First();
         TestAssertions.AssertNotNull(firstPrompt);
-        TestAssertions.AssertTrue(firstPrompt!.Id > 0);
+        TestAssertions.AssertTrue(firstPrompt!.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstPrompt.Identifier));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstPrompt.PromptText));
         TestAssertions.AssertTrue(firstPrompt.DateCreated != DateTime.MinValue);
@@ -361,23 +362,23 @@ public class AiPromptListQueryTests : IDisposable
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
         // Test Tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var responseTenant1 = await Client.GetAsync("/api/v1/AiPrompts");
         var resultTenant1 = await ReadResponseAsync<PaginatedResult<AiPromptListDto>>(responseTenant1);
 
         // Test Tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var responseTenant2 = await Client.GetAsync("/api/v1/AiPrompts");
         var resultTenant2 = await ReadResponseAsync<PaginatedResult<AiPromptListDto>>(responseTenant2);
 
         // Assert
         TestAssertions.AssertNotNull(resultTenant1.Data);
         TestAssertions.AssertNotNull(resultTenant2.Data);
-        
+
         // Verify that tenant data don't overlap
         var tenant1Identifiers = resultTenant1.Data.Select(p => p.Identifier).ToList();
         var tenant2Identifiers = resultTenant2.Data.Select(p => p.Identifier).ToList();
-        
+
         TestAssertions.AssertFalse(tenant1Identifiers.Any(id => tenant2Identifiers.Contains(id)));
     }
 
@@ -386,7 +387,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?orderBy=DateCreated");
@@ -410,7 +411,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts?orderBy=DateModified");
@@ -457,7 +458,7 @@ public class AiPromptListQueryTests : IDisposable
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
         var tasks = Enumerable.Range(1, 5).Select(_ => Client.GetAsync("/api/v1/AiPrompts")).ToArray();
