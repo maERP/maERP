@@ -22,7 +22,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public OrderFilterSpecification(int id)
+        public OrderFilterSpecification(Guid id)
         {
             Includes.Add(o => o.OrderItems);
             Criteria = o => o.Id == id;

@@ -22,7 +22,7 @@ public partial class CustomerInputViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
     [NotifyPropertyChangedFor(nameof(PageTitle))]
-    private int customerId;
+    private Guid customerId;
 
     [ObservableProperty]
     [Required(ErrorMessage = "Vorname ist erforderlich")]
@@ -115,7 +115,7 @@ public partial class CustomerInputViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
     private bool isSaving;
 
-    public bool IsEditMode => CustomerId > 0;
+    public bool IsEditMode => CustomerId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"Kunde #{CustomerId} bearbeiten" : "Neuen Kunden erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
@@ -123,7 +123,7 @@ public partial class CustomerInputViewModel : ViewModelBase
     public List<CustomerStatus> AvailableStatuses { get; } = Enum.GetValues<CustomerStatus>().ToList();
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToCustomerDetail { get; set; }
+    public Func<Guid, Task>? NavigateToCustomerDetail { get; set; }
 
     public CustomerInputViewModel(IHttpService httpService, IDebugService debugService)
     {
@@ -131,7 +131,7 @@ public partial class CustomerInputViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int customerId = 0)
+    public async Task InitializeAsync(Guid customerId = default)
     {
         CustomerId = customerId;
 
@@ -148,7 +148,7 @@ public partial class CustomerInputViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAsync()
     {
-        if (CustomerId <= 0) return;
+        if (CustomerId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -234,8 +234,8 @@ public partial class CustomerInputViewModel : ViewModelBase
             };
 
             var result = IsEditMode
-                ? await _httpService.PutAsync<CustomerInputDto, int>($"customers/{CustomerId}", customerDto)
-                : await _httpService.PostAsync<CustomerInputDto, int>("customers", customerDto);
+                ? await _httpService.PutAsync<CustomerInputDto, Guid>($"customers/{CustomerId}", customerDto)
+                : await _httpService.PostAsync<CustomerInputDto, Guid>("customers", customerDto);
 
             if (result == null)
             {
@@ -250,7 +250,7 @@ public partial class CustomerInputViewModel : ViewModelBase
                 {
                     await NavigateToCustomerDetail(CustomerId);
                 }
-                else if (!IsEditMode && result.Data != null && NavigateToCustomerDetail != null)
+                else if (!IsEditMode && result.Data != Guid.Empty && NavigateToCustomerDetail != null)
                 {
                     await NavigateToCustomerDetail(result.Data);
                 }
@@ -396,7 +396,7 @@ public partial class CustomerInputViewModel : ViewModelBase
             // Create new address
             var newAddress = new CustomerAddressListDto
             {
-                Id = 0, // Will be set by server
+                Id = Guid.Empty, // Will be set by server
                 Firstname = NewAddressFirstname,
                 Lastname = NewAddressLastname,
                 CompanyName = NewAddressCompanyName,

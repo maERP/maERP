@@ -20,7 +20,7 @@ public class InvoiceBaseValidator<T> : AbstractValidator<T> where T : IInvoiceIn
             .NotEmpty().WithMessage("Das Rechnungsdatum darf nicht leer sein.");
 
         RuleFor(x => x.CustomerId)
-            .GreaterThan(0).WithMessage("Bitte wählen Sie einen Kunden aus.");
+            .NotEqual(Guid.Empty).WithMessage("Bitte wählen Sie einen Kunden aus.");
 
         // Payment information validation
         RuleFor(x => x.PaymentMethod)

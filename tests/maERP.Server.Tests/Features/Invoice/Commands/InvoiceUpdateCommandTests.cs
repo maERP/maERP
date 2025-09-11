@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Invoice;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -34,11 +35,11 @@ public class InvoiceUpdateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -81,7 +82,7 @@ public class InvoiceUpdateCommandTests : IDisposable
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer2 = new maERP.Domain.Entities.Customer
@@ -90,7 +91,7 @@ public class InvoiceUpdateCommandTests : IDisposable
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Customer.AddRange(customer1, customer2);
@@ -116,7 +117,7 @@ public class InvoiceUpdateCommandTests : IDisposable
                     InvoiceAddressCity = "Original City",
                     InvoiceAddressZip = "12345",
                     InvoiceAddressCountry = "Original Country",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var invoice2Tenant2 = new maERP.Domain.Entities.Invoice
@@ -130,7 +131,7 @@ public class InvoiceUpdateCommandTests : IDisposable
                     Total = 238.00m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.CompletelyPaid,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Sent,
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Invoice.AddRange(invoice1Tenant1, invoice2Tenant2);

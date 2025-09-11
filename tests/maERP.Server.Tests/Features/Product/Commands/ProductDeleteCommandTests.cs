@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
 using maERP.Persistence.DatabaseContext;
@@ -33,11 +34,11 @@ public class ProductDeleteCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -136,8 +137,8 @@ public class ProductDeleteCommandTests : IDisposable
                 return (product1.Id, product3.Id);
             }
 
-            var tenant1Product = await DbContext.Product.FirstOrDefaultAsync(p => p.TenantId == 1);
-            var tenant2Product = await DbContext.Product.FirstOrDefaultAsync(p => p.TenantId == 2);
+            var tenant1Product = await DbContext.Product.FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
+            var tenant2Product = await DbContext.Product.FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant2Id);
             
             return (tenant1Product?.Id ?? 1, tenant2Product?.Id ?? 3);
         }
@@ -367,10 +368,10 @@ public class ProductDeleteCommandTests : IDisposable
         SetTenantHeader(1);
 
         // Set tenant context for database queries
-        TenantContext.SetCurrentTenantId(1);
+        TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
 
         // Get count of products before deletion
-        var productsBeforeCount = await DbContext.Product.CountAsync(p => p.TenantId == 1);
+        var productsBeforeCount = await DbContext.Product.CountAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Products/{productId1}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
@@ -381,10 +382,10 @@ public class ProductDeleteCommandTests : IDisposable
         var verifyTenantContext = verifyScope.ServiceProvider.GetRequiredService<ITenantContext>();
         
         // Set tenant context for verification
-        verifyTenantContext.SetCurrentTenantId(1);
+        verifyTenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
         
         // Verify only one product was deleted
-        var productsAfterCount = await verifyDbContext.Product.CountAsync(p => p.TenantId == 1);
+        var productsAfterCount = await verifyDbContext.Product.CountAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
         TestAssertions.AssertEqual(productsBeforeCount - 1, productsAfterCount);
 
         // Reset tenant context to check if product is really deleted

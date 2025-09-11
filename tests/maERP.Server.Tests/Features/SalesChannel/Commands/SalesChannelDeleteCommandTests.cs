@@ -1,6 +1,7 @@
 #nullable disable
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -36,11 +37,11 @@ public class SalesChannelDeleteCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -71,9 +72,9 @@ public class SalesChannelDeleteCommandTests : IDisposable
                 await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
                 // Get existing warehouses created by TestDataSeeder
-                var warehouse1 = await DbContext.Warehouse.FirstAsync(w => w.Id == 1 && w.TenantId == 1);
-                var warehouse2 = await DbContext.Warehouse.FirstAsync(w => w.Id == 2 && w.TenantId == 1);
-                var warehouse3 = await DbContext.Warehouse.FirstAsync(w => w.Id == 3 && w.TenantId == 2);
+                var warehouse1 = await DbContext.Warehouse.FirstAsync(w => w.Id == 1 && w.TenantId == TenantConstants.TestTenant1Id);
+                var warehouse2 = await DbContext.Warehouse.FirstAsync(w => w.Id == 2 && w.TenantId == TenantConstants.TestTenant1Id);
+                var warehouse3 = await DbContext.Warehouse.FirstAsync(w => w.Id == 3 && w.TenantId == TenantConstants.TestTenant2Id);
 
                 // Create existing sales channels for testing deletion
                 var salesChannel1 = new maERP.Domain.Entities.SalesChannel
@@ -90,7 +91,7 @@ public class SalesChannelDeleteCommandTests : IDisposable
                     ExportCustomers = false,
                     ImportOrders = true,
                     ExportOrders = false,
-                    TenantId = 1,
+                    TenantId = TenantConstants.TestTenant1Id,
                     Warehouses = new List<maERP.Domain.Entities.Warehouse> { warehouse1, warehouse2 }
                 };
 
@@ -125,7 +126,7 @@ public class SalesChannelDeleteCommandTests : IDisposable
                     ExportCustomers = true,
                     ImportOrders = true,
                     ExportOrders = true,
-                    TenantId = 2,
+                    TenantId = TenantConstants.TestTenant1Id,
                     Warehouses = new List<maERP.Domain.Entities.Warehouse> { warehouse3 }
                 };
 
@@ -195,7 +196,7 @@ public class SalesChannelDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse.StatusCode);
         
         // Verify through direct database query
-        TenantContext.SetCurrentTenantId(1);
+        TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
         var salesChannelInDb = await DbContext.SalesChannel.FindAsync(1);
         TestAssertions.AssertTrue(salesChannelInDb == null);
     }

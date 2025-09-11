@@ -5,7 +5,7 @@ namespace maERP.Domain.Dtos.Setting;
 
 public class SettingInputDto : ISettingInputModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required(ErrorMessage = "Key is required")]
     [Display(Name = "Key")]

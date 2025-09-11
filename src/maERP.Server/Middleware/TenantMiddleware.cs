@@ -32,7 +32,7 @@ public class TenantMiddleware
         if (context.Request.Headers.TryGetValue("X-Tenant-Id", out var tenantHeader))
         {
             var tenantHeaderValue = tenantHeader.FirstOrDefault();
-            if (int.TryParse(tenantHeaderValue, out var headerTenantId))
+            if (Guid.TryParse(tenantHeaderValue, out var headerTenantId))
             {
                 // In test environment, always honor the X-Tenant-Id header
                 if (isTestEnvironment)
@@ -66,10 +66,10 @@ public class TenantMiddleware
             }
             else
             {
-                // X-Tenant-Id header present but not parseable as integer
+                // X-Tenant-Id header present but not parseable as GUID
                 // Set an invalid tenant ID to ensure queries return no results (404 behavior)
                 // This maintains tenant isolation by not revealing header validation details
-                tenantContext.SetCurrentTenantId(-1);
+                tenantContext.SetCurrentTenantId(Guid.Empty);
             }
         }
         else
@@ -77,7 +77,7 @@ public class TenantMiddleware
             // In test environment, treat missing header as invalid tenant to maintain consistent behavior
             if (isTestEnvironment)
             {
-                tenantContext.SetCurrentTenantId(-1);
+                tenantContext.SetCurrentTenantId(Guid.Empty);
             }
             // For authenticated users without X-Tenant-Id header, use default tenant from JWT
             else if (user.Identity?.IsAuthenticated == true)
@@ -86,7 +86,7 @@ public class TenantMiddleware
                 tenantContext.SetAssignedTenantIds(availableTenantsIds);
 
                 var tenantIdClaim = user.FindFirst("tenantId");
-                if (tenantIdClaim != null && int.TryParse(tenantIdClaim.Value, out var claimTenantId) && claimTenantId > 0)
+                if (tenantIdClaim != null && Guid.TryParse(tenantIdClaim.Value, out var claimTenantId) && claimTenantId != Guid.Empty)
                 {
                     // SECURITY: Verify default tenant is still assigned to user
                     if (availableTenantsIds.Contains(claimTenantId))
@@ -106,7 +106,7 @@ public class TenantMiddleware
         await _next(context);
     }
 
-    private List<int> ExtractAvailableTenantIds(ClaimsPrincipal user)
+    private List<Guid> ExtractAvailableTenantIds(ClaimsPrincipal user)
     {
         var availableTenantsClaim = user.FindFirst("availableTenants");
         if (availableTenantsClaim?.Value != null)
@@ -114,13 +114,13 @@ public class TenantMiddleware
             try
             {
                 var tenants = JsonSerializer.Deserialize<List<dynamic>>(availableTenantsClaim.Value);
-                return tenants?.Select(t => Convert.ToInt32(((JsonElement)t).GetProperty("Id").GetInt32())).ToList() ?? new List<int>();
+                return tenants?.Select(t => Guid.Parse(((JsonElement)t).GetProperty("Id").GetString() ?? string.Empty)).ToList() ?? new List<Guid>();
             }
             catch
             {
-                return new List<int>();
+                return new List<Guid>();
             }
         }
-        return new List<int>();
+        return new List<Guid>();
     }
 }

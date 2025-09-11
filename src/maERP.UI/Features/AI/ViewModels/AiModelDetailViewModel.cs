@@ -26,12 +26,12 @@ public partial class AiModelDetailViewModel : ViewModelBase
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
-    private int aiModelId;
+    private Guid aiModelId;
 
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && AiModel != null;
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToEditAiModel { get; set; }
+    public Func<Guid, Task>? NavigateToEditAiModel { get; set; }
 
     // Computed properties for better display
     public bool HasApiUsername => AiModel != null && !string.IsNullOrEmpty(AiModel.ApiUsername);
@@ -68,7 +68,7 @@ public partial class AiModelDetailViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int aiModelId)
+    public async Task InitializeAsync(Guid aiModelId)
     {
         AiModelId = aiModelId;
         await LoadAiModelAsync();
@@ -77,7 +77,7 @@ public partial class AiModelDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAiModelAsync()
     {
-        if (AiModelId <= 0) return;
+        if (AiModelId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;

@@ -22,7 +22,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public SalesChannelFilterSpecification(int id)
+        public SalesChannelFilterSpecification(Guid id)
         {
             // Includes.Add(o => o.OrderItems);
             Criteria = o => o.Id == id;

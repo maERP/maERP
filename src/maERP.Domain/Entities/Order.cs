@@ -6,11 +6,11 @@ namespace maERP.Domain.Entities;
 
 public class Order : BaseEntity, IBaseEntity
 {
-    public int SalesChannelId { get; set; }
+    public Guid SalesChannelId { get; set; }
     public string RemoteOrderId { get; set; } = string.Empty;
 
     [Required]
-    public int CustomerId { get; set; }
+    public Guid CustomerId { get; set; }
     public Customer Customer { get; set; } = null!;
 
     [Required]

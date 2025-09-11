@@ -17,7 +17,7 @@ public class WarehouseDeleteValidator : AbstractValidator<WarehouseDeleteCommand
 
         RuleFor(p => p.Id)
             .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
         RuleFor(w => w)
             .MustAsync(WarehouseExists).WithMessage("Warehouse not found");

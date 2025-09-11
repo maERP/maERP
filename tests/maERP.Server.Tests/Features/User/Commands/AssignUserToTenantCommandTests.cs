@@ -9,6 +9,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.User.Commands;
@@ -36,11 +37,11 @@ public class AssignUserToTenantCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2, 3 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id, Guid.NewGuid() });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -124,7 +125,7 @@ public class AssignUserToTenantCommandTests : IDisposable
                 var existingAssignment = new Domain.Entities.UserTenant
                 {
                     UserId = user2.Id,
-                    TenantId = 1,
+                    TenantId = TenantConstants.TestTenant1Id,
                     IsDefault = false,
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow
@@ -288,7 +289,7 @@ public class AssignUserToTenantCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
         
         var dbAssignment = await DbContext.UserTenant
-            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == 2);
+            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant2Id);
         
         TestAssertions.AssertNotNull(dbAssignment);
         TestAssertions.AssertEqual(userId1, dbAssignment!.UserId);
@@ -390,7 +391,7 @@ public class AssignUserToTenantCommandTests : IDisposable
         
         // Verify the assignment was created for the user ID from the URL, not the command
         var dbAssignment = await DbContext.UserTenant
-            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == 1);
+            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant1Id);
         
         TestAssertions.AssertNotNull(dbAssignment);
         TestAssertions.AssertEqual(userId1, dbAssignment!.UserId);
@@ -445,7 +446,7 @@ public class AssignUserToTenantCommandTests : IDisposable
         
         // Verify assignment was created for the tenant in the command, not the header
         var dbAssignment = await DbContext.UserTenant
-            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == 1);
+            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant1Id);
         
         TestAssertions.AssertNotNull(dbAssignment);
         TestAssertions.AssertEqual(1, dbAssignment!.TenantId);

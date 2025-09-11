@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Setting.Queries;
 
@@ -34,11 +35,11 @@ public class SettingListQueryTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -70,35 +71,35 @@ public class SettingListQueryTests : IDisposable
                 {
                     Key = "test.setting.tenant1",
                     Value = "value1",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var setting2Tenant1 = new maERP.Domain.Entities.Setting
                 {
                     Key = "test.search.tenant1",
                     Value = "searchable",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var setting3Tenant1 = new maERP.Domain.Entities.Setting
                 {
                     Key = "test.theme.tenant1",
                     Value = "dark",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var setting1Tenant2 = new maERP.Domain.Entities.Setting
                 {
                     Key = "test.setting.tenant2",
                     Value = "value2",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var setting2Tenant2 = new maERP.Domain.Entities.Setting
                 {
                     Key = "test.search.tenant2",
                     Value = "findable",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Setting.AddRange(setting1Tenant1, setting2Tenant1, setting3Tenant1, 

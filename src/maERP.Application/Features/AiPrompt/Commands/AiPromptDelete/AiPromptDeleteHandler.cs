@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.AiPrompt.Commands.AiPromptDelete;
 
-public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Result<int>>
+public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<AiPromptDeleteHandler> _logger;
     private readonly IAiPromptRepository _aIPromptRepository;
@@ -18,11 +18,11 @@ public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Resu
         _aIPromptRepository = aIPromptRepository ?? throw new ArgumentNullException(nameof(aIPromptRepository));
     }
 
-    public async Task<Result<int>> Handle(AiPromptDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(AiPromptDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting AI prompt with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new AiPromptDeleteValidator();

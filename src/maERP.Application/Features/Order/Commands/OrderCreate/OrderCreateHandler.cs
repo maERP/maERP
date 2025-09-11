@@ -10,7 +10,7 @@ namespace maERP.Application.Features.Order.Commands.OrderCreate;
 /// Implements IRequestHandler from MediatR to handle OrderCreateCommand requests
 /// and return the ID of the newly created order wrapped in a Result.
 /// </summary>
-public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int>>
+public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,11 +41,11 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
     /// <param name="request">The order creation command with order details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created order if successful</returns>
-    public async Task<Result<int>> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new order with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new OrderCreateValidator(_orderRepository);

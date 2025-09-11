@@ -13,6 +13,6 @@ public interface ITenantService
     event EventHandler? TenantChanged;
 
     void SetAvailableTenants(List<TenantListDto> tenants);
-    void SetCurrentTenant(int? tenantId);
-    Task SwitchTenantAsync(int tenantId);
+    void SetCurrentTenant(Guid? tenantId);
+    Task SwitchTenantAsync(Guid tenantId);
 }

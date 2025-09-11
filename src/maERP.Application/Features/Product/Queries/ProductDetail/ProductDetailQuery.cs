@@ -13,5 +13,5 @@ public class ProductDetailQuery : IRequest<Result<ProductDetailDto>>
     /// <summary>
     /// The unique identifier of the product to retrieve
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

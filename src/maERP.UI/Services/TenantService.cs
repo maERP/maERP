@@ -28,7 +28,7 @@ public class TenantService : ITenantService
         }
     }
 
-    public void SetCurrentTenant(int? tenantId)
+    public void SetCurrentTenant(Guid? tenantId)
     {
         var tenant = tenantId.HasValue
             ? AvailableTenants.FirstOrDefault(t => t.Id == tenantId.Value)
@@ -52,7 +52,7 @@ public class TenantService : ITenantService
         }
     }
 
-    public async Task SwitchTenantAsync(int tenantId)
+    public async Task SwitchTenantAsync(Guid tenantId)
     {
         var tenant = AvailableTenants.FirstOrDefault(t => t.Id == tenantId);
         if (tenant != null && CurrentTenant?.Id != tenantId)

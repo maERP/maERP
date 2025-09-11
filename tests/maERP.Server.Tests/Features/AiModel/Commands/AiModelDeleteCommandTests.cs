@@ -39,11 +39,11 @@ public class AiModelDeleteCommandTests : IDisposable
         DbContext.Database.EnsureCreated();
 
         // Initialize tenant context with default tenants and reset current tenant
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -165,7 +165,7 @@ public class AiModelDeleteCommandTests : IDisposable
     {
         // Arrange
         SetTenantHeader(1);
-        var modelIds = new List<int>();
+        var modelIds = new List<Guid>();
         
         for (int i = 0; i < 5; i++)
         {
@@ -278,7 +278,7 @@ public class AiModelDeleteCommandTests : IDisposable
     {
         // Arrange
         SetTenantHeader(1);
-        var modelIds = new List<int>();
+        var modelIds = new List<Guid>();
         for (int i = 0; i < 3; i++)
         {
             var modelId = await CreateTestAiModel($"Concurrent Model {i}");
@@ -302,7 +302,7 @@ public class AiModelDeleteCommandTests : IDisposable
         // Arrange
         SetTenantHeader(1);
         var aiModelTypes = new[] { AiModelType.Ollama, AiModelType.VLlm, AiModelType.LmStudio, AiModelType.ChatGpt4O, AiModelType.Claude35 };
-        var modelIds = new List<int>();
+        var modelIds = new List<Guid>();
 
         // Create models of different types
         for (int i = 0; i < aiModelTypes.Length; i++)

@@ -23,6 +23,6 @@ public class ProductBaseValidator<T> : AbstractValidator<T> where T : IProductIn
             .GreaterThan(0).WithMessage("{PropertyName} must be greater than {ComparisonValue}.");
 
         RuleFor(p => p.TaxClassId)
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than {ComparisonValue}.");
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
     }
 }

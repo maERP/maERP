@@ -4,6 +4,6 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Product.Commands.ProductUpdate;
 
-public class ProductUpdateCommand : ProductInputDto, IRequest<Result<int>>
+public class ProductUpdateCommand : ProductInputDto, IRequest<Result<Guid>>
 {
 }

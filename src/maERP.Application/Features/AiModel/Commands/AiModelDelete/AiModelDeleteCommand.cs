@@ -3,7 +3,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.AiModel.Commands.AiModelDelete;
 
-public class AiModelDeleteCommand : IRequest<Result<int>>
+public class AiModelDeleteCommand : IRequest<Result<Guid>>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

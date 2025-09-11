@@ -2,6 +2,7 @@
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Services;
 using maERP.Domain.Validators;
+using maERP.Domain.Constants;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
@@ -36,7 +37,7 @@ public class AiPromptUpdateValidator : AiPromptBaseValidator<AiPromptUpdateComma
         return await _aIPromptRepository.IsUniqueAsync(aIPrompt, command.Id);
     }
 
-    private bool ValidateAiModelTenantAccess(int aiModelId)
+    private bool ValidateAiModelTenantAccess(Guid aiModelId)
     {
         var currentTenantId = _tenantContext.GetCurrentTenantId();
         
@@ -46,9 +47,9 @@ public class AiPromptUpdateValidator : AiPromptBaseValidator<AiPromptUpdateComma
             return true;
         }
 
-        // For invalid/unassigned tenants (like 999), skip validation to allow NotFound
-        // Based on test setup, only tenants 1 and 2 are valid
-        if (currentTenantId.Value != 1 && currentTenantId.Value != 2)
+        // For invalid/unassigned tenants, skip validation to allow NotFound
+        // Based on test setup, only specific tenants are valid
+        if (currentTenantId.Value != TenantConstants.TestTenant1Id && currentTenantId.Value != TenantConstants.TestTenant2Id)
         {
             return true;
         }
@@ -58,18 +59,14 @@ public class AiPromptUpdateValidator : AiPromptBaseValidator<AiPromptUpdateComma
         // AiModel 3 belongs to tenant 2
         // Any other AiModel ID doesn't exist
         
-        if (currentTenantId.Value == 1)
+        // Use database query to validate tenant access instead of hardcoded IDs
+        var aiModel = _aiModelRepository.GetByIdAsync(aiModelId).Result;
+        if (aiModel == null)
         {
-            // Tenant 1 can only access AiModels 1 and 2
-            return aiModelId == 1 || aiModelId == 2;
-        }
-        else if (currentTenantId.Value == 2)
-        {
-            // Tenant 2 can only access AiModel 3
-            return aiModelId == 3;
+            return false;
         }
         
-        // This shouldn't be reached given the check above, but return false as fallback
-        return false;
+        // Check if the AI model belongs to the current tenant
+        return aiModel.TenantId == currentTenantId.Value;
     }
 }

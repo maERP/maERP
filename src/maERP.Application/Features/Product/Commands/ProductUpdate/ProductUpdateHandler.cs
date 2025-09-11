@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Product.Commands.ProductUpdate;
 
-public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result<int>>
+public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<ProductUpdateHandler> _logger;
     private readonly IProductRepository _productRepository;
@@ -24,7 +24,7 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
         _manufacturerRepository = manufacturerRepository ?? throw new ArgumentNullException(nameof(manufacturerRepository));
     }
 
-    public async Task<Result<int>> Handle(ProductUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(ProductUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating product with ID: {Id}", request.Id);
 
@@ -42,10 +42,10 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
             // Check if the validation error is about product not found
             if (validationResult.Errors.Any(e => e.ErrorMessage.Contains("Product not found")))
             {
-                return Result<int>.Fail(ResultStatusCode.NotFound, validationErrors);
+                return Result<Guid>.Fail(ResultStatusCode.NotFound, validationErrors);
             }
             
-            return Result<int>.Fail(ResultStatusCode.BadRequest, validationErrors);
+            return Result<Guid>.Fail(ResultStatusCode.BadRequest, validationErrors);
         }
 
         try
@@ -56,7 +56,7 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
             if (productToUpdate == null)
             {
                 _logger.LogWarning("Product with ID {Id} not found for update", request.Id);
-                return Result<int>.Fail(ResultStatusCode.NotFound, "Product not found.");
+                return Result<Guid>.Fail(ResultStatusCode.NotFound, "Product not found.");
             }
 
             // Update properties
@@ -82,13 +82,13 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
 
             _logger.LogInformation("Successfully updated product with ID: {Id}", productToUpdate.Id);
             
-            return Result<int>.Success(productToUpdate.Id);
+            return Result<Guid>.Success(productToUpdate.Id);
         }
         catch (Exception ex)
         {
             _logger.LogError("Error updating product: {Message}", ex.Message);
             
-            return Result<int>.Fail(ResultStatusCode.InternalServerError,
+            return Result<Guid>.Fail(ResultStatusCode.InternalServerError,
                 $"An error occurred while updating the product: {ex.Message}");
         }
     }

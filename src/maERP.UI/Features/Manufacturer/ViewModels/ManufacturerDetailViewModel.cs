@@ -28,7 +28,7 @@ public partial class ManufacturerDetailViewModel : ViewModelBase
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
-    private int manufacturerId;
+    private Guid manufacturerId;
 
     [ObservableProperty]
     private bool isDeleting;
@@ -36,7 +36,7 @@ public partial class ManufacturerDetailViewModel : ViewModelBase
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && Manufacturer != null;
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToEditManufacturer { get; set; }
+    public Func<Guid, Task>? NavigateToEditManufacturer { get; set; }
 
     // Computed properties for better display
     public bool HasName => Manufacturer != null && !string.IsNullOrEmpty(Manufacturer.Name);
@@ -56,7 +56,7 @@ public partial class ManufacturerDetailViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int manufacturerId)
+    public async Task InitializeAsync(Guid manufacturerId)
     {
         ManufacturerId = manufacturerId;
         await LoadManufacturerAsync();
@@ -65,7 +65,7 @@ public partial class ManufacturerDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadManufacturerAsync()
     {
-        if (ManufacturerId <= 0) return;
+        if (ManufacturerId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;

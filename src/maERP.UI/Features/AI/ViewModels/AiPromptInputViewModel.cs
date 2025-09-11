@@ -20,12 +20,12 @@ public partial class AiPromptInputViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
     [NotifyPropertyChangedFor(nameof(PageTitle))]
-    private int aiPromptId;
+    private Guid aiPromptId;
 
     [ObservableProperty]
     [Required(ErrorMessage = "AI-Modell ist erforderlich")]
     [NotifyDataErrorInfo]
-    private int aiModelId;
+    private Guid aiModelId;
 
     [ObservableProperty]
     [Required(ErrorMessage = "Identifier ist erforderlich")]
@@ -57,12 +57,12 @@ public partial class AiPromptInputViewModel : ViewModelBase
     [ObservableProperty]
     private AiModelListDto? selectedAiModel;
 
-    public bool IsEditMode => AiPromptId > 0;
+    public bool IsEditMode => AiPromptId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"AI-Prompt #{AiPromptId} bearbeiten" : "Neuen AI-Prompt erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToAiPromptDetail { get; set; }
+    public Func<Guid, Task>? NavigateToAiPromptDetail { get; set; }
 
     public AiPromptInputViewModel(IHttpService httpService, IDebugService debugService)
     {
@@ -70,7 +70,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int aiPromptId = 0)
+    public async Task InitializeAsync(Guid aiPromptId = default)
     {
         AiPromptId = aiPromptId;
         await LoadAiModelsAsync();
@@ -113,7 +113,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAsync()
     {
-        if (AiPromptId <= 0) return;
+        if (AiPromptId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -181,8 +181,8 @@ public partial class AiPromptInputViewModel : ViewModelBase
             };
 
             var result = IsEditMode
-                ? await _httpService.PutAsync<AiPromptInputDto, int>($"aiprompts/{AiPromptId}", dto)
-                : await _httpService.PostAsync<AiPromptInputDto, int>("aiprompts", dto);
+                ? await _httpService.PutAsync<AiPromptInputDto, Guid>($"aiprompts/{AiPromptId}", dto)
+                : await _httpService.PostAsync<AiPromptInputDto, Guid>("aiprompts", dto);
 
             if (result == null)
             {
@@ -197,7 +197,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
                 {
                     await NavigateToAiPromptDetail(AiPromptId);
                 }
-                else if (!IsEditMode && result.Data != null && NavigateToAiPromptDetail != null)
+                else if (!IsEditMode && result.Data != Guid.Empty && NavigateToAiPromptDetail != null)
                 {
                     await NavigateToAiPromptDetail(result.Data);
                 }
@@ -239,7 +239,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
 
         var errors = new List<string>();
 
-        if (SelectedAiModel == null || AiModelId <= 0)
+        if (SelectedAiModel == null || AiModelId == Guid.Empty)
             errors.Add("Bitte wählen Sie ein AI-Modell aus");
 
         if (string.IsNullOrWhiteSpace(Identifier))
@@ -259,7 +259,7 @@ public partial class AiPromptInputViewModel : ViewModelBase
 
     private void ClearForm()
     {
-        AiModelId = 0;
+        AiModelId = Guid.Empty;
         Identifier = string.Empty;
         PromptText = string.Empty;
         SelectedAiModel = null;

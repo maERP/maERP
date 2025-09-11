@@ -11,7 +11,7 @@ namespace maERP.Application.Features.Product.Commands.ProductCreate;
 /// Implements IRequestHandler from MediatR to handle ProductCreateCommand requests
 /// and return the ID of the newly created product wrapped in a Result.
 /// </summary>
-public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result<int>>
+public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -66,7 +66,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
     /// <param name="request">The product creation command with product details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created product if successful</returns>
-    public async Task<Result<int>> Handle(ProductCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(ProductCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new product with SKU: {Sku}, Name: {Name}", request.Sku, request.Name);
 
@@ -82,7 +82,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
             _logger.LogWarning("Validation errors in create request for {0}: {1}",
                 nameof(ProductCreateCommand), validationErrors);
 
-            return Result<int>.Fail(ResultStatusCode.BadRequest, validationErrors);
+            return Result<Guid>.Fail(ResultStatusCode.BadRequest, validationErrors);
         }
 
         try
@@ -92,7 +92,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
             if (!currentTenantId.HasValue)
             {
                 _logger.LogError("Attempted to create product without tenant context");
-                return Result<int>.Fail(ResultStatusCode.BadRequest, 
+                return Result<Guid>.Fail(ResultStatusCode.BadRequest, 
                     "Tenant context is not set. Cannot create product without tenant information.");
             }
 
@@ -123,7 +123,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
 
             _logger.LogInformation("Successfully created product with ID: {Id}", productToCreate.Id);
             
-            var result = Result<int>.Success(productToCreate.Id);
+            var result = Result<Guid>.Success(productToCreate.Id);
             result.StatusCode = ResultStatusCode.Created;
             return result;
         }
@@ -132,7 +132,7 @@ public class ProductCreateHandler : IRequestHandler<ProductCreateCommand, Result
             // Handle any exceptions during product creation
             _logger.LogError("Error creating product: {Message}", ex.Message);
             
-            return Result<int>.Fail(ResultStatusCode.InternalServerError, 
+            return Result<Guid>.Fail(ResultStatusCode.InternalServerError, 
                 $"An error occurred while creating the product: {ex.Message}");
         }
     }

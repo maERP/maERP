@@ -72,7 +72,7 @@ public class ProductCreateValidator : ProductBaseValidator<ProductCreateCommand>
     /// <param name="taxClassId">The tax class ID to validate</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>True if the tax class exists, false otherwise</returns>
-    private async Task<bool> TaxClassExists(int taxClassId, CancellationToken cancellationToken)
+    private async Task<bool> TaxClassExists(Guid taxClassId, CancellationToken cancellationToken)
     {
         return await _taxClassRepository.ExistsAsync(taxClassId);
     }
@@ -83,7 +83,7 @@ public class ProductCreateValidator : ProductBaseValidator<ProductCreateCommand>
     /// <param name="manufacturerId">The manufacturer ID to validate</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>True if the manufacturer exists, false otherwise</returns>
-    private async Task<bool> ManufacturerExists(int? manufacturerId, CancellationToken cancellationToken)
+    private async Task<bool> ManufacturerExists(Guid? manufacturerId, CancellationToken cancellationToken)
     {
         if (!manufacturerId.HasValue)
             return true;

@@ -14,7 +14,7 @@ public class TenantUpdateValidator : TenantBaseValidator<TenantUpdateCommand>
 
         RuleFor(q => q.Id)
             .NotNull().WithMessage("{PropertyName} is required.")
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
         RuleFor(q => q)
             .MustAsync(TenantExistsAsync).WithMessage("Tenant not found.");

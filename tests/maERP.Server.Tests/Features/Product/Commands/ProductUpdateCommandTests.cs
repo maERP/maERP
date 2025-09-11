@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -34,11 +35,11 @@ public class ProductUpdateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -164,7 +165,7 @@ public class ProductUpdateCommandTests : IDisposable
                 return product1.Id;
             }
 
-            var existingProduct = await DbContext.Product.FirstOrDefaultAsync(p => p.TenantId == 1);
+            var existingProduct = await DbContext.Product.FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
             return existingProduct?.Id ?? 1;
         }
         finally
@@ -231,7 +232,7 @@ public class ProductUpdateCommandTests : IDisposable
         DbContext.ChangeTracker.Clear();
         
         // Set tenant context for database query
-        TenantContext.SetCurrentTenantId(1);
+        TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
         
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
@@ -303,7 +304,7 @@ public class ProductUpdateCommandTests : IDisposable
         
         // Get the SKU of another product
         var anotherProduct = await DbContext.Product
-            .FirstOrDefaultAsync(p => p.TenantId == 1 && p.Id != productId);
+            .FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant1Id&& p.Id != productId);
         
         if (anotherProduct != null)
         {
@@ -410,7 +411,7 @@ public class ProductUpdateCommandTests : IDisposable
         DbContext.ChangeTracker.Clear();
         
         // Set tenant context for database query
-        TenantContext.SetCurrentTenantId(1);
+        TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
         
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
@@ -427,7 +428,7 @@ public class ProductUpdateCommandTests : IDisposable
         SetTenantHeader(1);
         
         // Set tenant context for database query
-        TenantContext.SetCurrentTenantId(1);
+        TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
         
         // Get original values
         var originalProduct = await DbContext.Product.AsNoTracking().FirstAsync(p => p.Id == productId);
@@ -457,7 +458,7 @@ public class ProductUpdateCommandTests : IDisposable
         DbContext.ChangeTracker.Clear();
         
         // Set tenant context for database query
-        TenantContext.SetCurrentTenantId(1);
+        TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
         
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
@@ -482,7 +483,7 @@ public class ProductUpdateCommandTests : IDisposable
         DbContext.ChangeTracker.Clear();
         
         // Set tenant context for database query
-        TenantContext.SetCurrentTenantId(1);
+        TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
         
         var updatedProduct = await DbContext.Product.FindAsync(productId);
         TestAssertions.AssertNotNull(updatedProduct);
@@ -502,7 +503,7 @@ public class ProductUpdateCommandTests : IDisposable
         var manufacturer2 = await DbContext.Manufacturer
             .IgnoreQueryFilters()
             .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.Id == 2 && m.TenantId == 1);
+            .FirstOrDefaultAsync(m => m.Id == 2 && m.TenantId == TenantConstants.TestTenant1Id);
         TestAssertions.AssertNotNull(manufacturer2);
         
         var updateDto = CreateUpdateProductDto(productId);
@@ -546,12 +547,12 @@ public class ProductUpdateCommandTests : IDisposable
         DbContext.ChangeTracker.Clear();
 
         // Verify product was updated in tenant 1
-        var productInTenant1 = await DbContext.Product.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.Id == productId && p.TenantId == 1);
+        var productInTenant1 = await DbContext.Product.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.Id == productId && p.TenantId == TenantConstants.TestTenant1Id);
         TestAssertions.AssertNotNull(productInTenant1);
         TestAssertions.AssertEqual("Updated in Tenant 1", productInTenant1!.Name);
 
         // Verify product in tenant 2 remains unchanged
-        var productInTenant2 = await DbContext.Product.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.TenantId == 2);
+        var productInTenant2 = await DbContext.Product.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant2Id);
         if (productInTenant2 != null)
         {
             TestAssertions.AssertNotEqual("Updated in Tenant 1", productInTenant2.Name);

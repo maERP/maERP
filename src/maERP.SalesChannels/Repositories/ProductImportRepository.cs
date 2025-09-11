@@ -22,7 +22,7 @@ public class ProductImportRepository : IProductImportRepository
         _taxClassRepository = taxClassRepository;
     }
 
-    public async Task ImportOrUpdateFromSalesChannel(int salesChannelId, SalesChannelImportProduct importProduct)
+    public async Task ImportOrUpdateFromSalesChannel(Guid salesChannelId, SalesChannelImportProduct importProduct)
     {
         var taxClass = await _taxClassRepository.GetByTaxRateAsync(importProduct.TaxRate);
 
@@ -45,14 +45,14 @@ public class ProductImportRepository : IProductImportRepository
                 Price = importProduct.Price,
                 Sku = importProduct.Sku,
                 TaxClass = taxClass,
-                ProductStocks = [new ProductStock { WarehouseId = 1, Stock = 1 }],
+                ProductStocks = [new ProductStock { WarehouseId = Guid.NewGuid(), Stock = 1 }],
                 ProductSalesChannels =
                 [
                     new ProductSalesChannel
                     {
                         SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId) ?? throw new NotFoundException("SalesChannel {0} not found", salesChannelId),
                         SalesChannelId = salesChannelId,
-                        RemoteProductId = importProduct.RemoteProductId,
+                        RemoteProductId = new Guid(importProduct.RemoteProductId.ToString("D").PadLeft(32, '0')),
                         Price = importProduct.Price
                     }
                 ],
@@ -86,7 +86,7 @@ public class ProductImportRepository : IProductImportRepository
                     {
                         SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId) ?? throw new NotFoundException("SalesChannel {0} not found", salesChannelId),
                         SalesChannelId = salesChannelId,
-                        RemoteProductId = importProduct.RemoteProductId,
+                        RemoteProductId = new Guid(importProduct.RemoteProductId.ToString("D").PadLeft(32, '0')),
                         Price = importProduct.Price
                     }
                 ];

@@ -36,11 +36,11 @@ public abstract class BaseIntegrationTest : IClassFixture<TestWebApplicationFact
         DbContext.Database.EnsureCreated();
 
         // Initialize tenant context with default tenants and reset current tenant
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { maERP.Domain.Constants.TenantConstants.TestTenant1Id, maERP.Domain.Constants.TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null); // Start with no tenant set
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -48,7 +48,7 @@ public abstract class BaseIntegrationTest : IClassFixture<TestWebApplicationFact
 
     protected void SetInvalidTenantHeader()
     {
-        SetTenantHeader(999); // Non-existent tenant ID for testing tenant isolation
+        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
     }
 
     protected void ClearTenantHeader()

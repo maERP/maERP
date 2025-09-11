@@ -7,6 +7,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.AiPrompt.Commands;
 
@@ -33,11 +34,11 @@ public class AiPromptDeleteCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -68,12 +69,12 @@ public class AiPromptDeleteCommandTests : IDisposable
 
         // Get prompt IDs for both tenants
         var tenant1PromptId = await DbContext.AiPrompt.IgnoreQueryFilters()
-            .Where(p => p.TenantId == 1)
+            .Where(p => p.TenantId == TenantConstants.TestTenant1Id)
             .Select(p => p.Id)
             .FirstAsync();
 
         var tenant2PromptId = await DbContext.AiPrompt.IgnoreQueryFilters()
-            .Where(p => p.TenantId == 2)
+            .Where(p => p.TenantId == TenantConstants.TestTenant2Id)
             .Select(p => p.Id)
             .FirstAsync();
 
@@ -110,7 +111,7 @@ public class AiPromptDeleteCommandTests : IDisposable
         
         // Get all prompt IDs for tenant 1 to ensure we have at least one
         var tenant1PromptIds = await DbContext.AiPrompt.IgnoreQueryFilters()
-            .Where(p => p.TenantId == 1)
+            .Where(p => p.TenantId == TenantConstants.TestTenant1Id)
             .Select(p => p.Id)
             .ToListAsync();
         
@@ -129,7 +130,7 @@ public class AiPromptDeleteCommandTests : IDisposable
 
         // Verify prompt is removed from database by checking the count decreased
         var remainingPromptsCount = await DbContext.AiPrompt.IgnoreQueryFilters()
-            .Where(p => p.TenantId == 1)
+            .Where(p => p.TenantId == TenantConstants.TestTenant1Id)
             .CountAsync();
             
         TestAssertions.AssertEqual(tenant1PromptIds.Count - 1, remainingPromptsCount);
@@ -298,7 +299,7 @@ public class AiPromptDeleteCommandTests : IDisposable
 
         // Get all prompt IDs for tenant 1
         var tenant1PromptIds = await DbContext.AiPrompt.IgnoreQueryFilters()
-            .Where(p => p.TenantId == 1)
+            .Where(p => p.TenantId == TenantConstants.TestTenant1Id)
             .Select(p => p.Id)
             .OrderBy(p => p)
             .ToListAsync();
@@ -329,7 +330,7 @@ public class AiPromptDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(promptsCountBefore - 1, promptsCountAfter);
         
         // Verify the deleted prompt is not in the list
-        var remainingPromptIds = promptsAfterResult?.Data?.Select(p => p.Id).ToList() ?? new List<int>();
+        var remainingPromptIds = promptsAfterResult?.Data?.Select(p => p.Id).ToList() ?? new List<Guid>();
         TestAssertions.AssertFalse(remainingPromptIds.Contains(promptIdToDelete), "Deleted prompt should not be in the list");
     }
 
@@ -484,8 +485,8 @@ public class AiPromptDeleteCommandTests : IDisposable
         SetTenantHeader(1);
 
         // Get initial counts
-        var initialCountT1 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == 1);
-        var initialCountT2 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == 2);
+        var initialCountT1 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
+        var initialCountT2 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == TenantConstants.TestTenant2Id);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
@@ -494,8 +495,8 @@ public class AiPromptDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
         // Verify counts after deletion
-        var finalCountT1 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == 1);
-        var finalCountT2 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == 2);
+        var finalCountT1 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
+        var finalCountT2 = await DbContext.AiPrompt.IgnoreQueryFilters().CountAsync(p => p.TenantId == TenantConstants.TestTenant2Id);
 
         TestAssertions.AssertEqual(initialCountT1 - 1, finalCountT1);
         TestAssertions.AssertEqual(initialCountT2, finalCountT2); // Tenant 2 count should remain unchanged

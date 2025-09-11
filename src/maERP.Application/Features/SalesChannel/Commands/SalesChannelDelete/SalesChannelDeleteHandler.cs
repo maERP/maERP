@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 
-public class SalesChannelDeleteHandler : IRequestHandler<SalesChannelDeleteCommand, Result<int>>
+public class SalesChannelDeleteHandler : IRequestHandler<SalesChannelDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<SalesChannelDeleteHandler> _logger;
     private readonly ISalesChannelRepository _salesChannelRepository;
@@ -19,11 +19,11 @@ public class SalesChannelDeleteHandler : IRequestHandler<SalesChannelDeleteComma
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
     }
 
-    public async Task<Result<int>> Handle(SalesChannelDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(SalesChannelDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting sales channel with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new SalesChannelDeleteValidator(_salesChannelRepository);

@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Setting.Commands.SettingUpdate;
 
-public class SettingUpdateQuery : IRequestHandler<SettingUpdateCommand, Result<int>>
+public class SettingUpdateQuery : IRequestHandler<SettingUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<SettingUpdateQuery> _logger;
     private readonly ISettingRepository _settingRepository;
@@ -19,11 +19,11 @@ public class SettingUpdateQuery : IRequestHandler<SettingUpdateCommand, Result<i
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
     }
 
-    public async Task<Result<int>> Handle(SettingUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(SettingUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating setting with ID: {Id} and name: {Name}", request.Id, request.Key);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new SettingUpdateValidator(_settingRepository);

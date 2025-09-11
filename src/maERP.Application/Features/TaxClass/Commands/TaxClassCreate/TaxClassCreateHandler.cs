@@ -10,7 +10,7 @@ namespace maERP.Application.Features.TaxClass.Commands.TaxClassCreate;
 /// Implements IRequestHandler from MediatR to handle TaxClassCreateCommand requests
 /// and return the ID of the newly created tax class wrapped in a Result.
 /// </summary>
-public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Result<int>>
+public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,11 +41,11 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
     /// <param name="request">The tax class creation command with tax class details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created tax class if successful</returns>
-    public async Task<Result<int>> Handle(TaxClassCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(TaxClassCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new tax class with tax rate: {TaxRate}", request.TaxRate);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new TaxClassCreateValidator(_taxClassRepository);

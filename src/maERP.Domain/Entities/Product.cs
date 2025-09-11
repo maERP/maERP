@@ -22,8 +22,8 @@ public class Product : BaseEntity, IBaseEntity
     public decimal Height { get; set; }
     public decimal Depth { get; set; }
 
-    public int TaxClassId { get; set; }
-    public int? ManufacturerId { get; set; }
+    public Guid TaxClassId { get; set; }
+    public Guid? ManufacturerId { get; set; }
     public Manufacturer? Manufacturer { get; set; }
     public TaxClass? TaxClass { get; set; }
 

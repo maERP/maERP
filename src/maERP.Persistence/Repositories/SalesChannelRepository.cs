@@ -14,7 +14,7 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
 
     }
 
-    public async Task<SalesChannel> GetDetails(int id)
+    public async Task<SalesChannel> GetDetails(Guid id)
     {
         var salesChannel = await Context.SalesChannel
             .Include(s => s.Warehouses)
@@ -28,7 +28,7 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
         return salesChannel;
     }
 
-    public async Task<bool> SalesChannelIsUniqueAsync(SalesChannel salesChannel, int? id = null)
+    public async Task<bool> SalesChannelIsUniqueAsync(SalesChannel salesChannel, Guid? id = null)
     {
         if (id == null)
         {

@@ -22,7 +22,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
     [NotifyPropertyChangedFor(nameof(PageTitle))]
-    private int salesChannelId;
+    private Guid salesChannelId;
 
     [ObservableProperty]
     [Required(ErrorMessage = "Name ist erforderlich")]
@@ -80,7 +80,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
     private bool isSaving;
 
-    public bool IsEditMode => SalesChannelId > 0;
+    public bool IsEditMode => SalesChannelId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"Vertriebskanal #{SalesChannelId} bearbeiten" : "Neuen Vertriebskanal erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
@@ -88,7 +88,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
     public List<SalesChannelType> AvailableSalesChannelTypes { get; } = Enum.GetValues<SalesChannelType>().ToList();
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToSalesChannelDetail { get; set; }
+    public Func<Guid, Task>? NavigateToSalesChannelDetail { get; set; }
 
     public SalesChannelInputViewModel(IHttpService httpService, IDebugService debugService)
     {
@@ -96,7 +96,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int salesChannelId = 0)
+    public async Task InitializeAsync(Guid salesChannelId = default)
     {
         SalesChannelId = salesChannelId;
 
@@ -143,7 +143,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAsync()
     {
-        if (SalesChannelId <= 0) return;
+        if (SalesChannelId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -231,8 +231,8 @@ public partial class SalesChannelInputViewModel : ViewModelBase
             };
 
             var result = IsEditMode
-                ? await _httpService.PutAsync<SalesChannelInputDto, int>($"saleschannels/{SalesChannelId}", salesChannelDto)
-                : await _httpService.PostAsync<SalesChannelInputDto, int>("saleschannels", salesChannelDto);
+                ? await _httpService.PutAsync<SalesChannelInputDto, Guid>($"saleschannels/{SalesChannelId}", salesChannelDto)
+                : await _httpService.PostAsync<SalesChannelInputDto, Guid>("saleschannels", salesChannelDto);
 
             if (result == null)
             {
@@ -247,7 +247,7 @@ public partial class SalesChannelInputViewModel : ViewModelBase
                 {
                     await NavigateToSalesChannelDetail(SalesChannelId);
                 }
-                else if (!IsEditMode && result.Data > 0 && NavigateToSalesChannelDetail != null)
+                else if (!IsEditMode && result.Data != Guid.Empty && NavigateToSalesChannelDetail != null)
                 {
                     await NavigateToSalesChannelDetail(result.Data);
                 }

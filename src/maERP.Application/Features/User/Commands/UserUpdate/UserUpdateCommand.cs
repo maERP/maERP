@@ -38,10 +38,10 @@ public class UserUpdateCommand : IRequest<Result<string>>
     /// <summary>
     /// Default tenant ID for the user
     /// </summary>
-    public int? DefaultTenantId { get; set; }
+    public Guid? DefaultTenantId { get; set; }
 
     /// <summary>
     /// List of tenant IDs this user should be assigned to
     /// </summary>
-    public List<int> TenantIds { get; set; } = new List<int>();
+    public List<Guid> TenantIds { get; set; } = new List<Guid>();
 }

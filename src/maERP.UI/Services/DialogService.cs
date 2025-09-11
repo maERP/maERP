@@ -59,7 +59,7 @@ public class DialogService : IDialogService
         }
     }
 
-    public async Task<int?> ShowWarehouseSelectionDialogAsync(string title, string message, List<WarehouseListDto> warehouses)
+    public async Task<Guid?> ShowWarehouseSelectionDialogAsync(string title, string message, List<WarehouseListDto> warehouses)
     {
         try
         {

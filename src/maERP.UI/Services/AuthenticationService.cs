@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ public class AuthenticationService : IAuthenticationService
     public string? Token => _httpService.Token;
     public string? ServerUrl => _httpService.ServerUrl;
     public List<TenantListDto>? AvailableTenants => _tenantService.AvailableTenants.ToList();
-    public int? CurrentTenantId => _tenantService.CurrentTenant?.Id;
+    public Guid? CurrentTenantId => _tenantService.CurrentTenant?.Id;
 
     public async Task<LoginResponseDto> LoginAsync(string email, string password, string serverUrl)
     {

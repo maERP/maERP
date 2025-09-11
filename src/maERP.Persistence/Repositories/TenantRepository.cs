@@ -16,7 +16,7 @@ public class TenantRepository : ITenantRepository
 
     public IQueryable<Tenant> Entities => _context.Tenant;
 
-    public async Task<int> CreateAsync(Tenant entity)
+    public async Task<Guid> CreateAsync(Tenant entity)
     {
         await _context.AddAsync(entity);
         await _context.SaveChangesAsync();
@@ -43,7 +43,7 @@ public class TenantRepository : ITenantRepository
             .ToListAsync();
     }
 
-    public async Task<Tenant?> GetByIdAsync(int id, bool asNoTracking = false)
+    public async Task<Tenant?> GetByIdAsync(Guid id, bool asNoTracking = false)
     {
         if (asNoTracking)
         {
@@ -58,12 +58,12 @@ public class TenantRepository : ITenantRepository
             .FirstOrDefaultAsync(t => t.Id == id);
     }
 
-    public async Task<bool> ExistsAsync(int id)
+    public async Task<bool> ExistsAsync(Guid id)
     {
         return await _context.Tenant.AsNoTracking().AnyAsync(e => e.Id == id);
     }
 
-    public async Task<bool> IsUniqueAsync(Tenant entity, int? id = null)
+    public async Task<bool> IsUniqueAsync(Tenant entity, Guid? id = null)
     {
         var query = _context.Tenant.AsQueryable();
 
@@ -87,7 +87,7 @@ public class TenantRepository : ITenantRepository
         return await _context.Tenant.AnyAsync(t => t.TenantCode == tenantCode);
     }
 
-    public async Task<bool> TenantCodeExistsAsync(string tenantCode, int excludeId)
+    public async Task<bool> TenantCodeExistsAsync(string tenantCode, Guid excludeId)
     {
         return await _context.Tenant.AnyAsync(t => t.TenantCode == tenantCode && t.Id != excludeId);
     }

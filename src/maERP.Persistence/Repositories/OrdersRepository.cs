@@ -13,7 +13,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
     }
 
-    public async Task<Order?> GetWithDetailsAsync(int id)
+    public async Task<Order?> GetWithDetailsAsync(Guid id)
     {
         return await Context.Order
             .Where(o => o.Id == id)
@@ -23,7 +23,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .FirstOrDefaultAsync() ?? null;
     }
 
-    public async Task<Order?> GetByRemoteOrderIdAsync(int salesChannelId, string remoteOrderId)
+    public async Task<Order?> GetByRemoteOrderIdAsync(Guid salesChannelId, string remoteOrderId)
     {
         return await Context.Order
             .Where(o => o.RemoteOrderId == remoteOrderId)
@@ -31,7 +31,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .FirstOrDefaultAsync() ?? null;
     }
 
-    public async Task<List<OrderHistory>> GetOrderHistoryAsync(int orderId)
+    public async Task<List<OrderHistory>> GetOrderHistoryAsync(Guid orderId)
     {
         return await Context.OrderHistory
             .Where(oh => oh.OrderId == orderId)
@@ -39,7 +39,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .ToListAsync();
     }
 
-    public async Task<bool> CanCreateInvoice(int orderId)
+    public async Task<bool> CanCreateInvoice(Guid orderId)
     {
         var order = await Context.Order
             .Where(o => o.Id == orderId)

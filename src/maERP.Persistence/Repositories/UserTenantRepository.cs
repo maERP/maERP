@@ -17,7 +17,7 @@ public class UserTenantRepository : IUserTenantRepository
 
     public IQueryable<UserTenant> Entities => _context.UserTenant;
 
-    public async Task<int> CreateAsync(UserTenant entity)
+    public async Task<Guid> CreateAsync(UserTenant entity)
     {
         await _context.AddAsync(entity);
         await _context.SaveChangesAsync();
@@ -45,7 +45,7 @@ public class UserTenantRepository : IUserTenantRepository
             .ToListAsync();
     }
 
-    public async Task<UserTenant?> GetByIdAsync(int id, bool asNoTracking = false)
+    public async Task<UserTenant?> GetByIdAsync(Guid id, bool asNoTracking = false)
     {
         if (asNoTracking)
         {
@@ -62,12 +62,12 @@ public class UserTenantRepository : IUserTenantRepository
             .FirstOrDefaultAsync(ut => ut.Id == id);
     }
 
-    public async Task<bool> ExistsAsync(int id)
+    public async Task<bool> ExistsAsync(Guid id)
     {
         return await _context.UserTenant.AsNoTracking().AnyAsync(ut => ut.Id == id);
     }
 
-    public async Task<bool> IsUniqueAsync(UserTenant entity, int? id = null)
+    public async Task<bool> IsUniqueAsync(UserTenant entity, Guid? id = null)
     {
         var query = _context.UserTenant.AsQueryable();
 

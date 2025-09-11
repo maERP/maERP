@@ -6,9 +6,9 @@ namespace maERP.Application.Features.Tenant.Queries.TenantDetail;
 
 public class TenantDetailQuery : IRequest<Result<TenantDetailDto>>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
-    public TenantDetailQuery(int id)
+    public TenantDetailQuery(Guid id)
     {
         Id = id;
     }

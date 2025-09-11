@@ -41,10 +41,10 @@ public class GoodsReceiptsController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/goodsreceipts/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GoodsReceiptDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<GoodsReceiptDetailDto>> GetDetails(Guid id)
     {
         var response = await mediator.Send(new GoodsReceiptDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);

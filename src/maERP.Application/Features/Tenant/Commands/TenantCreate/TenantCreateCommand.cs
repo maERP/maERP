@@ -4,6 +4,6 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Tenant.Commands.TenantCreate;
 
-public class TenantCreateCommand : TenantInputDto, IRequest<Result<int>>
+public class TenantCreateCommand : TenantInputDto, IRequest<Result<Guid>>
 {
 }

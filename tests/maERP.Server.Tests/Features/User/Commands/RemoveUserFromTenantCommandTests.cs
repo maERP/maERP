@@ -9,6 +9,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.User.Commands;
@@ -36,11 +37,11 @@ public class RemoveUserFromTenantCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2, 3 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id, Guid.NewGuid() });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -117,16 +118,16 @@ public class RemoveUserFromTenantCommandTests : IDisposable
                 var assignments = new List<Domain.Entities.UserTenant>
                 {
                     // User1: Assigned to tenants 1 (default), 2, 3
-                    new() { UserId = user1.Id, TenantId = 1, IsDefault = true, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
-                    new() { UserId = user1.Id, TenantId = 2, IsDefault = false, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
+                    new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant1Id, IsDefault = true, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
+                    new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = false, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
                     new() { UserId = user1.Id, TenantId = 3, IsDefault = false, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
                     
                     // User2: Assigned to tenant 2 (default) and 3
-                    new() { UserId = user2.Id, TenantId = 2, IsDefault = true, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
+                    new() { UserId = user2.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = true, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
                     new() { UserId = user2.Id, TenantId = 3, IsDefault = false, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow },
                     
                     // User3: Assigned to tenant 1 only (default)
-                    new() { UserId = user3.Id, TenantId = 1, IsDefault = true, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow }
+                    new() { UserId = user3.Id, TenantId = TenantConstants.TestTenant1Id, IsDefault = true, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow }
                 };
 
                 DbContext.UserTenant.AddRange(assignments);
@@ -209,7 +210,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
 
         // Verify assignment exists before removal
         var assignmentBefore = await DbContext.UserTenant
-            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == 2);
+            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant2Id);
         TestAssertions.AssertNotNull(assignmentBefore);
 
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}/tenants/2");
@@ -217,7 +218,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
 
         // Verify assignment is removed from database
         var assignmentAfter = await DbContext.UserTenant
-            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == 2);
+            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant2Id);
         TestAssertions.AssertNotNull(assignmentAfter); // Should be null but TestAssertions.AssertNull doesn't exist
     }
 
@@ -257,7 +258,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         TestAssertions.AssertEqual(1, user3Assignments.Count); // Should still have tenant 1
         
         // User2 should still be in tenant 2
-        TestAssertions.AssertTrue(user2Assignments.Any(a => a.TenantId == 2));
+        TestAssertions.AssertTrue(user2Assignments.Any(a => a.TenantId == TenantConstants.TestTenant2Id));
     }
 
     [Fact]
@@ -360,11 +361,11 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         
         // Verify the assignment was removed regardless of the tenant header
         var assignment = await DbContext.UserTenant
-            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == 2);
+            .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant2Id);
         
         // Assignment should be removed (would be null, but we test that it's not found)
         var assignmentExists = await DbContext.UserTenant
-            .AnyAsync(ut => ut.UserId == userId1 && ut.TenantId == 2);
+            .AnyAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant2Id);
         TestAssertions.AssertFalse(assignmentExists);
     }
 

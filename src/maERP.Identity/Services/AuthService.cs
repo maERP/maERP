@@ -59,7 +59,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         // Get the default tenant ID from UserTenant relationship
         var defaultTenantId = await _userTenantRepository.Entities
             .Where(ut => ut.UserId == user.Id && ut.IsDefault)
-            .Select(ut => (int?)ut.TenantId)
+            .Select(ut => (Guid?)ut.TenantId)
             .FirstOrDefaultAsync();
 
         var jwtSecurityToken = await GenerateToken(user, availableTenants, defaultTenantId);
@@ -105,7 +105,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         return Result<RegistrationResponse>.Fail(ResultStatusCode.BadRequest, $"Registrierung fehlgeschlagen. {stringBuilder}");
     }
 
-    private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user, List<TenantListDto> availableTenants, int? defaultTenantId)
+    private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user, List<TenantListDto> availableTenants, Guid? defaultTenantId)
     {
         var userClaims = await _userManager.GetClaimsAsync(user);
         var roles = await _userManager.GetRolesAsync(user);

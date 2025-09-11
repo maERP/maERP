@@ -7,6 +7,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.User.Commands;
@@ -34,11 +35,11 @@ public class UserDeleteCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -127,21 +128,21 @@ public class UserDeleteCommandTests : IDisposable
             var userTenant1 = new UserTenant
             {
                 UserId = user1.Id,
-                TenantId = 1,
+                TenantId = TenantConstants.TestTenant1Id,
                 IsDefault = true
             };
 
             var userTenant2 = new UserTenant
             {
                 UserId = user2.Id,
-                TenantId = 2,
+                TenantId = TenantConstants.TestTenant2Id,
                 IsDefault = true
             };
 
             var userTenant3 = new UserTenant
             {
                 UserId = user3.Id,
-                TenantId = 1,
+                TenantId = TenantConstants.TestTenant1Id,
                 IsDefault = true
             };
 
@@ -168,7 +169,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
@@ -180,7 +181,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
@@ -203,7 +204,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var nonExistentId = Guid.NewGuid().ToString();
 
         var response = await Client.DeleteAsync($"/api/v1/Users/{nonExistentId}");
@@ -215,7 +216,7 @@ public class UserDeleteCommandTests : IDisposable
     public async Task DeleteUser_WithInvalidId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Users/invalid-id");
 
@@ -226,7 +227,7 @@ public class UserDeleteCommandTests : IDisposable
     public async Task DeleteUser_WithEmptyId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Users/");
 
@@ -240,7 +241,7 @@ public class UserDeleteCommandTests : IDisposable
         var (userId1, userId2, _) = await SeedUsersAsync();
         
         // Try to delete tenant 2's user from tenant 1 context
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId2}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -272,7 +273,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _, _) = await SeedUsersAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
@@ -295,13 +296,13 @@ public class UserDeleteCommandTests : IDisposable
         var additionalTenant = new UserTenant
         {
             UserId = userId1,
-            TenantId = 2,
+            TenantId = TenantConstants.TestTenant2Id,
             IsDefault = false
         };
         DbContext.UserTenant.Add(additionalTenant);
         await DbContext.SaveChangesAsync();
         
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
@@ -324,7 +325,7 @@ public class UserDeleteCommandTests : IDisposable
         var (userId1, userId2, userId3) = await SeedUsersAsync();
 
         // Delete user from tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response1.StatusCode);
 
@@ -348,7 +349,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Verify user has tenant assignments before deletion
         TenantContext.SetCurrentTenantId(null);
@@ -375,7 +376,7 @@ public class UserDeleteCommandTests : IDisposable
     public async Task DeleteUser_WithLongUserId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var longUserId = new string('a', 500);
 
         var response = await Client.DeleteAsync($"/api/v1/Users/{Uri.EscapeDataString(longUserId)}");
@@ -387,7 +388,7 @@ public class UserDeleteCommandTests : IDisposable
     public async Task DeleteUser_WithSpecialCharactersInId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var specialId = "user@#$%^&*()";
 
         var response = await Client.DeleteAsync($"/api/v1/Users/{Uri.EscapeDataString(specialId)}");
@@ -400,7 +401,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // First delete should succeed
         var response1 = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
@@ -416,7 +417,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Create two clients to simulate concurrent requests
         using var client2 = Factory.CreateClient();
@@ -445,7 +446,7 @@ public class UserDeleteCommandTests : IDisposable
     public async Task DeleteUser_WithMaxGuidLength_ShouldHandleCorrectly()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var maxGuid = Guid.NewGuid().ToString("D"); // Standard GUID format
 
         var response = await Client.DeleteAsync($"/api/v1/Users/{maxGuid}");
@@ -458,7 +459,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
@@ -471,7 +472,7 @@ public class UserDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Count total records before deletion
         TenantContext.SetCurrentTenantId(null);

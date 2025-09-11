@@ -6,7 +6,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Warehouse.Commands.WarehouseDelete;
 
-public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Result<int>>
+public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<WarehouseDeleteHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
@@ -25,11 +25,11 @@ public class WarehouseDeleteHandler : IRequestHandler<WarehouseDeleteCommand, Re
         _productStockRepository = productStockRepository ?? throw new ArgumentNullException(nameof(productStockRepository));
     }
 
-    public async Task<Result<int>> Handle(WarehouseDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(WarehouseDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting warehouse with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new WarehouseDeleteValidator(_warehouseRepository, _salesChannelRepository);

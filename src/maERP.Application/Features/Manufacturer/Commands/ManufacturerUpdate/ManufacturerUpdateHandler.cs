@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Manufacturer.Commands.ManufacturerUpdate;
 
-public class ManufacturerUpdateHandler : IRequestHandler<ManufacturerUpdateCommand, Result<int>>
+public class ManufacturerUpdateHandler : IRequestHandler<ManufacturerUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<ManufacturerUpdateHandler> _logger;
     private readonly IManufacturerRepository _manufacturerRepository;
@@ -18,11 +18,11 @@ public class ManufacturerUpdateHandler : IRequestHandler<ManufacturerUpdateComma
         _manufacturerRepository = manufacturerRepository ?? throw new ArgumentNullException(nameof(manufacturerRepository));
     }
 
-    public async Task<Result<int>> Handle(ManufacturerUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(ManufacturerUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating manufacturer with ID: {Id}, Name: {Name}", request.Id, request.Name);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new ManufacturerUpdateValidator(_manufacturerRepository);

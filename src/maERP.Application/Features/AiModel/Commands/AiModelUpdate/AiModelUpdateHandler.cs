@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.AiModel.Commands.AiModelUpdate;
 
-public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result<int>>
+public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<AiModelUpdateHandler> _logger;
     private readonly IAiModelRepository _aiModelRepository;
@@ -19,11 +19,11 @@ public class AiModelUpdateHandler : IRequestHandler<AiModelUpdateCommand, Result
         _aiModelRepository = aiModelRepository ?? throw new ArgumentNullException(nameof(aiModelRepository));
     }
 
-    public async Task<Result<int>> Handle(AiModelUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(AiModelUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating AI model with ID: {Id} and name: {Name}", request.Id, request.Name);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new AiModelUpdateValidator(_aiModelRepository);

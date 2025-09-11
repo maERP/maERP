@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Tenant.Commands.TenantDelete;
 
-public class TenantDeleteHandler : IRequestHandler<TenantDeleteCommand, Result<int>>
+public class TenantDeleteHandler : IRequestHandler<TenantDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<TenantDeleteHandler> _logger;
     private readonly ITenantRepository _tenantRepository;
@@ -18,11 +18,11 @@ public class TenantDeleteHandler : IRequestHandler<TenantDeleteCommand, Result<i
         _tenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
     }
 
-    public async Task<Result<int>> Handle(TenantDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(TenantDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting tenant with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         var validator = new TenantDeleteValidator(_tenantRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);

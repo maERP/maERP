@@ -10,5 +10,5 @@ public class RemoveUserFromTenantCommand : IRequest<Result<bool>>
     public string UserId { get; set; } = string.Empty;
 
     [Required]
-    public int TenantId { get; set; }
+    public Guid TenantId { get; set; }
 }

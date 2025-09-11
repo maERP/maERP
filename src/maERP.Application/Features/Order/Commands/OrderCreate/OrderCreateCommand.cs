@@ -9,6 +9,6 @@ namespace maERP.Application.Features.Order.Commands.OrderCreate;
 /// Inherits from OrderInputDto to get all order properties and implements IRequest
 /// to work with MediatR, returning the ID of the newly created order wrapped in a Result.
 /// </summary>
-public class OrderCreateCommand : OrderInputDto, IRequest<Result<int>>
+public class OrderCreateCommand : OrderInputDto, IRequest<Result<Guid>>
 {
 }

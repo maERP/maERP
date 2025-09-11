@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -36,11 +37,11 @@ public class OrderNotPaidListQueryTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -273,7 +274,7 @@ public class OrderNotPaidListQueryTests : IDisposable
 
         // Should not include the completely paid order (ID 4)
         var orderIds = result.Data?.Select(o => o.Id).ToList();
-        TestAssertions.AssertDoesNotContain(4, orderIds ?? new List<int>());
+        TestAssertions.AssertDoesNotContain(4, orderIds ?? new List<Guid>());
     }
 
     [Fact]
@@ -291,7 +292,7 @@ public class OrderNotPaidListQueryTests : IDisposable
 
         // Should not include the completed order (ID 5) even if not paid
         var orderIds = result.Data?.Select(o => o.Id).ToList();
-        TestAssertions.AssertDoesNotContain(5, orderIds ?? new List<int>());
+        TestAssertions.AssertDoesNotContain(5, orderIds ?? new List<Guid>());
     }
 
     [Fact]

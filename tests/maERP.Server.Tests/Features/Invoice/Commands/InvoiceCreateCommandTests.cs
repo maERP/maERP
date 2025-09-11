@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Invoice;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -34,11 +35,11 @@ public class InvoiceCreateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -81,7 +82,7 @@ public class InvoiceCreateCommandTests : IDisposable
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer2 = new maERP.Domain.Entities.Customer
@@ -90,7 +91,7 @@ public class InvoiceCreateCommandTests : IDisposable
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Customer.AddRange(customer1, customer2);
@@ -99,14 +100,14 @@ public class InvoiceCreateCommandTests : IDisposable
                 {
                     Id = 1001,
                     CustomerId = 1,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var order2 = new maERP.Domain.Entities.Order
                 {
                     Id = 1002,
                     CustomerId = 2,
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Order.AddRange(order1, order2);

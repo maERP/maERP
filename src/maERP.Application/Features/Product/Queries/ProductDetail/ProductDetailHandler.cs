@@ -94,7 +94,7 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
                     Logo = product.Manufacturer.Logo
                 } : null,
                 // Map related sales channels and stocks
-                ProductSalesChannel = product.ProductSalesChannels?.Select(psc => psc.Id).ToList() ?? new List<int>(),
+                ProductSalesChannel = product.ProductSalesChannels?.Select(psc => psc.Id).ToList() ?? new List<Guid>(),
                 ProductStocks = product.ProductStocks.Select(ps => ps.Id).ToList()
             };
 

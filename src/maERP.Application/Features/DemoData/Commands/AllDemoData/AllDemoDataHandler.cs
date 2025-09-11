@@ -2,6 +2,7 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
+using maERP.Domain.Constants;
 using maERP.Application.Mediator;
 using maERP.Application.Contracts.Services;
 
@@ -48,13 +49,13 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
         try
         {
             // Set the tenant ID to 1 for creating demo data
-            _tenantContext.SetCurrentTenantId(1);
+            _tenantContext.SetCurrentTenantId(TenantConstants.DefaultTenantId);
 
             // Create Tax Classes (19%, 7%, 0%)
             var taxClasses = GetDemoTaxClasses();
             foreach (var taxClass in taxClasses)
             {
-                taxClass.TenantId = 1; // Explicitly set tenant ID
+                taxClass.TenantId = TenantConstants.DefaultTenantId; // Explicitly set tenant ID
                 await _taxClassRepository.CreateAsync(taxClass);
             }
             createdItems.Add($"{taxClasses.Count} tax classes");
@@ -63,7 +64,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var warehouses = GetDemoWarehouses();
             foreach (var warehouse in warehouses)
             {
-                warehouse.TenantId = 1; // Explicitly set tenant ID
+                warehouse.TenantId = TenantConstants.DefaultTenantId; // Explicitly set tenant ID
                 await _warehouseRepository.CreateAsync(warehouse);
             }
             createdItems.Add($"{warehouses.Count} warehouses");
@@ -72,7 +73,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var customers = GetDemoCustomers();
             foreach (var customer in customers)
             {
-                customer.TenantId = 1; // Explicitly set tenant ID
+                customer.TenantId = TenantConstants.DefaultTenantId; // Explicitly set tenant ID
                 await _customerRepository.CreateAsync(customer);
             }
             createdItems.Add($"{customers.Count} customers");
@@ -81,7 +82,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var manufacturers = GetDemoManufacturers();
             foreach (var manufacturer in manufacturers)
             {
-                manufacturer.TenantId = 1; // Explicitly set tenant ID
+                manufacturer.TenantId = TenantConstants.DefaultTenantId; // Explicitly set tenant ID
                 await _manufacturerRepository.CreateAsync(manufacturer);
             }
             createdItems.Add($"{manufacturers.Count} manufacturers");
@@ -90,7 +91,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var products = GetDemoProducts(taxClasses, manufacturers);
             foreach (var product in products)
             {
-                product.TenantId = 1; // Explicitly set tenant ID
+                product.TenantId = TenantConstants.DefaultTenantId; // Explicitly set tenant ID
                 await _productRepository.CreateAsync(product);
             }
             createdItems.Add($"{products.Count} products");
@@ -99,16 +100,16 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             var orders = GetDemoOrders(customers);
             foreach (var order in orders)
             {
-                order.TenantId = 1; // Explicitly set tenant ID
+                order.TenantId = TenantConstants.DefaultTenantId; // Explicitly set tenant ID
                 await _orderRepository.CreateAsync(order);
             }
             createdItems.Add($"{orders.Count} orders");
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
-            result.Data = $"Successfully created: {string.Join(", ", createdItems)} for tenant ID 1";
+            result.Data = $"Successfully created: {string.Join(", ", createdItems)} for tenant ID {TenantConstants.DefaultTenantId}";
 
-            _logger.LogInformation("Successfully created all demo data for tenant ID 1: {Items}", string.Join(", ", createdItems));
+            _logger.LogInformation("Successfully created all demo data for tenant ID {TenantId}: {Items}", TenantConstants.DefaultTenantId, string.Join(", ", createdItems));
         }
         catch (Exception ex)
         {
@@ -326,7 +327,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
             {
                 CustomerId = customer.Id,
                 RemoteOrderId = $"DEMO-{i:D4}",
-                SalesChannelId = 1,
+                SalesChannelId = TenantConstants.DefaultTenantId, // Using default tenant ID as placeholder
                 Status = orderStatuses[random.Next(orderStatuses.Length)],
                 PaymentStatus = paymentStatuses[random.Next(paymentStatuses.Length)],
                 PaymentMethod = paymentMethods[random.Next(paymentMethods.Length)],

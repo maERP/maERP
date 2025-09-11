@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Tenant.Commands.TenantUpdate;
 
-public class TenantUpdateHandler : IRequestHandler<TenantUpdateCommand, Result<int>>
+public class TenantUpdateHandler : IRequestHandler<TenantUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<TenantUpdateHandler> _logger;
     private readonly ITenantRepository _tenantRepository;
@@ -18,11 +18,11 @@ public class TenantUpdateHandler : IRequestHandler<TenantUpdateCommand, Result<i
         _tenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
     }
 
-    public async Task<Result<int>> Handle(TenantUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(TenantUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating tenant with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         var validator = new TenantUpdateValidator(_tenantRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);

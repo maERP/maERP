@@ -13,10 +13,10 @@ public class Invoice : BaseEntity, IBaseEntity
     public DateTime InvoiceDate { get; set; }
 
     [Required]
-    public int CustomerId { get; set; }
+    public Guid CustomerId { get; set; }
     public Customer Customer { get; set; } = null!;
 
-    public int? OrderId { get; set; }
+    public Guid? OrderId { get; set; }
     public Order? Order { get; set; }
 
     public ICollection<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();

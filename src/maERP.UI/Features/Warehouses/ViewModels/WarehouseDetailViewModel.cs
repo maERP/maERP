@@ -28,7 +28,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
-    private int warehouseId;
+    private Guid warehouseId;
 
     [ObservableProperty]
     private bool isDeleting;
@@ -36,7 +36,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && Warehouse != null;
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToEditWarehouse { get; set; }
+    public Func<Guid, Task>? NavigateToEditWarehouse { get; set; }
 
     // Computed properties for better display
     public bool HasName => Warehouse != null && !string.IsNullOrEmpty(Warehouse.Name);
@@ -54,7 +54,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int warehouseId)
+    public async Task InitializeAsync(Guid warehouseId)
     {
         WarehouseId = warehouseId;
         await LoadWarehouseAsync();
@@ -63,7 +63,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadWarehouseAsync()
     {
-        if (WarehouseId <= 0) return;
+        if (WarehouseId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -157,7 +157,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
         var confirmed = await ShowDeleteConfirmationAsync();
         if (!confirmed) return;
 
-        int? targetWarehouseId = null;
+        Guid? targetWarehouseId = null;
 
         // If warehouse has products, ask user where to move them
         if (HasProductStocks)
@@ -229,7 +229,7 @@ public partial class WarehouseDetailViewModel : ViewModelBase
         }
     }
 
-    private async Task<int?> ShowWarehouseSelectionDialogAsync()
+    private async Task<Guid?> ShowWarehouseSelectionDialogAsync()
     {
         try
         {

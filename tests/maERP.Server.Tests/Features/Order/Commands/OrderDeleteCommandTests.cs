@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -44,7 +45,7 @@ public class OrderDeleteCommandTests : IDisposable
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());

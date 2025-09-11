@@ -4,16 +4,16 @@ namespace maERP.Domain.Dtos.Invoice;
 
 public class InvoiceDetailDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string InvoiceNumber { get; set; } = string.Empty;
     public DateTime InvoiceDate { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime? LastModifiedDate { get; set; }
 
-    public int CustomerId { get; set; }
+    public Guid CustomerId { get; set; }
     public string CustomerName { get; set; } = string.Empty;
 
-    public int? OrderId { get; set; }
+    public Guid? OrderId { get; set; }
     public string OrderNumber { get; set; } = string.Empty;
 
     public ICollection<InvoiceItemDto> InvoiceItems { get; set; } = new List<InvoiceItemDto>();

@@ -12,8 +12,8 @@ public interface IUserRepository
     Task<bool> Exists(string id);
 
     // New methods for managing user-tenant assignments
-    Task AssignUserToTenantsAsync(string userId, IEnumerable<int> tenantIds, int? defaultTenantId = null);
-    Task UpdateUserTenantAssignmentsAsync(string userId, IEnumerable<int> tenantIds, int? defaultTenantId = null);
+    Task AssignUserToTenantsAsync(string userId, IEnumerable<Guid> tenantIds, Guid? defaultTenantId = null);
+    Task UpdateUserTenantAssignmentsAsync(string userId, IEnumerable<Guid> tenantIds, Guid? defaultTenantId = null);
     Task<List<UserTenant>> GetUserTenantAssignmentsAsync(string userId);
-    Task<bool> IsUserAssignedToTenantAsync(string userId, int tenantId);
+    Task<bool> IsUserAssignedToTenantAsync(string userId, Guid tenantId);
 }

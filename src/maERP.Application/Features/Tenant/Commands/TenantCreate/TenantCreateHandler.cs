@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Tenant.Commands.TenantCreate;
 
-public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<int>>
+public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<Guid>>
 {
     private readonly IAppLogger<TenantCreateHandler> _logger;
     private readonly ITenantRepository _tenantRepository;
@@ -18,12 +18,12 @@ public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<i
         _tenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
     }
 
-    public async Task<Result<int>> Handle(TenantCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(TenantCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new tenant with name: {Name}, code: {TenantCode}",
             request.Name, request.TenantCode);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         var validator = new TenantCreateValidator(_tenantRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);

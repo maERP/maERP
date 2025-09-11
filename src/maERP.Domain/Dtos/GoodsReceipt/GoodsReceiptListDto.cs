@@ -2,7 +2,7 @@ namespace maERP.Domain.Dtos.GoodsReceipt;
 
 public class GoodsReceiptListDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public DateTime ReceiptDate { get; set; }
     public string ProductName { get; set; } = string.Empty;
     public string ProductSku { get; set; } = string.Empty;

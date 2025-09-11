@@ -26,8 +26,8 @@ public class UserCreateDto
 
     // Default tenant ID (required for initial creation)
     [Required]
-    public int DefaultTenantId { get; set; }
+    public Guid DefaultTenantId { get; set; }
 
     // Additional tenant assignments
-    public List<int> AdditionalTenantIds { get; set; } = new List<int>();
+    public List<Guid> AdditionalTenantIds { get; set; } = new List<Guid>();
 }

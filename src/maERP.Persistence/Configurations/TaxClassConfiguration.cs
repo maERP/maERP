@@ -11,17 +11,20 @@ public class TaxClassConfiguration : IEntityTypeConfiguration<TaxClass>
         builder.HasData(
             new TaxClass
             {
-                Id = 1,
+                Id = new Guid("77777777-7777-7777-7777-777777777771"),
+                TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 TaxRate = 19
             },
             new TaxClass
             {
-                Id = 2,
+                Id = new Guid("77777777-7777-7777-7777-777777777772"),
+                TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 TaxRate = 7
             },
             new TaxClass
             {
-                Id = 3,
+                Id = new Guid("77777777-7777-7777-7777-777777777773"),
+                TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 TaxRate = 0
             }
         );

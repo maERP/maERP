@@ -9,8 +9,8 @@ public interface IInvoiceInputModel
 {
     string InvoiceNumber { get; set; }
     DateTime InvoiceDate { get; set; }
-    int CustomerId { get; set; }
-    int? OrderId { get; set; }
+    Guid CustomerId { get; set; }
+    Guid? OrderId { get; set; }
 
     decimal Subtotal { get; set; }
     decimal ShippingCost { get; set; }

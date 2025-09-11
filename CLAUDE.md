@@ -134,3 +134,4 @@ dotnet format
 - Don't use FluentAssertions
 - Use RFC 7807 for problem details
 - Important: When fixing tests, first check whether the logic of the test is correct. If it is correct, fix the code of the program.
+- TenantId is type Guid

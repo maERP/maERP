@@ -18,7 +18,7 @@ public partial class AiModelInputViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
     [NotifyPropertyChangedFor(nameof(PageTitle))]
-    private int aiModelId;
+    private Guid aiModelId;
 
     [ObservableProperty]
     [Required(ErrorMessage = "Name ist erforderlich")]
@@ -52,12 +52,12 @@ public partial class AiModelInputViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
     private bool isSaving;
 
-    public bool IsEditMode => AiModelId > 0;
+    public bool IsEditMode => AiModelId != Guid.Empty;
     public string PageTitle => IsEditMode ? "AI-Modell bearbeiten" : "Neues AI-Modell";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToAiModelDetail { get; set; }
+    public Func<Guid, Task>? NavigateToAiModelDetail { get; set; }
 
     public AiModelInputViewModel(IHttpService httpService, IDebugService debugService)
     {
@@ -65,7 +65,7 @@ public partial class AiModelInputViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int aiModelId = 0)
+    public async Task InitializeAsync(Guid aiModelId = default)
     {
         AiModelId = aiModelId;
 
@@ -82,7 +82,7 @@ public partial class AiModelInputViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAsync()
     {
-        if (AiModelId <= 0) return;
+        if (AiModelId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -146,8 +146,8 @@ public partial class AiModelInputViewModel : ViewModelBase
             };
 
             var result = IsEditMode
-                ? await _httpService.PutAsync<AiModelInputDto, int>($"aimodels/{AiModelId}", inputDto)
-                : await _httpService.PostAsync<AiModelInputDto, int>("aimodels", inputDto);
+                ? await _httpService.PutAsync<AiModelInputDto, Guid>($"aimodels/{AiModelId}", inputDto)
+                : await _httpService.PostAsync<AiModelInputDto, Guid>("aimodels", inputDto);
 
             if (result == null)
             {

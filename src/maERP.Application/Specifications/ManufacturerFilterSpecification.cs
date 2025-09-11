@@ -22,7 +22,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public ManufacturerFilterSpecification(int id)
+        public ManufacturerFilterSpecification(Guid id)
         {
             Criteria = m => m.Id == id;
         }

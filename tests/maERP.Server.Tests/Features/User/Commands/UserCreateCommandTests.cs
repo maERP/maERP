@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.User.Commands;
@@ -35,11 +36,11 @@ public class UserCreateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -92,8 +93,8 @@ public class UserCreateCommandTests : IDisposable
             Password = "Test@123456",
             Firstname = "Test",
             Lastname = "User",
-            DefaultTenantId = 1,
-            AdditionalTenantIds = new List<int>()
+            DefaultTenantId = TenantConstants.TestTenant1Id,
+            AdditionalTenantIds = new List<Guid>()
         };
     }
 
@@ -108,7 +109,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithValidData_ShouldReturnCreated()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
 
         var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
@@ -124,7 +125,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithValidData_ShouldPersistInDatabase()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
 
         var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
@@ -154,11 +155,11 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithMissingRequiredFields_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = new UserCreateCommand
         {
             // Missing required fields Email, Password, Firstname, Lastname
-            DefaultTenantId = 1
+            DefaultTenantId = TenantConstants.TestTenant1Id
         };
 
         var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
@@ -174,7 +175,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithDuplicateEmail_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         
         // Create first user
         var firstUser = CreateValidUserCommand();
@@ -199,7 +200,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithInvalidEmail_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
         userCommand.Email = "invalid-email-format";
 
@@ -216,7 +217,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithWeakPassword_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
         userCommand.Password = "123"; // Too weak
 
@@ -233,9 +234,9 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithInvalidDefaultTenantId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
-        userCommand.DefaultTenantId = 999; // Non-existent tenant
+        userCommand.DefaultTenantId = Guid.NewGuid(); // Non-existent tenant
 
         var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
 
@@ -250,7 +251,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithEmptyFirstname_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
         userCommand.Firstname = "";
 
@@ -267,7 +268,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithEmptyLastname_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
         userCommand.Lastname = "";
 
@@ -284,10 +285,10 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithAdditionalTenantIds_ShouldCreateUserWithMultipleTenants()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
-        userCommand.DefaultTenantId = 1;
-        userCommand.AdditionalTenantIds = new List<int> { 2 };
+        userCommand.DefaultTenantId = TenantConstants.TestTenant1Id;
+        userCommand.AdditionalTenantIds = new List<Guid> { TenantConstants.TestTenant2Id };
 
         var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
 
@@ -304,18 +305,18 @@ public class UserCreateCommandTests : IDisposable
             .ToListAsync();
         
         TestAssertions.AssertEqual(2, userTenants.Count);
-        TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == 1 && ut.IsDefault));
-        TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == 2 && !ut.IsDefault));
+        TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == TenantConstants.TestTenant1Id && ut.IsDefault));
+        TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == TenantConstants.TestTenant2Id && !ut.IsDefault));
     }
 
     [Fact]
     public async Task CreateUser_WithInvalidAdditionalTenantIds_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
-        userCommand.DefaultTenantId = 1;
-        userCommand.AdditionalTenantIds = new List<int> { 999 }; // Non-existent tenant
+        userCommand.DefaultTenantId = TenantConstants.TestTenant1Id;
+        userCommand.AdditionalTenantIds = new List<Guid> { Guid.NewGuid() }; // Non-existent tenant
 
         var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
 
@@ -330,7 +331,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithLongName_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
         userCommand.Firstname = new string('A', 256); // Exceeds typical limit
 
@@ -346,7 +347,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithValidMaxLengthFields_ShouldCreateSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
         userCommand.Firstname = new string('A', 50); // Reasonable max length
         userCommand.Lastname = new string('B', 50);
@@ -366,10 +367,10 @@ public class UserCreateCommandTests : IDisposable
         await SeedTestDataAsync();
 
         // Create user in tenant 1
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var user1Command = CreateValidUserCommand();
         user1Command.Email = $"tenant1user{Guid.NewGuid():N}@example.com";
-        user1Command.DefaultTenantId = 1;
+        user1Command.DefaultTenantId = TenantConstants.TestTenant1Id;
 
         var response1 = await PostAsJsonAsync("/api/v1/Users", user1Command);
         TestAssertions.AssertEqual(HttpStatusCode.Created, response1.StatusCode);
@@ -378,10 +379,10 @@ public class UserCreateCommandTests : IDisposable
         TestAssertions.AssertTrue(result1.Succeeded);
 
         // Create user in tenant 2
-        SetTenantHeader(2);
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var user2Command = CreateValidUserCommand();
         user2Command.Email = $"tenant2user{Guid.NewGuid():N}@example.com";
-        user2Command.DefaultTenantId = 2;
+        user2Command.DefaultTenantId = TenantConstants.TestTenant2Id;
 
         var response2 = await PostAsJsonAsync("/api/v1/Users", user2Command);
         TestAssertions.AssertEqual(HttpStatusCode.Created, response2.StatusCode);
@@ -423,9 +424,9 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithNonExistentTenant_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(999);
+        SetTenantHeader(Guid.NewGuid());
         var userCommand = CreateValidUserCommand();
-        userCommand.DefaultTenantId = 999;
+        userCommand.DefaultTenantId = Guid.NewGuid();
 
         var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
 
@@ -440,7 +441,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_ResponseStructure_ShouldHaveCorrectFormat()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
 
         var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
@@ -458,7 +459,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithInvalidJson_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var invalidJson = "{ invalid json }";
         var content = new StringContent(invalidJson, System.Text.Encoding.UTF8, "application/json");
@@ -471,7 +472,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithEmptyBody_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var content = new StringContent("", System.Text.Encoding.UTF8, "application/json");
         var response = await Client.PostAsync("/api/v1/Users", content);
@@ -483,7 +484,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithSpecialCharactersInName_ShouldCreateSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
         userCommand.Firstname = "José-María";
         userCommand.Lastname = "García-Pérez";
@@ -501,7 +502,7 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithComplexPassword_ShouldCreateSuccessfully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
         userCommand.Password = "ComplexP@ssw0rd!2024";
 
@@ -518,10 +519,10 @@ public class UserCreateCommandTests : IDisposable
     public async Task CreateUser_WithDuplicateInAdditionalTenants_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
-        userCommand.DefaultTenantId = 1;
-        userCommand.AdditionalTenantIds = new List<int> { 1, 2 }; // Default tenant included in additional
+        userCommand.DefaultTenantId = TenantConstants.TestTenant1Id;
+        userCommand.AdditionalTenantIds = new List<Guid> { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id }; // Default tenant included in additional
 
         var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
 

@@ -26,12 +26,12 @@ public partial class TaxClassDetailViewModel : ViewModelBase
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
-    private int taxClassId;
+    private Guid taxClassId;
 
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && TaxClass != null;
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToEditTaxClass { get; set; }
+    public Func<Guid, Task>? NavigateToEditTaxClass { get; set; }
 
     // Computed properties for better display
     public string TaxRateFormatted => TaxClass?.TaxRate.ToString("F2") + " %" ?? "0,00 %";
@@ -63,7 +63,7 @@ public partial class TaxClassDetailViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int taxClassId)
+    public async Task InitializeAsync(Guid taxClassId)
     {
         TaxClassId = taxClassId;
         await LoadTaxClassAsync();
@@ -72,7 +72,7 @@ public partial class TaxClassDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadTaxClassAsync()
     {
-        if (TaxClassId <= 0) return;
+        if (TaxClassId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;

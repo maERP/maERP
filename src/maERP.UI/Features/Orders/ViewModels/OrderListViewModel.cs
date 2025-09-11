@@ -43,7 +43,7 @@ public partial class OrderListViewModel : ViewModelBase
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
-    public Func<int, Task>? NavigateToOrderDetail { get; set; }
+    public Func<Guid, Task>? NavigateToOrderDetail { get; set; }
     public Func<Task>? NavigateToCreateOrder { get; set; }
 
     public OrderListViewModel(IHttpService httpService, IDebugService debugService)

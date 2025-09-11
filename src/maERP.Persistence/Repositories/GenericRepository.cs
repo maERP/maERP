@@ -53,7 +53,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         Context.Set<T>().AttachRange(entities);
     }
 
-    public async Task<int> CreateAsync(T entity)
+    public async Task<Guid> CreateAsync(T entity)
     {
         await Context.AddAsync(entity);
         await Context.SaveChangesAsync();
@@ -72,7 +72,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await query.AsNoTracking().ToListAsync();
     }
 
-    public async Task<T?> GetByIdAsync(int id, bool asNoTracking = false)
+    public async Task<T?> GetByIdAsync(Guid id, bool asNoTracking = false)
     {
         // Always start with ignoring query filters to ensure fresh database reads
         // especially important after DELETE operations in tests
@@ -168,11 +168,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
             GC.Collect();
             
             // Additional synchronization: Force a dummy query to refresh the InMemory database state
-            await Context.Set<T>().IgnoreQueryFilters().Where(x => x.Id == -999).FirstOrDefaultAsync();
+            await Context.Set<T>().IgnoreQueryFilters().Where(x => x.Id == Guid.Empty).FirstOrDefaultAsync();
         }
     }
 
-    public async Task<bool> ExistsAsync(int id)
+    public async Task<bool> ExistsAsync(Guid id)
     {
         var query = Context.Set<T>().AsQueryable();
         var currentTenantId = TenantContext.GetCurrentTenantId();
@@ -184,7 +184,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await query.AsNoTracking().AnyAsync(e => e.Id == id);
     }
 
-    public virtual async Task<bool> IsUniqueAsync(T entity, int? id = null)
+    public virtual async Task<bool> IsUniqueAsync(T entity, Guid? id = null)
     {
         var type = typeof(T);
         var properties = type.GetProperties();

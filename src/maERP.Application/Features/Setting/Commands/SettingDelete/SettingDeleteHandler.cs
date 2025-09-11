@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Setting.Commands.SettingDelete;
 
-public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result<int>>
+public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<SettingDeleteHandler> _logger;
     private readonly ISettingRepository _settingRepository;
@@ -18,11 +18,11 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
     }
 
-    public async Task<Result<int>> Handle(SettingDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(SettingDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting setting with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new SettingDeleteValidator(_settingRepository);

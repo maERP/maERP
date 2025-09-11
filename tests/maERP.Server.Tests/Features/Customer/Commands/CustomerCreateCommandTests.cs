@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Enums;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Customer.Commands;
 
@@ -35,11 +36,11 @@ public class CustomerCreateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -92,7 +93,7 @@ public class CustomerCreateCommandTests : IDisposable
                     Note = "Existing customer for uniqueness testing",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-10),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Customer.Add(existingCustomer);

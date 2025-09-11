@@ -11,6 +11,6 @@ public interface ICustomerAddressInputModel
     string City { get; }
     bool DefaultDeliveryAddress { get; }
     bool DefaultInvoiceAddress { get; }
-    int CountryId { get; }
-    int CustomerId { get; }
+    Guid CountryId { get; }
+    Guid CustomerId { get; }
 }

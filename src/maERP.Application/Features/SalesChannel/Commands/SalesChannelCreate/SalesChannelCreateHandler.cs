@@ -10,7 +10,7 @@ namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelCreate;
 /// Implements IRequestHandler from MediatR to handle SalesChannelCreateCommand requests
 /// and return the ID of the newly created sales channel wrapped in a Result.
 /// </summary>
-public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateCommand, Result<int>>
+public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,11 +41,11 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
     /// <param name="request">The sales channel creation command with sales channel details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created sales channel if successful</returns>
-    public async Task<Result<int>> Handle(SalesChannelCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(SalesChannelCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new sales channel with name: {Name}", request.Name);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new SalesChannelCreateValidator(_salesChannelRepository);

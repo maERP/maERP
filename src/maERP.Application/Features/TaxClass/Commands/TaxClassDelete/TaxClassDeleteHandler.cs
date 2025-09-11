@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.TaxClass.Commands.TaxClassDelete;
 
-public class TaxClassDeleteHandler : IRequestHandler<TaxClassDeleteCommand, Result<int>>
+public class TaxClassDeleteHandler : IRequestHandler<TaxClassDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<TaxClassDeleteHandler> _logger;
     private readonly ITaxClassRepository _taxClassRepository;
@@ -19,11 +19,11 @@ public class TaxClassDeleteHandler : IRequestHandler<TaxClassDeleteCommand, Resu
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
 
-    public async Task<Result<int>> Handle(TaxClassDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(TaxClassDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting tax class with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new TaxClassDeleteValidator(_taxClassRepository);

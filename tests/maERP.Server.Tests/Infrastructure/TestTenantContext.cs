@@ -6,15 +6,15 @@ namespace maERP.Server.Tests.Infrastructure;
 public class TestTenantContext : ITenantContext
 {
     // Use instance variables for proper per-request isolation in tests
-    private int? _currentTenantId;
-    private HashSet<int> _assignedTenantIds = new HashSet<int>();
+    private Guid? _currentTenantId;
+    private HashSet<Guid> _assignedTenantIds = new HashSet<Guid>();
 
-    public int? GetCurrentTenantId()
+    public Guid? GetCurrentTenantId()
     {
         return _currentTenantId;
     }
 
-    public void SetCurrentTenantId(int? tenantId)
+    public void SetCurrentTenantId(Guid? tenantId)
     {
         // In test mode, allow setting any tenant ID to facilitate testing
         _currentTenantId = tenantId;
@@ -25,17 +25,17 @@ public class TestTenantContext : ITenantContext
         return _currentTenantId.HasValue;
     }
 
-    public IReadOnlyCollection<int> GetAssignedTenantIds()
+    public IReadOnlyCollection<Guid> GetAssignedTenantIds()
     {
         return _assignedTenantIds;
     }
 
-    public void SetAssignedTenantIds(IEnumerable<int> tenantIds)
+    public void SetAssignedTenantIds(IEnumerable<Guid> tenantIds)
     {
-        _assignedTenantIds = new HashSet<int>(tenantIds ?? new List<int>());
+        _assignedTenantIds = new HashSet<Guid>(tenantIds ?? new List<Guid>());
     }
 
-    public bool IsAssignedToTenant(int tenantId)
+    public bool IsAssignedToTenant(Guid tenantId)
     {
         return _assignedTenantIds.Contains(tenantId);
     }

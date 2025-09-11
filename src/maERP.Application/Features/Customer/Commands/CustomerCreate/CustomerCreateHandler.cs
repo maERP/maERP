@@ -10,7 +10,7 @@ namespace maERP.Application.Features.Customer.Commands.CustomerCreate;
 /// Implements IRequestHandler from custom mediator to handle CustomerCreateCommand requests
 /// and return the ID of the newly created customer wrapped in a Result.
 /// </summary>
-public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Result<int>>
+public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,7 +41,7 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
     /// <param name="request">The customer creation command with customer details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created customer if successful</returns>
-    public async Task<Result<int>> Handle(CustomerCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CustomerCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new customer with firstname: {Firstname}, lastname: {Lastname}",
             request.Firstname, request.Lastname);
@@ -58,7 +58,7 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
             _logger.LogWarning("Validation errors in create request for {0}: {1}",
                 nameof(CustomerCreateCommand), validationErrors);
 
-            return Result<int>.Fail(ResultStatusCode.BadRequest, validationErrors);
+            return Result<Guid>.Fail(ResultStatusCode.BadRequest, validationErrors);
         }
 
         try
@@ -84,7 +84,7 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
 
             _logger.LogInformation("Successfully created customer with ID: {Id}", customerToCreate.Id);
             
-            var result = Result<int>.Success(customerToCreate.Id);
+            var result = Result<Guid>.Success(customerToCreate.Id);
             result.StatusCode = ResultStatusCode.Created;
             return result;
         }
@@ -93,7 +93,7 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
             // Handle any exceptions during customer creation
             _logger.LogError("Error creating customer: {Message}", ex.Message);
             
-            return Result<int>.Fail(ResultStatusCode.InternalServerError,
+            return Result<Guid>.Fail(ResultStatusCode.InternalServerError,
                 $"An error occurred while creating the customer: {ex.Message}");
         }
     }

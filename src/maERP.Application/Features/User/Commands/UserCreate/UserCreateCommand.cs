@@ -33,10 +33,10 @@ public class UserCreateCommand : IRequest<Result<string>>
     /// <summary>
     /// Default tenant ID for the user
     /// </summary>
-    public int DefaultTenantId { get; set; }
+    public Guid DefaultTenantId { get; set; }
 
     /// <summary>
     /// Additional tenant IDs to assign to this user
     /// </summary>
-    public List<int> AdditionalTenantIds { get; set; } = new List<int>();
+    public List<Guid> AdditionalTenantIds { get; set; } = new List<Guid>();
 }

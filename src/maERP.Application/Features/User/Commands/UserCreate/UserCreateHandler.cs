@@ -94,7 +94,7 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
             }
 
             // Combine default tenant with additional tenants to assign all at once
-            var allTenantIds = new List<int> { request.DefaultTenantId };
+            var allTenantIds = new List<Guid> { request.DefaultTenantId };
             if (request.AdditionalTenantIds != null && request.AdditionalTenantIds.Any())
             {
                 // Add any additional tenants that aren't already included

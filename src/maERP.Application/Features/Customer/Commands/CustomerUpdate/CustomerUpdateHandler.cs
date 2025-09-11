@@ -6,7 +6,7 @@ using maERP.Domain.Entities;
 
 namespace maERP.Application.Features.Customer.Commands.CustomerUpdate;
 
-public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Result<int>>
+public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<CustomerUpdateHandler> _logger;
     private readonly ICustomerRepository _customerRepository;
@@ -20,11 +20,11 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
 
-    public async Task<Result<int>> Handle(CustomerUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CustomerUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating customer with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new CustomerUpdateValidator(_customerRepository);
@@ -102,7 +102,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
                         existingAddress.DefaultDeliveryAddress = addressDto.DefaultDeliveryAddress;
                         existingAddress.DefaultInvoiceAddress = addressDto.DefaultInvoiceAddress;
                     }
-                    else if (addressDto.Id == 0)
+                    else if (addressDto.Id == Guid.Empty)
                     {
                         // Add new address
                         var newAddress = new CustomerAddress
@@ -118,7 +118,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
                             DefaultDeliveryAddress = addressDto.DefaultDeliveryAddress,
                             DefaultInvoiceAddress = addressDto.DefaultInvoiceAddress,
                             // Using a fixed default value for CountryId as it's missing in CustomerAddressListDto
-                            CountryId = 1 // Default country (needs to be adjusted)
+                            CountryId = Guid.Empty // TODO: Need to get proper Country ID
                         };
 
                         await _customerRepository.AddCustomerAddressAsync(newAddress);

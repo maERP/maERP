@@ -13,5 +13,5 @@ public class ManufacturerDetailQuery : IRequest<Result<ManufacturerDetailDto>>
     /// <summary>
     /// The unique identifier of the manufacturer to retrieve
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

@@ -16,7 +16,8 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
         builder.HasData(
             new SalesChannel
             {
-                Id = 1,
+                Id = new Guid("88888888-8888-8888-8888-888888888888"),
+                TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 Name = "Kasse Ladengeschäft",
                 Type = SalesChannelType.PointOfSale,
                 Url = string.Empty,

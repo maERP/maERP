@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
 
-public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, Result<int>>
+public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<WarehouseUpdateHandler> _logger;
     private readonly IWarehouseRepository _warehouseRepository;
@@ -19,11 +19,11 @@ public class WarehouseUpdateHandler : IRequestHandler<WarehouseUpdateCommand, Re
         _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
     }
 
-    public async Task<Result<int>> Handle(WarehouseUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(WarehouseUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating warehouse with ID: {Id}, Name: {Name}", request.Id, request.Name);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new WarehouseUpdateValidator(_warehouseRepository);

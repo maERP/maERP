@@ -2,11 +2,11 @@ namespace maERP.Domain.Dtos.Invoice;
 
 public class InvoiceItemDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
-    public int InvoiceId { get; set; }
+    public Guid InvoiceId { get; set; }
 
-    public int? ProductId { get; set; }
+    public Guid? ProductId { get; set; }
 
     public string Sku { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;

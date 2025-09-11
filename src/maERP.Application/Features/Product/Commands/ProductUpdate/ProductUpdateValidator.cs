@@ -21,7 +21,7 @@ public class ProductUpdateValidator : ProductBaseValidator<ProductUpdateCommand>
 
         RuleFor(p => p.Id)
             .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
         RuleFor(p => p.Id)
             .NotNull().WithMessage("{PropertyName} is required.")
@@ -45,12 +45,12 @@ public class ProductUpdateValidator : ProductBaseValidator<ProductUpdateCommand>
         return await _productRepository.GetByIdAsync(command.Id, true) != null;
     }
 
-    private async Task<bool> TaxClassExists(int taxClassId, CancellationToken cancellationToken)
+    private async Task<bool> TaxClassExists(Guid taxClassId, CancellationToken cancellationToken)
     {
         return await _taxClassRepository.ExistsAsync(taxClassId);
     }
 
-    private async Task<bool> ManufacturerExists(int? manufacturerId, CancellationToken cancellationToken)
+    private async Task<bool> ManufacturerExists(Guid? manufacturerId, CancellationToken cancellationToken)
     {
         if (!manufacturerId.HasValue)
             return true;

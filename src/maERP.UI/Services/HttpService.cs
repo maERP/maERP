@@ -17,7 +17,7 @@ public class HttpService : IHttpService
     private readonly IDebugService _debugService;
     private string? _token;
     private string? _serverUrl;
-    private int? _currentTenantId;
+    private Guid? _currentTenantId;
     private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
     {
         PropertyNameCaseInsensitive = true,
@@ -34,7 +34,7 @@ public class HttpService : IHttpService
     public string? Token => _token;
     public bool IsAuthenticated => !string.IsNullOrEmpty(_token);
 
-    public void SetCurrentTenant(int? tenantId)
+    public void SetCurrentTenant(Guid? tenantId)
     {
         _currentTenantId = tenantId;
         UpdateTenantHeader();

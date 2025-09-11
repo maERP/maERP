@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Enums;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Customer.Commands;
 
@@ -34,11 +35,11 @@ public class CustomerDeleteCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -81,7 +82,7 @@ public class CustomerDeleteCommandTests : IDisposable
                     Note = "Customer to be deleted",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-30),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer2Tenant1 = new maERP.Domain.Entities.Customer
@@ -97,7 +98,7 @@ public class CustomerDeleteCommandTests : IDisposable
                     Note = "Another customer for tenant 1",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-20),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer3Tenant2 = new maERP.Domain.Entities.Customer
@@ -113,7 +114,7 @@ public class CustomerDeleteCommandTests : IDisposable
                     Note = "Customer for tenant 2",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-15),
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer4Inactive = new maERP.Domain.Entities.Customer
@@ -129,7 +130,7 @@ public class CustomerDeleteCommandTests : IDisposable
                     Note = "Inactive customer",
                     CustomerStatus = CustomerStatus.Inactive,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-50),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 // Add customer with addresses to test cascade deletion
@@ -146,7 +147,7 @@ public class CustomerDeleteCommandTests : IDisposable
                     Note = "Customer with addresses",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-25),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customerAddress = new maERP.Domain.Entities.CustomerAddress
@@ -162,7 +163,7 @@ public class CustomerDeleteCommandTests : IDisposable
                     City = "Test City",
                     DefaultDeliveryAddress = true,
                     DefaultInvoiceAddress = true,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Customer.AddRange(customer1Tenant1, customer2Tenant1, customer3Tenant2, customer4Inactive, customer5WithAddresses);
@@ -341,8 +342,8 @@ public class CustomerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         
         // Verify both customers exist
-        var customer1Exists = await DbContext.Customer.AnyAsync(c => c.Id == 1 && c.TenantId == 1);
-        var customer3Exists = await DbContext.Customer.AnyAsync(c => c.Id == 3 && c.TenantId == 2);
+        var customer1Exists = await DbContext.Customer.AnyAsync(c => c.Id == 1 && c.TenantId == TenantConstants.TestTenant1Id);
+        var customer3Exists = await DbContext.Customer.AnyAsync(c => c.Id == 3 && c.TenantId == TenantConstants.TestTenant2Id);
         TestAssertions.AssertTrue(customer1Exists);
         TestAssertions.AssertTrue(customer3Exists);
 
@@ -374,14 +375,14 @@ public class CustomerDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(1);
 
-        var customerCountBefore = await DbContext.Customer.Where(c => c.TenantId == 1).CountAsync();
+        var customerCountBefore = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant1Id).CountAsync();
         TestAssertions.AssertTrue(customerCountBefore > 1);
 
         var response = await Client.DeleteAsync("/api/v1/Customers/1");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
-        var customerCountAfter = await DbContext.Customer.Where(c => c.TenantId == 1).CountAsync();
+        var customerCountAfter = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant1Id).CountAsync();
         TestAssertions.AssertEqual(customerCountBefore - 1, customerCountAfter);
 
         var deletedCustomer = await DbContext.Customer.FindAsync(1);
@@ -496,15 +497,15 @@ public class CustomerDeleteCommandTests : IDisposable
         SetTenantHeader(1);
 
         var initialCount = await DbContext.Customer.CountAsync();
-        var initialTenant1Count = await DbContext.Customer.Where(c => c.TenantId == 1).CountAsync();
-        var initialTenant2Count = await DbContext.Customer.Where(c => c.TenantId == 2).CountAsync();
+        var initialTenant1Count = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant1Id).CountAsync();
+        var initialTenant2Count = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant2Id).CountAsync();
 
         var response = await Client.DeleteAsync("/api/v1/Customers/1");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
         var finalCount = await DbContext.Customer.CountAsync();
-        var finalTenant1Count = await DbContext.Customer.Where(c => c.TenantId == 1).CountAsync();
-        var finalTenant2Count = await DbContext.Customer.Where(c => c.TenantId == 2).CountAsync();
+        var finalTenant1Count = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant1Id).CountAsync();
+        var finalTenant2Count = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant2Id).CountAsync();
 
         TestAssertions.AssertEqual(initialCount - 1, finalCount);
         TestAssertions.AssertEqual(initialTenant1Count - 1, finalTenant1Count);

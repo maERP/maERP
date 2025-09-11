@@ -21,7 +21,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public TaxClassFilterSpecification(int id)
+        public TaxClassFilterSpecification(Guid id)
         {
             Criteria = o => o.Id == id;
         }

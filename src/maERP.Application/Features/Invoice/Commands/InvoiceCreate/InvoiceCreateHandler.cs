@@ -10,7 +10,7 @@ namespace maERP.Application.Features.Invoice.Commands.InvoiceCreate;
 /// Implements IRequestHandler from MediatR to handle InvoiceCreateCommand requests
 /// and return the ID of the newly created invoice wrapped in a Result.
 /// </summary>
-public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result<int>>
+public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,11 +41,11 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
     /// <param name="request">The invoice creation command with invoice details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created invoice if successful</returns>
-    public async Task<Result<int>> Handle(InvoiceCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(InvoiceCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new invoice with number: {InvoiceNumber}", request.InvoiceNumber);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new InvoiceCreateValidator(_invoiceRepository);

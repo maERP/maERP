@@ -5,7 +5,7 @@ namespace maERP.Domain.Dtos.User;
 public class UserTenantAssignmentDto
 {
     [Required]
-    public int TenantId { get; set; }
+    public Guid TenantId { get; set; }
 
     public string TenantName { get; set; } = string.Empty;
 

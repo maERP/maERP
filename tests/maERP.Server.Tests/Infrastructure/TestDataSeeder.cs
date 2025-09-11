@@ -1,5 +1,6 @@
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
+using maERP.Domain.Constants;
 using maERP.Persistence.DatabaseContext;
 using maERP.Application.Contracts.Services;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +56,7 @@ public static class TestDataSeeder
     {
         var tenant1 = new Tenant
         {
-            Id = 1,
+            Id = TenantConstants.TestTenant1Id,
             Name = "Test Tenant 1",
             TenantCode = "TEST1",
             IsActive = true,
@@ -65,7 +66,7 @@ public static class TestDataSeeder
 
         var tenant2 = new Tenant
         {
-            Id = 2,
+            Id = TenantConstants.TestTenant2Id,
             Name = "Test Tenant 2",
             TenantCode = "TEST2",
             IsActive = true,
@@ -82,7 +83,7 @@ public static class TestDataSeeder
         {
             Id = 1,
             TaxRate = 19.0, // 19% VAT for tenant 1
-            TenantId = 1,
+            TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -91,7 +92,7 @@ public static class TestDataSeeder
         {
             Id = 2,
             TaxRate = 7.0, // 7% reduced VAT for tenant 1
-            TenantId = 1,
+            TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -100,7 +101,7 @@ public static class TestDataSeeder
         {
             Id = 3,
             TaxRate = 20.0, // 20% VAT for tenant 2
-            TenantId = 2,
+            TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -109,7 +110,7 @@ public static class TestDataSeeder
         {
             Id = 4,
             TaxRate = 10.0, // 10% reduced VAT for tenant 2
-            TenantId = 2,
+            TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -123,7 +124,7 @@ public static class TestDataSeeder
         {
             Id = 1,
             Name = "Main Warehouse Tenant 1",
-            TenantId = 1,
+            TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -132,7 +133,7 @@ public static class TestDataSeeder
         {
             Id = 2,
             Name = "Secondary Warehouse Tenant 1",
-            TenantId = 1,
+            TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -141,7 +142,7 @@ public static class TestDataSeeder
         {
             Id = 3,
             Name = "Main Warehouse Tenant 2",
-            TenantId = 2,
+            TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -150,7 +151,7 @@ public static class TestDataSeeder
         {
             Id = 4,
             Name = "Secondary Warehouse Tenant 2",
-            TenantId = 2,
+            TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -168,7 +169,7 @@ public static class TestDataSeeder
             ApiUrl = "https://api.openai.com",
             ApiKey = "test-key-1",
             NCtx = 4096,
-            TenantId = 1, // Explicitly set TenantId
+            TenantId = TenantConstants.TestTenant1Id, // Explicitly set TenantId
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -181,7 +182,7 @@ public static class TestDataSeeder
             ApiUrl = "https://api.anthropic.com",
             ApiKey = "test-key-2",
             NCtx = 8192,
-            TenantId = 1, // Explicitly set TenantId
+            TenantId = TenantConstants.TestTenant1Id, // Explicitly set TenantId
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -194,7 +195,7 @@ public static class TestDataSeeder
             ApiUrl = "https://api.openai.com",
             ApiKey = "test-key-3",
             NCtx = 4096,
-            TenantId = 2, // Explicitly set TenantId
+            TenantId = TenantConstants.TestTenant2Id, // Explicitly set TenantId
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -210,7 +211,7 @@ public static class TestDataSeeder
             AiModelId = 1,
             Identifier = "Test Prompt 1 Tenant 1",
             PromptText = "This is a test prompt for tenant 1",
-            TenantId = 1,
+            TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -221,7 +222,7 @@ public static class TestDataSeeder
             AiModelId = 2,
             Identifier = "Test Prompt 2 Tenant 1",
             PromptText = "This is another test prompt for tenant 1",
-            TenantId = 1,
+            TenantId = TenantConstants.TestTenant1Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };
@@ -232,7 +233,7 @@ public static class TestDataSeeder
             AiModelId = 3,
             Identifier = "Test Prompt 1 Tenant 2",
             PromptText = "This is a test prompt for tenant 2",
-            TenantId = 2,
+            TenantId = TenantConstants.TestTenant2Id,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };

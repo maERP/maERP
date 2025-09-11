@@ -43,7 +43,8 @@ public class ManufacturerConfiguration : IEntityTypeConfiguration<Manufacturer>
         builder.HasData(
             new Manufacturer
             {
-                Id = 1,
+                Id = new Guid("55555555-5555-5555-5555-555555555555"),
+                TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 Name = "Beispiel Hersteller GmbH",
                 Street = "Musterstraße 123",
                 City = "Berlin",

@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Product.Commands.ProductDelete;
 
-public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result<int>>
+public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<ProductDeleteHandler> _logger;
     private readonly IProductRepository _productRepository;
@@ -18,7 +18,7 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
 
-    public async Task<Result<int>> Handle(ProductDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(ProductDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting product with ID: {Id}", request.Id);
 
@@ -33,7 +33,7 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result
             _logger.LogWarning("Validation errors in delete request for {0}: {1}",
                 nameof(ProductDeleteCommand), validationErrors);
 
-            return Result<int>.Fail(ResultStatusCode.BadRequest, validationErrors);
+            return Result<Guid>.Fail(ResultStatusCode.BadRequest, validationErrors);
         }
 
         try
@@ -44,7 +44,7 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result
             if (productToDelete == null)
             {
                 _logger.LogWarning("Product with ID: {Id} not found for deletion", request.Id);
-                return Result<int>.Fail(ResultStatusCode.NotFound, "Product not found");
+                return Result<Guid>.Fail(ResultStatusCode.NotFound, "Product not found");
             }
 
             // Delete from database
@@ -52,7 +52,7 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result
 
             _logger.LogInformation("Successfully deleted product with ID: {Id}", productToDelete.Id);
             
-            var result = Result<int>.Success(productToDelete.Id);
+            var result = Result<Guid>.Success(productToDelete.Id);
             result.StatusCode = ResultStatusCode.NoContent;
             return result;
         }
@@ -61,13 +61,13 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result
             // Handle concurrent deletion - product was already deleted by another request
             _logger.LogWarning("Product with ID: {Id} was deleted by another request: {Message}", request.Id, ex.Message);
             
-            return Result<int>.Fail(ResultStatusCode.NotFound, "Product not found");
+            return Result<Guid>.Fail(ResultStatusCode.NotFound, "Product not found");
         }
         catch (Exception ex)
         {
             _logger.LogError("Error deleting product: {Message}", ex.Message);
             
-            return Result<int>.Fail(ResultStatusCode.InternalServerError,
+            return Result<Guid>.Fail(ResultStatusCode.InternalServerError,
                 $"An error occurred while deleting the product: {ex.Message}");
         }
     }

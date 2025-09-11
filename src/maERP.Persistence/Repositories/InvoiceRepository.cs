@@ -31,7 +31,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
     /// </summary>
     /// <param name="id">The invoice ID</param>
     /// <returns>The invoice with all related entities or null if not found</returns>
-    public async Task<Invoice?> GetInvoiceWithDetailsAsync(int id)
+    public async Task<Invoice?> GetInvoiceWithDetailsAsync(Guid id)
     {
         return await Context.Set<Invoice>()
             .Where(x => x.Id == id)
@@ -47,7 +47,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
     /// </summary>
     /// <param name="customerId">The customer ID</param>
     /// <returns>Collection of invoices for the customer</returns>
-    public async Task<ICollection<Invoice>> GetInvoicesByCustomerIdAsync(int customerId)
+    public async Task<ICollection<Invoice>> GetInvoicesByCustomerIdAsync(Guid customerId)
     {
         return await Context.Set<Invoice>()
             .Where(x => x.CustomerId == customerId)

@@ -6,7 +6,7 @@ namespace maERP.Domain.Dtos.SalesChannel;
 
 public class SalesChannelInputDto : ISalesChannelInputModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public SalesChannelType SalesChannelType { get; set; }
     public string Name { get; set; } = string.Empty;
 
@@ -22,6 +22,6 @@ public class SalesChannelInputDto : ISalesChannelInputModel
     public bool ImportOrders { get; set; }
     public bool ExportOrders { get; set; }
 
-    public List<int> WarehouseIds { get; set; } = new();
+    public List<Guid> WarehouseIds { get; set; } = new();
 }
 

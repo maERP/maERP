@@ -34,11 +34,11 @@ public class WarehouseCreateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -304,7 +304,7 @@ public class WarehouseCreateCommandTests : IDisposable
         }
 
         // Verify all were created with unique IDs
-        var ids = new HashSet<int>();
+        var ids = new HashSet<Guid>();
         foreach (var response in responses)
         {
             var result = await ReadResponseAsync<Result<int>>(response);

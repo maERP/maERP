@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 
-public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Result<int>>
+public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<TaxClassUpdateHandler> _logger;
     private readonly ITaxClassRepository _taxClassRepository;
@@ -19,11 +19,11 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Resu
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
 
-    public async Task<Result<int>> Handle(TaxClassUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(TaxClassUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating tax class with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new TaxClassUpdateValidator(_taxClassRepository);

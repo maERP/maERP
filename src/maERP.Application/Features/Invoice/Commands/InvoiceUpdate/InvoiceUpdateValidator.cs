@@ -24,7 +24,7 @@ public class InvoiceUpdateValidator : InvoiceBaseValidator<InvoiceUpdateCommand>
         // Add validation rules specific to update operations
         RuleFor(p => p.Id)
             .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} muss größer als 0 sein.");
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
         RuleFor(p => p.Id)
             .NotNull().WithMessage("{PropertyName} ist erforderlich.")

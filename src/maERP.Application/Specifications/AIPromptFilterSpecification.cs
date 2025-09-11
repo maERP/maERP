@@ -20,7 +20,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public AiPromptFilterSpecification(int id)
+        public AiPromptFilterSpecification(Guid id)
         {
             Criteria = o => o.Id == id;
         }

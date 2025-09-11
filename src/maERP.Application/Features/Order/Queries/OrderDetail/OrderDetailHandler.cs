@@ -151,7 +151,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
             ShippingStatusOld = history.ShippingStatusOld,
             ShippingStatusNew = history.ShippingStatusNew,
             Description = history.Description,
-            IsSystemGenerated = history.UserId == 0
+            IsSystemGenerated = history.IsSystemGenerated
         }).ToList();
     }
 }

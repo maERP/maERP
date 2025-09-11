@@ -8,7 +8,14 @@
       "Bash(dotnet format:*)",
       "Bash(for:*)",
       "Bash(do echo \"=== $file ===\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(./create-migrations.sh:*)",
+      "Bash(chmod:*)",
+      "Bash(./fix-tenant-ids.sh:*)",
+      "Bash(dos2unix:*)",
+      "Bash(sed:*)",
+      "Bash(./fix-syntax-errors.sh:*)",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "ask": []

@@ -13,7 +13,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
 
     }
 
-    public async Task<Customer?> GetCustomerWithDetails(int id)
+    public async Task<Customer?> GetCustomerWithDetails(Guid id)
     {
         var query = Context.Customer
             .Where(x => x.Id == id);
@@ -47,7 +47,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         return await query.FirstOrDefaultAsync() ?? null;
     }
 
-    public async Task<Customer?> GetCustomerByRemoteCustomerIdAsync(int salesChannelId, string remoteCustomerId)
+    public async Task<Customer?> GetCustomerByRemoteCustomerIdAsync(Guid salesChannelId, string remoteCustomerId)
     {
         var query = Context.Customer
             .Where(x => x.CustomerSalesChannels!.Any(y => y.SalesChannelId == salesChannelId && y.RemoteCustomerId == remoteCustomerId));
@@ -62,7 +62,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         return await query.FirstOrDefaultAsync() ?? null;
     }
 
-    public async Task AddCustomerToSalesChannelAsync(int customerId, int salesChannelId, string remoteCustomerId)
+    public async Task AddCustomerToSalesChannelAsync(Guid customerId, Guid salesChannelId, string remoteCustomerId)
     {
         var customerSalesChannel = new CustomerSalesChannel
         {
@@ -76,7 +76,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         Console.WriteLine("saved");
     }
 
-    public async Task<ICollection<CustomerAddress>> GetCustomerAddressByCustomerIdAsync(int customerId)
+    public async Task<ICollection<CustomerAddress>> GetCustomerAddressByCustomerIdAsync(Guid customerId)
     {
         var query = Context.CustomerAddress
             .Where(x => x.CustomerId == customerId);
@@ -98,7 +98,7 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         return customerAddress;
     }
 
-    public override async Task<bool> IsUniqueAsync(Customer entity, int? id = null)
+    public override async Task<bool> IsUniqueAsync(Customer entity, Guid? id = null)
     {
         var currentTenantId = TenantContext.GetCurrentTenantId();
 

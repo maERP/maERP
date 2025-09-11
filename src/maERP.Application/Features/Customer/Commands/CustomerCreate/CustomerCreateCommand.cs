@@ -9,6 +9,6 @@ namespace maERP.Application.Features.Customer.Commands.CustomerCreate;
 /// Inherits from CustomerInputDto to get all customer properties and implements IRequest
 /// to work with the custom mediator, returning the ID of the newly created customer wrapped in a Result.
 /// </summary>
-public class CustomerCreateCommand : CustomerInputDto, IRequest<Result<int>>
+public class CustomerCreateCommand : CustomerInputDto, IRequest<Result<Guid>>
 {
 }

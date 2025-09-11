@@ -43,7 +43,7 @@ public partial class AiModelListViewModel : ViewModelBase
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
     public Func<Task>? NavigateToAiModelInput { get; set; }
-    public Action<int>? NavigateToAiModelDetail { get; set; }
+    public Action<Guid>? NavigateToAiModelDetail { get; set; }
 
     public AiModelListViewModel(IHttpService httpService, IDebugService debugService)
     {

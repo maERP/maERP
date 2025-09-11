@@ -23,7 +23,7 @@ public partial class ProductInputViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
     [NotifyPropertyChangedFor(nameof(PageTitle))]
-    private int productId;
+    private Guid productId;
 
     [ObservableProperty]
     [Required(ErrorMessage = "SKU ist erforderlich")]
@@ -87,21 +87,21 @@ public partial class ProductInputViewModel : ViewModelBase
     private decimal depth;
 
     [ObservableProperty]
-    private int taxClassId;
+    private Guid taxClassId;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TaxClassId))]
     private TaxClassListDto? selectedTaxClass;
 
     [ObservableProperty]
-    private int? manufacturerId;
+    private Guid? manufacturerId;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ManufacturerId))]
     private ManufacturerListDto? selectedManufacturer;
 
     [ObservableProperty]
-    private ObservableCollection<int> productSalesChannelIds = new();
+    private ObservableCollection<Guid> productSalesChannelIds = new();
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
@@ -125,12 +125,12 @@ public partial class ProductInputViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<SalesChannelSelectionViewModel> availableSalesChannels = new();
 
-    public bool IsEditMode => ProductId > 0;
+    public bool IsEditMode => ProductId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"Produkt #{ProductId} bearbeiten" : "Neues Produkt erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToProductDetail { get; set; }
+    public Func<Guid, Task>? NavigateToProductDetail { get; set; }
 
     public ProductInputViewModel(IHttpService httpService, IDebugService debugService)
     {
@@ -138,7 +138,7 @@ public partial class ProductInputViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int productId = 0)
+    public async Task InitializeAsync(Guid productId = default)
     {
         ProductId = productId;
 
@@ -157,7 +157,7 @@ public partial class ProductInputViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAsync()
     {
-        if (ProductId <= 0) return;
+        if (ProductId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -270,8 +270,8 @@ public partial class ProductInputViewModel : ViewModelBase
             };
 
             var result = IsEditMode
-                ? await _httpService.PutAsync<ProductInputDto, int>($"products/{ProductId}", productDto)
-                : await _httpService.PostAsync<ProductInputDto, int>("products", productDto);
+                ? await _httpService.PutAsync<ProductInputDto, Guid>($"products/{ProductId}", productDto)
+                : await _httpService.PostAsync<ProductInputDto, Guid>("products", productDto);
 
             if (result == null)
             {
@@ -286,7 +286,7 @@ public partial class ProductInputViewModel : ViewModelBase
                 {
                     await NavigateToProductDetail(ProductId);
                 }
-                else if (!IsEditMode && result.Data > 0 && NavigateToProductDetail != null)
+                else if (!IsEditMode && result.Data != Guid.Empty && NavigateToProductDetail != null)
                 {
                     await NavigateToProductDetail(result.Data);
                 }
@@ -339,7 +339,7 @@ public partial class ProductInputViewModel : ViewModelBase
                 }
 
                 // Set default tax class if available
-                if (AvailableTaxClasses.Any() && TaxClassId == 0)
+                if (AvailableTaxClasses.Any() && TaxClassId == Guid.Empty)
                 {
                     TaxClassId = AvailableTaxClasses.First().Id;
                     SelectedTaxClass = AvailableTaxClasses.First();
@@ -352,7 +352,7 @@ public partial class ProductInputViewModel : ViewModelBase
             {
                 AvailableManufacturers.Clear();
                 // Add empty option for no manufacturer
-                AvailableManufacturers.Add(new ManufacturerListDto { Id = 0, Name = "--- Kein Hersteller ---", City = "", Country = "" });
+                AvailableManufacturers.Add(new ManufacturerListDto { Id = Guid.Empty, Name = "--- Kein Hersteller ---", City = "", Country = "" });
 
                 foreach (var manufacturer in manufacturerResult.Data)
                 {
@@ -360,7 +360,7 @@ public partial class ProductInputViewModel : ViewModelBase
                 }
 
                 // Set default to no manufacturer if none selected
-                if (ManufacturerId == null || ManufacturerId == 0)
+                if (ManufacturerId == null || ManufacturerId == Guid.Empty)
                 {
                     SelectedManufacturer = AvailableManufacturers.First();
                 }
@@ -400,7 +400,7 @@ public partial class ProductInputViewModel : ViewModelBase
         Width = 0;
         Height = 0;
         Depth = 0;
-        TaxClassId = AvailableTaxClasses.Any() ? AvailableTaxClasses.First().Id : 0;
+        TaxClassId = AvailableTaxClasses.Any() ? AvailableTaxClasses.First().Id : Guid.Empty;
         SelectedTaxClass = AvailableTaxClasses.FirstOrDefault();
         ManufacturerId = null;
         SelectedManufacturer = AvailableManufacturers.FirstOrDefault();
@@ -432,7 +432,7 @@ public partial class ProductInputViewModel : ViewModelBase
 
     partial void OnSelectedManufacturerChanged(ManufacturerListDto? value)
     {
-        if (value != null && value.Id > 0)
+        if (value != null && value.Id != Guid.Empty)
         {
             ManufacturerId = value.Id;
         }
@@ -460,7 +460,7 @@ public partial class ProductInputViewModel : ViewModelBase
         }
     }
 
-    public bool IsSalesChannelSelected(int salesChannelId)
+    public bool IsSalesChannelSelected(Guid salesChannelId)
     {
         return ProductSalesChannelIds.Contains(salesChannelId);
     }

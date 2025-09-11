@@ -34,11 +34,11 @@ public class SettingDeleteCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -452,7 +452,7 @@ public class SettingDeleteCommandTests : IDisposable
         SetTenantHeader(1);
         
         // Create multiple settings
-        var settingIds = new List<int>();
+        var settingIds = new List<Guid>();
         for (int i = 0; i < 5; i++)
         {
             var settingId = await CreateTestSettingAsync(1, $"bulk.delete.test{i}", $"value{i}");

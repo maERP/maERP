@@ -17,8 +17,7 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "ai_model",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     AiModelType = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     ApiUrl = table.Column<string>(type: "TEXT", nullable: false),
@@ -28,7 +27,7 @@ namespace maERP.Persistence.SQLite.Migrations
                     NCtx = table.Column<uint>(type: "INTEGER", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -39,13 +38,12 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "country",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     CountryCode = table.Column<string>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,8 +54,7 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "customer",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Firstname = table.Column<string>(type: "TEXT", nullable: false),
                     Lastname = table.Column<string>(type: "TEXT", nullable: false),
                     CompanyName = table.Column<string>(type: "TEXT", nullable: false),
@@ -70,7 +67,7 @@ namespace maERP.Persistence.SQLite.Migrations
                     DateEnrollment = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -81,8 +78,7 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "manufacturer",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     Street = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     City = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
@@ -95,7 +91,7 @@ namespace maERP.Persistence.SQLite.Migrations
                     Logo = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -120,8 +116,7 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "saleschannel",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Type = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Url = table.Column<string>(type: "TEXT", nullable: false),
@@ -137,7 +132,7 @@ namespace maERP.Persistence.SQLite.Migrations
                     InitialProductExportCompleted = table.Column<bool>(type: "INTEGER", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -148,13 +143,12 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "setting",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Key = table.Column<string>(type: "TEXT", nullable: false),
                     Value = table.Column<string>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -165,17 +159,16 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "shipping",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    OrderId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ShippingProviderId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OrderId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ShippingProviderId = table.Column<Guid>(type: "TEXT", nullable: false),
                     TrackingNumber = table.Column<string>(type: "TEXT", nullable: false),
                     ShippingCost = table.Column<string>(type: "TEXT", nullable: false),
                     ShippingTaxRate = table.Column<string>(type: "TEXT", nullable: false),
                     ShippingProviderName = table.Column<string>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -186,12 +179,11 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "shipping_provider",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -202,12 +194,11 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "tax_class",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     TaxRate = table.Column<double>(type: "REAL", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -218,8 +209,7 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "tenant",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
                     TenantCode = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
@@ -237,12 +227,11 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "warehouse",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -253,14 +242,13 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "ai_prompt",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    AiModelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    AiModelId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Identifier = table.Column<string>(type: "TEXT", nullable: false),
                     PromptText = table.Column<string>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -277,8 +265,7 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "customer_address",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Firstname = table.Column<string>(type: "TEXT", nullable: false),
                     Lastname = table.Column<string>(type: "TEXT", nullable: false),
                     CompanyName = table.Column<string>(type: "TEXT", nullable: false),
@@ -288,11 +275,11 @@ namespace maERP.Persistence.SQLite.Migrations
                     City = table.Column<string>(type: "TEXT", nullable: false),
                     DefaultDeliveryAddress = table.Column<bool>(type: "INTEGER", nullable: false),
                     DefaultInvoiceAddress = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CountryId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CustomerId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CountryId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -315,14 +302,13 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "customer_saleschannel",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CustomerId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SalesChannelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    SalesChannelId = table.Column<Guid>(type: "TEXT", nullable: false),
                     RemoteCustomerId = table.Column<string>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -339,11 +325,10 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "order",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    SalesChannelId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    SalesChannelId = table.Column<Guid>(type: "TEXT", nullable: false),
                     RemoteOrderId = table.Column<string>(type: "TEXT", nullable: false),
-                    CustomerId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     Subtotal = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
                     ShippingCost = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
@@ -377,7 +362,7 @@ namespace maERP.Persistence.SQLite.Migrations
                     DateOrdered = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -415,17 +400,16 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "shipping_provider_rate",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     MaxLength = table.Column<decimal>(type: "TEXT", precision: 18, scale: 4, nullable: false),
                     MaxWidth = table.Column<decimal>(type: "TEXT", precision: 18, scale: 4, nullable: false),
                     MaxHeight = table.Column<decimal>(type: "TEXT", precision: 18, scale: 4, nullable: false),
                     MaxWeight = table.Column<decimal>(type: "TEXT", precision: 18, scale: 4, nullable: false),
-                    ShippingProviderId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ShippingProviderId = table.Column<Guid>(type: "TEXT", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -441,15 +425,14 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "product",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Sku = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
-                    NameOptimized = table.Column<string>(type: "TEXT", nullable: false),
-                    Ean = table.Column<string>(type: "TEXT", nullable: false),
-                    Asin = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    DescriptionOptimized = table.Column<string>(type: "TEXT", nullable: false),
+                    NameOptimized = table.Column<string>(type: "TEXT", nullable: true),
+                    Ean = table.Column<string>(type: "TEXT", nullable: true),
+                    Asin = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    DescriptionOptimized = table.Column<string>(type: "TEXT", nullable: true),
                     UseOptimized = table.Column<bool>(type: "INTEGER", nullable: false),
                     Price = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
                     Msrp = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
@@ -457,11 +440,11 @@ namespace maERP.Persistence.SQLite.Migrations
                     Width = table.Column<decimal>(type: "TEXT", precision: 18, scale: 4, nullable: false),
                     Height = table.Column<decimal>(type: "TEXT", precision: 18, scale: 4, nullable: false),
                     Depth = table.Column<decimal>(type: "TEXT", precision: 18, scale: 4, nullable: false),
-                    TaxClassId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ManufacturerId = table.Column<int>(type: "INTEGER", nullable: true),
+                    TaxClassId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ManufacturerId = table.Column<Guid>(type: "TEXT", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -486,9 +469,9 @@ namespace maERP.Persistence.SQLite.Migrations
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     Firstname = table.Column<string>(type: "TEXT", nullable: false),
                     Lastname = table.Column<string>(type: "TEXT", nullable: false),
+                    DefaultTenantId = table.Column<Guid>(type: "TEXT", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    DefaultTenantId = table.Column<int>(type: "INTEGER", nullable: true),
                     UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
@@ -518,8 +501,8 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "SalesChannelWarehouses",
                 columns: table => new
                 {
-                    SalesChannelsId = table.Column<int>(type: "INTEGER", nullable: false),
-                    WarehousesId = table.Column<int>(type: "INTEGER", nullable: false)
+                    SalesChannelsId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    WarehousesId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -542,12 +525,11 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "invoice",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     InvoiceNumber = table.Column<string>(type: "TEXT", nullable: false),
                     InvoiceDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CustomerId = table.Column<int>(type: "INTEGER", nullable: false),
-                    OrderId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CustomerId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OrderId = table.Column<Guid>(type: "TEXT", nullable: true),
                     Subtotal = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
                     ShippingCost = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
                     TotalTax = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
@@ -575,7 +557,7 @@ namespace maERP.Persistence.SQLite.Migrations
                     DeliveryAddressCountry = table.Column<string>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -597,10 +579,9 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "order_history",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    OrderId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OrderId = table.Column<Guid>(type: "TEXT", nullable: false),
                     OrderStatusOld = table.Column<int>(type: "INTEGER", nullable: true),
                     OrderStatusNew = table.Column<int>(type: "INTEGER", nullable: true),
                     PaymentStatusOld = table.Column<int>(type: "INTEGER", nullable: true),
@@ -611,7 +592,7 @@ namespace maERP.Persistence.SQLite.Migrations
                     IsSystemGenerated = table.Column<bool>(type: "INTEGER", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -628,20 +609,19 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "order_item",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    OrderId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProductId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OrderId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Quantity = table.Column<double>(type: "REAL", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Price = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
                     TaxRate = table.Column<double>(type: "REAL", nullable: false),
                     MissingProductSku = table.Column<string>(type: "TEXT", nullable: false),
                     MissingProductEan = table.Column<string>(type: "TEXT", nullable: false),
-                    ShippingId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ShippingId = table.Column<Guid>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -658,18 +638,17 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "goods_receipt",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     ReceiptDate = table.Column<DateTime>(type: "date", nullable: false),
-                    ProductId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    WarehouseId = table.Column<int>(type: "INTEGER", nullable: false),
+                    WarehouseId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Supplier = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     Notes = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: false),
                     CreatedBy = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -692,18 +671,17 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "product_saleschannel",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    SalesChannelId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProductId = table.Column<int>(type: "INTEGER", nullable: false),
-                    RemoteProductId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    SalesChannelId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    RemoteProductId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Price = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
                     RepricingType = table.Column<bool>(type: "INTEGER", nullable: false),
                     MinimumProfit = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
                     MinimumProfitUnit = table.Column<int>(type: "INTEGER", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -726,17 +704,16 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "product_stock",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ProductId = table.Column<int>(type: "INTEGER", nullable: false),
-                    WarehouseId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    WarehouseId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Stock = table.Column<double>(type: "REAL", nullable: false),
                     StockMin = table.Column<double>(type: "REAL", nullable: false),
                     StockMax = table.Column<double>(type: "REAL", nullable: false),
                     StorageLocation = table.Column<double>(type: "REAL", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -825,9 +802,9 @@ namespace maERP.Persistence.SQLite.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: false),
                     IsDefault = table.Column<bool>(type: "INTEGER", nullable: false, defaultValue: false),
-                    Id = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -872,10 +849,9 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "invoice_item",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    InvoiceId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProductId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    InvoiceId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ProductId = table.Column<Guid>(type: "TEXT", nullable: true),
                     Quantity = table.Column<double>(type: "REAL", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
@@ -886,10 +862,10 @@ namespace maERP.Persistence.SQLite.Migrations
                     TaxRate = table.Column<double>(type: "REAL", nullable: false),
                     TaxAmount = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
                     Unit = table.Column<string>(type: "TEXT", nullable: false),
-                    OrderItemId = table.Column<int>(type: "INTEGER", nullable: true),
+                    OrderItemId = table.Column<Guid>(type: "TEXT", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -911,13 +887,12 @@ namespace maERP.Persistence.SQLite.Migrations
                 name: "order_item_serialnumber",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    OrderItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OrderItemId = table.Column<Guid>(type: "TEXT", nullable: false),
                     SerialNumber = table.Column<string>(type: "TEXT", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DateModified = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TenantId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TenantId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -935,132 +910,132 @@ namespace maERP.Persistence.SQLite.Migrations
                 columns: new[] { "Id", "CountryCode", "DateCreated", "DateModified", "Name", "TenantId" },
                 values: new object[,]
                 {
-                    { 1, "DE", new DateTime(2025, 8, 23, 9, 26, 30, 704, DateTimeKind.Utc).AddTicks(9710), new DateTime(2025, 8, 23, 9, 26, 30, 704, DateTimeKind.Utc).AddTicks(9710), "Germany", null },
-                    { 2, "AT", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Austria", null },
-                    { 3, "CH", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Switzerland", null },
-                    { 4, "AD", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Andorra", null },
-                    { 5, "AF", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Afghanistan", null },
-                    { 6, "AG", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Antigua and Barbuda", null },
-                    { 7, "AL", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Albania", null },
-                    { 8, "AM", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Armenia", null },
-                    { 9, "AO", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Angola", null },
-                    { 10, "AX", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Åland Islands", null },
-                    { 11, "AR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Argentina", null },
-                    { 12, "AT", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Antarctica", null },
-                    { 13, "AU", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Australia", null },
-                    { 14, "AZ", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Azerbaijan", null },
-                    { 15, "BA", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Bosnia and Herzegovina", null },
-                    { 16, "BB", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Barbados", null },
-                    { 17, "BE", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Belgium", null },
-                    { 18, "BG", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(30), "Bulgaria", null },
-                    { 19, "BL", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), "Saint Barthélemy", null },
-                    { 20, "BO", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), "Bolivia", null },
-                    { 21, "BR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), "Brazil", null },
-                    { 22, "BS", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), "Bahamas", null },
-                    { 23, "BY", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), "Belarus", null },
-                    { 24, "BZ", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), "Belize", null },
-                    { 25, "CA", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), "Canada", null },
-                    { 26, "CH", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), "Cocos (Keeling) Islands", null },
-                    { 27, "CI", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), "Ivory Coast", null },
-                    { 28, "CL", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(40), "Chile", null },
-                    { 29, "CN", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "China", null },
-                    { 30, "CO", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Colombia", null },
-                    { 31, "CR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Costa Rica", null },
-                    { 32, "CU", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Cuba", null },
-                    { 33, "CY", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Cyprus", null },
-                    { 34, "CZ", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Czech Republic", null },
-                    { 35, "DO", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Dominican Republic", null },
-                    { 36, "DK", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Denmark", null },
-                    { 37, "DZ", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Algeria", null },
-                    { 38, "EC", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Ecuador", null },
-                    { 39, "EE", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Estonia", null },
-                    { 40, "EG", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Egypt", null },
-                    { 41, "ER", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Eritrea", null },
-                    { 42, "ES", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Spain", null },
-                    { 43, "ET", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Ethiopia", null },
-                    { 44, "FI", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(50), "Finland", null },
-                    { 45, "FR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "France", null },
-                    { 46, "GB", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "United Kingdom", null },
-                    { 47, "GE", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Georgia", null },
-                    { 48, "GF", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "French Guiana", null },
-                    { 49, "GH", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Ghana", null },
-                    { 50, "GL", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Greenland", null },
-                    { 51, "GP", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Guadeloupe", null },
-                    { 52, "GR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Greece", null },
-                    { 53, "GT", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Guatemala", null },
-                    { 54, "GY", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Guyana", null },
-                    { 55, "HN", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Honduras", null },
-                    { 56, "HR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Croatia", null },
-                    { 57, "HT", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Haiti", null },
-                    { 58, "HU", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Hungary", null },
-                    { 59, "ID", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Indonesia", null },
-                    { 60, "IE", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Ireland", null },
-                    { 61, "IN", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "India", null },
-                    { 62, "IR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(60), "Iran", null },
-                    { 63, "IS", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Iceland", null },
-                    { 64, "IT", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Italy", null },
-                    { 65, "JM", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Jamaica", null },
-                    { 66, "JP", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Japan", null },
-                    { 67, "KE", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Kenya", null },
-                    { 68, "KG", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Kyrgyzstan", null },
-                    { 69, "KR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "South Korea", null },
-                    { 70, "KW", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Kuwait", null },
-                    { 71, "KZ", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Kazakhstan", null },
-                    { 72, "LU", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Luxembourg", null },
-                    { 73, "LT", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Lithuania", null },
-                    { 74, "LV", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Latvia", null },
-                    { 75, "MA", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Morocco", null },
-                    { 76, "MC", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Monaco", null },
-                    { 77, "MD", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Moldova", null },
-                    { 78, "MF", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Saint Martin", null },
-                    { 79, "MG", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Madagascar", null },
-                    { 80, "MQ", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), "Martinique", null },
-                    { 81, "MT", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(70), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Malta", null },
-                    { 82, "MX", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Mexico", null },
-                    { 83, "MY", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Malaysia", null },
-                    { 84, "NG", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Nigeria", null },
-                    { 85, "NI", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Nicaragua", null },
-                    { 86, "NL", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Netherlands", null },
-                    { 87, "NO", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Norway", null },
-                    { 88, "NZ", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "New Zealand", null },
-                    { 89, "OM", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Oman", null },
-                    { 90, "PA", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Panama", null },
-                    { 91, "PE", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Peru", null },
-                    { 92, "PL", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Poland", null },
-                    { 93, "PM", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Saint Pierre and Miquelon", null },
-                    { 94, "PR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Puerto Rico", null },
-                    { 95, "PT", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Portugal", null },
-                    { 96, "PY", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Paraguay", null },
-                    { 97, "QA", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Qatar", null },
-                    { 98, "RO", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), "Romania", null },
-                    { 99, "RS", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(80), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Serbia", null },
-                    { 100, "RU", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Russia", null },
-                    { 101, "SA", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Saudi Arabia", null },
-                    { 102, "SE", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Sweden", null },
-                    { 103, "SG", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Singapore", null },
-                    { 104, "SI", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Slovenia", null },
-                    { 105, "SK", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Slovakia", null },
-                    { 106, "SN", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Senegal", null },
-                    { 107, "SR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Suriname", null },
-                    { 108, "SV", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "El Salvador", null },
-                    { 109, "TR", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Turkey", null },
-                    { 110, "TT", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Trinidad and Tobago", null },
-                    { 111, "UA", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Ukraine", null },
-                    { 112, "US", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "United States", null },
-                    { 113, "UY", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Uruguay", null },
-                    { 114, "VE", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Venezuela", null },
-                    { 115, "VI", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Virgin Islands", null },
-                    { 116, "VN", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Vietnam", null },
-                    { 117, "YE", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(90), "Yemen", null },
-                    { 118, "ZA", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(100), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(100), "South Africa", null },
-                    { 119, "ZM", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(100), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(100), "Zambia", null },
-                    { 120, "ZW", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(100), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(100), "Zimbabwe", null }
+                    { new Guid("00000000-0000-0000-0000-000000000001"), "DE", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7230), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7230), "Germany", null },
+                    { new Guid("00000000-0000-0000-0000-000000000002"), "AT", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7690), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7690), "Austria", null },
+                    { new Guid("00000000-0000-0000-0000-000000000003"), "CH", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7700), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7700), "Switzerland", null },
+                    { new Guid("00000000-0000-0000-0000-000000000004"), "AD", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7700), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7700), "Andorra", null },
+                    { new Guid("00000000-0000-0000-0000-000000000005"), "AF", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7700), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7700), "Afghanistan", null },
+                    { new Guid("00000000-0000-0000-0000-000000000006"), "AG", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7710), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7710), "Antigua and Barbuda", null },
+                    { new Guid("00000000-0000-0000-0000-000000000007"), "AL", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7710), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7710), "Albania", null },
+                    { new Guid("00000000-0000-0000-0000-000000000008"), "AM", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7710), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7710), "Armenia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000009"), "AO", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7720), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7720), "Angola", null },
+                    { new Guid("00000000-0000-0000-0000-000000000010"), "AX", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7720), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7720), "Åland Islands", null },
+                    { new Guid("00000000-0000-0000-0000-000000000011"), "AR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7720), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7720), "Argentina", null },
+                    { new Guid("00000000-0000-0000-0000-000000000012"), "AT", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7730), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7730), "Antarctica", null },
+                    { new Guid("00000000-0000-0000-0000-000000000013"), "AU", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7730), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7730), "Australia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000014"), "AZ", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7730), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7730), "Azerbaijan", null },
+                    { new Guid("00000000-0000-0000-0000-000000000015"), "BA", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7740), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7740), "Bosnia and Herzegovina", null },
+                    { new Guid("00000000-0000-0000-0000-000000000016"), "BB", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7750), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7750), "Barbados", null },
+                    { new Guid("00000000-0000-0000-0000-000000000017"), "BE", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7750), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7750), "Belgium", null },
+                    { new Guid("00000000-0000-0000-0000-000000000018"), "BG", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7750), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7750), "Bulgaria", null },
+                    { new Guid("00000000-0000-0000-0000-000000000019"), "BL", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7760), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7760), "Saint Barthélemy", null },
+                    { new Guid("00000000-0000-0000-0000-000000000020"), "BO", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7760), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7760), "Bolivia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000021"), "BR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7760), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7760), "Brazil", null },
+                    { new Guid("00000000-0000-0000-0000-000000000022"), "BS", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7760), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7760), "Bahamas", null },
+                    { new Guid("00000000-0000-0000-0000-000000000023"), "BY", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7770), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7770), "Belarus", null },
+                    { new Guid("00000000-0000-0000-0000-000000000024"), "BZ", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7770), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7770), "Belize", null },
+                    { new Guid("00000000-0000-0000-0000-000000000025"), "CA", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7770), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7770), "Canada", null },
+                    { new Guid("00000000-0000-0000-0000-000000000026"), "CH", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7780), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7780), "Cocos (Keeling) Islands", null },
+                    { new Guid("00000000-0000-0000-0000-000000000027"), "CI", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7780), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7780), "Ivory Coast", null },
+                    { new Guid("00000000-0000-0000-0000-000000000028"), "CL", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7780), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7780), "Chile", null },
+                    { new Guid("00000000-0000-0000-0000-000000000029"), "CN", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7780), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7780), "China", null },
+                    { new Guid("00000000-0000-0000-0000-000000000030"), "CO", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7790), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7790), "Colombia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000031"), "CR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7790), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7790), "Costa Rica", null },
+                    { new Guid("00000000-0000-0000-0000-000000000032"), "CU", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7790), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7790), "Cuba", null },
+                    { new Guid("00000000-0000-0000-0000-000000000033"), "CY", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7800), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7800), "Cyprus", null },
+                    { new Guid("00000000-0000-0000-0000-000000000034"), "CZ", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7800), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7800), "Czech Republic", null },
+                    { new Guid("00000000-0000-0000-0000-000000000035"), "DO", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7800), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7800), "Dominican Republic", null },
+                    { new Guid("00000000-0000-0000-0000-000000000036"), "DK", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7810), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7810), "Denmark", null },
+                    { new Guid("00000000-0000-0000-0000-000000000037"), "DZ", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7810), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7810), "Algeria", null },
+                    { new Guid("00000000-0000-0000-0000-000000000038"), "EC", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7810), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7810), "Ecuador", null },
+                    { new Guid("00000000-0000-0000-0000-000000000039"), "EE", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7810), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7810), "Estonia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000040"), "EG", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7820), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7820), "Egypt", null },
+                    { new Guid("00000000-0000-0000-0000-000000000041"), "ER", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7820), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7820), "Eritrea", null },
+                    { new Guid("00000000-0000-0000-0000-000000000042"), "ES", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7820), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7820), "Spain", null },
+                    { new Guid("00000000-0000-0000-0000-000000000043"), "ET", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7830), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7830), "Ethiopia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000044"), "FI", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7830), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7830), "Finland", null },
+                    { new Guid("00000000-0000-0000-0000-000000000045"), "FR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7830), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7830), "France", null },
+                    { new Guid("00000000-0000-0000-0000-000000000046"), "GB", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7830), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7830), "United Kingdom", null },
+                    { new Guid("00000000-0000-0000-0000-000000000047"), "GE", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7840), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7840), "Georgia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000048"), "GF", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7840), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7840), "French Guiana", null },
+                    { new Guid("00000000-0000-0000-0000-000000000049"), "GH", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7840), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7840), "Ghana", null },
+                    { new Guid("00000000-0000-0000-0000-000000000050"), "GL", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7850), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7850), "Greenland", null },
+                    { new Guid("00000000-0000-0000-0000-000000000051"), "GP", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7850), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7850), "Guadeloupe", null },
+                    { new Guid("00000000-0000-0000-0000-000000000052"), "GR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7850), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7850), "Greece", null },
+                    { new Guid("00000000-0000-0000-0000-000000000053"), "GT", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7860), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7860), "Guatemala", null },
+                    { new Guid("00000000-0000-0000-0000-000000000054"), "GY", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7860), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7860), "Guyana", null },
+                    { new Guid("00000000-0000-0000-0000-000000000055"), "HN", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7860), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7860), "Honduras", null },
+                    { new Guid("00000000-0000-0000-0000-000000000056"), "HR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7860), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7860), "Croatia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000057"), "HT", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7870), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7870), "Haiti", null },
+                    { new Guid("00000000-0000-0000-0000-000000000058"), "HU", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7870), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7870), "Hungary", null },
+                    { new Guid("00000000-0000-0000-0000-000000000059"), "ID", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7870), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7870), "Indonesia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000060"), "IE", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7880), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7880), "Ireland", null },
+                    { new Guid("00000000-0000-0000-0000-000000000061"), "IN", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7880), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7880), "India", null },
+                    { new Guid("00000000-0000-0000-0000-000000000062"), "IR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7880), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7880), "Iran", null },
+                    { new Guid("00000000-0000-0000-0000-000000000063"), "IS", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7890), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7890), "Iceland", null },
+                    { new Guid("00000000-0000-0000-0000-000000000064"), "IT", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7890), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7890), "Italy", null },
+                    { new Guid("00000000-0000-0000-0000-000000000065"), "JM", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7890), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7890), "Jamaica", null },
+                    { new Guid("00000000-0000-0000-0000-000000000066"), "JP", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7890), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7890), "Japan", null },
+                    { new Guid("00000000-0000-0000-0000-000000000067"), "KE", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7900), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7900), "Kenya", null },
+                    { new Guid("00000000-0000-0000-0000-000000000068"), "KG", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7900), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7900), "Kyrgyzstan", null },
+                    { new Guid("00000000-0000-0000-0000-000000000069"), "KR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7900), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7900), "South Korea", null },
+                    { new Guid("00000000-0000-0000-0000-000000000070"), "KW", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7910), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7910), "Kuwait", null },
+                    { new Guid("00000000-0000-0000-0000-000000000071"), "KZ", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7910), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7910), "Kazakhstan", null },
+                    { new Guid("00000000-0000-0000-0000-000000000072"), "LU", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7910), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7910), "Luxembourg", null },
+                    { new Guid("00000000-0000-0000-0000-000000000073"), "LT", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7910), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7910), "Lithuania", null },
+                    { new Guid("00000000-0000-0000-0000-000000000074"), "LV", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7920), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7920), "Latvia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000075"), "MA", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7920), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7920), "Morocco", null },
+                    { new Guid("00000000-0000-0000-0000-000000000076"), "MC", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7920), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7920), "Monaco", null },
+                    { new Guid("00000000-0000-0000-0000-000000000077"), "MD", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7930), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7930), "Moldova", null },
+                    { new Guid("00000000-0000-0000-0000-000000000078"), "MF", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7930), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7930), "Saint Martin", null },
+                    { new Guid("00000000-0000-0000-0000-000000000079"), "MG", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7930), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7930), "Madagascar", null },
+                    { new Guid("00000000-0000-0000-0000-000000000080"), "MQ", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7930), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7930), "Martinique", null },
+                    { new Guid("00000000-0000-0000-0000-000000000081"), "MT", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7940), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7940), "Malta", null },
+                    { new Guid("00000000-0000-0000-0000-000000000082"), "MX", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7940), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7940), "Mexico", null },
+                    { new Guid("00000000-0000-0000-0000-000000000083"), "MY", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7940), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7940), "Malaysia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000084"), "NG", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7950), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7950), "Nigeria", null },
+                    { new Guid("00000000-0000-0000-0000-000000000085"), "NI", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7950), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7950), "Nicaragua", null },
+                    { new Guid("00000000-0000-0000-0000-000000000086"), "NL", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7950), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7950), "Netherlands", null },
+                    { new Guid("00000000-0000-0000-0000-000000000087"), "NO", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7960), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7960), "Norway", null },
+                    { new Guid("00000000-0000-0000-0000-000000000088"), "NZ", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7960), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7960), "New Zealand", null },
+                    { new Guid("00000000-0000-0000-0000-000000000089"), "OM", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7960), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7960), "Oman", null },
+                    { new Guid("00000000-0000-0000-0000-000000000090"), "PA", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7960), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7960), "Panama", null },
+                    { new Guid("00000000-0000-0000-0000-000000000091"), "PE", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7970), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7970), "Peru", null },
+                    { new Guid("00000000-0000-0000-0000-000000000092"), "PL", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7970), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7970), "Poland", null },
+                    { new Guid("00000000-0000-0000-0000-000000000093"), "PM", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7970), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7970), "Saint Pierre and Miquelon", null },
+                    { new Guid("00000000-0000-0000-0000-000000000094"), "PR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7980), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7980), "Puerto Rico", null },
+                    { new Guid("00000000-0000-0000-0000-000000000095"), "PT", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7980), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7980), "Portugal", null },
+                    { new Guid("00000000-0000-0000-0000-000000000096"), "PY", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7980), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7980), "Paraguay", null },
+                    { new Guid("00000000-0000-0000-0000-000000000097"), "QA", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7980), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7980), "Qatar", null },
+                    { new Guid("00000000-0000-0000-0000-000000000098"), "RO", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7990), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7990), "Romania", null },
+                    { new Guid("00000000-0000-0000-0000-000000000099"), "RS", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7990), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7990), "Serbia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000100"), "RU", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7990), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(7990), "Russia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000101"), "SA", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8000), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8000), "Saudi Arabia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000102"), "SE", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8000), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8000), "Sweden", null },
+                    { new Guid("00000000-0000-0000-0000-000000000103"), "SG", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8000), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8000), "Singapore", null },
+                    { new Guid("00000000-0000-0000-0000-000000000104"), "SI", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8010), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8010), "Slovenia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000105"), "SK", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8010), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8010), "Slovakia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000106"), "SN", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8010), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8010), "Senegal", null },
+                    { new Guid("00000000-0000-0000-0000-000000000107"), "SR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8010), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8010), "Suriname", null },
+                    { new Guid("00000000-0000-0000-0000-000000000108"), "SV", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8050), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8050), "El Salvador", null },
+                    { new Guid("00000000-0000-0000-0000-000000000109"), "TR", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8050), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8050), "Turkey", null },
+                    { new Guid("00000000-0000-0000-0000-000000000110"), "TT", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8050), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8050), "Trinidad and Tobago", null },
+                    { new Guid("00000000-0000-0000-0000-000000000111"), "UA", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8060), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8060), "Ukraine", null },
+                    { new Guid("00000000-0000-0000-0000-000000000112"), "US", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8060), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8060), "United States", null },
+                    { new Guid("00000000-0000-0000-0000-000000000113"), "UY", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8060), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8060), "Uruguay", null },
+                    { new Guid("00000000-0000-0000-0000-000000000114"), "VE", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8060), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8070), "Venezuela", null },
+                    { new Guid("00000000-0000-0000-0000-000000000115"), "VI", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8070), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8070), "Virgin Islands", null },
+                    { new Guid("00000000-0000-0000-0000-000000000116"), "VN", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8070), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8070), "Vietnam", null },
+                    { new Guid("00000000-0000-0000-0000-000000000117"), "YE", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8070), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8070), "Yemen", null },
+                    { new Guid("00000000-0000-0000-0000-000000000118"), "ZA", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8080), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8080), "South Africa", null },
+                    { new Guid("00000000-0000-0000-0000-000000000119"), "ZM", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8080), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8080), "Zambia", null },
+                    { new Guid("00000000-0000-0000-0000-000000000120"), "ZW", new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8080), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(8080), "Zimbabwe", null }
                 });
 
             migrationBuilder.InsertData(
                 table: "manufacturer",
                 columns: new[] { "Id", "City", "Country", "DateCreated", "DateModified", "Email", "Logo", "Name", "Phone", "State", "Street", "TenantId", "Website", "ZipCode" },
-                values: new object[] { 1, "Berlin", "Deutschland", new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(6400), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(6400), "info@beispiel-hersteller.de", "", "Beispiel Hersteller GmbH", "+49 30 12345678", "Berlin", "Musterstraße 123", null, "https://www.beispiel-hersteller.de", "10115" });
+                values: new object[] { new Guid("55555555-5555-5555-5555-555555555555"), "Berlin", "Deutschland", new DateTime(2025, 9, 11, 10, 47, 27, 439, DateTimeKind.Utc).AddTicks(5390), new DateTime(2025, 9, 11, 10, 47, 27, 439, DateTimeKind.Utc).AddTicks(5390), "info@beispiel-hersteller.de", "", "Beispiel Hersteller GmbH", "+49 30 12345678", "Berlin", "Musterstraße 123", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "https://www.beispiel-hersteller.de", "10115" });
 
             migrationBuilder.InsertData(
                 table: "role",
@@ -1075,36 +1050,36 @@ namespace maERP.Persistence.SQLite.Migrations
             migrationBuilder.InsertData(
                 table: "saleschannel",
                 columns: new[] { "Id", "DateCreated", "DateModified", "ExportCustomers", "ExportOrders", "ExportProducts", "ImportCustomers", "ImportOrders", "ImportProducts", "InitialProductExportCompleted", "InitialProductImportCompleted", "Name", "Password", "TenantId", "Type", "Url", "Username" },
-                values: new object[] { 1, new DateTime(2025, 8, 23, 9, 26, 30, 706, DateTimeKind.Utc).AddTicks(6030), new DateTime(2025, 8, 23, 9, 26, 30, 706, DateTimeKind.Utc).AddTicks(6030), false, false, false, false, false, false, false, false, "Kasse Ladengeschäft", "", null, 1, "", "" });
+                values: new object[] { new Guid("88888888-8888-8888-8888-888888888888"), new DateTime(2025, 9, 11, 10, 47, 27, 440, DateTimeKind.Utc).AddTicks(5550), new DateTime(2025, 9, 11, 10, 47, 27, 440, DateTimeKind.Utc).AddTicks(5550), false, false, false, false, false, false, false, false, "Kasse Ladengeschäft", "", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), 1, "", "" });
 
             migrationBuilder.InsertData(
                 table: "setting",
                 columns: new[] { "Id", "DateCreated", "DateModified", "Key", "TenantId", "Value" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(7980), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(7980), "Company.Name", null, "Musterfirma GmbH" },
-                    { 2, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), "Company.Address", null, "Musterstraße 123" },
-                    { 3, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), "Company.ZipCity", null, "12345 Musterstadt" },
-                    { 4, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), "Company.Country", null, "Deutschland" },
-                    { 5, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), "Company.Phone", null, "+49 123 456789" },
-                    { 6, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), "Company.Email", null, "info@musterfirma.de" },
-                    { 7, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), "Company.Website", null, "www.musterfirma.de" },
-                    { 8, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), "Company.TaxId", null, "123/456/7890" },
-                    { 9, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), "Company.VatId", null, "DE123456789" },
-                    { 10, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), "Company.BankName", null, "Musterbank" },
-                    { 11, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8180), "Company.Iban", null, "DE89 3704 0044 0532 0130 00" },
-                    { 12, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Company.Bic", null, "MUSTDEXXX" },
-                    { 13, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Company.LogoPath", null, "" },
-                    { 14, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Jwt.Key", null, "CHANGE_TO_YOUR_VERY_SECRET_JWT_SIGNING_KEY" },
-                    { 15, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Jwt.Issuer", null, "maERP.Server" },
-                    { 16, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Jwt.Audience", null, "maERP.Client" },
-                    { 17, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Jwt.DurationInMinutes", null, "60" },
-                    { 18, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Jwt.RefreshTokenExpireDays", null, "7" },
-                    { 19, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Email.ApiKey", null, "Sendgrid-Key" },
-                    { 20, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Email.FromAddress", null, "no-reply@martin-andrich.de" },
-                    { 21, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Email.FromName", null, "maERP" },
-                    { 22, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Telemetry.Endpoint", null, "http://localhost:4317" },
-                    { 23, new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), new DateTime(2025, 8, 23, 9, 26, 30, 709, DateTimeKind.Utc).AddTicks(8190), "Telemetry.ServiceName", null, "maERP.Server" }
+                    { new Guid("66666666-6666-6666-6666-666666666601"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1620), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1620), "Company.Name", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "Musterfirma GmbH" },
+                    { new Guid("66666666-6666-6666-6666-666666666602"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1830), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1830), "Company.Address", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "Musterstraße 123" },
+                    { new Guid("66666666-6666-6666-6666-666666666603"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1840), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1840), "Company.ZipCity", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "12345 Musterstadt" },
+                    { new Guid("66666666-6666-6666-6666-666666666604"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1840), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1840), "Company.Country", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "Deutschland" },
+                    { new Guid("66666666-6666-6666-6666-666666666605"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1840), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1840), "Company.Phone", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "+49 123 456789" },
+                    { new Guid("66666666-6666-6666-6666-666666666606"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1850), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1850), "Company.Email", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "info@musterfirma.de" },
+                    { new Guid("66666666-6666-6666-6666-666666666607"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1850), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1850), "Company.Website", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "www.musterfirma.de" },
+                    { new Guid("66666666-6666-6666-6666-666666666608"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1850), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1850), "Company.TaxId", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "123/456/7890" },
+                    { new Guid("66666666-6666-6666-6666-666666666609"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1860), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1860), "Company.VatId", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "DE123456789" },
+                    { new Guid("66666666-6666-6666-6666-666666666610"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1860), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1860), "Company.BankName", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "Musterbank" },
+                    { new Guid("66666666-6666-6666-6666-666666666611"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1860), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1860), "Company.Iban", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "DE89 3704 0044 0532 0130 00" },
+                    { new Guid("66666666-6666-6666-6666-666666666612"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1870), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1870), "Company.Bic", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "MUSTDEXXX" },
+                    { new Guid("66666666-6666-6666-6666-666666666613"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1870), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1870), "Company.LogoPath", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "" },
+                    { new Guid("66666666-6666-6666-6666-666666666614"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1870), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1870), "Jwt.Key", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "CHANGE_TO_YOUR_VERY_SECRET_JWT_SIGNING_KEY" },
+                    { new Guid("66666666-6666-6666-6666-666666666615"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1880), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1880), "Jwt.Issuer", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "maERP.Server" },
+                    { new Guid("66666666-6666-6666-6666-666666666616"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1880), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1880), "Jwt.Audience", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "maERP.Client" },
+                    { new Guid("66666666-6666-6666-6666-666666666617"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1880), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1880), "Jwt.DurationInMinutes", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "60" },
+                    { new Guid("66666666-6666-6666-6666-666666666618"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1890), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1890), "Jwt.RefreshTokenExpireDays", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "7" },
+                    { new Guid("66666666-6666-6666-6666-666666666619"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1890), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1890), "Email.ApiKey", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "Sendgrid-Key" },
+                    { new Guid("66666666-6666-6666-6666-666666666620"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1890), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1890), "Email.FromAddress", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "no-reply@martin-andrich.de" },
+                    { new Guid("66666666-6666-6666-6666-666666666621"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1900), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1900), "Email.FromName", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "maERP" },
+                    { new Guid("66666666-6666-6666-6666-666666666622"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1900), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1900), "Telemetry.Endpoint", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "http://localhost:4317" },
+                    { new Guid("66666666-6666-6666-6666-666666666623"), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1900), new DateTime(2025, 9, 11, 10, 47, 27, 444, DateTimeKind.Utc).AddTicks(1900), "Telemetry.ServiceName", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), "maERP.Server" }
                 });
 
             migrationBuilder.InsertData(
@@ -1112,29 +1087,29 @@ namespace maERP.Persistence.SQLite.Migrations
                 columns: new[] { "Id", "DateCreated", "DateModified", "TaxRate", "TenantId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 8, 23, 9, 26, 30, 706, DateTimeKind.Utc).AddTicks(8860), new DateTime(2025, 8, 23, 9, 26, 30, 706, DateTimeKind.Utc).AddTicks(8860), 19.0, null },
-                    { 2, new DateTime(2025, 8, 23, 9, 26, 30, 706, DateTimeKind.Utc).AddTicks(8960), new DateTime(2025, 8, 23, 9, 26, 30, 706, DateTimeKind.Utc).AddTicks(8960), 7.0, null },
-                    { 3, new DateTime(2025, 8, 23, 9, 26, 30, 706, DateTimeKind.Utc).AddTicks(8960), new DateTime(2025, 8, 23, 9, 26, 30, 706, DateTimeKind.Utc).AddTicks(8960), 0.0, null }
+                    { new Guid("77777777-7777-7777-7777-777777777771"), new DateTime(2025, 9, 11, 10, 47, 27, 440, DateTimeKind.Utc).AddTicks(8830), new DateTime(2025, 9, 11, 10, 47, 27, 440, DateTimeKind.Utc).AddTicks(8830), 19.0, new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa") },
+                    { new Guid("77777777-7777-7777-7777-777777777772"), new DateTime(2025, 9, 11, 10, 47, 27, 440, DateTimeKind.Utc).AddTicks(8940), new DateTime(2025, 9, 11, 10, 47, 27, 440, DateTimeKind.Utc).AddTicks(8940), 7.0, new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa") },
+                    { new Guid("77777777-7777-7777-7777-777777777773"), new DateTime(2025, 9, 11, 10, 47, 27, 440, DateTimeKind.Utc).AddTicks(8940), new DateTime(2025, 9, 11, 10, 47, 27, 440, DateTimeKind.Utc).AddTicks(8940), 0.0, new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa") }
                 });
 
             migrationBuilder.InsertData(
                 table: "tenant",
                 columns: new[] { "Id", "ContactEmail", "DateCreated", "DateModified", "Description", "IsActive", "Name", "TenantCode" },
-                values: new object[] { 1, "admin@example.com", new DateTime(2025, 8, 23, 9, 26, 30, 700, DateTimeKind.Utc).AddTicks(6140), new DateTime(2025, 8, 23, 9, 26, 30, 700, DateTimeKind.Utc).AddTicks(6140), "Default tenant for initial setup", true, "Default Tenant", "DEFAULT" });
+                values: new object[] { new Guid("11111111-1111-1111-1111-111111111111"), "admin@example.com", new DateTime(2025, 9, 11, 10, 47, 27, 433, DateTimeKind.Utc).AddTicks(3240), new DateTime(2025, 9, 11, 10, 47, 27, 433, DateTimeKind.Utc).AddTicks(3240), "Default tenant for initial setup", true, "Default Tenant", "DEFAULT" });
 
             migrationBuilder.InsertData(
                 table: "user",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateCreated", "DateModified", "DefaultTenantId", "Email", "EmailConfirmed", "Firstname", "Lastname", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "61fc4dba-5b5e-4516-92b1-8f1b998e1fc9", new DateTime(2025, 8, 23, 9, 26, 30, 629, DateTimeKind.Utc).AddTicks(1220), new DateTime(2025, 8, 23, 9, 26, 30, 629, DateTimeKind.Utc).AddTicks(1220), null, "admin@localhost.com", true, "System", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEIK2387H5G/TsCrofgt3KubELk17Npiel5lADYJ7afYwEoTHqlSapGcba7JByENWcw==", null, false, "a7dfafb7-8725-4f59-86aa-c29c5e7e72fd", false, "admin@localhost.com" },
-                    { "9e224968-33e4-4652-b7b7-8574d048cdb9", 0, "eadb5960-cbdb-4adb-ae68-1b67cd9d8379", new DateTime(2025, 8, 23, 9, 26, 30, 665, DateTimeKind.Utc).AddTicks(1990), new DateTime(2025, 8, 23, 9, 26, 30, 665, DateTimeKind.Utc).AddTicks(1990), null, "user@localhost.com", true, "System", "User", false, null, "USER@LOCALHOST.COM", "USER@LOCALHOST.COM", "AQAAAAIAAYagAAAAELgVJvFFal9pl/Ed6ufhZRXZyTSG3GtaiEotyf0RmIeURvoz9mqQaj/X/DsKagiu/A==", null, false, "5e2f2db1-393e-47ad-8168-658316baa619", false, "user@localhost.com" }
+                    { "8e445865-a24d-4543-a6c6-9443d048cdb9", 0, "aa0d768c-cd84-48e2-9556-90044dacc99a", new DateTime(2025, 9, 11, 10, 47, 27, 363, DateTimeKind.Utc).AddTicks(6130), new DateTime(2025, 9, 11, 10, 47, 27, 363, DateTimeKind.Utc).AddTicks(6130), null, "admin@localhost.com", true, "System", "Admin", false, null, "ADMIN@LOCALHOST.COM", "ADMIN@LOCALHOST.COM", "AQAAAAIAAYagAAAAEHOKBozinENyvDAFwZdDIv2gt01zXEufWV+Xi6wiJLE4/E3TyIPidrjXC+eFfzno+Q==", null, false, "1eed715e-b33a-46c6-823f-14176d47e5ef", false, "admin@localhost.com" },
+                    { "9e224968-33e4-4652-b7b7-8574d048cdb9", 0, "3be43e33-c353-4a13-99bf-788dc5192f02", new DateTime(2025, 9, 11, 10, 47, 27, 398, DateTimeKind.Utc).AddTicks(5970), new DateTime(2025, 9, 11, 10, 47, 27, 398, DateTimeKind.Utc).AddTicks(5970), null, "user@localhost.com", true, "System", "User", false, null, "USER@LOCALHOST.COM", "USER@LOCALHOST.COM", "AQAAAAIAAYagAAAAECzfLadCmurlAEJAOpEGLuxx8lKgQaiuhkHctyyXeLwniJ20v08jwmp/3OTxwmp+rw==", null, false, "3f1b1868-88fc-4792-bc58-fd0169a375a4", false, "user@localhost.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "warehouse",
                 columns: new[] { "Id", "DateCreated", "DateModified", "Name", "TenantId" },
-                values: new object[] { 1, new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(1510), new DateTime(2025, 8, 23, 9, 26, 30, 705, DateTimeKind.Utc).AddTicks(1510), "Hauptlager", null });
+                values: new object[] { new Guid("33333333-3333-3333-3333-333333333333"), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(9950), new DateTime(2025, 9, 11, 10, 47, 27, 438, DateTimeKind.Utc).AddTicks(9950), "Hauptlager", new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa") });
 
             migrationBuilder.InsertData(
                 table: "user_role",

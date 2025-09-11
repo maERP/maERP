@@ -12,9 +12,9 @@ public class ProductSalesChannelRepository : GenericRepository<ProductSalesChann
     {
     }
 
-    public async Task<ProductSalesChannel?> GetByRemoteProductIdAsync(int productId, int salesChannelId = 0)
+    public async Task<ProductSalesChannel?> GetByRemoteProductIdAsync(Guid productId, Guid salesChannelId = default)
     {
-        if (salesChannelId > 0)
+        if (salesChannelId != default)
         {
             return await Context.ProductSalesChannel
                 .Where(p => p.RemoteProductId == productId)

@@ -16,6 +16,6 @@ public interface IProductInputModel
     decimal Width { get; }
     decimal Height { get; }
     decimal Depth { get; }
-    int TaxClassId { get; }
-    int? ManufacturerId { get; }
+    Guid TaxClassId { get; }
+    Guid? ManufacturerId { get; }
 }

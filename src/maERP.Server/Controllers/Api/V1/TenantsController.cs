@@ -44,11 +44,11 @@ public class TenantsController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="id">Tenant ID</param>
     /// <returns>Tenant details</returns>
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TenantDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<TenantDetailDto>> GetDetails(Guid id)
     {
         var response = await mediator.Send(new TenantDetailQuery(id));
         return StatusCode((int)response.StatusCode, response);
@@ -75,13 +75,13 @@ public class TenantsController(IMediator mediator) : ControllerBase
     /// <param name="id">Tenant ID</param>
     /// <param name="tenantUpdateCommand">Tenant update data</param>
     /// <returns>Updated tenant ID</returns>
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<Result<int>>> Update(int id, TenantUpdateCommand tenantUpdateCommand)
+    public async Task<ActionResult<Result<int>>> Update(Guid id, TenantUpdateCommand tenantUpdateCommand)
     {
         tenantUpdateCommand.Id = id;
         var response = await mediator.Send(tenantUpdateCommand);
@@ -93,13 +93,13 @@ public class TenantsController(IMediator mediator) : ControllerBase
     /// </summary>
     /// <param name="id">Tenant ID</param>
     /// <returns>No content if successful</returns>
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         var command = new TenantDeleteCommand(id);
         var response = await mediator.Send(command);

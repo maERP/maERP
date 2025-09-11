@@ -30,12 +30,12 @@ public partial class CustomerDetailViewModel : ViewModelBase
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
-    private int customerId;
+    private Guid customerId;
 
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && Customer != null;
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToEditCustomer { get; set; }
+    public Func<Guid, Task>? NavigateToEditCustomer { get; set; }
 
     // Computed properties for better display
     public bool HasCompanyName => Customer != null && !string.IsNullOrEmpty(Customer.CompanyName);
@@ -87,7 +87,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int customerId)
+    public async Task InitializeAsync(Guid customerId)
     {
         CustomerId = customerId;
         await LoadCustomerAsync();
@@ -96,7 +96,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadCustomerAsync()
     {
-        if (CustomerId <= 0) return;
+        if (CustomerId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;

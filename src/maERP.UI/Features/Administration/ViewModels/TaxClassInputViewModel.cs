@@ -18,7 +18,7 @@ public partial class TaxClassInputViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
     [NotifyPropertyChangedFor(nameof(PageTitle))]
-    private int taxClassId;
+    private Guid taxClassId;
 
     [ObservableProperty]
     [Range(0.0, 100.0, ErrorMessage = "Steuersatz muss zwischen 0% und 100% liegen")]
@@ -37,12 +37,12 @@ public partial class TaxClassInputViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
     private bool isSaving;
 
-    public bool IsEditMode => TaxClassId > 0;
+    public bool IsEditMode => TaxClassId != Guid.Empty;
     public string PageTitle => IsEditMode ? "Steuerklasse bearbeiten" : "Neue Steuerklasse";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToTaxClassDetail { get; set; }
+    public Func<Guid, Task>? NavigateToTaxClassDetail { get; set; }
 
     public TaxClassInputViewModel(IHttpService httpService, IDebugService debugService)
     {
@@ -50,7 +50,7 @@ public partial class TaxClassInputViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int taxClassId = 0)
+    public async Task InitializeAsync(Guid taxClassId = default)
     {
         TaxClassId = taxClassId;
 
@@ -67,7 +67,7 @@ public partial class TaxClassInputViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAsync()
     {
-        if (TaxClassId <= 0) return;
+        if (TaxClassId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -121,8 +121,8 @@ public partial class TaxClassInputViewModel : ViewModelBase
             };
 
             var result = IsEditMode
-                ? await _httpService.PutAsync<TaxClassInputDto, int>($"taxclasses/{TaxClassId}", inputDto)
-                : await _httpService.PostAsync<TaxClassInputDto, int>("taxclasses", inputDto);
+                ? await _httpService.PutAsync<TaxClassInputDto, Guid>($"taxclasses/{TaxClassId}", inputDto)
+                : await _httpService.PostAsync<TaxClassInputDto, Guid>("taxclasses", inputDto);
 
             if (result == null)
             {

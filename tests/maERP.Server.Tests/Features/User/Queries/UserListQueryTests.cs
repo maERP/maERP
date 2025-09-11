@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.User.Queries;
@@ -35,11 +36,11 @@ public class UserListQueryTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -205,7 +206,7 @@ public class UserListQueryTests : IDisposable
                     userTenantAssignments.Add(new UserTenant
                     {
                         UserId = userId,
-                        TenantId = 1,
+                        TenantId = TenantConstants.TestTenant1Id,
                         IsDefault = true
                     });
                 }
@@ -215,7 +216,7 @@ public class UserListQueryTests : IDisposable
                     userTenantAssignments.Add(new UserTenant
                     {
                         UserId = userId,
-                        TenantId = 2,
+                        TenantId = TenantConstants.TestTenant2Id,
                         IsDefault = true
                     });
                 }

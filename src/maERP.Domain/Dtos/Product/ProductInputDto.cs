@@ -5,7 +5,7 @@ namespace maERP.Domain.Dtos.Product;
 
 public class ProductInputDto : IProductInputModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     [StringLength(255)]
     public string Sku { get; set; } = string.Empty;
@@ -39,9 +39,9 @@ public class ProductInputDto : IProductInputModel
     public decimal Height { get; set; }
     public decimal Depth { get; set; }
 
-    public int TaxClassId { get; set; } = new();
+    public Guid TaxClassId { get; set; } = new();
 
-    public int? ManufacturerId { get; set; }
+    public Guid? ManufacturerId { get; set; }
 
-    public List<int> ProductSalesChannel { get; set; } = new();
+    public List<Guid> ProductSalesChannel { get; set; } = new();
 }

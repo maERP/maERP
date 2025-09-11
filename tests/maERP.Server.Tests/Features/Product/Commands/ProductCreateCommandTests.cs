@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -34,11 +35,11 @@ public class ProductCreateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -571,7 +572,7 @@ public class ProductCreateCommandTests : IDisposable
         TestAssertions.AssertTrue(result.Succeeded);
         
         // Set the tenant context for querying
-        TenantContext.SetCurrentTenantId(1);
+        TenantContext.SetCurrentTenantId(TenantConstants.TestTenant1Id);
         
         // Refresh the DbContext to ensure we get the latest data
         DbContext.ChangeTracker.Clear();

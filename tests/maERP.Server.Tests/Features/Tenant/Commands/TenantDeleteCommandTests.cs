@@ -34,7 +34,7 @@ public class TenantDeleteCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
@@ -278,7 +278,7 @@ public class TenantDeleteCommandTests : IDisposable
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
-    public async Task DeleteTenant_WithDifferentValidIds_ShouldReturnUnauthorized(int tenantId)
+    public async Task DeleteTenant_WithDifferentValidIds_ShouldReturnUnauthorized(Guid tenantId)
     {
         await SeedTestTenantsAsync();
 
@@ -291,7 +291,7 @@ public class TenantDeleteCommandTests : IDisposable
     [InlineData(-1)]
     [InlineData(-100)]
     [InlineData(-2147483648)]
-    public async Task DeleteTenant_WithNegativeIds_ShouldReturnUnauthorized(int tenantId)
+    public async Task DeleteTenant_WithNegativeIds_ShouldReturnUnauthorized(Guid tenantId)
     {
         await SeedTestTenantsAsync();
 

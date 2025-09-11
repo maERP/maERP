@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.AiPrompt.Commands;
 
@@ -34,11 +35,11 @@ public class AiPromptUpdateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -83,7 +84,7 @@ public class AiPromptUpdateCommandTests : IDisposable
 
         // Return the ID of the first prompt for tenant 1
         var prompt = await DbContext.AiPrompt.IgnoreQueryFilters()
-            .FirstOrDefaultAsync(p => p.TenantId == 1);
+            .FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
         return prompt?.Id ?? 1;
     }
 

@@ -20,7 +20,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public AiModelFilterSpecification(int id)
+        public AiModelFilterSpecification(Guid id)
         {
             Criteria = o => o.Id == id;
         }

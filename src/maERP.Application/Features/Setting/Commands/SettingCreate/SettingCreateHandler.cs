@@ -10,7 +10,7 @@ namespace maERP.Application.Features.Setting.Commands.SettingCreate;
 /// Implements IRequestHandler from MediatR to handle SettingCreateCommand requests
 /// and return the ID of the newly created setting wrapped in a Result.
 /// </summary>
-public class SettingCreateHandler : IRequestHandler<SettingCreateCommand, Result<int>>
+public class SettingCreateHandler : IRequestHandler<SettingCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,11 +41,11 @@ public class SettingCreateHandler : IRequestHandler<SettingCreateCommand, Result
     /// <param name="request">The setting creation command with setting details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created setting if successful</returns>
-    public async Task<Result<int>> Handle(SettingCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(SettingCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new setting with name: {Name}", request.Key);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new SettingCreateValidator(_settingRepository);

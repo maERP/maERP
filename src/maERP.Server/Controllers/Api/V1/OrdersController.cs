@@ -35,8 +35,8 @@ public class OrdersController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/<OrdersController>/customer/{customerId}
-    [HttpGet("customer/{customerId}")]
-    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetByCustomer(int customerId, int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    [HttpGet("customer/{customerId:guid}")]
+    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetByCustomer(Guid customerId, int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -74,10 +74,10 @@ public class OrdersController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/<OrdersController>/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<OrderDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<OrderDetailDto>> GetDetails(Guid id)
     {
         var response = await mediator.Send(new OrderDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
@@ -94,12 +94,12 @@ public class OrdersController(IMediator mediator) : ControllerBase
     }
 
     // PUT: api/v1/<OrdersController>/5
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, OrderUpdateCommand orderUpdateCommand)
+    public async Task<ActionResult> Update(Guid id, OrderUpdateCommand orderUpdateCommand)
     {
         orderUpdateCommand.Id = id;
         var response = await mediator.Send(orderUpdateCommand);
@@ -107,11 +107,11 @@ public class OrdersController(IMediator mediator) : ControllerBase
     }
 
     // DELETE: api/v1/<OrderController>/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         var command = new DeleteOrderCommand { Id = id };
         await mediator.Send(command);

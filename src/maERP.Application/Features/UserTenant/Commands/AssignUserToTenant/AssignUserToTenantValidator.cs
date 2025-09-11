@@ -11,7 +11,7 @@ public class AssignUserToTenantValidator : AbstractValidator<AssignUserToTenantC
             .WithMessage("User ID is required");
 
         RuleFor(x => x.TenantId)
-            .GreaterThan(0)
-            .WithMessage("Tenant ID must be greater than 0");
+            .NotEmpty()
+            .WithMessage("Tenant ID is required");
     }
 }

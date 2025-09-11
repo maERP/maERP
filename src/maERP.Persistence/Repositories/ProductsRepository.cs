@@ -27,7 +27,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
         return await query.Include(ps => ps.ProductSalesChannels).FirstOrDefaultAsync();
     }
 
-    public async Task<Product?> GetWithDetailsAsync(int id)
+    public async Task<Product?> GetWithDetailsAsync(Guid id)
     {
         var query = Context.Product.Where(p => p.Id == id);
 
@@ -46,7 +46,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<bool> UpdateStockAsync(int productId, int warehouseId, int newStock)
+    public async Task<bool> UpdateStockAsync(Guid productId, Guid warehouseId, int newStock)
     {
         var productStock = await Context.ProductStock.FirstOrDefaultAsync(ps => ps.ProductId == productId && ps.WarehouseId == warehouseId);
 
@@ -61,7 +61,7 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
         return true;
     }
 
-    public override async Task<bool> IsUniqueAsync(Product entity, int? id = null)
+    public override async Task<bool> IsUniqueAsync(Product entity, Guid? id = null)
     {
         var currentTenantId = TenantContext.GetCurrentTenantId();
 

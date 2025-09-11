@@ -4,6 +4,6 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.AiModel.Commands.AiModelUpdate;
 
-public class AiModelUpdateCommand : AiModelInputDto, IRequest<Result<int>>
+public class AiModelUpdateCommand : AiModelInputDto, IRequest<Result<Guid>>
 {
 }

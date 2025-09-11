@@ -6,7 +6,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.AiPrompt.Commands.AiPromptUpdate;
 
-public class AiPromptUpdateHandler : IRequestHandler<AiPromptUpdateCommand, Result<int>>
+public class AiPromptUpdateHandler : IRequestHandler<AiPromptUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<AiPromptUpdateHandler> _logger;
     private readonly IAiPromptRepository _aIPromptRepository;
@@ -25,11 +25,11 @@ public class AiPromptUpdateHandler : IRequestHandler<AiPromptUpdateCommand, Resu
         _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
-    public async Task<Result<int>> Handle(AiPromptUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(AiPromptUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating AI prompt with ID: {Id} and identifier: {Identifier}", request.Id, request.Identifier);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new AiPromptUpdateValidator(_aIPromptRepository, _aiModelRepository, _tenantContext);

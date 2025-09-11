@@ -78,8 +78,8 @@ public class OrderImportRepository : IOrderImportRepository
                 _logger.LogInformation("CustomerSalesChannel added for Customer {0} ", customer.Id);
             }
 
-            int billingAddressId = 0;
-            int shippingAddressId = 0;
+            Guid billingAddressId = Guid.Empty;
+            Guid shippingAddressId = Guid.Empty;
             var customerAddresses = await _customerRepository.GetCustomerAddressByCustomerIdAsync(customer.Id);
 
             Country? billingAddressCountry = await MapCountryFromStringAsync(importOrder.BillingAddress.Country);
@@ -119,13 +119,13 @@ public class OrderImportRepository : IOrderImportRepository
                     shippingAddressId = address.Id;
                 }
 
-                if (billingAddressId > 0 && shippingAddressId > 0)
+                if (billingAddressId != Guid.Empty && shippingAddressId != Guid.Empty)
                 {
                     break;
                 }
             }
 
-            if (billingAddressId == 0)
+            if (billingAddressId == Guid.Empty)
             {
                 var newAddress = new CustomerAddress
                 {
@@ -144,7 +144,7 @@ public class OrderImportRepository : IOrderImportRepository
                 await _customerRepository.AddCustomerAddressAsync(newAddress);
             }
 
-            if (shippingAddressId > 0 && shippingAddressId != billingAddressId)
+            if (shippingAddressId != Guid.Empty && shippingAddressId != billingAddressId)
             {
                 var newAddress = new CustomerAddress
                 {
@@ -240,7 +240,7 @@ public class OrderImportRepository : IOrderImportRepository
             {
                 new OrderHistory
                 {
-                    UserId = 0,
+                    UserId = Guid.Empty,
                     OrderId = newOrder.Id,
                     OrderStatusNew = newOrder.Status,
                     PaymentStatusNew = newOrder.PaymentStatus,

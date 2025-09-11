@@ -10,7 +10,7 @@ namespace maERP.Application.Features.Invoice.Commands.InvoiceDelete;
 /// Implements IRequestHandler from MediatR to handle DeleteInvoiceCommand requests
 /// and return the ID of the deleted invoice wrapped in a Result.
 /// </summary>
-public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result<int>>
+public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,11 +41,11 @@ public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result
     /// <param name="request">The invoice deletion command with invoice ID</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the deleted invoice if successful</returns>
-    public async Task<Result<int>> Handle(InvoiceDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(InvoiceDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting invoice with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new InvoiceDeleteValidator(_invoiceRepository);

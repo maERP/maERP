@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.User.Queries;
@@ -35,11 +36,11 @@ public class UserDetailQueryTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -116,21 +117,21 @@ public class UserDetailQueryTests : IDisposable
                 var userTenant1_1 = new UserTenant
                 {
                     UserId = user1Tenant1.Id,
-                    TenantId = 1,
+                    TenantId = TenantConstants.TestTenant1Id,
                     IsDefault = true
                 };
 
                 var userTenant2_1 = new UserTenant
                 {
                     UserId = user2Tenant1.Id,
-                    TenantId = 1,
+                    TenantId = TenantConstants.TestTenant1Id,
                     IsDefault = true
                 };
 
                 var userTenant3_2 = new UserTenant
                 {
                     UserId = user3Tenant2.Id,
-                    TenantId = 2,
+                    TenantId = TenantConstants.TestTenant2Id,
                     IsDefault = true
                 };
 
@@ -397,7 +398,7 @@ public class UserDetailQueryTests : IDisposable
         var additionalAssignment = new UserTenant
         {
             UserId = userId1,
-            TenantId = 2,
+            TenantId = TenantConstants.TestTenant2Id,
             IsDefault = false
         };
         DbContext.UserTenant.Add(additionalAssignment);

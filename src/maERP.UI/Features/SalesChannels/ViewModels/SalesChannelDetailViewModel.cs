@@ -26,12 +26,12 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
-    private int salesChannelId;
+    private Guid salesChannelId;
 
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && SalesChannel != null;
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToSalesChannelInput { get; set; }
+    public Func<Guid, Task>? NavigateToSalesChannelInput { get; set; }
 
     // Computed properties for better display
     public bool HasUrl => SalesChannel != null && !string.IsNullOrEmpty(SalesChannel.Url);
@@ -76,7 +76,7 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int salesChannelId)
+    public async Task InitializeAsync(Guid salesChannelId)
     {
         SalesChannelId = salesChannelId;
         await LoadSalesChannelAsync();
@@ -85,7 +85,7 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadSalesChannelAsync()
     {
-        if (SalesChannelId <= 0) return;
+        if (SalesChannelId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -149,7 +149,7 @@ public partial class SalesChannelDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task EditSalesChannel()
     {
-        if (SalesChannelId <= 0 || NavigateToSalesChannelInput == null) return;
+        if (SalesChannelId == Guid.Empty || NavigateToSalesChannelInput == null) return;
 
         await NavigateToSalesChannelInput(SalesChannelId);
     }

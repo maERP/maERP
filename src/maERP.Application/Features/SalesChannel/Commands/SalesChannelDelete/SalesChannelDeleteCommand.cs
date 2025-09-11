@@ -3,7 +3,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelDelete;
 
-public class SalesChannelDeleteCommand : IRequest<Result<int>>
+public class SalesChannelDeleteCommand : IRequest<Result<Guid>>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

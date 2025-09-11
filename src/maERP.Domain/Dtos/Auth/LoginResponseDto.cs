@@ -11,5 +11,5 @@ public class LoginResponseDto
     public string Message { get; set; }
     public string Token { get; set; }
     public List<TenantListDto> AvailableTenants { get; set; } = new();
-    public int? CurrentTenantId { get; set; }
+    public Guid? CurrentTenantId { get; set; }
 }

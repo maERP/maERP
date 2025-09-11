@@ -24,7 +24,7 @@ public class GoodsReceiptFilterSpecification : FilterSpecification<GoodsReceipt>
         }
     }
 
-    public GoodsReceiptFilterSpecification(int id)
+    public GoodsReceiptFilterSpecification(Guid id)
     {
         Includes.Add(gr => gr.Product!);
         Includes.Add(gr => gr.Warehouse!);

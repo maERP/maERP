@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace maERP.Application.Features.UserTenant.Commands.AssignUserToTenant;
 
-public class AssignUserToTenantCommand : IRequest<Result<int>>
+public class AssignUserToTenantCommand : IRequest<Result<Guid>>
 {
     [Required]
     public string UserId { get; set; } = string.Empty;
 
     [Required]
-    public int TenantId { get; set; }
+    public Guid TenantId { get; set; }
 
     public bool IsDefault { get; set; } = false;
 }

@@ -11,7 +11,8 @@ public class WarehouseConfiguration : IEntityTypeConfiguration<Warehouse>
         builder.HasData(
             new Warehouse
             {
-                Id = 1,
+                Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 Name = "Hauptlager"
             }
         );

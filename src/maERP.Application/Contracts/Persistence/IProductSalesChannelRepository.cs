@@ -4,5 +4,5 @@ namespace maERP.Application.Contracts.Persistence;
 
 public interface IProductSalesChannelRepository : IGenericRepository<ProductSalesChannel>
 {
-    Task<ProductSalesChannel?> GetByRemoteProductIdAsync(int productId, int salesChannelId = 0);
+    Task<ProductSalesChannel?> GetByRemoteProductIdAsync(Guid productId, Guid salesChannelId = default);
 }

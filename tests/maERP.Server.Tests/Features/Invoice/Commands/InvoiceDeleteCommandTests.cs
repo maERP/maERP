@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
 using maERP.Persistence.DatabaseContext;
@@ -33,11 +34,11 @@ public class InvoiceDeleteCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -73,7 +74,7 @@ public class InvoiceDeleteCommandTests : IDisposable
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer2 = new maERP.Domain.Entities.Customer
@@ -82,7 +83,7 @@ public class InvoiceDeleteCommandTests : IDisposable
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Customer.AddRange(customer1, customer2);
@@ -100,7 +101,7 @@ public class InvoiceDeleteCommandTests : IDisposable
                     Total = 129.00m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.Invoiced,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Created,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var invoice2Tenant1 = new maERP.Domain.Entities.Invoice
@@ -114,7 +115,7 @@ public class InvoiceDeleteCommandTests : IDisposable
                     Total = 238.00m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.CompletelyPaid,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Sent,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var invoice3Tenant2 = new maERP.Domain.Entities.Invoice
@@ -128,7 +129,7 @@ public class InvoiceDeleteCommandTests : IDisposable
                     Total = 178.50m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.Invoiced,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Created,
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var invoice4WithItems = new maERP.Domain.Entities.Invoice
@@ -142,7 +143,7 @@ public class InvoiceDeleteCommandTests : IDisposable
                     Total = 357.00m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.Invoiced,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Created,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Invoice.AddRange(invoice1Tenant1, invoice2Tenant1, invoice3Tenant2, invoice4WithItems);
@@ -154,7 +155,7 @@ public class InvoiceDeleteCommandTests : IDisposable
                     ProductId = 1,
                     Name = "Test Product",
                     UnitPrice = 100.00m,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var invoiceItem2 = new maERP.Domain.Entities.InvoiceItem
@@ -164,7 +165,7 @@ public class InvoiceDeleteCommandTests : IDisposable
                     ProductId = 1,
                     Name = "Another Product",
                     UnitPrice = 200.00m,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.InvoiceItem.AddRange(invoiceItem1, invoiceItem2);
@@ -360,13 +361,13 @@ public class InvoiceDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(1);
 
-        var invoicesBeforeDelete = await DbContext.Invoice.Where(i => i.TenantId == 2).CountAsync();
+        var invoicesBeforeDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant2Id).CountAsync();
         TestAssertions.AssertEqual(1, invoicesBeforeDelete);
 
         var response = await Client.DeleteAsync("/api/v1/Invoices/1");
         TestAssertions.AssertHttpSuccess(response);
 
-        var invoicesAfterDelete = await DbContext.Invoice.Where(i => i.TenantId == 2).CountAsync();
+        var invoicesAfterDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant2Id).CountAsync();
         TestAssertions.AssertEqual(1, invoicesAfterDelete);
 
         var tenant2Invoice = await DbContext.Invoice.FindAsync(3);
@@ -445,15 +446,15 @@ public class InvoiceDeleteCommandTests : IDisposable
     {
         await SeedTestDataAsync();
 
-        var tenant1InvoicesBeforeDelete = await DbContext.Invoice.Where(i => i.TenantId == 1).CountAsync();
-        var tenant2InvoicesBeforeDelete = await DbContext.Invoice.Where(i => i.TenantId == 2).CountAsync();
+        var tenant1InvoicesBeforeDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant1Id).CountAsync();
+        var tenant2InvoicesBeforeDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant2Id).CountAsync();
 
         SetTenantHeader(1);
         var response = await Client.DeleteAsync("/api/v1/Invoices/1");
         TestAssertions.AssertHttpSuccess(response);
 
-        var tenant1InvoicesAfterDelete = await DbContext.Invoice.Where(i => i.TenantId == 1).CountAsync();
-        var tenant2InvoicesAfterDelete = await DbContext.Invoice.Where(i => i.TenantId == 2).CountAsync();
+        var tenant1InvoicesAfterDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant1Id).CountAsync();
+        var tenant2InvoicesAfterDelete = await DbContext.Invoice.Where(i => i.TenantId == TenantConstants.TestTenant2Id).CountAsync();
 
         TestAssertions.AssertEqual(tenant1InvoicesBeforeDelete - 1, tenant1InvoicesAfterDelete);
         TestAssertions.AssertEqual(tenant2InvoicesBeforeDelete, tenant2InvoicesAfterDelete);
@@ -501,14 +502,14 @@ public class InvoiceDeleteCommandTests : IDisposable
         SetTenantHeader(1);
 
         var tenant1InvoicesBeforeDelete = await DbContext.Invoice
-            .Where(i => i.TenantId == 1 && i.Id != 1)
+            .Where(i => i.TenantId == TenantConstants.TestTenant1Id&& i.Id != 1)
             .CountAsync();
 
         var response = await Client.DeleteAsync("/api/v1/Invoices/1");
         TestAssertions.AssertHttpSuccess(response);
 
         var tenant1InvoicesAfterDelete = await DbContext.Invoice
-            .Where(i => i.TenantId == 1 && i.Id != 1)
+            .Where(i => i.TenantId == TenantConstants.TestTenant1Id&& i.Id != 1)
             .CountAsync();
 
         TestAssertions.AssertEqual(tenant1InvoicesBeforeDelete, tenant1InvoicesAfterDelete);

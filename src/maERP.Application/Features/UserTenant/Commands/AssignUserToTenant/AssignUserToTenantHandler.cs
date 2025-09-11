@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Application.Features.UserTenant.Commands.AssignUserToTenant;
 
-public class AssignUserToTenantHandler : IRequestHandler<AssignUserToTenantCommand, Result<int>>
+public class AssignUserToTenantHandler : IRequestHandler<AssignUserToTenantCommand, Result<Guid>>
 {
     private readonly IUserTenantRepository _userTenantRepository;
     private readonly ITenantRepository _tenantRepository;
@@ -26,25 +26,25 @@ public class AssignUserToTenantHandler : IRequestHandler<AssignUserToTenantComma
         _validator = validator;
     }
 
-    public async Task<Result<int>> Handle(AssignUserToTenantCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(AssignUserToTenantCommand request, CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return await Result<int>.FailAsync(validationResult.ToString());
+            return await Result<Guid>.FailAsync(validationResult.ToString());
         }
 
         // Check if user exists
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user == null)
         {
-            return await Result<int>.FailAsync("User not found");
+            return await Result<Guid>.FailAsync("User not found");
         }
 
         // Check if tenant exists
         if (!await _tenantRepository.ExistsAsync(request.TenantId))
         {
-            return await Result<int>.FailAsync("Tenant not found");
+            return await Result<Guid>.FailAsync("Tenant not found");
         }
 
         // Check if assignment already exists
@@ -53,7 +53,7 @@ public class AssignUserToTenantHandler : IRequestHandler<AssignUserToTenantComma
 
         if (existingAssignment != null)
         {
-            return await Result<int>.FailAsync("User is already assigned to this tenant");
+            return await Result<Guid>.FailAsync("User is already assigned to this tenant");
         }
 
         // If this should be the default tenant, remove default flag from other assignments
@@ -81,6 +81,6 @@ public class AssignUserToTenantHandler : IRequestHandler<AssignUserToTenantComma
 
         var id = await _userTenantRepository.CreateAsync(userTenant);
 
-        return await Result<int>.SuccessAsync(id, "User successfully assigned to tenant");
+        return await Result<Guid>.SuccessAsync(id, "User successfully assigned to tenant");
     }
 }

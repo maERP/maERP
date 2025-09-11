@@ -4,7 +4,7 @@ namespace maERP.Domain.Dtos.Tenant;
 
 public class TenantListDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required]
     public string Name { get; set; } = string.Empty;

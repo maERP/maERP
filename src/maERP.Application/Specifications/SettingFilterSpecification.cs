@@ -20,7 +20,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public SettingFilterSpecification(int id)
+        public SettingFilterSpecification(Guid id)
         {
             Criteria = o => o.Id == id;
         }

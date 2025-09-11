@@ -50,10 +50,10 @@ public class ProductsController(IMediator mediator) : ControllerBase
     /// <returns>Detailed product information</returns>
     /// <response code="200">Returns the product details</response>
     /// <response code="404">Product not found</response>
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ProductDetailDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ProblemDetails), StatusCodes.Status404NotFound, "application/problem+json")]
-    public async Task<ActionResult<ProductDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<ProductDetailDto>> GetDetails(Guid id)
     {
         var response = await mediator.Send(new ProductDetailQuery { Id = id });
         return response.ToActionResult();
@@ -84,14 +84,14 @@ public class ProductsController(IMediator mediator) : ControllerBase
     /// <response code="200">Product updated successfully</response>
     /// <response code="400">Invalid product data, validation errors, or ID mismatch</response>
     /// <response code="404">Product not found</response>
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(Result<int>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ProblemDetails), StatusCodes.Status404NotFound, "application/problem+json")]
-    public async Task<ActionResult<Result<int>>> Update(int id, ProductUpdateCommand productUpdateCommand)
+    public async Task<ActionResult<Result<int>>> Update(Guid id, ProductUpdateCommand productUpdateCommand)
     {
         // Validate ID is not zero or negative
-        if (id <= 0)
+        if (id == Guid.Empty)
         {
             var invalidIdResponse = ProblemDetailsResult.BadRequest(
                 "Invalid Request", 
@@ -103,7 +103,7 @@ public class ProductsController(IMediator mediator) : ControllerBase
         }
 
         // Validate ID consistency between URL and body if ID is provided in body and differs
-        if (productUpdateCommand.Id != 0 && productUpdateCommand.Id != id)
+        if (productUpdateCommand.Id != Guid.Empty && productUpdateCommand.Id != id)
         {
             var errorResponse = ProblemDetailsResult.BadRequest(
                 "Invalid Request", 
@@ -127,11 +127,11 @@ public class ProductsController(IMediator mediator) : ControllerBase
     /// <response code="204">Product deleted successfully</response>
     /// <response code="400">Invalid product ID</response>
     /// <response code="404">Product not found</response>
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [ProducesResponseType(typeof(Result<int>), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ProblemDetails), StatusCodes.Status400BadRequest, "application/problem+json")]
     [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ProblemDetails), StatusCodes.Status404NotFound, "application/problem+json")]
-    public async Task<ActionResult<Result<int>>> Delete(int id)
+    public async Task<ActionResult<Result<int>>> Delete(Guid id)
     {
         var command = new ProductDeleteCommand { Id = id };
         var response = await mediator.Send(command);

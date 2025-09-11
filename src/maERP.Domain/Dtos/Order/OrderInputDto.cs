@@ -6,10 +6,10 @@ namespace maERP.Domain.Dtos.Order;
 
 public class OrderInputDto : IOrderInputModel
 {
-    public int Id { get; set; }
-    public int SalesChannelId { get; set; }
+    public Guid Id { get; set; }
+    public Guid SalesChannelId { get; set; }
     public string RemoteOrderId { get; set; } = string.Empty;
-    public int CustomerId { get; set; }
+    public Guid CustomerId { get; set; }
 
     public OrderStatus Status { get; set; }
     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

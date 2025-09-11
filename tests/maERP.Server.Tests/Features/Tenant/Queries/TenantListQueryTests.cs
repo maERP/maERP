@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Tenant;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -34,7 +35,7 @@ public class TenantListQueryTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2, 3, 4, 5 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id, Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() });
         TenantContext.SetCurrentTenantId(null);
     }
 

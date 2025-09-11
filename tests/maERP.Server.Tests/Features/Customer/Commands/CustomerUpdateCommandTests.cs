@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Enums;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Customer.Commands;
 
@@ -35,11 +36,11 @@ public class CustomerUpdateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -92,7 +93,7 @@ public class CustomerUpdateCommandTests : IDisposable
                     Note = "Original customer",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-30),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer2Tenant1 = new maERP.Domain.Entities.Customer
@@ -108,7 +109,7 @@ public class CustomerUpdateCommandTests : IDisposable
                     Note = "Another customer",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-20),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer3Tenant2 = new maERP.Domain.Entities.Customer
@@ -124,7 +125,7 @@ public class CustomerUpdateCommandTests : IDisposable
                     Note = "Tenant 2 customer",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-15),
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Customer.AddRange(customer1Tenant1, customer2Tenant1, customer3Tenant2);

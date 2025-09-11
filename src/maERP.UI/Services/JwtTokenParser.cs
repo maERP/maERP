@@ -42,7 +42,7 @@ public static class JwtTokenParser
         return new List<TenantListDto>();
     }
 
-    public static int? ExtractCurrentTenantId(string token)
+    public static Guid? ExtractCurrentTenantId(string token)
     {
         try
         {
@@ -51,9 +51,9 @@ public static class JwtTokenParser
 
             var tenantIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "tenantId")?.Value;
 
-            if (!string.IsNullOrEmpty(tenantIdClaim) && int.TryParse(tenantIdClaim, out int tenantId))
+            if (!string.IsNullOrEmpty(tenantIdClaim) && Guid.TryParse(tenantIdClaim, out Guid tenantId))
             {
-                return tenantId == 0 ? null : tenantId;
+                return tenantId == Guid.Empty ? null : tenantId;
             }
         }
         catch (Exception)
@@ -66,7 +66,7 @@ public static class JwtTokenParser
 
     private class TenantInfo
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string TenantCode { get; set; } = string.Empty;
     }

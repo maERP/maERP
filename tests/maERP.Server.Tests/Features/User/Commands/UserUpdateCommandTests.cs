@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.User.Commands;
@@ -35,11 +36,11 @@ public class UserUpdateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -122,14 +123,14 @@ public class UserUpdateCommandTests : IDisposable
             var userTenant1 = new UserTenant
             {
                 UserId = user1.Id,
-                TenantId = 1,
+                TenantId = TenantConstants.TestTenant1Id,
                 IsDefault = true
             };
 
             var userTenant2 = new UserTenant
             {
                 UserId = user2.Id,
-                TenantId = 2,
+                TenantId = TenantConstants.TestTenant2Id,
                 IsDefault = true
             };
 
@@ -153,8 +154,8 @@ public class UserUpdateCommandTests : IDisposable
             Firstname = "Updated",
             Lastname = "User",
             Password = "", // Optional for update
-            DefaultTenantId = 1,
-            TenantIds = new List<int> { 1 }
+            DefaultTenantId = TenantConstants.TestTenant1Id,
+            TenantIds = new List<Guid> { TenantConstants.TestTenant1Id }
         };
     }
 
@@ -170,7 +171,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
 
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
@@ -183,7 +184,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
         updateCommand.Firstname = "UpdatedFirstname";
         updateCommand.Lastname = "UpdatedLastname";
@@ -207,7 +208,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var nonExistentId = Guid.NewGuid().ToString();
         var updateCommand = CreateValidUpdateCommand(nonExistentId);
 
@@ -221,7 +222,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = new UserUpdateCommand
         {
             Id = userId1,
@@ -245,7 +246,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, userId2) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         
         // Get the email of the second user
         TenantContext.SetCurrentTenantId(null);
@@ -270,7 +271,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
         updateCommand.Email = "invalid-email-format";
 
@@ -288,7 +289,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
         updateCommand.Password = "NewP@ssw0rd123";
 
@@ -309,7 +310,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
         updateCommand.Password = "123"; // Too weak
 
@@ -327,10 +328,10 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
-        updateCommand.DefaultTenantId = 1;
-        updateCommand.TenantIds = new List<int> { 1, 2 };
+        updateCommand.DefaultTenantId = TenantConstants.TestTenant1Id;
+        updateCommand.TenantIds = new List<Guid> { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id };
 
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
 
@@ -343,8 +344,8 @@ public class UserUpdateCommandTests : IDisposable
             .ToListAsync();
         
         TestAssertions.AssertEqual(2, userTenants.Count);
-        TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == 1 && ut.IsDefault));
-        TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == 2 && !ut.IsDefault));
+        TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == TenantConstants.TestTenant1Id && ut.IsDefault));
+        TestAssertions.AssertTrue(userTenants.Any(ut => ut.TenantId == TenantConstants.TestTenant2Id && !ut.IsDefault));
     }
 
     [Fact]
@@ -352,9 +353,9 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
-        updateCommand.TenantIds = new List<int> { 999 }; // Non-existent tenant
+        updateCommand.TenantIds = new List<Guid> { Guid.NewGuid() }; // Non-existent tenant
 
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
 
@@ -370,7 +371,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
         updateCommand.Firstname = new string('A', 256); // Exceeds typical limit
 
@@ -389,7 +390,7 @@ public class UserUpdateCommandTests : IDisposable
         var (userId1, userId2) = await SeedUsersAsync();
         
         // Try to update tenant 2's user from tenant 1 context
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId2);
         updateCommand.Firstname = "ShouldNotUpdate";
 
@@ -422,7 +423,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
         var differentId = Guid.NewGuid().ToString();
         updateCommand.Id = differentId;
@@ -441,7 +442,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         
         // Get original password hash
         TenantContext.SetCurrentTenantId(null);
@@ -467,7 +468,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
         updateCommand.Firstname = "José-María";
         updateCommand.Lastname = "García-Pérez";
@@ -490,7 +491,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var invalidJson = "{ invalid json }";
         var content = new StringContent(invalidJson, System.Text.Encoding.UTF8, "application/json");
@@ -504,7 +505,7 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var content = new StringContent("", System.Text.Encoding.UTF8, "application/json");
         var response = await Client.PutAsync($"/api/v1/Users/{userId1}", content);
@@ -517,9 +518,9 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
-        updateCommand.TenantIds = new List<int>(); // Empty tenant list
+        updateCommand.TenantIds = new List<Guid>(); // Empty tenant list
 
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
 
@@ -535,10 +536,10 @@ public class UserUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
-        SetTenantHeader(1);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var updateCommand = CreateValidUpdateCommand(userId1);
         updateCommand.DefaultTenantId = null;
-        updateCommand.TenantIds = new List<int> { 1 };
+        updateCommand.TenantIds = new List<Guid> { TenantConstants.TestTenant1Id };
 
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
 

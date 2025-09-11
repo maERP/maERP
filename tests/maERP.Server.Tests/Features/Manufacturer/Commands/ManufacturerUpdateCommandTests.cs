@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Manufacturer.Commands;
 
@@ -34,11 +35,11 @@ public class ManufacturerUpdateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -91,7 +92,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
                     Email = "original1@manufacturer.com",
                     Website = "https://original1.com",
                     Logo = "original1-logo.png",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var manufacturer2 = new maERP.Domain.Entities.Manufacturer
@@ -101,7 +102,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
                     Street = "456 Original Ave",
                     City = "Different City",
                     Country = "Original Country",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var manufacturer3Tenant2 = new maERP.Domain.Entities.Manufacturer
@@ -110,7 +111,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
                     Name = "Tenant 2 Manufacturer",
                     City = "Tenant 2 City",
                     Country = "Tenant 2 Country",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var manufacturer4Tenant2 = new maERP.Domain.Entities.Manufacturer
@@ -119,7 +120,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
                     Name = "Another Tenant 2 Manufacturer",
                     City = "Another City T2",
                     Country = "Tenant 2 Country",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Manufacturer.AddRange(manufacturer1, manufacturer2, manufacturer3Tenant2, manufacturer4Tenant2);

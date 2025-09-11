@@ -6,7 +6,7 @@ namespace maERP.Domain.Dtos.Invoice;
 
 public class InvoiceInputDto : IInvoiceInputModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required]
     public string InvoiceNumber { get; set; } = string.Empty;
@@ -15,9 +15,9 @@ public class InvoiceInputDto : IInvoiceInputModel
     public DateTime InvoiceDate { get; set; }
 
     [Required]
-    public int CustomerId { get; set; }
+    public Guid CustomerId { get; set; }
 
-    public int? OrderId { get; set; }
+    public Guid? OrderId { get; set; }
 
     public decimal Subtotal { get; set; }
     public decimal ShippingCost { get; set; }

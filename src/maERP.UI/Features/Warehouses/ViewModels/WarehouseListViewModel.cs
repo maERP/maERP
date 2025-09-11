@@ -42,7 +42,7 @@ public partial class WarehouseListViewModel : ViewModelBase
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
-    public Action<int>? NavigateToWarehouseDetail { get; set; }
+    public Action<Guid>? NavigateToWarehouseDetail { get; set; }
     public Func<Task>? NavigateToWarehouseCreate { get; set; }
 
     public WarehouseListViewModel(IHttpService httpService, IDebugService debugService)

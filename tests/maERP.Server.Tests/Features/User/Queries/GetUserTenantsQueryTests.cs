@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.User.Queries;
@@ -35,11 +36,11 @@ public class GetUserTenantsQueryTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2, 3 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id, Guid.NewGuid() });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -116,11 +117,11 @@ public class GetUserTenantsQueryTests : IDisposable
                 var userTenantAssignments = new List<Domain.Entities.UserTenant>
                 {
                     // User 1: Assigned to tenants 1 and 2, default is tenant 1
-                    new() { UserId = user1.Id, TenantId = 1, IsDefault = true },
-                    new() { UserId = user1.Id, TenantId = 2, IsDefault = false },
+                    new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant1Id, IsDefault = true },
+                    new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = false },
                     
                     // User 2: Assigned to tenant 2 only, default is tenant 2
-                    new() { UserId = user2.Id, TenantId = 2, IsDefault = true },
+                    new() { UserId = user2.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = true },
                     
                     // User 3: Assigned to tenant 3 only, default is tenant 3
                     new() { UserId = user3.Id, TenantId = 3, IsDefault = true }

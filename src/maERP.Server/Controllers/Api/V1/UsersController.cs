@@ -130,12 +130,12 @@ public class UsersController : ControllerBase
     /// <param name="id">User ID</param>
     /// <param name="tenantId">Tenant ID</param>
     /// <returns>No content if successful</returns>
-    [HttpDelete("{id}/tenants/{tenantId}")]
+    [HttpDelete("{id}/tenants/{tenantId:guid}")]
     [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> RemoveUserFromTenant(string id, int tenantId)
+    public async Task<ActionResult> RemoveUserFromTenant(string id, Guid tenantId)
     {
         var command = new RemoveUserFromTenantCommand
         {

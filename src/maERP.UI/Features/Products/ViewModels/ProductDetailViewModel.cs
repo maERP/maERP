@@ -27,12 +27,12 @@ public partial class ProductDetailViewModel : ViewModelBase
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
-    private int productId;
+    private Guid productId;
 
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && Product != null;
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToProductInput { get; set; }
+    public Func<Guid, Task>? NavigateToProductInput { get; set; }
 
     // Computed properties for better display
     public string DisplayName => Product.UseOptimized && !string.IsNullOrEmpty(Product.NameOptimized)
@@ -91,7 +91,7 @@ public partial class ProductDetailViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int productId)
+    public async Task InitializeAsync(Guid productId)
     {
         ProductId = productId;
         await LoadProductAsync();
@@ -100,7 +100,7 @@ public partial class ProductDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadProductAsync()
     {
-        if (ProductId <= 0) return;
+        if (ProductId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -170,7 +170,7 @@ public partial class ProductDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task EditProductAsync()
     {
-        if (ProductId > 0 && NavigateToProductInput != null)
+        if (ProductId != Guid.Empty && NavigateToProductInput != null)
         {
             await NavigateToProductInput(ProductId);
         }

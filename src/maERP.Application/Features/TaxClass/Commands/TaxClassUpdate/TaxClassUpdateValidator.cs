@@ -14,7 +14,7 @@ public class TaxClassUpdateValidator : TaxClassBaseValidator<TaxClassUpdateComma
 
         RuleFor(p => p.Id)
             .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
         RuleFor(t => t)
             .MustAsync(TaxClassExists).WithMessage("TaxClass not found")

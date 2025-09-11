@@ -13,5 +13,5 @@ public class WarehouseDetailQuery : IRequest<Result<WarehouseDetailDto>>
     /// <summary>
     /// The unique identifier of the warehouse to retrieve
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

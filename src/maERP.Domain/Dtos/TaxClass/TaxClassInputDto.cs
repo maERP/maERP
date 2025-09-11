@@ -4,6 +4,6 @@ namespace maERP.Domain.Dtos.TaxClass;
 
 public class TaxClassInputDto : ITaxClassInputModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public double TaxRate { get; set; }
 }

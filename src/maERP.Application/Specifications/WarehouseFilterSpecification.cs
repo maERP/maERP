@@ -20,7 +20,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public WarehouseFilterSpecification(int id)
+        public WarehouseFilterSpecification(Guid id)
         {
             Criteria = o => o.Id == id;
         }

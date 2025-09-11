@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Enums;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Customer.Queries;
 
@@ -35,11 +36,11 @@ public class CustomerDetailQueryTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -80,7 +81,7 @@ public class CustomerDetailQueryTests : IDisposable
                     Note = "Test customer for tenant 1",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-30),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer2Tenant1 = new maERP.Domain.Entities.Customer
@@ -96,7 +97,7 @@ public class CustomerDetailQueryTests : IDisposable
                     Note = "Another test customer for tenant 1",
                     CustomerStatus = CustomerStatus.Inactive,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-60),
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer3Tenant2 = new maERP.Domain.Entities.Customer
@@ -112,7 +113,7 @@ public class CustomerDetailQueryTests : IDisposable
                     Note = "Test customer for tenant 2",
                     CustomerStatus = CustomerStatus.Active,
                     DateEnrollment = DateTimeOffset.UtcNow.AddDays(-15),
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customerAddress1 = new maERP.Domain.Entities.CustomerAddress
@@ -128,7 +129,7 @@ public class CustomerDetailQueryTests : IDisposable
                     City = "Test City",
                     DefaultDeliveryAddress = true,
                     DefaultInvoiceAddress = true,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customerAddress2 = new maERP.Domain.Entities.CustomerAddress
@@ -144,7 +145,7 @@ public class CustomerDetailQueryTests : IDisposable
                     City = "Another City",
                     DefaultDeliveryAddress = true,
                     DefaultInvoiceAddress = false,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Customer.AddRange(customer1Tenant1, customer2Tenant1, customer3Tenant2);

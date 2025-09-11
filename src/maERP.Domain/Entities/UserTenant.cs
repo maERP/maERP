@@ -13,7 +13,7 @@ public class UserTenant : BaseEntityWithoutTenant
     public ApplicationUser? User { get; set; }
 
     [Required]
-    public int TenantId { get; set; }
+    public Guid TenantId { get; set; }
 
     [ForeignKey("TenantId")]
     public Tenant? Tenant { get; set; }

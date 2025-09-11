@@ -36,11 +36,11 @@ public class SalesChannelCreateCommandTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -124,7 +124,7 @@ public class SalesChannelCreateCommandTests : IDisposable
             ExportCustomers = false,
             ImportOrders = true,
             ExportOrders = true,
-            WarehouseIds = new List<int> { 1, 2 }
+            WarehouseIds = new List<Guid> { 1, 2 }
         };
     }
 
@@ -227,7 +227,7 @@ public class SalesChannelCreateCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(1);
         var salesChannelDto = CreateValidSalesChannelDto();
-        salesChannelDto.WarehouseIds = new List<int> { 999 }; // Non-existent warehouse
+        salesChannelDto.WarehouseIds = new List<Guid> { 999 }; // Non-existent warehouse
 
         var response = await PostAsJsonAsync("/api/v1/SalesChannels", salesChannelDto);
 
@@ -244,7 +244,7 @@ public class SalesChannelCreateCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(1);
         var salesChannelDto = CreateValidSalesChannelDto();
-        salesChannelDto.WarehouseIds = new List<int> { 3 }; // Warehouse belongs to tenant 2
+        salesChannelDto.WarehouseIds = new List<Guid> { 3 }; // Warehouse belongs to tenant 2
 
         var response = await PostAsJsonAsync("/api/v1/SalesChannels", salesChannelDto);
 
@@ -320,11 +320,11 @@ public class SalesChannelCreateCommandTests : IDisposable
         // Create sales channels for each tenant
         var salesChannel1Dto = CreateValidSalesChannelDto();
         salesChannel1Dto.Name = $"Store Tenant 1 - {Guid.NewGuid():N}";
-        salesChannel1Dto.WarehouseIds = new List<int> { 1 };
+        salesChannel1Dto.WarehouseIds = new List<Guid> { 1 };
         
         var salesChannel2Dto = CreateValidSalesChannelDto();
         salesChannel2Dto.Name = $"Store Tenant 2 - {Guid.NewGuid():N}";
-        salesChannel2Dto.WarehouseIds = new List<int> { 3 };
+        salesChannel2Dto.WarehouseIds = new List<Guid> { 3 };
 
         // Create sales channel in tenant 1
         SetTenantHeader(1);
@@ -485,7 +485,7 @@ public class SalesChannelCreateCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(1);
         var salesChannelDto = CreateValidSalesChannelDto();
-        salesChannelDto.WarehouseIds = new List<int>(); // Empty list should be allowed
+        salesChannelDto.WarehouseIds = new List<Guid>(); // Empty list should be allowed
 
         var response = await PostAsJsonAsync("/api/v1/SalesChannels", salesChannelDto);
 

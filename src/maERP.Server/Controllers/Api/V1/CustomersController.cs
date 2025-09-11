@@ -35,10 +35,10 @@ public class CustomersController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/<CustomersController>/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<CustomerDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<CustomerDetailDto>> GetDetails(Guid id)
     {
         var response = await mediator.Send(new CustomerDetailQuery { Id = id });
         return response.ToActionResult();
@@ -55,15 +55,15 @@ public class CustomersController(IMediator mediator) : ControllerBase
     }
 
     // PUT: api/v1/<CustomersController>/5
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, CustomerUpdateCommand customerUpdateCommand)
+    public async Task<ActionResult> Update(Guid id, CustomerUpdateCommand customerUpdateCommand)
     {
         // Validate ID consistency between URL and body if ID is provided in body and differs
-        if (customerUpdateCommand.Id != 0 && customerUpdateCommand.Id != id)
+        if (customerUpdateCommand.Id != Guid.Empty && customerUpdateCommand.Id != id)
         {
             var errorResponse = ProblemDetailsResult.BadRequest(
                 "Invalid Request", 
@@ -80,12 +80,12 @@ public class CustomersController(IMediator mediator) : ControllerBase
     }
 
     // DELETE: api/v1/<CustomerController>/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         var command = new CustomerDeleteCommand { Id = id };
         var response = await mediator.Send(command);

@@ -8,7 +8,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Order.Commands.OrderUpdate;
 
-public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int>>
+public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<OrderUpdateHandler> _logger;
     private readonly IOrderRepository _orderRepository;
@@ -28,11 +28,11 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
         _pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
     }
 
-    public async Task<Result<int>> Handle(OrderUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(OrderUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating order with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new OrderUpdateValidator(_orderRepository);

@@ -21,15 +21,15 @@ public class ApplicationDbContextTests
 
     private class TestTenantContext : ITenantContext
     {
-        private int? _tenantId = null;
-        private HashSet<int> _assignedTenantIds = new HashSet<int>();
+        private Guid? _tenantId = null;
+        private HashSet<Guid> _assignedTenantIds = new HashSet<Guid>();
 
-        public int? GetCurrentTenantId() => _tenantId;
-        public void SetCurrentTenantId(int? tenantId) => _tenantId = tenantId;
+        public Guid? GetCurrentTenantId() => _tenantId;
+        public void SetCurrentTenantId(Guid? tenantId) => _tenantId = tenantId;
         public bool HasTenant() => _tenantId.HasValue;
-        public IReadOnlyCollection<int> GetAssignedTenantIds() => _assignedTenantIds;
-        public void SetAssignedTenantIds(IEnumerable<int> tenantIds) => _assignedTenantIds = new HashSet<int>(tenantIds ?? new List<int>());
-        public bool IsAssignedToTenant(int tenantId) => _assignedTenantIds.Contains(tenantId);
+        public IReadOnlyCollection<Guid> GetAssignedTenantIds() => _assignedTenantIds;
+        public void SetAssignedTenantIds(IEnumerable<Guid> tenantIds) => _assignedTenantIds = new HashSet<Guid>(tenantIds ?? new List<Guid>());
+        public bool IsAssignedToTenant(Guid tenantId) => _assignedTenantIds.Contains(tenantId);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class ApplicationDbContextTests
         // Arrange
         var warehouse = new Warehouse
         {
-            Id = 1,
+            Id = Guid.NewGuid(),
             Name = "Test Warehouse 1"
         };
 
@@ -56,7 +56,7 @@ public class ApplicationDbContextTests
         // Arrange
         var warehouse = new Warehouse
         {
-            Id = 1,
+            Id = Guid.NewGuid(),
             Name = "Test Warehouse 1"
         };
 

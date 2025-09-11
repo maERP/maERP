@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using maERP.Domain.Dtos.Auth;
@@ -13,5 +14,5 @@ public interface IAuthenticationService
     string? Token { get; }
     string? ServerUrl { get; }
     List<TenantListDto>? AvailableTenants { get; }
-    int? CurrentTenantId { get; }
+    Guid? CurrentTenantId { get; }
 }

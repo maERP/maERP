@@ -32,10 +32,10 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/<AiModelsController>/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AiModelDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<AiModelDetailDto>> GetDetails(Guid id)
     {
         var response = await mediator.Send(new AiModelDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
@@ -52,12 +52,12 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     }
 
     // PUT: api/v1/<AiModelsController>/5
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<AiModelDetailDto>> Update(int id, AiModelUpdateCommand aiModelUpdateCommand)
+    public async Task<ActionResult<AiModelDetailDto>> Update(Guid id, AiModelUpdateCommand aiModelUpdateCommand)
     {
         aiModelUpdateCommand.Id = id;
         var response = await mediator.Send(aiModelUpdateCommand);
@@ -65,12 +65,12 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     }
 
     // DELETE: api/v1/<AiModelsController>/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         var command = new AiModelDeleteCommand { Id = id };
         await mediator.Send(command);

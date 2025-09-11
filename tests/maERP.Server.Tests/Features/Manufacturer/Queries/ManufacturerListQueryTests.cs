@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Manufacturer.Queries;
 
@@ -34,11 +35,11 @@ public class ManufacturerListQueryTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -79,7 +80,7 @@ public class ManufacturerListQueryTests : IDisposable
                     Email = "contact@alpha.com",
                     Website = "https://alpha.com",
                     Logo = "alpha-logo.png",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var manufacturer2Tenant1 = new maERP.Domain.Entities.Manufacturer
@@ -94,7 +95,7 @@ public class ManufacturerListQueryTests : IDisposable
                     Phone = "+1-555-0202",
                     Email = "info@beta.com",
                     Website = "https://beta.com",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var manufacturer3Tenant1 = new maERP.Domain.Entities.Manufacturer
@@ -103,7 +104,7 @@ public class ManufacturerListQueryTests : IDisposable
                     Name = "Gamma Corp",
                     City = "Chicago",
                     Country = "USA",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var manufacturer4Tenant2 = new maERP.Domain.Entities.Manufacturer
@@ -112,7 +113,7 @@ public class ManufacturerListQueryTests : IDisposable
                     Name = "Delta Systems",
                     City = "Berlin",
                     Country = "Germany",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var manufacturer5Tenant2 = new maERP.Domain.Entities.Manufacturer
@@ -121,7 +122,7 @@ public class ManufacturerListQueryTests : IDisposable
                     Name = "Echo Solutions",
                     City = "Munich",
                     Country = "Germany",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Manufacturer.AddRange(

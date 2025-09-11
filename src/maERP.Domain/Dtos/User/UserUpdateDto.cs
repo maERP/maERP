@@ -23,8 +23,8 @@ public class UserUpdateDto
     public string PasswordConfirm { get; set; } = string.Empty;
 
     // Default tenant for the user
-    public int? DefaultTenantId { get; set; }
+    public Guid? DefaultTenantId { get; set; }
 
     // List of tenant IDs this user should be assigned to
-    public List<int> TenantIds { get; set; } = new List<int>();
+    public List<Guid> TenantIds { get; set; } = new List<Guid>();
 }

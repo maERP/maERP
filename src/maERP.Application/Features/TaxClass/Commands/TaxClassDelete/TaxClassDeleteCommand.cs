@@ -3,7 +3,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.TaxClass.Commands.TaxClassDelete;
 
-public class TaxClassDeleteCommand : IRequest<Result<int>>
+public class TaxClassDeleteCommand : IRequest<Result<Guid>>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

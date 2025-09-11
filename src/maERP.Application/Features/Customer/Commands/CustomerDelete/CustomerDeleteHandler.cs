@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Customer.Commands.CustomerDelete;
 
-public class CustomerDeleteHandler : IRequestHandler<CustomerDeleteCommand, Result<int>>
+public class CustomerDeleteHandler : IRequestHandler<CustomerDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<CustomerDeleteHandler> _logger;
     private readonly ICustomerRepository _customerRepository;
@@ -19,11 +19,11 @@ public class CustomerDeleteHandler : IRequestHandler<CustomerDeleteCommand, Resu
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
 
-    public async Task<Result<int>> Handle(CustomerDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CustomerDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting customer with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new CustomerDeleteValidator(_customerRepository);

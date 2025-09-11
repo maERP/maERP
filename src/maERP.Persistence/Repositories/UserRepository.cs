@@ -84,7 +84,7 @@ public class UserRepository : IUserRepository
 
     // New methods for managing user-tenant assignments
 
-    public async Task AssignUserToTenantsAsync(string userId, IEnumerable<int> tenantIds, int? defaultTenantId = null)
+    public async Task AssignUserToTenantsAsync(string userId, IEnumerable<Guid> tenantIds, Guid? defaultTenantId = null)
     {
         // Validate the user exists
         var user = await _userManager.FindByIdAsync(userId)
@@ -123,7 +123,7 @@ public class UserRepository : IUserRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task UpdateUserTenantAssignmentsAsync(string userId, IEnumerable<int> tenantIds, int? defaultTenantId = null)
+    public async Task UpdateUserTenantAssignmentsAsync(string userId, IEnumerable<Guid> tenantIds, Guid? defaultTenantId = null)
     {
         // Validate the user exists
         var user = await _userManager.FindByIdAsync(userId)
@@ -190,7 +190,7 @@ public class UserRepository : IUserRepository
             .ToListAsync();
     }
 
-    public async Task<bool> IsUserAssignedToTenantAsync(string userId, int tenantId)
+    public async Task<bool> IsUserAssignedToTenantAsync(string userId, Guid tenantId)
     {
         return await _dbContext.UserTenant
             .AnyAsync(ut => ut.UserId == userId && ut.TenantId == tenantId);

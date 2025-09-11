@@ -3,11 +3,11 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Tenant.Commands.TenantDelete;
 
-public class TenantDeleteCommand : IRequest<Result<int>>
+public class TenantDeleteCommand : IRequest<Result<Guid>>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
-    public TenantDeleteCommand(int id)
+    public TenantDeleteCommand(Guid id)
     {
         Id = id;
     }

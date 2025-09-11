@@ -1,4 +1,5 @@
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,7 +12,7 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
         builder.HasData(
             new Tenant
             {
-                Id = 1,
+                Id = TenantConstants.DefaultTenantId,
                 Name = "Default Tenant",
                 Description = "Default tenant for initial setup",
                 TenantCode = "DEFAULT",

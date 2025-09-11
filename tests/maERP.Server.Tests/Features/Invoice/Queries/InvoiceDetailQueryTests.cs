@@ -8,6 +8,7 @@ using maERP.Application.Contracts.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Invoice.Queries;
 
@@ -34,11 +35,11 @@ public class InvoiceDetailQueryTests : IDisposable
 
         DbContext.Database.EnsureCreated();
 
-        TenantContext.SetAssignedTenantIds(new[] { 1, 2 });
+        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
         TenantContext.SetCurrentTenantId(null);
     }
 
-    protected void SetTenantHeader(int tenantId)
+    protected void SetTenantHeader(Guid tenantId)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
@@ -72,7 +73,7 @@ public class InvoiceDetailQueryTests : IDisposable
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var customer2 = new maERP.Domain.Entities.Customer
@@ -81,7 +82,7 @@ public class InvoiceDetailQueryTests : IDisposable
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Customer.AddRange(customer1, customer2);
@@ -92,7 +93,7 @@ public class InvoiceDetailQueryTests : IDisposable
                     Sku = "TEST-001",
                     Name = "Test Product 1",
                     Price = 100.00m,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var product2 = new maERP.Domain.Entities.Product
@@ -101,7 +102,7 @@ public class InvoiceDetailQueryTests : IDisposable
                     Sku = "TEST-002", 
                     Name = "Test Product 2",
                     Price = 50.00m,
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Product.AddRange(product1, product2);
@@ -135,7 +136,7 @@ public class InvoiceDetailQueryTests : IDisposable
                     DeliveryAddressCity = "Delivery City",
                     DeliveryAddressZip = "54321",
                     DeliveryAddressCountry = "Delivery Country",
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var invoice2Tenant2 = new maERP.Domain.Entities.Invoice
@@ -149,7 +150,7 @@ public class InvoiceDetailQueryTests : IDisposable
                     Total = 119.00m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.CompletelyPaid,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Sent,
-                    TenantId = 2
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.Invoice.AddRange(invoice1Tenant1, invoice2Tenant2);
@@ -161,7 +162,7 @@ public class InvoiceDetailQueryTests : IDisposable
                     ProductId = 1,
                     Name = "Test Product 1",
                     UnitPrice = 100.00m,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 var invoiceItem2 = new maERP.Domain.Entities.InvoiceItem
@@ -171,7 +172,7 @@ public class InvoiceDetailQueryTests : IDisposable
                     ProductId = 1,
                     Name = "Test Product 1 (Second Item)",
                     UnitPrice = 100.00m,
-                    TenantId = 1
+                    TenantId = TenantConstants.TestTenant1Id
                 };
 
                 DbContext.InvoiceItem.AddRange(invoiceItem1, invoiceItem2);

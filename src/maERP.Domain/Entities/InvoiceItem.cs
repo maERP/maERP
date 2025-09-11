@@ -4,10 +4,10 @@ namespace maERP.Domain.Entities;
 
 public class InvoiceItem : BaseEntity, IBaseEntity
 {
-    public int InvoiceId { get; set; }
+    public Guid InvoiceId { get; set; }
     public Invoice Invoice { get; set; } = null!;
 
-    public int? ProductId { get; set; }
+    public Guid? ProductId { get; set; }
     public Product? Product { get; set; }
 
     public double Quantity { get; set; }
@@ -26,5 +26,5 @@ public class InvoiceItem : BaseEntity, IBaseEntity
 
     public string Unit { get; set; } = "piece";
 
-    public int? OrderItemId { get; set; }
+    public Guid? OrderItemId { get; set; }
 }

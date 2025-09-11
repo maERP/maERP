@@ -5,7 +5,7 @@ namespace maERP.Domain.Dtos.Product;
 
 public class ProductDetailDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required]
     [StringLength(255)]
@@ -45,11 +45,11 @@ public class ProductDetailDto
 
     public decimal Depth { get; set; }
 
-    public int TaxClassId { get; set; } = new();
+    public Guid TaxClassId { get; set; } = new();
 
     public ManufacturerDetailDto? Manufacturer { get; set; }
 
-    public List<int> ProductSalesChannel { get; set; } = new();
+    public List<Guid> ProductSalesChannel { get; set; } = new();
 
-    public List<int> ProductStocks { get; set; } = new();
+    public List<Guid> ProductStocks { get; set; } = new();
 }

@@ -10,10 +10,10 @@ public class OrderBaseValidator<T> : AbstractValidator<T> where T : IOrderInputM
     {
         // Basic order validation
         RuleFor(x => x.CustomerId)
-            .GreaterThan(0).WithMessage("Bitte wählen Sie einen Kunden aus.");
+            .NotEqual(Guid.Empty).WithMessage("Bitte wählen Sie einen Kunden aus.");
 
         RuleFor(x => x.SalesChannelId)
-            .GreaterThanOrEqualTo(0).WithMessage("Die Vertriebskanal-ID muss größer oder gleich 0 sein.");
+            .NotEqual(Guid.Empty).WithMessage("Bitte wählen Sie einen Vertriebskanal aus.");
 
         RuleFor(x => x.Status)
             .NotEqual(OrderStatus.Unknown).When(x => x.Status != OrderStatus.Pending)

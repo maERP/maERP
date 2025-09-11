@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.SalesChannel.Commands.SalesChannelUpdate;
 
-public class SalesChannelUpdateHandler : IRequestHandler<SalesChannelUpdateCommand, Result<int>>
+public class SalesChannelUpdateHandler : IRequestHandler<SalesChannelUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<SalesChannelUpdateHandler> _logger;
     private readonly ISalesChannelRepository _salesChannelRepository;
@@ -19,11 +19,11 @@ public class SalesChannelUpdateHandler : IRequestHandler<SalesChannelUpdateComma
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
     }
 
-    public async Task<Result<int>> Handle(SalesChannelUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(SalesChannelUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating sales channel with ID: {Id} and name: {Name}", request.Id, request.Name);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new SalesChannelUpdateValidator(_salesChannelRepository);

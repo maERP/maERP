@@ -33,10 +33,10 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/<AiPromptsController>/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AiPromptDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<AiPromptDetailDto>> GetDetails(Guid id)
     {
         var response = await mediator.Send(new AiPromptDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
@@ -53,15 +53,15 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     }
 
     // PUT: api/v1/<AiPromptsController>/5
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<AiPromptDetailDto>> Update(int id, AiPromptUpdateCommand aIPromptUpdateCommand)
+    public async Task<ActionResult<AiPromptDetailDto>> Update(Guid id, AiPromptUpdateCommand aIPromptUpdateCommand)
     {
         // Validate ID is not zero
-        if (id == 0)
+        if (id == Guid.Empty)
         {
             var invalidIdResponse = ProblemDetailsResult.BadRequest(
                 "Invalid Request", 
@@ -73,7 +73,7 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
         }
 
         // Validate ID consistency between URL and body if ID is provided in body and differs
-        if (aIPromptUpdateCommand.Id != 0 && aIPromptUpdateCommand.Id != id)
+        if (aIPromptUpdateCommand.Id != Guid.Empty && aIPromptUpdateCommand.Id != id)
         {
             var errorResponse = ProblemDetailsResult.BadRequest(
                 "Invalid Request", 
@@ -90,12 +90,12 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     }
 
     // DELETE: api/v1/<AiPromptsController>/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<Result<int>>> Delete(int id)
+    public async Task<ActionResult<Result<int>>> Delete(Guid id)
     {
         var command = new AiPromptDeleteCommand { Id = id };
         var response = await mediator.Send(command);
