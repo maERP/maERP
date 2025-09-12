@@ -37,7 +37,7 @@ public class OrderDetailDto
     public string DeliveryAddressPhone { get; set; } = string.Empty;
     public string DeliveryAddressStreet { get; set; } = string.Empty;
     public string DeliveryAddressCity { get; set; } = string.Empty;
-    public string DeliverAddressZip { get; set; } = string.Empty;
+    public string DeliveryAddressZip { get; set; } = string.Empty;
     public string DeliveryAddressCountry { get; set; } = string.Empty;
 
     public string InvoiceAddressFirstName { get; set; } = string.Empty;

@@ -27,6 +27,7 @@ public class OrderUpdateCommandTests : IDisposable
     private static readonly Guid Order1Id = Guid.NewGuid();
     private static readonly Guid Order2Id = Guid.NewGuid();
     private static readonly Guid Order3Id = Guid.NewGuid();
+    private static readonly Guid SalesChannel1Id = Guid.NewGuid();
 
     public OrderUpdateCommandTests()
     {
@@ -116,6 +117,7 @@ public class OrderUpdateCommandTests : IDisposable
                 var order1 = new Domain.Entities.Order
                 {
                     Id = Order1Id,
+                    SalesChannelId = SalesChannel1Id,
                     CustomerId = Customer1Id,
                     Status = OrderStatus.Processing,
                     PaymentStatus = PaymentStatus.Invoiced,
@@ -132,6 +134,7 @@ public class OrderUpdateCommandTests : IDisposable
                 var order2 = new Domain.Entities.Order
                 {
                     Id = Order2Id,
+                    SalesChannelId = SalesChannel1Id,
                     CustomerId = Customer2Id,
                     Status = OrderStatus.Pending,
                     PaymentStatus = PaymentStatus.Unknown,
@@ -148,6 +151,7 @@ public class OrderUpdateCommandTests : IDisposable
                 var order3 = new Domain.Entities.Order
                 {
                     Id = Order3Id,
+                    SalesChannelId = SalesChannel1Id,
                     CustomerId = Customer3Id,
                     Status = OrderStatus.Processing,
                     PaymentStatus = PaymentStatus.CompletelyPaid,
@@ -182,6 +186,7 @@ public class OrderUpdateCommandTests : IDisposable
         return new OrderInputDto
         {
             Id = id,
+            SalesChannelId = SalesChannel1Id,
             CustomerId = Customer1Id,
             Status = OrderStatus.ReadyForDelivery,
             PaymentStatus = PaymentStatus.CompletelyPaid,
@@ -202,7 +207,7 @@ public class OrderUpdateCommandTests : IDisposable
             DeliveryAddressLastName = "Doe Updated",
             DeliveryAddressStreet = "456 Updated St",
             DeliveryAddressCity = "Updated City",
-            DeliverAddressZip = "54321",
+            DeliveryAddressZip = "54321",
             DeliveryAddressCountry = "Germany",
             CustomerNote = "Updated customer note",
             InternalNote = "Updated internal note",

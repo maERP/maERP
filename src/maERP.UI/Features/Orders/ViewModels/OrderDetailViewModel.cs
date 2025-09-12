@@ -39,7 +39,7 @@ public partial class OrderDetailViewModel : ViewModelBase
         ? $"{Order.DeliveryAddressCompanyName}{(!string.IsNullOrEmpty(Order.DeliveryAddressCompanyName) ? "\n" : "")}" +
           $"{Order.DeliveryAddressFirstName} {Order.DeliveryAddressLastName}\n" +
           $"{Order.DeliveryAddressStreet}\n" +
-          $"{Order.DeliverAddressZip} {Order.DeliveryAddressCity}\n" +
+          $"{Order.DeliveryAddressZip} {Order.DeliveryAddressCity}\n" +
           $"{Order.DeliveryAddressCountry}" +
           (!string.IsNullOrEmpty(Order.DeliveryAddressPhone) ? $"\nTel: {Order.DeliveryAddressPhone}" : "")
         : string.Empty;

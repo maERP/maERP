@@ -77,7 +77,7 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<Gui
                 DeliveryAddressPhone = request.DeliveryAddressPhone,
                 DeliveryAddressStreet = request.DeliveryAddressStreet,
                 DeliveryAddressCity = request.DeliveryAddressCity,
-                DeliverAddressZip = request.DeliverAddressZip,
+                DeliveryAddressZip = request.DeliveryAddressZip,
                 DeliveryAddressCountry = request.DeliveryAddressCountry,
                 InvoiceAddressFirstName = request.InvoiceAddressFirstName,
                 InvoiceAddressLastName = request.InvoiceAddressLastName,

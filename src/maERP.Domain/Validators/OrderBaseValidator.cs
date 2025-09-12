@@ -68,7 +68,7 @@ public class OrderBaseValidator<T> : AbstractValidator<T> where T : IOrderInputM
             RuleFor(x => x.DeliveryAddressCity)
                 .NotEmpty().WithMessage("Die Stadt für die Lieferadresse ist erforderlich.");
 
-            RuleFor(x => x.DeliverAddressZip)
+            RuleFor(x => x.DeliveryAddressZip)
                 .NotEmpty().WithMessage("Die Postleitzahl für die Lieferadresse ist erforderlich.");
 
             RuleFor(x => x.DeliveryAddressCountry)
@@ -105,7 +105,7 @@ public class OrderBaseValidator<T> : AbstractValidator<T> where T : IOrderInputM
                model.DeliveryAddressLastName != model.InvoiceAddressLastName ||
                model.DeliveryAddressStreet != model.InvoiceAddressStreet ||
                model.DeliveryAddressCity != model.InvoiceAddressCity ||
-               model.DeliverAddressZip != model.InvoiceAddressZip ||
+               model.DeliveryAddressZip != model.InvoiceAddressZip ||
                model.DeliveryAddressCountry != model.InvoiceAddressCountry;
     }
 

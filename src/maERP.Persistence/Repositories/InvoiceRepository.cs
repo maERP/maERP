@@ -111,7 +111,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
                 DeliveryAddressPhone = order.DeliveryAddressPhone,
                 DeliveryAddressStreet = order.DeliveryAddressStreet,
                 DeliveryAddressCity = order.DeliveryAddressCity,
-                DeliveryAddressZip = order.DeliverAddressZip,
+                DeliveryAddressZip = order.DeliveryAddressZip,
                 DeliveryAddressCountry = order.DeliveryAddressCountry
             };
 

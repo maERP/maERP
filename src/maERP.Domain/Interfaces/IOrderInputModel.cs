@@ -24,7 +24,7 @@ public interface IOrderInputModel
     string DeliveryAddressPhone { get; }
     string DeliveryAddressStreet { get; }
     string DeliveryAddressCity { get; }
-    string DeliverAddressZip { get; }
+    string DeliveryAddressZip { get; }
     string DeliveryAddressCountry { get; }
     string InvoiceAddressFirstName { get; }
     string InvoiceAddressLastName { get; }

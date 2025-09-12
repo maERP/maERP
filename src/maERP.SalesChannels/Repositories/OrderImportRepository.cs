@@ -193,7 +193,7 @@ public class OrderImportRepository : IOrderImportRepository
                 DeliveryAddressCompanyName = importOrder.ShippingAddress.CompanyName,
                 DeliveryAddressStreet = importOrder.ShippingAddress.Street,
                 DeliveryAddressCity = importOrder.ShippingAddress.City,
-                DeliverAddressZip = importOrder.ShippingAddress.Zip,
+                DeliveryAddressZip = importOrder.ShippingAddress.Zip,
                 DeliveryAddressCountry = shippingAddressCountry.Name,
 
                 DateOrdered = importOrder.DateOrdered.ToUniversalTime()

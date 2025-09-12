@@ -345,7 +345,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
                 DeliveryAddressPhone = customer.Phone,
                 DeliveryAddressStreet = $"Demo Street {random.Next(1, 100)}",
                 DeliveryAddressCity = "Demo City",
-                DeliverAddressZip = $"{random.Next(10000, 99999)}",
+                DeliveryAddressZip = $"{random.Next(10000, 99999)}",
                 DeliveryAddressCountry = "Germany",
                 InvoiceAddressFirstName = customer.Firstname,
                 InvoiceAddressLastName = customer.Lastname,

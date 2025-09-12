@@ -110,7 +110,7 @@ public partial class OrderInputViewModel : ViewModelBase
     private string deliveryAddressCity = string.Empty;
 
     [ObservableProperty]
-    private string deliverAddressZip = string.Empty;
+    private string deliveryAddressZip = string.Empty;
 
     [ObservableProperty]
     private string deliveryAddressCountry = string.Empty;
@@ -273,7 +273,7 @@ public partial class OrderInputViewModel : ViewModelBase
                 DeliveryAddressPhone = order.DeliveryAddressPhone;
                 DeliveryAddressStreet = order.DeliveryAddressStreet;
                 DeliveryAddressCity = order.DeliveryAddressCity;
-                DeliverAddressZip = order.DeliverAddressZip;
+                DeliveryAddressZip = order.DeliveryAddressZip;
                 DeliveryAddressCountry = order.DeliveryAddressCountry;
                 InvoiceAddressFirstName = order.InvoiceAddressFirstName;
                 InvoiceAddressLastName = order.InvoiceAddressLastName;
@@ -353,7 +353,7 @@ public partial class OrderInputViewModel : ViewModelBase
                 DeliveryAddressPhone = DeliveryAddressPhone,
                 DeliveryAddressStreet = DeliveryAddressStreet,
                 DeliveryAddressCity = DeliveryAddressCity,
-                DeliverAddressZip = DeliverAddressZip,
+                DeliveryAddressZip = DeliveryAddressZip,
                 DeliveryAddressCountry = DeliveryAddressCountry,
                 InvoiceAddressFirstName = InvoiceAddressFirstName,
                 InvoiceAddressLastName = InvoiceAddressLastName,
@@ -449,7 +449,7 @@ public partial class OrderInputViewModel : ViewModelBase
         DeliveryAddressPhone = string.Empty;
         DeliveryAddressStreet = string.Empty;
         DeliveryAddressCity = string.Empty;
-        DeliverAddressZip = string.Empty;
+        DeliveryAddressZip = string.Empty;
         DeliveryAddressCountry = string.Empty;
         InvoiceAddressFirstName = string.Empty;
         InvoiceAddressLastName = string.Empty;
@@ -575,7 +575,7 @@ public partial class OrderInputViewModel : ViewModelBase
         InvoiceAddressPhone = DeliveryAddressPhone;
         InvoiceAddressStreet = DeliveryAddressStreet;
         InvoiceAddressCity = DeliveryAddressCity;
-        InvoiceAddressZip = DeliverAddressZip;
+        InvoiceAddressZip = DeliveryAddressZip;
         InvoiceAddressCountry = DeliveryAddressCountry;
     }
 
@@ -588,7 +588,7 @@ public partial class OrderInputViewModel : ViewModelBase
         DeliveryAddressPhone = InvoiceAddressPhone;
         DeliveryAddressStreet = InvoiceAddressStreet;
         DeliveryAddressCity = InvoiceAddressCity;
-        DeliverAddressZip = InvoiceAddressZip;
+        DeliveryAddressZip = InvoiceAddressZip;
         DeliveryAddressCountry = InvoiceAddressCountry;
     }
 }

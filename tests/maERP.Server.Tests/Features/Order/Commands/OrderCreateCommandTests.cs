@@ -140,7 +140,7 @@ public class OrderCreateCommandTests : IDisposable
             DeliveryAddressLastName = "Doe",
             DeliveryAddressStreet = "123 Test St",
             DeliveryAddressCity = "Test City",
-            DeliverAddressZip = "12345",
+            DeliveryAddressZip = "12345",
             DeliveryAddressCountry = "Germany",
             DateOrdered = DateTime.UtcNow
         };
@@ -474,7 +474,7 @@ public class OrderCreateCommandTests : IDisposable
             DeliveryAddressLastName = "Doe",
             DeliveryAddressStreet = "123 Test St",
             DeliveryAddressCity = "Test City",
-            DeliverAddressZip = "12345",
+            DeliveryAddressZip = "12345",
             DeliveryAddressCountry = "Germany",
             DateOrdered = DateTime.UtcNow
         };
