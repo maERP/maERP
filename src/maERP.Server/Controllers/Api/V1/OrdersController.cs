@@ -89,6 +89,11 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Create(OrderCreateCommand orderCreateCommand)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
         var response = await mediator.Send(orderCreateCommand);
         return StatusCode((int)response.StatusCode, response);
     }

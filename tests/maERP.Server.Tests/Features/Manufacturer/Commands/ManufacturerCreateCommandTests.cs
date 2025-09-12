@@ -341,8 +341,8 @@ public class ManufacturerCreateCommandTests : IDisposable
         var response2 = await PostAsJsonAsync("/api/v1/Manufacturers", manufacturerInput);
         TestAssertions.AssertEqual(HttpStatusCode.Created, response2.StatusCode);
 
-        var result1 = await ReadResponseAsync<Result<int>>(response1);
-        var result2 = await ReadResponseAsync<Result<int>>(response2);
+        var result1 = await ReadResponseAsync<Result<Guid>>(response1);
+        var result2 = await ReadResponseAsync<Result<Guid>>(response2);
 
         TestAssertions.AssertNotEqual(result1.Data, result2.Data);
     }

@@ -122,6 +122,7 @@ public class OrderCreateCommandTests : IDisposable
         return new OrderInputDto
         {
             CustomerId = Customer1Id,
+            SalesChannelId = Guid.NewGuid(),
             Status = OrderStatus.Pending,
             PaymentStatus = PaymentStatus.Unknown,
             PaymentMethod = "Credit Card",
@@ -280,10 +281,14 @@ public class OrderCreateCommandTests : IDisposable
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var orderDto = CreateValidOrderDto();
 
-        // Create JSON with invalid enum value
+        // Create JSON with invalid enum value  
         var json = JsonSerializer.Serialize(orderDto);
-        var jsonObject = JsonSerializer.Deserialize<JsonElement>(json);
-        var modifiedJson = json.Replace($"\"status\":{(int)orderDto.Status}", "\"status\":999");
+        var modifiedJson = json.Replace($"\"Status\":{(int)orderDto.Status}", "\"Status\":999");
+        if (modifiedJson == json)
+        {
+            // Try lowercase
+            modifiedJson = json.Replace($"\"status\":{(int)orderDto.Status}", "\"status\":999");
+        }
 
         var content = new StringContent(modifiedJson, System.Text.Encoding.UTF8, "application/json");
         var response = await Client.PostAsync("/api/v1/Orders", content);
@@ -452,13 +457,25 @@ public class OrderCreateCommandTests : IDisposable
         var orderDto = new OrderInputDto
         {
             CustomerId = Customer1Id,
+            SalesChannelId = Guid.NewGuid(),
             Status = OrderStatus.Pending,
             PaymentStatus = PaymentStatus.Unknown,
+            Subtotal = 40.00m,
+            ShippingCost = 5.00m,
+            TotalTax = 5.00m,
             Total = 50.00m,
             InvoiceAddressFirstName = "John",
             InvoiceAddressLastName = "Doe",
+            InvoiceAddressStreet = "123 Test St",
             InvoiceAddressCity = "Test City",
+            InvoiceAddressZip = "12345",
             InvoiceAddressCountry = "Germany",
+            DeliveryAddressFirstName = "John",
+            DeliveryAddressLastName = "Doe",
+            DeliveryAddressStreet = "123 Test St",
+            DeliveryAddressCity = "Test City",
+            DeliverAddressZip = "12345",
+            DeliveryAddressCountry = "Germany",
             DateOrdered = DateTime.UtcNow
         };
 

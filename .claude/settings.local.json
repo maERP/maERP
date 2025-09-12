@@ -15,7 +15,8 @@
       "Bash(dos2unix:*)",
       "Bash(sed:*)",
       "Bash(./fix-syntax-errors.sh:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []

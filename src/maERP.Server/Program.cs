@@ -1,6 +1,9 @@
 #nullable disable
 
+using System.Text.Json.Serialization;
 using maERP.Application;
+using maERP.Domain.Enums;
+using maERP.Server.Infrastructure.JsonConverters;
 using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
 using maERP.Identity;
@@ -58,7 +61,11 @@ builder.Services.AddOpenTelemetryServices(builder.Configuration, "maERP.Server")
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>
-    opts.JsonSerializerOptions.PropertyNamingPolicy = null); // JsonNamingPolicy.CamelCase);
+{
+    opts.JsonSerializerOptions.PropertyNamingPolicy = null; // JsonNamingPolicy.CamelCase);
+    opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<OrderStatus>());
+    opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<PaymentStatus>());
+});
 
 builder.Services.AddResponseCaching(options =>
 {

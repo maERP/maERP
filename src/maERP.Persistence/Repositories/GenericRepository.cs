@@ -228,7 +228,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
                 if (tenantProperty != null)
                 {
                     var tenantPropertyExpression = Expression.Property(parameter, tenantProperty);
-                    var tenantConstant = Expression.Constant(currentTenantId.Value, typeof(int?));
+                    var tenantConstant = Expression.Constant(currentTenantId.Value, typeof(Guid?));
                     var tenantEqualityExpression = Expression.Equal(tenantPropertyExpression, tenantConstant);
 
                     var combinedExpression = Expression.AndAlso(equalityExpression, tenantEqualityExpression);

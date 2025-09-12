@@ -255,9 +255,10 @@ public class ProductUpdateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var updateDto = CreateUpdateProductDto(Guid.NewGuid());
-
+        
         var nonExistentId = Guid.NewGuid();
+        var updateDto = CreateUpdateProductDto(nonExistentId);
+
         var response = await PutAsJsonAsync($"/api/v1/Products/{nonExistentId}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);

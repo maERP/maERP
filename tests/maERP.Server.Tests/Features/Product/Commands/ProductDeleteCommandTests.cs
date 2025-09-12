@@ -264,26 +264,16 @@ public class ProductDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact]
-    public async Task DeleteProduct_WithNegativeId_ShouldReturnBadRequest()
-    {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-
-        var response = await Client.DeleteAsync($"/api/v1/Products/{Guid.NewGuid()}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-    }
 
     [Fact]
-    public async Task DeleteProduct_WithInvalidId_ShouldReturnBadRequest()
+    public async Task DeleteProduct_WithInvalidId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Products/invalid");
 
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]

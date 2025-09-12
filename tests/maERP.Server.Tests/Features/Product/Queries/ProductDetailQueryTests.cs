@@ -67,13 +67,6 @@ public class ProductDetailQueryTests : IDisposable
             {
                 await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
-                var taxClass = new maERP.Domain.Entities.TaxClass
-                {
-                    Id = Guid.Parse("00000001-0001-0001-0001-000000000001"),
-                    TaxRate = 19.0,
-                    TenantId = TenantConstants.TestTenant1Id
-                };
-
                 var manufacturer1 = new maERP.Domain.Entities.Manufacturer
                 {
                     Id = Guid.Parse("00000001-0001-0001-0002-000000000001"),
@@ -98,7 +91,6 @@ public class ProductDetailQueryTests : IDisposable
                     TenantId = TenantConstants.TestTenant2Id
                 };
 
-                DbContext.TaxClass.Add(taxClass);
                 DbContext.Manufacturer.AddRange(manufacturer1, manufacturer2);
 
                 var product1Tenant1 = new maERP.Domain.Entities.Product
@@ -312,13 +304,13 @@ public class ProductDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetProductDetail_WithInvalidId_ShouldReturnBadRequest()
+    public async Task GetProductDetail_WithInvalidId_ShouldReturnNotFound()
     {
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Products/invalid");
 
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]

@@ -23,16 +23,24 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<Gui
     private readonly IOrderRepository _orderRepository;
 
     /// <summary>
+    /// Repository for customer data operations
+    /// </summary>
+    private readonly ICustomerRepository _customerRepository;
+
+    /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
     /// <param name="logger">Logger for recording operations</param>
     /// <param name="orderRepository">Repository for order data access</param>
+    /// <param name="customerRepository">Repository for customer data access</param>
     public OrderCreateHandler(
         IAppLogger<OrderCreateHandler> logger,
-        IOrderRepository orderRepository)
+        IOrderRepository orderRepository,
+        ICustomerRepository customerRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+        _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
 
     /// <summary>
@@ -48,7 +56,7 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<Gui
         var result = new Result<Guid>();
 
         // Validate incoming data
-        var validator = new OrderCreateValidator(_orderRepository);
+        var validator = new OrderCreateValidator(_orderRepository, _customerRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         // If validation fails, return a bad request result with validation error messages
