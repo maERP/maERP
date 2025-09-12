@@ -7,6 +7,7 @@ using maERP.Application.Features.TaxClass.Queries.TaxClassList;
 using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using maERP.Server.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -75,11 +76,12 @@ public class TaxClassesController : ControllerBase
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(Guid id)
     {
         var command = new TaxClassDeleteCommand { Id = id };
-        await _mediator.Send(command);
-        return NoContent();
+        var response = await _mediator.Send(command);
+        return response.ToActionResult();
     }
 }

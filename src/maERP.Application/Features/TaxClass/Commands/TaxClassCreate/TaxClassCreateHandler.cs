@@ -78,7 +78,7 @@ public class TaxClassCreateHandler : IRequestHandler<TaxClassCreateCommand, Resu
 
             // Set successful result with the new tax class ID
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.Created;
             result.Data = taxClassToCreate.Id;
 
             _logger.LogInformation("Successfully created tax class with ID: {Id}", taxClassToCreate.Id);

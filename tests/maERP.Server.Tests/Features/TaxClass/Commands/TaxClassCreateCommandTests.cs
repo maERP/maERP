@@ -97,7 +97,10 @@ public class TaxClassCreateCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var taxClassDto = CreateValidTaxClassDto();
+        var taxClassDto = new TaxClassInputDto
+        {
+            TaxRate = 97.77 // Use unique tax rate that won't conflict with seed data
+        };
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto);
@@ -156,7 +159,7 @@ public class TaxClassCreateCommandTests : IDisposable
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
         var content = await response.Content.ReadAsStringAsync();
-        TestAssertions.AssertTrue(content.Contains("TaxRate"));
+        TestAssertions.AssertTrue(content.Contains("Tax Rate"));
     }
 
     [Fact]
@@ -176,7 +179,7 @@ public class TaxClassCreateCommandTests : IDisposable
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
         var content = await response.Content.ReadAsStringAsync();
-        TestAssertions.AssertTrue(content.Contains("TaxRate"));
+        TestAssertions.AssertTrue(content.Contains("Tax Rate"));
     }
 
     [Fact]
@@ -330,7 +333,10 @@ public class TaxClassCreateCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var taxClassDto = CreateValidTaxClassDto();
+        var taxClassDto = new TaxClassInputDto
+        {
+            TaxRate = 99.99 // Use unique tax rate that won't conflict with seed data
+        };
         var startTime = DateTime.UtcNow;
 
         // Act
@@ -399,7 +405,10 @@ public class TaxClassCreateCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var taxClassDto = CreateValidTaxClassDto();
+        var taxClassDto = new TaxClassInputDto
+        {
+            TaxRate = 98.88 // Use unique tax rate that won't conflict with seed data
+        };
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto);

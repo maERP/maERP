@@ -26,7 +26,7 @@ public class TaxClassDeleteHandler : IRequestHandler<TaxClassDeleteCommand, Resu
         var result = new Result<Guid>();
 
         // Validate incoming data
-        var validator = new TaxClassDeleteValidator(_taxClassRepository);
+        var validator = new TaxClassDeleteValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
@@ -44,11 +44,18 @@ public class TaxClassDeleteHandler : IRequestHandler<TaxClassDeleteCommand, Resu
 
         try
         {
-            // Create entity to delete
-            var taxClassToDelete = new Domain.Entities.TaxClass
+            // Get entity from database first
+            var taxClassToDelete = await _taxClassRepository.GetByIdAsync(request.Id);
+
+            if (taxClassToDelete == null)
             {
-                Id = request.Id
-            };
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("TaxClass not found");
+
+                _logger.LogWarning("TaxClass with ID: {Id} not found for deletion", request.Id);
+                return result;
+            }
 
             // Delete from database
             await _taxClassRepository.DeleteAsync(taxClassToDelete);
@@ -58,6 +65,15 @@ public class TaxClassDeleteHandler : IRequestHandler<TaxClassDeleteCommand, Resu
             result.Data = taxClassToDelete.Id;
 
             _logger.LogInformation("Successfully deleted tax class with ID: {Id}", taxClassToDelete.Id);
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
+        {
+            // Handle concurrent deletion - tax class was already deleted by another request
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.NotFound;
+            result.Messages.Add("TaxClass not found");
+
+            _logger.LogWarning("TaxClass with ID: {Id} was deleted by another request: {Message}", request.Id, ex.Message);
         }
         catch (Exception ex)
         {
