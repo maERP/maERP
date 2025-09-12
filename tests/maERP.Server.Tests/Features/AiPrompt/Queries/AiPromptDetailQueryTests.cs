@@ -308,7 +308,6 @@ public class AiPromptDetailQueryTests : IDisposable
 
     [Theory]
     [InlineData("abc")]
-    [InlineData("")]
     public async Task GetAiPromptById_WithUnparseableTenantHeaderValue_ShouldReturnUnauthorized(string unparseableTenantId)
     {
         // Arrange
@@ -321,6 +320,21 @@ public class AiPromptDetailQueryTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task GetAiPromptById_WithEmptyStringTenantHeader_ShouldReturnNotFound()
+    {
+        // Arrange
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        Client.DefaultRequestHeaders.Add("X-Tenant-Id", ""); // HttpClient treats empty string headers like missing headers
+
+        // Act
+        var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
+
+        // Assert - Empty string headers are not transmitted by HttpClient, so this behaves like missing header in test environment
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
     [Fact]

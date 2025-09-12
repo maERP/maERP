@@ -66,7 +66,7 @@ public class TenantMiddleware
             }
             else
             {
-                // X-Tenant-Id header present but not parseable as GUID
+                // X-Tenant-Id header present but not parseable as GUID - applies to all environments
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsync("Invalid X-Tenant-Id header format");
                 return;

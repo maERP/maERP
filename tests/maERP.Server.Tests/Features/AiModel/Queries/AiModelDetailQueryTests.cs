@@ -295,13 +295,27 @@ public class AiModelDetailQueryTests : IDisposable
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
-    public async Task GetAiModelById_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task GetAiModelById_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
         Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+
+        // Act
+        var response = await Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001");
+
+        // Assert
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task GetAiModelById_WithEmptyTenantHeaderValue_ShouldReturnNotFound()
+    {
+        // Arrange
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        Client.DefaultRequestHeaders.Add("X-Tenant-Id", "");
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiModels/20000001-0001-0001-0001-000000000001");
