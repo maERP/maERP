@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Order.Commands.OrderUpdate;
@@ -7,10 +8,12 @@ namespace maERP.Application.Features.Order.Commands.OrderUpdate;
 public class OrderUpdateValidator : OrderBaseValidator<OrderUpdateCommand>
 {
     private readonly IOrderRepository _orderRepository;
+    private readonly ICustomerRepository _customerRepository;
 
-    public OrderUpdateValidator(IOrderRepository orderRepository)
+    public OrderUpdateValidator(IOrderRepository orderRepository, ICustomerRepository customerRepository)
     {
         _orderRepository = orderRepository;
+        _customerRepository = customerRepository;
 
 
         RuleFor(p => p.Id)
@@ -21,12 +24,8 @@ public class OrderUpdateValidator : OrderBaseValidator<OrderUpdateCommand>
             .NotNull().WithMessage("{PropertyName} is required.")
             .NotEmpty().WithMessage("{PropertyName} is required.");
 
-        RuleFor(o => o)
-            .MustAsync(OrderExists).WithMessage("Order not found");
+        // Order existence is handled in the Handler for proper NotFound vs BadRequest logic
     }
 
-    private async Task<bool> OrderExists(OrderUpdateCommand command, CancellationToken cancellationToken)
-    {
-        return await _orderRepository.ExistsAsync(command.Id);
-    }
+
 }

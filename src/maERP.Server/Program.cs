@@ -133,6 +133,7 @@ using (var scope = app.Services.CreateScope())
     app.Logger.LogInformation("Settings initialization completed");
 }
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseStaticFiles();

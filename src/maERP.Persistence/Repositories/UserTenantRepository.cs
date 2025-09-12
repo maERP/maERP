@@ -67,6 +67,11 @@ public class UserTenantRepository : IUserTenantRepository
         return await _context.UserTenant.AsNoTracking().AnyAsync(ut => ut.Id == id);
     }
 
+    public async Task<bool> ExistsGloballyAsync(Guid id)
+    {
+        return await _context.UserTenant.IgnoreQueryFilters().AsNoTracking().AnyAsync(ut => ut.Id == id);
+    }
+
     public async Task<bool> IsUniqueAsync(UserTenant entity, Guid? id = null)
     {
         var query = _context.UserTenant.AsQueryable();

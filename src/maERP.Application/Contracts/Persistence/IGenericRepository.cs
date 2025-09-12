@@ -12,5 +12,6 @@ public interface IGenericRepository<T> where T : class
     Task UpdateAsync(T entity);
     Task DeleteAsync(T entity);
     Task<bool> ExistsAsync(Guid id);
+    Task<bool> ExistsGloballyAsync(Guid id);
     Task<bool> IsUniqueAsync(T entity, Guid? id = null);
 }

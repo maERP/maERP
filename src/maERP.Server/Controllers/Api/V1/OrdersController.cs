@@ -106,6 +106,12 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Update(Guid id, OrderUpdateCommand orderUpdateCommand)
     {
+        // Check for ID mismatch
+        if (orderUpdateCommand.Id != Guid.Empty && orderUpdateCommand.Id != id)
+        {
+            return BadRequest("ID mismatch between route and payload");
+        }
+        
         orderUpdateCommand.Id = id;
         var response = await mediator.Send(orderUpdateCommand);
         return StatusCode((int)response.StatusCode, response);

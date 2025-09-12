@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using maERP.Application.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,16 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
     {
         var problemDetails = new ProblemDetails();
         problemDetails.Instance = httpContext.Request.Path;
+        
         if (exception is BaseException e)
         {
             httpContext.Response.StatusCode = (int)e.StatusCode;
             problemDetails.Title = e.Message;
+        }
+        else if (exception is NotFoundException)
+        {
+            httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            problemDetails.Title = exception.Message;
         }
         else
         {

@@ -63,6 +63,11 @@ public class TenantRepository : ITenantRepository
         return await _context.Tenant.AsNoTracking().AnyAsync(e => e.Id == id);
     }
 
+    public async Task<bool> ExistsGloballyAsync(Guid id)
+    {
+        return await _context.Tenant.IgnoreQueryFilters().AsNoTracking().AnyAsync(e => e.Id == id);
+    }
+
     public async Task<bool> IsUniqueAsync(Tenant entity, Guid? id = null)
     {
         var query = _context.Tenant.AsQueryable();

@@ -184,6 +184,12 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await query.AsNoTracking().AnyAsync(e => e.Id == id);
     }
 
+    public async Task<bool> ExistsGloballyAsync(Guid id)
+    {
+        // Check existence without tenant filtering - used for cross-tenant validation scenarios
+        return await Context.Set<T>().IgnoreQueryFilters().AsNoTracking().AnyAsync(e => e.Id == id);
+    }
+
     public virtual async Task<bool> IsUniqueAsync(T entity, Guid? id = null)
     {
         var type = typeof(T);
