@@ -44,6 +44,18 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Resu
 
         try
         {
+            // Check if the tax class exists and belongs to the current tenant
+            var existingTaxClass = await _taxClassRepository.GetByIdAsync(request.Id, true);
+            if (existingTaxClass == null)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("TaxClass not found or access denied due to tenant isolation.");
+
+                _logger.LogWarning("TaxClass with ID {Id} not found or access denied due to tenant isolation", request.Id);
+                return result;
+            }
+
             // Manually map to domain entity
             var taxClassToUpdate = new Domain.Entities.TaxClass
             {

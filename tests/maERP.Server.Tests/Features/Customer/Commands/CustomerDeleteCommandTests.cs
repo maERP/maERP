@@ -215,6 +215,9 @@ public class CustomerDeleteCommandTests : IDisposable
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
+        // Clear the change tracker to force fresh database reads
+        DbContext.ChangeTracker.Clear();
+
         var customerAfter = await DbContext.Customer.FindAsync(Customer1Id);
         Assert.Null(customerAfter);
     }
@@ -256,13 +259,13 @@ public class CustomerDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteCustomer_WithoutTenantHeader_ShouldReturnUnauthorized()
+    public async Task DeleteCustomer_WithoutTenantHeader_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
 
         var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
@@ -336,8 +339,14 @@ public class CustomerDeleteCommandTests : IDisposable
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
+        // Clear the change tracker to force fresh database reads
+        DbContext.ChangeTracker.Clear();
+
         var customerAfter = await DbContext.Customer.FindAsync(Customer5Id);
         Assert.Null(customerAfter);
+
+        // Clear change tracker again to ensure fresh reads for addresses
+        DbContext.ChangeTracker.Clear();
 
         var addressesAfter = await DbContext.CustomerAddress.Where(ca => ca.CustomerId == Customer5Id).CountAsync();
         TestAssertions.AssertEqual(0, addressesAfter);

@@ -11,7 +11,6 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
     private readonly IAppLogger<CustomerUpdateHandler> _logger;
     private readonly ICustomerRepository _customerRepository;
 
-
     public CustomerUpdateHandler(
         IAppLogger<CustomerUpdateHandler> logger,
         ICustomerRepository customerRepository)
@@ -55,14 +54,16 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
 
         try
         {
-            // Manual mapping instead of AutoMapper
+            // Get the customer for tracking (required for update)
             var customerToUpdate = await _customerRepository.GetByIdAsync(request.Id);
 
             if (customerToUpdate == null)
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add($"Customer with ID {request.Id} not found");
+                result.Messages.Add("Customer not found or access denied due to tenant isolation.");
+
+                _logger.LogWarning("Customer with ID {Id} not found or access denied due to tenant isolation", request.Id);
                 return result;
             }
 
@@ -130,7 +131,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
             await _customerRepository.UpdateAsync(customerToUpdate);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.NoContent;
             result.Data = customerToUpdate.Id;
 
             _logger.LogInformation("Successfully updated customer with ID: {Id}", customerToUpdate.Id);

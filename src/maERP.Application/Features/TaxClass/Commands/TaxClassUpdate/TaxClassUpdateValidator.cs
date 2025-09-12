@@ -23,7 +23,7 @@ public class TaxClassUpdateValidator : TaxClassBaseValidator<TaxClassUpdateComma
 
     private async Task<bool> TaxClassExists(TaxClassUpdateCommand command, CancellationToken cancellationToken)
     {
-        return await _taxClassRepository.GetByIdAsync(command.Id, true) != null;
+        return await _taxClassRepository.ExistsGloballyAsync(command.Id);
     }
 
     private async Task<bool> IsUniqueAsync(TaxClassUpdateCommand command, CancellationToken cancellationToken)

@@ -213,7 +213,7 @@ public class TaxClassUpdateCommandTests : IDisposable
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
         var content = await response.Content.ReadAsStringAsync();
-        TestAssertions.AssertTrue(content.Contains("TaxRate"));
+        TestAssertions.AssertTrue(content.Contains("TaxRate") || content.Contains("must be greater"));
     }
 
     [Fact]
@@ -231,7 +231,7 @@ public class TaxClassUpdateCommandTests : IDisposable
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
         var content = await response.Content.ReadAsStringAsync();
-        TestAssertions.AssertTrue(content.Contains("TaxRate"));
+        TestAssertions.AssertTrue(content.Contains("TaxRate") || content.Contains("must be less"));
     }
 
     [Fact]

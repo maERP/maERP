@@ -137,3 +137,4 @@ dotnet format
 - TenantId is type Guid
 - StrictEnumConverter.cs is used for safe enum serialization
 - Use GlobalExceptionFilters
+- IMPORTANT: cascade deletes must be implemented in the handler or repository

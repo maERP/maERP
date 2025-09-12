@@ -18,6 +18,6 @@ public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateComma
 
     private async Task<bool> CustomerExists(CustomerUpdateCommand command, CancellationToken cancellationToken)
     {
-        return await _customerRepository.ExistsAsync(command.Id);
+        return await _customerRepository.ExistsGloballyAsync(command.Id);
     }
 }

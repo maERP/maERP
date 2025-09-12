@@ -361,7 +361,11 @@ public class CustomerUpdateCommandTests : IDisposable
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
 
-        var updatedCustomer = await DbContext.Customer.FindAsync(Customer1Id);
+        // Clear change tracker to ensure fresh database read
+        DbContext.ChangeTracker.Clear();
+        
+        // Use IgnoreQueryFilters to read the updated customer directly from database
+        var updatedCustomer = await DbContext.Customer.IgnoreQueryFilters().FirstOrDefaultAsync(c => c.Id == Customer1Id);
         TestAssertions.AssertEqual(CustomerStatus.Inactive, updatedCustomer!.CustomerStatus);
     }
 

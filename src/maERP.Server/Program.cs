@@ -65,6 +65,7 @@ builder.Services.AddControllers().AddJsonOptions(opts =>
     opts.JsonSerializerOptions.PropertyNamingPolicy = null; // JsonNamingPolicy.CamelCase);
     opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<OrderStatus>());
     opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<PaymentStatus>());
+    opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<CustomerStatus>());
 });
 
 builder.Services.AddResponseCaching(options =>
