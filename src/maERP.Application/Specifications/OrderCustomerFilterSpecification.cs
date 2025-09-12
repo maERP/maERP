@@ -16,7 +16,9 @@ public class OrderCustomerFilterSpecification : FilterSpecification<Order>
         {
             Criteria = o => o.CustomerId == customerId && (o.InvoiceAddressCompanyName.Contains(searchString) ||
                                                         o.InvoiceAddressFirstName.Contains(searchString) ||
-                                                        o.InvoiceAddressLastName.Contains(searchString));
+                                                        o.InvoiceAddressLastName.Contains(searchString) ||
+                                                        o.Status.ToString().Contains(searchString) ||
+                                                        o.PaymentStatus.ToString().Contains(searchString));
         }
         else
         {

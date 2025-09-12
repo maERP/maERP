@@ -136,7 +136,7 @@ public class AiModelDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteAiModel_WithNegativeId_ShouldReturnNoContent()
+    public async Task DeleteAiModel_WithNegativeId_ShouldReturnBadRequest()
     {
         // Arrange
         SetTenantHeader(TenantConstants.TestTenant1Id);
@@ -144,8 +144,8 @@ public class AiModelDeleteCommandTests : IDisposable
         // Act
         var response = await Client.DeleteAsync("/api/v1/AiModels/-1");
 
-        // Assert - DELETE is idempotent, returns NoContent
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NoContent);
+        // Assert - Invalid GUID format should return BadRequest
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
     }
 
     [Fact]

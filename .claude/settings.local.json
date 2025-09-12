@@ -16,7 +16,8 @@
       "Bash(sed:*)",
       "Bash(./fix-syntax-errors.sh:*)",
       "Bash(python3:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(dotnet --version)"
     ],
     "deny": [],
     "ask": []

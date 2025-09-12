@@ -47,8 +47,8 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return Ok(orders);
     }
 
-    // GET: api/v1/<OrdersController>/readyfordelivery
-    [HttpGet("readyfordelivery")]
+    // GET: api/v1/<OrdersController>/ready-for-delivery
+    [HttpGet("ready-for-delivery")]
     public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetReadyForDelivery(int pageNumber = 0, int pageSize = 10, string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
@@ -60,8 +60,8 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return Ok(orders);
     }
 
-    // GET: api/v1/<OrdersController>/notpaid
-    [HttpGet("notpaid")]
+    // GET: api/v1/<OrdersController>/not-paid
+    [HttpGet("not-paid")]
     public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetNotPaid(int pageNumber = 0, int pageSize = 10, string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))

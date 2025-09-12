@@ -228,7 +228,7 @@ public class AiPromptDetailQueryTests : IDisposable
         var response = await Client.GetAsync("/api/v1/AiPrompts/abc");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
     [Fact]

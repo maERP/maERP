@@ -92,10 +92,10 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
@@ -117,10 +117,10 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
@@ -145,10 +145,10 @@ public class AiModelCreateCommandTests : IDisposable
 
             // Assert
             TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
-            var result = await ReadResponseAsync<Result<int>>(response);
+            var result = await ReadResponseAsync<Result<Guid>>(response);
             TestAssertions.AssertNotNull(result);
             TestAssertions.AssertTrue(result.Succeeded);
-            TestAssertions.AssertTrue(result.Data > 0);
+            TestAssertions.AssertTrue(result.Data != Guid.Empty);
         }
     }
 
@@ -170,7 +170,7 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("Name")));
@@ -194,7 +194,7 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("50 characters")));
@@ -218,7 +218,7 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("Ai Model Type")));
@@ -242,7 +242,7 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("ApiKey") || m.Contains("ApiUsername")));
@@ -266,7 +266,7 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("Api Key") && m.Contains("10 characters")));
@@ -290,7 +290,7 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("ApiPassword")));
@@ -318,7 +318,7 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("already exists")));
@@ -347,10 +347,10 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert - Should succeed because different tenants
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.Created);
-        var result = await ReadResponseAsync<Result<int>>(response2);
+        var result = await ReadResponseAsync<Result<Guid>>(response2);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
@@ -390,7 +390,7 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
     }
@@ -413,7 +413,7 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
     }
@@ -436,7 +436,7 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
     }

@@ -164,7 +164,7 @@ public class AiModelUpdateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PutAsJsonAsync("/api/v1/AiModels/999", updateCommand);
+        var response = await Client.PutAsJsonAsync("/api/v1/AiModels/99999999-9999-9999-9999-999999999999", updateCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);

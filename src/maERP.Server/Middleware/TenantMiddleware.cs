@@ -32,7 +32,7 @@ public class TenantMiddleware
         if (context.Request.Headers.TryGetValue("X-Tenant-Id", out var tenantHeader))
         {
             var tenantHeaderValue = tenantHeader.FirstOrDefault();
-            if (Guid.TryParse(tenantHeaderValue, out var headerTenantId))
+            if (!string.IsNullOrEmpty(tenantHeaderValue) && Guid.TryParse(tenantHeaderValue, out var headerTenantId) && headerTenantId != Guid.Empty)
             {
                 // In test environment, always honor the X-Tenant-Id header
                 if (isTestEnvironment)
@@ -67,9 +67,9 @@ public class TenantMiddleware
             else
             {
                 // X-Tenant-Id header present but not parseable as GUID
-                // Set an invalid tenant ID to ensure queries return no results (404 behavior)
-                // This maintains tenant isolation by not revealing header validation details
-                tenantContext.SetCurrentTenantId(Guid.Empty);
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsync("Invalid X-Tenant-Id header format");
+                return;
             }
         }
         else

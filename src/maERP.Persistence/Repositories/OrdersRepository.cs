@@ -15,7 +15,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
     public async Task<Order?> GetWithDetailsAsync(Guid id)
     {
-        return await Context.Order
+        return await Entities
             .Where(o => o.Id == id)
             .Include(o => o.OrderItems)
             .Include(o => o.OrderHistories)
@@ -25,7 +25,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
     public async Task<Order?> GetByRemoteOrderIdAsync(Guid salesChannelId, string remoteOrderId)
     {
-        return await Context.Order
+        return await Entities
             .Where(o => o.RemoteOrderId == remoteOrderId)
             .Where(o => o.SalesChannelId == salesChannelId)
             .FirstOrDefaultAsync() ?? null;
@@ -33,7 +33,19 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
     public async Task<List<OrderHistory>> GetOrderHistoryAsync(Guid orderId)
     {
-        return await Context.OrderHistory
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        var query = Context.OrderHistory.AsQueryable();
+        
+        if (currentTenantId.HasValue)
+        {
+            query = query.Where(oh => oh.TenantId == null || oh.TenantId == currentTenantId.Value);
+        }
+        else
+        {
+            query = query.Where(oh => oh.TenantId == null);
+        }
+        
+        return await query
             .Where(oh => oh.OrderId == orderId)
             .OrderByDescending(oh => oh.DateCreated)
             .ToListAsync();
@@ -41,7 +53,7 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 
     public async Task<bool> CanCreateInvoice(Guid orderId)
     {
-        var order = await Context.Order
+        var order = await Entities
             .Where(o => o.Id == orderId)
             .FirstOrDefaultAsync();
 
@@ -57,8 +69,19 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
         }
 
         // Check if an invoice already exists for this order
-        var invoiceExists = await Context.Invoice
-            .AnyAsync(i => i.OrderId == orderId);
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        var invoiceQuery = Context.Invoice.AsQueryable();
+        
+        if (currentTenantId.HasValue)
+        {
+            invoiceQuery = invoiceQuery.Where(i => i.TenantId == null || i.TenantId == currentTenantId.Value);
+        }
+        else
+        {
+            invoiceQuery = invoiceQuery.Where(i => i.TenantId == null);
+        }
+        
+        var invoiceExists = await invoiceQuery.AnyAsync(i => i.OrderId == orderId);
 
         // Return false if invoice already exists
         return !invoiceExists;

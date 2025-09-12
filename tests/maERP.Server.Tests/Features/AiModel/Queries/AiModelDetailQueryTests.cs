@@ -160,7 +160,7 @@ public class AiModelDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetAiModelById_WithNegativeId_ShouldReturnNotFound()
+    public async Task GetAiModelById_WithNegativeId_ShouldReturnBadRequest()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
@@ -170,7 +170,7 @@ public class AiModelDetailQueryTests : IDisposable
         var response = await Client.GetAsync("/api/v1/AiModels/-1");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
     }
 
     [Fact]
