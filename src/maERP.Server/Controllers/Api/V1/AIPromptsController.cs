@@ -90,14 +90,38 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     }
 
     // DELETE: api/v1/<AiPromptsController>/5
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<Result<int>>> Delete(Guid id)
+    public async Task<ActionResult<Result<int>>> Delete(string id)
     {
-        var command = new AiPromptDeleteCommand { Id = id };
+        // Validate ID format
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            var invalidIdResponse = ProblemDetailsResult.BadRequest(
+                "Invalid Request", 
+                $"AiPrompt ID must be a valid GUID",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                $"/api/v1/aiprompts/{id}"
+            );
+            return invalidIdResponse.ToActionResult();
+        }
+
+        // Validate ID is not empty
+        if (guidId == Guid.Empty)
+        {
+            var emptyIdResponse = ProblemDetailsResult.BadRequest(
+                "Invalid Request", 
+                $"AiPrompt ID cannot be empty",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                $"/api/v1/aiprompts/{id}"
+            );
+            return emptyIdResponse.ToActionResult();
+        }
+
+        var command = new AiPromptDeleteCommand { Id = guidId };
         var response = await mediator.Send(command);
         return response.ToActionResult();
     }

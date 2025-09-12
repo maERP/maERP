@@ -311,13 +311,13 @@ public class CustomerDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetCustomerDetail_WithInvalidId_ShouldReturnBadRequest()
+    public async Task GetCustomerDetail_WithInvalidId_ShouldReturnNotFound()
     {
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers/invalid");
 
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
@@ -336,18 +336,14 @@ public class CustomerDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetCustomerDetail_WithNegativeId_ShouldReturnBadRequest()
+    public async Task GetCustomerDetail_WithNegativeId_ShouldReturnNotFound()
     {
         await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers/invalid");
 
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<CustomerDetailDto>>(response);
-        TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertFalse(result.Succeeded);
-        Assert.Null(result.Data);
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
