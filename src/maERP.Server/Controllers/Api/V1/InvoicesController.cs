@@ -21,41 +21,85 @@ public class InvoicesController(IMediator mediator) : ControllerBase
 {
     // GET: api/v1/<InvoiceController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<InvoiceListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PaginatedResult<InvoiceListDto>>> GetAll(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
+        // Validate pagination parameters
+        if (pageNumber < 1)
+        {
+            var errorResult = new Result<PaginatedResult<InvoiceListDto>>();
+            errorResult.Succeeded = false;
+            errorResult.StatusCode = ResultStatusCode.BadRequest;
+            errorResult.Messages.Add("PageNumber muss größer als 0 sein.");
+            return BadRequest(errorResult);
+        }
+
+        if (pageSize < 1)
+        {
+            var errorResult = new Result<PaginatedResult<InvoiceListDto>>();
+            errorResult.Succeeded = false;
+            errorResult.StatusCode = ResultStatusCode.BadRequest;
+            errorResult.Messages.Add("PageSize muss größer als 0 sein.");
+            return BadRequest(errorResult);
+        }
+
         if (string.IsNullOrEmpty(orderBy))
         {
             orderBy = "InvoiceDate Descending";
         }
 
-        var invoices = await mediator.Send(new InvoiceListQuery(pageNumber, pageSize, searchString, orderBy));
+        // Convert 1-based API input to 0-based for QueryableExtensions
+        var zeroBasedPageNumber = pageNumber - 1;
+
+        var invoices = await mediator.Send(new InvoiceListQuery(zeroBasedPageNumber, pageSize, searchString, orderBy));
         return Ok(invoices);
     }
 
     // GET: api/v1/<InvoiceController>/5
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<InvoiceDetailDto>> GetDetails(Guid id)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<InvoiceDetailDto>> GetDetails(string id)
     {
-        var response = await mediator.Send(new InvoiceDetailQuery { Id = id });
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            var errorResult = new Result<InvoiceDetailDto>();
+            errorResult.Succeeded = false;
+            errorResult.StatusCode = ResultStatusCode.BadRequest;
+            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erforderlich.");
+            return BadRequest(errorResult);
+        }
+
+        var response = await mediator.Send(new InvoiceDetailQuery { Id = guidId });
         return StatusCode((int)response.StatusCode, response);
     }
 
     // GET: api/v1/<InvoiceController>/5/pdf
-    [HttpGet("{id:guid}/pdf")]
+    [HttpGet("{id}/pdf")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetPdf(Guid id)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetPdf(string id)
     {
-        var response = await mediator.Send(new InvoicePdfQuery { Id = id });
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            var errorResult = new Result<byte[]>();
+            errorResult.Succeeded = false;
+            errorResult.StatusCode = ResultStatusCode.BadRequest;
+            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erforderlich.");
+            return BadRequest(errorResult);
+        }
+
+        var response = await mediator.Send(new InvoicePdfQuery { Id = guidId });
 
         if (!response.Succeeded)
         {
             return StatusCode((int)response.StatusCode, response);
         }
 
-        return File(response.Data, "application/pdf", $"Rechnung_{id}.pdf");
+        return File(response.Data, "application/pdf", $"Rechnung_{guidId}.pdf");
     }
 
     // POST: api/v1/<InvoiceController>
@@ -69,26 +113,45 @@ public class InvoicesController(IMediator mediator) : ControllerBase
     }
 
     // PUT: api/v1/<InvoiceController>/5
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(Guid id, InvoiceUpdateCommand invoiceUpdateCommand)
+    public async Task<ActionResult> Update(string id, InvoiceUpdateCommand invoiceUpdateCommand)
     {
-        invoiceUpdateCommand.Id = id;
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            var errorResult = new Result();
+            errorResult.Succeeded = false;
+            errorResult.StatusCode = ResultStatusCode.BadRequest;
+            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erforderlich.");
+            return BadRequest(errorResult);
+        }
+
+        invoiceUpdateCommand.Id = guidId;
         var response = await mediator.Send(invoiceUpdateCommand);
         return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE: api/v1/<InvoiceController>/5
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(Guid id)
+    public async Task<ActionResult> Delete(string id)
     {
-        var command = new InvoiceDeleteCommand { Id = id };
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            var errorResult = new Result();
+            errorResult.Succeeded = false;
+            errorResult.StatusCode = ResultStatusCode.BadRequest;
+            errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erforderlich.");
+            return BadRequest(errorResult);
+        }
+
+        var command = new InvoiceDeleteCommand { Id = guidId };
         var response = await mediator.Send(command);
         return StatusCode((int)response.StatusCode, response);
     }

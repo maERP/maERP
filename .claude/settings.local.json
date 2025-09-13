@@ -17,7 +17,8 @@
       "Bash(./fix-syntax-errors.sh:*)",
       "Bash(python3:*)",
       "Bash(pkill:*)",
-      "Bash(dotnet --version)"
+      "Bash(dotnet --version)",
+      "Read(//tmp/**)"
     ],
     "deny": [],
     "ask": []

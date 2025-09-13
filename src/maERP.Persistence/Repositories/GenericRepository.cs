@@ -123,12 +123,20 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         // Ensure the entity is being tracked and mark it as modified
         var existingEntry = Context.ChangeTracker.Entries<T>().FirstOrDefault(e => e.Entity.Id == entity.Id);
-        
+
         if (existingEntry != null)
         {
-            // Update the existing tracked entity
-            Context.Entry(existingEntry.Entity).CurrentValues.SetValues(entity);
-            Context.Entry(existingEntry.Entity).State = EntityState.Modified;
+            // If it's the same entity reference, just mark as modified
+            if (ReferenceEquals(existingEntry.Entity, entity))
+            {
+                Context.Entry(entity).State = EntityState.Modified;
+            }
+            else
+            {
+                // Update the existing tracked entity with values from the new entity
+                Context.Entry(existingEntry.Entity).CurrentValues.SetValues(entity);
+                Context.Entry(existingEntry.Entity).State = EntityState.Modified;
+            }
         }
         else
         {
@@ -136,7 +144,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
             Context.Attach(entity);
             Context.Entry(entity).State = EntityState.Modified;
         }
-        
+
         await Context.SaveChangesAsync();
     }
 

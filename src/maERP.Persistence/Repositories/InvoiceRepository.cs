@@ -33,7 +33,23 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
     /// <returns>The invoice with all related entities or null if not found</returns>
     public async Task<Invoice?> GetInvoiceWithDetailsAsync(Guid id)
     {
-        return await Context.Set<Invoice>()
+        // Start with ignoring query filters to ensure fresh database reads
+        var query = Context.Set<Invoice>().IgnoreQueryFilters().AsQueryable();
+
+        // Apply manual tenant filtering - crucial for multi-tenant scenarios
+        var currentTenantId = base.TenantContext.GetCurrentTenantId();
+        if (currentTenantId.HasValue)
+        {
+            // Manual tenant filtering for both production and test environments
+            query = query.Where(x => x.TenantId == null || x.TenantId == currentTenantId.Value);
+        }
+        else
+        {
+            // If no tenant context, only return tenant-agnostic entities
+            query = query.Where(x => x.TenantId == null);
+        }
+
+        return await query
             .Where(x => x.Id == id)
             .Include(x => x.Customer)
             .Include(x => x.Order)

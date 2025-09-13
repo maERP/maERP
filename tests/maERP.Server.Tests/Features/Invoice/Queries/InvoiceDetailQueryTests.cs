@@ -226,7 +226,7 @@ public class InvoiceDetailQueryTests : IDisposable
         await SeedInvoiceTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/999");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
@@ -312,7 +312,7 @@ public class InvoiceDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(invoice.InvoiceItems);
         TestAssertions.AssertEqual(2, invoice.InvoiceItems.Count);
 
-        var firstItem = invoice.InvoiceItems.First();
+        var firstItem = invoice.InvoiceItems.First(x => x.Id == InvoiceItem1Id);
         TestAssertions.AssertTrue(firstItem.Id != Guid.Empty);
         TestAssertions.AssertEqual<Guid>(Invoice1Id, firstItem.InvoiceId);
         TestAssertions.AssertEqual<Guid?>(Product1Id, firstItem.ProductId);
@@ -395,14 +395,14 @@ public class InvoiceDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetInvoiceDetail_WithZeroId_ShouldReturnNotFound()
+    public async Task GetInvoiceDetail_WithZeroId_ShouldReturnBadRequest()
     {
         await SeedInvoiceTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/0");
 
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
@@ -410,14 +410,14 @@ public class InvoiceDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetInvoiceDetail_WithNegativeId_ShouldReturnNotFound()
+    public async Task GetInvoiceDetail_WithNegativeId_ShouldReturnBadRequest()
     {
         await SeedInvoiceTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Invoices/-1");
 
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
@@ -461,7 +461,7 @@ public class InvoiceDetailQueryTests : IDisposable
         await SeedInvoiceTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices/999");
+        var response = await Client.GetAsync($"/api/v1/Invoices/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
@@ -480,7 +480,7 @@ public class InvoiceDetailQueryTests : IDisposable
 
         var response = await Client.GetAsync("/api/v1/Invoices/2147483647");
 
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var result = await ReadResponseAsync<Result<InvoiceDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
@@ -494,11 +494,11 @@ public class InvoiceDetailQueryTests : IDisposable
 
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/Invoices/2");
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response1.StatusCode);
 
         SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/Invoices/1");
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response2.StatusCode);
     }
 
     [Fact]
