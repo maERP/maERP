@@ -11,11 +11,11 @@ public static class QueryableExtensions
     public static async Task<PaginatedResult<T>> ToPaginatedListAsync<T>(this IQueryable<T> source, int pageNumber, int pageSize) where T : class
     {
         if (source == null) throw new SourceNullException("source is null - pagination is aborted");
-        pageNumber = pageNumber < 1 ? 1 : pageNumber;
+        pageNumber = pageNumber < 0 ? 0 : pageNumber;
         pageSize = pageSize == 0 ? 10 : pageSize;
         int count = await source.CountAsync();
-        List<T> items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
-        return PaginatedResult<T>.Success(items, count, pageNumber, pageSize);
+        List<T> items = await source.Skip(pageNumber * pageSize).Take(pageSize).ToListAsync();
+        return PaginatedResult<T>.Success(items, count, pageNumber + 1, pageSize);
     }
 
     public static IQueryable<T> Specify<T>(this IQueryable<T> query, ISpecification<T> spec) where T : class, IBaseEntity
