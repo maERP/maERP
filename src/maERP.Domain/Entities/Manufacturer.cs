@@ -5,13 +5,13 @@ namespace maERP.Domain.Entities;
 public class Manufacturer : BaseEntity, IBaseEntity
 {
     public string Name { get; set; } = string.Empty;
-    public string Street { get; set; } = string.Empty;
+    public string? Street { get; set; }
     public string City { get; set; } = string.Empty;
-    public string State { get; set; } = string.Empty;
+    public string? State { get; set; }
     public string Country { get; set; } = string.Empty;
-    public string ZipCode { get; set; } = string.Empty;
-    public string Phone { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string Website { get; set; } = string.Empty;
-    public string Logo { get; set; } = string.Empty;
+    public string? ZipCode { get; set; }
+    public string? Phone { get; set; }
+    public string? Email { get; set; }
+    public string? Website { get; set; }
+    public string? Logo { get; set; }
 }

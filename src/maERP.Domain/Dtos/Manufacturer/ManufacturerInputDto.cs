@@ -38,7 +38,6 @@ public class ManufacturerInputDto : IManufacturerInputModel
 
     [Display(Name = "Email")]
     [StringLength(255)]
-    [EmailAddress]
     public string Email { get; set; } = string.Empty;
 
     [Display(Name = "Website")]

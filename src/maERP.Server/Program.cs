@@ -1,6 +1,7 @@
 #nullable disable
 
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using maERP.Application;
 using maERP.Domain.Enums;
 using maERP.Server.Infrastructure.JsonConverters;
@@ -66,6 +67,31 @@ builder.Services.AddControllers().AddJsonOptions(opts =>
     opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<OrderStatus>());
     opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<PaymentStatus>());
     opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<CustomerStatus>());
+});
+
+// Configure API behavior to return consistent Result<T> format for validation errors
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(x => x.Value.Errors.Count > 0)
+            .SelectMany(x => x.Value.Errors.Select(e => e.ErrorMessage))
+            .ToList();
+
+        var result = new
+        {
+            Succeeded = false,
+            StatusCode = 400,
+            Messages = errors,
+            Data = (object)null
+        };
+
+        return new BadRequestObjectResult(result)
+        {
+            ContentTypes = { "application/json" }
+        };
+    };
 });
 
 builder.Services.AddResponseCaching(options =>

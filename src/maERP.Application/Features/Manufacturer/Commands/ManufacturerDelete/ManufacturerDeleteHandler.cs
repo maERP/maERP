@@ -46,17 +46,24 @@ public class ManufacturerDeleteHandler : IRequestHandler<ManufacturerDeleteComma
 
         try
         {
-            // Create entity to delete
-            var manufacturerToDelete = new Domain.Entities.Manufacturer
+            // Get entity from database first
+            var manufacturerToDelete = await _manufacturerRepository.GetByIdAsync(request.Id);
+
+            if (manufacturerToDelete == null)
             {
-                Id = request.Id
-            };
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Manufacturer not found");
+
+                _logger.LogWarning("Manufacturer with ID: {Id} not found for deletion", request.Id);
+                return result;
+            }
 
             // Delete from database
             await _manufacturerRepository.DeleteAsync(manufacturerToDelete);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.NoContent;
             result.Data = manufacturerToDelete.Id;
 
             _logger.LogInformation("Successfully deleted manufacturer with ID: {Id}", manufacturerToDelete.Id);

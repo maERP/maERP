@@ -19,18 +19,12 @@ public class ManufacturerDeleteValidator : AbstractValidator<ManufacturerDeleteC
             .NotNull()
             .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
-        RuleFor(m => m)
-            .MustAsync(ManufacturerExists).WithMessage("Manufacturer not found");
 
         RuleFor(m => m)
             .MustAsync(ManufacturerIsNotUsedInProducts)
             .WithMessage("Cannot delete manufacturer as it is being used by one or more products.");
     }
 
-    private async Task<bool> ManufacturerExists(ManufacturerDeleteCommand command, CancellationToken cancellationToken)
-    {
-        return await _manufacturerRepository.ExistsAsync(command.Id);
-    }
 
     private async Task<bool> ManufacturerIsNotUsedInProducts(ManufacturerDeleteCommand command, CancellationToken cancellationToken)
     {

@@ -19,18 +19,12 @@ public class WarehouseDeleteValidator : AbstractValidator<WarehouseDeleteCommand
             .NotNull()
             .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
-        RuleFor(w => w)
-            .MustAsync(WarehouseExists).WithMessage("Warehouse not found");
 
         RuleFor(w => w)
             .MustAsync(WarehouseIsNotUsedInSalesChannel)
             .WithMessage("Cannot delete warehouse as it is being used by one or more sales channels.");
     }
 
-    private async Task<bool> WarehouseExists(WarehouseDeleteCommand command, CancellationToken cancellationToken)
-    {
-        return await _warehouseRepository.ExistsAsync(command.Id);
-    }
 
     private async Task<bool> WarehouseIsNotUsedInSalesChannel(WarehouseDeleteCommand command, CancellationToken cancellationToken)
     {

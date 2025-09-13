@@ -24,7 +24,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         get
         {
-            IQueryable<T> query = Context.Set<T>();
+            IQueryable<T> query = Context.Set<T>().AsNoTracking();
             var currentTenantId = TenantContext.GetCurrentTenantId();
 
 

@@ -6,6 +6,7 @@ using maERP.Application.Specifications;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.Warehouse.Queries.WarehouseList;
 
@@ -31,6 +32,7 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
         if (request.OrderBy.Any() != true)
         {
             return await _warehouseRepository.Entities
+               .AsNoTracking()
                .Specify(warehouseFilterSpec)
                .Select(w => new WarehouseListDto
                {
@@ -43,6 +45,7 @@ public class WarehouseListHandler : IRequestHandler<WarehouseListQuery, Paginate
         var ordering = string.Join(",", request.OrderBy);
 
         return await _warehouseRepository.Entities
+            .AsNoTracking()
             .Specify(warehouseFilterSpec)
             .OrderBy(ordering)
             .Select(w => new WarehouseListDto
