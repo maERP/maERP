@@ -101,21 +101,8 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         }
         else
         {
-            // For tracking entities, still use AsNoTracking to get fresh data, then attach
-            var result = await query.AsNoTracking().FirstOrDefaultAsync();
-            if (result != null)
-            {
-                // Clear any potentially stale tracked entities with the same ID
-                var trackedEntity = Context.ChangeTracker.Entries<T>()
-                    .FirstOrDefault(e => e.Entity.Id == id);
-                if (trackedEntity != null)
-                {
-                    Context.Entry(trackedEntity.Entity).State = EntityState.Detached;
-                }
-                
-                Context.Attach(result);
-            }
-            return result;
+            // For tracking entities: Load directly for proper Entity Framework tracking
+            return await query.FirstOrDefaultAsync();
         }
     }
 

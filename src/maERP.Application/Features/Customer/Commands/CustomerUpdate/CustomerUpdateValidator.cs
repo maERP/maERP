@@ -12,12 +12,19 @@ public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateComma
     {
         _customerRepository = customerRepository;
 
+        // Add ID validation for Zero-GUID first
+        RuleFor(c => c.Id)
+            .NotEqual(Guid.Empty).WithMessage("Customer ID cannot be empty.");
+
+        // Only check existence if ID is valid
         RuleFor(c => c)
-            .MustAsync(CustomerExists).WithMessage("Customer not found");
+            .MustAsync(CustomerExists).WithMessage("Customer not found")
+            .When(c => c.Id != Guid.Empty);
 
         // Add uniqueness validation for updates
         RuleFor(q => q)
-            .MustAsync(IsUniqueAsync).WithMessage("Customer with the same values already exists.");
+            .MustAsync(IsUniqueAsync).WithMessage("Customer with the same values already exists.")
+            .When(c => c.Id != Guid.Empty);
     }
 
     private async Task<bool> CustomerExists(CustomerUpdateCommand command, CancellationToken cancellationToken)

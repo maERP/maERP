@@ -433,12 +433,11 @@ public class AiPromptCreateCommandTests : IDisposable
         // Assert
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        // When Identifier is null, ASP.NET Core model binding returns ProblemDetails (RFC 7807)
-        // instead of our custom Result<T> format
-        var content = await response.Content.ReadAsStringAsync();
-        TestAssertions.AssertTrue(content.Contains("\"status\":400"));
-        TestAssertions.AssertTrue(content.Contains("\"errors\"") || content.Contains("\"detail\""));
-        TestAssertions.AssertTrue(content.Contains("Identifier") || content.Contains("required"));
+        // Validation returns our custom Result<T> format with validation messages
+        var result = await ReadResponseAsync<Result<object>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
     }
 
     [Fact]
