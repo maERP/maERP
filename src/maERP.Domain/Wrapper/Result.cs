@@ -1,4 +1,6 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+using System.Text.Json.Serialization;
+
 namespace maERP.Domain.Wrapper;
 
 /// <summary>
@@ -66,6 +68,7 @@ public class Result : IResult
 
 public class Result<T> : Result, IResult<T>
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public T Data { get; set; }
 
     public new static Result<T> Fail()

@@ -325,14 +325,14 @@ public class SalesChannelDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteSalesChannel_WithNegativeId_ShouldReturnNotFound()
+    public async Task DeleteSalesChannel_WithNegativeId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/SalesChannels/-1");
 
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact(Skip = "Todo: check later")]
@@ -525,8 +525,9 @@ public class SalesChannelDeleteCommandTests : IDisposable
         var response1 = await Client.DeleteAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.OK, response1.StatusCode);
 
-        // Try to delete non-existent sales channel
-        var response2 = await Client.DeleteAsync("/api/v1/SalesChannels/999");
+        // Try to delete non-existent sales channel with valid Guid format
+        var nonExistentId = Guid.NewGuid();
+        var response2 = await Client.DeleteAsync($"/api/v1/SalesChannels/{nonExistentId}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
 
         // Both operations should complete without throwing exceptions

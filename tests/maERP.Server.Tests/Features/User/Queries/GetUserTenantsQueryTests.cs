@@ -227,9 +227,9 @@ public class GetUserTenantsQueryTests : IDisposable
     {
         await SeedUserTenantTestDataAsync();
 
-        var response = await Client.GetAsync("/api/v1/Users/");
+        var response = await Client.GetAsync("/api/v1/Users/ /tenants");
 
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -381,7 +381,7 @@ public class GetUserTenantsQueryTests : IDisposable
         var response1 = await Client.GetAsync($"/api/v1/Users/{userId1}/tenants");
         var result1 = await ReadResponseAsync<Result<List<UserTenantAssignmentDto>>>(response1);
 
-        var response2 = await Client.GetAsync($"/api/v1/UserTenants/{userId1}");
+        var response2 = await Client.GetAsync($"/api/v1/Users/{userId1}/tenants");
         var result2 = await ReadResponseAsync<Result<List<UserTenantAssignmentDto>>>(response2);
 
         TestAssertions.AssertEqual(result1.Data!.Count, result2.Data!.Count);

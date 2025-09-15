@@ -11,7 +11,6 @@ public class SettingInputDto : ISettingInputModel
     [Display(Name = "Key")]
     public string Key { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Value is required")]
     [Display(Name = "Value")]
     public string Value { get; set; } = string.Empty;
 }

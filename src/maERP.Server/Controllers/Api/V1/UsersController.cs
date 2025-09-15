@@ -97,11 +97,17 @@ public class UsersController : ControllerBase
     /// <param name="id">User ID</param>
     /// <returns>List of tenant assignments for the user</returns>
     [HttpGet("{id}/tenants")]
-    [Authorize(Roles = "Superadmin")]
+    [Authorize(Roles = "Superadmin,Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Result<List<UserTenantAssignmentDto>>>> GetUserTenants(string id)
     {
+        if (string.IsNullOrEmpty(id))
+        {
+            return BadRequest("User ID cannot be empty");
+        }
+
         var response = await _mediator.Send(new GetUserTenantsQuery(id));
         return StatusCode((int)response.StatusCode, response);
     }

@@ -106,6 +106,7 @@ if (!builder.Environment.IsEnvironment("Testing"))
     builder.Services.AddSalesChannelServices();
 }
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);

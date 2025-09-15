@@ -8,6 +8,13 @@ public class GetUserTenantsValidator : AbstractValidator<GetUserTenantsQuery>
     {
         RuleFor(x => x.UserId)
             .NotEmpty()
-            .WithMessage("User ID is required");
+            .WithMessage("User ID is required")
+            .Must(BeValidGuid)
+            .WithMessage("User ID must be a valid GUID format");
+    }
+
+    private static bool BeValidGuid(string userId)
+    {
+        return !string.IsNullOrEmpty(userId) && Guid.TryParse(userId, out _);
     }
 }

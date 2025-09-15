@@ -31,8 +31,21 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.BadRequest;
-            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+
+            // Check if the validation error is about setting not found
+            var settingNotFoundError = validationResult.Errors
+                .FirstOrDefault(e => e.ErrorMessage.Contains("Setting not found"));
+
+            if (settingNotFoundError != null)
+            {
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Setting not found.");
+            }
+            else
+            {
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+            }
 
             _logger.LogWarning("Validation errors in delete request for {0}: {1}",
                 nameof(SettingDeleteCommand),
@@ -53,7 +66,7 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
             await _settingRepository.DeleteAsync(settingToDelete);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.NoContent;
             result.Data = settingToDelete.Id;
 
             _logger.LogInformation("Successfully deleted setting with ID: {Id}", settingToDelete.Id);
@@ -61,10 +74,21 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
         catch (Exception ex)
         {
             result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.InternalServerError;
-            result.Messages.Add($"An error occurred while deleting the setting: {ex.Message}");
 
-            _logger.LogError("Error deleting setting: {Message}", ex.Message);
+            // Check if this is an entity not found exception
+            if (ex.Message.Contains("does not exist in the store") ||
+                ex.Message.Contains("entity that does not exist"))
+            {
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Setting not found.");
+                _logger.LogWarning("Attempted to delete non-existent setting with ID: {Id}", request.Id);
+            }
+            else
+            {
+                result.StatusCode = ResultStatusCode.InternalServerError;
+                result.Messages.Add($"An error occurred while deleting the setting: {ex.Message}");
+                _logger.LogError("Error deleting setting: {Message}", ex.Message);
+            }
         }
 
         return result;

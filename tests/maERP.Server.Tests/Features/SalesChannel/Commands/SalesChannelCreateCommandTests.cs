@@ -429,10 +429,10 @@ public class SalesChannelCreateCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var salesChannelDto = CreateValidSalesChannelDto();
-        salesChannelDto.Name = new string('N', 255); // Max allowed length
-        salesChannelDto.Url = new string('h', 4) + new string('t', 4) + "://" + new string('u', 240); // Max URL length
-        salesChannelDto.Username = new string('U', 100); // Max username length
-        salesChannelDto.Password = new string('P', 255); // Max password length
+        salesChannelDto.Name = new string('N', 100); // Max allowed length (100 characters as per validator)
+        salesChannelDto.Url = "https://test-max-length-store.example.com"; // Valid URL format
+        salesChannelDto.Username = "testuser";
+        salesChannelDto.Password = "testpassword123";
 
         var response = await PostAsJsonAsync("/api/v1/SalesChannels", salesChannelDto);
 

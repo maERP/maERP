@@ -74,7 +74,17 @@ public static class TestDataSeeder
             DateModified = DateTime.UtcNow
         };
 
-        context.Tenant.AddRange(tenant1, tenant2);
+        var tenant3 = new Tenant
+        {
+            Id = TenantConstants.TestTenant3Id,
+            Name = "Test Tenant 3",
+            TenantCode = "TEST3",
+            IsActive = true,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        context.Tenant.AddRange(tenant1, tenant2, tenant3);
     }
 
     private static void SeedTaxClasses(ApplicationDbContext context, ITenantContext? tenantContext)

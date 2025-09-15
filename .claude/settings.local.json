@@ -20,7 +20,8 @@
       "Bash(dotnet --version)",
       "Read(//tmp/**)",
       "mcp__ref__ref_search_documentation",
-      "mcp__ref__ref_read_url"
+      "mcp__ref__ref_read_url",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

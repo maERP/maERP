@@ -140,3 +140,5 @@ dotnet format
 - IMPORTANT: cascade deletes must be implemented in the handler or repository
 - Pagination is zero-based and defined in QueryableExtensions.cs
 - IMPORTANT: all Entities are using System.Guid for Id, defined in BaseEntity.cs
+- Admin-Rights can add, edit or delete users in their own tenant
+- Superadmin-Rights can add, edit or delete users in any tenant
