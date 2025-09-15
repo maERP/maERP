@@ -139,3 +139,4 @@ dotnet format
 - Use GlobalExceptionFilters
 - IMPORTANT: cascade deletes must be implemented in the handler or repository
 - Pagination is zero-based and defined in QueryableExtensions.cs
+- IMPORTANT: all Entities are using System.Guid for Id, defined in BaseEntity.cs

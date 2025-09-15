@@ -1,5 +1,6 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 
@@ -9,14 +10,16 @@ public class SalesChannelUpdateHandler : IRequestHandler<SalesChannelUpdateComma
 {
     private readonly IAppLogger<SalesChannelUpdateHandler> _logger;
     private readonly ISalesChannelRepository _salesChannelRepository;
-
+    private readonly IWarehouseRepository _warehouseRepository;
 
     public SalesChannelUpdateHandler(
         IAppLogger<SalesChannelUpdateHandler> logger,
-        ISalesChannelRepository salesChannelRepository)
+        ISalesChannelRepository salesChannelRepository,
+        IWarehouseRepository warehouseRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
+        _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
     }
 
     public async Task<Result<Guid>> Handle(SalesChannelUpdateCommand request, CancellationToken cancellationToken)
@@ -44,17 +47,71 @@ public class SalesChannelUpdateHandler : IRequestHandler<SalesChannelUpdateComma
 
         try
         {
-            // Map to domain entity
-            var salesChannelToUpdate = MapToEntity(request);
+            // Get existing sales channel with warehouses
+            Domain.Entities.SalesChannel existingSalesChannel;
+            try
+            {
+                existingSalesChannel = await _salesChannelRepository.GetDetails(request.Id);
+            }
+            catch (NotFoundException)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add($"Sales channel with ID {request.Id} not found");
+                return result;
+            }
+
+            // Update properties from request
+            existingSalesChannel.Type = request.SalesChannelType;
+            existingSalesChannel.Name = request.Name;
+            existingSalesChannel.Url = request.Url;
+            existingSalesChannel.Username = request.Username;
+            existingSalesChannel.Password = request.Password;
+            existingSalesChannel.ImportProducts = request.ImportProducts;
+            existingSalesChannel.ImportCustomers = request.ImportCustomers;
+            existingSalesChannel.ImportOrders = request.ImportOrders;
+            existingSalesChannel.ExportProducts = request.ExportProducts;
+            existingSalesChannel.ExportCustomers = request.ExportCustomers;
+            existingSalesChannel.ExportOrders = request.ExportOrders;
+
+            // Update warehouse relationships
+            var warehouses = new List<Domain.Entities.Warehouse>();
+            if (request.WarehouseIds != null && request.WarehouseIds.Any())
+            {
+                var invalidWarehouseIds = new List<Guid>();
+
+                foreach (var warehouseId in request.WarehouseIds)
+                {
+                    var warehouse = await _warehouseRepository.GetByIdAsync(warehouseId);
+                    if (warehouse != null)
+                    {
+                        warehouses.Add(warehouse);
+                    }
+                    else
+                    {
+                        invalidWarehouseIds.Add(warehouseId);
+                    }
+                }
+
+                // Return error if any warehouse IDs are invalid
+                if (invalidWarehouseIds.Any())
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.BadRequest;
+                    result.Messages.Add($"The following warehouse IDs do not exist: {string.Join(", ", invalidWarehouseIds)}");
+                    return result;
+                }
+            }
+            existingSalesChannel.Warehouses = warehouses;
 
             // Update in database
-            await _salesChannelRepository.UpdateAsync(salesChannelToUpdate);
+            await _salesChannelRepository.UpdateAsync(existingSalesChannel);
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
-            result.Data = salesChannelToUpdate.Id;
+            result.Data = existingSalesChannel.Id;
 
-            _logger.LogInformation("Successfully updated sales channel with ID: {Id}", salesChannelToUpdate.Id);
+            _logger.LogInformation("Successfully updated sales channel with ID: {Id}", existingSalesChannel.Id);
         }
         catch (Exception ex)
         {
@@ -66,24 +123,5 @@ public class SalesChannelUpdateHandler : IRequestHandler<SalesChannelUpdateComma
         }
 
         return result;
-    }
-
-    private Domain.Entities.SalesChannel MapToEntity(SalesChannelUpdateCommand command)
-    {
-        return new Domain.Entities.SalesChannel
-        {
-            Id = command.Id,
-            Type = command.SalesChannelType,
-            Name = command.Name,
-            Url = command.Url,
-            Username = command.Username,
-            Password = command.Password,
-            ImportProducts = command.ImportProducts,
-            ImportCustomers = command.ImportCustomers,
-            ImportOrders = command.ImportOrders,
-            ExportProducts = command.ExportProducts,
-            ExportCustomers = command.ExportCustomers,
-            ExportOrders = command.ExportOrders,
-        };
     }
 }

@@ -23,16 +23,24 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
     private readonly ISalesChannelRepository _salesChannelRepository;
 
     /// <summary>
+    /// Repository for warehouse data operations
+    /// </summary>
+    private readonly IWarehouseRepository _warehouseRepository;
+
+    /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
     /// <param name="logger">Logger for recording operations</param>
     /// <param name="salesChannelRepository">Repository for sales channel data access</param>
+    /// <param name="warehouseRepository">Repository for warehouse data access</param>
     public SalesChannelCreateHandler(
         IAppLogger<SalesChannelCreateHandler> logger,
-        ISalesChannelRepository salesChannelRepository)
+        ISalesChannelRepository salesChannelRepository,
+        IWarehouseRepository warehouseRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
+        _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
     }
 
     /// <summary>
@@ -48,7 +56,7 @@ public class SalesChannelCreateHandler : IRequestHandler<SalesChannelCreateComma
         var result = new Result<Guid>();
 
         // Validate incoming data
-        var validator = new SalesChannelCreateValidator(_salesChannelRepository);
+        var validator = new SalesChannelCreateValidator(_salesChannelRepository, _warehouseRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         // If validation fails, return a bad request result with validation error messages

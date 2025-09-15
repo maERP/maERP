@@ -30,35 +30,22 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
 
         _logger.LogInformation("Handle SalesChannelListQuery: {0}", request);
 
-        List<Domain.Entities.SalesChannel> entities;
+        var entities = await _salesChannelRepository.Entities
+           .Specify(salesChannelFilterSpec)
+           .ToListAsync(cancellationToken);
 
-        if (request.OrderBy.Any() != true)
-        {
-            entities = await _salesChannelRepository.Entities
-               .Specify(salesChannelFilterSpec)
-               .ToListAsync(cancellationToken);
-        }
-        else
-        {
-            var ordering = string.Join(",", request.OrderBy);
-
-            entities = await _salesChannelRepository.Entities
-                .Specify(salesChannelFilterSpec)
-                .OrderBy(ordering)
-                .ToListAsync(cancellationToken);
-        }
-
-        return MapToListDtoAndPaginate(entities, request.PageNumber, request.PageSize);
+        return MapToListDtoAndPaginate(entities, request.PageNumber, request.PageSize, request.OrderBy);
     }
 
     private PaginatedResult<SalesChannelListDto> MapToListDtoAndPaginate(
-        List<Domain.Entities.SalesChannel> entities, int pageNumber, int pageSize)
+        List<Domain.Entities.SalesChannel> entities, int pageNumber, int pageSize, string[] orderBy)
     {
         var dtos = entities.Select(entity => new SalesChannelListDto
         {
             Id = entity.Id,
             SalesChannelType = entity.Type,
             Name = entity.Name,
+            DateCreated = entity.DateCreated,
             Url = entity.Url,
             Username = entity.Username,
             ImportProducts = entity.ImportProducts,
@@ -73,6 +60,13 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
                 Name = w.Name
             }).ToList() ?? new List<WarehouseDetailDto>()
         }).ToList();
+
+        // Apply ordering if specified
+        if (orderBy.Any())
+        {
+            var ordering = string.Join(",", orderBy);
+            dtos = dtos.AsQueryable().OrderBy(ordering).ToList();
+        }
 
         // Erstelle paginierte Ergebnisse
         var totalCount = dtos.Count;

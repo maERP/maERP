@@ -16,9 +16,23 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
 
     public async Task<SalesChannel> GetDetails(Guid id)
     {
-        var salesChannel = await Context.SalesChannel
+        // Apply tenant filtering similar to GenericRepository
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        var query = Context.SalesChannel
             .Include(s => s.Warehouses)
-            .FirstOrDefaultAsync(s => s.Id == id);
+            .AsQueryable();
+
+        // Apply manual tenant filtering
+        if (currentTenantId.HasValue)
+        {
+            query = query.Where(s => s.TenantId == null || s.TenantId == currentTenantId.Value);
+        }
+        else
+        {
+            query = query.Where(s => s.TenantId == null);
+        }
+
+        var salesChannel = await query.FirstOrDefaultAsync(s => s.Id == id);
 
         if (salesChannel == null)
         {
@@ -38,5 +52,38 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
 
         return await Context.SalesChannel
             .AnyAsync(s => s.Name == salesChannel.Name && s.Id != id) ? false : true;
+    }
+
+    public override async Task UpdateAsync(SalesChannel entity)
+    {
+        // Get the existing entity with its warehouses
+        var existing = await Context.SalesChannel
+            .Include(s => s.Warehouses)
+            .FirstOrDefaultAsync(s => s.Id == entity.Id);
+
+        if (existing == null)
+        {
+            throw new InvalidOperationException($"SalesChannel with ID {entity.Id} not found for update");
+        }
+
+        // Update scalar properties
+        Context.Entry(existing).CurrentValues.SetValues(entity);
+
+        // Update warehouse relationships
+        existing.Warehouses.Clear();
+        if (entity.Warehouses != null)
+        {
+            foreach (var warehouse in entity.Warehouses)
+            {
+                // Ensure warehouse is tracked
+                var trackedWarehouse = await Context.Warehouse.FindAsync(warehouse.Id);
+                if (trackedWarehouse != null)
+                {
+                    existing.Warehouses.Add(trackedWarehouse);
+                }
+            }
+        }
+
+        await Context.SaveChangesAsync();
     }
 }

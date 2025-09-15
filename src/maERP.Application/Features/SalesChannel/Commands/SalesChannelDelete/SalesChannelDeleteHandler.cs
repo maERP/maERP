@@ -44,20 +44,32 @@ public class SalesChannelDeleteHandler : IRequestHandler<SalesChannelDeleteComma
 
         try
         {
-            // Create entity to delete
-            var salesChannelToDelete = new Domain.Entities.SalesChannel
+            // Check if sales channel exists (handles race condition)
+            var salesChannel = await _salesChannelRepository.GetByIdAsync(request.Id);
+            if (salesChannel == null)
             {
-                Id = request.Id
-            };
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add($"SalesChannel with ID {request.Id} not found");
+                return result;
+            }
 
-            // Delete from database
-            await _salesChannelRepository.DeleteAsync(salesChannelToDelete);
+            // Delete the existing entity
+            await _salesChannelRepository.DeleteAsync(salesChannel);
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
-            result.Data = salesChannelToDelete.Id;
+            result.Data = salesChannel.Id;
 
-            _logger.LogInformation("Successfully deleted sales channel with ID: {Id}", salesChannelToDelete.Id);
+            _logger.LogInformation("Successfully deleted sales channel with ID: {Id}", salesChannel.Id);
+        }
+        catch (Exception ex) when (ex.Message.Contains("does not exist") || ex.Message.Contains("not found"))
+        {
+            // Handle race condition: Entity was deleted between check and delete
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.NotFound;
+            result.Messages.Add($"SalesChannel with ID {request.Id} not found");
+            _logger.LogWarning("Sales channel {Id} was deleted by concurrent operation: {ExceptionType} - {Message}", request.Id, ex.GetType().Name, ex.Message);
         }
         catch (Exception ex)
         {
@@ -65,7 +77,7 @@ public class SalesChannelDeleteHandler : IRequestHandler<SalesChannelDeleteComma
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while deleting the sales channel: {ex.Message}");
 
-            _logger.LogError("Error deleting sales channel: {Message}", ex.Message);
+            _logger.LogError("Error deleting sales channel: {ExceptionType} - {Message}", ex.GetType().Name, ex.Message);
         }
 
         return result;

@@ -106,7 +106,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         }
     }
 
-    public async Task UpdateAsync(T entity)
+    public virtual async Task UpdateAsync(T entity)
     {
         // Ensure the entity is being tracked and mark it as modified
         var existingEntry = Context.ChangeTracker.Entries<T>().FirstOrDefault(e => e.Entity.Id == entity.Id);
