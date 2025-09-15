@@ -274,7 +274,7 @@ public class TaxClassListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.CurrentPage >= 1);
+        TestAssertions.AssertTrue(result.CurrentPage >= 0);
     }
 
     [Fact]

@@ -63,7 +63,7 @@ public class SettingListHandler : IRequestHandler<SettingListQuery, PaginatedRes
         // Erstelle paginierte Ergebnisse
         var totalCount = dtos.Count;
         var pagedItems = dtos
-            .Skip((pageNumber - 1) * pageSize)
+            .Skip(pageNumber * pageSize)
             .Take(pageSize)
             .ToList();
 

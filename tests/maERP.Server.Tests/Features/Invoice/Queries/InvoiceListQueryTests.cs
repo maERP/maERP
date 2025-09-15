@@ -279,7 +279,7 @@ public class InvoiceListQueryTests : IDisposable
         await SeedInvoiceTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices?pageNumber=0");
+        var response = await Client.GetAsync("/api/v1/Invoices?pageNumber=-1");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -364,13 +364,13 @@ public class InvoiceListQueryTests : IDisposable
         await SeedInvoiceTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Invoices?pageNumber=1&pageSize=1");
+        var response = await Client.GetAsync("/api/v1/Invoices?pageNumber=0&pageSize=1");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<InvoiceListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(1, result.CurrentPage);
+        TestAssertions.AssertEqual(0, result.CurrentPage);
         TestAssertions.AssertEqual(1, result.PageSize);
         TestAssertions.AssertTrue(result.TotalCount > 0);
         TestAssertions.AssertTrue(result.TotalPages > 0);

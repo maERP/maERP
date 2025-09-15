@@ -15,7 +15,7 @@ public static class QueryableExtensions
         pageSize = pageSize == 0 ? 10 : pageSize;
         int count = await source.CountAsync();
         List<T> items = await source.Skip(pageNumber * pageSize).Take(pageSize).ToListAsync();
-        return PaginatedResult<T>.Success(items, count, pageNumber + 1, pageSize);
+        return PaginatedResult<T>.Success(items, count, pageNumber, pageSize);
     }
 
     public static IQueryable<T> Specify<T>(this IQueryable<T> query, ISpecification<T> spec) where T : class, IBaseEntity

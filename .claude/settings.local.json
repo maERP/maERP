@@ -18,7 +18,9 @@
       "Bash(python3:*)",
       "Bash(pkill:*)",
       "Bash(dotnet --version)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "mcp__ref__ref_search_documentation",
+      "mcp__ref__ref_read_url"
     ],
     "deny": [],
     "ask": []

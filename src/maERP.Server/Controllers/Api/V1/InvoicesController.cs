@@ -23,15 +23,15 @@ public class InvoicesController(IMediator mediator) : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<PaginatedResult<InvoiceListDto>>> GetAll(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<InvoiceListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         // Validate pagination parameters
-        if (pageNumber < 1)
+        if (pageNumber < 0)
         {
             var errorResult = new Result<PaginatedResult<InvoiceListDto>>();
             errorResult.Succeeded = false;
             errorResult.StatusCode = ResultStatusCode.BadRequest;
-            errorResult.Messages.Add("PageNumber muss größer als 0 sein.");
+            errorResult.Messages.Add("PageNumber muss größer oder gleich 0 sein.");
             return BadRequest(errorResult);
         }
 
@@ -49,10 +49,7 @@ public class InvoicesController(IMediator mediator) : ControllerBase
             orderBy = "InvoiceDate Descending";
         }
 
-        // Convert 1-based API input to 0-based for QueryableExtensions
-        var zeroBasedPageNumber = pageNumber - 1;
-
-        var invoices = await mediator.Send(new InvoiceListQuery(zeroBasedPageNumber, pageSize, searchString, orderBy));
+        var invoices = await mediator.Send(new InvoiceListQuery(pageNumber, pageSize, searchString, orderBy));
         return Ok(invoices);
     }
 

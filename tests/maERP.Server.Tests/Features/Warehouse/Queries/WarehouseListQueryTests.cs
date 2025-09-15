@@ -123,7 +123,7 @@ public class WarehouseListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(1, result.CurrentPage);
+        TestAssertions.AssertEqual(0, result.CurrentPage);
         TestAssertions.AssertEqual(5, result.PageSize);
         TestAssertions.AssertTrue(result.Data.Count <= 5);
     }
@@ -274,7 +274,7 @@ public class WarehouseListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.CurrentPage >= 1);
+        TestAssertions.AssertTrue(result.CurrentPage >= 0);
     }
 
     [Fact]
