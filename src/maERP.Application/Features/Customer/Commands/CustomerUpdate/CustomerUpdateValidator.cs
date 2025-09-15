@@ -14,10 +14,25 @@ public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateComma
 
         RuleFor(c => c)
             .MustAsync(CustomerExists).WithMessage("Customer not found");
+
+        // Add uniqueness validation for updates
+        RuleFor(q => q)
+            .MustAsync(IsUniqueAsync).WithMessage("Customer with the same values already exists.");
     }
 
     private async Task<bool> CustomerExists(CustomerUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _customerRepository.ExistsGloballyAsync(command.Id);
+    }
+
+    private async Task<bool> IsUniqueAsync(CustomerUpdateCommand command, CancellationToken cancellationToken)
+    {
+        var customer = new Domain.Entities.Customer
+        {
+            Firstname = command.Firstname,
+            Lastname = command.Lastname
+        };
+
+        return await _customerRepository.IsUniqueAsync(customer, command.Id);
     }
 }

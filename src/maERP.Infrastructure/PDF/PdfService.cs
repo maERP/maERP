@@ -35,13 +35,17 @@ public class PdfService : IPdfService
     public PdfService(ISettingRepository settingRepository)
     {
         // Den PDFsharp FontResolver initialisieren, falls er noch nicht gesetzt ist
-        if (GlobalFontSettings.FontResolver == null)
+        try
         {
-            GlobalFontSettings.FontResolver = new StandardFontResolver();
+            if (GlobalFontSettings.FontResolver == null)
+            {
+                GlobalFontSettings.FontResolver = new CustomFontResolver();
+            }
         }
-
-        // Explizit den FontCache aktivieren um Null-Referenzen zu verhindern
-        PdfSharp.Fonts.GlobalFontSettings.FontResolver = new StandardFontResolver();
+        catch
+        {
+            // Ignore font resolver issues - wird zur Laufzeit behandelt
+        }
 
         _settingRepository = settingRepository;
         LoadCompanySettings();
@@ -206,7 +210,7 @@ public class PdfService : IPdfService
         if (table == null)
             throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
 
-        table.Borders = table.Borders ?? new Borders();
+        table.Borders = new Borders();
         table.Borders.Visible = false;
 
         // Spalten hinzufügen
@@ -215,8 +219,8 @@ public class PdfService : IPdfService
 
         // Zeile erstellen
         var row = table.AddRow();
-        if (row == null || row.Cells.Count < 2)
-            throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
+        if (row == null)
+            throw new InvalidOperationException("Tabellenzeile konnte nicht erstellt werden");
 
         // Linke Spalte: Logo und Firmeninfos
         var cell = row.Cells[0];
@@ -274,14 +278,14 @@ public class PdfService : IPdfService
         if (table == null)
             throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
 
-        table.Borders = table.Borders ?? new Borders();
+        table.Borders = new Borders();
         table.Borders.Visible = false;
 
         table.AddColumn(Unit.FromCentimeter(8.5));
         table.AddColumn(Unit.FromCentimeter(8.5));
 
         var row = table.AddRow();
-        if (row == null || row.Cells.Count < 2)
+        if (row == null)
             throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
 
         // Rechnungsadresse
@@ -341,7 +345,7 @@ public class PdfService : IPdfService
         if (table == null)
             throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
 
-        table.Borders = table.Borders ?? new Borders();
+        table.Borders = new Borders();
         table.Borders.Width = 0.5;
 
         // Spalten definieren
@@ -354,7 +358,7 @@ public class PdfService : IPdfService
 
         // Header-Zeile
         var headerRow = table.AddRow();
-        if (headerRow == null || headerRow.Cells.Count < 6)
+        if (headerRow == null)
             throw new InvalidOperationException("Header-Zeile konnte nicht korrekt erstellt werden");
         headerRow.HeadingFormat = true;
         headerRow.Format.Font.Bold = true;
@@ -416,14 +420,14 @@ public class PdfService : IPdfService
         if (table == null)
             throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
 
-        table.Borders = table.Borders ?? new Borders();
+        table.Borders = new Borders();
         table.Borders.Visible = false;
 
         table.AddColumn(Unit.FromCentimeter(12));
         table.AddColumn(Unit.FromCentimeter(5));
 
         var row = table.AddRow();
-        if (row == null || row.Cells.Count < 2)
+        if (row == null)
             throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
 
         // Leere linke Zelle
@@ -506,8 +510,8 @@ public class PdfService : IPdfService
 
         var paragraph = section.AddParagraph();
         paragraph.Format.SpaceBefore = Unit.FromCentimeter(1);
-        paragraph.Format.Borders = paragraph.Format.Borders ?? new Borders();
-        paragraph.Format.Borders.Top = paragraph.Format.Borders.Top ?? new Border();
+        paragraph.Format.Borders = new Borders();
+        paragraph.Format.Borders.Top = new Border();
         paragraph.Format.Borders.Top.Width = 1;
         paragraph.Format.Borders.Top.Color = new Color(180, 180, 180);
 
@@ -515,7 +519,7 @@ public class PdfService : IPdfService
         if (table == null)
             throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
 
-        table.Borders = table.Borders ?? new Borders();
+        table.Borders = new Borders();
         table.Borders.Visible = false;
 
         table.AddColumn(Unit.FromCentimeter(5.5));
@@ -523,7 +527,7 @@ public class PdfService : IPdfService
         table.AddColumn(Unit.FromCentimeter(6));
 
         var row = table.AddRow();
-        if (row == null || row.Cells.Count < 3)
+        if (row == null)
             throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
 
         // Firmendaten
