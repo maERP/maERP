@@ -52,7 +52,7 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
 
             // Add test authentication
             services.AddAuthentication("Test")
-                .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
+                .AddScheme<TestAuthenticationOptions, TestAuthenticationHandler>(
                     "Test", options => { });
 
             // Override authorization to allow all
@@ -68,9 +68,8 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             if (tenantContextDescriptor != null)
                 services.Remove(tenantContextDescriptor);
 
-            // Register TestTenantContext as singleton to ensure the same instance is used across all requests
-            // This is crucial for Global Query Filters to work correctly in tests
-            services.AddSingleton<ITenantContext, TestTenantContext>();
+            // Register TestTenantContext as scoped to ensure proper isolation between tests
+            services.AddScoped<ITenantContext, TestTenantContext>();
 
             // Add Identity services for tests
             services.AddIdentity<ApplicationUser, IdentityRole>()

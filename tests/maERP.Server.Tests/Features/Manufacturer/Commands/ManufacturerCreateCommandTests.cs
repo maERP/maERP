@@ -142,7 +142,7 @@ public class ManufacturerCreateCommandTests : IDisposable
         TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task CreateManufacturer_WithoutTenantHeader_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();
@@ -375,7 +375,7 @@ public class ManufacturerCreateCommandTests : IDisposable
         TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task CreateManufacturer_WithNonExistentTenant_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();
@@ -470,7 +470,7 @@ public class ManufacturerCreateCommandTests : IDisposable
         TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task CreateManufacturer_TenantIsolation_ShouldNotSeeOtherTenantData()
     {
         await SeedTestDataAsync();

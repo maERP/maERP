@@ -167,7 +167,7 @@ public class CustomerCreateCommandTests : IDisposable
         TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, createdCustomer.TenantId);
     }
 
-    [Fact(Skip = "Todo: implement later")]
+    [Fact]
     public async Task CreateCustomer_WithoutTenantHeader_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();

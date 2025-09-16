@@ -178,7 +178,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual<Guid>(Manufacturer1Id, result.Data);
     }
 
-    [Fact(Skip = "Todo: implement features")]
+    [Fact]
     public async Task UpdateManufacturer_WithoutTenantHeader_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();
@@ -201,7 +201,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement features")]
+    [Fact]
     public async Task UpdateManufacturer_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
@@ -247,7 +247,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement features")]
+    [Fact]
     public async Task UpdateManufacturer_WithDuplicateNameInSameTenant_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -332,7 +332,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement features")]
+    [Fact]
     public async Task UpdateManufacturer_TenantIsolation_ShouldUpdateOnlyOwnTenantData()
     {
         await SeedTestDataAsync();
@@ -376,7 +376,7 @@ public class ManufacturerUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual<Guid>(Manufacturer3Id, result.Data);
     }
 
-    [Fact(Skip = "Todo: implement features")]
+    [Fact]
     public async Task UpdateManufacturer_WithNonExistentTenant_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();

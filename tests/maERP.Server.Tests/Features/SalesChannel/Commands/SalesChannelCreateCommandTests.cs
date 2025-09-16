@@ -202,7 +202,7 @@ public class SalesChannelCreateCommandTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: Not implemented yet")]
+    [Fact]
     public async Task CreateSalesChannel_WithoutTenantHeader_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -213,7 +213,7 @@ public class SalesChannelCreateCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: Not implemented yet")]
+    [Fact]
     public async Task CreateSalesChannel_WithNonExistentTenant_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
@@ -244,7 +244,7 @@ public class SalesChannelCreateCommandTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: Not implemented yet")]
+    [Fact]
     public async Task CreateSalesChannel_WithCrossTenantWarehouseIds_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -318,7 +318,7 @@ public class SalesChannelCreateCommandTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: Not implemented yet")]
+    [Fact]
     public async Task CreateSalesChannel_TenantIsolation_ShouldOnlyCreateInCorrectTenant()
     {
         await SeedTestDataAsync();

@@ -1,73 +1,14 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.AiPrompt.Queries;
 
-public class AiPromptDetailQueryTests : IDisposable
+public class AiPromptDetailQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public AiPromptDetailQueryTests()
-    {
-        // Create a unique factory per test class to ensure complete isolation
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_AiPromptDetailQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        // Ensure database is created for this test
-        DbContext.Database.EnsureCreated();
-
-        // Initialize tenant context with default tenants and reset current tenant
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
 
     [Fact]
     public async Task GetAiPromptById_WithValidIdAndTenant_ShouldReturnPromptDetails()
@@ -292,18 +233,19 @@ public class AiPromptDetailQueryTests : IDisposable
     [Theory]
     [InlineData("0")]
     [InlineData("-1")]
-    public async Task GetAiPromptById_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task GetAiPromptById_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+        SetInvalidTenantHeaderValue(invalidTenantId);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+        var responseContent = await ReadResponseStringAsync(response);
+        TestAssertions.AssertTrue(responseContent.Contains("Invalid X-Tenant-Id header format"));
     }
 
     [Theory]
@@ -323,18 +265,19 @@ public class AiPromptDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetAiPromptById_WithEmptyStringTenantHeader_ShouldReturnNotFound()
+    public async Task GetAiPromptById_WithEmptyStringTenantHeader_ShouldReturnUnauthorized()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", ""); // HttpClient treats empty string headers like missing headers
+        SetInvalidTenantHeaderValue("");
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
-        // Assert - Empty string headers are not transmitted by HttpClient, so this behaves like missing header in test environment
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        // Assert
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+        var responseContent = await ReadResponseStringAsync(response);
+        TestAssertions.AssertTrue(responseContent.Contains("Invalid X-Tenant-Id header format"));
     }
 
     [Fact]

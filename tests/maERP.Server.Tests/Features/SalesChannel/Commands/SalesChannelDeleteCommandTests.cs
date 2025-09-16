@@ -249,7 +249,7 @@ public class SalesChannelDeleteCommandTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteSalesChannel_WithoutTenantHeader_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -259,7 +259,7 @@ public class SalesChannelDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteSalesChannel_TenantIsolation_ShouldOnlyDeleteOwnTenantData()
     {
         await SeedTestDataAsync();
@@ -335,7 +335,7 @@ public class SalesChannelDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: check later")]
+    [Fact]
     public async Task DeleteSalesChannel_WithWarehouseRelationships_ShouldDeleteSuccessfully()
     {
         await SeedTestDataAsync();
@@ -385,7 +385,7 @@ public class SalesChannelDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.OK, response3.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteSalesChannel_WithNonExistentTenant_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();

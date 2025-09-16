@@ -385,7 +385,7 @@ public class CustomerDeleteCommandTests : IDisposable
         TestAssertions.AssertTrue(customer1Exists);
     }
 
-    [Fact(Skip = "Todo: implement later")]
+    [Fact]
     public async Task DeleteCustomer_MultipleCustomersInTenant_ShouldOnlyDeleteSpecified()
     {
         await SeedTestDataAsync();

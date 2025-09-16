@@ -1,14 +1,16 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Infrastructure;
 
-public class TestAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticationOptions>
 {
-    public TestAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
+    public TestAuthenticationHandler(IOptionsMonitor<TestAuthenticationOptions> options,
         ILoggerFactory logger, UrlEncoder encoder)
         : base(options, logger, encoder)
     {
@@ -16,13 +18,38 @@ public class TestAuthenticationHandler : AuthenticationHandler<AuthenticationSch
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var claims = new[]
+        // Check if test should be unauthenticated
+        if (Context.Request.Headers.ContainsKey("X-Test-Unauthenticated"))
         {
-            new Claim(ClaimTypes.Name, "TestUser"),
-            new Claim(ClaimTypes.NameIdentifier, "123"),
-            new Claim("tenantId", "1"),
-            new Claim("availableTenants", "[{\"Id\": 1, \"Name\": \"Test Tenant 1\"}, {\"Id\": 2, \"Name\": \"Test Tenant 2\"}]")
+            return Task.FromResult(AuthenticateResult.NoResult());
+        }
+
+        // Get tenant configuration from options or use defaults
+        var testTenantIds = Options.AssignedTenantIds ?? new[] {
+            TenantConstants.TestTenant1Id,
+            TenantConstants.TestTenant2Id
         };
+
+        var defaultTenantId = Options.DefaultTenantId ?? testTenantIds.FirstOrDefault();
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, Options.Username ?? "TestUser"),
+            new Claim(ClaimTypes.NameIdentifier, Options.UserId ?? Guid.NewGuid().ToString()),
+            new Claim("tenantId", defaultTenantId.ToString()),
+            new Claim("availableTenants", JsonSerializer.Serialize(
+                testTenantIds.Select(id => new { Id = id.ToString(), Name = $"Test Tenant {id}" })
+            ))
+        };
+
+        // Add role claims if specified
+        if (Options.Roles != null)
+        {
+            foreach (var role in Options.Roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+        }
 
         var identity = new ClaimsIdentity(claims, "Test");
         var principal = new ClaimsPrincipal(identity);

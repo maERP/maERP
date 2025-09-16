@@ -1,69 +1,14 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.AiPrompt.Queries;
 
-public class AiPromptListQueryTests : IDisposable
+public class AiPromptListQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public AiPromptListQueryTests()
-    {
-        // Create a unique factory per test class to ensure complete isolation
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_AiPromptListQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        // Ensure database is created for this test
-        DbContext.Database.EnsureCreated();
-
-        // Initialize tenant context with default tenants and reset current tenant
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
-
     [Fact]
     public async Task GetAiPrompts_WithValidTenant_ShouldReturnTenantData()
     {
@@ -435,22 +380,19 @@ public class AiPromptListQueryTests : IDisposable
     [InlineData("-1")]
     [InlineData("abc")]
     [InlineData("")]
-    public async Task GetAiPrompts_WithInvalidTenantHeaderValue_ShouldReturnEmptyResult(string invalidTenantId)
+    public async Task GetAiPrompts_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+        SetInvalidTenantHeaderValue(invalidTenantId);
 
         // Act
         var response = await Client.GetAsync("/api/v1/AiPrompts");
 
-        // Assert
-        TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<PaginatedResult<AiPromptListDto>>(response);
-        TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEmpty(result.Data);
+        // Assert - Invalid header format should return Unauthorized
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        var responseContent = await ReadResponseStringAsync(response);
+        TestAssertions.AssertTrue(responseContent.Contains("Invalid X-Tenant-Id header format"));
     }
 
     [Fact]

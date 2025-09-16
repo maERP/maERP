@@ -1,64 +1,14 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.AiPrompt.Commands;
 
-public class AiPromptDeleteCommandTests : IDisposable
+public class AiPromptDeleteCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public AiPromptDeleteCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_AiPromptDeleteCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task<(Guid tenant1PromptId, Guid tenant2PromptId)> SeedTestDataAsync()
     {
         var hasData = await DbContext.AiPrompt.IgnoreQueryFilters().AnyAsync();
@@ -79,13 +29,6 @@ public class AiPromptDeleteCommandTests : IDisposable
             .FirstAsync();
 
         return (tenant1PromptId, tenant2PromptId);
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
@@ -177,25 +120,30 @@ public class AiPromptDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteAiPrompt_WithoutTenantHeader_ShouldReturnNotFound()
+    public async Task DeleteAiPrompt_WithoutTenantHeader_ShouldReturnUnauthorized()
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
+        SimulateUnauthenticatedRequest(); // Make request unauthenticated
+        RemoveTenantHeader(); // Ensure no tenant header
 
-        // Act (no tenant header set)
+        // Act
         var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
 
         // Assert
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        var responseContent = await ReadResponseStringAsync(response);
+        TestAssertions.AssertTrue(responseContent.Contains("X-Tenant-Id header is required"));
 
         // Verify prompt still exists in tenant 1
+        SimulateAuthenticatedRequest();
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
         TestAssertions.AssertHttpSuccess(getResponse);
     }
 
     [Fact]
-    public async Task DeleteAiPrompt_WithInvalidTenantHeader_ShouldReturnNotFound()
+    public async Task DeleteAiPrompt_WithInvalidTenantHeaderValue_ShouldReturnNotFound()
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
@@ -433,18 +381,19 @@ public class AiPromptDeleteCommandTests : IDisposable
     [InlineData("-1")]
     [InlineData("abc")]
     [InlineData("")]
-    public async Task DeleteAiPrompt_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task DeleteAiPrompt_WithInvalidGuidTenantHeader_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         var (tenant1PromptId, _) = await SeedTestDataAsync();
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+        SetInvalidTenantHeaderValue(invalidTenantId);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/AiPrompts/{tenant1PromptId}");
 
-        // Assert
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        // Assert - Invalid header format should return Unauthorized
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        var responseContent = await ReadResponseStringAsync(response);
+        TestAssertions.AssertTrue(responseContent.Contains("Invalid X-Tenant-Id header format"));
     }
 
     [Fact]

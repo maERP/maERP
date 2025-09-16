@@ -237,7 +237,7 @@ public class CustomerUpdateCommandTests : IDisposable
         TestAssertions.AssertFalse(result.Succeeded);
     }
 
-    [Fact(Skip = "Todo: Implement tenant check")]
+    [Fact]
     public async Task UpdateCustomer_WithoutTenantHeader_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();

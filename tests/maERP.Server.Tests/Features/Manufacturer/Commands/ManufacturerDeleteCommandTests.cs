@@ -177,7 +177,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteManufacturer_WithoutTenantHeader_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();
@@ -202,7 +202,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteManufacturer_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
@@ -252,7 +252,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteManufacturer_TenantIsolation_ShouldOnlyDeleteOwnTenantData()
     {
         await SeedTestDataAsync();
@@ -270,7 +270,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, tenant2Manufacturer.TenantId);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteManufacturer_WithTenant2Data_ShouldDeleteCorrectly()
     {
         await SeedTestDataAsync();
@@ -284,7 +284,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
         Assert.Null(deletedManufacturer);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteManufacturer_WithNonExistentTenant_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();
@@ -439,7 +439,7 @@ public class ManufacturerDeleteCommandTests : IDisposable
         TestAssertions.AssertFalse(result.Succeeded);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteManufacturer_CrossTenantCheck_ShouldMaintainIsolation()
     {
         await SeedTestDataAsync();

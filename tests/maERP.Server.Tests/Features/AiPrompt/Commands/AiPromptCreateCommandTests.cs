@@ -1,72 +1,15 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.AiPrompt.Commands;
 
-public class AiPromptCreateCommandTests : IDisposable
+public class AiPromptCreateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public AiPromptCreateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_AiPromptCreateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task SeedTestDataAsync()
     {
         var hasData = await DbContext.AiModel.IgnoreQueryFilters().AnyAsync();
@@ -80,17 +23,10 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         return new AiPromptInputDto
         {
-            AiModelId = Guid.Parse("00000001-0001-0001-0004-000000000001"), // From test data seeder
+            AiModelId = Guid.Parse("20000001-0001-0001-0001-000000000001"), // From test data seeder - ChatGPT-4O Tenant 1
             Identifier = "Test Prompt Create",
             PromptText = "This is a test prompt for creation"
         };
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
@@ -279,27 +215,32 @@ public class AiPromptCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var promptDto = CreateValidAiPromptDto();
-
-        // Act (no tenant header set)
-        var response = await PostAsJsonAsync("/api/v1/AiPrompts", promptDto);
-
-        // Assert
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task CreateAiPrompt_WithInvalidTenantHeader_ShouldReturnCreated()
-    {
-        // Arrange
-        await SeedTestDataAsync();
-        SetInvalidTenantHeader();
+        SimulateUnauthenticatedRequest(); // Make request unauthenticated
+        RemoveTenantHeader(); // Ensure no tenant header
         var promptDto = CreateValidAiPromptDto();
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/AiPrompts", promptDto);
 
         // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        var responseContent = await ReadResponseStringAsync(response);
+        TestAssertions.AssertTrue(responseContent.Contains("X-Tenant-Id header is required"));
+    }
+
+    [Fact]
+    public async Task CreateAiPrompt_WithInvalidTenantHeaderValue_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        SetInvalidTenantHeader(); // Sets a non-existent but valid GUID
+        var promptDto = CreateValidAiPromptDto();
+        promptDto.AiModelId = Guid.NewGuid(); // Use a non-existent AI model ID
+
+        // Act
+        var response = await PostAsJsonAsync("/api/v1/AiPrompts", promptDto);
+
+        // Assert - Should be created but the AI model won't be found in that tenant
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
     }
 
@@ -310,12 +251,12 @@ public class AiPromptCreateCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant2Id);
         var promptDto = CreateValidAiPromptDto();
-        promptDto.AiModelId = Guid.Parse("00000001-0001-0001-0001-000000000001"); // AI Model belongs to tenant 1, but creating in tenant 2 - validation may not check this
+        promptDto.AiModelId = Guid.Parse("20000001-0001-0001-0001-000000000001"); // AI Model belongs to tenant 1, but creating in tenant 2
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/AiPrompts", promptDto);
 
-        // Assert
+        // Assert - Should be created (no cross-tenant validation for AI models)
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);

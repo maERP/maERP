@@ -80,6 +80,54 @@ dotnet test tests/maERP.Server.Tests/maERP.Server.Tests.csproj --filter "FullyQu
 dotnet test tests/maERP.Server.Tests/maERP.Server.Tests.csproj --filter "FullyQualifiedName~CustomerCrudTest.CustomerCreateTest"
 ```
 
+#### Multi-Tenant Testing Infrastructure
+
+The project uses a specialized testing infrastructure for multi-tenant scenarios:
+
+**TenantIsolatedTestBase**: All multi-tenant tests should inherit from `TenantIsolatedTestBase` instead of implementing their own test setup. This base class provides:
+
+- **Automatic test isolation**: Each test gets its own database and tenant context
+- **Built-in tenant management**: Helper methods for setting tenant headers and simulating different scenarios
+- **Proper authentication simulation**: Support for authenticated/unauthenticated requests
+
+**Usage Example**:
+```csharp
+public class MyTenantAwareTests : TenantIsolatedTestBase
+{
+    [Fact]
+    public async Task MyTest_WithTenant1_ShouldReturnTenant1Data()
+    {
+        // Arrange
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        // Act
+        var response = await Client.GetAsync("/api/v1/MyResource");
+
+        // Assert
+        TestAssertions.AssertHttpSuccess(response);
+        // ... additional assertions
+    }
+}
+```
+
+**Available Helper Methods**:
+- `SetTenantHeader(Guid tenantId)` - Set valid tenant header
+- `SetInvalidTenantHeader()` - Set non-existent but valid GUID tenant header
+- `SetInvalidTenantHeaderValue(string value)` - Set invalid header format
+- `RemoveTenantHeader()` - Remove tenant header entirely
+- `SimulateUnauthenticatedRequest()` - Make request unauthenticated
+- `SimulateAuthenticatedRequest()` - Make request authenticated
+- `PostAsJsonAsync<T>()`, `PutAsJsonAsync<T>()` - HTTP helper methods
+- `ReadResponseAsync<T>()`, `ReadResponseStringAsync()` - Response parsing helpers
+
+**Testing Scenarios**:
+- Tenant data isolation (each tenant sees only their data)
+- Cross-tenant access prevention
+- Missing/invalid tenant header handling
+- Authentication and authorization with tenants
+- Unauthenticated request handling
+
 ### Database Migrations
 
 The project supports multiple database providers (MySQL, PostgreSQL, MSSQL) with separate migration assemblies:
@@ -145,3 +193,10 @@ dotnet format
 - IMPORTANT: cascade deletes must be implemented in the handler or repository
 - Pagination is zero-based and defined in QueryableExtensions.cs
 - IMPORTANT: all Entities are using System.Guid for Id, defined in BaseEntity.cs
+# Multi-Tenant Testing Guidelines
+- IMPORTANT: All multi-tenant tests MUST inherit from TenantIsolatedTestBase for proper isolation
+- IMPORTANT: Use TestDataSeeder.SeedTestDataAsync() to populate test data across tenants
+- IMPORTANT: Always test tenant isolation scenarios - verify each tenant only sees their own data
+- IMPORTANT: Test both authenticated and unauthenticated scenarios using helper methods
+- IMPORTANT: Verify proper HTTP status codes for missing/invalid tenant headers (Unauthorized for invalid format, NotFound for valid but non-existent tenant)
+- IMPORTANT: When creating new multi-tenant features, add comprehensive tests covering all tenant scenarios

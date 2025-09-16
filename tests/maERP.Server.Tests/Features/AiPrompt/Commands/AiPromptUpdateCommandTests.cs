@@ -1,79 +1,15 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.AiPrompt.Commands;
 
-public class AiPromptUpdateCommandTests : IDisposable
+public class AiPromptUpdateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public AiPromptUpdateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_AiPromptUpdateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PutAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task<Guid> SeedTestDataAsync()
     {
         var hasData = await DbContext.AiPrompt.IgnoreQueryFilters().AnyAsync();
@@ -97,13 +33,6 @@ public class AiPromptUpdateCommandTests : IDisposable
             Identifier = "Updated Test Prompt",
             PromptText = "This is an updated test prompt"
         };
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
