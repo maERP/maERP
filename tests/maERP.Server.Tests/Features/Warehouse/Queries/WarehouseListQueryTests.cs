@@ -81,7 +81,7 @@ public class WarehouseListQueryTests : IDisposable
         TestAssertions.AssertTrue(result.TotalCount > 0);
     }
 
-    [Fact(Skip = "Todo: Implement tenant validation")]
+    [Fact]
     public async Task GetWarehouseList_WithoutTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -94,7 +94,7 @@ public class WarehouseListQueryTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Implement tenant validation")]
+    [Fact]
     public async Task GetWarehouseList_WithInvalidTenant_ShouldReturnNotFound()
     {
         // Arrange
@@ -322,7 +322,7 @@ public class WarehouseListQueryTests : IDisposable
         }
     }
 
-    [Theory(Skip = "Todo: Implement tenant validation")]
+    [Theory]
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]

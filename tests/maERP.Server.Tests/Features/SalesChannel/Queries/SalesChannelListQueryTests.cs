@@ -179,7 +179,7 @@ public class SalesChannelListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result.Data);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task GetSalesChannelsList_WithoutTenantHeader_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();

@@ -268,7 +268,7 @@ public class SalesChannelUpdateCommandTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task UpdateSalesChannel_WithoutTenantHeader_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -279,7 +279,7 @@ public class SalesChannelUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task UpdateSalesChannel_TenantIsolation_ShouldOnlyUpdateOwnTenantData()
     {
         await SeedTestDataAsync();
@@ -370,7 +370,7 @@ public class SalesChannelUpdateCommandTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task UpdateSalesChannel_WithCrossTenantWarehouseIds_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -574,7 +574,7 @@ public class SalesChannelUpdateCommandTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task UpdateSalesChannel_WithNonExistentTenant_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();

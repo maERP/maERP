@@ -14,12 +14,20 @@ public static class TestDataSeeder
 
     public static async Task SeedTestDataAsync(ApplicationDbContext context, ITenantContext? tenantContext = null)
     {
-        // Use context hash code to track seeded contexts
-        var contextId = context.GetHashCode();
+        // For InMemory databases in tests, don't rely on static caching as it can cause issues
+        // with database state consistency between different HTTP client instances
+        var isInMemoryDatabase = context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory";
 
-        if (_seededContexts.ContainsKey(contextId))
+        // Use database name + context hash for better uniqueness in InMemory scenarios
+        var databaseName = isInMemoryDatabase
+            ? Environment.GetEnvironmentVariable("TEST_DB_NAME") ?? "InMemoryTest"
+            : "unknown";
+        var contextKey = $"{databaseName}_{context.GetHashCode()}";
+        var contextId = contextKey.GetHashCode();
+
+        if (!isInMemoryDatabase && _seededContexts.ContainsKey(contextId))
         {
-            return; // Already seeded
+            return; // Already seeded (only for non-InMemory databases)
         }
 
         // Check if data is already seeded to avoid duplicate operations
@@ -43,7 +51,11 @@ public static class TestDataSeeder
                 SeedAiPrompts(context, tenantContext);
                 await context.SaveChangesAsync();
 
-                _seededContexts.TryAdd(contextId, true);
+                // Only cache for non-InMemory databases to avoid state inconsistencies
+                if (!isInMemoryDatabase)
+                {
+                    _seededContexts.TryAdd(contextId, true);
+                }
             }
         }
         finally

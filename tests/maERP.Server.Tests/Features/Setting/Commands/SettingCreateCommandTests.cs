@@ -209,7 +209,7 @@ public class SettingCreateCommandTests : IDisposable
         TestAssertions.AssertNotEqual(Guid.Empty, result.Data);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task CreateSetting_WithTenant1_ShouldIsolateFromTenant2()
     {
         await SeedTestDataAsync();
@@ -351,7 +351,7 @@ public class SettingCreateCommandTests : IDisposable
         TestAssertions.AssertFalse(result!.Succeeded);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task CreateSetting_MultipleTenants_ShouldMaintainSeparateNamespaces()
     {
         await SeedTestDataAsync();
@@ -414,7 +414,7 @@ public class SettingCreateCommandTests : IDisposable
         TestAssertions.AssertEqual(ResultStatusCode.Created, result.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task CreateSetting_WithInvalidTenantHeader_ShouldCreateWithNullTenant()
     {
         await SeedTestDataAsync();

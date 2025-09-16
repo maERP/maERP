@@ -113,7 +113,7 @@ public class TaxClassCreateCommandTests : IDisposable
         TestAssertions.AssertNotEqual(Guid.Empty, result.Data);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task CreateTaxClass_WithoutTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -127,7 +127,7 @@ public class TaxClassCreateCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task CreateTaxClass_WithInvalidTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -203,7 +203,7 @@ public class TaxClassCreateCommandTests : IDisposable
         TestAssertions.AssertTrue(result.Succeeded);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task CreateTaxClass_TenantIsolation_ShouldCreateSeparatelyForEachTenant()
     {
         // Arrange
@@ -293,7 +293,7 @@ public class TaxClassCreateCommandTests : IDisposable
         }
     }
 
-    [Theory(Skip = "Todo: Tenant isolation")]
+    [Theory]
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
@@ -369,7 +369,7 @@ public class TaxClassCreateCommandTests : IDisposable
         TestAssertions.AssertTrue(result.Succeeded);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task CreateTaxClass_AfterTenantSwitch_ShouldCreateInCorrectTenant()
     {
         // Arrange

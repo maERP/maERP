@@ -92,7 +92,7 @@ public class TaxClassDetailQueryTests : IDisposable
         TestAssertions.AssertTrue(result.Data?.TaxRate >= 0);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task GetTaxClassById_WithValidIdButDifferentTenant_ShouldReturnNotFound()
     {
         // Arrange
@@ -126,7 +126,7 @@ public class TaxClassDetailQueryTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task GetTaxClassById_WithoutTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -145,7 +145,7 @@ public class TaxClassDetailQueryTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task GetTaxClassById_WithInvalidTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -261,7 +261,7 @@ public class TaxClassDetailQueryTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task GetTaxClassById_TenantIsolation_ShouldNotReturnDataFromOtherTenants()
     {
         // Arrange
@@ -321,7 +321,7 @@ public class TaxClassDetailQueryTests : IDisposable
         }
     }
 
-    [Theory(Skip = "Todo: Tenant isolation")]
+    [Theory]
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]

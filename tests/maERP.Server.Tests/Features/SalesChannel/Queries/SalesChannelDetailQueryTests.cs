@@ -209,7 +209,7 @@ public class SalesChannelDetailQueryTests : IDisposable
         TestAssertions.AssertEqual("WooCommerce Store T1", result.Data.Name);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task GetSalesChannelDetail_WithoutTenantHeader_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();

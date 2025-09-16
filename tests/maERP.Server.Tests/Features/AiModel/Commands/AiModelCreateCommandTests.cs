@@ -1,78 +1,15 @@
 using System.Net;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.AiModel.Commands;
 
-public class AiModelCreateCommandTests : IDisposable
+public class AiModelCreateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public AiModelCreateCommandTests()
-    {
-        // Create a unique factory per test class to ensure complete isolation
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_AiModelCreateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        // Ensure database is created for this test
-        DbContext.Database.EnsureCreated();
-
-        // Initialize tenant context with default tenants and reset current tenant
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
 
     [Fact]
     public async Task CreateAiModel_WithValidApiKey_ShouldReturnCreated()
@@ -88,7 +25,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
@@ -113,7 +50,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
@@ -141,7 +78,7 @@ public class AiModelCreateCommandTests : IDisposable
             };
 
             // Act
-            var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+            var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
             // Assert
             TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
@@ -166,7 +103,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -190,7 +127,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -214,7 +151,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -238,7 +175,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -262,7 +199,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -286,7 +223,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -310,11 +247,11 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Create first model
-        var firstResponse = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var firstResponse = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
         TestAssertions.AssertHttpStatusCode(firstResponse, HttpStatusCode.Created);
 
         // Act - Try to create second model with same name
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
@@ -338,12 +275,12 @@ public class AiModelCreateCommandTests : IDisposable
 
         // Create model in tenant 1
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var response1 = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response1 = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
         TestAssertions.AssertHttpStatusCode(response1, HttpStatusCode.Created);
 
         // Act - Create model with same name in tenant 2
         SetTenantHeader(TenantConstants.TestTenant2Id);
-        var response2 = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response2 = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert - Should succeed because different tenants
         TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.Created);
@@ -357,6 +294,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithoutTenantHeader_ShouldHandleGracefully()
     {
         // Arrange
+        RemoveTenantHeader();
         var createCommand = new AiModelInputDto
         {
             Name = "No Tenant Model",
@@ -366,7 +304,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act - No tenant header set
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert - Should still process the request (tenant context may default to null)
         TestAssertions.AssertHttpSuccess(response);
@@ -376,7 +314,7 @@ public class AiModelCreateCommandTests : IDisposable
     public async Task CreateAiModel_WithInvalidTenantHeader_ShouldHandleGracefully()
     {
         // Arrange
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Invalid tenant
+        SetInvalidTenantHeader(); // Use helper method for non-existent tenant
         var createCommand = new AiModelInputDto
         {
             Name = "Invalid Tenant Model",
@@ -386,7 +324,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpSuccess(response);
@@ -409,7 +347,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
@@ -432,7 +370,7 @@ public class AiModelCreateCommandTests : IDisposable
         };
 
         // Act
-        var response = await Client.PostAsJsonAsync("/api/v1/AiModels", createCommand);
+        var response = await PostAsJsonAsync("/api/v1/AiModels", createCommand);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);

@@ -1,76 +1,16 @@
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 using maERP.Domain.Constants;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.AiModel.Commands;
 
-public class AiModelDeleteCommandTests : IDisposable
+public class AiModelDeleteCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public AiModelDeleteCommandTests()
-    {
-        // Create a unique factory per test class to ensure complete isolation
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_AiModelDeleteCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        // Ensure database is created for this test
-        DbContext.Database.EnsureCreated();
-
-        // Initialize tenant context with default tenants and reset current tenant
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999")); // Non-existent tenant ID for testing tenant isolation
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     protected async Task<Guid> CreateTestAiModel(string name = "Test Model", AiModelType aiModelType = AiModelType.ChatGpt4O)
     {
@@ -88,12 +28,6 @@ public class AiModelDeleteCommandTests : IDisposable
         return result.Data;
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
 
     [Fact]
     public async Task DeleteAiModel_WithValidId_ShouldReturnNoContent()
@@ -241,21 +175,20 @@ public class AiModelDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteAiModel_WithoutTenantHeader_ShouldHandleGracefully()
+    public async Task DeleteAiModel_WithoutTenantHeader_ShouldReturnNoContent()
     {
         // Arrange
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var createdId = await CreateTestAiModel();
 
         // Remove tenant header
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        RemoveTenantHeader();
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/AiModels/{createdId}");
 
-        // Assert - Should handle gracefully (could succeed or fail based on business logic)
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.NoContent ||
-                                 response.StatusCode == HttpStatusCode.BadRequest);
+        // Assert - DELETE is idempotent, returns NoContent even without tenant header
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NoContent);
     }
 
     [Fact]
@@ -270,8 +203,24 @@ public class AiModelDeleteCommandTests : IDisposable
         // Act
         var response = await Client.DeleteAsync($"/api/v1/AiModels/{createdId}");
 
-        // Assert - Returns NoContent due to idempotent behavior
+        // Assert - DELETE is idempotent, returns NoContent even with invalid tenant (model not found in that tenant)
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task DeleteAiModel_WithMalformedTenantHeader_ShouldReturnUnauthorized()
+    {
+        // Arrange
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var createdId = await CreateTestAiModel();
+
+        SetInvalidTenantHeaderValue("invalid-guid-format");
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/AiModels/{createdId}");
+
+        // Assert - Malformed tenant header should return Unauthorized
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
     }
 
     [Fact]

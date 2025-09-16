@@ -140,7 +140,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(getResponse, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task DeleteTaxClass_WithoutTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -154,7 +154,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task DeleteTaxClass_WithInvalidTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -169,7 +169,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task DeleteTaxClass_FromDifferentTenant_ShouldReturnNotFound()
     {
         // Arrange
@@ -203,7 +203,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task DeleteTaxClass_TenantIsolation_ShouldOnlyDeleteOwnTenant()
     {
         // Arrange
@@ -291,7 +291,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(getResponse, HttpStatusCode.NotFound);
     }
 
-    [Theory(Skip = "Todo: Tenant isolation")]
+    [Theory]
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
@@ -421,7 +421,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpSuccess(getResponse3);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task DeleteTaxClass_AfterTenantSwitch_ShouldDeleteFromCorrectTenant()
     {
         // Arrange

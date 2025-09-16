@@ -21,7 +21,9 @@
       "Read(//tmp/**)",
       "mcp__ref__ref_search_documentation",
       "mcp__ref__ref_read_url",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(dotnet run:*)",
+      "Read(//dev/**)"
     ],
     "deny": [],
     "ask": []

@@ -350,7 +350,7 @@ public class SettingDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(null, settingAfter);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteSetting_SystemSettings_ShouldDeleteWithoutTenantRestriction()
     {
         await SeedTestDataAsync();
@@ -406,7 +406,7 @@ public class SettingDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteSetting_WithInvalidTenantHeader_ShouldReturnNotFoundForTenantSpecificSetting()
     {
         await SeedTestDataAsync();
@@ -426,7 +426,7 @@ public class SettingDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpSuccess(getResponse);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteSetting_CrossTenantAttempt_ShouldPreventUnauthorizedDeletion()
     {
         await SeedTestDataAsync();

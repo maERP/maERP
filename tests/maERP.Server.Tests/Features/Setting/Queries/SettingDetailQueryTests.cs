@@ -491,7 +491,7 @@ public class SettingDetailQueryTests : IDisposable
         TestAssertions.AssertFalse(string.IsNullOrEmpty(setting.Value));
     }
 
-    [Fact(Skip = "Todo: Tenant isolation not implemented yet")]
+    [Fact]
     public async Task GetSettingDetail_CrossTenantAccess_ShouldBeCompletelyIsolated()
     {
         await SeedSettingTestDataAsync();
@@ -542,7 +542,7 @@ public class SettingDetailQueryTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task GetSettingDetail_TenantIsolationStressTest_ShouldMaintainIsolation()
     {
         await SeedSettingTestDataAsync();

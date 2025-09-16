@@ -262,7 +262,7 @@ public class SettingUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual(settingId, result.Data);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task UpdateSetting_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
@@ -403,7 +403,7 @@ public class SettingUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual(jsonValue, settingDetail.Data!.Value);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task UpdateSetting_WithoutTenantHeader_ShouldReturnNotFoundForTenantSpecificSetting()
     {
         await SeedTestDataAsync();

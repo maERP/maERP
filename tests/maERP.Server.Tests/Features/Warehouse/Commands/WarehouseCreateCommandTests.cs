@@ -110,7 +110,7 @@ public class WarehouseCreateCommandTests : IDisposable
         TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
-    [Fact(Skip = "Todo: Implement tenant validation")]
+    [Fact]
     public async Task CreateWarehouse_WithoutTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -124,7 +124,7 @@ public class WarehouseCreateCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Implement tenant validation")]
+    [Fact]
     public async Task CreateWarehouse_WithInvalidTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -197,7 +197,7 @@ public class WarehouseCreateCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
     }
 
-    [Fact(Skip = "Todo: Implement tenant validation")]
+    [Fact]
     public async Task CreateWarehouse_TenantIsolation_ShouldCreateSeparatelyForEachTenant()
     {
         // Arrange
@@ -313,7 +313,7 @@ public class WarehouseCreateCommandTests : IDisposable
         }
     }
 
-    [Theory(Skip = "Todo: Implement tenant validation")]
+    [Theory]
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
@@ -366,7 +366,7 @@ public class WarehouseCreateCommandTests : IDisposable
         TestAssertions.AssertTrue(responseTime.TotalSeconds < 5); // Should respond within 5 seconds
     }
 
-    [Fact(Skip = "Todo: Implement tenant validation")]
+    [Fact]
     public async Task CreateWarehouse_AfterTenantSwitch_ShouldCreateInCorrectTenant()
     {
         // Arrange

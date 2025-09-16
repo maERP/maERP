@@ -135,7 +135,7 @@ public class WarehouseUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual("Updated Name", getResult.Data!.Name);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task UpdateWarehouse_WithoutTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -150,7 +150,7 @@ public class WarehouseUpdateCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task UpdateWarehouse_WithInvalidTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
@@ -166,7 +166,7 @@ public class WarehouseUpdateCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task UpdateWarehouse_FromDifferentTenant_ShouldReturnNotFound()
     {
         // Arrange
@@ -249,7 +249,7 @@ public class WarehouseUpdateCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
     }
 
-    [Fact(Skip = "Todo: Tenant isolation")]
+    [Fact]
     public async Task UpdateWarehouse_TenantIsolation_ShouldOnlyUpdateOwnTenant()
     {
         // Arrange
@@ -352,7 +352,7 @@ public class WarehouseUpdateCommandTests : IDisposable
         TestAssertions.AssertTrue(getResult.Data!.Name.StartsWith("Concurrent Update"));
     }
 
-    [Theory(Skip = "Todo: Tenant isolation")]
+    [Theory]
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]

@@ -37,13 +37,23 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             // Use a database name per test class to avoid conflicts but share within each test class
             var testDatabaseName = Environment.GetEnvironmentVariable("TEST_DB_NAME") ?? "TestDb_" + Guid.NewGuid();
 
-            // Ensure DbContext is created per request with proper tenant context injection
-            services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+            // For InMemory database, we need to ensure the database instance is shared
+            // across all scopes to maintain consistency in tests
+            services.AddSingleton<DbContextOptions<ApplicationDbContext>>(serviceProvider =>
             {
-                options.UseInMemoryDatabase(testDatabaseName);
-                // Ensure sensitive data logging is disabled for performance
-                options.EnableSensitiveDataLogging(false);
-            }, ServiceLifetime.Scoped);
+                var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
+                builder.UseInMemoryDatabase(testDatabaseName);
+                builder.EnableSensitiveDataLogging(false);
+                return builder.Options;
+            });
+
+            // Register DbContext as scoped, but using the singleton options
+            services.AddScoped<ApplicationDbContext>((serviceProvider) =>
+            {
+                var options = serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>();
+                var tenantContext = serviceProvider.GetRequiredService<ITenantContext>();
+                return new ApplicationDbContext(options, tenantContext);
+            });
 
             // Remove existing authentication services
             var authServiceDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IAuthenticationService));

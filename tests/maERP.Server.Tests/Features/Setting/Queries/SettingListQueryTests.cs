@@ -464,7 +464,7 @@ public class SettingListQueryTests : IDisposable
         TestAssertions.AssertTrue(result.Data?.Any(s => s.Key.Contains("tenant1")) ?? false);
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task GetSettings_TenantIsolation_ShouldNotReturnOtherTenantSettings()
     {
         await SeedSettingTestDataAsync();

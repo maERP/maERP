@@ -432,7 +432,7 @@ public class SalesChannelDeleteCommandTests : IDisposable
         TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains(nonExistentId.ToString()) || m.Contains("not found")));
     }
 
-    [Fact(Skip = "Todo: implement feature")]
+    [Fact]
     public async Task DeleteSalesChannel_VerifyOtherDataUnaffected_ShouldNotDeleteOtherSalesChannels()
     {
         await SeedTestDataAsync();

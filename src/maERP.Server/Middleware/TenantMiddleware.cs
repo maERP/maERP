@@ -32,7 +32,7 @@ public class TenantMiddleware
         if (context.Request.Headers.TryGetValue("X-Tenant-Id", out var tenantHeader))
         {
             var tenantHeaderValue = tenantHeader.FirstOrDefault();
-            if (!string.IsNullOrEmpty(tenantHeaderValue) && Guid.TryParse(tenantHeaderValue, out var headerTenantId) && headerTenantId != Guid.Empty)
+            if (tenantHeaderValue != null && Guid.TryParse(tenantHeaderValue, out var headerTenantId) && headerTenantId != Guid.Empty)
             {
                 // In test environment, always honor the X-Tenant-Id header
                 if (isTestEnvironment)
