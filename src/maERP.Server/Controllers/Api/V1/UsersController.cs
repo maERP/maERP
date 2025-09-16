@@ -43,12 +43,18 @@ public class UsersController : ControllerBase
     }
 
     // GET api/UsersController>/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:minlength(1)}")]
     [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<UserDetailDto>> GetDetails(string id)
     {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return BadRequest("User ID cannot be empty");
+        }
+
         var response = await _mediator.Send(new UserDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
     }

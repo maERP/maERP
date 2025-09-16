@@ -342,7 +342,7 @@ public class AiPromptUpdateCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement later")]
+    [Fact]
     public async Task UpdateAiPrompt_TenantIsolation_ShouldOnlyUpdateInCorrectTenant()
     {
         // Arrange

@@ -430,7 +430,7 @@ public class AiPromptListQueryTests : IDisposable
         }
     }
 
-    [Theory(Skip = "Todo: implement later")]
+    [Theory]
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]

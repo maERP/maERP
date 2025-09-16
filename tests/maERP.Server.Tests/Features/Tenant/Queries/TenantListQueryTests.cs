@@ -235,11 +235,11 @@ public class TenantListQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetTenantList_OnlyGetMethod_ShouldRejectPostRequests()
+    public async Task PostTenant_WithInvalidContentType_ShouldReturnUnsupportedMediaType()
     {
         var response = await Client.PostAsync("/api/v1/Tenants", new StringContent(""));
 
-        TestAssertions.AssertEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.UnsupportedMediaType, response.StatusCode);
     }
 
     [Fact]

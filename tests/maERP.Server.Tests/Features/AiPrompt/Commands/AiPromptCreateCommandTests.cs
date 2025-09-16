@@ -274,7 +274,7 @@ public class AiPromptCreateCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(getResponseTenant2, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "TODO: implement later")]
+    [Fact]
     public async Task CreateAiPrompt_WithoutTenantHeader_ShouldReturnUnauthorized()
     {
         // Arrange

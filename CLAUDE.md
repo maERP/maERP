@@ -30,6 +30,11 @@ The codebase implements:
 - Avalonia with CommunityToolkit.MVVM for cross-platform UI
 - UI projects not using direct database acces, using REST-API instead
 
+## Role Management
+- IMPORTANT: only Superadmin-Role can add, edit or delete users in any tenant
+- IMPORTANT: all users can see their own user profile
+- IMPORTANT: all users only see data from their own tenant
+
 ## Development Commands
 
 ### Building the Project
@@ -140,5 +145,3 @@ dotnet format
 - IMPORTANT: cascade deletes must be implemented in the handler or repository
 - Pagination is zero-based and defined in QueryableExtensions.cs
 - IMPORTANT: all Entities are using System.Guid for Id, defined in BaseEntity.cs
-- Admin-Rights can add, edit or delete users in their own tenant
-- Superadmin-Rights can add, edit or delete users in any tenant

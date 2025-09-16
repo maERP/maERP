@@ -30,7 +30,7 @@ public class UserRepository : IUserRepository
         return await _userManager.Users
             .Where(x => x.Id == userId)
             .AsNoTracking()
-            .FirstAsync();
+            .FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<IdentityError>> CreateAsync(ApplicationUser userToCreate, string password)

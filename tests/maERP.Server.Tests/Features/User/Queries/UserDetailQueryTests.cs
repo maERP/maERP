@@ -299,9 +299,9 @@ public class UserDetailQueryTests : IDisposable
     {
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/Users/");
+        var response = await Client.GetAsync("/api/v1/Users/%20");
 
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]

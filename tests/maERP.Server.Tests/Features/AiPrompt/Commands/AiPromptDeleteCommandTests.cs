@@ -386,7 +386,7 @@ public class AiPromptDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(getResponse, HttpStatusCode.NotFound);
     }
 
-    [Fact(Skip = "TODO: implement later")]
+    [Fact]
     public async Task DeleteAiPrompt_AfterDeletion_IndividualGetShouldReturn404()
     {
         // Arrange
@@ -428,7 +428,7 @@ public class AiPromptDeleteCommandTests : IDisposable
         TestAssertions.AssertHttpStatusCode(getResponseAfter, HttpStatusCode.NotFound);
     }
 
-    [Theory(Skip = "TODO: implement later")]
+    [Theory]
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]

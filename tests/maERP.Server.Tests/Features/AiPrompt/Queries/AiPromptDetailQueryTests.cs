@@ -289,7 +289,7 @@ public class AiPromptDetailQueryTests : IDisposable
         TestAssertions.AssertTrue(result3.Data?.Identifier.Contains("Tenant 2") ?? false);
     }
 
-    [Theory(Skip = "implement later")]
+    [Theory]
     [InlineData("0")]
     [InlineData("-1")]
     public async Task GetAiPromptById_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)

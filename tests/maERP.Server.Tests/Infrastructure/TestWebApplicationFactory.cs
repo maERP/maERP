@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using maERP.Application.Contracts.Services;
+using maERP.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace maERP.Server.Tests.Infrastructure;
 
@@ -69,6 +71,11 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             // Register TestTenantContext as singleton to ensure the same instance is used across all requests
             // This is crucial for Global Query Filters to work correctly in tests
             services.AddSingleton<ITenantContext, TestTenantContext>();
+
+            // Add Identity services for tests
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
         });
 
         builder.UseEnvironment("Testing");
