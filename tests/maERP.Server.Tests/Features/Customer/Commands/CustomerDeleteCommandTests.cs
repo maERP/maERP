@@ -12,7 +12,7 @@ using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Customer.Commands;
 
-public class CustomerDeleteCommandTests : IDisposable
+public class CustomerDeleteCommandTests : TenantIsolatedTestBase
 {
     // Test customer IDs - using consistent GUIDs for reproducible tests
     private static readonly Guid Customer1Id = Guid.Parse("c1111111-1111-1111-1111-111111111111");
@@ -21,162 +21,117 @@ public class CustomerDeleteCommandTests : IDisposable
     private static readonly Guid Customer4Id = Guid.Parse("c4444444-4444-4444-4444-444444444444");
     private static readonly Guid Customer5Id = Guid.Parse("c5555555-5555-5555-5555-555555555555");
     private static readonly Guid CustomerAddressId = Guid.Parse("ca111111-1111-1111-1111-111111111111");
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
 
-    public CustomerDeleteCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_CustomerDeleteCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
 
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-
-        Task.Delay(10).Wait();
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
-    private async Task SeedTestDataAsync()
+    private async Task SeedCustomerTestDataAsync()
     {
         var currentTenant = TenantContext.GetCurrentTenantId();
         TenantContext.SetCurrentTenantId(null);
 
         try
         {
-            var hasData = await DbContext.Customer.AnyAsync();
-            if (!hasData)
+            await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+
+            var customer1Tenant1 = new maERP.Domain.Entities.Customer
             {
-                await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+                Id = Customer1Id,
+                Firstname = "John",
+                Lastname = "Doe",
+                CompanyName = "Test Company 1",
+                Email = "john.doe@testcompany1.com",
+                Phone = "+1111111111",
+                Website = "https://testcompany1.com",
+                VatNumber = "VAT111111111",
+                Note = "Customer to be deleted",
+                CustomerStatus = CustomerStatus.Active,
+                DateEnrollment = DateTimeOffset.UtcNow.AddDays(-30),
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                var customer1Tenant1 = new maERP.Domain.Entities.Customer
-                {
-                    Id = Customer1Id,
-                    Firstname = "John",
-                    Lastname = "Doe",
-                    CompanyName = "Test Company 1",
-                    Email = "john.doe@testcompany1.com",
-                    Phone = "+1111111111",
-                    Website = "https://testcompany1.com",
-                    VatNumber = "VAT111111111",
-                    Note = "Customer to be deleted",
-                    CustomerStatus = CustomerStatus.Active,
-                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-30),
-                    TenantId = TenantConstants.TestTenant1Id
-                };
+            var customer2Tenant1 = new maERP.Domain.Entities.Customer
+            {
+                Id = Customer2Id,
+                Firstname = "Jane",
+                Lastname = "Smith",
+                CompanyName = "Test Company 2",
+                Email = "jane.smith@testcompany2.com",
+                Phone = "+2222222222",
+                Website = "https://testcompany2.com",
+                VatNumber = "VAT222222222",
+                Note = "Another customer for tenant 1",
+                CustomerStatus = CustomerStatus.Active,
+                DateEnrollment = DateTimeOffset.UtcNow.AddDays(-20),
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                var customer2Tenant1 = new maERP.Domain.Entities.Customer
-                {
-                    Id = Customer2Id,
-                    Firstname = "Jane",
-                    Lastname = "Smith",
-                    CompanyName = "Test Company 2",
-                    Email = "jane.smith@testcompany2.com",
-                    Phone = "+2222222222",
-                    Website = "https://testcompany2.com",
-                    VatNumber = "VAT222222222",
-                    Note = "Another customer for tenant 1",
-                    CustomerStatus = CustomerStatus.Active,
-                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-20),
-                    TenantId = TenantConstants.TestTenant1Id
-                };
+            var customer3Tenant2 = new maERP.Domain.Entities.Customer
+            {
+                Id = Customer3Id,
+                Firstname = "Bob",
+                Lastname = "Wilson",
+                CompanyName = "Tenant 2 Company",
+                Email = "bob.wilson@tenant2.com",
+                Phone = "+3333333333",
+                Website = "https://tenant2.com",
+                VatNumber = "VAT333333333",
+                Note = "Customer for tenant 2",
+                CustomerStatus = CustomerStatus.Active,
+                DateEnrollment = DateTimeOffset.UtcNow.AddDays(-15),
+                TenantId = TenantConstants.TestTenant2Id
+            };
 
-                var customer3Tenant2 = new maERP.Domain.Entities.Customer
-                {
-                    Id = Customer3Id,
-                    Firstname = "Bob",
-                    Lastname = "Wilson",
-                    CompanyName = "Tenant 2 Company",
-                    Email = "bob.wilson@tenant2.com",
-                    Phone = "+3333333333",
-                    Website = "https://tenant2.com",
-                    VatNumber = "VAT333333333",
-                    Note = "Customer for tenant 2",
-                    CustomerStatus = CustomerStatus.Active,
-                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-15),
-                    TenantId = TenantConstants.TestTenant2Id
-                };
+            var customer4Inactive = new maERP.Domain.Entities.Customer
+            {
+                Id = Customer4Id,
+                Firstname = "Alice",
+                Lastname = "Brown",
+                CompanyName = "Inactive Company",
+                Email = "alice.brown@inactive.com",
+                Phone = "+4444444444",
+                Website = "https://inactive.com",
+                VatNumber = "VAT444444444",
+                Note = "Inactive customer",
+                CustomerStatus = CustomerStatus.Inactive,
+                DateEnrollment = DateTimeOffset.UtcNow.AddDays(-50),
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                var customer4Inactive = new maERP.Domain.Entities.Customer
-                {
-                    Id = Customer4Id,
-                    Firstname = "Alice",
-                    Lastname = "Brown",
-                    CompanyName = "Inactive Company",
-                    Email = "alice.brown@inactive.com",
-                    Phone = "+4444444444",
-                    Website = "https://inactive.com",
-                    VatNumber = "VAT444444444",
-                    Note = "Inactive customer",
-                    CustomerStatus = CustomerStatus.Inactive,
-                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-50),
-                    TenantId = TenantConstants.TestTenant1Id
-                };
+            // Add customer with addresses to test cascade deletion
+            var customer5WithAddresses = new maERP.Domain.Entities.Customer
+            {
+                Id = Customer5Id,
+                Firstname = "Charlie",
+                Lastname = "Davis",
+                CompanyName = "Address Company",
+                Email = "charlie.davis@address.com",
+                Phone = "+5555555555",
+                Website = "https://address.com",
+                VatNumber = "VAT555555555",
+                Note = "Customer with addresses",
+                CustomerStatus = CustomerStatus.Active,
+                DateEnrollment = DateTimeOffset.UtcNow.AddDays(-25),
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                // Add customer with addresses to test cascade deletion
-                var customer5WithAddresses = new maERP.Domain.Entities.Customer
-                {
-                    Id = Customer5Id,
-                    Firstname = "Charlie",
-                    Lastname = "Davis",
-                    CompanyName = "Address Company",
-                    Email = "charlie.davis@address.com",
-                    Phone = "+5555555555",
-                    Website = "https://address.com",
-                    VatNumber = "VAT555555555",
-                    Note = "Customer with addresses",
-                    CustomerStatus = CustomerStatus.Active,
-                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-25),
-                    TenantId = TenantConstants.TestTenant1Id
-                };
+            var customerAddress = new maERP.Domain.Entities.CustomerAddress
+            {
+                Id = CustomerAddressId,
+                CustomerId = Customer5Id,
+                Firstname = "Charlie",
+                Lastname = "Davis",
+                CompanyName = "Address Company",
+                Street = "123 Test Street",
+                HouseNr = "1",
+                Zip = "12345",
+                City = "Test City",
+                DefaultDeliveryAddress = true,
+                DefaultInvoiceAddress = true,
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                var customerAddress = new maERP.Domain.Entities.CustomerAddress
-                {
-                    Id = CustomerAddressId,
-                    CustomerId = Customer5Id,
-                    Firstname = "Charlie",
-                    Lastname = "Davis",
-                    CompanyName = "Address Company",
-                    Street = "123 Test Street",
-                    HouseNr = "1",
-                    Zip = "12345",
-                    City = "Test City",
-                    DefaultDeliveryAddress = true,
-                    DefaultInvoiceAddress = true,
-                    TenantId = TenantConstants.TestTenant1Id
-                };
-
-                DbContext.Customer.AddRange(customer1Tenant1, customer2Tenant1, customer3Tenant2, customer4Inactive, customer5WithAddresses);
-                DbContext.CustomerAddress.Add(customerAddress);
-                await DbContext.SaveChangesAsync();
-            }
+            DbContext.Customer.AddRange(customer1Tenant1, customer2Tenant1, customer3Tenant2, customer4Inactive, customer5WithAddresses);
+            DbContext.CustomerAddress.Add(customerAddress);
+            await DbContext.SaveChangesAsync();
         }
         finally
         {
@@ -184,17 +139,11 @@ public class CustomerDeleteCommandTests : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
 
     [Fact]
     public async Task DeleteCustomer_WithValidId_ShouldReturnNoContent()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
@@ -205,7 +154,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_WithValidId_ShouldRemoveFromDatabase()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerBefore = await DbContext.Customer.FindAsync(Customer1Id);
@@ -225,7 +174,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_WithNonExistentId_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Customers/{Guid.NewGuid()}");
@@ -240,7 +189,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_WithWrongTenant_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant2Id);
 
         var customerExists = await DbContext.Customer.AnyAsync(c => c.Id == Customer1Id);
@@ -261,7 +210,8 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_WithoutTenantHeader_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
+        RemoveTenantHeader();
 
         var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
@@ -271,7 +221,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_WithZeroId_ShouldReturnBadRequest()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Customers/00000000-0000-0000-0000-000000000000");
@@ -282,7 +232,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_WithNegativeId_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Customers/invalid-guid");
@@ -293,7 +243,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_WithInvalidId_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Customers/invalid");
@@ -304,7 +254,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_WithLargeId_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Customers/{Guid.NewGuid()}");
@@ -315,7 +265,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact(Skip = "Todo: implement later")]
     public async Task DeleteCustomer_InactiveCustomer_ShouldDeleteSuccessfully()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer4Id}");
@@ -329,7 +279,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_WithAddresses_ShouldDeleteCascade()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var addressesBefore = await DbContext.CustomerAddress.Where(ca => ca.CustomerId == Customer5Id).CountAsync();
@@ -355,7 +305,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_TenantIsolation_ShouldOnlyDeleteOwnTenantData()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
 
         // Verify both customers exist
         var customer1Exists = await DbContext.Customer.AnyAsync(c => c.Id == Customer1Id && c.TenantId == TenantConstants.TestTenant1Id);
@@ -388,7 +338,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_MultipleCustomersInTenant_ShouldOnlyDeleteSpecified()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerCountBefore = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant1Id).CountAsync();
@@ -401,6 +351,9 @@ public class CustomerDeleteCommandTests : IDisposable
         var customerCountAfter = await DbContext.Customer.Where(c => c.TenantId == TenantConstants.TestTenant1Id).CountAsync();
         TestAssertions.AssertEqual(customerCountBefore - 1, customerCountAfter);
 
+        // Clear the change tracker to force fresh database reads
+        DbContext.ChangeTracker.Clear();
+
         var deletedCustomer = await DbContext.Customer.FindAsync(Customer1Id);
         Assert.Null(deletedCustomer);
 
@@ -411,7 +364,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_ConcurrentDelete_ShouldHandleGracefully()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response1Task = Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
@@ -433,7 +386,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Customers/{Guid.NewGuid()}");
@@ -449,8 +402,8 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_NonExistentTenant_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
+        await SeedCustomerTestDataAsync();
+        SetInvalidTenantHeader();
 
         var response = await Client.DeleteAsync($"/api/v1/Customers/{Customer1Id}");
 
@@ -463,7 +416,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_AlreadyDeletedCustomer_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // First deletion
@@ -483,7 +436,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_DatabaseConstraintViolation_ShouldHandleGracefully()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // This test assumes there might be foreign key constraints
@@ -509,7 +462,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_ValidateDataIntegrityAfterDeletion()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var initialCount = await DbContext.Customer.CountAsync();
@@ -531,7 +484,7 @@ public class CustomerDeleteCommandTests : IDisposable
     [Fact]
     public async Task DeleteCustomer_VerifyAuditTrailOrSoftDelete()
     {
-        await SeedTestDataAsync();
+        await SeedCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var customerBefore = await DbContext.Customer.AsNoTracking().FirstAsync(c => c.Id == Customer1Id);

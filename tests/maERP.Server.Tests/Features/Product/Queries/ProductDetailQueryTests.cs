@@ -1,59 +1,15 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.Product.Queries;
 
-public class ProductDetailQueryTests : IDisposable
+public class ProductDetailQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public ProductDetailQueryTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_ProductDetailQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task SeedProductTestDataAsync()
     {
@@ -158,13 +114,6 @@ public class ProductDetailQueryTests : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
-
     [Fact]
     public async Task GetProductDetail_WithValidIdAndTenant_ShouldReturnProductDetail()
     {
@@ -217,6 +166,7 @@ public class ProductDetailQueryTests : IDisposable
     public async Task GetProductDetail_WithoutTenantHeader_ShouldReturnNotFound()
     {
         await SeedProductTestDataAsync();
+        RemoveTenantHeader();
 
         var response = await Client.GetAsync($"/api/v1/Products/{Guid.Parse("00000001-0001-0001-0003-000000000001")}");
 
@@ -368,7 +318,7 @@ public class ProductDetailQueryTests : IDisposable
     public async Task GetProductDetail_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedProductTestDataAsync();
-        SetTenantHeader(Guid.NewGuid());
+        SetInvalidTenantHeader();
 
         var response = await Client.GetAsync($"/api/v1/Products/{Guid.Parse("00000001-0001-0001-0003-000000000001")}");
 
@@ -499,5 +449,16 @@ public class ProductDetailQueryTests : IDisposable
         TestAssertions.AssertTrue(product.Height > 0);
         TestAssertions.AssertTrue(product.Depth > 0);
         TestAssertions.AssertTrue(product.TaxClassId != Guid.Empty);
+    }
+
+    [Fact]
+    public async Task GetProductDetail_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
+    {
+        await SeedProductTestDataAsync();
+        SetInvalidTenantHeaderValue("invalid-guid-format");
+
+        var response = await Client.GetAsync($"/api/v1/Products/{Guid.Parse("00000001-0001-0001-0003-000000000001")}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }

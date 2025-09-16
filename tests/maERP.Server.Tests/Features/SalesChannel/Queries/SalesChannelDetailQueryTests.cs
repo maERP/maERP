@@ -1,12 +1,8 @@
 #nullable disable
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Enums;
@@ -14,111 +10,36 @@ using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.SalesChannel.Queries;
 
-public class SalesChannelDetailQueryTests : IDisposable
+public class SalesChannelDetailQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-    
     // Test Entity IDs
     private static readonly Guid TestSalesChannel1Id = new("11111111-1111-1111-1111-111111111111");
     private static readonly Guid TestSalesChannel2Id = new("22222222-2222-2222-2222-222222222222");
     private static readonly Guid TestSalesChannel3Id = new("33333333-3333-3333-3333-333333333333");
 
-    public SalesChannelDetailQueryTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_SalesChannelDetailQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-
-        Task.Delay(10).Wait();
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task SeedTestDataAsync()
     {
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+
         var currentTenant = TenantContext.GetCurrentTenantId();
         TenantContext.SetCurrentTenantId(null);
 
         try
         {
-            var hasData = await DbContext.SalesChannel.AnyAsync();
-            if (!hasData)
+            // Check if test sales channels are already seeded to avoid duplicates
+            var existingSalesChannel = await DbContext.SalesChannel.IgnoreQueryFilters()
+                .FirstOrDefaultAsync(sc => sc.Id == TestSalesChannel1Id);
+
+            if (existingSalesChannel == null)
             {
-                await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
-                var TestWarehouse1Id = new Guid("44444444-4444-4444-4444-444444444444");
-                var TestWarehouse2Id = new Guid("55555555-5555-5555-5555-555555555555");
-                var TestWarehouse3Id = new Guid("66666666-6666-6666-6666-666666666666");
-
-                // Get existing warehouses created by TestDataSeeder or create them
-                var warehouse1 = await DbContext.Warehouse.FirstOrDefaultAsync(w => w.TenantId == TenantConstants.TestTenant1Id);
-                var warehouse2 = await DbContext.Warehouse.Skip(1).FirstOrDefaultAsync(w => w.TenantId == TenantConstants.TestTenant1Id);
-                var warehouse3 = await DbContext.Warehouse.FirstOrDefaultAsync(w => w.TenantId == TenantConstants.TestTenant2Id);
-
-                if (warehouse1 == null)
-                {
-                    warehouse1 = new maERP.Domain.Entities.Warehouse
-                    {
-                        Id = TestWarehouse1Id,
-                        Name = "Warehouse T1-1",
-                        TenantId = TenantConstants.TestTenant1Id
-                    };
-                    DbContext.Warehouse.Add(warehouse1);
-                }
-
-                if (warehouse2 == null)
-                {
-                    warehouse2 = new maERP.Domain.Entities.Warehouse
-                    {
-                        Id = TestWarehouse2Id,
-                        Name = "Warehouse T1-2",
-                        TenantId = TenantConstants.TestTenant1Id
-                    };
-                    DbContext.Warehouse.Add(warehouse2);
-                }
-
-                if (warehouse3 == null)
-                {
-                    warehouse3 = new maERP.Domain.Entities.Warehouse
-                    {
-                        Id = TestWarehouse3Id,
-                        Name = "Warehouse T2-1",
-                        TenantId = TenantConstants.TestTenant2Id
-                    };
-                    DbContext.Warehouse.Add(warehouse3);
-                }
-
-                await DbContext.SaveChangesAsync();
+                // Get existing warehouses created by TestDataSeeder (they should exist)
+                var warehouse1 = await DbContext.Warehouse.IgnoreQueryFilters()
+                    .FirstAsync(w => w.TenantId == TenantConstants.TestTenant1Id);
+                var warehouse2 = await DbContext.Warehouse.IgnoreQueryFilters()
+                    .Skip(1).FirstAsync(w => w.TenantId == TenantConstants.TestTenant1Id);
+                var warehouse3 = await DbContext.Warehouse.IgnoreQueryFilters()
+                    .FirstAsync(w => w.TenantId == TenantConstants.TestTenant2Id);
 
                 // Seed SalesChannels for Tenant 1
                 var salesChannel1_1 = new maERP.Domain.Entities.SalesChannel
@@ -185,13 +106,6 @@ public class SalesChannelDetailQueryTests : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
-
     [Fact]
     public async Task GetSalesChannelDetail_WithValidIdAndTenant_ShouldReturnSuccess()
     {
@@ -210,13 +124,25 @@ public class SalesChannelDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetSalesChannelDetail_WithoutTenantHeader_ShouldReturnBadRequest()
+    public async Task GetSalesChannelDetail_WithoutTenantHeader_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
+        RemoveTenantHeader();
 
         var response = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
 
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetSalesChannelDetail_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
+    {
+        await SeedTestDataAsync();
+        SetInvalidTenantHeaderValue("invalid-guid-format");
+
+        var response = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -224,33 +150,43 @@ public class SalesChannelDetailQueryTests : IDisposable
     {
         await SeedTestDataAsync();
 
-        // Test Tenant 1 trying to access its own data
-        using var tenant1Client = Factory.CreateClient();
-        tenant1Client.DefaultRequestHeaders.Add("X-Tenant-Id", TenantConstants.TestTenant1Id.ToString());
+        // Test Tenant 1 can access its own data
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var ownDataResponse = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
+        TestAssertions.AssertEqual(HttpStatusCode.OK, ownDataResponse.StatusCode);
+        var ownDataResult = await ReadResponseAsync<Result<SalesChannelDetailDto>>(ownDataResponse);
+        TestAssertions.AssertNotNull(ownDataResult?.Data);
+        TestAssertions.AssertEqual("WooCommerce Store T1", ownDataResult.Data.Name);
+        TestAssertions.AssertEqual(TestSalesChannel1Id, ownDataResult.Data.Id);
 
-        var response1 = await tenant1Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
-        TestAssertions.AssertEqual(HttpStatusCode.OK, response1.StatusCode);
-        var result1 = await ReadResponseAsync<Result<SalesChannelDetailDto>>(response1);
-        TestAssertions.AssertNotNull(result1?.Data);
-        TestAssertions.AssertEqual("WooCommerce Store T1", result1?.Data?.Name);
+        // Test Tenant 1 cannot access Tenant 2's data - should return NotFound
+        var crossTenantResponse1 = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel3Id}");
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, crossTenantResponse1.StatusCode);
 
-        // Test Tenant 1 trying to access Tenant 2 data - should fail
-        var response1Cross = await tenant1Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel3Id}");
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1Cross.StatusCode);
+        // Test Tenant 2 can access its own data
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var ownDataResponse2 = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel3Id}");
+        TestAssertions.AssertEqual(HttpStatusCode.OK, ownDataResponse2.StatusCode);
+        var ownDataResult2 = await ReadResponseAsync<Result<SalesChannelDetailDto>>(ownDataResponse2);
+        TestAssertions.AssertNotNull(ownDataResult2?.Data);
+        TestAssertions.AssertEqual("eBay Store T2", ownDataResult2.Data.Name);
+        TestAssertions.AssertEqual(TestSalesChannel3Id, ownDataResult2.Data.Id);
 
-        // Test Tenant 2 trying to access its own data
-        using var tenant2Client = Factory.CreateClient();
-        tenant2Client.DefaultRequestHeaders.Add("X-Tenant-Id", TenantConstants.TestTenant2Id.ToString());
+        // Test Tenant 2 cannot access Tenant 1's data - should return NotFound
+        var crossTenantResponse2 = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, crossTenantResponse2.StatusCode);
+        
+        // Additional verification: Tenant 2 cannot access Tenant 1's other sales channel
+        var crossTenantResponse3 = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel2Id}");
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, crossTenantResponse3.StatusCode);
 
-        var response2 = await tenant2Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel3Id}");
-        TestAssertions.AssertEqual(HttpStatusCode.OK, response2.StatusCode);
-        var result2 = await ReadResponseAsync<Result<SalesChannelDetailDto>>(response2);
-        TestAssertions.AssertNotNull(result2?.Data);
-        TestAssertions.AssertEqual("eBay Store T2", result2.Data!.Name);
-
-        // Test Tenant 2 trying to access Tenant 1 data - should fail
-        var response2Cross = await tenant2Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2Cross.StatusCode);
+        // Verify tenant 1 can access their other sales channel
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var ownDataResponse3 = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel2Id}");
+        TestAssertions.AssertEqual(HttpStatusCode.OK, ownDataResponse3.StatusCode);
+        var ownDataResult3 = await ReadResponseAsync<Result<SalesChannelDetailDto>>(ownDataResponse3);
+        TestAssertions.AssertNotNull(ownDataResult3?.Data);
+        TestAssertions.AssertEqual("Shopify Store T1", ownDataResult3.Data.Name);
     }
 
     [Fact]
@@ -383,15 +319,14 @@ public class SalesChannelDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetSalesChannelDetail_WithNonExistentTenant_ShouldHandleGracefully()
+    public async Task GetSalesChannelDetail_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(Guid.NewGuid());
+        SetInvalidTenantHeader();
 
         var response = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
 
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest ||
-                                 response.StatusCode == HttpStatusCode.NotFound);
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]

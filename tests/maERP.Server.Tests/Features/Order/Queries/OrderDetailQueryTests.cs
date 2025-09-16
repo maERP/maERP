@@ -14,54 +14,14 @@ using Xunit;
 
 namespace maERP.Server.Tests.Features.Order.Queries;
 
-public class OrderDetailQueryTests : IDisposable
+public class OrderDetailQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
     private static readonly Guid Customer1Id = Guid.NewGuid();
     private static readonly Guid Customer2Id = Guid.NewGuid();
     private static readonly Guid Order1Id = Guid.NewGuid();
     private static readonly Guid Order2Id = Guid.NewGuid();
     private static readonly Guid SalesChannel1Id = Guid.NewGuid();
     private static readonly Guid SalesChannel2Id = Guid.NewGuid();
-
-    public OrderDetailQueryTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_OrderDetailQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task SeedOrderDetailTestDataAsync()
     {
@@ -172,12 +132,7 @@ public class OrderDetailQueryTests : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
+
 
     [Fact]
     public async Task GetOrderDetail_WithValidIdAndTenant_ShouldReturnOrderDetail()
@@ -221,6 +176,7 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithoutTenantHeader_ShouldReturnNotFound()
     {
         await SeedOrderDetailTestDataAsync();
+        RemoveTenantHeader();
 
         var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
@@ -231,7 +187,7 @@ public class OrderDetailQueryTests : IDisposable
     public async Task GetOrderDetail_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedOrderDetailTestDataAsync();
-        SetTenantHeader(Guid.NewGuid());
+        SetInvalidTenantHeader();
 
         var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
 
@@ -400,6 +356,17 @@ public class OrderDetailQueryTests : IDisposable
         var response = await Client.GetAsync($"/api/v1/Orders/{Guid.NewGuid()}");
 
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task GetOrderDetail_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
+    {
+        await SeedOrderDetailTestDataAsync();
+        SetInvalidTenantHeaderValue("invalid-tenant-id");
+
+        var response = await Client.GetAsync($"/api/v1/Orders/{Order1Id}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]

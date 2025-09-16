@@ -1,12 +1,8 @@
 #nullable disable
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Enums;
@@ -14,76 +10,29 @@ using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.SalesChannel.Commands;
 
-public class SalesChannelCreateCommandTests : IDisposable
+public class SalesChannelCreateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
     // Test Warehouse IDs
     private static readonly Guid TestWarehouse1Id = new("11111111-1111-1111-1111-111111111111");
     private static readonly Guid TestWarehouse2Id = new("22222222-2222-2222-2222-222222222222");
     private static readonly Guid TestWarehouse3Id = new("33333333-3333-3333-3333-333333333333");
 
-    public SalesChannelCreateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_SalesChannelCreateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-
-        Task.Delay(10).Wait();
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task SeedTestDataAsync()
     {
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+
         var currentTenant = TenantContext.GetCurrentTenantId();
         TenantContext.SetCurrentTenantId(null);
 
         try
         {
-            var hasData = await DbContext.Warehouse.AnyAsync();
-            if (!hasData)
-            {
-                await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+            // Check if warehouses are already seeded to avoid duplicates
+            var existingWarehouse = await DbContext.Warehouse.IgnoreQueryFilters()
+                .FirstOrDefaultAsync(w => w.Id == TestWarehouse1Id);
 
-                // Seed Warehouses for testing
+            if (existingWarehouse == null)
+            {
+                // Seed additional Warehouses for testing
                 var warehouse1 = new maERP.Domain.Entities.Warehouse
                 {
                     Id = TestWarehouse1Id,
@@ -134,12 +83,7 @@ public class SalesChannelCreateCommandTests : IDisposable
         };
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
+
 
     [Fact]
     public async Task CreateSalesChannel_WithValidData_ShouldReturnCreated()
@@ -206,6 +150,7 @@ public class SalesChannelCreateCommandTests : IDisposable
     public async Task CreateSalesChannel_WithoutTenantHeader_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
+        RemoveTenantHeader();
         var salesChannelDto = CreateValidSalesChannelDto();
 
         var response = await PostAsJsonAsync("/api/v1/SalesChannels", salesChannelDto);
@@ -214,17 +159,27 @@ public class SalesChannelCreateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateSalesChannel_WithNonExistentTenant_ShouldHandleGracefully()
+    public async Task CreateSalesChannel_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(Guid.NewGuid());
+        SetInvalidTenantHeaderValue("invalid-guid-format");
         var salesChannelDto = CreateValidSalesChannelDto();
 
         var response = await PostAsJsonAsync("/api/v1/SalesChannels", salesChannelDto);
 
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest ||
-                                 response.StatusCode == HttpStatusCode.NotFound ||
-                                 response.StatusCode == HttpStatusCode.InternalServerError);
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CreateSalesChannel_WithNonExistentTenant_ShouldReturnBadRequest()
+    {
+        await SeedTestDataAsync();
+        SetInvalidTenantHeader();
+        var salesChannelDto = CreateValidSalesChannelDto();
+
+        var response = await PostAsJsonAsync("/api/v1/SalesChannels", salesChannelDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]
@@ -323,51 +278,66 @@ public class SalesChannelCreateCommandTests : IDisposable
     {
         await SeedTestDataAsync();
 
-        // Create sales channels for each tenant
+        var uniqueId1 = Guid.NewGuid().ToString("N")[..8];
+        var uniqueId2 = Guid.NewGuid().ToString("N")[..8];
+
+        // Create sales channels for each tenant with unique names
         var salesChannel1Dto = CreateValidSalesChannelDto();
-        salesChannel1Dto.Name = $"Store Tenant 1 - {Guid.NewGuid():N}";
+        salesChannel1Dto.Name = $"Store-T1-{uniqueId1}";
         salesChannel1Dto.WarehouseIds = new List<Guid> { TestWarehouse1Id };
 
         var salesChannel2Dto = CreateValidSalesChannelDto();
-        salesChannel2Dto.Name = $"Store Tenant 2 - {Guid.NewGuid():N}";
+        salesChannel2Dto.Name = $"Store-T2-{uniqueId2}";
         salesChannel2Dto.WarehouseIds = new List<Guid> { TestWarehouse3Id };
 
         // Create sales channel in tenant 1
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var createResponse1 = await PostAsJsonAsync("/api/v1/SalesChannels", salesChannel1Dto);
         TestAssertions.AssertEqual(HttpStatusCode.Created, createResponse1.StatusCode);
+        var result1 = await ReadResponseAsync<Result<Guid>>(createResponse1);
+        var salesChannel1Id = result1.Data;
 
         // Create sales channel in tenant 2
         SetTenantHeader(TenantConstants.TestTenant2Id);
         var createResponse2 = await PostAsJsonAsync("/api/v1/SalesChannels", salesChannel2Dto);
         TestAssertions.AssertEqual(HttpStatusCode.Created, createResponse2.StatusCode);
+        var result2 = await ReadResponseAsync<Result<Guid>>(createResponse2);
+        var salesChannel2Id = result2.Data;
 
-        TenantContext.SetCurrentTenantId(null);
-        DbContext.ChangeTracker.Clear();
-
-        // Check if both sales channels were created with correct tenant IDs
-        var allSalesChannels = await DbContext.Set<maERP.Domain.Entities.SalesChannel>()
-            .IgnoreQueryFilters()
-            .ToListAsync();
-
-        var salesChannel1InDb = allSalesChannels.FirstOrDefault(s => s.Name.Contains("Store Tenant 1"));
-        var salesChannel2InDb = allSalesChannels.FirstOrDefault(s => s.Name.Contains("Store Tenant 2"));
-
-        TestAssertions.AssertNotNull(salesChannel1InDb);
-        TestAssertions.AssertNotNull(salesChannel2InDb);
-        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, salesChannel1InDb.TenantId);
-        TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, salesChannel2InDb.TenantId);
-
-        // Verify tenant isolation in API responses
-        using var tenant1Client = Factory.CreateClient();
-        tenant1Client.DefaultRequestHeaders.Add("X-Tenant-Id", TenantConstants.TestTenant1Id.ToString());
-
-        var listResponse1 = await tenant1Client.GetAsync("/api/v1/SalesChannels");
+        // Verify tenant isolation - Tenant 1 can only see their sales channel
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var listResponse1 = await Client.GetAsync("/api/v1/SalesChannels");
         TestAssertions.AssertHttpSuccess(listResponse1);
         var list1 = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(listResponse1);
-        var tenant1SeesTenant2Data = list1.Data?.Any(s => s.Name.Contains("Store Tenant 2")) ?? false;
+        
+        var tenant1SalesChannels = list1.Data ?? new List<SalesChannelListDto>();
+        var tenant1SeesTenant2Data = tenant1SalesChannels.Any(s => s.Name == salesChannel2Dto.Name);
+        var tenant1SeesOwnData = tenant1SalesChannels.Any(s => s.Name == salesChannel1Dto.Name);
 
         TestAssertions.AssertFalse(tenant1SeesTenant2Data, "Tenant 1 should not see Tenant 2's sales channels");
+        TestAssertions.AssertTrue(tenant1SeesOwnData, "Tenant 1 should see their own sales channels");
+
+        // Verify tenant isolation - Tenant 2 can only see their sales channel
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var listResponse2 = await Client.GetAsync("/api/v1/SalesChannels");
+        TestAssertions.AssertHttpSuccess(listResponse2);
+        var list2 = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(listResponse2);
+        
+        var tenant2SalesChannels = list2.Data ?? new List<SalesChannelListDto>();
+        var tenant2SeesTenant1Data = tenant2SalesChannels.Any(s => s.Name == salesChannel1Dto.Name);
+        var tenant2SeesOwnData = tenant2SalesChannels.Any(s => s.Name == salesChannel2Dto.Name);
+
+        TestAssertions.AssertFalse(tenant2SeesTenant1Data, "Tenant 2 should not see Tenant 1's sales channels");
+        TestAssertions.AssertTrue(tenant2SeesOwnData, "Tenant 2 should see their own sales channels");
+
+        // Verify cross-tenant access prevention via direct API calls
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var crossTenantResponse = await Client.GetAsync($"/api/v1/SalesChannels/{salesChannel2Id}");
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, crossTenantResponse.StatusCode);
+
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var crossTenantResponse2 = await Client.GetAsync($"/api/v1/SalesChannels/{salesChannel1Id}");
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, crossTenantResponse2.StatusCode);
     }
 
     [Fact]

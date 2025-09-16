@@ -14,13 +14,8 @@ using Xunit;
 
 namespace maERP.Server.Tests.Features.Order.Commands;
 
-public class OrderUpdateCommandTests : IDisposable
+public class OrderUpdateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
     private static readonly Guid Customer1Id = Guid.NewGuid();
     private static readonly Guid Customer2Id = Guid.NewGuid();
     private static readonly Guid Customer3Id = Guid.NewGuid();
@@ -28,48 +23,6 @@ public class OrderUpdateCommandTests : IDisposable
     private static readonly Guid Order2Id = Guid.NewGuid();
     private static readonly Guid Order3Id = Guid.NewGuid();
     private static readonly Guid SalesChannel1Id = Guid.NewGuid();
-
-    public OrderUpdateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_OrderUpdateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PutAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task<Guid> SeedOrderTestDataAndCreateOrderAsync()
     {
@@ -215,12 +168,7 @@ public class OrderUpdateCommandTests : IDisposable
         };
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
+
 
     [Fact]
     public async Task UpdateOrder_WithValidData_ShouldReturnOk()
@@ -287,15 +235,15 @@ public class OrderUpdateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task UpdateOrder_WithoutTenantHeader_ShouldReturnBadRequestOrNotFound()
+    public async Task UpdateOrder_WithoutTenantHeader_ShouldReturnNotFound()
     {
         var orderId = await SeedOrderTestDataAndCreateOrderAsync();
+        RemoveTenantHeader();
         var orderDto = CreateOrderUpdateDto(orderId);
 
         var response = await PutAsJsonAsync($"/api/v1/Orders/{orderId}", orderDto);
 
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest ||
-                                 response.StatusCode == HttpStatusCode.NotFound);
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
@@ -308,6 +256,30 @@ public class OrderUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Orders/{orderId}", orderDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateOrder_WithNonExistentTenant_ShouldReturnNotFound()
+    {
+        var orderId = await SeedOrderTestDataAndCreateOrderAsync();
+        SetInvalidTenantHeader();
+        var orderDto = CreateOrderUpdateDto(orderId);
+
+        var response = await PutAsJsonAsync($"/api/v1/Orders/{orderId}", orderDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateOrder_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
+    {
+        var orderId = await SeedOrderTestDataAndCreateOrderAsync();
+        SetInvalidTenantHeaderValue("invalid-guid-format");
+        var orderDto = CreateOrderUpdateDto(orderId);
+
+        var response = await PutAsJsonAsync($"/api/v1/Orders/{orderId}", orderDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -413,18 +385,23 @@ public class OrderUpdateCommandTests : IDisposable
     {
         var orderId = await SeedOrderTestDataAndCreateOrderAsync();
 
-        // Verify order exists for tenant 1
+        // Verify order exists for tenant 1 and get original data
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var getResponse1 = await Client.GetAsync($"/api/v1/Orders/{orderId}");
         TestAssertions.AssertHttpSuccess(getResponse1);
+        var originalOrder = await ReadResponseAsync<Result<OrderDetailDto>>(getResponse1);
+        var originalFirstName = originalOrder.Data.InvoiceAddressFirstName;
 
-        // Try to update from tenant 2
+        // Try to update from tenant 2 - should fail because order doesn't exist in tenant 2
         SetTenantHeader(TenantConstants.TestTenant2Id);
         var orderDto = CreateOrderUpdateDto(orderId);
+        // Use valid customer for tenant 2 to avoid validation issues
+        orderDto.CustomerId = Customer3Id;
         orderDto.InvoiceAddressFirstName = "Hacked Name";
+        orderDto.Total = 999.99m;
 
         var updateResponse = await PutAsJsonAsync($"/api/v1/Orders/{orderId}", orderDto);
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, updateResponse.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, updateResponse.StatusCode);
 
         // Verify order was not changed when accessed from original tenant
         SetTenantHeader(TenantConstants.TestTenant1Id);
@@ -432,7 +409,8 @@ public class OrderUpdateCommandTests : IDisposable
         TestAssertions.AssertHttpSuccess(getResponse2);
         var orderDetail = await ReadResponseAsync<Result<OrderDetailDto>>(getResponse2);
         TestAssertions.AssertNotNull(orderDetail?.Data);
-        TestAssertions.AssertNotEqual("Hacked Name", orderDetail!.Data.InvoiceAddressFirstName);
+        TestAssertions.AssertEqual(originalFirstName, orderDetail!.Data.InvoiceAddressFirstName);
+        TestAssertions.AssertNotEqual(999.99m, orderDetail.Data.Total);
     }
 
     [Fact]

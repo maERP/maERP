@@ -1,24 +1,19 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Application.Contracts.Services;
 using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Wrapper;
-using maERP.Server.Tests.Infrastructure;
 using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
+using maERP.Server.Tests.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.Product.Commands;
 
-public class ProductUpdateCommandTests : IDisposable
+public class ProductUpdateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
 
     // Test Entity IDs
     private static readonly Guid TestTaxClassId = new("11111111-1111-1111-1111-111111111111");
@@ -26,55 +21,6 @@ public class ProductUpdateCommandTests : IDisposable
     private static readonly Guid TestManufacturer2Id = new("33333333-3333-3333-3333-333333333333");
     private static readonly Guid TestProduct1Id = new("44444444-4444-4444-4444-444444444444");
     private static readonly Guid TestProduct2Id = new("55555555-5555-5555-5555-555555555555");
-
-    public ProductUpdateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_ProductUpdateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PutAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task<Guid> SeedTestDataAsync()
     {
@@ -201,12 +147,6 @@ public class ProductUpdateCommandTests : IDisposable
         };
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
 
     [Fact]
     public async Task UpdateProduct_WithValidData_ShouldReturnOk()
@@ -625,5 +565,101 @@ public class ProductUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Products/{Guid.Empty}", updateDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateProduct_WithoutTenantHeader_ShouldReturnNotFound()
+    {
+        var productId = await SeedTestDataAsync();
+        RemoveTenantHeader();
+        var updateDto = CreateUpdateProductDto(productId);
+
+        var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+
+        // Verify product still exists in database unchanged
+        var productStillExists = await DbContext.Product
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(p => p.Id == productId);
+        TestAssertions.AssertNotNull(productStillExists);
+        TestAssertions.AssertNotEqual(updateDto.Name, productStillExists!.Name);
+    }
+
+    [Fact]
+    public async Task UpdateProduct_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
+    {
+        var productId = await SeedTestDataAsync();
+        SetInvalidTenantHeaderValue("invalid-guid-format");
+        var updateDto = CreateUpdateProductDto(productId);
+
+        var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+
+        // Verify product still exists in database unchanged
+        var productStillExists = await DbContext.Product
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(p => p.Id == productId);
+        TestAssertions.AssertNotNull(productStillExists);
+        TestAssertions.AssertNotEqual(updateDto.Name, productStillExists!.Name);
+    }
+
+    [Fact]
+    public async Task UpdateProduct_WithNonExistentTenant_ShouldReturnNotFound()
+    {
+        var productId = await SeedTestDataAsync();
+        SetInvalidTenantHeader();
+        var updateDto = CreateUpdateProductDto(productId);
+
+        var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+
+        // Verify product still exists in database unchanged
+        var productStillExists = await DbContext.Product
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(p => p.Id == productId);
+        TestAssertions.AssertNotNull(productStillExists);
+        TestAssertions.AssertNotEqual(updateDto.Name, productStillExists!.Name);
+    }
+
+    [Fact]
+    public async Task UpdateProduct_CrossTenantResourceAccess_ShouldReturnBadRequest()
+    {
+        var productId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateProductDto(productId);
+
+        // Try to use a tax class from tenant 2 (which doesn't exist in this test setup but demonstrates the concept)
+        // Create a tax class for tenant 2 first
+        var currentTenant = TenantContext.GetCurrentTenantId();
+        TenantContext.SetCurrentTenantId(null);
+        try
+        {
+            var tenant2TaxClass = new maERP.Domain.Entities.TaxClass
+            {
+                Id = Guid.NewGuid(),
+                TaxRate = 21.0,
+                TenantId = TenantConstants.TestTenant2Id
+            };
+            DbContext.TaxClass.Add(tenant2TaxClass);
+            await DbContext.SaveChangesAsync();
+
+            // Try to use tenant 2's tax class while being in tenant 1
+            updateDto.TaxClassId = tenant2TaxClass.Id;
+        }
+        finally
+        {
+            TenantContext.SetCurrentTenantId(currentTenant);
+        }
+
+        var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
     }
 }

@@ -12,53 +12,15 @@ using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Manufacturer.Queries;
 
-public class ManufacturerListQueryTests : IDisposable
+public class ManufacturerListQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
     private static readonly Guid Manufacturer1Id = Guid.NewGuid();
     private static readonly Guid Manufacturer2Id = Guid.NewGuid();
     private static readonly Guid Manufacturer3Id = Guid.NewGuid();
     private static readonly Guid Manufacturer4Id = Guid.NewGuid();
     private static readonly Guid Manufacturer5Id = Guid.NewGuid();
 
-    public ManufacturerListQueryTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_ManufacturerListQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
 
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task SeedManufacturerTestDataAsync()
     {
@@ -146,12 +108,7 @@ public class ManufacturerListQueryTests : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
+
 
     [Fact]
     public async Task GetManufacturers_WithValidTenant_ShouldReturnTenantData()
@@ -189,6 +146,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithoutTenantHeader_ShouldReturnEmptyResult()
     {
         await SeedManufacturerTestDataAsync();
+        RemoveTenantHeader();
 
         var response = await Client.GetAsync("/api/v1/Manufacturers");
 
@@ -368,7 +326,7 @@ public class ManufacturerListQueryTests : IDisposable
     [Fact]
     public async Task GetManufacturers_WithNegativePageNumber_ShouldHandleGracefully()
     {
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
+        SetInvalidTenantHeader();
 
         var response = await Client.GetAsync("/api/v1/Manufacturers?pageNumber=-1");
 
@@ -383,7 +341,7 @@ public class ManufacturerListQueryTests : IDisposable
     public async Task GetManufacturers_WithNonExistentTenant_ShouldReturnEmptyPaginatedResult()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
+        SetInvalidTenantHeader();
 
         var response = await Client.GetAsync("/api/v1/Manufacturers");
 

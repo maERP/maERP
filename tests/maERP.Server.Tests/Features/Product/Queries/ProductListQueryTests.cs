@@ -1,65 +1,21 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.Product.Queries;
 
-public class ProductListQueryTests : IDisposable
+public class ProductListQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
     private static readonly Guid Manufacturer1Id = Guid.Parse("50000001-0001-0001-0001-000000000001");
     private static readonly Guid Manufacturer2Id = Guid.Parse("50000002-0002-0002-0002-000000000002");
     private static readonly Guid Product1Id = Guid.NewGuid();
     private static readonly Guid Product2Id = Guid.NewGuid();
     private static readonly Guid Product3Id = Guid.NewGuid();
     private static readonly Guid TaxClass1Id = Guid.NewGuid();
-
-    public ProductListQueryTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_ProductListQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task SeedProductTestDataAsync()
     {
@@ -153,12 +109,6 @@ public class ProductListQueryTests : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
 
     [Fact]
     public async Task GetProducts_WithValidTenant_ShouldReturnTenantData()
@@ -195,6 +145,7 @@ public class ProductListQueryTests : IDisposable
     public async Task GetProducts_WithoutTenantHeader_ShouldReturnEmptyResult()
     {
         await SeedProductTestDataAsync();
+        RemoveTenantHeader();
 
         var response = await Client.GetAsync("/api/v1/Products");
 
@@ -376,7 +327,7 @@ public class ProductListQueryTests : IDisposable
     [Fact]
     public async Task GetProducts_WithNegativePageNumber_ShouldHandleGracefully()
     {
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
+        SetInvalidTenantHeader();
 
         var response = await Client.GetAsync("/api/v1/Products?pageNumber=-1");
 
@@ -391,7 +342,7 @@ public class ProductListQueryTests : IDisposable
     public async Task GetProducts_WithNonExistentTenant_ShouldReturnEmptyPaginatedResult()
     {
         await SeedProductTestDataAsync();
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
+        SetInvalidTenantHeader();
 
         var response = await Client.GetAsync("/api/v1/Products");
 
@@ -537,5 +488,51 @@ public class ProductListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(2, result.Data?.Count ?? 0);
+    }
+
+    [Fact]
+    public async Task GetProducts_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
+    {
+        await SeedProductTestDataAsync();
+        SetInvalidTenantHeaderValue("invalid-guid-format");
+
+        var response = await Client.GetAsync("/api/v1/Products");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetProducts_TenantIsolation_ShouldOnlyReturnOwnTenantData()
+    {
+        await SeedProductTestDataAsync();
+
+        // Test tenant 1 sees only its products
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response1 = await Client.GetAsync("/api/v1/Products");
+        TestAssertions.AssertHttpSuccess(response1);
+        var result1 = await ReadResponseAsync<PaginatedResult<ProductListDto>>(response1);
+        TestAssertions.AssertNotNull(result1);
+        TestAssertions.AssertNotNull(result1.Data);
+        TestAssertions.AssertEqual(2, result1.Data?.Count ?? 0);
+
+        // Verify all products belong to tenant 1
+        var tenant1Products = result1.Data?.Where(p => p.Name.Contains("Test Product") || p.Name.Contains("Another")).ToList();
+        TestAssertions.AssertEqual(2, tenant1Products?.Count ?? 0);
+
+        // Test tenant 2 sees only its products
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response2 = await Client.GetAsync("/api/v1/Products");
+        TestAssertions.AssertHttpSuccess(response2);
+        var result2 = await ReadResponseAsync<PaginatedResult<ProductListDto>>(response2);
+        TestAssertions.AssertNotNull(result2);
+        TestAssertions.AssertNotNull(result2.Data);
+        TestAssertions.AssertEqual(1, result2.Data?.Count ?? 0);
+        TestAssertions.AssertEqual("Tenant 2 Product", result2.Data?.First().Name);
+
+        // Verify tenant 2 doesn't see tenant 1 products
+        var hasTestProduct1 = result2.Data?.Any(p => p.Name.Contains("Test Product 1")) ?? false;
+        var hasAnotherProduct = result2.Data?.Any(p => p.Name.Contains("Another")) ?? false;
+        TestAssertions.AssertFalse(hasTestProduct1, "Tenant 2 should not see Tenant 1 products");
+        TestAssertions.AssertFalse(hasAnotherProduct, "Tenant 2 should not see Tenant 1 products");
     }
 }

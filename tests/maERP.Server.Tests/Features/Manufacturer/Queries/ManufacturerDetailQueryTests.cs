@@ -12,52 +12,13 @@ using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Manufacturer.Queries;
 
-public class ManufacturerDetailQueryTests : IDisposable
+public class ManufacturerDetailQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
     private static readonly Guid Manufacturer1Id = Guid.NewGuid();
     private static readonly Guid Manufacturer2Id = Guid.NewGuid();
     private static readonly Guid Manufacturer3Id = Guid.NewGuid();
     private static readonly Guid Manufacturer4Id = Guid.NewGuid();
 
-    public ManufacturerDetailQueryTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_ManufacturerDetailQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task SeedManufacturerTestDataAsync()
     {
@@ -142,12 +103,6 @@ public class ManufacturerDetailQueryTests : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
 
     [Fact]
     public async Task GetManufacturerDetail_WithValidIdAndTenant_ShouldReturnManufacturerDetail()
@@ -202,6 +157,7 @@ public class ManufacturerDetailQueryTests : IDisposable
     public async Task GetManufacturerDetail_WithoutTenantHeader_ShouldReturnNotFound()
     {
         await SeedManufacturerTestDataAsync();
+        RemoveTenantHeader();
 
         var response = await Client.GetAsync($"/api/v1/Manufacturers/{Manufacturer1Id}");
 
@@ -344,7 +300,7 @@ public class ManufacturerDetailQueryTests : IDisposable
     public async Task GetManufacturerDetail_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedManufacturerTestDataAsync();
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
+        SetInvalidTenantHeader();
 
         var response = await Client.GetAsync($"/api/v1/Manufacturers/{Manufacturer1Id}");
 
@@ -409,17 +365,17 @@ public class ManufacturerDetailQueryTests : IDisposable
         await SeedManufacturerTestDataAsync();
 
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var response1 = await Client.GetAsync("/api/v1/Manufacturers/3");
+        var response1 = await Client.GetAsync($"/api/v1/Manufacturers/{Manufacturer3Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response1.StatusCode);
 
-        var response2 = await Client.GetAsync("/api/v1/Manufacturers/4");
+        var response2 = await Client.GetAsync($"/api/v1/Manufacturers/{Manufacturer4Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
 
         SetTenantHeader(TenantConstants.TestTenant2Id);
-        var response3 = await Client.GetAsync("/api/v1/Manufacturers/1");
+        var response3 = await Client.GetAsync($"/api/v1/Manufacturers/{Manufacturer1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response3.StatusCode);
 
-        var response4 = await Client.GetAsync("/api/v1/Manufacturers/2");
+        var response4 = await Client.GetAsync($"/api/v1/Manufacturers/{Manufacturer2Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response4.StatusCode);
     }
 

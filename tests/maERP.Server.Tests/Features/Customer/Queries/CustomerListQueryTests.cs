@@ -1,173 +1,107 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Enums;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Customer.Queries;
 
-public class CustomerListQueryTests : IDisposable
+public class CustomerListQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public CustomerListQueryTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_CustomerListQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task SeedCustomerTestDataAsync()
     {
-        var currentTenant = TenantContext.GetCurrentTenantId();
-        TenantContext.SetCurrentTenantId(null);
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
-        try
+        var customer1Tenant1 = new maERP.Domain.Entities.Customer
         {
-            var hasData = await DbContext.Customer.AnyAsync();
-            if (!hasData)
-            {
-                await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+            Id = Guid.Parse("40000001-0001-0001-0001-000000000001"),
+            Firstname = "Alice",
+            Lastname = "Johnson",
+            CompanyName = "Alpha Company",
+            Email = "alice.johnson@alpha.com",
+            Phone = "+1111111111",
+            Website = "https://alpha.com",
+            VatNumber = "VAT111111111",
+            Note = "First customer for tenant 1",
+            CustomerStatus = CustomerStatus.Active,
+            DateEnrollment = DateTimeOffset.UtcNow.AddDays(-10),
+            TenantId = TenantConstants.TestTenant1Id
+        };
 
-                var customer1Tenant1 = new maERP.Domain.Entities.Customer
-                {
-                    Id = Guid.Parse("40000001-0001-0001-0001-000000000001"),
-                    Firstname = "Alice",
-                    Lastname = "Johnson",
-                    CompanyName = "Alpha Company",
-                    Email = "alice.johnson@alpha.com",
-                    Phone = "+1111111111",
-                    Website = "https://alpha.com",
-                    VatNumber = "VAT111111111",
-                    Note = "First customer for tenant 1",
-                    CustomerStatus = CustomerStatus.Active,
-                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-10),
-                    TenantId = TenantConstants.TestTenant1Id
-                };
-
-                var customer2Tenant1 = new maERP.Domain.Entities.Customer
-                {
-                    Id = Guid.Parse("40000002-0002-0002-0002-000000000002"),
-                    Firstname = "Bob",
-                    Lastname = "Smith",
-                    CompanyName = "Beta Corporation",
-                    Email = "bob.smith@beta.com",
-                    Phone = "+2222222222",
-                    Website = "https://beta.com",
-                    VatNumber = "VAT222222222",
-                    Note = "Second customer for tenant 1",
-                    CustomerStatus = CustomerStatus.Inactive,
-                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-20),
-                    TenantId = TenantConstants.TestTenant1Id
-                };
-
-                var customer3Tenant1 = new maERP.Domain.Entities.Customer
-                {
-                    Id = Guid.Parse("40000003-0003-0003-0003-000000000003"),
-                    Firstname = "Charlie",
-                    Lastname = "Brown",
-                    CompanyName = "Gamma Enterprise",
-                    Email = "charlie.brown@gamma.com",
-                    Phone = "+3333333333",
-                    Website = "https://gamma.com",
-                    VatNumber = "VAT333333333",
-                    Note = "Third customer for tenant 1",
-                    CustomerStatus = CustomerStatus.Active,
-                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-30),
-                    TenantId = TenantConstants.TestTenant1Id
-                };
-
-                var customer4Tenant2 = new maERP.Domain.Entities.Customer
-                {
-                    Id = Guid.Parse("40000004-0004-0004-0004-000000000004"),
-                    Firstname = "David",
-                    Lastname = "Wilson",
-                    CompanyName = "Delta Company",
-                    Email = "david.wilson@delta.com",
-                    Phone = "+4444444444",
-                    Website = "https://delta.com",
-                    VatNumber = "VAT444444444",
-                    Note = "Customer for tenant 2",
-                    CustomerStatus = CustomerStatus.Active,
-                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-5),
-                    TenantId = TenantConstants.TestTenant2Id
-                };
-
-                var customer5Tenant2 = new maERP.Domain.Entities.Customer
-                {
-                    Id = Guid.Parse("40000005-0005-0005-0005-000000000005"),
-                    Firstname = "Eve",
-                    Lastname = "Davis",
-                    CompanyName = "Epsilon Ltd",
-                    Email = "eve.davis@epsilon.com",
-                    Phone = "+5555555555",
-                    Website = "https://epsilon.com",
-                    VatNumber = "VAT555555555",
-                    Note = "Another customer for tenant 2",
-                    CustomerStatus = CustomerStatus.Active,
-                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-15),
-                    TenantId = TenantConstants.TestTenant2Id
-                };
-
-                DbContext.Customer.AddRange(
-                    customer1Tenant1,
-                    customer2Tenant1,
-                    customer3Tenant1,
-                    customer4Tenant2,
-                    customer5Tenant2);
-                await DbContext.SaveChangesAsync();
-            }
-        }
-        finally
+        var customer2Tenant1 = new maERP.Domain.Entities.Customer
         {
-            TenantContext.SetCurrentTenantId(currentTenant);
-        }
-    }
+            Id = Guid.Parse("40000002-0002-0002-0002-000000000002"),
+            Firstname = "Bob",
+            Lastname = "Smith",
+            CompanyName = "Beta Corporation",
+            Email = "bob.smith@beta.com",
+            Phone = "+2222222222",
+            Website = "https://beta.com",
+            VatNumber = "VAT222222222",
+            Note = "Second customer for tenant 1",
+            CustomerStatus = CustomerStatus.Inactive,
+            DateEnrollment = DateTimeOffset.UtcNow.AddDays(-20),
+            TenantId = TenantConstants.TestTenant1Id
+        };
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
+        var customer3Tenant1 = new maERP.Domain.Entities.Customer
+        {
+            Id = Guid.Parse("40000003-0003-0003-0003-000000000003"),
+            Firstname = "Charlie",
+            Lastname = "Brown",
+            CompanyName = "Gamma Enterprise",
+            Email = "charlie.brown@gamma.com",
+            Phone = "+3333333333",
+            Website = "https://gamma.com",
+            VatNumber = "VAT333333333",
+            Note = "Third customer for tenant 1",
+            CustomerStatus = CustomerStatus.Active,
+            DateEnrollment = DateTimeOffset.UtcNow.AddDays(-30),
+            TenantId = TenantConstants.TestTenant1Id
+        };
+
+        var customer4Tenant2 = new maERP.Domain.Entities.Customer
+        {
+            Id = Guid.Parse("40000004-0004-0004-0004-000000000004"),
+            Firstname = "David",
+            Lastname = "Wilson",
+            CompanyName = "Delta Company",
+            Email = "david.wilson@delta.com",
+            Phone = "+4444444444",
+            Website = "https://delta.com",
+            VatNumber = "VAT444444444",
+            Note = "Customer for tenant 2",
+            CustomerStatus = CustomerStatus.Active,
+            DateEnrollment = DateTimeOffset.UtcNow.AddDays(-5),
+            TenantId = TenantConstants.TestTenant2Id
+        };
+
+        var customer5Tenant2 = new maERP.Domain.Entities.Customer
+        {
+            Id = Guid.Parse("40000005-0005-0005-0005-000000000005"),
+            Firstname = "Eve",
+            Lastname = "Davis",
+            CompanyName = "Epsilon Ltd",
+            Email = "eve.davis@epsilon.com",
+            Phone = "+5555555555",
+            Website = "https://epsilon.com",
+            VatNumber = "VAT555555555",
+            Note = "Another customer for tenant 2",
+            CustomerStatus = CustomerStatus.Active,
+            DateEnrollment = DateTimeOffset.UtcNow.AddDays(-15),
+            TenantId = TenantConstants.TestTenant2Id
+        };
+
+        DbContext.Customer.AddRange(
+            customer1Tenant1,
+            customer2Tenant1,
+            customer3Tenant1,
+            customer4Tenant2,
+            customer5Tenant2);
+        await DbContext.SaveChangesAsync();
     }
 
     [Fact]
@@ -205,6 +139,7 @@ public class CustomerListQueryTests : IDisposable
     public async Task GetCustomers_WithoutTenantHeader_ShouldReturnEmptyResult()
     {
         await SeedCustomerTestDataAsync();
+        RemoveTenantHeader();
 
         var response = await Client.GetAsync("/api/v1/Customers");
 
@@ -405,7 +340,8 @@ public class CustomerListQueryTests : IDisposable
     [Fact]
     public async Task GetCustomers_WithNegativePageNumber_ShouldHandleGracefully()
     {
-        SetTenantHeader(Guid.NewGuid());
+        await SeedCustomerTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.GetAsync("/api/v1/Customers?pageNumber=-1");
 
@@ -413,14 +349,14 @@ public class CustomerListQueryTests : IDisposable
         var result = await ReadResponseAsync<PaginatedResult<CustomerListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEmpty(result.Data);
+        TestAssertions.AssertEqual(3, result.Data?.Count ?? 0);
     }
 
     [Fact]
     public async Task GetCustomers_WithNonExistentTenant_ShouldReturnEmptyPaginatedResult()
     {
         await SeedCustomerTestDataAsync();
-        SetTenantHeader(Guid.NewGuid());
+        SetInvalidTenantHeader();
 
         var response = await Client.GetAsync("/api/v1/Customers");
 
@@ -431,6 +367,17 @@ public class CustomerListQueryTests : IDisposable
         TestAssertions.AssertEmpty(result.Data);
         TestAssertions.AssertEqual(0, result.TotalCount);
         TestAssertions.AssertEqual(0, result.TotalPages);
+    }
+
+    [Fact]
+    public async Task GetCustomers_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
+    {
+        await SeedCustomerTestDataAsync();
+        SetInvalidTenantHeaderValue("invalid-guid-format");
+
+        var response = await Client.GetAsync("/api/v1/Customers");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]

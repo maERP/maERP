@@ -37,6 +37,13 @@ The codebase implements:
 
 ## Development Commands
 
+### Available MCP Server
+- jetbrains for general, debugging, error, files, formatting, text, terminal and version control operations
+- ref for getting official documentations
+- postgres for database operations
+
+Use MCP Server if needed.
+
 ### Building the Project
 
 ```bash

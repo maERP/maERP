@@ -1,63 +1,23 @@
 using System.Net;
 using System.Text.Json;
+using maERP.Application.Contracts.Services;
 using maERP.Domain.Constants;
 using maERP.Domain.Wrapper;
-using maERP.Server.Tests.Infrastructure;
 using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
+using maERP.Server.Tests.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.Product.Commands;
 
-public class ProductDeleteCommandTests : IDisposable
+public class ProductDeleteCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
     private static readonly Guid TaxClass1Id = Guid.NewGuid();
     private static readonly Guid Manufacturer1Id = Guid.NewGuid();
     private static readonly Guid Product1Id = Guid.NewGuid();
     private static readonly Guid Product2Id = Guid.NewGuid();
     private static readonly Guid Product3Id = Guid.NewGuid();
-
-    public ProductDeleteCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_ProductDeleteCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task<(Guid tenant1ProductId, Guid tenant2ProductId)> SeedTestDataAsync()
     {
@@ -153,12 +113,6 @@ public class ProductDeleteCommandTests : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
 
     [Fact]
     public async Task DeleteProduct_WithValidId_ShouldReturnNoContent()
@@ -240,6 +194,7 @@ public class ProductDeleteCommandTests : IDisposable
     public async Task DeleteProduct_WithoutTenantHeader_ShouldReturnNotFound()
     {
         var (productId, _) = await SeedTestDataAsync();
+        RemoveTenantHeader();
 
         // Don't set tenant header - the repository won't find the product due to query filters
         var response = await Client.DeleteAsync($"/api/v1/Products/{productId}");
@@ -533,5 +488,39 @@ public class ProductDeleteCommandTests : IDisposable
         // Try to get the product details - should return NotFound
         var detailResponse = await Client.GetAsync($"/api/v1/Products/{productId}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, detailResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteProduct_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
+    {
+        var (productId, _) = await SeedTestDataAsync();
+        SetInvalidTenantHeaderValue("invalid-guid-format");
+
+        var response = await Client.DeleteAsync($"/api/v1/Products/{productId}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+
+        // Verify product still exists in database
+        var productStillExists = await DbContext.Product
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(p => p.Id == productId);
+        TestAssertions.AssertNotNull(productStillExists);
+    }
+
+    [Fact]
+    public async Task DeleteProduct_WithNonExistentTenant_ShouldReturnNotFound()
+    {
+        var (productId, _) = await SeedTestDataAsync();
+        SetInvalidTenantHeader();
+
+        var response = await Client.DeleteAsync($"/api/v1/Products/{productId}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+
+        // Verify product still exists in database
+        var productStillExists = await DbContext.Product
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(p => p.Id == productId);
+        TestAssertions.AssertNotNull(productStillExists);
     }
 }

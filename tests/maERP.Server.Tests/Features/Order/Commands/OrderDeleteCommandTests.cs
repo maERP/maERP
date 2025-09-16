@@ -14,13 +14,8 @@ using Xunit;
 
 namespace maERP.Server.Tests.Features.Order.Commands;
 
-public class OrderDeleteCommandTests : IDisposable
+public class OrderDeleteCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
     private static readonly Guid Customer1Id = Guid.NewGuid();
     private static readonly Guid Customer2Id = Guid.NewGuid();
     private static readonly Guid Customer3Id = Guid.NewGuid();
@@ -28,43 +23,6 @@ public class OrderDeleteCommandTests : IDisposable
     private static readonly Guid Order2Id = Guid.NewGuid();
     private static readonly Guid Order3Id = Guid.NewGuid();
     private static readonly Guid Order10Id = Guid.NewGuid();
-
-    public OrderDeleteCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_OrderDeleteCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
-    }
 
     private async Task SeedOrderTestDataAsync()
     {
@@ -189,7 +147,7 @@ public class OrderDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteOrder_TenantIsolation_ShouldNotDeleteCrossTenantOrders()
+    public async Task DeleteOrder_CrossTenantAttempt_ShouldNotDeleteOtherTenantsOrder()
     {
         await SeedOrderTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
@@ -347,7 +305,7 @@ public class OrderDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteOrder_WithInvalidTenantHeader_ShouldReturnNoContent()
+    public async Task DeleteOrder_WithNonExistentTenant_ShouldReturnNoContent()
     {
         await SeedOrderTestDataAsync();
 
@@ -359,16 +317,15 @@ public class OrderDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteOrder_EmptyTenantHeader_ShouldReturnNoContent()
+    public async Task DeleteOrder_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
     {
         await SeedOrderTestDataAsync();
 
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", "");
+        SetInvalidTenantHeaderValue("invalid-guid-format");
 
         var response = await Client.DeleteAsync($"/api/v1/Orders/{Order1Id}");
 
-        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]

@@ -14,58 +14,11 @@ using Xunit;
 
 namespace maERP.Server.Tests.Features.Order.Commands;
 
-public class OrderCreateCommandTests : IDisposable
+public class OrderCreateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
     private static readonly Guid Customer1Id = Guid.NewGuid();
     private static readonly Guid Customer2Id = Guid.NewGuid();
     private static readonly Guid Customer3Id = Guid.NewGuid();
-
-    public OrderCreateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_OrderCreateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task SeedOrderTestDataAsync()
     {
@@ -79,7 +32,7 @@ public class OrderCreateCommandTests : IDisposable
             {
                 await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
-                // Create customers for both tenants
+                // Create additional customers for order tests
                 var customer1Tenant1 = new Domain.Entities.Customer
                 {
                     Id = Customer1Id,
@@ -146,12 +99,7 @@ public class OrderCreateCommandTests : IDisposable
         };
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
+
 
     [Fact]
     public async Task CreateOrder_WithValidData_ShouldReturnCreated()
@@ -236,6 +184,7 @@ public class OrderCreateCommandTests : IDisposable
     public async Task CreateOrder_WithoutTenantHeader_ShouldReturnBadRequest()
     {
         await SeedOrderTestDataAsync();
+        RemoveTenantHeader();
         var orderDto = CreateValidOrderDto();
 
         var response = await PostAsJsonAsync("/api/v1/Orders", orderDto);
@@ -244,17 +193,27 @@ public class OrderCreateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateOrder_WithNonExistentTenant_ShouldHandleGracefully()
+    public async Task CreateOrder_WithNonExistentTenant_ShouldReturnBadRequest()
     {
         await SeedOrderTestDataAsync();
-        SetTenantHeader(Guid.NewGuid());
+        SetInvalidTenantHeader();
         var orderDto = CreateValidOrderDto();
 
         var response = await PostAsJsonAsync("/api/v1/Orders", orderDto);
 
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.BadRequest ||
-                                 response.StatusCode == HttpStatusCode.NotFound ||
-                                 response.StatusCode == HttpStatusCode.InternalServerError);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CreateOrder_WithInvalidTenantHeaderFormat_ShouldReturnUnauthorized()
+    {
+        await SeedOrderTestDataAsync();
+        SetInvalidTenantHeaderValue("invalid-guid-format");
+        var orderDto = CreateValidOrderDto();
+
+        var response = await PostAsJsonAsync("/api/v1/Orders", orderDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -547,4 +506,6 @@ public class OrderCreateCommandTests : IDisposable
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
+
+
 }
