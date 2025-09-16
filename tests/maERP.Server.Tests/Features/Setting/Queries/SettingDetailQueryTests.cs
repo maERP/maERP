@@ -1,130 +1,68 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Setting.Queries;
 
-public class SettingDetailQueryTests : IDisposable
+public class SettingDetailQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public SettingDetailQueryTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_SettingDetailQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task SeedSettingTestDataAsync()
     {
-        var currentTenant = TenantContext.GetCurrentTenantId();
-        TenantContext.SetCurrentTenantId(null);
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
-        try
+        var existingSettings = await DbContext.Setting.IgnoreQueryFilters().ToListAsync();
+        if (!existingSettings.Any(s => s.Key == "test.detail.tenant1"))
         {
-            await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-
-            var existingSettings = await DbContext.Setting.IgnoreQueryFilters().ToListAsync();
-            if (!existingSettings.Any(s => s.Key == "test.detail.tenant1"))
+            var setting1Tenant1 = new maERP.Domain.Entities.Setting
             {
-                var setting1Tenant1 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.detail.tenant1",
-                    Value = "detail_value1",
-                    TenantId = TenantConstants.TestTenant1Id
-                };
+                Key = "test.detail.tenant1",
+                Value = "detail_value1",
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                var setting2Tenant1 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.config.tenant1",
-                    Value = "config_value1",
-                    TenantId = TenantConstants.TestTenant1Id
-                };
+            var setting2Tenant1 = new maERP.Domain.Entities.Setting
+            {
+                Key = "test.config.tenant1",
+                Value = "config_value1",
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                var setting3Tenant1 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.boolean.tenant1",
-                    Value = "true",
-                    TenantId = TenantConstants.TestTenant1Id
-                };
+            var setting3Tenant1 = new maERP.Domain.Entities.Setting
+            {
+                Key = "test.boolean.tenant1",
+                Value = "true",
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                var setting1Tenant2 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.detail.tenant2",
-                    Value = "detail_value2",
-                    TenantId = TenantConstants.TestTenant2Id
-                };
+            var setting1Tenant2 = new maERP.Domain.Entities.Setting
+            {
+                Key = "test.detail.tenant2",
+                Value = "detail_value2",
+                TenantId = TenantConstants.TestTenant2Id
+            };
 
-                var setting2Tenant2 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.config.tenant2",
-                    Value = "config_value2",
-                    TenantId = TenantConstants.TestTenant2Id
-                };
+            var setting2Tenant2 = new maERP.Domain.Entities.Setting
+            {
+                Key = "test.config.tenant2",
+                Value = "config_value2",
+                TenantId = TenantConstants.TestTenant2Id
+            };
 
-                var setting3Tenant2 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.special.tenant2",
-                    Value = "special_value",
-                    TenantId = TenantConstants.TestTenant2Id
-                };
+            var setting3Tenant2 = new maERP.Domain.Entities.Setting
+            {
+                Key = "test.special.tenant2",
+                Value = "special_value",
+                TenantId = TenantConstants.TestTenant2Id
+            };
 
-                DbContext.Setting.AddRange(setting1Tenant1, setting2Tenant1, setting3Tenant1,
-                                         setting1Tenant2, setting2Tenant2, setting3Tenant2);
-                await DbContext.SaveChangesAsync();
-            }
+            DbContext.Setting.AddRange(setting1Tenant1, setting2Tenant1, setting3Tenant1,
+                                     setting1Tenant2, setting2Tenant2, setting3Tenant2);
+            await DbContext.SaveChangesAsync();
         }
-        finally
-        {
-            TenantContext.SetCurrentTenantId(currentTenant);
-        }
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
@@ -202,7 +140,7 @@ public class SettingDetailQueryTests : IDisposable
         TestAssertions.AssertNotNull(tenant1Setting);
 
         // Remove tenant header and try to access tenant-specific setting
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        RemoveTenantHeader();
         var response = await Client.GetAsync($"/api/v1/Settings/{tenant1Setting!.Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -302,7 +240,7 @@ public class SettingDetailQueryTests : IDisposable
     public async Task GetSettingDetail_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedSettingTestDataAsync();
-        SetTenantHeader(Guid.NewGuid());
+        SetInvalidTenantHeader(); // Uses valid GUID but non-existent tenant
 
         var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
@@ -496,20 +434,35 @@ public class SettingDetailQueryTests : IDisposable
     {
         await SeedSettingTestDataAsync();
 
+        // Get actual setting IDs for both tenants
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var response1 = await Client.GetAsync("/api/v1/Settings/1");
+        var listResponse1 = await Client.GetAsync("/api/v1/Settings");
+        var listResult1 = await ReadResponseAsync<PaginatedResult<SettingListDto>>(listResponse1);
+        var tenant1SettingId = listResult1.Data?.FirstOrDefault()?.Id ?? Guid.Empty;
+
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var listResponse2 = await Client.GetAsync("/api/v1/Settings");
+        var listResult2 = await ReadResponseAsync<PaginatedResult<SettingListDto>>(listResponse2);
+        var tenant2SettingId = listResult2.Data?.FirstOrDefault()?.Id ?? Guid.Empty;
+
+        // Test that tenant 1 can access its own setting
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response1 = await Client.GetAsync($"/api/v1/Settings/{tenant1SettingId}");
         TestAssertions.AssertHttpSuccess(response1);
 
+        // Test that tenant 2 cannot access tenant 1's setting
         SetTenantHeader(TenantConstants.TestTenant2Id);
-        var response2 = await Client.GetAsync("/api/v1/Settings/1");
+        var response2 = await Client.GetAsync($"/api/v1/Settings/{tenant1SettingId}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
 
+        // Test that tenant 1 cannot access tenant 2's setting
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var response3 = await Client.GetAsync("/api/v1/Settings/4");
+        var response3 = await Client.GetAsync($"/api/v1/Settings/{tenant2SettingId}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response3.StatusCode);
 
+        // Test that tenant 2 can access its own setting
         SetTenantHeader(TenantConstants.TestTenant2Id);
-        var response4 = await Client.GetAsync("/api/v1/Settings/4");
+        var response4 = await Client.GetAsync($"/api/v1/Settings/{tenant2SettingId}");
         TestAssertions.AssertHttpSuccess(response4);
     }
 
@@ -518,7 +471,7 @@ public class SettingDetailQueryTests : IDisposable
     {
         await SeedSettingTestDataAsync();
 
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        RemoveTenantHeader();
 
         var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
@@ -534,12 +487,23 @@ public class SettingDetailQueryTests : IDisposable
     {
         await SeedSettingTestDataAsync();
 
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", string.Empty);
+        SetInvalidTenantHeaderValue(string.Empty);
 
         var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetSettingDetail_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized()
+    {
+        await SeedSettingTestDataAsync();
+        
+        SetInvalidTenantHeaderValue("invalid_tenant_id");
+
+        var response = await Client.GetAsync($"/api/v1/Settings/{Guid.NewGuid()}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -551,33 +515,47 @@ public class SettingDetailQueryTests : IDisposable
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var listResponse1 = await Client.GetAsync("/api/v1/Settings");
         var listResult1 = await ReadResponseAsync<PaginatedResult<SettingListDto>>(listResponse1);
-        var tenant1Ids = listResult1.Data?.Select(s => s.Id).ToArray() ?? new Guid[0];
+        var tenant1Settings = listResult1.Data ?? new List<SettingListDto>();
 
         // Get tenant 2 settings
         SetTenantHeader(TenantConstants.TestTenant2Id);
         var listResponse2 = await Client.GetAsync("/api/v1/Settings");
         var listResult2 = await ReadResponseAsync<PaginatedResult<SettingListDto>>(listResponse2);
-        var tenant2Ids = listResult2.Data?.Select(s => s.Id).ToArray() ?? new Guid[0];
+        var tenant2Settings = listResult2.Data ?? new List<SettingListDto>();
 
-        foreach (var id in tenant1Ids)
+        // Ensure we have settings for both tenants
+        TestAssertions.AssertTrue(tenant1Settings.Count > 0);
+        TestAssertions.AssertTrue(tenant2Settings.Count > 0);
+
+        // Get tenant-specific settings (those with "tenant1" or "tenant2" in the key)
+        var tenant1SpecificSettings = tenant1Settings.Where(s => s.Key.Contains("tenant1")).ToList();
+        var tenant2SpecificSettings = tenant2Settings.Where(s => s.Key.Contains("tenant2")).ToList();
+
+        // Verify tenant 1 specific settings isolation
+        foreach (var setting in tenant1SpecificSettings)
         {
+            // Tenant 1 should be able to access its own tenant-specific settings
             SetTenantHeader(TenantConstants.TestTenant1Id);
-            var response = await Client.GetAsync($"/api/v1/Settings/{id}");
+            var response = await Client.GetAsync($"/api/v1/Settings/{setting.Id}");
             TestAssertions.AssertHttpSuccess(response);
 
+            // Tenant 2 should NOT be able to access tenant 1's tenant-specific settings
             SetTenantHeader(TenantConstants.TestTenant2Id);
-            response = await Client.GetAsync($"/api/v1/Settings/{id}");
+            response = await Client.GetAsync($"/api/v1/Settings/{setting.Id}");
             TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        foreach (var id in tenant2Ids)
+        // Verify tenant 2 specific settings isolation
+        foreach (var setting in tenant2SpecificSettings)
         {
+            // Tenant 2 should be able to access its own tenant-specific settings
             SetTenantHeader(TenantConstants.TestTenant2Id);
-            var response = await Client.GetAsync($"/api/v1/Settings/{id}");
+            var response = await Client.GetAsync($"/api/v1/Settings/{setting.Id}");
             TestAssertions.AssertHttpSuccess(response);
 
+            // Tenant 1 should NOT be able to access tenant 2's tenant-specific settings
             SetTenantHeader(TenantConstants.TestTenant1Id);
-            response = await Client.GetAsync($"/api/v1/Settings/{id}");
+            response = await Client.GetAsync($"/api/v1/Settings/{setting.Id}");
             TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
     }

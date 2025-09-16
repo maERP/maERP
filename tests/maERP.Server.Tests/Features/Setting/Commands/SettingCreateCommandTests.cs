@@ -3,81 +3,16 @@ using System.Text.Json;
 using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Setting.Commands;
 
-public class SettingCreateCommandTests : IDisposable
+public class SettingCreateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public SettingCreateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_SettingCreateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-
-        // Force a small delay to ensure header is set properly
-        Task.Delay(10).Wait();
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task SeedTestDataAsync()
     {
-        var currentTenant = TenantContext.GetCurrentTenantId();
-        TenantContext.SetCurrentTenantId(null);
-
-        try
-        {
-            await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        }
-        finally
-        {
-            TenantContext.SetCurrentTenantId(currentTenant);
-        }
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
     }
 
     private static SettingInputDto CreateValidSettingDto(string key = "test.create.key", string value = "test_value")
@@ -87,13 +22,6 @@ public class SettingCreateCommandTests : IDisposable
             Key = key,
             Value = value
         };
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
@@ -218,7 +146,7 @@ public class SettingCreateCommandTests : IDisposable
 
         var createResponse = await PostAsJsonAsync("/api/v1/Settings", settingDto);
         TestAssertions.AssertEqual(HttpStatusCode.Created, createResponse.StatusCode);
-        var createResult = await ReadResponseAsync<Result<int>>(createResponse);
+        var createResult = await ReadResponseAsync<Result<Guid>>(createResponse);
         var settingId = createResult.Data;
 
         // Verify tenant 1 can access it
@@ -342,7 +270,7 @@ public class SettingCreateCommandTests : IDisposable
         var response = await Client.PostAsync("/api/v1/Settings", content);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseContent = await ReadResponseStringAsync(response);
         var result = JsonSerializer.Deserialize<Result<Guid?>>(responseContent, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
@@ -369,8 +297,8 @@ public class SettingCreateCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.Created, response2.StatusCode);
 
         // Both should succeed because they are in different tenant contexts
-        var result1 = await ReadResponseAsync<Result<int>>(response1);
-        var result2 = await ReadResponseAsync<Result<int>>(response2);
+        var result1 = await ReadResponseAsync<Result<Guid>>(response1);
+        var result2 = await ReadResponseAsync<Result<Guid>>(response2);
         TestAssertions.AssertTrue(result1.Succeeded);
         TestAssertions.AssertTrue(result2.Succeeded);
         TestAssertions.AssertNotEqual(result1.Data, result2.Data);
@@ -415,17 +343,30 @@ public class SettingCreateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateSetting_WithInvalidTenantHeader_ShouldCreateWithNullTenant()
+    public async Task CreateSetting_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", "invalid_tenant_id");
+        SetInvalidTenantHeaderValue("invalid_tenant_id");
 
         var settingDto = CreateValidSettingDto("test.invalid.tenant", "invalid_tenant_value");
 
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
 
-        // Should still create successfully but as system setting
+        // Should return unauthorized for invalid header format
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CreateSetting_WithNonExistentValidTenant_ShouldCreateSuccessfully()
+    {
+        await SeedTestDataAsync();
+        SetInvalidTenantHeader(); // Uses a valid GUID but non-existent tenant
+
+        var settingDto = CreateValidSettingDto("test.nonexistent.tenant", "nonexistent_tenant_value");
+
+        var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
+
+        // API creates successfully even with non-existent tenant (creates as system setting)
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertTrue(result.Succeeded);

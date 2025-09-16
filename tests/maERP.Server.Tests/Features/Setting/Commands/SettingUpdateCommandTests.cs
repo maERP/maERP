@@ -4,9 +4,6 @@ using System.Text.Json.Serialization;
 using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
@@ -37,57 +34,9 @@ public class GuidJsonConverter : JsonConverter<Guid>
     }
 }
 
-public class SettingUpdateCommandTests : IDisposable
+public class SettingUpdateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public SettingUpdateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_SettingUpdateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-
-        // Force a small delay to ensure header is set properly
-        Task.Delay(10).Wait();
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PutAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
+    private new async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
     {
         var content = await response.Content.ReadAsStringAsync();
 
@@ -103,17 +52,7 @@ public class SettingUpdateCommandTests : IDisposable
 
     private async Task SeedTestDataAsync()
     {
-        var currentTenant = TenantContext.GetCurrentTenantId();
-        TenantContext.SetCurrentTenantId(null);
-
-        try
-        {
-            await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        }
-        finally
-        {
-            TenantContext.SetCurrentTenantId(currentTenant);
-        }
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
     }
 
     private async Task<Guid> CreateTestSettingAsync(Guid tenantId, string key = "test.update.key", string value = "original_value")
@@ -138,13 +77,6 @@ public class SettingUpdateCommandTests : IDisposable
             Key = key,
             Value = value
         };
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
@@ -410,7 +342,7 @@ public class SettingUpdateCommandTests : IDisposable
         var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
 
         // Remove tenant header
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        RemoveTenantHeader();
 
         var updateDto = CreateUpdateDto(settingId, "test.no.tenant", "value");
 
@@ -523,5 +455,37 @@ public class SettingUpdateCommandTests : IDisposable
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{setting2Id}");
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
         TestAssertions.AssertEqual("tenant2_value", settingDetail.Data!.Value);
+    }
+
+    [Fact]
+    public async Task UpdateSetting_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized()
+    {
+        await SeedTestDataAsync();
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+
+        // Set invalid tenant header format
+        SetInvalidTenantHeaderValue("invalid_tenant_id");
+
+        var updateDto = CreateUpdateDto(settingId, "test.invalid.tenant", "value");
+
+        var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateSetting_WithNonExistentValidTenant_ShouldReturnNotFound()
+    {
+        await SeedTestDataAsync();
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+
+        // Set valid GUID but non-existent tenant
+        SetInvalidTenantHeader();
+
+        var updateDto = CreateUpdateDto(settingId, "test.nonexistent.tenant", "value");
+
+        var response = await PutAsJsonAsync($"/api/v1/Settings/{settingId}", updateDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

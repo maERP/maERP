@@ -3,81 +3,16 @@ using System.Text.Json;
 using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Setting.Commands;
 
-public class SettingDeleteCommandTests : IDisposable
+public class SettingDeleteCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public SettingDeleteCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_SettingDeleteCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-
-        // Force a small delay to ensure header is set properly
-        Task.Delay(10).Wait();
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task SeedTestDataAsync()
     {
-        var currentTenant = TenantContext.GetCurrentTenantId();
-        TenantContext.SetCurrentTenantId(null);
-
-        try
-        {
-            await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        }
-        finally
-        {
-            TenantContext.SetCurrentTenantId(currentTenant);
-        }
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
     }
 
     private async Task<Guid> CreateTestSettingAsync(Guid tenantId, string key = "test.delete.key", string value = "delete_value")
@@ -92,13 +27,6 @@ public class SettingDeleteCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         return result.Data;
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
@@ -203,7 +131,7 @@ public class SettingDeleteCommandTests : IDisposable
         var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
 
         // Remove tenant header
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        RemoveTenantHeader();
 
         var response = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
 
@@ -356,14 +284,14 @@ public class SettingDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
 
         // Create a system setting (no tenant header)
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        RemoveTenantHeader();
         var settingDto = new SettingInputDto
         {
             Key = "system.delete.test",
             Value = "system_value"
         };
         var createResponse = await PostAsJsonAsync("/api/v1/Settings", settingDto);
-        var createResult = await ReadResponseAsync<Result<int>>(createResponse);
+        var createResult = await ReadResponseAsync<Result<Guid>>(createResponse);
         var systemSettingId = createResult.Data;
 
         // Delete system setting (still no tenant header)
@@ -407,14 +335,32 @@ public class SettingDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteSetting_WithInvalidTenantHeader_ShouldReturnNotFoundForTenantSpecificSetting()
+    public async Task DeleteSetting_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized()
     {
         await SeedTestDataAsync();
         var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
 
         // Set invalid tenant header
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", "invalid_tenant");
+        SetInvalidTenantHeaderValue("invalid_tenant");
+
+        var response = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+
+        // Verify setting still exists for tenant 1
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var getResponse = await Client.GetAsync($"/api/v1/Settings/{settingId}");
+        TestAssertions.AssertHttpSuccess(getResponse);
+    }
+
+    [Fact]
+    public async Task DeleteSetting_WithNonExistentValidTenant_ShouldReturnNotFound()
+    {
+        await SeedTestDataAsync();
+        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
+
+        // Set valid GUID but non-existent tenant
+        SetInvalidTenantHeader();
 
         var response = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
 

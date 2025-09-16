@@ -1,65 +1,14 @@
 using System.Net;
-using System.Text.Json;
-using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.TaxClass.Commands;
 
-public class TaxClassDeleteCommandTests : IDisposable
+public class TaxClassDeleteCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public TaxClassDeleteCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_TaxClassDeleteCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task<Guid> CreateTestTaxClassAsync(Guid tenantId, double taxRate = 19.0)
     {
         TenantContext.SetCurrentTenantId(tenantId);
@@ -110,13 +59,6 @@ public class TaxClassDeleteCommandTests : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
-
     [Fact]
     public async Task DeleteTaxClass_WithValidId_ShouldReturnOk()
     {
@@ -146,6 +88,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        RemoveTenantHeader();
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
@@ -174,8 +117,8 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
-        SetTenantHeader(TenantConstants.TestTenant2Id); // Different tenant
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 15.0);
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Attempt to delete from different tenant
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
@@ -183,10 +126,14 @@ public class TaxClassDeleteCommandTests : IDisposable
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
 
-        // Verify tax class still exists for tenant 1
+        // Verify tax class still exists and is unchanged for tenant 1
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var getResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
         TestAssertions.AssertHttpSuccess(getResponse);
+        
+        // Verify the tax class data is still intact
+        var result = await ReadResponseAsync<Result<maERP.Domain.Dtos.TaxClass.TaxClassDetailDto>>(getResponse);
+        TestAssertions.AssertEqual(15.0, result.Data!.TaxRate);
     }
 
     [Fact]
@@ -210,22 +157,41 @@ public class TaxClassDeleteCommandTests : IDisposable
         await SeedTestDataAsync();
         var taxClassId1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 19.0);
         var taxClassId2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id, 20.0);
+        var taxClassId3 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 7.0); // Another for tenant 1
 
-        // Act - Delete tenant 1's tax class
+        // Act - Delete tenant 1's first tax class from tenant 1 context
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId1}");
 
-        // Try to delete tenant 2's tax class from tenant 1
+        // Try to delete tenant 2's tax class from tenant 1 context (should fail)
+        var crossTenantResponse = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId2}");
+
+        // Delete tenant 2's tax class from tenant 2 context
+        SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId2}");
 
         // Assert
         TestAssertions.AssertHttpSuccess(response1);
-        TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(crossTenantResponse, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpSuccess(response2);
 
-        // Verify tenant 2's tax class still exists
+        // Verify tenant 1's remaining tax class still exists
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var getTenant1Response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId3}");
+        TestAssertions.AssertHttpSuccess(getTenant1Response);
+
+        // Verify deleted tax classes are gone
+        var getDeleted1 = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId1}");
+        TestAssertions.AssertHttpStatusCode(getDeleted1, HttpStatusCode.NotFound);
+
         SetTenantHeader(TenantConstants.TestTenant2Id);
-        var getResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
-        TestAssertions.AssertHttpSuccess(getResponse);
+        var getDeleted2 = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
+        TestAssertions.AssertHttpStatusCode(getDeleted2, HttpStatusCode.NotFound);
+
+        // Verify cross-tenant access is still blocked for remaining records
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var crossAccessResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId3}");
+        TestAssertions.AssertHttpStatusCode(crossAccessResponse, HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -301,8 +267,7 @@ public class TaxClassDeleteCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+        SetInvalidTenantHeaderValue(invalidTenantId);
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
@@ -426,10 +391,10 @@ public class TaxClassDeleteCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
-        var taxClassId2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id);
+        var taxClassId1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 12.0);
+        var taxClassId2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id, 18.0);
 
-        // Act - Start with tenant 1
+        // Act - Start with tenant 1, verify access to own tax class
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var canAccessOwn = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId1}");
         TestAssertions.AssertHttpSuccess(canAccessOwn);
@@ -439,14 +404,25 @@ public class TaxClassDeleteCommandTests : IDisposable
         var deleteResponse = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId2}");
         TestAssertions.AssertHttpSuccess(deleteResponse);
 
-        // Try to delete tenant 1's tax class from tenant 2
+        // Verify tenant 2's tax class is deleted
+        var deletedCheck = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
+        TestAssertions.AssertHttpStatusCode(deletedCheck, HttpStatusCode.NotFound);
+
+        // Try to delete tenant 1's tax class from tenant 2 context (should fail)
         var deleteOtherResponse = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId1}");
         TestAssertions.AssertHttpStatusCode(deleteOtherResponse, HttpStatusCode.NotFound);
 
-        // Verify tenant 1's tax class still exists
+        // Verify tenant 1's tax class still exists and is unchanged
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var stillExists = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId1}");
         TestAssertions.AssertHttpSuccess(stillExists);
+        
+        var result = await ReadResponseAsync<Result<maERP.Domain.Dtos.TaxClass.TaxClassDetailDto>>(stillExists);
+        TestAssertions.AssertEqual(12.0, result.Data!.TaxRate); // Original value preserved
+
+        // Verify tenant 1 cannot access deleted tenant 2's tax class
+        var crossAccessCheck = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
+        TestAssertions.AssertHttpStatusCode(crossAccessCheck, HttpStatusCode.NotFound);
     }
 
     [Fact]

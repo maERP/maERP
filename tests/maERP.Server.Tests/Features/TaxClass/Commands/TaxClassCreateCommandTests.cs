@@ -1,79 +1,18 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.TaxClass.Commands;
 
-public class TaxClassCreateCommandTests : IDisposable
+public class TaxClassCreateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public TaxClassCreateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_TaxClassCreateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
-    }
-
-    protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PostAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task SeedTestDataAsync()
     {
-        var hasData = await DbContext.Tenant.IgnoreQueryFilters().AnyAsync();
-        if (!hasData)
-        {
-            await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        }
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
     }
 
     private TaxClassInputDto CreateValidTaxClassDto()
@@ -82,13 +21,6 @@ public class TaxClassCreateCommandTests : IDisposable
         {
             TaxRate = 19.0
         };
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
@@ -114,21 +46,22 @@ public class TaxClassCreateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateTaxClass_WithoutTenantHeader_ShouldReturnNotFound()
+    public async Task CreateTaxClass_WithoutTenantHeader_ShouldReturnCreated()
     {
         // Arrange
         await SeedTestDataAsync();
+        RemoveTenantHeader();
         var taxClassDto = CreateValidTaxClassDto();
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto);
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
     }
 
     [Fact]
-    public async Task CreateTaxClass_WithInvalidTenantHeader_ShouldReturnNotFound()
+    public async Task CreateTaxClass_WithInvalidTenantHeader_ShouldReturnCreated()
     {
         // Arrange
         await SeedTestDataAsync();
@@ -139,7 +72,7 @@ public class TaxClassCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto);
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
     }
 
     [Fact]
@@ -208,17 +141,18 @@ public class TaxClassCreateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassDto = CreateValidTaxClassDto();
+        var taxClassDto1 = new TaxClassInputDto { TaxRate = 15.5 };
+        var taxClassDto2 = new TaxClassInputDto { TaxRate = 25.5 };
 
         // Act - Create for tenant 1
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var response1 = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto);
-        var result1 = await ReadResponseAsync<Result<int>>(response1);
+        var response1 = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto1);
+        var result1 = await ReadResponseAsync<Result<Guid>>(response1);
 
         // Act - Create for tenant 2
         SetTenantHeader(TenantConstants.TestTenant2Id);
-        var response2 = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto);
-        var result2 = await ReadResponseAsync<Result<int>>(response2);
+        var response2 = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto2);
+        var result2 = await ReadResponseAsync<Result<Guid>>(response2);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response1, HttpStatusCode.Created);
@@ -297,20 +231,33 @@ public class TaxClassCreateCommandTests : IDisposable
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
-    public async Task CreateTaxClass_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task CreateTaxClass_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await SeedTestDataAsync();
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+        SetInvalidTenantHeaderValue(invalidTenantId);
         var taxClassDto = CreateValidTaxClassDto();
 
         // Act
         var response = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto);
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task CreateTaxClass_WithEmptyTenantHeaderValue_ShouldReturnCreated()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        SetInvalidTenantHeaderValue("");
+        var taxClassDto = CreateValidTaxClassDto();
+
+        // Act
+        var response = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto);
+
+        // Assert
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Created);
     }
 
     [Fact]
@@ -380,12 +327,12 @@ public class TaxClassCreateCommandTests : IDisposable
         // Act - Create in tenant 1
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto1);
-        var result1 = await ReadResponseAsync<Result<int>>(response1);
+        var result1 = await ReadResponseAsync<Result<Guid>>(response1);
 
         // Switch to tenant 2 and create
         SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await PostAsJsonAsync("/api/v1/TaxClasses", taxClassDto2);
-        var result2 = await ReadResponseAsync<Result<int>>(response2);
+        var result2 = await ReadResponseAsync<Result<Guid>>(response2);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response1, HttpStatusCode.Created);

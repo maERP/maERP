@@ -1,71 +1,50 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.TaxClass.Queries;
 
-public class TaxClassListQueryTests : IDisposable
+public class TaxClassListQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public TaxClassListQueryTests()
+    private async Task<Guid> CreateTestTaxClassAsync(Guid tenantId, double taxRate = 19.0)
     {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_TaxClassListQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
+        TenantContext.SetCurrentTenantId(tenantId);
 
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
+        var taxClass = new Domain.Entities.TaxClass
         {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
+            TaxRate = taxRate,
+            TenantId = tenantId,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        DbContext.TaxClass.Add(taxClass);
+        await DbContext.SaveChangesAsync();
+
+        TenantContext.SetCurrentTenantId(null);
+        return taxClass.Id;
     }
 
-    public void Dispose()
+    private async Task SeedTestDataAsync()
     {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
+        var hasData = await DbContext.Tenant.IgnoreQueryFilters().AnyAsync();
+        if (!hasData)
+        {
+            await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        }
     }
 
     [Fact]
     public async Task GetTaxClassList_WithValidTenant_ShouldReturnPaginatedResults()
     {
         // Arrange
-        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        await SeedTestDataAsync();
+        await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 15.5);
+        await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 22.0);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Act
@@ -77,15 +56,17 @@ public class TaxClassListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertTrue(result.Data.Count > 0);
-        TestAssertions.AssertTrue(result.TotalCount > 0);
+        TestAssertions.AssertTrue(result.Data.Count >= 2); // At least our 2 created tax classes
+        TestAssertions.AssertTrue(result.TotalCount >= 2);
     }
 
     [Fact]
     public async Task GetTaxClassList_WithoutTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
-        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        await SeedTestDataAsync();
+        await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        RemoveTenantHeader();
 
         // Act
         var response = await Client.GetAsync("/api/v1/TaxClasses");
@@ -98,8 +79,9 @@ public class TaxClassListQueryTests : IDisposable
     public async Task GetTaxClassList_WithInvalidTenant_ShouldReturnNotFound()
     {
         // Arrange
-        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(Guid.NewGuid());
+        await SeedTestDataAsync();
+        await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetInvalidTenantHeader();
 
         // Act
         var response = await Client.GetAsync("/api/v1/TaxClasses");
@@ -181,7 +163,11 @@ public class TaxClassListQueryTests : IDisposable
     public async Task GetTaxClassList_TenantIsolation_ShouldReturnOnlyTenantData()
     {
         // Arrange
-        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        await SeedTestDataAsync();
+        var tenant1Tax1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 12.5);
+        var tenant1Tax2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 18.0);
+        var tenant2Tax1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id, 25.5);
+        var tenant2Tax2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id, 8.25);
 
         // Act - Get data for tenant 1
         SetTenantHeader(TenantConstants.TestTenant1Id);
@@ -199,10 +185,30 @@ public class TaxClassListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result1);
         TestAssertions.AssertNotNull(result2);
 
-        // Ensure IDs don't overlap between tenants
+        // Verify tenant 1 sees their tax classes
         var tenant1Ids = result1.Data.Select(tc => tc.Id).ToList();
+        TestAssertions.AssertTrue(tenant1Ids.Contains(tenant1Tax1));
+        TestAssertions.AssertTrue(tenant1Ids.Contains(tenant1Tax2));
+        TestAssertions.AssertFalse(tenant1Ids.Contains(tenant2Tax1));
+        TestAssertions.AssertFalse(tenant1Ids.Contains(tenant2Tax2));
+
+        // Verify tenant 2 sees their tax classes
         var tenant2Ids = result2.Data.Select(tc => tc.Id).ToList();
-        TestAssertions.AssertFalse(tenant1Ids.Intersect(tenant2Ids).Any());
+        TestAssertions.AssertTrue(tenant2Ids.Contains(tenant2Tax1));
+        TestAssertions.AssertTrue(tenant2Ids.Contains(tenant2Tax2));
+        TestAssertions.AssertFalse(tenant2Ids.Contains(tenant1Tax1));
+        TestAssertions.AssertFalse(tenant2Ids.Contains(tenant1Tax2));
+
+        // Verify tax rates are correct
+        var tenant1Tax1Data = result1.Data.First(tc => tc.Id == tenant1Tax1);
+        var tenant1Tax2Data = result1.Data.First(tc => tc.Id == tenant1Tax2);
+        TestAssertions.AssertEqual(12.5, tenant1Tax1Data.TaxRate);
+        TestAssertions.AssertEqual(18.0, tenant1Tax2Data.TaxRate);
+
+        var tenant2Tax1Data = result2.Data.First(tc => tc.Id == tenant2Tax1);
+        var tenant2Tax2Data = result2.Data.First(tc => tc.Id == tenant2Tax2);
+        TestAssertions.AssertEqual(25.5, tenant2Tax1Data.TaxRate);
+        TestAssertions.AssertEqual(8.25, tenant2Tax2Data.TaxRate);
     }
 
     [Fact]
@@ -330,9 +336,9 @@ public class TaxClassListQueryTests : IDisposable
     public async Task GetTaxClassList_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
     {
         // Arrange
-        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+        await SeedTestDataAsync();
+        await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetInvalidTenantHeaderValue(invalidTenantId);
 
         // Act
         var response = await Client.GetAsync("/api/v1/TaxClasses");
@@ -380,33 +386,51 @@ public class TaxClassListQueryTests : IDisposable
     public async Task GetTaxClassList_AfterTenantSwitch_ShouldReturnCorrectData()
     {
         // Arrange
-        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        await SeedTestDataAsync();
+        var tenant1Tax1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 16.5);
+        var tenant1Tax2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 21.0);
+        var tenant2Tax1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id, 9.75);
 
-        // First request with tenant 1
+        // Act - First request with tenant 1
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var response1 = await Client.GetAsync("/api/v1/TaxClasses");
         var result1 = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(response1);
         TestAssertions.AssertHttpSuccess(response1);
-        var tenant1Count = result1.TotalCount;
 
         // Switch to tenant 2
         SetTenantHeader(TenantConstants.TestTenant2Id);
         var response2 = await Client.GetAsync("/api/v1/TaxClasses");
         var result2 = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(response2);
         TestAssertions.AssertHttpSuccess(response2);
-        var tenant2Count = result2.TotalCount;
 
-        // Assert - Different tenants should have different data
+        // Switch back to tenant 1
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response3 = await Client.GetAsync("/api/v1/TaxClasses");
+        var result3 = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(response3);
+        TestAssertions.AssertHttpSuccess(response3);
+
+        // Assert
         TestAssertions.AssertNotNull(result1);
         TestAssertions.AssertNotNull(result2);
+        TestAssertions.AssertNotNull(result3);
 
-        // Verify no ID overlap
-        if (result1.Data.Any() && result2.Data.Any())
-        {
-            var ids1 = result1.Data.Select(x => x.Id);
-            var ids2 = result2.Data.Select(x => x.Id);
-            TestAssertions.AssertFalse(ids1.Intersect(ids2).Any());
-        }
+        // Verify tenant 1 sees their data consistently
+        var tenant1Ids1 = result1.Data.Select(x => x.Id).ToList();
+        var tenant1Ids3 = result3.Data.Select(x => x.Id).ToList();
+        TestAssertions.AssertTrue(tenant1Ids1.Contains(tenant1Tax1));
+        TestAssertions.AssertTrue(tenant1Ids1.Contains(tenant1Tax2));
+        TestAssertions.AssertTrue(tenant1Ids3.Contains(tenant1Tax1));
+        TestAssertions.AssertTrue(tenant1Ids3.Contains(tenant1Tax2));
+
+        // Verify tenant 2 sees only their data
+        var tenant2Ids = result2.Data.Select(x => x.Id).ToList();
+        TestAssertions.AssertTrue(tenant2Ids.Contains(tenant2Tax1));
+        TestAssertions.AssertFalse(tenant2Ids.Contains(tenant1Tax1));
+        TestAssertions.AssertFalse(tenant2Ids.Contains(tenant1Tax2));
+
+        // Verify no cross-tenant data leakage
+        TestAssertions.AssertFalse(tenant1Ids1.Contains(tenant2Tax1));
+        TestAssertions.AssertFalse(tenant1Ids3.Contains(tenant2Tax1));
     }
 
     [Fact]

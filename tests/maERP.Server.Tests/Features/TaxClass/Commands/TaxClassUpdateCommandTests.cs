@@ -1,73 +1,15 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.TaxClass;
-using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.TaxClass.Commands;
 
-public class TaxClassUpdateCommandTests : IDisposable
+public class TaxClassUpdateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public TaxClassUpdateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_TaxClassUpdateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
-    }
-
-    protected async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PutAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
     private async Task<Guid> CreateTestTaxClassAsync(Guid tenantId, double taxRate = 19.0)
     {
         TenantContext.SetCurrentTenantId(tenantId);
@@ -104,13 +46,6 @@ public class TaxClassUpdateCommandTests : IDisposable
         };
     }
 
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
-
     [Fact]
     public async Task UpdateTaxClass_WithValidData_ShouldReturnOk()
     {
@@ -142,6 +77,7 @@ public class TaxClassUpdateCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        RemoveTenantHeader();
         var updateDto = CreateValidUpdateDto();
 
         // Act
@@ -172,15 +108,21 @@ public class TaxClassUpdateCommandTests : IDisposable
     {
         // Arrange
         await SeedTestDataAsync();
-        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
-        SetTenantHeader(TenantConstants.TestTenant2Id); // Different tenant
-        var updateDto = CreateValidUpdateDto();
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 15.0);
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Attempt to access from different tenant
+        var updateDto = CreateValidUpdateDto(25.0);
 
         // Act
         var response = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId}", updateDto);
 
         // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+
+        // Verify the original tax class is unchanged
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var getResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
+        var getResult = await ReadResponseAsync<Result<TaxClassDetailDto>>(getResponse);
+        TestAssertions.AssertEqual(15.0, getResult.Data!.TaxRate); // Original value preserved
     }
 
     [Fact]
@@ -264,24 +206,40 @@ public class TaxClassUpdateCommandTests : IDisposable
         await SeedTestDataAsync();
         var taxClassId1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 19.0);
         var taxClassId2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id, 20.0);
-        var updateDto = CreateValidUpdateDto(30.0);
+        var updateDto1 = CreateValidUpdateDto(30.0);
+        var updateDto2 = CreateValidUpdateDto(35.0);
 
-        // Act - Update tenant 1's tax class
+        // Act - Update tenant 1's tax class from tenant 1 context
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var response1 = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId1}", updateDto);
+        var response1 = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId1}", updateDto1);
 
-        // Try to update tenant 2's tax class from tenant 1
-        var response2 = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId2}", updateDto);
+        // Try to update tenant 2's tax class from tenant 1 context (should fail)
+        var crossTenantResponse = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId2}", updateDto1);
+
+        // Act - Update tenant 2's tax class from tenant 2 context
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var response2 = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId2}", updateDto2);
 
         // Assert
         TestAssertions.AssertHttpSuccess(response1);
-        TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(crossTenantResponse, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpSuccess(response2);
 
-        // Verify tenant 2's tax class was not modified
+        // Verify each tenant sees only their updated data
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var getTenant1Response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId1}");
+        var getTenant1Result = await ReadResponseAsync<Result<TaxClassDetailDto>>(getTenant1Response);
+        TestAssertions.AssertEqual(30.0, getTenant1Result.Data!.TaxRate);
+
         SetTenantHeader(TenantConstants.TestTenant2Id);
-        var getResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
-        var getResult = await ReadResponseAsync<Result<TaxClassDetailDto>>(getResponse);
-        TestAssertions.AssertEqual(20.0, getResult.Data!.TaxRate); // Original value
+        var getTenant2Response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
+        var getTenant2Result = await ReadResponseAsync<Result<TaxClassDetailDto>>(getTenant2Response);
+        TestAssertions.AssertEqual(35.0, getTenant2Result.Data!.TaxRate);
+
+        // Verify cross-tenant access is still blocked
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var crossAccessResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
+        TestAssertions.AssertHttpStatusCode(crossAccessResponse, HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -345,8 +303,7 @@ public class TaxClassUpdateCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+        SetInvalidTenantHeaderValue(invalidTenantId);
         var updateDto = CreateValidUpdateDto();
 
         // Act
