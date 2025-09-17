@@ -1,66 +1,14 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.Warehouse.Queries;
 
-public class WarehouseListQueryTests : IDisposable
+public class WarehouseListQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public WarehouseListQueryTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_WarehouseListQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
-    }
-
     [Fact]
     public async Task GetWarehouseList_WithValidTenant_ShouldReturnPaginatedResults()
     {
@@ -82,30 +30,41 @@ public class WarehouseListQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetWarehouseList_WithoutTenantHeader_ShouldReturnNotFound()
+    public async Task GetWarehouseList_WithoutTenantHeader_ShouldReturnEmptyResults()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        RemoveTenantHeader();
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpSuccess(response);
+        var result = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertEqual(0, result.Data.Count);
+        TestAssertions.AssertEqual(0, result.TotalCount);
     }
 
     [Fact]
-    public async Task GetWarehouseList_WithInvalidTenant_ShouldReturnNotFound()
+    public async Task GetWarehouseList_WithInvalidTenant_ShouldReturnEmptyResults()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(Guid.Parse("99999999-9999-9999-9999-999999999999"));
+        SetInvalidTenantHeader();
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpSuccess(response);
+        var result = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertEqual(0, result.Data.Count);
+        TestAssertions.AssertEqual(0, result.TotalCount);
     }
 
     [Fact]
@@ -326,19 +285,36 @@ public class WarehouseListQueryTests : IDisposable
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
-    public async Task GetWarehouseList_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task GetWarehouseList_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+        SetInvalidTenantHeaderValue(invalidTenantId);
 
         // Act
         var response = await Client.GetAsync("/api/v1/Warehouses");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task GetWarehouseList_WithEmptyTenantHeaderValue_ShouldReturnEmptyResults()
+    {
+        // Arrange
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        SetInvalidTenantHeaderValue("");
+
+        // Act
+        var response = await Client.GetAsync("/api/v1/Warehouses");
+
+        // Assert
+        TestAssertions.AssertHttpSuccess(response);
+        var result = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertEqual(0, result.Data.Count);
+        TestAssertions.AssertEqual(0, result.TotalCount);
     }
 
     [Fact]

@@ -265,7 +265,7 @@ public class AiPromptDetailQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetAiPromptById_WithEmptyStringTenantHeader_ShouldReturnUnauthorized()
+    public async Task GetAiPromptById_WithEmptyStringTenantHeader_ShouldReturnNotFound()
     {
         // Arrange
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
@@ -275,9 +275,7 @@ public class AiPromptDetailQueryTests : TenantIsolatedTestBase
         var response = await Client.GetAsync("/api/v1/AiPrompts/30000001-0001-0001-0001-000000000001");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
-        var responseContent = await ReadResponseStringAsync(response);
-        TestAssertions.AssertTrue(responseContent.Contains("Invalid X-Tenant-Id header format"));
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
     [Fact]

@@ -1,71 +1,15 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using maERP.Domain.Constants;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.Warehouse.Commands;
 
-public class WarehouseUpdateCommandTests : IDisposable
+public class WarehouseUpdateCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public WarehouseUpdateCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_WarehouseUpdateCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
-    }
-
-    protected async Task<HttpResponseMessage> PutAsJsonAsync<T>(string requestUri, T value)
-    {
-        var json = JsonSerializer.Serialize(value);
-        var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-        return await Client.PutAsync(requestUri, content);
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task<Guid> CreateTestWarehouseAsync(Guid tenantId, string name = "Test Warehouse")
     {
@@ -95,19 +39,12 @@ public class WarehouseUpdateCommandTests : IDisposable
         }
     }
 
-    private WarehouseInputDto CreateValidUpdateDto(string name = "Updated Warehouse")
+    private static WarehouseInputDto CreateValidUpdateDto(string name = "Updated Warehouse")
     {
         return new WarehouseInputDto
         {
             Name = name
         };
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
@@ -136,22 +73,25 @@ public class WarehouseUpdateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task UpdateWarehouse_WithoutTenantHeader_ShouldReturnNotFound()
+    public async Task UpdateWarehouse_WithoutTenantHeader_ShouldReturnBadRequest()
     {
         // Arrange
         await SeedTestDataAsync();
         var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        RemoveTenantHeader();
         var updateDto = CreateValidUpdateDto();
 
         // Act
         var response = await PutAsJsonAsync($"/api/v1/Warehouses/{warehouseId}", updateDto);
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
+        var content = await response.Content.ReadAsStringAsync();
+        TestAssertions.AssertTrue(content.Contains("Warehouse not found"));
     }
 
     [Fact]
-    public async Task UpdateWarehouse_WithInvalidTenantHeader_ShouldReturnNotFound()
+    public async Task UpdateWarehouse_WithInvalidTenantHeader_ShouldReturnBadRequest()
     {
         // Arrange
         await SeedTestDataAsync();
@@ -163,11 +103,13 @@ public class WarehouseUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Warehouses/{warehouseId}", updateDto);
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
+        var content = await response.Content.ReadAsStringAsync();
+        TestAssertions.AssertTrue(content.Contains("Warehouse not found"));
     }
 
     [Fact]
-    public async Task UpdateWarehouse_FromDifferentTenant_ShouldReturnNotFound()
+    public async Task UpdateWarehouse_FromDifferentTenant_ShouldReturnBadRequest()
     {
         // Arrange
         await SeedTestDataAsync();
@@ -179,7 +121,9 @@ public class WarehouseUpdateCommandTests : IDisposable
         var response = await PutAsJsonAsync($"/api/v1/Warehouses/{warehouseId}", updateDto);
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
+        var content = await response.Content.ReadAsStringAsync();
+        TestAssertions.AssertTrue(content.Contains("Warehouse not found"));
     }
 
     [Fact]
@@ -267,7 +211,7 @@ public class WarehouseUpdateCommandTests : IDisposable
 
         // Assert
         TestAssertions.AssertHttpSuccess(response1);
-        TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response2, HttpStatusCode.BadRequest);
 
         // Verify tenant 2's warehouse was not modified
         SetTenantHeader(TenantConstants.TestTenant2Id);
@@ -356,21 +300,37 @@ public class WarehouseUpdateCommandTests : IDisposable
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
-    public async Task UpdateWarehouse_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task UpdateWarehouse_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await SeedTestDataAsync();
         var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+        SetInvalidTenantHeaderValue(invalidTenantId);
         var updateDto = CreateValidUpdateDto();
 
         // Act
         var response = await PutAsJsonAsync($"/api/v1/Warehouses/{warehouseId}", updateDto);
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task UpdateWarehouse_WithEmptyTenantHeaderValue_ShouldReturnBadRequest()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetInvalidTenantHeaderValue("");
+        var updateDto = CreateValidUpdateDto();
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/Warehouses/{warehouseId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
+        var content = await response.Content.ReadAsStringAsync();
+        TestAssertions.AssertTrue(content.Contains("Warehouse not found"));
     }
 
     [Fact]

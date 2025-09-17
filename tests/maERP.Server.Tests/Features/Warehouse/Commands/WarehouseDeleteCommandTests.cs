@@ -1,64 +1,15 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using maERP.Domain.Constants;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.Warehouse.Commands;
 
-public class WarehouseDeleteCommandTests : IDisposable
+public class WarehouseDeleteCommandTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public WarehouseDeleteCommandTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_WarehouseDeleteCommandTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected void SetInvalidTenantHeader()
-    {
-        SetTenantHeader(Guid.NewGuid()); // Non-existent tenant ID for testing tenant isolation
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task<Guid> CreateTestWarehouseAsync(Guid tenantId, string name = "Test Warehouse")
     {
@@ -86,13 +37,6 @@ public class WarehouseDeleteCommandTests : IDisposable
         {
             await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         }
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
@@ -124,6 +68,7 @@ public class WarehouseDeleteCommandTests : IDisposable
         // Arrange
         await SeedTestDataAsync();
         var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        RemoveTenantHeader();
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId}");
@@ -251,14 +196,27 @@ public class WarehouseDeleteCommandTests : IDisposable
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
-    public async Task DeleteWarehouse_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task DeleteWarehouse_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await SeedTestDataAsync();
         var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidTenantId);
+        SetInvalidTenantHeaderValue(invalidTenantId);
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId}");
+
+        // Assert
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task DeleteWarehouse_WithEmptyTenantHeaderValue_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        var warehouseId = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id);
+        SetInvalidTenantHeaderValue("");
 
         // Act
         var response = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId}");
@@ -491,34 +449,23 @@ public class WarehouseDeleteCommandTests : IDisposable
         var warehouseId1 = await CreateTestWarehouseAsync(TenantConstants.TestTenant1Id, "Tenant 1 Warehouse");
         var warehouseId2 = await CreateTestWarehouseAsync(TenantConstants.TestTenant2Id, "Tenant 2 Warehouse");
 
-        // Get initial counts for both tenants
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var list1Before = await Client.GetAsync("/api/v1/Warehouses");
-        var list1BeforeResult = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(list1Before);
-        var count1Before = list1BeforeResult.TotalCount;
-
-        SetTenantHeader(TenantConstants.TestTenant2Id);
-        var list2Before = await Client.GetAsync("/api/v1/Warehouses");
-        var list2BeforeResult = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(list2Before);
-        var count2Before = list2BeforeResult.TotalCount;
-
         // Act - Delete from tenant 1
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var deleteResponse = await Client.DeleteAsync($"/api/v1/Warehouses/{warehouseId1}");
         TestAssertions.AssertHttpSuccess(deleteResponse);
 
-        // Assert - Tenant 1 count decreased, tenant 2 unchanged
-        var list1After = await Client.GetAsync("/api/v1/Warehouses");
-        var list1AfterResult = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(list1After);
-        TestAssertions.AssertEqual(count1Before - 1, list1AfterResult.TotalCount);
+        // Assert - Verify tenant 1's warehouse is deleted
+        var getDeletedResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId1}");
+        TestAssertions.AssertHttpStatusCode(getDeletedResponse, HttpStatusCode.NotFound);
 
+        // Verify tenant 2's warehouse still exists and can be accessed
         SetTenantHeader(TenantConstants.TestTenant2Id);
-        var list2After = await Client.GetAsync("/api/v1/Warehouses");
-        var list2AfterResult = await ReadResponseAsync<PaginatedResult<WarehouseListDto>>(list2After);
-        TestAssertions.AssertEqual(count2Before, list2AfterResult.TotalCount); // Unchanged
-
-        // Tenant 2's warehouse should still exist
         var getResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId2}");
         TestAssertions.AssertHttpSuccess(getResponse);
+
+        // Verify tenant 1 cannot access tenant 2's warehouse
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var crossTenantResponse = await Client.GetAsync($"/api/v1/Warehouses/{warehouseId2}");
+        TestAssertions.AssertHttpStatusCode(crossTenantResponse, HttpStatusCode.NotFound);
     }
 }

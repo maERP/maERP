@@ -44,24 +44,32 @@ public class SalesChannelDeleteHandler : IRequestHandler<SalesChannelDeleteComma
 
         try
         {
-            // Check if sales channel exists (handles race condition)
-            var salesChannel = await _salesChannelRepository.GetByIdAsync(request.Id);
-            if (salesChannel == null)
+            // Get the entity with its relationships for proper cleanup
+            var salesChannel = await _salesChannelRepository.GetDetails(request.Id);
+
+            // Clear many-to-many relationships before deletion
+            if (salesChannel.Warehouses != null && salesChannel.Warehouses.Any())
             {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add($"SalesChannel with ID {request.Id} not found");
-                return result;
+                salesChannel.Warehouses.Clear();
+                await _salesChannelRepository.UpdateAsync(salesChannel);
             }
 
             // Delete the existing entity
             await _salesChannelRepository.DeleteAsync(salesChannel);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.NoContent;
             result.Data = salesChannel.Id;
 
             _logger.LogInformation("Successfully deleted sales channel with ID: {Id}", salesChannel.Id);
+        }
+        catch (maERP.Application.Exceptions.NotFoundException)
+        {
+            // Sales channel not found
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.NotFound;
+            result.Messages.Add($"SalesChannel with ID {request.Id} not found");
+            _logger.LogWarning("Sales channel {Id} not found", request.Id);
         }
         catch (Exception ex) when (ex.Message.Contains("does not exist") || ex.Message.Contains("not found"))
         {

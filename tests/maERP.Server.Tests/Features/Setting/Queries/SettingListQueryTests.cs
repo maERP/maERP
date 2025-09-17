@@ -1,123 +1,62 @@
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Setting.Queries;
 
-public class SettingListQueryTests : IDisposable
+public class SettingListQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public SettingListQueryTests()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_SettingListQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id });
-        TenantContext.SetCurrentTenantId(null);
-    }
-
-    protected void SetTenantHeader(Guid tenantId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", tenantId.ToString());
-    }
-
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
-    {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
-    }
 
     private async Task SeedSettingTestDataAsync()
     {
-        var currentTenant = TenantContext.GetCurrentTenantId();
-        TenantContext.SetCurrentTenantId(null);
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
-        try
+        var existingSettings = await DbContext.Setting.IgnoreQueryFilters().ToListAsync();
+        if (!existingSettings.Any(s => s.Key == "test.setting.tenant1"))
         {
-            await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-
-            var existingSettings = await DbContext.Setting.IgnoreQueryFilters().ToListAsync();
-            if (!existingSettings.Any(s => s.Key == "test.setting.tenant1"))
+            var setting1Tenant1 = new maERP.Domain.Entities.Setting
             {
-                var setting1Tenant1 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.setting.tenant1",
-                    Value = "value1",
-                    TenantId = TenantConstants.TestTenant1Id
-                };
+                Key = "test.setting.tenant1",
+                Value = "value1",
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                var setting2Tenant1 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.search.tenant1",
-                    Value = "searchable",
-                    TenantId = TenantConstants.TestTenant1Id
-                };
+            var setting2Tenant1 = new maERP.Domain.Entities.Setting
+            {
+                Key = "test.search.tenant1",
+                Value = "searchable",
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                var setting3Tenant1 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.theme.tenant1",
-                    Value = "dark",
-                    TenantId = TenantConstants.TestTenant1Id
-                };
+            var setting3Tenant1 = new maERP.Domain.Entities.Setting
+            {
+                Key = "test.theme.tenant1",
+                Value = "dark",
+                TenantId = TenantConstants.TestTenant1Id
+            };
 
-                var setting1Tenant2 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.setting.tenant2",
-                    Value = "value2",
-                    TenantId = TenantConstants.TestTenant2Id
-                };
+            var setting1Tenant2 = new maERP.Domain.Entities.Setting
+            {
+                Key = "test.setting.tenant2",
+                Value = "value2",
+                TenantId = TenantConstants.TestTenant2Id
+            };
 
-                var setting2Tenant2 = new maERP.Domain.Entities.Setting
-                {
-                    Key = "test.search.tenant2",
-                    Value = "findable",
-                    TenantId = TenantConstants.TestTenant2Id
-                };
+            var setting2Tenant2 = new maERP.Domain.Entities.Setting
+            {
+                Key = "test.search.tenant2",
+                Value = "findable",
+                TenantId = TenantConstants.TestTenant2Id
+            };
 
-                DbContext.Setting.AddRange(setting1Tenant1, setting2Tenant1, setting3Tenant1,
-                                         setting1Tenant2, setting2Tenant2);
-                await DbContext.SaveChangesAsync();
-            }
+            DbContext.Setting.AddRange(setting1Tenant1, setting2Tenant1, setting3Tenant1,
+                                     setting1Tenant2, setting2Tenant2);
+            await DbContext.SaveChangesAsync();
         }
-        finally
-        {
-            TenantContext.SetCurrentTenantId(currentTenant);
-        }
-    }
-
-    public void Dispose()
-    {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
     }
 
     [Fact]
@@ -477,11 +416,22 @@ public class SettingListQueryTests : IDisposable
         var response2 = await Client.GetAsync("/api/v1/Settings");
         var result2 = await ReadResponseAsync<PaginatedResult<SettingListDto>>(response2);
 
-        TestAssertions.AssertEqual(3, result1.Data?.Count ?? 0);
-        TestAssertions.AssertEqual(2, result2.Data?.Count ?? 0);
+        // Filter to only test-specific settings to verify tenant isolation
+        var tenant1TestSettings = result1.Data?.Where(s => s.Key.StartsWith("test.")).ToList();
+        var tenant2TestSettings = result2.Data?.Where(s => s.Key.StartsWith("test.")).ToList();
 
-        var tenant1Ids = result1.Data?.Select(s => s.Id).ToList();
-        var tenant2Ids = result2.Data?.Select(s => s.Id).ToList();
+        TestAssertions.AssertEqual(3, tenant1TestSettings?.Count ?? 0);
+        TestAssertions.AssertEqual(2, tenant2TestSettings?.Count ?? 0);
+
+        // Verify that tenant1 only gets tenant1 test settings
+        TestAssertions.AssertTrue(tenant1TestSettings?.All(s => s.Key.Contains("tenant1")) ?? false);
+        
+        // Verify that tenant2 only gets tenant2 test settings
+        TestAssertions.AssertTrue(tenant2TestSettings?.All(s => s.Key.Contains("tenant2")) ?? false);
+
+        // Ensure no overlap between tenant-specific settings
+        var tenant1Ids = tenant1TestSettings?.Select(s => s.Id).ToList();
+        var tenant2Ids = tenant2TestSettings?.Select(s => s.Id).ToList();
 
         TestAssertions.AssertTrue(tenant1Ids?.All(id => !tenant2Ids?.Contains(id) ?? true) ?? false);
         TestAssertions.AssertTrue(tenant2Ids?.All(id => !tenant1Ids?.Contains(id) ?? true) ?? false);

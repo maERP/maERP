@@ -38,11 +38,11 @@ The codebase implements:
 ## Development Commands
 
 ### Available MCP Server
-- jetbrains for general, debugging, error, files, formatting, text, terminal and version control operations
+- jetbrains for general, debugging, error, files, formatting, text and version control operations
 - ref for getting official documentations
 - postgres for database operations
 
-Use MCP Server if needed.
+Use MCP Server if needed. Do not use jetbrains for shell commands.
 
 ### Building the Project
 

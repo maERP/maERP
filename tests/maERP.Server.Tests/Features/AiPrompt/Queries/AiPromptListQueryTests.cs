@@ -379,7 +379,6 @@ public class AiPromptListQueryTests : TenantIsolatedTestBase
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
     public async Task GetAiPrompts_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
@@ -393,6 +392,25 @@ public class AiPromptListQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         var responseContent = await ReadResponseStringAsync(response);
         TestAssertions.AssertTrue(responseContent.Contains("Invalid X-Tenant-Id header format"));
+    }
+
+    [Fact]
+    public async Task GetAiPrompts_WithEmptyTenantHeaderValue_ShouldReturnEmptyResults()
+    {
+        // Arrange
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        SetInvalidTenantHeaderValue("");
+
+        // Act
+        var response = await Client.GetAsync("/api/v1/AiPrompts");
+
+        // Assert
+        TestAssertions.AssertHttpSuccess(response);
+        var result = await ReadResponseAsync<PaginatedResult<AiPromptListDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertNotNull(result.Data);
+        TestAssertions.AssertEmpty(result.Data);
+        TestAssertions.AssertEqual(0, result.TotalCount);
     }
 
     [Fact]

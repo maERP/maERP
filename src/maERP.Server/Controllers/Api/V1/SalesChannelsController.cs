@@ -7,6 +7,7 @@ using maERP.Application.Features.SalesChannel.Queries.SalesChannelList;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using maERP.Server.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -91,6 +92,6 @@ public class SalesChannelsController(IMediator mediator) : ControllerBase
 
         var command = new SalesChannelDeleteCommand { Id = guidId };
         var response = await mediator.Send(command);
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 }
