@@ -32,17 +32,7 @@ public class TenantMiddleware
         if (context.Request.Headers.TryGetValue("X-Tenant-Id", out var tenantHeader))
         {
             var tenantHeaderValue = tenantHeader.FirstOrDefault();
-            
-            // Check for empty or whitespace-only header values first
-            if (string.IsNullOrWhiteSpace(tenantHeaderValue))
-            {
-                // X-Tenant-Id header present but empty/whitespace - treat as invalid format
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsync("Invalid X-Tenant-Id header format");
-                return;
-            }
-            
-            if (Guid.TryParse(tenantHeaderValue, out var headerTenantId) && headerTenantId != Guid.Empty)
+            if (tenantHeaderValue != null && Guid.TryParse(tenantHeaderValue, out var headerTenantId) && headerTenantId != Guid.Empty)
             {
                 // In test environment, always honor the X-Tenant-Id header
                 if (isTestEnvironment)
@@ -84,12 +74,10 @@ public class TenantMiddleware
         }
         else
         {
-            // For test environment AND missing header, return Unauthorized for consistency
+            // In test environment, treat missing header as invalid tenant to maintain consistent behavior
             if (isTestEnvironment)
             {
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsync("X-Tenant-Id header is required");
-                return;
+                tenantContext.SetCurrentTenantId(Guid.Empty);
             }
             // For authenticated users without X-Tenant-Id header, use default tenant from JWT
             else if (user.Identity?.IsAuthenticated == true)

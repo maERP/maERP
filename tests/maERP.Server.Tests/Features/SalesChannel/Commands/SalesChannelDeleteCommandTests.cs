@@ -69,6 +69,10 @@ public class SalesChannelDeleteCommandTests : TenantIsolatedTestBase
         var response = await Client.DeleteAsync($"/api/v1/SalesChannels/{salesChannelId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertEqual(salesChannelId, result.Data);
     }
 
     [Fact]
@@ -81,6 +85,8 @@ public class SalesChannelDeleteCommandTests : TenantIsolatedTestBase
         var response = await Client.DeleteAsync($"/api/v1/SalesChannels/{salesChannelId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertTrue(result.Succeeded);
 
         // Verify sales channel no longer exists
         var getResponse = await Client.GetAsync($"/api/v1/SalesChannels/{salesChannelId}");
@@ -204,16 +210,24 @@ public class SalesChannelDeleteCommandTests : TenantIsolatedTestBase
     public async Task DeleteSalesChannel_WithWarehouseRelationships_ShouldDeleteSuccessfully()
     {
         await SeedTestDataAsync();
-        var salesChannelId = await CreateTestSalesChannelAsync(TenantConstants.TestTenant1Id, "Sales Channel with Warehouses");
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
+        // Verify sales channel has warehouse relationships before deletion
+        var getResponseBefore = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
+        TestAssertions.AssertHttpSuccess(getResponseBefore);
+        var salesChannelDetailBefore = await ReadResponseAsync<Result<SalesChannelDetailDto>>(getResponseBefore);
+        TestAssertions.AssertNotNull(salesChannelDetailBefore?.Data);
+        TestAssertions.AssertEqual(2, salesChannelDetailBefore.Data.Warehouses.Count);
+
         // Delete the sales channel
-        var response = await Client.DeleteAsync($"/api/v1/SalesChannels/{salesChannelId}");
+        var response = await Client.DeleteAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertTrue(result.Succeeded);
 
         // Verify sales channel is gone
-        var getResponseAfter = await Client.GetAsync($"/api/v1/SalesChannels/{salesChannelId}");
+        var getResponseAfter = await Client.GetAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponseAfter.StatusCode);
 
         // Note: Warehouses should still exist in the system (cascade deletion should not affect warehouses)
@@ -297,32 +311,30 @@ public class SalesChannelDeleteCommandTests : TenantIsolatedTestBase
     public async Task DeleteSalesChannel_VerifyOtherDataUnaffected_ShouldNotDeleteOtherSalesChannels()
     {
         await SeedTestDataAsync();
-        
-        // Create two test sales channels
-        var salesChannelId1 = await CreateTestSalesChannelAsync(TenantConstants.TestTenant1Id, "Sales Channel 1");
-        var salesChannelId2 = await CreateTestSalesChannelAsync(TenantConstants.TestTenant1Id, "Sales Channel 2");
-        
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
+        // Get count before deletion
+        var listResponseBefore = await Client.GetAsync("/api/v1/SalesChannels");
+        TestAssertions.AssertHttpSuccess(listResponseBefore);
+        var listBefore = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(listResponseBefore);
+        var countBefore = listBefore.Data?.Count ?? 0;
+
         // Delete one sales channel
-        var deleteResponse = await Client.DeleteAsync($"/api/v1/SalesChannels/{salesChannelId1}");
+        var deleteResponse = await Client.DeleteAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
 
-        // Verify the deleted sales channel no longer exists
-        var getDeletedResponse = await Client.GetAsync($"/api/v1/SalesChannels/{salesChannelId1}");
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, getDeletedResponse.StatusCode);
-
-        // Verify the other sales channel still exists
-        var getOtherResponse = await Client.GetAsync($"/api/v1/SalesChannels/{salesChannelId2}");
-        TestAssertions.AssertHttpSuccess(getOtherResponse);
-
-        // Verify through list that specific sales channel was deleted and others remain
+        // Get count after deletion
         var listResponseAfter = await Client.GetAsync("/api/v1/SalesChannels");
         TestAssertions.AssertHttpSuccess(listResponseAfter);
         var listAfter = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(listResponseAfter);
+        var countAfter = listAfter.Data?.Count ?? 0;
 
-        var deletedChannelExists = listAfter.Data?.Any(s => s.Id == salesChannelId1) ?? false;
-        var otherChannelExists = listAfter.Data?.Any(s => s.Id == salesChannelId2) ?? false;
+        // Should have exactly one less sales channel
+        TestAssertions.AssertEqual(countBefore - 1, countAfter);
+
+        // Verify specific sales channel was deleted and others remain
+        var deletedChannelExists = listAfter.Data?.Any(s => s.Id == TestSalesChannel1Id) ?? false;
+        var otherChannelExists = listAfter.Data?.Any(s => s.Id == TestSalesChannel2Id) ?? false;
 
         TestAssertions.AssertFalse(deletedChannelExists);
         TestAssertions.AssertTrue(otherChannelExists);
@@ -360,41 +372,14 @@ public class SalesChannelDeleteCommandTests : TenantIsolatedTestBase
     {
         await SeedTestDataAsync();
 
-        // Create WooCommerce sales channel for Tenant 1
-        var salesChannelId1 = await CreateTestSalesChannelAsync(TenantConstants.TestTenant1Id, "WooCommerce Channel");
-        
-        // Create eBay sales channel for Tenant 2  
-        TenantContext.SetCurrentTenantId(TenantConstants.TestTenant2Id);
-        var salesChannel2 = new maERP.Domain.Entities.SalesChannel
-        {
-            Name = "eBay Channel",
-            Type = SalesChannelType.eBay,
-            Url = "https://ebay.example.com",
-            Username = "testuser",
-            Password = "testpass",
-            ImportProducts = false,
-            ExportProducts = false,
-            ImportCustomers = false,
-            ExportCustomers = false,
-            ImportOrders = false,
-            ExportOrders = false,
-            TenantId = TenantConstants.TestTenant2Id,
-            DateCreated = DateTime.UtcNow,
-            DateModified = DateTime.UtcNow
-        };
-        DbContext.SalesChannel.Add(salesChannel2);
-        await DbContext.SaveChangesAsync();
-        var salesChannelId2 = salesChannel2.Id;
-        TenantContext.SetCurrentTenantId(null);
-
         // Delete WooCommerce sales channel from Tenant 1
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var response1 = await Client.DeleteAsync($"/api/v1/SalesChannels/{salesChannelId1}");
+        var response1 = await Client.DeleteAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response1.StatusCode);
 
         // Delete eBay sales channel from Tenant 2
         SetTenantHeader(TenantConstants.TestTenant2Id);
-        var response2 = await Client.DeleteAsync($"/api/v1/SalesChannels/{salesChannelId2}");
+        var response2 = await Client.DeleteAsync($"/api/v1/SalesChannels/{TestSalesChannel3Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response2.StatusCode);
 
         // Verify both deletions were successful
@@ -405,22 +390,21 @@ public class SalesChannelDeleteCommandTests : TenantIsolatedTestBase
             .IgnoreQueryFilters()
             .ToListAsync();
 
-        var deletedChannel1 = allSalesChannels.FirstOrDefault(s => s.Id == salesChannelId1);
-        var deletedChannel2 = allSalesChannels.FirstOrDefault(s => s.Id == salesChannelId2);
+        var deletedChannel1 = allSalesChannels.FirstOrDefault(s => s.Id == TestSalesChannel1Id);
+        var deletedChannel3 = allSalesChannels.FirstOrDefault(s => s.Id == TestSalesChannel3Id);
 
         TestAssertions.AssertTrue(deletedChannel1 == null);
-        TestAssertions.AssertTrue(deletedChannel2 == null);
+        TestAssertions.AssertTrue(deletedChannel3 == null);
     }
 
     [Fact]
     public async Task DeleteSalesChannel_VerifyAuditTrail_ShouldLogDeletionAttempts()
     {
         await SeedTestDataAsync();
-        var salesChannelId = await CreateTestSalesChannelAsync(TenantConstants.TestTenant1Id);
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         // Delete existing sales channel
-        var response1 = await Client.DeleteAsync($"/api/v1/SalesChannels/{salesChannelId}");
+        var response1 = await Client.DeleteAsync($"/api/v1/SalesChannels/{TestSalesChannel1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response1.StatusCode);
 
         // Try to delete non-existent sales channel with valid Guid format
