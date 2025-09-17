@@ -74,6 +74,15 @@ public abstract class TenantIsolatedTestBase : IDisposable
         Client.DefaultRequestHeaders.Remove("X-Test-Unauthenticated");
     }
 
+    protected void SetTestUserRoles(params string[] roles)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        if (roles != null && roles.Length > 0)
+        {
+            Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Join(",", roles));
+        }
+    }
+
     protected async Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
     {
         var json = JsonSerializer.Serialize(value);

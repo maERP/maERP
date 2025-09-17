@@ -61,17 +61,19 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
                 services.Remove(authServiceDescriptor);
 
             // Add test authentication
-            services.AddAuthentication("Test")
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = "Test";
+                    options.DefaultAuthenticateScheme = "Test";
+                    options.DefaultChallengeScheme = "Test";
+                })
                 .AddScheme<TestAuthenticationOptions, TestAuthenticationHandler>(
-                    "Test", options => { });
+                    "Test", options =>
+                    {
+                        // Do not assign roles by default - they should be assigned per test as needed
+                    });
 
-            // Override authorization to allow all
-            services.AddAuthorization(options =>
-            {
-                options.DefaultPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAssertion(_ => true)
-                    .Build();
-            });
+            // Do not override authorization - use default ASP.NET Core authorization
 
             // Replace ITenantContext with test implementation
             var tenantContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(ITenantContext));

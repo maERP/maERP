@@ -21,7 +21,7 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
         // Check if test should be unauthenticated
         if (Context.Request.Headers.ContainsKey("X-Test-Unauthenticated"))
         {
-            return Task.FromResult(AuthenticateResult.NoResult());
+            return Task.FromResult(AuthenticateResult.Fail("Unauthenticated test request"));
         }
 
         // Get tenant configuration from options or use defaults
@@ -42,12 +42,26 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
             ))
         };
 
-        // Add role claims if specified
+        // Add role claims if specified in options
         if (Options.Roles != null)
         {
             foreach (var role in Options.Roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+        }
+
+        // Check for roles specified in HTTP headers (for per-test role assignment)
+        if (Context.Request.Headers.ContainsKey("X-Test-Roles"))
+        {
+            var headerRoles = Context.Request.Headers["X-Test-Roles"].ToString();
+            if (!string.IsNullOrEmpty(headerRoles))
+            {
+                var roles = headerRoles.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role.Trim()));
+                }
             }
         }
 
