@@ -4,6 +4,7 @@ using maERP.Application.Exceptions;
 using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace maERP.Persistence.Repositories;
 
@@ -85,5 +86,58 @@ public class SalesChannelRepository : GenericRepository<SalesChannel>, ISalesCha
         }
 
         await Context.SaveChangesAsync();
+    }
+
+    public override async Task DeleteAsync(SalesChannel entity)
+    {
+        // Get the existing entity with its warehouses to properly handle many-to-many relationships
+        var existingEntity = await Context.SalesChannel
+            .Include(s => s.Warehouses)
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(e => e.Id == entity.Id);
+
+        if (existingEntity == null)
+        {
+            throw new InvalidOperationException($"SalesChannel with ID {entity.Id} not found for deletion");
+        }
+
+        // Verify tenant isolation for security
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        if (currentTenantId.HasValue && existingEntity.TenantId != null && existingEntity.TenantId != currentTenantId)
+        {
+            throw new UnauthorizedAccessException($"Cannot delete SalesChannel from different tenant");
+        }
+
+        // Clear many-to-many relationships first
+        existingEntity.Warehouses.Clear();
+
+        // Remove the entity
+        Context.Remove(existingEntity);
+        await Context.SaveChangesAsync();
+
+        // For InMemory database scenarios, ensure the deletion is immediately visible across all scopes
+        if (Context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+        {
+            // Clear change tracker to ensure fresh reads
+            Context.ChangeTracker.Clear();
+
+            // Force immediate garbage collection for InMemory database synchronization
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            // Verify deletion in InMemory database
+            var verifyEntity = await Context.SalesChannel
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == entity.Id);
+
+            if (verifyEntity != null)
+            {
+                // Force delete the entity directly from the context if it still exists
+                Context.Entry(verifyEntity).State = EntityState.Deleted;
+                await Context.SaveChangesAsync();
+                Context.ChangeTracker.Clear();
+            }
+        }
     }
 }

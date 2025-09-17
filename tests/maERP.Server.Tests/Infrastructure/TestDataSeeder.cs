@@ -40,16 +40,21 @@ public static class TestDataSeeder
                           await context.AiModel.IgnoreQueryFilters().AnyAsync() ||
                           await context.AiPrompt.IgnoreQueryFilters().AnyAsync() ||
                           await context.TaxClass.IgnoreQueryFilters().AnyAsync() ||
-                          await context.Warehouse.IgnoreQueryFilters().AnyAsync();
+                          await context.Warehouse.IgnoreQueryFilters().AnyAsync() ||
+                          await context.SalesChannel.IgnoreQueryFilters().AnyAsync();
 
             if (!hasData)
             {
                 SeedTenants(context, tenantContext);
                 SeedTaxClasses(context, tenantContext);
                 SeedWarehouses(context, tenantContext);
+                SeedSalesChannels(context, tenantContext);
                 SeedAiModels(context, tenantContext);
                 SeedAiPrompts(context, tenantContext);
                 await context.SaveChangesAsync();
+
+                // Seed relationships after main entities are saved
+                await SeedSalesChannelWarehouseRelationshipsAsync(context, tenantContext);
 
                 // Only cache for non-InMemory databases to avoid state inconsistencies
                 if (!isInMemoryDatabase)
@@ -179,6 +184,150 @@ public static class TestDataSeeder
         };
 
         context.Warehouse.AddRange(warehouse1Tenant1, warehouse2Tenant1, warehouse1Tenant2, warehouse2Tenant2);
+    }
+
+    private static void SeedSalesChannels(ApplicationDbContext context, ITenantContext? tenantContext)
+    {
+        var salesChannel1Tenant1 = new maERP.Domain.Entities.SalesChannel
+        {
+            Id = Guid.Parse("d1d1d1d1-d1d1-d1d1-d1d1-d1d1d1d1d1d1"),
+            Name = "WooCommerce Tenant 1",
+            Type = SalesChannelType.WooCommerce,
+            Url = "https://tenant1.woocommerce.com",
+            Username = "tenant1_user",
+            Password = "tenant1_pass",
+            ImportProducts = true,
+            ExportProducts = true,
+            ImportCustomers = true,
+            ExportCustomers = false,
+            ImportOrders = true,
+            ExportOrders = false,
+            TenantId = TenantConstants.TestTenant1Id,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var salesChannel2Tenant1 = new maERP.Domain.Entities.SalesChannel
+        {
+            Id = Guid.Parse("d2d2d2d2-d2d2-d2d2-d2d2-d2d2d2d2d2d2"),
+            Name = "Shopware6 Tenant 1",
+            Type = SalesChannelType.Shopware6,
+            Url = "https://tenant1.shopware6.com",
+            Username = "tenant1_shopware6",
+            Password = "tenant1_shopware6_pass",
+            ImportProducts = false,
+            ExportProducts = true,
+            ImportCustomers = false,
+            ExportCustomers = true,
+            ImportOrders = false,
+            ExportOrders = true,
+            TenantId = TenantConstants.TestTenant1Id,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var salesChannel3Tenant2 = new maERP.Domain.Entities.SalesChannel
+        {
+            Id = Guid.Parse("d3d3d3d3-d3d3-d3d3-d3d3-d3d3d3d3d3d3"),
+            Name = "eBay Tenant 2",
+            Type = SalesChannelType.eBay,
+            Url = "https://tenant2.ebay.com",
+            Username = "tenant2_ebay",
+            Password = "tenant2_ebay_pass",
+            ImportProducts = true,
+            ExportProducts = false,
+            ImportCustomers = true,
+            ExportCustomers = true,
+            ImportOrders = true,
+            ExportOrders = true,
+            TenantId = TenantConstants.TestTenant2Id,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        var salesChannel4Tenant2 = new maERP.Domain.Entities.SalesChannel
+        {
+            Id = Guid.Parse("d4d4d4d4-d4d4-d4d4-d4d4-d4d4d4d4d4d4"),
+            Name = "PointOfSale Tenant 2",
+            Type = SalesChannelType.PointOfSale,
+            Url = "https://tenant2.pos.com",
+            Username = "tenant2_pos",
+            Password = "tenant2_pos_pass",
+            ImportProducts = false,
+            ExportProducts = false,
+            ImportCustomers = false,
+            ExportCustomers = false,
+            ImportOrders = true,
+            ExportOrders = false,
+            TenantId = TenantConstants.TestTenant2Id,
+            DateCreated = DateTime.UtcNow,
+            DateModified = DateTime.UtcNow
+        };
+
+        context.SalesChannel.AddRange(salesChannel1Tenant1, salesChannel2Tenant1, salesChannel3Tenant2, salesChannel4Tenant2);
+
+        // Set up warehouse relationships - must be done after SaveChanges to ensure entities exist
+        // These will be set up in a separate call after initial seeding
+    }
+
+    public static async Task SeedSalesChannelWarehouseRelationshipsAsync(ApplicationDbContext context, ITenantContext? tenantContext = null)
+    {
+        var currentTenant = tenantContext?.GetCurrentTenantId();
+        tenantContext?.SetCurrentTenantId(null);
+
+        try
+        {
+            // Check if relationships already exist
+            var hasRelationships = await context.SalesChannel
+                .IgnoreQueryFilters()
+                .Include(sc => sc.Warehouses)
+                .AnyAsync(sc => sc.Warehouses.Any());
+
+            if (!hasRelationships)
+            {
+                var salesChannel1 = await context.SalesChannel
+                    .IgnoreQueryFilters()
+                    .Include(sc => sc.Warehouses)
+                    .FirstAsync(sc => sc.Id == Guid.Parse("d1d1d1d1-d1d1-d1d1-d1d1-d1d1d1d1d1d1"));
+
+                var salesChannel2 = await context.SalesChannel
+                    .IgnoreQueryFilters()
+                    .Include(sc => sc.Warehouses)
+                    .FirstAsync(sc => sc.Id == Guid.Parse("d2d2d2d2-d2d2-d2d2-d2d2-d2d2d2d2d2d2"));
+
+                var salesChannel3 = await context.SalesChannel
+                    .IgnoreQueryFilters()
+                    .Include(sc => sc.Warehouses)
+                    .FirstAsync(sc => sc.Id == Guid.Parse("d3d3d3d3-d3d3-d3d3-d3d3-d3d3d3d3d3d3"));
+
+                // Get warehouses
+                var warehouse1Tenant1 = await context.Warehouse
+                    .IgnoreQueryFilters()
+                    .FirstAsync(w => w.Id == Guid.Parse("10000001-0001-0001-0001-000000000001"));
+
+                var warehouse2Tenant1 = await context.Warehouse
+                    .IgnoreQueryFilters()
+                    .FirstAsync(w => w.Id == Guid.Parse("10000002-0002-0002-0002-000000000002"));
+
+                var warehouse1Tenant2 = await context.Warehouse
+                    .IgnoreQueryFilters()
+                    .FirstAsync(w => w.Id == Guid.Parse("10000003-0003-0003-0003-000000000003"));
+
+                // Set up relationships
+                salesChannel1.Warehouses.Add(warehouse1Tenant1);
+                salesChannel1.Warehouses.Add(warehouse2Tenant1);
+
+                salesChannel2.Warehouses.Add(warehouse1Tenant1);
+
+                salesChannel3.Warehouses.Add(warehouse1Tenant2);
+
+                await context.SaveChangesAsync();
+            }
+        }
+        finally
+        {
+            tenantContext?.SetCurrentTenantId(currentTenant);
+        }
     }
 
     private static void SeedAiModels(ApplicationDbContext context, ITenantContext? tenantContext)

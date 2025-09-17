@@ -2,6 +2,7 @@
 using maERP.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Collections.Generic;
 
 namespace maERP.Persistence.Configurations;
 
@@ -11,7 +12,18 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
     {
         builder.HasMany(sc => sc.Warehouses)
             .WithMany(w => w.SalesChannels)
-            .UsingEntity(j => j.ToTable("SalesChannelWarehouses"));
+            .UsingEntity<Dictionary<string, object>>(
+                "SalesChannelWarehouses",
+                j => j
+                    .HasOne<Warehouse>()
+                    .WithMany()
+                    .HasForeignKey("WarehousesId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j
+                    .HasOne<SalesChannel>()
+                    .WithMany()
+                    .HasForeignKey("SalesChannelsId")
+                    .OnDelete(DeleteBehavior.Cascade));
 
         builder.HasData(
             new SalesChannel

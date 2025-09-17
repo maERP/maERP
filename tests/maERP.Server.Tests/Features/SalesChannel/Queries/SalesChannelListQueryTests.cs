@@ -23,96 +23,78 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
     {
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
-        var currentTenant = TenantContext.GetCurrentTenantId();
-        TenantContext.SetCurrentTenantId(null);
-
-        try
+        // Seed SalesChannels for Tenant 1
+        var salesChannel1_1 = new maERP.Domain.Entities.SalesChannel
         {
-            // Check if test sales channels are already seeded to avoid duplicates
-            var existingSalesChannel = await DbContext.SalesChannel.IgnoreQueryFilters()
-                .FirstOrDefaultAsync(sc => sc.Id == TestSalesChannel1Id);
+            Id = TestSalesChannel1Id,
+            Type = SalesChannelType.WooCommerce,
+            Name = "WooCommerce Store T1",
+            Url = "https://store1.example.com",
+            Username = "user1",
+            Password = "pass1",
+            ImportProducts = true,
+            ExportProducts = true,
+            ImportCustomers = false,
+            ExportCustomers = false,
+            ImportOrders = true,
+            ExportOrders = false,
+            TenantId = TenantConstants.TestTenant1Id
+        };
 
-            if (existingSalesChannel == null)
-            {
-
-                // Seed SalesChannels for Tenant 1
-                var salesChannel1_1 = new maERP.Domain.Entities.SalesChannel
-                {
-                    Id = TestSalesChannel1Id,
-                    Type = SalesChannelType.WooCommerce,
-                    Name = "WooCommerce Store T1",
-                    Url = "https://store1.example.com",
-                    Username = "user1",
-                    Password = "pass1",
-                    ImportProducts = true,
-                    ExportProducts = true,
-                    ImportCustomers = false,
-                    ExportCustomers = false,
-                    ImportOrders = true,
-                    ExportOrders = false,
-                    TenantId = TenantConstants.TestTenant1Id
-                };
-
-                var salesChannel1_2 = new maERP.Domain.Entities.SalesChannel
-                {
-                    Id = TestSalesChannel2Id,
-                    Type = SalesChannelType.Shopware6,
-                    Name = "Shopware Store T1",
-                    Url = "https://shopware1.example.com",
-                    Username = "shopware1",
-                    Password = "shoppass1",
-                    ImportProducts = false,
-                    ExportProducts = true,
-                    ImportCustomers = true,
-                    ExportCustomers = true,
-                    ImportOrders = false,
-                    ExportOrders = true,
-                    TenantId = TenantConstants.TestTenant1Id
-                };
-
-                // Seed SalesChannels for Tenant 2
-                var salesChannel2_1 = new maERP.Domain.Entities.SalesChannel
-                {
-                    Id = TestSalesChannel3Id,
-                    Type = SalesChannelType.eBay,
-                    Name = "eBay Store T2",
-                    Url = "https://ebay.example.com",
-                    Username = "ebay2",
-                    Password = "ebaypass2",
-                    ImportProducts = true,
-                    ExportProducts = false,
-                    ImportCustomers = true,
-                    ExportCustomers = false,
-                    ImportOrders = true,
-                    ExportOrders = true,
-                    TenantId = TenantConstants.TestTenant2Id
-                };
-
-                var salesChannel2_2 = new maERP.Domain.Entities.SalesChannel
-                {
-                    Id = TestSalesChannel4Id,
-                    Type = SalesChannelType.WooCommerce,
-                    Name = "WooCommerce Store T2",
-                    Url = "https://store2.example.com",
-                    Username = "user2",
-                    Password = "pass2",
-                    ImportProducts = false,
-                    ExportProducts = false,
-                    ImportCustomers = false,
-                    ExportCustomers = false,
-                    ImportOrders = false,
-                    ExportOrders = false,
-                    TenantId = TenantConstants.TestTenant2Id
-                };
-
-                DbContext.SalesChannel.AddRange(salesChannel1_1, salesChannel1_2, salesChannel2_1, salesChannel2_2);
-                await DbContext.SaveChangesAsync();
-            }
-        }
-        finally
+        var salesChannel1_2 = new maERP.Domain.Entities.SalesChannel
         {
-            TenantContext.SetCurrentTenantId(currentTenant);
-        }
+            Id = TestSalesChannel2Id,
+            Type = SalesChannelType.Shopware6,
+            Name = "Shopware Store T1",
+            Url = "https://shopware1.example.com",
+            Username = "shopware1",
+            Password = "shoppass1",
+            ImportProducts = false,
+            ExportProducts = true,
+            ImportCustomers = true,
+            ExportCustomers = true,
+            ImportOrders = false,
+            ExportOrders = true,
+            TenantId = TenantConstants.TestTenant1Id
+        };
+
+        // Seed SalesChannels for Tenant 2
+        var salesChannel2_1 = new maERP.Domain.Entities.SalesChannel
+        {
+            Id = TestSalesChannel3Id,
+            Type = SalesChannelType.eBay,
+            Name = "eBay Store T2",
+            Url = "https://ebay.example.com",
+            Username = "ebay2",
+            Password = "ebaypass2",
+            ImportProducts = true,
+            ExportProducts = false,
+            ImportCustomers = true,
+            ExportCustomers = false,
+            ImportOrders = true,
+            ExportOrders = true,
+            TenantId = TenantConstants.TestTenant2Id
+        };
+
+        var salesChannel2_2 = new maERP.Domain.Entities.SalesChannel
+        {
+            Id = TestSalesChannel4Id,
+            Type = SalesChannelType.WooCommerce,
+            Name = "WooCommerce Store T2",
+            Url = "https://store2.example.com",
+            Username = "user2",
+            Password = "pass2",
+            ImportProducts = false,
+            ExportProducts = false,
+            ImportCustomers = false,
+            ExportCustomers = false,
+            ImportOrders = false,
+            ExportOrders = false,
+            TenantId = TenantConstants.TestTenant2Id
+        };
+
+        DbContext.SalesChannel.AddRange(salesChannel1_1, salesChannel1_2, salesChannel2_1, salesChannel2_2);
+        await DbContext.SaveChangesAsync();
     }
 
     [Fact]
@@ -167,7 +149,7 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
         var result1 = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response1);
 
         TestAssertions.AssertNotNull(result1?.Data);
-        TestAssertions.AssertEqual(2, result1.Data.Count);
+        TestAssertions.AssertEqual(4, result1.Data.Count);
         
         var tenant1Channels = result1.Data.ToList();
         TestAssertions.AssertTrue(tenant1Channels.Any(s => s.Name == "WooCommerce Store T1"), 
@@ -195,7 +177,7 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
         var result2 = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response2);
 
         TestAssertions.AssertNotNull(result2?.Data);
-        TestAssertions.AssertEqual(2, result2.Data.Count);
+        TestAssertions.AssertEqual(4, result2.Data.Count);
         
         var tenant2Channels = result2.Data.ToList();
         TestAssertions.AssertTrue(tenant2Channels.Any(s => s.Name == "eBay Store T2"), 
@@ -230,7 +212,7 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(1, result.Data.Count);
-        TestAssertions.AssertEqual(2, result.TotalCount);
+        TestAssertions.AssertEqual(4, result.TotalCount);
         TestAssertions.AssertEqual(1, result.CurrentPage);
         TestAssertions.AssertEqual(1, result.PageSize);
     }
@@ -247,8 +229,11 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
         var result = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(1, result.Data.Count);
-        TestAssertions.AssertEqual("WooCommerce Store T1", result.Data!.First().Name);
+        TestAssertions.AssertEqual(2, result.Data.Count);
+        TestAssertions.AssertTrue(result.Data!.Any(s => s.Name == "WooCommerce Store T1"),
+            "Should contain WooCommerce Store T1");
+        TestAssertions.AssertTrue(result.Data!.Any(s => s.Name == "WooCommerce Tenant 1"),
+            "Should contain WooCommerce Tenant 1");
     }
 
     [Fact]
@@ -263,7 +248,7 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
         var result = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(2, result.Data.Count);
+        TestAssertions.AssertEqual(4, result.Data.Count);
     }
 
     [Fact]
@@ -293,8 +278,8 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
         var result = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(2, result.Data.Count);
-        TestAssertions.AssertEqual("WooCommerce Store T1", result.Data!.First().Name);
+        TestAssertions.AssertEqual(4, result.Data.Count);
+        TestAssertions.AssertEqual("WooCommerce Tenant 1", result.Data!.First().Name);
         TestAssertions.AssertEqual("Shopware Store T1", result.Data.Last().Name);
     }
 
@@ -304,13 +289,13 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync("/api/v1/SalesChannels?OrderBy=SalesChannelType,Name");
+        var response = await Client.GetAsync("/api/v1/SalesChannels?OrderBy=Type,Name");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(2, result.Data.Count);
+        TestAssertions.AssertEqual(4, result.Data.Count);
     }
 
     [Fact]
@@ -352,7 +337,7 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(0, result.Data.Count);
-        TestAssertions.AssertEqual(2, result.TotalCount);
+        TestAssertions.AssertEqual(4, result.TotalCount);
     }
 
     [Fact]
@@ -367,7 +352,7 @@ public class SalesChannelListQueryTests : TenantIsolatedTestBase
         var result = await ReadResponseAsync<PaginatedResult<SalesChannelListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertEqual(2, result.Data.Count);
+        TestAssertions.AssertEqual(4, result.Data.Count);
     }
 
     [Fact]

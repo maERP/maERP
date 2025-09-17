@@ -30,51 +30,58 @@ public class SalesChannelListHandler : IRequestHandler<SalesChannelListQuery, Pa
 
         _logger.LogInformation("Handle SalesChannelListQuery: {0}", request);
 
-        var entities = await _salesChannelRepository.Entities
-           .Specify(salesChannelFilterSpec)
-           .ToListAsync(cancellationToken);
-
-        return MapToListDtoAndPaginate(entities, request.PageNumber, request.PageSize, request.OrderBy);
-    }
-
-    private PaginatedResult<SalesChannelListDto> MapToListDtoAndPaginate(
-        List<Domain.Entities.SalesChannel> entities, int pageNumber, int pageSize, string[] orderBy)
-    {
-        var dtos = entities.Select(entity => new SalesChannelListDto
+        if (request.OrderBy.Any() != true)
         {
-            Id = entity.Id,
-            SalesChannelType = entity.Type,
-            Name = entity.Name,
-            DateCreated = entity.DateCreated,
-            Url = entity.Url,
-            Username = entity.Username,
-            ImportProducts = entity.ImportProducts,
-            ImportCustomers = entity.ImportCustomers,
-            ImportOrders = entity.ImportOrders,
-            ExportProducts = entity.ExportProducts,
-            ExportCustomers = entity.ExportCustomers,
-            ExportOrders = entity.ExportOrders,
-            Warehouses = entity.Warehouses?.Select(w => new WarehouseDetailDto
-            {
-                Id = w.Id,
-                Name = w.Name
-            }).ToList() ?? new List<WarehouseDetailDto>()
-        }).ToList();
-
-        // Apply ordering if specified
-        if (orderBy.Any())
-        {
-            var ordering = string.Join(",", orderBy);
-            dtos = dtos.AsQueryable().OrderBy(ordering).ToList();
+            return await _salesChannelRepository.Entities
+               .Specify(salesChannelFilterSpec)
+               .Select(entity => new SalesChannelListDto
+               {
+                   Id = entity.Id,
+                   SalesChannelType = entity.Type,
+                   Name = entity.Name,
+                   DateCreated = entity.DateCreated,
+                   Url = entity.Url,
+                   Username = entity.Username,
+                   ImportProducts = entity.ImportProducts,
+                   ImportCustomers = entity.ImportCustomers,
+                   ImportOrders = entity.ImportOrders,
+                   ExportProducts = entity.ExportProducts,
+                   ExportCustomers = entity.ExportCustomers,
+                   ExportOrders = entity.ExportOrders,
+                   Warehouses = entity.Warehouses.Select(w => new WarehouseDetailDto
+                   {
+                       Id = w.Id,
+                       Name = w.Name
+                   }).ToList()
+               })
+               .ToPaginatedListAsync(request.PageNumber, request.PageSize);
         }
 
-        // Erstelle paginierte Ergebnisse
-        var totalCount = dtos.Count;
-        var pagedItems = dtos
-            .Skip(pageNumber * pageSize)
-            .Take(pageSize)
-            .ToList();
+        var ordering = string.Join(",", request.OrderBy);
 
-        return PaginatedResult<SalesChannelListDto>.Success(pagedItems, totalCount, pageNumber, pageSize);
+        return await _salesChannelRepository.Entities
+            .Specify(salesChannelFilterSpec)
+            .OrderBy(ordering)
+            .Select(entity => new SalesChannelListDto
+            {
+                Id = entity.Id,
+                SalesChannelType = entity.Type,
+                Name = entity.Name,
+                DateCreated = entity.DateCreated,
+                Url = entity.Url,
+                Username = entity.Username,
+                ImportProducts = entity.ImportProducts,
+                ImportCustomers = entity.ImportCustomers,
+                ImportOrders = entity.ImportOrders,
+                ExportProducts = entity.ExportProducts,
+                ExportCustomers = entity.ExportCustomers,
+                ExportOrders = entity.ExportOrders,
+                Warehouses = entity.Warehouses.Select(w => new WarehouseDetailDto
+                {
+                    Id = w.Id,
+                    Name = w.Name
+                }).ToList()
+            })
+            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
     }
 }

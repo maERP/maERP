@@ -10,11 +10,12 @@ namespace maERP.Application.Specifications
     {
         public SalesChannelFilterSpecification(string searchString)
         {
-            // Includes.Add(c => c.OrderItems);
+            Includes.Add(s => s.Warehouses);
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = s => (s.Name.Contains(searchString));
+                var lowerSearchString = searchString.ToLower();
+                Criteria = s => (s.Name.ToLower().Contains(lowerSearchString));
             }
             else
             {
@@ -24,7 +25,7 @@ namespace maERP.Application.Specifications
 
         public SalesChannelFilterSpecification(Guid id)
         {
-            // Includes.Add(o => o.OrderItems);
+            Includes.Add(s => s.Warehouses);
             Criteria = o => o.Id == id;
         }
     }

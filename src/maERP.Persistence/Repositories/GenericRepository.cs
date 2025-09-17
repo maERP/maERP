@@ -135,7 +135,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         await Context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(T entity)
+    public virtual async Task DeleteAsync(T entity)
     {
         // First verify the entity exists and belongs to the current tenant
         var existingEntity = await Context.Set<T>().IgnoreQueryFilters()

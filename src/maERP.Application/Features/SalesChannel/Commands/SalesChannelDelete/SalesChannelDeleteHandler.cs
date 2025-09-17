@@ -44,17 +44,19 @@ public class SalesChannelDeleteHandler : IRequestHandler<SalesChannelDeleteComma
 
         try
         {
-            // Get the entity with its relationships for proper cleanup
-            var salesChannel = await _salesChannelRepository.GetDetails(request.Id);
+            // Get entity from database first
+            var salesChannel = await _salesChannelRepository.GetByIdAsync(request.Id);
 
-            // Clear many-to-many relationships before deletion
-            if (salesChannel.Warehouses != null && salesChannel.Warehouses.Any())
+            if (salesChannel == null)
             {
-                salesChannel.Warehouses.Clear();
-                await _salesChannelRepository.UpdateAsync(salesChannel);
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add($"SalesChannel with ID {request.Id} not found");
+                _logger.LogWarning("Sales channel {Id} not found", request.Id);
+                return result;
             }
 
-            // Delete the existing entity
+            // Delete the entity - EF Core will handle cascade deletion of relationships
             await _salesChannelRepository.DeleteAsync(salesChannel);
 
             result.Succeeded = true;
