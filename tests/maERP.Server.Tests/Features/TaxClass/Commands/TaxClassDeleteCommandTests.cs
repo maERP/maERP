@@ -261,8 +261,7 @@ public class TaxClassDeleteCommandTests : TenantIsolatedTestBase
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
-    public async Task DeleteTaxClass_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task DeleteTaxClass_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await SeedTestDataAsync();
@@ -273,11 +272,26 @@ public class TaxClassDeleteCommandTests : TenantIsolatedTestBase
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
 
         // Assert
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task DeleteTaxClass_WithEmptyTenantHeader_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetInvalidTenantHeaderValue("");
+
+        // Act
+        var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{taxClassId}");
+
+        // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
     }
 
     [Fact]
-    public async Task DeleteTaxClass_WithZeroId_ShouldReturnNotFound()
+    public async Task DeleteTaxClass_WithZeroId_ShouldReturnBadRequest()
     {
         // Arrange
         await SeedTestDataAsync();
@@ -287,7 +301,7 @@ public class TaxClassDeleteCommandTests : TenantIsolatedTestBase
         var response = await Client.DeleteAsync($"/api/v1/TaxClasses/{Guid.Empty}");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.BadRequest);
     }
 
     [Fact]

@@ -28,6 +28,8 @@ public class TaxClassesController : ControllerBase
 
     // GET: api/v1/<TaxClassesController>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginatedResult<TaxClassListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
@@ -36,7 +38,7 @@ public class TaxClassesController : ControllerBase
         }
 
         var response = await _mediator.Send(new TaxClassListQuery(pageNumber, pageSize, searchString, orderBy));
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // GET api/TaxClassesController>/5
@@ -46,7 +48,7 @@ public class TaxClassesController : ControllerBase
     public async Task<ActionResult<TaxClassDetailDto>> GetDetails(Guid id)
     {
         var response = await _mediator.Send(new TaxClassDetailQuery { Id = id });
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // POST: api/v1/<TaxClassesController>
@@ -56,7 +58,7 @@ public class TaxClassesController : ControllerBase
     public async Task<ActionResult<int>> Create(TaxClassCreateCommand taxClassCreateCommand)
     {
         var response = await _mediator.Send(taxClassCreateCommand);
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // PUT: api/v1/<TaxClassesController>/5
@@ -69,7 +71,7 @@ public class TaxClassesController : ControllerBase
     {
         taxClassUpdateCommand.Id = id;
         var response = await _mediator.Send(taxClassUpdateCommand);
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // DELETE: api/v1/<TaxClassesController>/5

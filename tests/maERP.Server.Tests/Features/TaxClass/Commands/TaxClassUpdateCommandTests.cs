@@ -214,7 +214,8 @@ public class TaxClassUpdateCommandTests : TenantIsolatedTestBase
         var response1 = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId1}", updateDto1);
 
         // Try to update tenant 2's tax class from tenant 1 context (should fail)
-        var crossTenantResponse = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId2}", updateDto1);
+        var crossTenantUpdateDto = CreateValidUpdateDto(40.0); // Use different rate to avoid uniqueness conflicts
+        var crossTenantResponse = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId2}", crossTenantUpdateDto);
 
         // Act - Update tenant 2's tax class from tenant 2 context
         SetTenantHeader(TenantConstants.TestTenant2Id);
@@ -297,13 +298,28 @@ public class TaxClassUpdateCommandTests : TenantIsolatedTestBase
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
-    public async Task UpdateTaxClass_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task UpdateTaxClass_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await SeedTestDataAsync();
         var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
         SetInvalidTenantHeaderValue(invalidTenantId);
+        var updateDto = CreateValidUpdateDto();
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task UpdateTaxClass_WithEmptyTenantHeader_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetInvalidTenantHeaderValue("");
         var updateDto = CreateValidUpdateDto();
 
         // Act

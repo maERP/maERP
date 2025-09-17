@@ -17,13 +17,7 @@ public class TaxClassUpdateValidator : TaxClassBaseValidator<TaxClassUpdateComma
             .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
         RuleFor(t => t)
-            .MustAsync(TaxClassExists).WithMessage("TaxClass not found")
             .MustAsync(IsUniqueAsync).WithMessage("TaxClass with the same tax rate already exists.");
-    }
-
-    private async Task<bool> TaxClassExists(TaxClassUpdateCommand command, CancellationToken cancellationToken)
-    {
-        return await _taxClassRepository.ExistsGloballyAsync(command.Id);
     }
 
     private async Task<bool> IsUniqueAsync(TaxClassUpdateCommand command, CancellationToken cancellationToken)

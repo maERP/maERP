@@ -32,17 +32,7 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Resu
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
-
-            // Check if the validation error is about tax class not found
-            if (validationResult.Errors.Any(e => e.ErrorMessage.Contains("TaxClass not found")))
-            {
-                result.StatusCode = ResultStatusCode.NotFound;
-            }
-            else
-            {
-                result.StatusCode = ResultStatusCode.BadRequest;
-            }
-
+            result.StatusCode = ResultStatusCode.BadRequest;
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
 
             _logger.LogWarning("Validation errors in update request for {0}: {1}",
@@ -54,9 +44,9 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Resu
 
         try
         {
-            // Check if the tax class exists and belongs to the current tenant
-            var existingTaxClass = await _taxClassRepository.GetByIdAsync(request.Id, true);
-            if (existingTaxClass == null)
+            // Get the tax class for tracking (required for update)
+            var taxClassToUpdate = await _taxClassRepository.GetByIdAsync(request.Id, true);
+            if (taxClassToUpdate == null)
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
@@ -66,12 +56,8 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Resu
                 return result;
             }
 
-            // Manually map to domain entity
-            var taxClassToUpdate = new Domain.Entities.TaxClass
-            {
-                Id = request.Id,
-                TaxRate = request.TaxRate
-            };
+            // Update the existing entity properties
+            taxClassToUpdate.TaxRate = request.TaxRate;
 
             // Update in database
             await _taxClassRepository.UpdateAsync(taxClassToUpdate);
