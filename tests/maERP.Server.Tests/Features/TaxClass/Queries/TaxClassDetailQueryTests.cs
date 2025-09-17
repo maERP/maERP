@@ -279,13 +279,27 @@ public class TaxClassDetailQueryTests : TenantIsolatedTestBase
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
-    public async Task GetTaxClassById_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task GetTaxClassById_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await SeedTestDataAsync();
         var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
         SetInvalidTenantHeaderValue(invalidTenantId);
+
+        // Act
+        var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");
+
+        // Assert
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task GetTaxClassById_WithEmptyTenantHeaderValue_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetInvalidTenantHeaderValue("");
 
         // Act
         var response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId}");

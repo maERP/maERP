@@ -63,14 +63,20 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             // Add test authentication
             services.AddAuthentication("Test")
                 .AddScheme<TestAuthenticationOptions, TestAuthenticationHandler>(
-                    "Test", options => { });
+                    "Test", options => { 
+                        options.Roles = new[] { "Superadmin" };
+                    });
 
-            // Override authorization to allow all
+            // Configure authorization for testing - keep role requirements but allow test authentication
             services.AddAuthorization(options =>
             {
+                // Keep the default policy that requires authentication
                 options.DefaultPolicy = new AuthorizationPolicyBuilder()
-                    .RequireAssertion(_ => true)
+                    .RequireAuthenticatedUser()
                     .Build();
+                    
+                // Maintain role policies for proper testing
+                options.AddPolicy("Superadmin", policy => policy.RequireRole("Superadmin"));
             });
 
             // Replace ITenantContext with test implementation

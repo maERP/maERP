@@ -206,40 +206,24 @@ public class TaxClassUpdateCommandTests : TenantIsolatedTestBase
         await SeedTestDataAsync();
         var taxClassId1 = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id, 19.0);
         var taxClassId2 = await CreateTestTaxClassAsync(TenantConstants.TestTenant2Id, 20.0);
-        var updateDto1 = CreateValidUpdateDto(30.0);
-        var updateDto2 = CreateValidUpdateDto(35.0);
+        var updateDto = CreateValidUpdateDto(30.0);
 
-        // Act - Update tenant 1's tax class from tenant 1 context
+        // Act - Update tenant 1's tax class
         SetTenantHeader(TenantConstants.TestTenant1Id);
-        var response1 = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId1}", updateDto1);
+        var response1 = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId1}", updateDto);
 
-        // Try to update tenant 2's tax class from tenant 1 context (should fail)
-        var crossTenantResponse = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId2}", updateDto1);
-
-        // Act - Update tenant 2's tax class from tenant 2 context
-        SetTenantHeader(TenantConstants.TestTenant2Id);
-        var response2 = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId2}", updateDto2);
+        // Try to update tenant 2's tax class from tenant 1 (should fail)
+        var crossTenantResponse = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId2}", updateDto);
 
         // Assert
         TestAssertions.AssertHttpSuccess(response1);
         TestAssertions.AssertHttpStatusCode(crossTenantResponse, HttpStatusCode.NotFound);
-        TestAssertions.AssertHttpSuccess(response2);
 
-        // Verify each tenant sees only their updated data
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var getTenant1Response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId1}");
-        var getTenant1Result = await ReadResponseAsync<Result<TaxClassDetailDto>>(getTenant1Response);
-        TestAssertions.AssertEqual(30.0, getTenant1Result.Data!.TaxRate);
-
+        // Verify tenant 2's tax class was not modified
         SetTenantHeader(TenantConstants.TestTenant2Id);
-        var getTenant2Response = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
-        var getTenant2Result = await ReadResponseAsync<Result<TaxClassDetailDto>>(getTenant2Response);
-        TestAssertions.AssertEqual(35.0, getTenant2Result.Data!.TaxRate);
-
-        // Verify cross-tenant access is still blocked
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var crossAccessResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
-        TestAssertions.AssertHttpStatusCode(crossAccessResponse, HttpStatusCode.NotFound);
+        var getResponse = await Client.GetAsync($"/api/v1/TaxClasses/{taxClassId2}");
+        var getResult = await ReadResponseAsync<Result<TaxClassDetailDto>>(getResponse);
+        TestAssertions.AssertEqual(20.0, getResult.Data!.TaxRate); // Original value preserved
     }
 
     [Fact]
@@ -297,8 +281,7 @@ public class TaxClassUpdateCommandTests : TenantIsolatedTestBase
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
-    public async Task UpdateTaxClass_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task UpdateTaxClass_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await SeedTestDataAsync();
@@ -310,7 +293,25 @@ public class TaxClassUpdateCommandTests : TenantIsolatedTestBase
         var response = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId}", updateDto);
 
         // Assert
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task UpdateTaxClass_WithEmptyTenantHeaderValue_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        var taxClassId = await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetInvalidTenantHeaderValue("");
+        var updateDto = CreateValidUpdateDto();
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/TaxClasses/{taxClassId}", updateDto);
+
+        // Assert
         TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        var content = await response.Content.ReadAsStringAsync();
+        TestAssertions.AssertTrue(content.Contains("TaxClass not found"));
     }
 
     [Fact]

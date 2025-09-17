@@ -61,7 +61,7 @@ public class TaxClassListQueryTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task GetTaxClassList_WithoutTenantHeader_ShouldReturnNotFound()
+    public async Task GetTaxClassList_WithoutTenantHeader_ShouldReturnEmptyResult()
     {
         // Arrange
         await SeedTestDataAsync();
@@ -72,11 +72,15 @@ public class TaxClassListQueryTests : TenantIsolatedTestBase
         var response = await Client.GetAsync("/api/v1/TaxClasses");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpSuccess(response);
+        var result = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertNotNull(result.Data);
+        TestAssertions.AssertEmpty(result.Data);
     }
 
     [Fact]
-    public async Task GetTaxClassList_WithInvalidTenant_ShouldReturnNotFound()
+    public async Task GetTaxClassList_WithInvalidTenant_ShouldReturnEmptyResult()
     {
         // Arrange
         await SeedTestDataAsync();
@@ -87,7 +91,11 @@ public class TaxClassListQueryTests : TenantIsolatedTestBase
         var response = await Client.GetAsync("/api/v1/TaxClasses");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpSuccess(response);
+        var result = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertNotNull(result.Data);
+        TestAssertions.AssertEmpty(result.Data);
     }
 
     [Fact]
@@ -332,8 +340,7 @@ public class TaxClassListQueryTests : TenantIsolatedTestBase
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("abc")]
-    [InlineData("")]
-    public async Task GetTaxClassList_WithInvalidTenantHeaderValue_ShouldReturnNotFound(string invalidTenantId)
+    public async Task GetTaxClassList_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized(string invalidTenantId)
     {
         // Arrange
         await SeedTestDataAsync();
@@ -344,7 +351,26 @@ public class TaxClassListQueryTests : TenantIsolatedTestBase
         var response = await Client.GetAsync("/api/v1/TaxClasses");
 
         // Assert
-        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.NotFound);
+        TestAssertions.AssertHttpStatusCode(response, HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task GetTaxClassList_WithEmptyTenantHeaderValue_ShouldReturnEmptyResults()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        await CreateTestTaxClassAsync(TenantConstants.TestTenant1Id);
+        SetInvalidTenantHeaderValue("");
+
+        // Act
+        var response = await Client.GetAsync("/api/v1/TaxClasses");
+
+        // Assert
+        TestAssertions.AssertHttpSuccess(response);
+        var result = await ReadResponseAsync<PaginatedResult<TaxClassListDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertEqual(0, result.Data.Count);
     }
 
     [Fact]

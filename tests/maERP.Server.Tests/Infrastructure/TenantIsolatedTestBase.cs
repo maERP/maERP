@@ -56,7 +56,9 @@ public abstract class TenantIsolatedTestBase : IDisposable
     protected void SetInvalidTenantHeaderValue(string invalidValue)
     {
         Client.DefaultRequestHeaders.Remove("X-Tenant-Id");
-        Client.DefaultRequestHeaders.Add("X-Tenant-Id", invalidValue);
+        // HttpClient removes completely empty headers, so use a space for empty string tests
+        var headerValue = string.IsNullOrEmpty(invalidValue) ? " " : invalidValue;
+        Client.DefaultRequestHeaders.Add("X-Tenant-Id", headerValue);
     }
 
     protected void RemoveTenantHeader()
