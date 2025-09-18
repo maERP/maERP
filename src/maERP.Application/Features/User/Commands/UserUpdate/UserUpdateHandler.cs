@@ -1,9 +1,11 @@
+using System;
+using System.Linq;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
+using maERP.Application.Mediator;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
-using maERP.Application.Mediator;
-using System.Linq;
 
 namespace maERP.Application.Features.User.Commands.UserUpdate;
 
@@ -24,6 +26,8 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
     /// </summary>
     private readonly IUserRepository _userRepository;
 
+    private readonly ITenantContext _tenantContext;
+
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
@@ -31,10 +35,12 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
     /// <param name="userRepository">Repository for user data access</param>
     public UserUpdateHandler(
         IAppLogger<UserUpdateHandler> logger,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        ITenantContext tenantContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
     /// <summary>
@@ -69,9 +75,18 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
 
         try
         {
-            // First, check if user exists
-            var userExists = await _userRepository.Exists(request.Id);
-            if (!userExists)
+            var currentTenantId = _tenantContext.GetCurrentTenantId();
+            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Tenant context is required to update a user.");
+                return result;
+            }
+
+            // Get existing user with tenant assignments
+            var existingUser = await _userRepository.GetByIdWithTenantsAsync(request.Id);
+            if (existingUser == null)
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
@@ -79,14 +94,45 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
                 return result;
             }
 
-            // Get existing user
-            var existingUser = await _userRepository.GetByIdAsync(request.Id);
-            if (existingUser == null)
+            if (existingUser.UserTenants == null || !existingUser.UserTenants.Any(ut => ut.TenantId == currentTenantId.Value))
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add($"User with ID {request.Id} not found.");
+                result.Messages.Add("User not found in current tenant.");
                 return result;
+            }
+
+            if (request.TenantIds != null && request.TenantIds.Any())
+            {
+                if (!await _userRepository.TenantsExistAsync(request.TenantIds))
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.BadRequest;
+                    result.Messages.Add("One or more provided tenant IDs do not exist.");
+                    return result;
+                }
+
+                if (!request.TenantIds.Contains(currentTenantId.Value))
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.BadRequest;
+                    result.Messages.Add("User must remain assigned to the current tenant.");
+                    return result;
+                }
+
+                if (request.DefaultTenantId.HasValue && request.DefaultTenantId.Value != Guid.Empty &&
+                    !request.TenantIds.Contains(request.DefaultTenantId.Value))
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.BadRequest;
+                    result.Messages.Add("Default tenant must be part of the tenant assignments.");
+                    return result;
+                }
+            }
+
+            if (!request.DefaultTenantId.HasValue || request.DefaultTenantId.Value == Guid.Empty)
+            {
+                request.DefaultTenantId = existingUser.UserTenants.FirstOrDefault(ut => ut.IsDefault)?.TenantId ?? currentTenantId.Value;
             }
 
             // Update user properties

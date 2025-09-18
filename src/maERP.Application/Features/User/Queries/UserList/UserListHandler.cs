@@ -1,11 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq.Dynamic.Core;
 using maERP.Application.Contracts.Logging;
+using maERP.Application.Contracts.Services;
 using maERP.Application.Extensions;
+using maERP.Application.Mediator;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
-using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Identity;
-using System.Linq.Dynamic.Core;
 
 namespace maERP.Application.Features.User.Queries.UserList;
 
@@ -25,6 +28,7 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
     /// ASP.NET Identity UserManager for user data operations
     /// </summary>
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ITenantContext _tenantContext;
 
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
@@ -33,10 +37,12 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
     /// <param name="userManager">ASP.NET Identity UserManager for user data access</param>
     public UserListHandler(
         IAppLogger<UserListHandler> logger,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        ITenantContext tenantContext)
     {
         _logger = logger;
         _userManager = userManager;
+        _tenantContext = tenantContext;
     }
 
     /// <summary>
@@ -52,10 +58,17 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
 
         _logger.LogInformation("Handle UserListQuery: {0}", request);
 
+        var currentTenantId = _tenantContext.GetCurrentTenantId();
+
+        if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+        {
+            return PaginatedResult<UserListDto>.Success(new List<UserListDto>(), 0, request.PageNumber, request.PageSize);
+        }
+
         // Manual mapping using LINQ projection instead of AutoMapper
         // This creates a query that selects only the needed properties for the DTO
         var query = _userManager.Users
-            //.Specify(userFilterSpec) // Uncomment when filter specification is implemented
+            .Where(u => u.UserTenants!.Any(ut => ut.TenantId == currentTenantId.Value))
             .Select(u => new UserListDto
             {
                 Id = u.Id,

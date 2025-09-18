@@ -1,9 +1,11 @@
+using System;
+using System.Linq;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
+using maERP.Application.Mediator;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
-using maERP.Application.Mediator;
-using System.Linq;
 
 namespace maERP.Application.Features.User.Commands.UserCreate;
 
@@ -24,6 +26,8 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
     /// </summary>
     private readonly IUserRepository _userRepository;
 
+    private readonly ITenantContext _tenantContext;
+
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
@@ -31,10 +35,12 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
     /// <param name="userRepository">Repository for user data access</param>
     public UserCreateHandler(
         IAppLogger<UserCreateHandler> logger,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        ITenantContext tenantContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
     /// <summary>
@@ -50,7 +56,7 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
         var result = new Result<string>();
 
         // Validate incoming data using FluentValidation
-        var validator = new UserCreateValidator();
+        var validator = new UserCreateValidator(_userRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         // If validation fails, return a bad request result with validation errors
@@ -69,6 +75,29 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
 
         try
         {
+            var currentTenantId = _tenantContext.GetCurrentTenantId();
+
+            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Tenant context is required to create a user.");
+                return result;
+            }
+
+            if (request.DefaultTenantId == Guid.Empty)
+            {
+                request.DefaultTenantId = currentTenantId.Value;
+            }
+
+            if (request.DefaultTenantId != currentTenantId.Value)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Cannot create users for another tenant.");
+                return result;
+            }
+
             // Manual mapping from command to entity (instead of using AutoMapper)
             var userToCreate = new ApplicationUser
             {
@@ -99,6 +128,14 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
             {
                 // Add any additional tenants that aren't already included
                 allTenantIds.AddRange(request.AdditionalTenantIds.Where(id => id != request.DefaultTenantId));
+            }
+
+            if (!await _userRepository.TenantsExistAsync(allTenantIds))
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("One or more provided tenant IDs do not exist.");
+                return result;
             }
 
             // Assign user to tenants

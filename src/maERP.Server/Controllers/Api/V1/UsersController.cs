@@ -93,8 +93,8 @@ public class UsersController : ControllerBase
     public async Task<ActionResult> Delete(string id)
     {
         var command = new UserDeleteCommand { Id = id };
-        await _mediator.Send(command);
-        return NoContent();
+        var response = await _mediator.Send(command);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     /// <summary>

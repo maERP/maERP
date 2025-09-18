@@ -1,4 +1,5 @@
 using FluentValidation;
+using maERP.Application.Contracts.Persistence;
 
 namespace maERP.Application.Features.User.Commands.UserCreate;
 
@@ -8,14 +9,34 @@ namespace maERP.Application.Features.User.Commands.UserCreate;
 /// </summary>
 public class UserCreateValidator : AbstractValidator<UserCreateCommand>
 {
+    private readonly IUserRepository _userRepository;
+
     /// <summary>
     /// Constructor that initializes validation rules for user creation
     /// </summary>
-    public UserCreateValidator()
+    public UserCreateValidator(IUserRepository userRepository)
     {
+        _userRepository = userRepository;
+
         // Email validation rules
         RuleFor(p => p.Email)
             .NotNull().WithMessage("{PropertyName} is required.")
+            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .EmailAddress().WithMessage("{PropertyName} must be a valid email address.");
+
+        RuleFor(p => p.Password)
+            .NotNull().WithMessage("{PropertyName} is required.")
+            .NotEmpty().WithMessage("{PropertyName} is required.");
+
+        RuleFor(p => p.Firstname)
+            .NotNull().WithMessage("{PropertyName} is required.")
+            .NotEmpty().WithMessage("{PropertyName} is required.");
+
+        RuleFor(p => p.Lastname)
+            .NotNull().WithMessage("{PropertyName} is required.")
+            .NotEmpty().WithMessage("{PropertyName} is required.");
+
+        RuleFor(p => p.DefaultTenantId)
             .NotEmpty().WithMessage("{PropertyName} is required.");
 
         // Unique user validation rule
@@ -31,9 +52,6 @@ public class UserCreateValidator : AbstractValidator<UserCreateCommand>
     /// <returns>True if the user email is unique, false otherwise</returns>
     private async Task<bool> UserUnique(UserCreateCommand command, CancellationToken cancellationToken)
     {
-        // TODO: Implement unique User name validation
-        // Currently returns false as a placeholder until implementation is complete
-        await Task.CompletedTask;
-        return false;
+        return !await _userRepository.EmailExistsAsync(command.Email);
     }
 }

@@ -33,6 +33,25 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<ApplicationUser?> GetByIdWithTenantsAsync(string userId)
+    {
+        return await _userManager.Users
+            .Include(u => u.UserTenants!)
+            .ThenInclude(ut => ut.Tenant)
+            .FirstOrDefaultAsync(x => x.Id == userId);
+    }
+
+    public async Task<bool> EmailExistsAsync(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return false;
+        }
+
+        var normalizedEmail = _userManager.NormalizeEmail(email);
+        return await _userManager.Users.AnyAsync(u => u.NormalizedEmail == normalizedEmail);
+    }
+
     public async Task<IEnumerable<IdentityError>> CreateAsync(ApplicationUser userToCreate, string password)
     {
         userToCreate.PasswordHash = _userManager.PasswordHasher.HashPassword(userToCreate, password);
@@ -41,7 +60,11 @@ public class UserRepository : IUserRepository
 
         if (result.Succeeded)
         {
-            await _userManager.AddToRoleAsync(userToCreate, "User");
+            var roleExists = await _dbContext.Roles.AnyAsync(r => r.Name == "User");
+            if (roleExists)
+            {
+                await _userManager.AddToRoleAsync(userToCreate, "User");
+            }
         }
 
         return result.Errors;
@@ -80,6 +103,43 @@ public class UserRepository : IUserRepository
     {
         var entity = await GetByIdAsync(id);
         return entity != null;
+    }
+
+    public async Task<bool> TenantsExistAsync(IEnumerable<Guid> tenantIds)
+    {
+        var ids = tenantIds?.Where(id => id != Guid.Empty).Distinct().ToList() ?? new List<Guid>();
+        if (ids.Count == 0)
+        {
+            return true;
+        }
+
+        var existingCount = await _dbContext.Tenant
+            .CountAsync(t => ids.Contains(t.Id));
+
+        return existingCount == ids.Count;
+    }
+
+    public async Task<IdentityResult> DeleteAsync(ApplicationUser userToDelete)
+    {
+        var assignments = await _dbContext.UserTenant
+            .Where(ut => ut.UserId == userToDelete.Id)
+            .ToListAsync();
+
+        if (assignments.Count > 0)
+        {
+            _dbContext.UserTenant.RemoveRange(assignments);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        var identityResult = await _userManager.DeleteAsync(userToDelete);
+
+        if (identityResult.Succeeded)
+        {
+            await _dbContext.SaveChangesAsync();
+            _dbContext.ChangeTracker.Clear();
+        }
+
+        return identityResult;
     }
 
     // New methods for managing user-tenant assignments

@@ -148,6 +148,7 @@ public class UserDeleteCommandTests : IDisposable
 
             DbContext.UserTenant.AddRange(userTenant1, userTenant2, userTenant3);
             await DbContext.SaveChangesAsync();
+            DbContext.ChangeTracker.Clear();
 
             return (user1.Id, user2.Id, user3.Id);
         }

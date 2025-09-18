@@ -1,10 +1,12 @@
-using maERP.Application.Contracts.Logging;
-using maERP.Application.Contracts.Persistence;
-using maERP.Domain.Dtos.User;
-using maERP.Domain.Wrapper;
-using maERP.Application.Mediator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using maERP.Application.Contracts.Logging;
+using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
+using maERP.Application.Mediator;
+using maERP.Domain.Dtos.User;
+using maERP.Domain.Wrapper;
 
 namespace maERP.Application.Features.User.Queries.UserDetail;
 
@@ -25,6 +27,8 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
     /// </summary>
     private readonly IUserRepository _userRepository;
 
+    private readonly ITenantContext _tenantContext;
+
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
@@ -32,10 +36,12 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
     /// <param name="userRepository">Repository for user data access</param>
     public UserDetailHandler(
         IAppLogger<UserDetailHandler> logger,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        ITenantContext tenantContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
     /// <summary>
@@ -53,7 +59,7 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
         try
         {
             // Retrieve user from the repository by ID
-            var user = await _userRepository.GetByIdAsync(request.Id);
+            var user = await _userRepository.GetByIdWithTenantsAsync(request.Id);
 
             // If user not found, return a not found result
             if (user == null)
@@ -63,6 +69,16 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                 result.Messages.Add($"User with ID {request.Id} not found");
 
                 _logger.LogWarning("User with ID {Id} not found", request.Id);
+                return result;
+            }
+
+            var currentTenantId = _tenantContext.GetCurrentTenantId();
+            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty ||
+                user.UserTenants == null || !user.UserTenants.Any(ut => ut.TenantId == currentTenantId.Value))
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("User not found in current tenant.");
                 return result;
             }
 
