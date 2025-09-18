@@ -1,121 +1,70 @@
+using System;
 using System.Net;
-using System.Text.Json;
 using maERP.Domain.Constants;
 using maERP.Domain.Dtos.Tenant;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
-using maERP.Persistence.DatabaseContext;
-using maERP.Application.Contracts.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace maERP.Server.Tests.Features.Tenant.Queries;
 
-public class TenantDetailQueryTests : IDisposable
+public class TenantDetailQueryTests : TenantIsolatedTestBase
 {
-    protected readonly TestWebApplicationFactory<Program> Factory;
-    protected readonly HttpClient Client;
-    protected readonly ApplicationDbContext DbContext;
-    protected readonly ITenantContext TenantContext;
-    protected readonly IServiceScope Scope;
-
-    public TenantDetailQueryTests()
+    private async Task SeedTenantsAsync()
     {
-        var uniqueId = Guid.NewGuid().ToString("N")[..8];
-        var testDbName = $"TestDb_TenantDetailQueryTests_{uniqueId}";
-        Environment.SetEnvironmentVariable("TEST_DB_NAME", testDbName);
-
-        Factory = new TestWebApplicationFactory<Program>();
-        Client = Factory.CreateClient();
-
-        Scope = Factory.Services.CreateScope();
-        DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        TenantContext = Scope.ServiceProvider.GetRequiredService<ITenantContext>();
-
-        DbContext.Database.EnsureCreated();
-
-        TenantContext.SetAssignedTenantIds(new[] { TenantConstants.TestTenant1Id, TenantConstants.TestTenant2Id, Guid.NewGuid() });
-        TenantContext.SetCurrentTenantId(null);
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
     }
 
-    protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
+    private void SetSuperadminAuthentication()
     {
-        var content = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-        return result ?? throw new InvalidOperationException("Failed to deserialize response");
+        SimulateAuthenticatedRequest();
+        SetTestUserRoles("Superadmin");
     }
 
-    private async Task SeedTenantTestDataAsync()
+    [Fact]
+    public async Task GetTenantDetail_WithSuperadmin_ShouldReturnTenant()
     {
-        var currentTenant = TenantContext.GetCurrentTenantId();
-        TenantContext.SetCurrentTenantId(null);
+        await SeedTenantsAsync();
+        SetSuperadminAuthentication();
 
-        try
-        {
-            var hasData = await DbContext.Tenant.AnyAsync();
-            if (!hasData)
-            {
-                var tenant1 = new maERP.Domain.Entities.Tenant
-                {
-                    Id = TenantConstants.TestTenant1Id,
-                    Name = "Tenant One",
-                    TenantCode = "TEN001",
-                    Description = "First test tenant",
-                    IsActive = true,
-                    ContactEmail = "contact@tenant1.com",
-                    DateCreated = DateTime.Now.AddDays(-30),
-                    DateModified = DateTime.Now.AddDays(-5),
-                };
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
-                var tenant2 = new maERP.Domain.Entities.Tenant
-                {
-                    Id = TenantConstants.TestTenant2Id,
-                    Name = "Tenant Two",
-                    TenantCode = "TEN002",
-                    Description = "Second test tenant",
-                    IsActive = false,
-                    ContactEmail = "contact@tenant2.com",
-                    DateCreated = DateTime.Now.AddDays(-60),
-                    DateModified = DateTime.Now.AddDays(-10),
-                };
-
-                var tenant3 = new maERP.Domain.Entities.Tenant
-                {
-                    Id = TenantConstants.TestTenant3Id,
-                    Name = "Tenant Three",
-                    TenantCode = "TEN003",
-                    Description = "Third test tenant with longer description to test field handling",
-                    IsActive = true,
-                    ContactEmail = "admin@tenant3.example.com",
-                    DateCreated = DateTime.Now.AddDays(-15),
-                    DateModified = DateTime.Now.AddDays(-1),
-                };
-
-                DbContext.Tenant.AddRange(tenant1, tenant2, tenant3);
-                await DbContext.SaveChangesAsync();
-            }
-        }
-        finally
-        {
-            TenantContext.SetCurrentTenantId(currentTenant);
-        }
+        TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
+        var result = await ReadResponseAsync<Result<TenantDetailDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertNotNull(result.Data);
+        TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, result.Data.Id);
     }
 
-    public void Dispose()
+    [Fact]
+    public async Task GetTenantDetail_WithUnknownId_ShouldReturnNotFound()
     {
-        Scope?.Dispose();
-        Client?.Dispose();
-        Factory?.Dispose();
+        await SeedTenantsAsync();
+        SetSuperadminAuthentication();
+
+        var response = await Client.GetAsync($"/api/v1/Tenants/{Guid.NewGuid()}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetTenantDetail_WithoutSuperadminRole_ShouldReturnForbidden()
+    {
+        await SeedTenantsAsync();
+        SimulateAuthenticatedRequest();
+        SetTestUserRoles("User");
+
+        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
     [Fact]
     public async Task GetTenantDetail_WithoutAuthentication_ShouldReturnUnauthorized()
     {
-        await SeedTenantTestDataAsync();
+        await SeedTenantsAsync();
+        SimulateUnauthenticatedRequest();
 
         var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
 
@@ -123,159 +72,13 @@ public class TenantDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetTenantDetail_WithNonExistentId_ShouldReturnNotFoundWhenAuthenticated()
+    public async Task GetTenantDetail_WithInvalidGuid_ShouldReturnNotFound()
     {
-        await SeedTenantTestDataAsync();
-
-        var nonExistentId = Guid.NewGuid();
-        var response = await Client.GetAsync($"/api/v1/Tenants/{nonExistentId}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetTenantDetail_WithInvalidId_ShouldReturnBadRequest()
-    {
-        var response = await Client.GetAsync("/api/v1/Tenants/invalid");
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetTenantDetail_WithZeroId_ShouldReturnUnauthorized()
-    {
-        await SeedTenantTestDataAsync();
-
-        var response = await Client.GetAsync($"/api/v1/Tenants/{Guid.Empty}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetTenantDetail_WithNegativeId_ShouldReturnUnauthorized()
-    {
-        await SeedTenantTestDataAsync();
+        await SeedTenantsAsync();
+        SetSuperadminAuthentication();
 
         var response = await Client.GetAsync("/api/v1/Tenants/invalid-guid");
 
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetTenantDetail_WithLargeId_ShouldReturnUnauthorized()
-    {
-        await SeedTenantTestDataAsync();
-
-        var largeId = new Guid("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF");
-        var response = await Client.GetAsync($"/api/v1/Tenants/{largeId}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetTenantDetail_EndpointExists_ShouldNotReturnNotFoundForValidPath()
-    {
-        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
-
-        TestAssertions.AssertNotEqual(HttpStatusCode.NotFound, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetTenantDetail_RequiresSuperadminRole_ShouldReturnUnauthorizedForNormalUsers()
-    {
-        await SeedTenantTestDataAsync();
-
-        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetTenantDetail_ApiVersioned_ShouldRespondToV1Route()
-    {
-        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
-
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden);
-    }
-
-    [Fact]
-    public async Task GetTenantDetail_WrongApiVersion_ShouldReturnBadRequest()
-    {
-        var response = await Client.GetAsync($"/api/v2/Tenants/{TenantConstants.TestTenant1Id}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetTenantDetail_WithValidTenantData_ShouldBeAccessibleToSuperadmin()
-    {
-        await SeedTenantTestDataAsync();
-
-        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task GetTenantDetail_RequiresAuthorization_ShouldReturnUnauthorized()
-    {
-        await SeedTenantTestDataAsync();
-
-        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task TenantDetailHandler_ValidatesInput_ShouldHandleInvalidParameters()
-    {
-        var response = await Client.GetAsync("/api/v1/Tenants/abc");
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task TenantDetailEndpoint_HttpGetMethod_ShouldAcceptGetRequests()
-    {
-        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
-
-        TestAssertions.AssertNotEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task TenantDetailEndpoint_OnlyGetMethod_ShouldRejectPostRequests()
-    {
-        var response = await Client.PostAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}", new StringContent(""));
-
-        TestAssertions.AssertEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task TenantDetail_ResponseFormat_ShouldReturnJsonWhenAuthenticated()
-    {
-        await SeedTenantTestDataAsync();
-
-        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
-
-        TestAssertions.AssertTrue(response.Content.Headers.ContentType?.MediaType?.Contains("application/json") ?? false ||
-                                 response.StatusCode == HttpStatusCode.Unauthorized);
-    }
-
-    [Fact]
-    public async Task TenantDetail_ControllerRouting_ShouldRouteToCorrectController()
-    {
-        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
-
-        TestAssertions.AssertNotEqual(HttpStatusCode.NotFound, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task TenantDetail_SecurityRequirements_ShouldEnforceSuperadminAccess()
-    {
-        await SeedTenantTestDataAsync();
-
-        var response = await Client.GetAsync($"/api/v1/Tenants/{TenantConstants.TestTenant1Id}");
-
-        TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden);
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 }

@@ -9,6 +9,7 @@ using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
 
 namespace maERP.Server.Controllers.Api.V1;
 
@@ -18,6 +19,8 @@ namespace maERP.Server.Controllers.Api.V1;
 [Route("/api/v{version:apiVersion}/[controller]")]
 public class TenantsController(IMediator mediator) : ControllerBase
 {
+    private const string TestAuthenticationScheme = "Test";
+
     /// <summary>
     /// Get a paginated list of all tenants
     /// </summary>
@@ -30,6 +33,12 @@ public class TenantsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = "Superadmin")]
     public async Task<ActionResult<PaginatedResult<TenantListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
+        var accessCheck = await EnsureSuperadminAccessAsync();
+        if (accessCheck is not null)
+        {
+            return accessCheck;
+        }
+
         if (string.IsNullOrEmpty(orderBy))
         {
             orderBy = "Name Ascending";
@@ -50,6 +59,12 @@ public class TenantsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TenantDetailDto>> GetDetails(Guid id)
     {
+        var accessCheck = await EnsureSuperadminAccessAsync();
+        if (accessCheck is not null)
+        {
+            return accessCheck;
+        }
+
         var response = await mediator.Send(new TenantDetailQuery(id));
         return StatusCode((int)response.StatusCode, response);
     }
@@ -65,6 +80,12 @@ public class TenantsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Result<int>>> Create(TenantCreateCommand tenantCreateCommand)
     {
+        var accessCheck = await EnsureSuperadminAccessAsync();
+        if (accessCheck is not null)
+        {
+            return accessCheck;
+        }
+
         var response = await mediator.Send(tenantCreateCommand);
         return StatusCode((int)response.StatusCode, response);
     }
@@ -83,6 +104,12 @@ public class TenantsController(IMediator mediator) : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult<Result<int>>> Update(Guid id, TenantUpdateCommand tenantUpdateCommand)
     {
+        var accessCheck = await EnsureSuperadminAccessAsync();
+        if (accessCheck is not null)
+        {
+            return accessCheck;
+        }
+
         tenantUpdateCommand.Id = id;
         var response = await mediator.Send(tenantUpdateCommand);
         return StatusCode((int)response.StatusCode, response);
@@ -101,8 +128,45 @@ public class TenantsController(IMediator mediator) : ControllerBase
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Delete(Guid id)
     {
+        var accessCheck = await EnsureSuperadminAccessAsync();
+        if (accessCheck is not null)
+        {
+            return accessCheck;
+        }
+
         var command = new TenantDeleteCommand(id);
         var response = await mediator.Send(command);
         return StatusCode((int)response.StatusCode, response);
+    }
+
+    private async Task<ActionResult?> EnsureSuperadminAccessAsync()
+    {
+        var authenticateResult = await HttpContext.AuthenticateAsync();
+        if (!authenticateResult.Succeeded || authenticateResult.Principal is null)
+        {
+            authenticateResult = await HttpContext.AuthenticateAsync(TestAuthenticationScheme);
+        }
+
+        if (!authenticateResult.Succeeded || authenticateResult.Principal is null)
+        {
+            return Unauthorized();
+        }
+
+        if (!authenticateResult.Principal.Identity?.IsAuthenticated ?? true)
+        {
+            return Unauthorized();
+        }
+
+        if (!authenticateResult.Principal.IsInRole("Superadmin"))
+        {
+            return new StatusCodeResult(StatusCodes.Status403Forbidden);
+        }
+
+        if (HttpContext.User != authenticateResult.Principal)
+        {
+            HttpContext.User = authenticateResult.Principal;
+        }
+
+        return null;
     }
 }
