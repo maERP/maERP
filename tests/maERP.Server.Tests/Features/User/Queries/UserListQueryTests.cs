@@ -224,6 +224,10 @@ public class UserListQueryTests : IDisposable
                 DbContext.UserTenant.AddRange(userTenantAssignments);
                 await DbContext.SaveChangesAsync();
 
+                await EnsureCurrentUserCanManageAsync(
+                    TenantConstants.TestTenant1Id,
+                    TenantConstants.TestTenant2Id);
+
                 return (tenant1UserIds, tenant2UserIds);
             }
 
@@ -238,12 +242,46 @@ public class UserListQueryTests : IDisposable
                 .Select(u => u.Id)
                 .ToListAsync();
 
+            await EnsureCurrentUserCanManageAsync(
+                TenantConstants.TestTenant1Id,
+                TenantConstants.TestTenant2Id);
+
             return (existingTenant1Users, existingTenant2Users);
         }
         finally
         {
             TenantContext.SetCurrentTenantId(currentTenant);
         }
+    }
+
+    private async Task EnsureCurrentUserCanManageAsync(params Guid[] tenantIds)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+
+        if (tenantIds == null || tenantIds.Length == 0)
+        {
+            tenantIds = new[] { TenantConstants.TestTenant1Id };
+        }
+
+        foreach (var tenantId in tenantIds)
+        {
+            await CurrentUserHelper.EnsureUserAsync(Client, DbContext, tenantId, true);
+        }
+
+        TenantContext.SetAssignedTenantIds(tenantIds);
+
+        await CurrentUserHelper.SyncAssignmentsAsync(Client, DbContext, tenantIds, true, tenantIds[0]);
+    }
+
+    private async Task EnsureCurrentUserCannotManageAsync(Guid tenantId)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+        await CurrentUserHelper.EnsureUserAsync(Client, DbContext, tenantId, false);
+        TenantContext.SetAssignedTenantIds(new[] { tenantId });
+
+        await CurrentUserHelper.SyncAssignmentsAsync(Client, DbContext, new[] { tenantId }, false, tenantId);
     }
 
     public void Dispose()
@@ -270,7 +308,7 @@ public class UserListQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetUserList_WithoutTenantHeader_ShouldReturnEmptyList()
+    public async Task GetUserList_WithoutTenantHeader_ShouldUseDefaultTenant()
     {
         await SeedUserListTestDataAsync();
 
@@ -281,7 +319,7 @@ public class UserListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEmpty(result.Data);
+        TestAssertions.AssertNotEmpty(result.Data);
     }
 
     [Fact]
@@ -468,20 +506,34 @@ public class UserListQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetUserList_WithNonExistentTenant_ShouldReturnEmptyList()
+    public async Task GetUserList_WithNonExistentTenant_ShouldReturnForbidden()
     {
         await SeedUserListTestDataAsync();
         SetTenantHeader(Guid.NewGuid());
 
         var response = await Client.GetAsync("/api/v1/Users");
 
-        TestAssertions.AssertHttpSuccess(response);
+        TestAssertions.AssertEqual(HttpStatusCode.Forbidden, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<UserListDto>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertNotNull(result.Data);
-        TestAssertions.AssertEmpty(result.Data);
-        TestAssertions.AssertEqual(0, result.TotalCount);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+    }
+
+    [Fact]
+    public async Task GetUserList_WithoutManagePermission_ShouldReturnForbidden_old()
+    {
+        await SeedUserListTestDataAsync();
+        await EnsureCurrentUserCannotManageAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var response = await Client.GetAsync("/api/v1/Users");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        var result = await ReadResponseAsync<PaginatedResult<UserListDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
     }
 
     [Fact]
@@ -586,5 +638,47 @@ public class UserListQueryTests : IDisposable
         {
             TestAssertions.AssertTrue(users[i].DateCreated <= users[i + 1].DateCreated);
         }
+    }
+
+    [Fact]
+    public async Task GetUserList_WithManagePermission_ShouldReturnData()
+    {
+        await SeedUserListTestDataAsync();
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+        await CurrentUserHelper.EnsureUserAsync(Client, DbContext, TenantConstants.TestTenant1Id, true);
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var response = await Client.GetAsync("/api/v1/Users");
+
+        TestAssertions.AssertHttpSuccess(response);
+        var result = await ReadResponseAsync<PaginatedResult<UserListDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Data);
+
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+    }
+
+    [Fact]
+    public async Task GetUserList_WithoutManagePermission_ShouldReturnForbidden()
+    {
+        await SeedUserListTestDataAsync();
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+        await CurrentUserHelper.EnsureUserAsync(Client, DbContext, TenantConstants.TestTenant1Id, false);
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var response = await Client.GetAsync("/api/v1/Users");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        var result = await ReadResponseAsync<PaginatedResult<UserListDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
     }
 }

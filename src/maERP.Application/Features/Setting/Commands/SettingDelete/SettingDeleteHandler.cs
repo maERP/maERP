@@ -75,19 +75,27 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
         {
             result.Succeeded = false;
 
-            // Check if this is an entity not found exception
-            if (ex.Message.Contains("does not exist in the store") ||
-                ex.Message.Contains("entity that does not exist"))
+            var exceptionMessage = ex.Message ?? string.Empty;
+
+            // Treat missing entity scenarios (including concurrent deletes) as NotFound
+            if (ex is maERP.Application.Exceptions.NotFoundException ||
+                ex is InvalidOperationException && exceptionMessage.Contains("not found", StringComparison.OrdinalIgnoreCase) ||
+                exceptionMessage.Contains("does not exist in the store", StringComparison.OrdinalIgnoreCase) ||
+                exceptionMessage.Contains("entity that does not exist", StringComparison.OrdinalIgnoreCase) ||
+                exceptionMessage.Contains("not found", StringComparison.OrdinalIgnoreCase))
             {
                 result.StatusCode = ResultStatusCode.NotFound;
                 result.Messages.Add("Setting not found.");
-                _logger.LogWarning("Attempted to delete non-existent setting with ID: {Id}", request.Id);
+                _logger.LogWarning(
+                    "Setting with ID: {Id} not found for deletion. Reason: {Reason}",
+                    request.Id,
+                    exceptionMessage);
             }
             else
             {
                 result.StatusCode = ResultStatusCode.InternalServerError;
-                result.Messages.Add($"An error occurred while deleting the setting: {ex.Message}");
-                _logger.LogError("Error deleting setting: {Message}", ex.Message);
+                result.Messages.Add($"An error occurred while deleting the setting: {exceptionMessage}");
+                _logger.LogError("Error deleting setting: {Message}", exceptionMessage);
             }
         }
 

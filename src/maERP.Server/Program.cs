@@ -7,12 +7,14 @@ using maERP.Domain.Enums;
 using maERP.Server.Infrastructure.JsonConverters;
 using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
 using maERP.Identity;
 using maERP.Infrastructure;
 using maERP.Persistence;
 using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
 using maERP.Persistence.Repositories;
+using maERP.Persistence.Services;
 using maERP.SalesChannels;
 using maERP.Server;
 using maERP.Server.ServiceRegistrations;
@@ -135,6 +137,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGoodsReceiptRepository, GoodsReceiptRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<IUserTenantRepository, UserTenantRepository>();
+builder.Services.AddScoped<ITenantPermissionService, TenantPermissionService>();
 
 // Register SettingsInitializer service
 builder.Services.AddTransient<SettingsInitializer>();

@@ -87,7 +87,8 @@ public class TenantDemoDataHandler : IRequestHandler<TenantDemoDataCommand, Resu
                         {
                             UserId = user.Id,
                             TenantId = tenantId,
-                            IsDefault = false
+                            IsDefault = false,
+                            RoleManageUser = false
                         };
                         await _userTenantRepository.CreateAsync(userTenant);
                     }

@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using maERP.Application.Extensions;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Services;
 using maERP.Application.Mediator;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
+using Microsoft.AspNetCore.Http;
 
 namespace maERP.Application.Features.User.Commands.UserCreate;
 
@@ -27,6 +30,8 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
     private readonly IUserRepository _userRepository;
 
     private readonly ITenantContext _tenantContext;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ITenantPermissionService _tenantPermissionService;
 
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
@@ -36,11 +41,15 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
     public UserCreateHandler(
         IAppLogger<UserCreateHandler> logger,
         IUserRepository userRepository,
-        ITenantContext tenantContext)
+        ITenantContext tenantContext,
+        IHttpContextAccessor httpContextAccessor,
+        ITenantPermissionService tenantPermissionService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        _tenantPermissionService = tenantPermissionService ?? throw new ArgumentNullException(nameof(tenantPermissionService));
     }
 
     /// <summary>
@@ -75,9 +84,45 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
 
         try
         {
-            var currentTenantId = _tenantContext.GetCurrentTenantId();
+            var currentTenantId = ResolveTenantId(_tenantContext.GetCurrentTenantId());
+            var httpContext = _httpContextAccessor.HttpContext;
+            var currentUser = httpContext?.User;
+            var isSuperadmin = currentUser?.IsInRole("Superadmin") ?? false;
 
-            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+            if (!isSuperadmin)
+            {
+                var currentUserId = httpContext.GetUserId() ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.Unauthorized;
+                    result.Messages.Add("User context is required to evaluate permissions.");
+                    return result;
+                }
+
+                if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.BadRequest;
+                    result.Messages.Add("Tenant context is required to create a user.");
+                    return result;
+                }
+
+                var hasPermission = await _tenantPermissionService.CanManageUsersAsync(
+                    currentUserId,
+                    currentTenantId.Value,
+                    cancellationToken);
+
+                if (!hasPermission)
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.Forbidden;
+                    result.Messages.Add("You do not have permission to create users for this tenant.");
+                    return result;
+                }
+            }
+            else if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.BadRequest;
@@ -87,7 +132,7 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
 
             if (request.DefaultTenantId == Guid.Empty)
             {
-                request.DefaultTenantId = currentTenantId.Value;
+                request.DefaultTenantId = currentTenantId!.Value;
             }
 
             if (request.DefaultTenantId != currentTenantId.Value)
@@ -163,5 +208,16 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
         }
 
         return result;
+    }
+
+    private Guid? ResolveTenantId(Guid? currentTenantId)
+    {
+        if (currentTenantId.HasValue && currentTenantId.Value != Guid.Empty)
+        {
+            return currentTenantId;
+        }
+
+        var fallback = _tenantContext.GetAssignedTenantIds().FirstOrDefault(id => id != Guid.Empty);
+        return fallback == Guid.Empty ? (Guid?)null : fallback;
     }
 }

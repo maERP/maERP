@@ -6,6 +6,8 @@ using maERP.Application.Contracts.Services;
 using maERP.Application.Mediator;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
+using maERP.Application.Extensions;
+using Microsoft.AspNetCore.Http;
 
 namespace maERP.Application.Features.User.Commands.UserDelete;
 
@@ -20,6 +22,8 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
     private readonly IUserRepository _userRepository;
     private readonly ITenantContext _tenantContext;
     private readonly IAppLogger<UserDeleteHandler> _logger;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ITenantPermissionService _tenantPermissionService;
 
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
@@ -29,11 +33,15 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
     public UserDeleteHandler(
         IUserRepository userRepository,
         ITenantContext tenantContext,
-        IAppLogger<UserDeleteHandler> logger)
+        IAppLogger<UserDeleteHandler> logger,
+        IHttpContextAccessor httpContextAccessor,
+        ITenantPermissionService tenantPermissionService)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        _tenantPermissionService = tenantPermissionService ?? throw new ArgumentNullException(nameof(tenantPermissionService));
     }
 
     /// <summary>
@@ -69,13 +77,49 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
         try
         {
             // Find the user to delete by ID
-            var currentTenantId = _tenantContext.GetCurrentTenantId();
+            var currentTenantId = ResolveTenantId(_tenantContext.GetCurrentTenantId());
+            var httpContext = _httpContextAccessor.HttpContext;
+            var currentUser = httpContext?.User;
+            var isSuperadmin = currentUser?.IsInRole("Superadmin") ?? false;
 
-            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+            if (!isSuperadmin)
+            {
+                var currentUserId = httpContext.GetUserId() ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.Unauthorized;
+                    result.Messages.Add("User context is required to evaluate permissions.");
+                    return result;
+                }
+
+                if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.NotFound;
+                    result.Messages.Add("User not found in current tenant.");
+                    return result;
+                }
+
+                var hasPermission = await _tenantPermissionService.CanManageUsersAsync(
+                    currentUserId,
+                    currentTenantId.Value,
+                    cancellationToken);
+
+                if (!hasPermission)
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.Forbidden;
+                    result.Messages.Add("You do not have permission to delete users for this tenant.");
+                    return result;
+                }
+            }
+            else if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
             {
                 result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add("User not found in current tenant.");
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Tenant context is required to delete a user.");
                 return result;
             }
 
@@ -92,7 +136,7 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
                 return result;
             }
 
-            if (userToDelete.UserTenants == null || !userToDelete.UserTenants.Any(ut => ut.TenantId == currentTenantId.Value))
+            if (!isSuperadmin && currentTenantId.HasValue && (userToDelete.UserTenants == null || !userToDelete.UserTenants.Any(ut => ut.TenantId == currentTenantId.Value)))
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
@@ -135,5 +179,16 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
         }
 
         return result;
+    }
+
+    private Guid? ResolveTenantId(Guid? currentTenantId)
+    {
+        if (currentTenantId.HasValue && currentTenantId.Value != Guid.Empty)
+        {
+            return currentTenantId;
+        }
+
+        var fallback = _tenantContext.GetAssignedTenantIds().FirstOrDefault(id => id != Guid.Empty);
+        return fallback == Guid.Empty ? (Guid?)null : fallback;
     }
 }

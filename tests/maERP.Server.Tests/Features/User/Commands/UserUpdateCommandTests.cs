@@ -78,6 +78,10 @@ public class UserUpdateCommandTests : IDisposable
             {
                 await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
             }
+
+            await EnsureCurrentUserCanManageAsync(
+                TenantConstants.TestTenant1Id,
+                TenantConstants.TestTenant2Id);
         }
         finally
         {
@@ -92,26 +96,28 @@ public class UserUpdateCommandTests : IDisposable
 
         try
         {
+            var user1Email = $"user1{Guid.NewGuid():N}@example.com";
             var user1 = new ApplicationUser
             {
                 Id = Guid.NewGuid().ToString(),
-                Email = $"user1{Guid.NewGuid():N}@example.com",
-                UserName = $"user1{Guid.NewGuid():N}@example.com",
-                NormalizedEmail = $"USER1{Guid.NewGuid():N}@EXAMPLE.COM",
-                NormalizedUserName = $"USER1{Guid.NewGuid():N}@EXAMPLE.COM",
+                Email = user1Email,
+                UserName = user1Email,
+                NormalizedEmail = user1Email.ToUpperInvariant(),
+                NormalizedUserName = user1Email.ToUpperInvariant(),
                 Firstname = "Test",
                 Lastname = "User1",
                 EmailConfirmed = true,
                 PasswordHash = "AQAAAAEAACcQAAAAEJYOKhHvgoNZq5tLEhlTWxgCRCg6FeIxRQdIgQJpG1rGJXfkNv9m+GZOhFVK4qWdWQ=="
             };
 
+            var user2Email = $"user2{Guid.NewGuid():N}@example.com";
             var user2 = new ApplicationUser
             {
                 Id = Guid.NewGuid().ToString(),
-                Email = $"user2{Guid.NewGuid():N}@example.com",
-                UserName = $"user2{Guid.NewGuid():N}@example.com",
-                NormalizedEmail = $"USER2{Guid.NewGuid():N}@EXAMPLE.COM",
-                NormalizedUserName = $"USER2{Guid.NewGuid():N}@EXAMPLE.COM",
+                Email = user2Email,
+                UserName = user2Email,
+                NormalizedEmail = user2Email.ToUpperInvariant(),
+                NormalizedUserName = user2Email.ToUpperInvariant(),
                 Firstname = "Test",
                 Lastname = "User2",
                 EmailConfirmed = true,
@@ -124,14 +130,16 @@ public class UserUpdateCommandTests : IDisposable
             {
                 UserId = user1.Id,
                 TenantId = TenantConstants.TestTenant1Id,
-                IsDefault = true
+                IsDefault = true,
+                RoleManageUser = false
             };
 
             var userTenant2 = new UserTenant
             {
                 UserId = user2.Id,
                 TenantId = TenantConstants.TestTenant2Id,
-                IsDefault = true
+                IsDefault = true,
+                RoleManageUser = false
             };
 
             DbContext.UserTenant.AddRange(userTenant1, userTenant2);
@@ -143,6 +151,35 @@ public class UserUpdateCommandTests : IDisposable
         {
             TenantContext.SetCurrentTenantId(currentTenant);
         }
+    }
+
+    private async Task EnsureCurrentUserCanManageAsync(params Guid[] tenantIds)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+
+        if (tenantIds == null || tenantIds.Length == 0)
+        {
+            tenantIds = new[] { TenantConstants.TestTenant1Id };
+        }
+
+        foreach (var tenantId in tenantIds)
+        {
+            await CurrentUserHelper.EnsureUserAsync(Client, DbContext, tenantId, true);
+        }
+
+        TenantContext.SetAssignedTenantIds(tenantIds);
+
+        await CurrentUserHelper.SyncAssignmentsAsync(Client, DbContext, tenantIds, true, tenantIds[0]);
+    }
+
+    private async Task EnsureCurrentUserCannotManageAsync(Guid tenantId)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+        await CurrentUserHelper.EnsureUserAsync(Client, DbContext, tenantId, false);
+        TenantContext.SetAssignedTenantIds(new[] { tenantId });
+        await CurrentUserHelper.SyncAssignmentsAsync(Client, DbContext, new[] { tenantId }, false, tenantId);
     }
 
     private UserUpdateCommand CreateValidUpdateCommand(string userId)
@@ -406,7 +443,7 @@ public class UserUpdateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task UpdateUser_WithoutTenantHeader_ShouldReturnBadRequest()
+    public async Task UpdateUser_WithoutTenantHeader_ShouldUseDefaultTenant()
     {
         await SeedTestDataAsync();
         var (userId1, _) = await SeedUsersAsync();
@@ -414,8 +451,13 @@ public class UserUpdateCommandTests : IDisposable
 
         var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
 
-        // Should fail due to missing tenant context
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        if (response.StatusCode != HttpStatusCode.NoContent)
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Expected NoContent but received {response.StatusCode}. Body: {body}");
+        }
+
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 
     [Fact]
@@ -545,5 +587,56 @@ public class UserUpdateCommandTests : IDisposable
 
         // Should either succeed or return validation error depending on business rules
         TestAssertions.AssertTrue(response.StatusCode == HttpStatusCode.NoContent || response.StatusCode == HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task UpdateUser_WithManagePermission_ShouldReturnNoContent()
+    {
+        await SeedTestDataAsync();
+        var (userId1, _) = await SeedUsersAsync();
+        await EnsureCurrentUserCanManageAsync(TenantConstants.TestTenant1Id);
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateCommand = CreateValidUpdateCommand(userId1);
+
+        var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
+
+        if (response.StatusCode != HttpStatusCode.NoContent)
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Status {response.StatusCode}, Body {body}");
+        }
+
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateUser_WithoutManagePermission_ShouldReturnForbidden()
+    {
+        await SeedTestDataAsync();
+        var (userId1, _) = await SeedUsersAsync();
+        await EnsureCurrentUserCannotManageAsync(TenantConstants.TestTenant1Id);
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateCommand = CreateValidUpdateCommand(userId1);
+
+        var response = await PutAsJsonAsync($"/api/v1/Users/{userId1}", updateCommand);
+
+        TestAssertions.AssertEqual(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateUser_SelfWithoutManagePermission_ShouldSucceed()
+    {
+        await SeedTestDataAsync();
+        await EnsureCurrentUserCannotManageAsync(TenantConstants.TestTenant1Id);
+        var currentUserId = CurrentUserHelper.DefaultUserId;
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateCommand = CreateValidUpdateCommand(currentUserId);
+
+        var response = await PutAsJsonAsync($"/api/v1/Users/{currentUserId}", updateCommand);
+
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 }

@@ -13,4 +13,6 @@ public class AssignUserToTenantCommand : IRequest<Result<Guid>>
     public Guid TenantId { get; set; }
 
     public bool IsDefault { get; set; } = false;
+
+    public bool RoleManageUser { get; set; } = false;
 }

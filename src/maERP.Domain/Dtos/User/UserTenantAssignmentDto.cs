@@ -12,4 +12,6 @@ public class UserTenantAssignmentDto
     public string TenantCode { get; set; } = string.Empty;
 
     public bool IsDefault { get; set; }
+
+    public bool RoleManageUser { get; set; }
 }

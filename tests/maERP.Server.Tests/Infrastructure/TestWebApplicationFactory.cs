@@ -70,7 +70,10 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
                 .AddScheme<TestAuthenticationOptions, TestAuthenticationHandler>(
                     "Test", options =>
                     {
-                        // Do not assign roles by default - they should be assigned per test as needed
+                        // Provide defaults; tests can override via headers
+                        options.UserId = CurrentUserHelper.DefaultUserId;
+                        options.Username = "TestUser";
+                        options.Roles = Array.Empty<string>();
                     });
 
             // Do not override authorization - use default ASP.NET Core authorization

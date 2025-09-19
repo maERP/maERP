@@ -66,6 +66,36 @@ public class UserCreateCommandTests : IDisposable
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
     }
 
+    private async Task EnsureCurrentUserCanManageAsync(params Guid[] tenantIds)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+
+        if (tenantIds == null || tenantIds.Length == 0)
+        {
+            tenantIds = new[] { TenantConstants.TestTenant1Id };
+        }
+
+        foreach (var tenantId in tenantIds)
+        {
+            await CurrentUserHelper.EnsureUserAsync(Client, DbContext, tenantId, true);
+        }
+
+        TenantContext.SetAssignedTenantIds(tenantIds);
+
+        await CurrentUserHelper.SyncAssignmentsAsync(Client, DbContext, tenantIds, true, tenantIds[0]);
+    }
+
+    private async Task EnsureCurrentUserCannotManageAsync(Guid tenantId)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+        await CurrentUserHelper.EnsureUserAsync(Client, DbContext, tenantId, false);
+        TenantContext.SetAssignedTenantIds(new[] { tenantId });
+
+        await CurrentUserHelper.SyncAssignmentsAsync(Client, DbContext, new[] { tenantId }, false, tenantId);
+    }
+
     private async Task SeedTestDataAsync()
     {
         var currentTenant = TenantContext.GetCurrentTenantId();
@@ -78,6 +108,10 @@ public class UserCreateCommandTests : IDisposable
             {
                 await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
             }
+
+            await EnsureCurrentUserCanManageAsync(
+                TenantConstants.TestTenant1Id,
+                TenantConstants.TestTenant2Id);
         }
         finally
         {
@@ -119,6 +153,23 @@ public class UserCreateCommandTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(result.Data));
+    }
+
+    [Fact]
+    public async Task CreateUser_WithoutManagePermission_ShouldReturnForbidden_old()
+    {
+        await SeedTestDataAsync();
+        await EnsureCurrentUserCannotManageAsync(TenantConstants.TestTenant1Id);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var userCommand = CreateValidUserCommand();
+
+        var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
+
+        TestAssertions.AssertEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        var result = await ReadResponseAsync<Result<string>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
     }
 
     [Fact]
@@ -409,22 +460,25 @@ public class UserCreateCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateUser_WithoutTenantHeader_ShouldReturnBadRequest()
+    public async Task CreateUser_WithoutTenantHeader_ShouldUseDefaultTenant()
     {
         await SeedTestDataAsync();
         var userCommand = CreateValidUserCommand();
 
         var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
 
-        // Should fail due to missing tenant context or validation
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
+        var result = await ReadResponseAsync<Result<string>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertFalse(string.IsNullOrEmpty(result.Data));
     }
 
     [Fact]
     public async Task CreateUser_WithNonExistentTenant_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
-        SetTenantHeader(Guid.NewGuid());
+        SetTenantHeader(TenantConstants.TestTenant1Id);
         var userCommand = CreateValidUserCommand();
         userCommand.DefaultTenantId = Guid.NewGuid();
 
@@ -544,5 +598,48 @@ public class UserCreateCommandTests : IDisposable
             var distinctTenants = userTenants.Select(ut => ut.TenantId).Distinct().ToList();
             TestAssertions.AssertEqual(userTenants.Count, distinctTenants.Count);
         }
+    }
+
+    [Fact]
+    public async Task CreateUser_WithManagePermission_ShouldSucceed()
+    {
+        await SeedTestDataAsync();
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+        await CurrentUserHelper.EnsureUserAsync(Client, DbContext, TenantConstants.TestTenant1Id, true);
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var userCommand = CreateValidUserCommand();
+
+        var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
+
+        TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
+        var result = await ReadResponseAsync<Result<string>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+    }
+
+    [Fact]
+    public async Task CreateUser_WithoutManagePermission_ShouldReturnForbidden()
+    {
+        await SeedTestDataAsync();
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+        await CurrentUserHelper.EnsureUserAsync(Client, DbContext, TenantConstants.TestTenant1Id, false);
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var userCommand = CreateValidUserCommand();
+
+        var response = await PostAsJsonAsync("/api/v1/Users", userCommand);
+
+        TestAssertions.AssertEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        var result = await ReadResponseAsync<Result<string>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
     }
 }

@@ -233,7 +233,8 @@ public partial class UserDetailViewModel : ViewModelBase
                     TenantId = tenant.Id,
                     TenantName = tenant.Name,
                     TenantCode = tenant.TenantCode,
-                    IsDefault = false
+                    IsDefault = false,
+                    RoleManageUser = false
                 };
                 UserTenants.Add(newAssignment);
 

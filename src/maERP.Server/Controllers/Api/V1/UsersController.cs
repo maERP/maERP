@@ -30,7 +30,6 @@ public class UsersController : ControllerBase
 
     // GET: api/v1/<UsersController>
     [HttpGet]
-    [Authorize(Roles = "Superadmin")]
     public async Task<ActionResult<PaginatedResult<UserListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
@@ -44,7 +43,6 @@ public class UsersController : ControllerBase
 
     // GET api/UsersController>/5
     [HttpGet("{id:minlength(1)}")]
-    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -61,7 +59,6 @@ public class UsersController : ControllerBase
 
     // POST: api/v1/<UsersController>
     [HttpPost]
-    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<string>> Create(UserCreateCommand userCreateCommand)
@@ -72,13 +69,19 @@ public class UsersController : ControllerBase
 
     // PUT: api/v1/<UsersController>/5
     [HttpPut("{id}")]
-    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
     public async Task<ActionResult> Update(string id, UserUpdateCommand userUpdateCommand)
     {
+        if (!string.IsNullOrWhiteSpace(userUpdateCommand.Id) &&
+            !string.Equals(userUpdateCommand.Id, id, StringComparison.OrdinalIgnoreCase))
+        {
+            var mismatchResult = Result<string>.Fail(ResultStatusCode.BadRequest, "User ID in the payload must match the route parameter.");
+            return BadRequest(mismatchResult);
+        }
+
         userUpdateCommand.Id = id;
         var response = await _mediator.Send(userUpdateCommand);
         return StatusCode((int)response.StatusCode, response);
@@ -86,7 +89,6 @@ public class UsersController : ControllerBase
 
     // DELETE: api/v1/<UsersController>/5
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]

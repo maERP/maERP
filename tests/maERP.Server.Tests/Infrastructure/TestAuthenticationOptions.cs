@@ -8,6 +8,6 @@ public class TestAuthenticationOptions : AuthenticationSchemeOptions
     public Guid? DefaultTenantId { get; set; }
     public string? Username { get; set; }
     public string? UserId { get; set; }
-    public string[]? Roles { get; set; }
+    public string[] Roles { get; set; } = new[] { "Superadmin" };
     public bool IsAuthenticated { get; set; } = true;
 }

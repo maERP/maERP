@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Services;
+using maERP.Application.Extensions;
 using maERP.Application.Mediator;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Wrapper;
+using Microsoft.AspNetCore.Http;
 
 namespace maERP.Application.Features.User.Queries.UserDetail;
 
@@ -28,6 +31,8 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
     private readonly IUserRepository _userRepository;
 
     private readonly ITenantContext _tenantContext;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ITenantPermissionService _tenantPermissionService;
 
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
@@ -37,11 +42,15 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
     public UserDetailHandler(
         IAppLogger<UserDetailHandler> logger,
         IUserRepository userRepository,
-        ITenantContext tenantContext)
+        ITenantContext tenantContext,
+        IHttpContextAccessor httpContextAccessor,
+        ITenantPermissionService tenantPermissionService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+        _tenantPermissionService = tenantPermissionService ?? throw new ArgumentNullException(nameof(tenantPermissionService));
     }
 
     /// <summary>
@@ -58,6 +67,48 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
 
         try
         {
+            var httpContext = _httpContextAccessor.HttpContext;
+            var currentTenantId = ResolveTenantId(_tenantContext.GetCurrentTenantId());
+            var currentUser = httpContext?.User;
+            var isSuperadmin = currentUser?.IsInRole("Superadmin") ?? false;
+            var currentUserId = httpContext.GetUserId() ?? string.Empty;
+            var isSelfRequest = !string.IsNullOrWhiteSpace(currentUserId) && currentUserId == request.Id;
+
+            if (!isSuperadmin)
+            {
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.Unauthorized;
+                    result.Messages.Add("User context is required to evaluate permissions.");
+                    return result;
+                }
+
+                if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.BadRequest;
+                    result.Messages.Add("Tenant context is required to retrieve user details.");
+                    return result;
+                }
+
+                if (!isSelfRequest)
+                {
+                    var hasPermission = await _tenantPermissionService.CanManageUsersAsync(
+                        currentUserId,
+                        currentTenantId.Value,
+                        cancellationToken);
+
+                    if (!hasPermission)
+                    {
+                        result.Succeeded = false;
+                        result.StatusCode = ResultStatusCode.Forbidden;
+                        result.Messages.Add("You do not have permission to view other users in this tenant.");
+                        return result;
+                    }
+                }
+            }
+
             // Retrieve user from the repository by ID
             var user = await _userRepository.GetByIdWithTenantsAsync(request.Id);
 
@@ -72,13 +123,22 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                 return result;
             }
 
-            var currentTenantId = _tenantContext.GetCurrentTenantId();
-            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty ||
-                user.UserTenants == null || !user.UserTenants.Any(ut => ut.TenantId == currentTenantId.Value))
+            if (!isSuperadmin)
+            {
+                if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty ||
+                    user.UserTenants == null || !user.UserTenants.Any(ut => ut.TenantId == currentTenantId.Value))
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.NotFound;
+                    result.Messages.Add("User not found in current tenant.");
+                    return result;
+                }
+            }
+            else if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
             {
                 result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add("User not found in current tenant.");
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Tenant context is required to retrieve user details.");
                 return result;
             }
 
@@ -98,7 +158,8 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                             TenantId = assignment.TenantId,
                             TenantName = assignment.Tenant.Name,
                             TenantCode = assignment.Tenant.TenantCode,
-                            IsDefault = assignment.IsDefault
+                            IsDefault = assignment.IsDefault,
+                            RoleManageUser = assignment.RoleManageUser
                         });
                     }
                 }
@@ -132,5 +193,16 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
         }
 
         return result;
+    }
+
+    private Guid? ResolveTenantId(Guid? currentTenantId)
+    {
+        if (currentTenantId.HasValue && currentTenantId.Value != Guid.Empty)
+        {
+            return currentTenantId;
+        }
+
+        var fallback = _tenantContext.GetAssignedTenantIds().FirstOrDefault(id => id != Guid.Empty);
+        return fallback == Guid.Empty ? (Guid?)null : fallback;
     }
 }

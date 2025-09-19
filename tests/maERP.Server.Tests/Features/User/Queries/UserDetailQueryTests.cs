@@ -118,36 +118,78 @@ public class UserDetailQueryTests : IDisposable
                 {
                     UserId = user1Tenant1.Id,
                     TenantId = TenantConstants.TestTenant1Id,
-                    IsDefault = true
+                    IsDefault = true,
+                    RoleManageUser = false
                 };
 
                 var userTenant2_1 = new UserTenant
                 {
                     UserId = user2Tenant1.Id,
                     TenantId = TenantConstants.TestTenant1Id,
-                    IsDefault = true
+                    IsDefault = true,
+                    RoleManageUser = false
                 };
 
                 var userTenant3_2 = new UserTenant
                 {
                     UserId = user3Tenant2.Id,
                     TenantId = TenantConstants.TestTenant2Id,
-                    IsDefault = true
+                    IsDefault = true,
+                    RoleManageUser = false
                 };
 
                 DbContext.UserTenant.AddRange(userTenant1_1, userTenant2_1, userTenant3_2);
                 await DbContext.SaveChangesAsync();
 
+                await EnsureCurrentUserCanManageAsync(
+                    TenantConstants.TestTenant1Id,
+                    TenantConstants.TestTenant2Id);
+
                 return (user1Tenant1.Id, user2Tenant1.Id, user3Tenant2.Id);
             }
 
             var existingUsers = await DbContext.Users.Take(3).ToListAsync();
+
+            await EnsureCurrentUserCanManageAsync(
+                TenantConstants.TestTenant1Id,
+                TenantConstants.TestTenant2Id);
+
             return (existingUsers[0].Id, existingUsers[1].Id, existingUsers[2].Id);
         }
         finally
         {
             TenantContext.SetCurrentTenantId(currentTenant);
         }
+    }
+
+    private async Task EnsureCurrentUserCanManageAsync(params Guid[] tenantIds)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+
+        if (tenantIds == null || tenantIds.Length == 0)
+        {
+            tenantIds = new[] { TenantConstants.TestTenant1Id };
+        }
+
+        foreach (var tenantId in tenantIds)
+        {
+            await CurrentUserHelper.EnsureUserAsync(Client, DbContext, tenantId, true);
+        }
+
+        TenantContext.SetAssignedTenantIds(tenantIds);
+
+        await CurrentUserHelper.SyncAssignmentsAsync(Client, DbContext, tenantIds, true, tenantIds[0]);
+    }
+
+    private async Task EnsureCurrentUserCannotManageAsync(Guid tenantId)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+        await CurrentUserHelper.EnsureUserAsync(Client, DbContext, tenantId, false);
+        TenantContext.SetAssignedTenantIds(new[] { tenantId });
+
+        await CurrentUserHelper.SyncAssignmentsAsync(Client, DbContext, new[] { tenantId }, false, tenantId);
     }
 
     public void Dispose()
@@ -208,17 +250,17 @@ public class UserDetailQueryTests : IDisposable
     }
 
     [Fact]
-    public async Task GetUserDetail_WithoutTenantHeader_ShouldReturnNotFound()
+    public async Task GetUserDetail_WithoutTenantHeader_ShouldUseDefaultTenant()
     {
         var (userId1, _, _) = await SeedUserTestDataAsync();
 
         var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
 
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<Result<UserDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertFalse(result.Succeeded);
-        Assert.Null(result.Data);
+        TestAssertions.AssertTrue(result.Succeeded);
+        Assert.NotNull(result.Data);
     }
 
     [Fact]
@@ -399,7 +441,8 @@ public class UserDetailQueryTests : IDisposable
         {
             UserId = userId1,
             TenantId = TenantConstants.TestTenant2Id,
-            IsDefault = false
+            IsDefault = false,
+            RoleManageUser = false
         };
         DbContext.UserTenant.Add(additionalAssignment);
         await DbContext.SaveChangesAsync();
@@ -467,6 +510,40 @@ public class UserDetailQueryTests : IDisposable
         var response = await Client.GetAsync($"/api/v1/Users/{Uri.EscapeDataString(specialId)}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        var result = await ReadResponseAsync<Result<UserDetailDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        Assert.Null(result.Data);
+    }
+
+    [Fact]
+    public async Task GetUserDetail_WithManagePermission_ShouldReturnData()
+    {
+        var (userId1, _, _) = await SeedUserTestDataAsync();
+        await EnsureCurrentUserCanManageAsync(TenantConstants.TestTenant1Id);
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
+
+        TestAssertions.AssertHttpSuccess(response);
+        var result = await ReadResponseAsync<Result<UserDetailDto>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        Assert.NotNull(result.Data);
+    }
+
+    [Fact]
+    public async Task GetUserDetail_WithoutManagePermission_ShouldReturnForbidden()
+    {
+        var (userId1, _, _) = await SeedUserTestDataAsync();
+        await EnsureCurrentUserCannotManageAsync(TenantConstants.TestTenant1Id);
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var response = await Client.GetAsync($"/api/v1/Users/{userId1}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Forbidden, response.StatusCode);
         var result = await ReadResponseAsync<Result<UserDetailDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);

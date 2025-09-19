@@ -21,5 +21,6 @@ public class UserTenantConfiguration : IEntityTypeConfiguration<UserTenant>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(ut => ut.IsDefault).HasDefaultValue(false);
+        builder.Property(ut => ut.RoleManageUser).HasDefaultValue(false);
     }
 }

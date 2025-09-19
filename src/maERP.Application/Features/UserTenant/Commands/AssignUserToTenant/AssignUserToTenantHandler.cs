@@ -75,6 +75,7 @@ public class AssignUserToTenantHandler : IRequestHandler<AssignUserToTenantComma
             UserId = request.UserId,
             TenantId = request.TenantId,
             IsDefault = request.IsDefault,
+            RoleManageUser = request.RoleManageUser,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
         };

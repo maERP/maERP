@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -25,44 +27,101 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
         }
 
         // Get tenant configuration from options or use defaults
-        var testTenantIds = Options.AssignedTenantIds ?? new[] {
-            TenantConstants.TestTenant1Id,
-            TenantConstants.TestTenant2Id
-        };
+        Guid[] testTenantIds;
+        if (Context.Request.Headers.TryGetValue("X-Test-Tenants", out var tenantHeader) && !string.IsNullOrWhiteSpace(tenantHeader.ToString()))
+        {
+            var tenantHeaderValue = tenantHeader.ToString();
+            testTenantIds = tenantHeaderValue
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(value => Guid.TryParse(value, out var parsed) ? parsed : Guid.Empty)
+                .Where(id => id != Guid.Empty)
+                .ToArray();
 
-        var defaultTenantId = Options.DefaultTenantId ?? testTenantIds.FirstOrDefault();
+            if (testTenantIds.Length == 0)
+            {
+                testTenantIds = Options.AssignedTenantIds ?? new[]
+                {
+                    TenantConstants.TestTenant1Id,
+                    TenantConstants.TestTenant2Id
+                };
+            }
+        }
+        else
+        {
+            testTenantIds = Options.AssignedTenantIds ?? new[]
+            {
+                TenantConstants.TestTenant1Id,
+                TenantConstants.TestTenant2Id
+            };
+        }
+
+        Guid? defaultTenantId = Options.DefaultTenantId;
+        if (Context.Request.Headers.TryGetValue("X-Test-DefaultTenantId", out var defaultTenantHeader) && Guid.TryParse(defaultTenantHeader.ToString(), out var parsedDefault) && parsedDefault != Guid.Empty)
+        {
+            defaultTenantId = parsedDefault;
+        }
+
+        defaultTenantId ??= testTenantIds.FirstOrDefault();
+
+        var userId = Options.UserId;
+        if (Context.Request.Headers.TryGetValue("X-Test-UserId", out var userIdHeader) && !string.IsNullOrWhiteSpace(userIdHeader))
+        {
+            userId = userIdHeader!;
+        }
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            userId = Guid.NewGuid().ToString();
+        }
+
+        System.Console.WriteLine($"TestAuth userId={userId}");
+
+        var username = Options.Username;
+        if (Context.Request.Headers.TryGetValue("X-Test-Username", out var usernameHeader) && !string.IsNullOrWhiteSpace(usernameHeader))
+        {
+            username = usernameHeader!;
+        }
+
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            username = "TestUser";
+        }
+
+        var effectiveDefaultTenantId = defaultTenantId ?? Guid.Empty;
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, Options.Username ?? "TestUser"),
-            new Claim(ClaimTypes.NameIdentifier, Options.UserId ?? Guid.NewGuid().ToString()),
-            new Claim("tenantId", defaultTenantId.ToString()),
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.NameIdentifier, userId),
+            new Claim("uid", userId),
+            new Claim("tenantId", effectiveDefaultTenantId.ToString()),
             new Claim("availableTenants", JsonSerializer.Serialize(
                 testTenantIds.Select(id => new { Id = id.ToString(), Name = $"Test Tenant {id}" })
             ))
         };
 
-        // Add role claims if specified in options
-        if (Options.Roles != null)
+        var roleClaims = Options.Roles?.ToList() ?? new List<string>();
+
+        if (Context.Request.Headers.TryGetValue("X-Test-Roles", out var headerRolesValue))
         {
-            foreach (var role in Options.Roles)
+            var headerRoles = headerRolesValue.ToString();
+            if (!string.IsNullOrWhiteSpace(headerRoles))
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                roleClaims = headerRoles
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(role => role.Trim())
+                    .Where(role => !string.IsNullOrWhiteSpace(role))
+                    .ToList();
+            }
+            else
+            {
+                roleClaims = new List<string>();
             }
         }
 
-        // Check for roles specified in HTTP headers (for per-test role assignment)
-        if (Context.Request.Headers.ContainsKey("X-Test-Roles"))
+        foreach (var role in roleClaims)
         {
-            var headerRoles = Context.Request.Headers["X-Test-Roles"].ToString();
-            if (!string.IsNullOrEmpty(headerRoles))
-            {
-                var roles = headerRoles.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                foreach (var role in roles)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, role.Trim()));
-                }
-            }
+            claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
         var identity = new ClaimsIdentity(claims, "Test");

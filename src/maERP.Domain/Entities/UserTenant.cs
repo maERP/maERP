@@ -20,4 +20,6 @@ public class UserTenant : BaseEntityWithoutTenant
 
     // Flag to indicate if this is the default tenant for the user
     public bool IsDefault { get; set; }
+
+    public bool RoleManageUser { get; set; }
 }

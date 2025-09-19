@@ -117,14 +117,14 @@ public class GetUserTenantsQueryTests : IDisposable
                 var userTenantAssignments = new List<Domain.Entities.UserTenant>
                 {
                     // User 1: Assigned to tenants 1 and 2, default is tenant 1
-                    new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant1Id, IsDefault = true },
-                    new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = false },
-                    
+                    new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant1Id, IsDefault = true, RoleManageUser = false },
+                    new() { UserId = user1.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = false, RoleManageUser = false },
+
                     // User 2: Assigned to tenant 2 only, default is tenant 2
-                    new() { UserId = user2.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = true },
-                    
+                    new() { UserId = user2.Id, TenantId = TenantConstants.TestTenant2Id, IsDefault = true, RoleManageUser = false },
+
                     // User 3: Assigned to tenant 3 only, default is tenant 3
-                    new() { UserId = user3.Id, TenantId = TenantConstants.TestTenant3Id, IsDefault = true }
+                    new() { UserId = user3.Id, TenantId = TenantConstants.TestTenant3Id, IsDefault = true, RoleManageUser = false }
                 };
 
                 DbContext.UserTenant.AddRange(userTenantAssignments);

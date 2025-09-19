@@ -10,9 +10,11 @@ namespace maERP.Application.Specifications
     {
         public WarehouseFilterSpecification(string searchString)
         {
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                Criteria = w => (w.Name.Contains(searchString));
+                var normalizedSearch = searchString.Trim().ToUpperInvariant();
+
+                Criteria = w => w.Name != null && w.Name.ToUpper().Contains(normalizedSearch);
             }
             else
             {

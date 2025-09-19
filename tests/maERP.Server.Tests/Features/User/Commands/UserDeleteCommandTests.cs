@@ -70,6 +70,10 @@ public class UserDeleteCommandTests : IDisposable
             {
                 await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
             }
+
+            await EnsureCurrentUserCanManageAsync(
+                TenantConstants.TestTenant1Id,
+                TenantConstants.TestTenant2Id);
         }
         finally
         {
@@ -129,21 +133,24 @@ public class UserDeleteCommandTests : IDisposable
             {
                 UserId = user1.Id,
                 TenantId = TenantConstants.TestTenant1Id,
-                IsDefault = true
+                IsDefault = true,
+                RoleManageUser = false
             };
 
             var userTenant2 = new UserTenant
             {
                 UserId = user2.Id,
                 TenantId = TenantConstants.TestTenant2Id,
-                IsDefault = true
+                IsDefault = true,
+                RoleManageUser = false
             };
 
             var userTenant3 = new UserTenant
             {
                 UserId = user3.Id,
                 TenantId = TenantConstants.TestTenant1Id,
-                IsDefault = true
+                IsDefault = true,
+                RoleManageUser = false
             };
 
             DbContext.UserTenant.AddRange(userTenant1, userTenant2, userTenant3);
@@ -156,6 +163,36 @@ public class UserDeleteCommandTests : IDisposable
         {
             TenantContext.SetCurrentTenantId(currentTenant);
         }
+    }
+
+    private async Task EnsureCurrentUserCanManageAsync(params Guid[] tenantIds)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+
+        if (tenantIds == null || tenantIds.Length == 0)
+        {
+            tenantIds = new[] { TenantConstants.TestTenant1Id };
+        }
+
+        foreach (var tenantId in tenantIds)
+        {
+            await CurrentUserHelper.EnsureUserAsync(Client, DbContext, tenantId, true);
+        }
+
+        TenantContext.SetAssignedTenantIds(tenantIds);
+
+        await CurrentUserHelper.SyncAssignmentsAsync(Client, DbContext, tenantIds, true, tenantIds[0]);
+    }
+
+    private async Task EnsureCurrentUserCannotManageAsync(Guid tenantId)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-Roles");
+        Client.DefaultRequestHeaders.Add("X-Test-Roles", string.Empty);
+        await CurrentUserHelper.EnsureUserAsync(Client, DbContext, tenantId, false);
+        TenantContext.SetAssignedTenantIds(new[] { tenantId });
+
+        await CurrentUserHelper.SyncAssignmentsAsync(Client, DbContext, new[] { tenantId }, false, tenantId);
     }
 
     public void Dispose()
@@ -254,19 +291,14 @@ public class UserDeleteCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteUser_WithoutTenantHeader_ShouldReturnNotFound()
+    public async Task DeleteUser_WithoutTenantHeader_ShouldUseDefaultTenant()
     {
         await SeedTestDataAsync();
         var (userId1, _, _) = await SeedUsersAsync();
 
         var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
 
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-
-        // Verify user was not deleted
-        TenantContext.SetCurrentTenantId(null);
-        var user = await DbContext.Users.FindAsync(userId1);
-        TestAssertions.AssertNotNull(user);
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
     }
 
     [Fact]
@@ -298,7 +330,8 @@ public class UserDeleteCommandTests : IDisposable
         {
             UserId = userId1,
             TenantId = TenantConstants.TestTenant2Id,
-            IsDefault = false
+            IsDefault = false,
+            RoleManageUser = false
         };
         DbContext.UserTenant.Add(additionalTenant);
         await DbContext.SaveChangesAsync();
@@ -496,5 +529,31 @@ public class UserDeleteCommandTests : IDisposable
             .Where(ut => ut.UserId == userId1)
             .ToListAsync();
         TestAssertions.AssertEmpty(orphanedAssignments);
+    }
+
+    [Fact]
+    public async Task DeleteUser_WithManagePermission_ShouldReturnNoContent()
+    {
+        await SeedTestDataAsync();
+        var (userId1, _, _) = await SeedUsersAsync();
+        await EnsureCurrentUserCanManageAsync(TenantConstants.TestTenant1Id);
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteUser_WithoutManagePermission_ShouldReturnForbidden()
+    {
+        await SeedTestDataAsync();
+        var (userId1, _, _) = await SeedUsersAsync();
+        await EnsureCurrentUserCannotManageAsync(TenantConstants.TestTenant1Id);
+
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var response = await Client.DeleteAsync($"/api/v1/Users/{userId1}");
+
+        TestAssertions.AssertEqual(HttpStatusCode.Forbidden, response.StatusCode);
     }
 }

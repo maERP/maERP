@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Dynamic.Core;
+using System.Security.Claims;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Services;
 using maERP.Application.Extensions;
@@ -9,6 +10,7 @@ using maERP.Domain.Dtos.User;
 using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace maERP.Application.Features.User.Queries.UserList;
 
@@ -29,6 +31,8 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
     /// </summary>
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ITenantContext _tenantContext;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ITenantPermissionService _tenantPermissionService;
 
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
@@ -38,11 +42,15 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
     public UserListHandler(
         IAppLogger<UserListHandler> logger,
         UserManager<ApplicationUser> userManager,
-        ITenantContext tenantContext)
+        ITenantContext tenantContext,
+        IHttpContextAccessor httpContextAccessor,
+        ITenantPermissionService tenantPermissionService)
     {
         _logger = logger;
         _userManager = userManager;
         _tenantContext = tenantContext;
+        _httpContextAccessor = httpContextAccessor;
+        _tenantPermissionService = tenantPermissionService;
     }
 
     /// <summary>
@@ -58,9 +66,55 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
 
         _logger.LogInformation("Handle UserListQuery: {0}", request);
 
-        var currentTenantId = _tenantContext.GetCurrentTenantId();
+        var httpContext = _httpContextAccessor.HttpContext;
+        var currentTenantId = ResolveTenantId(_tenantContext.GetCurrentTenantId());
 
-        if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+        var currentUser = httpContext?.User;
+        var isSuperadmin = currentUser?.IsInRole("Superadmin") ?? false;
+
+        if (!isSuperadmin)
+        {
+            var currentUserId = httpContext.GetUserId() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(currentUserId))
+            {
+                var missingUser = PaginatedResult<UserListDto>.Failure(new List<string>
+                {
+                    "User context is required to evaluate permissions."
+                });
+                missingUser.StatusCode = ResultStatusCode.Unauthorized;
+                missingUser.Data = new List<UserListDto>();
+                return missingUser;
+            }
+
+            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+            {
+                var missingTenant = PaginatedResult<UserListDto>.Failure(new List<string>
+                {
+                    "Tenant context is required to list users."
+                });
+                missingTenant.StatusCode = ResultStatusCode.BadRequest;
+                missingTenant.Data = new List<UserListDto>();
+                return missingTenant;
+            }
+
+            var hasPermission = await _tenantPermissionService.CanManageUsersAsync(
+                currentUserId,
+                currentTenantId.Value,
+                cancellationToken);
+
+            if (!hasPermission)
+            {
+                var forbidden = PaginatedResult<UserListDto>.Failure(new List<string>
+                {
+                    "You do not have permission to manage users for this tenant."
+                });
+                forbidden.StatusCode = ResultStatusCode.Forbidden;
+                forbidden.Data = new List<UserListDto>();
+                return forbidden;
+            }
+        }
+        else if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
         {
             return PaginatedResult<UserListDto>.Success(new List<UserListDto>(), 0, request.PageNumber, request.PageSize);
         }
@@ -92,5 +146,16 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
         return await query
             .OrderBy(ordering)
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+}
+
+    private Guid? ResolveTenantId(Guid? currentTenantId)
+    {
+        if (currentTenantId.HasValue && currentTenantId.Value != Guid.Empty)
+        {
+            return currentTenantId;
+        }
+
+        var fallback = _tenantContext.GetAssignedTenantIds().FirstOrDefault(id => id != Guid.Empty);
+        return fallback == Guid.Empty ? (Guid?)null : fallback;
     }
 }

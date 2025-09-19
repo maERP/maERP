@@ -165,6 +165,7 @@ public class UserRepository : IUserRepository
                     UserId = userId,
                     TenantId = tenantId,
                     IsDefault = defaultTenantId.HasValue && tenantId == defaultTenantId.Value,
+                    RoleManageUser = false,
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow
                 };
@@ -219,6 +220,7 @@ public class UserRepository : IUserRepository
                     UserId = userId,
                     TenantId = tenantId,
                     IsDefault = defaultTenantId.HasValue && tenantId == defaultTenantId.Value,
+                    RoleManageUser = false,
                     DateCreated = DateTime.UtcNow,
                     DateModified = DateTime.UtcNow
                 };
