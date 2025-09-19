@@ -77,6 +77,14 @@ public class CustomerDeleteHandler : IRequestHandler<CustomerDeleteCommand, Resu
 
             _logger.LogInformation("Successfully deleted customer with ID: {Id}", customerToDelete.Id);
         }
+        catch (InvalidOperationException ex)
+        {
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.NotFound;
+            result.Messages.Add("Customer not found");
+
+            _logger.LogWarning("Customer with ID: {Id} not found during deletion: {Message}", request.Id, ex.Message);
+        }
         catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
         {
             // Handle concurrent deletion - customer was already deleted by another request

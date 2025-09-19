@@ -21,4 +21,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="PDF/Fonts/OpenSans-Regular.ttf" LogicalName="maERP.Infrastructure.PDF.Fonts.OpenSans-Regular.ttf" />
+	</ItemGroup>
 </Project>

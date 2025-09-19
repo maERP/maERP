@@ -198,7 +198,7 @@ public class InvoicePdfQueryTests : IDisposable
         Factory?.Dispose();
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithValidIdAndTenant_ShouldReturnPdfBytes()
     {
         await SeedInvoiceTestDataAsync();
@@ -214,7 +214,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Data);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
@@ -229,7 +229,7 @@ public class InvoicePdfQueryTests : IDisposable
         Assert.Null(result.Data);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
@@ -244,7 +244,7 @@ public class InvoicePdfQueryTests : IDisposable
         Assert.Null(result.Data);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithoutTenantHeader_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
@@ -258,7 +258,7 @@ public class InvoicePdfQueryTests : IDisposable
         Assert.Null(result.Data);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithValidPdf_ShouldReturnValidByteArray()
     {
         await SeedInvoiceTestDataAsync();
@@ -284,7 +284,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithZeroId_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
@@ -299,7 +299,7 @@ public class InvoicePdfQueryTests : IDisposable
         Assert.Null(result.Data);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithNegativeId_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
@@ -314,7 +314,7 @@ public class InvoicePdfQueryTests : IDisposable
         Assert.Null(result.Data);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithTenant2Invoice_ShouldReturnCorrectPdf()
     {
         await SeedInvoiceTestDataAsync();
@@ -330,7 +330,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertTrue(result.Data.Length > 0);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithNonExistentTenant_ShouldReturnNotFound()
     {
         await SeedInvoiceTestDataAsync();
@@ -345,7 +345,7 @@ public class InvoicePdfQueryTests : IDisposable
         Assert.Null(result.Data);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_TenantIsolation_ShouldNotReturnOtherTenantInvoices()
     {
         await SeedInvoiceTestDataAsync();
@@ -359,7 +359,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response2.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         await SeedInvoiceTestDataAsync();
@@ -375,7 +375,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertNotNull(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedInvoiceTestDataAsync();
@@ -392,7 +392,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithLargeId_ShouldHandleGracefully()
     {
         await SeedInvoiceTestDataAsync();
@@ -407,7 +407,7 @@ public class InvoicePdfQueryTests : IDisposable
         Assert.Null(result.Data);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_ShouldGenerateValidPdfHeader()
     {
         await SeedInvoiceTestDataAsync();
@@ -428,7 +428,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertEqual("%PDF", header);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_MultipleRequests_ShouldReturnConsistentResults()
     {
         await SeedInvoiceTestDataAsync();
@@ -451,7 +451,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertNotNull(result2.Data);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithCompanySettings_ShouldUseSettingsInPdf()
     {
         await SeedInvoiceTestDataAsync();
@@ -467,7 +467,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertTrue(result.Data.Length > 1000);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithCompleteInvoiceData_ShouldGenerateCompletePdf()
     {
         await SeedInvoiceTestDataAsync();
@@ -485,7 +485,7 @@ public class InvoicePdfQueryTests : IDisposable
         TestAssertions.AssertTrue(pdfSize > 0);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task GetInvoicePdf_WithMinimalInvoiceData_ShouldStillGeneratePdf()
     {
         await SeedInvoiceTestDataAsync();

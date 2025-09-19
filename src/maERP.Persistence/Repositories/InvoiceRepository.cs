@@ -168,4 +168,42 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
             throw;
         }
     }
+
+    public override async Task DeleteAsync(Invoice entity)
+    {
+        var invoice = await Context.Invoice
+            .IgnoreQueryFilters()
+            .Include(i => i.InvoiceItems)
+            .FirstOrDefaultAsync(i => i.Id == entity.Id);
+
+        if (invoice == null)
+        {
+            throw new InvalidOperationException($"Invoice with ID {entity.Id} not found for deletion");
+        }
+
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        if (currentTenantId.HasValue && invoice.TenantId != null && invoice.TenantId != currentTenantId)
+        {
+            throw new UnauthorizedAccessException("Cannot delete invoice belonging to a different tenant");
+        }
+
+        if (invoice.InvoiceItems?.Any() == true)
+        {
+            Context.InvoiceItem.RemoveRange(invoice.InvoiceItems);
+        }
+
+        Context.Remove(invoice);
+        await Context.SaveChangesAsync();
+
+        if (Context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+        {
+            Context.ChangeTracker.Clear();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            await Context.Invoice.IgnoreQueryFilters().Where(x => x.Id == Guid.Empty).FirstOrDefaultAsync();
+        }
+    }
 }

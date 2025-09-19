@@ -1,5 +1,7 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
+using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 
@@ -21,6 +23,7 @@ public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result
     /// Repository for invoice data operations
     /// </summary>
     private readonly IInvoiceRepository _invoiceRepository;
+    private readonly ITenantContext _tenantContext;
 
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
@@ -29,10 +32,12 @@ public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result
     /// <param name="invoiceRepository">Repository for invoice data access</param>
     public InvoiceDeleteHandler(
         IAppLogger<InvoiceDeleteHandler> logger,
-        IInvoiceRepository invoiceRepository)
+        IInvoiceRepository invoiceRepository,
+        ITenantContext tenantContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _invoiceRepository = invoiceRepository ?? throw new ArgumentNullException(nameof(invoiceRepository));
+        _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
     /// <summary>
@@ -48,7 +53,7 @@ public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result
         var result = new Result<Guid>();
 
         // Validate incoming data
-        var validator = new InvoiceDeleteValidator(_invoiceRepository);
+        var validator = new InvoiceDeleteValidator();
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         // If validation fails, return a bad request result with validation error messages
@@ -67,13 +72,41 @@ public class InvoiceDeleteHandler : IRequestHandler<InvoiceDeleteCommand, Result
 
         try
         {
-            // Create entity to delete
-            var invoiceToDelete = new Domain.Entities.Invoice
+            var currentTenantId = _tenantContext.GetCurrentTenantId();
+            if (!currentTenantId.HasValue || currentTenantId == Guid.Empty)
             {
-                Id = request.Id
-            };
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Rechnung wurde nicht gefunden.");
+                return result;
+            }
 
-            // Delete from database
+            var assignedTenantIds = _tenantContext.GetAssignedTenantIds();
+            if (assignedTenantIds.Count > 0 && !assignedTenantIds.Contains(currentTenantId.Value))
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Mandant wurde nicht gefunden oder ist nicht zugewiesen.");
+                return result;
+            }
+
+            var invoiceToDelete = await _invoiceRepository.GetInvoiceWithDetailsAsync(request.Id);
+            if (invoiceToDelete == null || invoiceToDelete.TenantId != currentTenantId.Value)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Rechnung wurde nicht gefunden.");
+                return result;
+            }
+
+            if (invoiceToDelete.PaymentStatus == PaymentStatus.CompletelyPaid)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Bezahlte Rechnungen können nicht gelöscht werden.");
+                return result;
+            }
+
             await _invoiceRepository.DeleteAsync(invoiceToDelete);
 
             // Set successful result with the deleted invoice ID

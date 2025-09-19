@@ -91,12 +91,7 @@ public class InvoicesController(IMediator mediator) : ControllerBase
 
         var response = await mediator.Send(new InvoicePdfQuery { Id = guidId });
 
-        if (!response.Succeeded)
-        {
-            return StatusCode((int)response.StatusCode, response);
-        }
-
-        return File(response.Data, "application/pdf", $"Rechnung_{guidId}.pdf");
+        return StatusCode((int)response.StatusCode, response);
     }
 
     // POST: api/v1/<InvoiceController>
@@ -124,6 +119,12 @@ public class InvoicesController(IMediator mediator) : ControllerBase
             errorResult.StatusCode = ResultStatusCode.BadRequest;
             errorResult.Messages.Add("Ungültige ID-Format. Eine gültige GUID ist erforderlich.");
             return BadRequest(errorResult);
+        }
+
+        if (invoiceUpdateCommand.Id != Guid.Empty && invoiceUpdateCommand.Id != guidId)
+        {
+            var mismatchResult = await Result<Guid>.FailAsync(ResultStatusCode.BadRequest, "Die in der Anfrage angegebene ID stimmt nicht mit der URL überein.");
+            return BadRequest(mismatchResult);
         }
 
         invoiceUpdateCommand.Id = guidId;

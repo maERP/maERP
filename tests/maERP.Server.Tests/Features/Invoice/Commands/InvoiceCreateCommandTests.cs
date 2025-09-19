@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Text.Json;
 using maERP.Domain.Constants;
@@ -58,14 +59,93 @@ public class InvoiceCreateCommandTests : IDisposable
         return await Client.PostAsync(requestUri, content);
     }
 
+    private static Guid AssertAndGetInvoiceId(Result<Guid?> result)
+    {
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result!.Succeeded);
+
+        var invoiceId = result.Data.GetValueOrDefault();
+        TestAssertions.AssertTrue(invoiceId != Guid.Empty);
+        return invoiceId;
+    }
+
     protected async Task<T> ReadResponseAsync<T>(HttpResponseMessage response) where T : class
     {
         var content = await response.Content.ReadAsStringAsync();
+
+        if (typeof(T) == typeof(Result<Guid?>))
+        {
+            using var document = JsonDocument.Parse(content);
+            var root = document.RootElement;
+
+            var manualResult = new Result<Guid?>
+            {
+                StatusCode = TryGetPropertyCaseInsensitive(root, "statusCode", out var statusElement) && statusElement.TryGetInt32(out var statusValue)
+                    ? (ResultStatusCode)statusValue
+                    : ResultStatusCode.Ok,
+                Succeeded = TryGetPropertyCaseInsensitive(root, "succeeded", out var succeededElement) && succeededElement.ValueKind is JsonValueKind.True or JsonValueKind.False
+                    ? succeededElement.GetBoolean()
+                    : false
+            };
+
+            if (TryGetPropertyCaseInsensitive(root, "messages", out var messagesElement) && messagesElement.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var messageElement in messagesElement.EnumerateArray())
+                {
+                    if (messageElement.ValueKind == JsonValueKind.String)
+                    {
+                        manualResult.Messages.Add(messageElement.GetString() ?? string.Empty);
+                    }
+                }
+            }
+
+            if (TryGetPropertyCaseInsensitive(root, "data", out var dataElement) && dataElement.ValueKind != JsonValueKind.Null)
+            {
+                if (dataElement.ValueKind == JsonValueKind.String)
+                {
+                    if (Guid.TryParse(dataElement.GetString(), out var parsedGuid))
+                    {
+                        manualResult.Data = parsedGuid;
+                    }
+                }
+                else if (dataElement.ValueKind == JsonValueKind.Object)
+                {
+                    // Unexpected object - ignore
+                }
+                else
+                {
+                    manualResult.Data = dataElement.GetGuid();
+                }
+            }
+
+            return (manualResult as T)!;
+        }
+
         var result = JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         });
         return result ?? throw new InvalidOperationException("Failed to deserialize response");
+    }
+
+    private static bool TryGetPropertyCaseInsensitive(JsonElement element, string propertyName, out JsonElement value)
+    {
+        if (element.TryGetProperty(propertyName, out value))
+        {
+            return true;
+        }
+
+        foreach (var property in element.EnumerateObject())
+        {
+            if (string.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase))
+            {
+                value = property.Value;
+                return true;
+            }
+        }
+
+        value = default;
+        return false;
     }
 
     private async Task SeedTestDataAsync()
@@ -95,7 +175,7 @@ public class InvoiceCreateCommandTests : IDisposable
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Customer.AddRange(customer1, customer2);
@@ -111,7 +191,7 @@ public class InvoiceCreateCommandTests : IDisposable
                 {
                     Id = Order2Id,
                     CustomerId = Customer2Id,
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant2Id
                 };
 
                 DbContext.Order.AddRange(order1, order2);
@@ -139,6 +219,7 @@ public class InvoiceCreateCommandTests : IDisposable
             Total = 129.00m,
             PaymentStatus = maERP.Domain.Enums.PaymentStatus.Invoiced,
             InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Created,
+            PaymentMethod = "Bank Transfer",
             Notes = "Test invoice",
             InvoiceAddressFirstName = "John",
             InvoiceAddressLastName = "Doe",
@@ -146,6 +227,12 @@ public class InvoiceCreateCommandTests : IDisposable
             InvoiceAddressCity = "Test City",
             InvoiceAddressZip = "12345",
             InvoiceAddressCountry = "Test Country"
+            ,DeliveryAddressFirstName = "John",
+            DeliveryAddressLastName = "Doe",
+            DeliveryAddressStreet = "123 Test St",
+            DeliveryAddressCity = "Test City",
+            DeliveryAddressZip = "12345",
+            DeliveryAddressCountry = "Test Country"
         };
     }
 
@@ -156,7 +243,7 @@ public class InvoiceCreateCommandTests : IDisposable
         Factory?.Dispose();
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithValidData_ShouldReturnCreatedInvoiceId()
     {
         await SeedTestDataAsync();
@@ -166,18 +253,16 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
-        TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
+        var invoiceId = AssertAndGetInvoiceId(result);
 
-        var createdInvoice = await DbContext.Invoice.FindAsync(result.Data);
+        var createdInvoice = await DbContext.Invoice.FindAsync(invoiceId);
         TestAssertions.AssertNotNull(createdInvoice);
         TestAssertions.AssertEqual(invoiceDto.InvoiceNumber, createdInvoice!.InvoiceNumber);
         TestAssertions.AssertEqual(TenantConstants.TestTenant1Id, createdInvoice.TenantId);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithMissingRequiredFields_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -191,13 +276,13 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithDuplicateInvoiceNumber_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -212,13 +297,13 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", duplicateInvoice);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithNonExistentCustomerId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -229,7 +314,7 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
@@ -260,7 +345,7 @@ public class InvoiceCreateCommandTests : IDisposable
                                  response.StatusCode == HttpStatusCode.InternalServerError);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_TenantIsolation_ShouldNotAccessOtherTenantCustomers()
     {
         await SeedTestDataAsync();
@@ -271,12 +356,12 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithInvalidInvoiceNumber_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -287,13 +372,13 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithNegativeAmounts_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -304,13 +389,13 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithFutureInvoiceDate_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -321,13 +406,13 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithCompleteAddressDetails_ShouldCreateSuccessfully()
     {
         await SeedTestDataAsync();
@@ -345,17 +430,16 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
-        TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
+        var invoiceId = AssertAndGetInvoiceId(result);
 
-        var createdInvoice = await DbContext.Invoice.FindAsync(result.Data);
+        var createdInvoice = await DbContext.Invoice.FindAsync(invoiceId);
         TestAssertions.AssertNotNull(createdInvoice);
         TestAssertions.AssertEqual("Test Company", createdInvoice!.InvoiceAddressCompanyName);
         TestAssertions.AssertEqual("Delivery City", createdInvoice.DeliveryAddressCity);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithDifferentTenants_ShouldMaintainStrictIsolation()
     {
         await SeedTestDataAsync();
@@ -371,14 +455,15 @@ public class InvoiceCreateCommandTests : IDisposable
         var invoice2 = CreateValidInvoiceDto();
         invoice2.InvoiceNumber = "INV-T2-001";
         invoice2.CustomerId = Customer2Id;
+        invoice2.OrderId = Order2Id;
         var response2 = await PostAsJsonAsync("/api/v1/Invoices", invoice2);
         TestAssertions.AssertEqual(HttpStatusCode.Created, response2.StatusCode);
 
-        var result1 = await ReadResponseAsync<Result<int>>(response1);
-        var result2 = await ReadResponseAsync<Result<int>>(response2);
+        var result1 = await ReadResponseAsync<Result<Guid?>>(response1);
+        var result2 = await ReadResponseAsync<Result<Guid?>>(response2);
 
-        var createdInvoice1 = await DbContext.Invoice.FindAsync(result1.Data);
-        var createdInvoice2 = await DbContext.Invoice.FindAsync(result2.Data);
+        var createdInvoice1 = await DbContext.Invoice.FindAsync(AssertAndGetInvoiceId(result1));
+        var createdInvoice2 = await DbContext.Invoice.FindAsync(AssertAndGetInvoiceId(result2));
 
         TestAssertions.AssertNotNull(createdInvoice1);
         TestAssertions.AssertNotNull(createdInvoice2);
@@ -387,7 +472,7 @@ public class InvoiceCreateCommandTests : IDisposable
         TestAssertions.AssertNotEqual(createdInvoice1.Id, createdInvoice2.Id);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithInvalidOrderId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -398,13 +483,13 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithValidOrderFromDifferentTenant_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -415,12 +500,12 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_ResponseStructure_ShouldHaveCorrectSuccessFormat()
     {
         await SeedTestDataAsync();
@@ -430,15 +515,14 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
-        TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertTrue(result.Data > 0);
-        TestAssertions.AssertNotNull(result.Messages);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
+        _ = AssertAndGetInvoiceId(result);
+
+        TestAssertions.AssertNotNull(result!.Messages);
         TestAssertions.AssertEqual(ResultStatusCode.Created, result.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedTestDataAsync();
@@ -448,16 +532,16 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertEqual(0, result.Data);
+        TestAssertions.AssertFalse(result!.Succeeded);
+        TestAssertions.AssertTrue(!result.Data.HasValue || result.Data.Value == Guid.Empty);
         TestAssertions.AssertNotNull(result.Messages);
         TestAssertions.AssertNotEmpty(result.Messages);
         TestAssertions.AssertEqual(ResultStatusCode.BadRequest, result.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithLongInvoiceNumber_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
@@ -468,13 +552,13 @@ public class InvoiceCreateCommandTests : IDisposable
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task CreateInvoice_WithSpecialCharactersInInvoiceNumber_ShouldHandleCorrectly()
     {
         await SeedTestDataAsync();
@@ -484,13 +568,13 @@ public class InvoiceCreateCommandTests : IDisposable
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 
-        var result = await ReadResponseAsync<Result<int>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
 
         if (result.Succeeded)
         {
             TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-            var createdInvoice = await DbContext.Invoice.FindAsync(result.Data);
+            var createdInvoice = await DbContext.Invoice.FindAsync(AssertAndGetInvoiceId(result));
             TestAssertions.AssertNotNull(createdInvoice);
             TestAssertions.AssertEqual("INV-#@$%-001", createdInvoice!.InvoiceNumber);
         }

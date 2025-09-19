@@ -1,5 +1,7 @@
 using maERP.Application.Contracts.Logging;
+using System.Linq;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 
@@ -21,6 +23,9 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
     /// Repository for invoice data operations
     /// </summary>
     private readonly IInvoiceRepository _invoiceRepository;
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IOrderRepository _orderRepository;
+    private readonly ITenantContext _tenantContext;
 
     /// <summary>
     /// Constructor that initializes the handler with required dependencies
@@ -29,10 +34,16 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
     /// <param name="invoiceRepository">Repository for invoice data access</param>
     public InvoiceCreateHandler(
         IAppLogger<InvoiceCreateHandler> logger,
-        IInvoiceRepository invoiceRepository)
+        IInvoiceRepository invoiceRepository,
+        ICustomerRepository customerRepository,
+        IOrderRepository orderRepository,
+        ITenantContext tenantContext)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _invoiceRepository = invoiceRepository ?? throw new ArgumentNullException(nameof(invoiceRepository));
+        _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+        _tenantContext = tenantContext ?? throw new ArgumentNullException(nameof(tenantContext));
     }
 
     /// <summary>
@@ -67,6 +78,53 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
 
         try
         {
+            var currentTenantId = _tenantContext.GetCurrentTenantId();
+            if (!currentTenantId.HasValue || currentTenantId == Guid.Empty)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Ein Mandantenkontext ist erforderlich.");
+                return result;
+            }
+
+            var assignedTenantIds = _tenantContext.GetAssignedTenantIds();
+            if (assignedTenantIds.Count > 0 && !assignedTenantIds.Contains(currentTenantId.Value))
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Mandant wurde nicht gefunden oder ist nicht zugewiesen.");
+                return result;
+            }
+
+            var customer = await _customerRepository.GetByIdAsync(request.CustomerId);
+            if (customer == null || customer.TenantId != currentTenantId.Value)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Kunde wurde nicht gefunden oder gehört zu einem anderen Mandanten.");
+                return result;
+            }
+
+            if (request.OrderId.HasValue)
+            {
+                var relatedOrder = await _orderRepository.GetByIdAsync(request.OrderId.Value);
+                if (relatedOrder == null || relatedOrder.TenantId != currentTenantId.Value)
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.BadRequest;
+                    result.Messages.Add("Bestellung wurde nicht gefunden oder gehört zu einem anderen Mandanten.");
+                    return result;
+                }
+
+                if (relatedOrder.CustomerId != request.CustomerId)
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.BadRequest;
+                    result.Messages.Add("Die Bestellung gehört nicht zum ausgewählten Kunden.");
+                    return result;
+                }
+            }
+
             // Manual mapping instead of using AutoMapper
             var invoiceToCreate = new Domain.Entities.Invoice
             {
@@ -98,7 +156,8 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
                 DeliveryAddressStreet = request.DeliveryAddressStreet,
                 DeliveryAddressCity = request.DeliveryAddressCity,
                 DeliveryAddressZip = request.DeliveryAddressZip,
-                DeliveryAddressCountry = request.DeliveryAddressCountry
+                DeliveryAddressCountry = request.DeliveryAddressCountry,
+                TenantId = currentTenantId.Value
                 // InvoiceItems would need to be mapped separately
             };
 

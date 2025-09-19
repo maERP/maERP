@@ -195,7 +195,7 @@ public class InvoiceDeleteCommandTests : IDisposable
         Factory?.Dispose();
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_WithValidIdAndTenant_ShouldReturnDeletedInvoiceId()
     {
         await SeedTestDataAsync();
@@ -204,16 +204,18 @@ public class InvoiceDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(Invoice1Id, result.Data);
 
-        var deletedInvoice = await DbContext.Invoice.FindAsync(Invoice1Id);
+        var deletedInvoice = await DbContext.Invoice
+            .AsNoTracking()
+            .FirstOrDefaultAsync(i => i.Id == Invoice1Id);
         Assert.Null(deletedInvoice);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_WithNonExistentId_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
@@ -223,13 +225,13 @@ public class InvoiceDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Invoices/{nonExistentId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertEqual(Guid.Empty, result.Data);
+        Assert.False(result.Data.HasValue);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_WithWrongTenant_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
@@ -238,12 +240,12 @@ public class InvoiceDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_WithoutTenantHeader_ShouldReturnNotFound()
     {
         await SeedTestDataAsync();
@@ -251,12 +253,12 @@ public class InvoiceDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_TenantIsolation_ShouldNotDeleteOtherTenantInvoices()
     {
         await SeedTestDataAsync();
@@ -265,16 +267,16 @@ public class InvoiceDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice3Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
 
-        var invoice3 = await DbContext.Invoice.FindAsync(Invoice3Id);
+        var invoice3 = await DbContext.Invoice.AsNoTracking().FirstOrDefaultAsync(i => i.Id == Invoice3Id);
         TestAssertions.AssertNotNull(invoice3);
         TestAssertions.AssertEqual(TenantConstants.TestTenant2Id, invoice3!.TenantId);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_WithInvoiceItems_ShouldDeleteInvoiceAndItems()
     {
         await SeedTestDataAsync();
@@ -286,19 +288,19 @@ public class InvoiceDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice4Id}");
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(Invoice4Id, result.Data);
 
-        var deletedInvoice = await DbContext.Invoice.FindAsync(Invoice4Id);
+        var deletedInvoice = await DbContext.Invoice.AsNoTracking().FirstOrDefaultAsync(i => i.Id == Invoice4Id);
         Assert.Null(deletedInvoice);
 
         var itemsAfterDelete = await DbContext.InvoiceItem.Where(i => i.InvoiceId == Invoice4Id).CountAsync();
         TestAssertions.AssertEqual(0, itemsAfterDelete);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_WithPaidStatus_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -307,12 +309,12 @@ public class InvoiceDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice2Id}");
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
         TestAssertions.AssertNotEmpty(result.Messages);
 
-        var invoice2 = await DbContext.Invoice.FindAsync(Invoice2Id);
+        var invoice2 = await DbContext.Invoice.AsNoTracking().FirstOrDefaultAsync(i => i.Id == Invoice2Id);
         TestAssertions.AssertNotNull(invoice2);
     }
 
@@ -327,16 +329,16 @@ public class InvoiceDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
-    public async Task DeleteInvoice_WithZeroId_ShouldReturnNotFound()
+    [Fact]
+    public async Task DeleteInvoice_WithZeroId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Invoices/0");
 
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -394,7 +396,7 @@ public class InvoiceDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(Invoice1Id, result.Data);
@@ -402,7 +404,7 @@ public class InvoiceDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(ResultStatusCode.Ok, result.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_ResponseStructure_ShouldHaveCorrectErrorFormat()
     {
         await SeedTestDataAsync();
@@ -412,42 +414,43 @@ public class InvoiceDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Invoices/{nonExistentId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertEqual(Guid.Empty, result.Data);
+        Assert.False(result.Data.HasValue);
         TestAssertions.AssertNotNull(result.Messages);
         TestAssertions.AssertNotEmpty(result.Messages);
         TestAssertions.AssertEqual(ResultStatusCode.NotFound, result.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_MultipleDeletionAttempts_ShouldHandleGracefully()
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var firstDeleteResponse = await Client.DeleteAsync("/api/v1/Invoices/1");
+        var firstDeleteResponse = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
         TestAssertions.AssertHttpSuccess(firstDeleteResponse);
 
-        var secondDeleteResponse = await Client.DeleteAsync("/api/v1/Invoices/1");
+        var secondDeleteResponse = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, secondDeleteResponse.StatusCode);
 
-        var result = await ReadResponseAsync<Result<int>>(secondDeleteResponse);
+        var result = await ReadResponseAsync<Result<Guid?>>(secondDeleteResponse);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertEqual(ResultStatusCode.NotFound, result.StatusCode);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
-    public async Task DeleteInvoice_WithLargeId_ShouldReturnNotFound()
+    [Fact]
+    public async Task DeleteInvoice_WithLargeId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Invoices/2147483647");
 
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertFalse(result.Succeeded);
     }
@@ -471,7 +474,7 @@ public class InvoiceDeleteCommandTests : IDisposable
         TestAssertions.AssertEqual(tenant2InvoicesBeforeDelete, tenant2InvoicesAfterDelete);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_WithDraftStatus_ShouldDeleteSuccessfully()
     {
         await SeedTestDataAsync();
@@ -480,16 +483,18 @@ public class InvoiceDeleteCommandTests : IDisposable
         var response = await Client.DeleteAsync($"/api/v1/Invoices/{Invoice1Id}");
 
         TestAssertions.AssertHttpSuccess(response);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
+        var result = await ReadResponseAsync<Result<Guid?>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(Invoice1Id, result.Data);
 
-        var deletedInvoice = await DbContext.Invoice.FindAsync(Invoice1Id);
+        var deletedInvoice = await DbContext.Invoice
+            .AsNoTracking()
+            .FirstOrDefaultAsync(i => i.Id == Invoice1Id);
         Assert.Null(deletedInvoice);
     }
 
-    [Fact(Skip = "Todo: implement PDF gneeration")]
+    [Fact]
     public async Task DeleteInvoice_CascadeDelete_ShouldRemoveRelatedEntities()
     {
         await SeedTestDataAsync();

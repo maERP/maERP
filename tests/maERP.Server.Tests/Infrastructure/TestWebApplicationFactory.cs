@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.IO;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -20,6 +21,12 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "src", "maERP.Server");
+        if (Directory.Exists(contentRoot))
+        {
+            builder.UseContentRoot(contentRoot);
+        }
+
         builder.ConfigureServices(services =>
         {
             var dbContextDescriptor = services.SingleOrDefault(
