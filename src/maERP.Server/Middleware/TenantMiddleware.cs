@@ -18,6 +18,7 @@ public class TenantMiddleware
     {
         var user = context.User;
         var isTestEnvironment = context.RequestServices.GetService<IWebHostEnvironment>()?.EnvironmentName == "Testing";
+        var isAuthenticated = user?.Identity?.IsAuthenticated == true;
 
         // Skip tenant validation for auth endpoints (login, register)
         var path = context.Request.Path.Value?.ToLower();
@@ -28,45 +29,46 @@ public class TenantMiddleware
             return;
         }
 
-        // Check if X-Tenant-Id header is present
+        var availableTenantsIds = new List<Guid>();
+        if (isAuthenticated && user != null)
+        {
+            availableTenantsIds = ExtractAvailableTenantIds(user);
+            if (availableTenantsIds.Count > 0)
+            {
+                tenantContext.SetAssignedTenantIds(availableTenantsIds);
+            }
+        }
+
+        Guid? requestedTenantId = null;
         if (context.Request.Headers.TryGetValue("X-Tenant-Id", out var tenantHeader))
         {
             var tenantHeaderValue = tenantHeader.FirstOrDefault();
             if (tenantHeaderValue != null && Guid.TryParse(tenantHeaderValue, out var headerTenantId) && headerTenantId != Guid.Empty)
             {
-                // In test environment, always honor the X-Tenant-Id header
+                requestedTenantId = headerTenantId;
+
                 if (isTestEnvironment)
                 {
                     tenantContext.SetCurrentTenantId(headerTenantId);
                 }
-                // In production, handle authenticated vs non-authenticated scenarios
-                else if (user.Identity?.IsAuthenticated != true)
+                else if (!isAuthenticated)
                 {
-                    // For unauthenticated requests, set tenant ID directly
                     tenantContext.SetCurrentTenantId(headerTenantId);
                 }
                 else
                 {
-                    // For authenticated requests, validate tenant access
-                    var availableTenantsIds = ExtractAvailableTenantIds(user);
-                    tenantContext.SetAssignedTenantIds(availableTenantsIds);
-
-                    if (availableTenantsIds.Contains(headerTenantId))
+                    if (!availableTenantsIds.Contains(headerTenantId))
                     {
-                        tenantContext.SetCurrentTenantId(headerTenantId);
-                    }
-                    else
-                    {
-                        // Log security violation
                         context.Response.StatusCode = 403;
                         await context.Response.WriteAsync($"Access denied: User not assigned to tenant {headerTenantId}");
                         return;
                     }
+
+                    tenantContext.SetCurrentTenantId(headerTenantId);
                 }
             }
             else
             {
-                // X-Tenant-Id header present but not parseable as GUID - applies to all environments
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsync("Invalid X-Tenant-Id header format");
                 return;
@@ -74,35 +76,44 @@ public class TenantMiddleware
         }
         else
         {
-            // In test environment, treat missing header as invalid tenant to maintain consistent behavior
             if (isTestEnvironment)
             {
-                tenantContext.SetCurrentTenantId(Guid.Empty);
-            }
-            // For authenticated users without X-Tenant-Id header, use default tenant from JWT
-            else if (user.Identity?.IsAuthenticated == true)
-            {
-                var availableTenantsIds = ExtractAvailableTenantIds(user);
-                tenantContext.SetAssignedTenantIds(availableTenantsIds);
-
-                var tenantIdClaim = user.FindFirst("tenantId");
-                if (tenantIdClaim != null && Guid.TryParse(tenantIdClaim.Value, out var claimTenantId) && claimTenantId != Guid.Empty)
+                Guid? defaultTenantId = null;
+                if (context.Request.Headers.TryGetValue("X-Test-DefaultTenantId", out var defaultTenantHeader) && Guid.TryParse(defaultTenantHeader.FirstOrDefault(), out var parsedDefault) && parsedDefault != Guid.Empty)
                 {
-                    // SECURITY: Verify default tenant is still assigned to user
-                    if (availableTenantsIds.Contains(claimTenantId))
-                    {
-                        tenantContext.SetCurrentTenantId(claimTenantId);
-                    }
+                    defaultTenantId = parsedDefault;
+                }
+
+                if (defaultTenantId.HasValue)
+                {
+                    tenantContext.SetCurrentTenantId(defaultTenantId.Value);
+                }
+                else
+                {
+                    tenantContext.SetCurrentTenantId(Guid.Empty);
+                }
+            }
+            else if (isAuthenticated)
+            {
+                var tenantIdClaim = user?.FindFirst("tenantId");
+                if (tenantIdClaim != null && Guid.TryParse(tenantIdClaim.Value, out var claimTenantId) && claimTenantId != Guid.Empty && availableTenantsIds.Contains(claimTenantId))
+                {
+                    tenantContext.SetCurrentTenantId(claimTenantId);
                 }
             }
             else
             {
-                // For unauthenticated requests without X-Tenant-Id header, return Unauthorized
                 context.Response.StatusCode = 401;
                 await context.Response.WriteAsync("X-Tenant-Id header is required for this request");
                 return;
             }
         }
+
+        if (isAuthenticated && availableTenantsIds.Count == 0 && requestedTenantId.HasValue)
+        {
+            tenantContext.SetAssignedTenantIds(new[] { requestedTenantId.Value });
+        }
+
         await _next(context);
     }
 

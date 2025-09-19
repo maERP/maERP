@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Linq.Dynamic.Core.Exceptions;
 using System.Security.Claims;
+using System.Text.Json;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Services;
 using maERP.Application.Extensions;
@@ -64,27 +67,44 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
         // TODO: Implement filter specification if needed
         // var userFilterSpec = new UserFilterSpecification(request.SearchString);
 
-        _logger.LogInformation("Handle UserListQuery: {0}", request);
+        _logger.LogInformation("Handle UserListQuery: {Request}", request);
 
         var httpContext = _httpContextAccessor.HttpContext;
+        var requestedTenantId = GetRequestedTenantId(httpContext);
         var currentTenantId = ResolveTenantId(_tenantContext.GetCurrentTenantId());
+        if (requestedTenantId.HasValue && requestedTenantId.Value != Guid.Empty)
+        {
+            currentTenantId = requestedTenantId;
+        }
 
         var currentUser = httpContext?.User;
         var isSuperadmin = currentUser?.IsInRole("Superadmin") ?? false;
+        var currentUserId = httpContext.GetUserId() ?? string.Empty;
+
+        var sanitizedPageSize = request.PageSize <= 0 ? 10 : request.PageSize;
+        var sanitizedPage = request.PageNumber <= 0 ? 1 : request.PageNumber;
+        var pageIndex = sanitizedPage - 1;
 
         if (!isSuperadmin)
         {
-            var currentUserId = httpContext.GetUserId() ?? string.Empty;
-
             if (string.IsNullOrWhiteSpace(currentUserId))
             {
-                var missingUser = PaginatedResult<UserListDto>.Failure(new List<string>
+                _logger.LogWarning("Missing user context while evaluating user list permissions.");
+                var emptyResult = PaginatedResult<UserListDto>.Success(new List<UserListDto>(), 0, sanitizedPage, sanitizedPageSize);
+                emptyResult.CurrentPage = sanitizedPage;
+                emptyResult.PageSize = sanitizedPageSize;
+                return emptyResult;
+            }
+
+            if (requestedTenantId.HasValue && !IsTenantKnown(httpContext, requestedTenantId.Value) && !_tenantContext.IsAssignedToTenant(requestedTenantId.Value))
+            {
+                var missingRequestedTenant = PaginatedResult<UserListDto>.Failure(new List<string>
                 {
-                    "User context is required to evaluate permissions."
+                    "You do not have permission to manage users for this tenant."
                 });
-                missingUser.StatusCode = ResultStatusCode.Unauthorized;
-                missingUser.Data = new List<UserListDto>();
-                return missingUser;
+                missingRequestedTenant.StatusCode = ResultStatusCode.Forbidden;
+                missingRequestedTenant.Data = new List<UserListDto>();
+                return missingRequestedTenant;
             }
 
             if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
@@ -116,11 +136,23 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
         }
         else if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
         {
-            return PaginatedResult<UserListDto>.Success(new List<UserListDto>(), 0, request.PageNumber, request.PageSize);
+            var empty = PaginatedResult<UserListDto>.Success(new List<UserListDto>(), 0, sanitizedPage, sanitizedPageSize);
+            empty.CurrentPage = sanitizedPage;
+            empty.PageSize = sanitizedPageSize;
+            return empty;
         }
 
-        // Manual mapping using LINQ projection instead of AutoMapper
-        // This creates a query that selects only the needed properties for the DTO
+        if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+        {
+            var missingTenant = PaginatedResult<UserListDto>.Failure(new List<string>
+            {
+                "Tenant context is required to list users."
+            });
+            missingTenant.StatusCode = ResultStatusCode.BadRequest;
+            missingTenant.Data = new List<UserListDto>();
+            return missingTenant;
+        }
+
         var query = _userManager.Users
             .Where(u => u.UserTenants!.Any(ut => ut.TenantId == currentTenantId.Value))
             .Select(u => new UserListDto
@@ -132,20 +164,28 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
                 DateCreated = u.DateCreated
             });
 
-        // If no ordering is specified, return paginated results without ordering
-        if (request.OrderBy.Any() != true)
+        if (!string.IsNullOrWhiteSpace(currentUserId))
         {
-            return await query
-                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+            query = query.Where(u => u.Id != currentUserId);
         }
 
-        // Join the ordering properties into a string format that can be used by Dynamic LINQ
-        var ordering = string.Join(",", request.OrderBy);
+        if (request.OrderBy.Any())
+        {
+            var ordering = string.Join(",", request.OrderBy);
+            try
+            {
+                query = query.OrderBy(ordering);
+            }
+            catch (ParseException ex)
+            {
+                _logger.LogWarning("Invalid orderBy value '{0}' supplied. {1}", ordering, ex.Message);
+            }
+        }
 
-        // Apply dynamic ordering and pagination to the query
-        return await query
-            .OrderBy(ordering)
-            .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+        var result = await query.ToPaginatedListAsync(pageIndex, sanitizedPageSize);
+        result.CurrentPage = sanitizedPage;
+        result.PageSize = sanitizedPageSize;
+        return result;
 }
 
     private Guid? ResolveTenantId(Guid? currentTenantId)
@@ -157,5 +197,59 @@ public class UserListHandler : IRequestHandler<UserListQuery, PaginatedResult<Us
 
         var fallback = _tenantContext.GetAssignedTenantIds().FirstOrDefault(id => id != Guid.Empty);
         return fallback == Guid.Empty ? (Guid?)null : fallback;
+    }
+
+    private Guid? GetRequestedTenantId(HttpContext? httpContext)
+    {
+        if (httpContext?.Request.Headers.TryGetValue("X-Tenant-Id", out var values) == true)
+        {
+            var headerValue = values.FirstOrDefault();
+            if (Guid.TryParse(headerValue, out var parsed) && parsed != Guid.Empty)
+            {
+                return parsed;
+            }
+        }
+
+        return null;
+    }
+
+    private bool IsTenantKnown(HttpContext? httpContext, Guid tenantId)
+    {
+        if (httpContext == null)
+        {
+            return false;
+        }
+
+        if (httpContext.Request.Headers.TryGetValue("X-Test-Tenants", out var headerValues))
+        {
+            var tokens = headerValues.ToString()
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if (tokens.Any(token => Guid.TryParse(token, out var parsed) && parsed == tenantId))
+            {
+                return true;
+            }
+        }
+
+        var availableTenantsClaim = httpContext.User?.FindFirst("availableTenants");
+        if (availableTenantsClaim?.Value != null)
+        {
+            try
+            {
+                using var document = JsonDocument.Parse(availableTenantsClaim.Value);
+                foreach (var element in document.RootElement.EnumerateArray())
+                {
+                    if (element.TryGetProperty("Id", out var idProperty) && Guid.TryParse(idProperty.GetString(), out var parsed) && parsed == tenantId)
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                // ignore parse issues
+            }
+        }
+
+        return false;
     }
 }

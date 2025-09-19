@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
@@ -46,8 +48,15 @@ public class UserListQuery : IRequest<PaginatedResult<UserListDto>>
         // Parse the orderBy string into an array of property names
         if (!string.IsNullOrWhiteSpace(orderBy))
         {
-            OrderBy = orderBy.Split(',');
+            OrderBy = orderBy
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(value => value.Trim())
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .ToArray();
         }
-        else OrderBy = new string[] { };
+        else
+        {
+            OrderBy = Array.Empty<string>();
+        }
     }
 }

@@ -68,7 +68,19 @@ public class AiPromptDeleteHandler : IRequestHandler<AiPromptDeleteCommand, Resu
         {
             // Handle concurrent deletion - prompt was already deleted by another request
             _logger.LogWarning("AI prompt with ID: {Id} was deleted by another request: {Message}", request.Id, ex.Message);
-            
+
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.NotFound;
+            result.Messages.Add("AI prompt not found");
+        }
+        catch (InvalidOperationException ex)
+        {
+            // Repository signals entity was already removed (e.g. concurrent delete)
+            _logger.LogWarning(
+                "AI prompt with ID: {Id} not found for deletion. Reason: {Reason}",
+                request.Id,
+                ex.Message);
+
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.NotFound;
             result.Messages.Add("AI prompt not found");
