@@ -13,14 +13,6 @@ public class CustomerDeleteValidator : AbstractValidator<CustomerDeleteCommand>
 
         RuleFor(p => p.Id)
             .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-
-        RuleFor(c => c)
-            .MustAsync(CustomerExists).WithMessage("Customer not found");
-    }
-
-    private async Task<bool> CustomerExists(CustomerDeleteCommand command, CancellationToken cancellationToken)
-    {
-        return await _customerRepository.ExistsAsync(command.Id);
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
     }
 }

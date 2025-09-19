@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Manufacturer.Commands.ManufacturerDelete;
 
-public class ManufacturerDeleteHandler : IRequestHandler<ManufacturerDeleteCommand, Result<int>>
+public class ManufacturerDeleteHandler : IRequestHandler<ManufacturerDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<ManufacturerDeleteHandler> _logger;
     private readonly IManufacturerRepository _manufacturerRepository;
@@ -21,11 +21,11 @@ public class ManufacturerDeleteHandler : IRequestHandler<ManufacturerDeleteComma
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
 
-    public async Task<Result<int>> Handle(ManufacturerDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(ManufacturerDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting manufacturer with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new ManufacturerDeleteValidator(_manufacturerRepository, _productRepository);
@@ -46,17 +46,24 @@ public class ManufacturerDeleteHandler : IRequestHandler<ManufacturerDeleteComma
 
         try
         {
-            // Create entity to delete
-            var manufacturerToDelete = new Domain.Entities.Manufacturer
+            // Get entity from database first
+            var manufacturerToDelete = await _manufacturerRepository.GetByIdAsync(request.Id);
+
+            if (manufacturerToDelete == null)
             {
-                Id = request.Id
-            };
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Manufacturer not found");
+
+                _logger.LogWarning("Manufacturer with ID: {Id} not found for deletion", request.Id);
+                return result;
+            }
 
             // Delete from database
             await _manufacturerRepository.DeleteAsync(manufacturerToDelete);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.NoContent;
             result.Data = manufacturerToDelete.Id;
 
             _logger.LogInformation("Successfully deleted manufacturer with ID: {Id}", manufacturerToDelete.Id);

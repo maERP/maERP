@@ -37,13 +37,13 @@ public class GoodsReceiptCreateValidator : AbstractValidator<GoodsReceiptCreateC
             .MaximumLength(1000).WithMessage("Notes cannot exceed 1000 characters.");
     }
 
-    private async Task<bool> ProductExists(int productId, CancellationToken cancellationToken)
+    private async Task<bool> ProductExists(Guid productId, CancellationToken cancellationToken)
     {
         var product = await _productRepository.GetByIdAsync(productId);
         return product != null;
     }
 
-    private async Task<bool> WarehouseExists(int warehouseId, CancellationToken cancellationToken)
+    private async Task<bool> WarehouseExists(Guid warehouseId, CancellationToken cancellationToken)
     {
         var warehouse = await _warehouseRepository.GetByIdAsync(warehouseId);
         return warehouse != null;

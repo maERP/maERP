@@ -4,11 +4,11 @@ namespace maERP.Domain.Dtos.ProductSalesChannel;
 
 public class ProductSalesChannelUpdateDto : IProductSalesChannelInputModel
 {
-    public int Id { get; set; }
-    public int ProductId { get; set; }
-    public int SalesChannelId { get; set; }
-    
-    public int RemoteProductId { get; set; }
+    public Guid Id { get; set; }
+    public Guid ProductId { get; set; }
+    public Guid SalesChannelId { get; set; }
+
+    public Guid RemoteProductId { get; set; }
 
     public decimal Price { get; set; }
 

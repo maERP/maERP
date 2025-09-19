@@ -32,11 +32,11 @@ public class ManufacturersController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/<ManufacturersController>/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ManufacturerDetailDto>> GetDetails(int id)
-    { 
+    public async Task<ActionResult<ManufacturerDetailDto>> GetDetails(Guid id)
+    {
         var response = await mediator.Send(new ManufacturerDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
     }
@@ -52,12 +52,12 @@ public class ManufacturersController(IMediator mediator) : ControllerBase
     }
 
     // PUT: api/v1/<ManufacturersController>/5
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<ManufacturerDetailDto>> Update(int id, ManufacturerUpdateCommand manufacturerUpdateCommand)
+    public async Task<ActionResult<ManufacturerDetailDto>> Update(Guid id, ManufacturerUpdateCommand manufacturerUpdateCommand)
     {
         manufacturerUpdateCommand.Id = id;
         var response = await mediator.Send(manufacturerUpdateCommand);
@@ -65,21 +65,15 @@ public class ManufacturersController(IMediator mediator) : ControllerBase
     }
 
     // DELETE: api/v1/<ManufacturersController>/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         var command = new ManufacturerDeleteCommand { Id = id };
         var response = await mediator.Send(command);
-        
-        if (response.Succeeded)
-        {
-            return NoContent();
-        }
-        
         return StatusCode((int)response.StatusCode, response);
     }
 }

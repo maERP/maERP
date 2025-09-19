@@ -11,7 +11,7 @@ public partial class ProductListView : UserControl
     {
         InitializeComponent();
     }
-    
+
     private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e)
     {
         if (DataContext is ProductListViewModel viewModel && viewModel.SelectedProduct != null)

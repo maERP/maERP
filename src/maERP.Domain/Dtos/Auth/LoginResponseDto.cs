@@ -1,5 +1,7 @@
 ﻿#nullable disable
 
+using maERP.Domain.Dtos.Tenant;
+
 namespace maERP.Domain.Dtos.Auth;
 
 public class LoginResponseDto
@@ -8,4 +10,6 @@ public class LoginResponseDto
     public bool Succeeded { get; set; }
     public string Message { get; set; }
     public string Token { get; set; }
+    public List<TenantListDto> AvailableTenants { get; set; } = new();
+    public Guid? CurrentTenantId { get; set; }
 }

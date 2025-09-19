@@ -1,3 +1,4 @@
+using System;
 using FluentValidation;
 using maERP.Domain.Enums;
 using maERP.Domain.Interfaces;
@@ -10,19 +11,25 @@ public class OrderBaseValidator<T> : AbstractValidator<T> where T : IOrderInputM
     {
         // Basic order validation
         RuleFor(x => x.CustomerId)
-            .GreaterThan(0).WithMessage("Bitte wählen Sie einen Kunden aus.");
+            .NotEqual(Guid.Empty).WithMessage("Bitte wählen Sie einen Kunden aus.");
 
         RuleFor(x => x.SalesChannelId)
-            .GreaterThanOrEqualTo(0).WithMessage("Die Vertriebskanal-ID muss größer oder gleich 0 sein.");
+            .NotEqual(Guid.Empty).WithMessage("Bitte wählen Sie einen Vertriebskanal aus.");
 
         RuleFor(x => x.Status)
             .NotEqual(OrderStatus.Unknown).When(x => x.Status != OrderStatus.Pending)
+            .WithMessage("Bitte wählen Sie einen gültigen Bestellstatus aus.")
+            .Must(BeAValidOrderStatus)
             .WithMessage("Bitte wählen Sie einen gültigen Bestellstatus aus.");
 
         RuleFor(x => x.DateOrdered)
             .NotEmpty().WithMessage("Das Bestelldatum darf nicht leer sein.");
 
         // Payment information validation
+        RuleFor(x => x.PaymentStatus)
+            .Must(BeAValidPaymentStatus)
+            .WithMessage("Bitte wählen Sie einen gültigen Zahlungsstatus aus.");
+
         RuleFor(x => x.PaymentMethod)
             .NotEmpty().When(x => x.PaymentStatus != PaymentStatus.Unknown)
             .WithMessage("Bitte geben Sie eine Zahlungsmethode an, wenn ein Zahlungsstatus angegeben ist.");
@@ -61,7 +68,7 @@ public class OrderBaseValidator<T> : AbstractValidator<T> where T : IOrderInputM
             RuleFor(x => x.DeliveryAddressCity)
                 .NotEmpty().WithMessage("Die Stadt für die Lieferadresse ist erforderlich.");
 
-            RuleFor(x => x.DeliverAddressZip)
+            RuleFor(x => x.DeliveryAddressZip)
                 .NotEmpty().WithMessage("Die Postleitzahl für die Lieferadresse ist erforderlich.");
 
             RuleFor(x => x.DeliveryAddressCountry)
@@ -98,7 +105,17 @@ public class OrderBaseValidator<T> : AbstractValidator<T> where T : IOrderInputM
                model.DeliveryAddressLastName != model.InvoiceAddressLastName ||
                model.DeliveryAddressStreet != model.InvoiceAddressStreet ||
                model.DeliveryAddressCity != model.InvoiceAddressCity ||
-               model.DeliverAddressZip != model.InvoiceAddressZip ||
+               model.DeliveryAddressZip != model.InvoiceAddressZip ||
                model.DeliveryAddressCountry != model.InvoiceAddressCountry;
+    }
+
+    private bool BeAValidOrderStatus(OrderStatus status)
+    {
+        return Enum.IsDefined(typeof(OrderStatus), status);
+    }
+
+    private bool BeAValidPaymentStatus(PaymentStatus status)
+    {
+        return Enum.IsDefined(typeof(PaymentStatus), status);
     }
 }

@@ -14,7 +14,10 @@ namespace maERP.Application.Specifications
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = c => (c.CompanyName.Contains(searchString) || c.Firstname.Contains(searchString) || c.Lastname.Contains(searchString));
+                var lowerSearchString = searchString.ToLower();
+                Criteria = c => (c.CompanyName.ToLower().Contains(lowerSearchString) ||
+                                c.Firstname.ToLower().Contains(lowerSearchString) ||
+                                c.Lastname.ToLower().Contains(lowerSearchString));
             }
             else
             {
@@ -22,7 +25,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public CustomerFilterSpecification(int id)
+        public CustomerFilterSpecification(Guid id)
         {
             // Includes.Add(o => o.OrderItems);
             Criteria = o => o.Id == id;

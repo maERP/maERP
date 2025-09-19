@@ -43,7 +43,7 @@ public partial class CustomerListViewModel : ViewModelBase
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
-    public Func<int, Task>? NavigateToCustomerDetail { get; set; }
+    public Func<Guid, Task>? NavigateToCustomerDetail { get; set; }
     public Func<Task>? NavigateToCreateCustomer { get; set; }
 
     public CustomerListViewModel(IHttpService httpService, IDebugService debugService)
@@ -146,7 +146,7 @@ public partial class CustomerListViewModel : ViewModelBase
     private async Task ViewCustomerDetails(CustomerListDto? customer)
     {
         if (customer == null || NavigateToCustomerDetail == null) return;
-        
+
         SelectedCustomer = customer;
         await NavigateToCustomerDetail(customer.Id);
     }
@@ -155,7 +155,7 @@ public partial class CustomerListViewModel : ViewModelBase
     private async Task CreateNewCustomer()
     {
         if (NavigateToCreateCustomer == null) return;
-        
+
         await NavigateToCreateCustomer();
     }
 

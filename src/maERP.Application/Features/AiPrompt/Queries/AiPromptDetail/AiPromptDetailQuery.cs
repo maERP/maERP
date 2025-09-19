@@ -6,5 +6,5 @@ namespace maERP.Application.Features.AiPrompt.Queries.AiPromptDetail;
 
 public class AiPromptDetailQuery : IRequest<Result<AiPromptDetailDto>>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

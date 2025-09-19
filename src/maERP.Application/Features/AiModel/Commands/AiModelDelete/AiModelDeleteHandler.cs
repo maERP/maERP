@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.AiModel.Commands.AiModelDelete;
 
-public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, Result<int>>
+public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<AiModelDeleteHandler> _logger;
     private readonly IAiModelRepository _aiModelRepository;
@@ -18,11 +18,11 @@ public class AiModelDeleteHandler : IRequestHandler<AiModelDeleteCommand, Result
         _aiModelRepository = aiModelRepository ?? throw new ArgumentNullException(nameof(aiModelRepository));
     }
 
-    public async Task<Result<int>> Handle(AiModelDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(AiModelDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting AI model with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new AiModelDeleteValidator(_aiModelRepository);

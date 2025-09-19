@@ -37,13 +37,13 @@ public static class OpenTelemetryRegistration
     public static IServiceCollection AddOpenTelemetryServices(this IServiceCollection services, IConfiguration configuration, string serviceName)
     {
         var telemetryEndpoint = configuration["Telemetry:Endpoint"] ?? "http://localhost:4317";
-        
+
         var telemetrySettings = new TelemetrySettings
         {
             Endpoint = telemetryEndpoint,
             ServiceName = serviceName
         };
-        
+
         return services.AddOpenTelemetryServices(telemetrySettings);
     }
 }

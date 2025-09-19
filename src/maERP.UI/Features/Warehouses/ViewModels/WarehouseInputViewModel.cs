@@ -28,7 +28,7 @@ public partial class WarehouseInputViewModel : ViewModelBase
     private bool isSaving;
 
     [ObservableProperty]
-    private int id;
+    private Guid id;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasValidationErrors))]
@@ -40,7 +40,7 @@ public partial class WarehouseInputViewModel : ViewModelBase
 
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
     public bool HasValidationErrors => ValidationErrors.Count > 0;
-    public bool IsEditMode => Id > 0;
+    public bool IsEditMode => Id != Guid.Empty;
     public string PageTitle => IsEditMode ? $"🏭 Lager #{Id} bearbeiten" : "🏭 Neues Lager erstellen";
 
     public Action? GoBackAction { get; set; }
@@ -52,9 +52,9 @@ public partial class WarehouseInputViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int? warehouseId = null)
+    public async Task InitializeAsync(Guid? warehouseId = null)
     {
-        if (warehouseId.HasValue && warehouseId.Value > 0)
+        if (warehouseId.HasValue && warehouseId.Value != Guid.Empty)
         {
             Id = warehouseId.Value;
             await LoadWarehouseAsync();
@@ -62,7 +62,7 @@ public partial class WarehouseInputViewModel : ViewModelBase
         else
         {
             // New warehouse
-            Id = 0;
+            Id = Guid.Empty;
             Name = string.Empty;
             ValidationErrors.Clear();
             OnPropertyChanged(nameof(IsEditMode));
@@ -73,7 +73,7 @@ public partial class WarehouseInputViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadWarehouseAsync()
     {
-        if (Id <= 0) return;
+        if (Id == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -136,8 +136,8 @@ public partial class WarehouseInputViewModel : ViewModelBase
             if (IsEditMode)
             {
                 // Update existing warehouse
-                var result = await _httpService.PutAsync<WarehouseInputDto, int>($"warehouses/{Id}", warehouseDto);
-                
+                var result = await _httpService.PutAsync<WarehouseInputDto, Guid>($"warehouses/{Id}", warehouseDto);
+
                 if (result == null)
                 {
                     ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
@@ -158,7 +158,7 @@ public partial class WarehouseInputViewModel : ViewModelBase
             {
                 // Create new warehouse
                 var result = await _httpService.PostAsync<WarehouseInputDto, WarehouseDetailDto>("warehouses", warehouseDto);
-                
+
                 if (result == null)
                 {
                     ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";

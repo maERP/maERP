@@ -112,7 +112,7 @@ public class Shopware5ProductImportTask : IHostedService
                             {
                                 remoteProduct.mainDetail.ean = remoteProduct.mainDetail.ean.Substring(0, 13);
                             }
-                            
+
                             if (remoteProduct.descriptionLong.Length > 4000)
                             {
                                 remoteProduct.descriptionLong = remoteProduct.descriptionLong.Substring(0, 4000);

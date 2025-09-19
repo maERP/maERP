@@ -30,7 +30,12 @@ jobs:
       id: version
       shell: pwsh
       run: |
-        $version = (Get-Date -Format "yyyy.M.d") + "." + $env:GITHUB_RUN_NUMBER
+        # Generate version in format: YYYY.M.D.BUILD (e.g., 2024.1.15.123)
+        $year = Get-Date -Format "yyyy"
+        $month = Get-Date -Format "M"
+        $day = Get-Date -Format "d"
+        $build = $env:GITHUB_RUN_NUMBER
+        $version = "$year.$month.$day.$build"
         echo "VERSION=$version" >> $env:GITHUB_OUTPUT
         echo "Generated version: $version"
 
@@ -49,51 +54,71 @@ jobs:
         dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj `
           --configuration Release `
           --runtime win-x64 `
-          --self-contained true `
+          --self-contained false `
           --output ./publish/msix `
           -p:PublishSingleFile=false `
+          -p:PublishReadyToRun=false `
           -p:Version=${{ steps.version.outputs.VERSION }} `
           -p:AssemblyVersion=${{ steps.version.outputs.VERSION }} `
-          -p:FileVersion=${{ steps.version.outputs.VERSION }}
+          -p:FileVersion=${{ steps.version.outputs.VERSION }} `
+          -p:UseAppHost=true
 
     - name: Create MSIX Package
       shell: pwsh
       run: |
-        # Install Windows SDK tools if needed
-        if (!(Get-Command "makeappx.exe" -ErrorAction SilentlyContinue)) {
-          Write-Host "Installing Windows SDK..."
-          choco install windows-sdk-10-version-2004-all
-          
-          # Add Windows SDK tools to PATH
-          $env:PATH += ";C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64"
-          $env:PATH += ";C:\Program Files (x86)\Windows Kits\10\bin\10.0.20348.0\x64"
-          $env:PATH += ";C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64"
-          
-          # Refresh environment variables
-          [System.Environment]::SetEnvironmentVariable("PATH", $env:PATH, [System.EnvironmentVariableTarget]::Process)
+        # Windows runners should have Windows SDK pre-installed, but let's find the tools
+        $possiblePaths = @(
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\makeappx.exe",
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\makeappx.exe",
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.20348.0\x64\makeappx.exe",
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\makeappx.exe"
+        )
+        
+        $fullMakeappxPath = $null
+        foreach ($path in $possiblePaths) {
+          if (Test-Path $path) {
+            $fullMakeappxPath = $path
+            Write-Host "Found makeappx.exe at: $fullMakeappxPath"
+            break
+          }
         }
         
-        # Find makeappx.exe location
-        $makeappxPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "makeappx.exe" | Select-Object -First 1
-        if ($makeappxPath) {
-          $fullMakeappxPath = "C:\Program Files (x86)\Windows Kits\10\bin\$makeappxPath"
-          Write-Host "Found makeappx.exe at: $fullMakeappxPath"
-        } else {
-          $fullMakeappxPath = "makeappx.exe"
+        if (-not $fullMakeappxPath) {
+          # Fallback: search for any makeappx.exe in Windows Kits
+          $found = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "makeappx.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($found) {
+            $fullMakeappxPath = "C:\Program Files (x86)\Windows Kits\10\bin\$found"
+            Write-Host "Found makeappx.exe at: $fullMakeappxPath"
+          } else {
+            Write-Error "makeappx.exe not found. Windows SDK may not be installed."
+            exit 1
+          }
         }
         
-        # Create package manifest
+        # Create Assets directory and placeholder assets
+        New-Item -Path "./publish/msix/Assets" -ItemType Directory -Force
+        
+        # Create minimal placeholder PNG files (1x1 transparent pixel in base64)
+        $transparentPixelBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChAI9BfKSVQAAAABJRU5ErkJggg=="
+        $transparentPixelBytes = [System.Convert]::FromBase64String($transparentPixelBase64)
+        
+        [System.IO.File]::WriteAllBytes("./publish/msix/Assets/StoreLogo.png", $transparentPixelBytes)
+        [System.IO.File]::WriteAllBytes("./publish/msix/Assets/Square150x150Logo.png", $transparentPixelBytes)
+        [System.IO.File]::WriteAllBytes("./publish/msix/Assets/Square44x44Logo.png", $transparentPixelBytes)
+        [System.IO.File]::WriteAllBytes("./publish/msix/Assets/Wide310x150Logo.png", $transparentPixelBytes)
+        
+        # Create package manifest as AppxManifest.xml (required by MakeAppx)
         $manifestContent = @"
         <?xml version="1.0" encoding="utf-8"?>
         <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
                  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
                  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
-          <Identity Name="YourPublisherName.maERP"
-                    Publisher="CN=YourPublisherName"
-                    Version="${{ steps.version.outputs.VERSION }}.0" />
+          <Identity Name="MartinAndrich.maERP"
+                    Publisher="CN=Martin Andrich"
+                    Version="${{ steps.version.outputs.VERSION }}" />
           <Properties>
             <DisplayName>maERP</DisplayName>
-            <PublisherDisplayName>Your Publisher Name</PublisherDisplayName>
+            <PublisherDisplayName>Martin Andrich</PublisherDisplayName>
             <Logo>Assets\StoreLogo.png</Logo>
             <Description>Cross-platform ERP system</Description>
           </Properties>
@@ -117,7 +142,7 @@ jobs:
         </Package>
         "@
         
-        $manifestContent | Out-File -FilePath "./publish/msix/Package.appxmanifest" -Encoding UTF8
+        $manifestContent | Out-File -FilePath "./publish/msix/AppxManifest.xml" -Encoding UTF8
         
         # Create MSIX package
         & $fullMakeappxPath pack /d "./publish/msix" /p "./maERP-${{ steps.version.outputs.VERSION }}.msix"
@@ -126,46 +151,52 @@ jobs:
       shell: pwsh
       run: |
         # Find signtool.exe location
-        $signtoolPath = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "signtool.exe" | Select-Object -First 1
-        if ($signtoolPath) {
-          $fullSigntoolPath = "C:\Program Files (x86)\Windows Kits\10\bin\$signtoolPath"
-          Write-Host "Found signtool.exe at: $fullSigntoolPath"
-        } else {
-          $fullSigntoolPath = "signtool.exe"
+        $possiblePaths = @(
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe",
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe",
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.20348.0\x64\signtool.exe",
+          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe"
+        )
+        
+        $fullSigntoolPath = $null
+        foreach ($path in $possiblePaths) {
+          if (Test-Path $path) {
+            $fullSigntoolPath = $path
+            Write-Host "Found signtool.exe at: $fullSigntoolPath"
+            break
+          }
+        }
+        
+        if (-not $fullSigntoolPath) {
+          # Fallback: search for any signtool.exe in Windows Kits
+          $found = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "signtool.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($found) {
+            $fullSigntoolPath = "C:\Program Files (x86)\Windows Kits\10\bin\$found"
+            Write-Host "Found signtool.exe at: $fullSigntoolPath"
+          } else {
+            Write-Error "signtool.exe not found. Windows SDK may not be installed."
+            exit 1
+          }
         }
         
         # Sign the package
         & $fullSigntoolPath sign /f "${{ github.workspace }}\certificate.pfx" /p "${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}" /fd SHA256 "./maERP-${{ steps.version.outputs.VERSION }}.msix"
 
-    - name: Install Store CLI
+    - name: Store Upload (Manual Process)
       shell: pwsh
       run: |
-        Invoke-WebRequest -Uri "https://aka.ms/Microsoft.Windows.SDK.ProjectReunion" -OutFile "ProjectReunion.exe"
-        # Alternative: Use winget or direct download of Store CLI
-
-    - name: Upload to Microsoft Store
-      shell: pwsh
-      env:
-        TENANT_ID: ${{ secrets.MS_PARTNER_CENTER_TENANT_ID }}
-        CLIENT_ID: ${{ secrets.MS_PARTNER_CENTER_CLIENT_ID }}
-        CLIENT_SECRET: ${{ secrets.MS_PARTNER_CENTER_CLIENT_SECRET }}
-      run: |
-        # Install Microsoft Store Developer CLI if not available
-        # This is a placeholder - you may need to use Microsoft Store API directly
-        
-        # Example API call (you'll need to implement the actual Store API integration)
-        $headers = @{
-            'Authorization' = "Bearer $token"
-            'Content-Type' = 'application/json'
-        }
-        
-        # Upload package to Microsoft Store
-        # This requires proper Microsoft Store API integration
-        Write-Host "Uploading package to Microsoft Store..."
-        Write-Host "Package file: maERP-${{ steps.version.outputs.VERSION }}.msix"
-        
-        # Placeholder for actual Store upload logic
-        # You'll need to implement the Microsoft Store submission API calls here
+        Write-Host "=== MSIX Package Ready for Manual Store Submission ==="
+        Write-Host "Package Location: ${{ github.workspace }}/maERP-${{ steps.version.outputs.VERSION }}.msix"
+        Write-Host ""
+        Write-Host "Manual Steps Required:"
+        Write-Host "1. Download the MSIX package from GitHub Release"
+        Write-Host "2. Sign in to Microsoft Partner Center"
+        Write-Host "3. Navigate to your maERP app submission"
+        Write-Host "4. Upload the MSIX package"
+        Write-Host "5. Complete certification and publishing process"
+        Write-Host ""
+        Write-Host "Note: Automated Store API integration requires additional setup"
+        Write-Host "and Microsoft Partner Center API credentials configuration."
 
     - name: Create GitHub Release with MSIX
       uses: softprops/action-gh-release@v2

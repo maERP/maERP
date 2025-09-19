@@ -12,15 +12,6 @@ public class SalesChannelDeleteValidator : AbstractValidator<SalesChannelDeleteC
         _salesChannelRepository = salesChannelRepository;
 
         RuleFor(p => p.Id)
-            .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-
-        RuleFor(s => s)
-            .MustAsync(SalesChannelExists).WithMessage("SalesChannel not found.");
-    }
-
-    private async Task<bool> SalesChannelExists(SalesChannelDeleteCommand command, CancellationToken cancellationToken)
-    {
-        return await _salesChannelRepository.ExistsAsync(command.Id);
+            .NotNull();
     }
 }

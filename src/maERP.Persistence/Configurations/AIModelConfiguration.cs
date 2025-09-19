@@ -7,12 +7,13 @@ namespace maERP.Persistence.Configurations;
 
 public class AiModelConfiguration : IEntityTypeConfiguration<AiModel>
 {
-    public void Configure(EntityTypeBuilder<AiModel> modelBuilder)
+    public void Configure(EntityTypeBuilder<AiModel> builder)
     {
-        modelBuilder.HasData(
+        builder.HasData(
             new AiModel
             {
-                Id = 1,
+                Id = new Guid("44444444-4444-4444-4444-444444444444"),
+                TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 AiModelType = AiModelType.ChatGpt4O,
                 Name = "ChatGPT 4o Demo",
                 ApiUsername = "demo",
@@ -21,7 +22,7 @@ public class AiModelConfiguration : IEntityTypeConfiguration<AiModel>
             }
         );
 
-        modelBuilder.Property(q => q.Name)
+        builder.Property(q => q.Name)
             .IsRequired()
             .HasMaxLength(100);
     }

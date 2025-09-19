@@ -21,6 +21,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>maERP</PackageId>
 		<PackageTags>maerp;erp;open source;server;docker;shopware</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Configurations>Debug;Release</Configurations>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904;NU1608</WarningsNotAsErrors>
@@ -66,6 +67,9 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
 		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="../maERP.Analytics/maERP.Analytics.csproj" />

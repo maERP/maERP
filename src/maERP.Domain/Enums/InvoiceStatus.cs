@@ -13,4 +13,4 @@ public enum InvoiceStatus
     Refunded = 8,
     WrittenOff = 9,
     Archived = 10
-} 
+}

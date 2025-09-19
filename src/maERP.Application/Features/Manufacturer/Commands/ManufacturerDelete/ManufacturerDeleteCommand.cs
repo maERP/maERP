@@ -3,7 +3,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Manufacturer.Commands.ManufacturerDelete;
 
-public class ManufacturerDeleteCommand : IRequest<Result<int>>
+public class ManufacturerDeleteCommand : IRequest<Result<Guid>>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

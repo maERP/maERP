@@ -98,7 +98,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 DeliveryAddressPhone = order.DeliveryAddressPhone,
                 DeliveryAddressStreet = order.DeliveryAddressStreet,
                 DeliveryAddressCity = order.DeliveryAddressCity,
-                DeliverAddressZip = order.DeliverAddressZip,
+                DeliveryAddressZip = order.DeliveryAddressZip,
                 DeliveryAddressCountry = order.DeliveryAddressCountry,
                 // Invoice address details
                 InvoiceAddressFirstName = order.InvoiceAddressFirstName,
@@ -151,7 +151,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
             ShippingStatusOld = history.ShippingStatusOld,
             ShippingStatusNew = history.ShippingStatusNew,
             Description = history.Description,
-            IsSystemGenerated = history.UserId == 0
+            IsSystemGenerated = history.IsSystemGenerated
         }).ToList();
     }
 }

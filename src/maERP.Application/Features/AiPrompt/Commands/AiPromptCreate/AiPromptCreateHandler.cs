@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.AiPrompt.Commands.AiPromptCreate;
 
-public class AiPromptCreateHandler : IRequestHandler<AiPromptCreateCommand, Result<int>>
+public class AiPromptCreateHandler : IRequestHandler<AiPromptCreateCommand, Result<Guid>>
 {
     private readonly IAppLogger<AiPromptCreateHandler> _logger;
     private readonly IAiPromptRepository _aIPromptRepository;
@@ -18,11 +18,11 @@ public class AiPromptCreateHandler : IRequestHandler<AiPromptCreateCommand, Resu
         _aIPromptRepository = aIPromptRepository ?? throw new ArgumentNullException(nameof(aIPromptRepository));
     }
 
-    public async Task<Result<int>> Handle(AiPromptCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(AiPromptCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new AI prompt with identifier: {Identifier}", request.Identifier);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new AiPromptCreateValidator(_aIPromptRepository);

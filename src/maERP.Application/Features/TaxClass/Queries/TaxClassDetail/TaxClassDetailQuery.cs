@@ -13,5 +13,5 @@ public class TaxClassDetailQuery : IRequest<Result<TaxClassDetailDto>>
     /// <summary>
     /// The unique identifier of the tax class to retrieve
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

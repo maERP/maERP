@@ -9,7 +9,7 @@ public class GoodsReceipt : BaseEntity, IBaseEntity
     public DateTime ReceiptDate { get; set; } = DateTime.Today;
 
     [Required]
-    public int ProductId { get; set; }
+    public Guid ProductId { get; set; }
     public Product? Product { get; set; }
 
     [Required]
@@ -17,7 +17,7 @@ public class GoodsReceipt : BaseEntity, IBaseEntity
     public int Quantity { get; set; }
 
     [Required]
-    public int WarehouseId { get; set; }
+    public Guid WarehouseId { get; set; }
     public Warehouse? Warehouse { get; set; }
 
     [StringLength(255)]

@@ -5,9 +5,10 @@ namespace maERP.Domain.Dtos.SalesChannel;
 
 public class SalesChannelListDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public SalesChannelType SalesChannelType { get; set; }
     public string Name { get; set; } = string.Empty;
+    public DateTime DateCreated { get; set; }
 
     public string Url { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;

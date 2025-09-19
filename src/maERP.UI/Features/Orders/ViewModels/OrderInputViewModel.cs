@@ -22,12 +22,12 @@ public partial class OrderInputViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
     [NotifyPropertyChangedFor(nameof(PageTitle))]
-    private int orderId;
+    private Guid orderId;
 
     [ObservableProperty]
     [Required(ErrorMessage = "Sales Channel ist erforderlich")]
     [NotifyDataErrorInfo]
-    private int salesChannelId;
+    private Guid salesChannelId;
 
     [ObservableProperty]
     private string remoteOrderId = string.Empty;
@@ -35,7 +35,7 @@ public partial class OrderInputViewModel : ViewModelBase
     [ObservableProperty]
     [Required(ErrorMessage = "Kunde ist erforderlich")]
     [NotifyDataErrorInfo]
-    private int customerId;
+    private Guid customerId;
 
     [ObservableProperty]
     private OrderStatus status = OrderStatus.Pending;
@@ -110,7 +110,7 @@ public partial class OrderInputViewModel : ViewModelBase
     private string deliveryAddressCity = string.Empty;
 
     [ObservableProperty]
-    private string deliverAddressZip = string.Empty;
+    private string deliveryAddressZip = string.Empty;
 
     [ObservableProperty]
     private string deliveryAddressCountry = string.Empty;
@@ -165,7 +165,7 @@ public partial class OrderInputViewModel : ViewModelBase
     private OrderItem? selectedOrderItem;
 
     [ObservableProperty]
-    private int newItemProductId;
+    private Guid newItemProductId;
 
     [ObservableProperty]
     private double newItemQuantity = 1;
@@ -179,7 +179,7 @@ public partial class OrderInputViewModel : ViewModelBase
     [ObservableProperty]
     private double newItemTaxRate = 19.0;
 
-    public bool IsEditMode => OrderId > 0;
+    public bool IsEditMode => OrderId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"Bestellung #{OrderId} bearbeiten" : "Neue Bestellung erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
@@ -192,7 +192,7 @@ public partial class OrderInputViewModel : ViewModelBase
     public bool HasOrderItems => OrderItems.Any();
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToOrderDetail { get; set; }
+    public Func<Guid, Task>? NavigateToOrderDetail { get; set; }
 
     public OrderInputViewModel(IHttpService httpService, IDebugService debugService)
     {
@@ -212,10 +212,10 @@ public partial class OrderInputViewModel : ViewModelBase
         Total = Subtotal + ShippingCost + TotalTax;
     }
 
-    public async Task InitializeAsync(int orderId = 0)
+    public async Task InitializeAsync(Guid orderId = default)
     {
         OrderId = orderId;
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -229,7 +229,7 @@ public partial class OrderInputViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAsync()
     {
-        if (OrderId <= 0) return;
+        if (OrderId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -246,7 +246,7 @@ public partial class OrderInputViewModel : ViewModelBase
             else if (result.Succeeded && result.Data != null)
             {
                 var order = result.Data;
-                
+
                 // Map order data to form fields
                 SalesChannelId = order.SalesChannelId;
                 RemoteOrderId = order.RemoteOrderId;
@@ -273,7 +273,7 @@ public partial class OrderInputViewModel : ViewModelBase
                 DeliveryAddressPhone = order.DeliveryAddressPhone;
                 DeliveryAddressStreet = order.DeliveryAddressStreet;
                 DeliveryAddressCity = order.DeliveryAddressCity;
-                DeliverAddressZip = order.DeliverAddressZip;
+                DeliveryAddressZip = order.DeliveryAddressZip;
                 DeliveryAddressCountry = order.DeliveryAddressCountry;
                 InvoiceAddressFirstName = order.InvoiceAddressFirstName;
                 InvoiceAddressLastName = order.InvoiceAddressLastName;
@@ -284,7 +284,7 @@ public partial class OrderInputViewModel : ViewModelBase
                 InvoiceAddressZip = order.InvoiceAddressZip;
                 InvoiceAddressCountry = order.InvoiceAddressCountry;
                 DateOrdered = order.DateOrdered;
-                
+
                 // Load order items
                 OrderItems.Clear();
                 if (order.OrderItems != null)
@@ -353,7 +353,7 @@ public partial class OrderInputViewModel : ViewModelBase
                 DeliveryAddressPhone = DeliveryAddressPhone,
                 DeliveryAddressStreet = DeliveryAddressStreet,
                 DeliveryAddressCity = DeliveryAddressCity,
-                DeliverAddressZip = DeliverAddressZip,
+                DeliveryAddressZip = DeliveryAddressZip,
                 DeliveryAddressCountry = DeliveryAddressCountry,
                 InvoiceAddressFirstName = InvoiceAddressFirstName,
                 InvoiceAddressLastName = InvoiceAddressLastName,
@@ -367,8 +367,8 @@ public partial class OrderInputViewModel : ViewModelBase
             };
 
             var result = IsEditMode
-                ? await _httpService.PutAsync<OrderInputDto, int>($"orders/{OrderId}", orderDto)
-                : await _httpService.PostAsync<OrderInputDto, int>("orders", orderDto);
+                ? await _httpService.PutAsync<OrderInputDto, Guid>($"orders/{OrderId}", orderDto)
+                : await _httpService.PostAsync<OrderInputDto, Guid>("orders", orderDto);
 
             if (result == null)
             {
@@ -378,7 +378,7 @@ public partial class OrderInputViewModel : ViewModelBase
             else if (result.Succeeded)
             {
                 _debugService.LogInfo($"Order {(IsEditMode ? "updated" : "created")} successfully");
-                
+
                 if (IsEditMode && NavigateToOrderDetail != null)
                 {
                     await NavigateToOrderDetail(OrderId);
@@ -423,9 +423,9 @@ public partial class OrderInputViewModel : ViewModelBase
 
     private void ClearForm()
     {
-        SalesChannelId = 0;
+        SalesChannelId = Guid.Empty;
         RemoteOrderId = string.Empty;
-        CustomerId = 0;
+        CustomerId = Guid.Empty;
         Status = OrderStatus.Pending;
         OrderItems.Clear();
         PaymentMethod = string.Empty;
@@ -449,7 +449,7 @@ public partial class OrderInputViewModel : ViewModelBase
         DeliveryAddressPhone = string.Empty;
         DeliveryAddressStreet = string.Empty;
         DeliveryAddressCity = string.Empty;
-        DeliverAddressZip = string.Empty;
+        DeliveryAddressZip = string.Empty;
         DeliveryAddressCountry = string.Empty;
         InvoiceAddressFirstName = string.Empty;
         InvoiceAddressLastName = string.Empty;
@@ -461,14 +461,14 @@ public partial class OrderInputViewModel : ViewModelBase
         InvoiceAddressCountry = string.Empty;
         DateOrdered = DateTime.Now;
         ErrorMessage = string.Empty;
-        
+
         ClearErrors();
     }
 
     private bool ValidateForm()
     {
         ValidateAllProperties();
-        
+
         if (HasErrors)
         {
             ErrorMessage = "Bitte korrigieren Sie die Eingabefehler";
@@ -520,7 +520,7 @@ public partial class OrderInputViewModel : ViewModelBase
             // Create new item
             var newItem = new OrderItem
             {
-                Id = 0, // Will be set by server
+                Id = Guid.Empty, // Will be set by server
                 OrderId = OrderId,
                 ProductId = NewItemProductId,
                 Quantity = NewItemQuantity,
@@ -550,7 +550,7 @@ public partial class OrderInputViewModel : ViewModelBase
         if (item == null) return;
 
         OrderItems.Remove(item);
-        
+
         if (SelectedOrderItem == item)
         {
             CancelOrderItemEdit();
@@ -559,7 +559,7 @@ public partial class OrderInputViewModel : ViewModelBase
 
     private void ClearOrderItemForm()
     {
-        NewItemProductId = 0;
+        NewItemProductId = Guid.Empty;
         NewItemQuantity = 1;
         NewItemName = string.Empty;
         NewItemPrice = 0;
@@ -575,7 +575,7 @@ public partial class OrderInputViewModel : ViewModelBase
         InvoiceAddressPhone = DeliveryAddressPhone;
         InvoiceAddressStreet = DeliveryAddressStreet;
         InvoiceAddressCity = DeliveryAddressCity;
-        InvoiceAddressZip = DeliverAddressZip;
+        InvoiceAddressZip = DeliveryAddressZip;
         InvoiceAddressCountry = DeliveryAddressCountry;
     }
 
@@ -588,7 +588,7 @@ public partial class OrderInputViewModel : ViewModelBase
         DeliveryAddressPhone = InvoiceAddressPhone;
         DeliveryAddressStreet = InvoiceAddressStreet;
         DeliveryAddressCity = InvoiceAddressCity;
-        DeliverAddressZip = InvoiceAddressZip;
+        DeliveryAddressZip = InvoiceAddressZip;
         DeliveryAddressCountry = InvoiceAddressCountry;
     }
 }

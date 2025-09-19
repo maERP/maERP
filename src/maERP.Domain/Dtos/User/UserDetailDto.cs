@@ -1,4 +1,4 @@
-﻿namespace maERP.Domain.Dtos.User;
+namespace maERP.Domain.Dtos.User;
 
 public class UserDetailDto
 {
@@ -9,4 +9,7 @@ public class UserDetailDto
 
     public string Password { get; set; } = string.Empty;
     public string PasswordConfirm { get; set; } = string.Empty;
+
+    // Collection of tenant assignments
+    public ICollection<UserTenantAssignmentDto> TenantAssignments { get; set; } = new List<UserTenantAssignmentDto>();
 }

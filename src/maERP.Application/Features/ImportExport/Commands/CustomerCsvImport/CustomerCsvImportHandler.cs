@@ -52,7 +52,7 @@ public class CustomerCsvImportHandler : IRequestHandler<CustomerCsvImportCommand
             // Read and process CSV file
             using var stream = request.CsvFile.OpenReadStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);
-            
+
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = true,
@@ -70,7 +70,7 @@ public class CustomerCsvImportHandler : IRequestHandler<CustomerCsvImportCommand
             {
                 await csv.ReadAsync();
                 csv.ReadHeader();
-                
+
                 while (await csv.ReadAsync())
                 {
                     rowNumber++;
@@ -158,7 +158,7 @@ public class CustomerCsvImportHandler : IRequestHandler<CustomerCsvImportCommand
             result.StatusCode = ResultStatusCode.Ok;
             result.Data = importResult;
 
-            _logger.LogInformation("CSV import completed. Imported: {Imported}, Updated: {Updated}, Skipped: {Skipped}", 
+            _logger.LogInformation("CSV import completed. Imported: {Imported}, Updated: {Updated}, Skipped: {Skipped}",
                 importResult.ImportedCount, importResult.UpdatedCount, importResult.SkippedCount);
         }
         catch (Exception ex)

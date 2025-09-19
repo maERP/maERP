@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Setting.Commands.SettingUpdate;
 
-public class SettingUpdateQuery : IRequestHandler<SettingUpdateCommand, Result<int>>
+public class SettingUpdateQuery : IRequestHandler<SettingUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<SettingUpdateQuery> _logger;
     private readonly ISettingRepository _settingRepository;
@@ -19,11 +19,11 @@ public class SettingUpdateQuery : IRequestHandler<SettingUpdateCommand, Result<i
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
     }
 
-    public async Task<Result<int>> Handle(SettingUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(SettingUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating setting with ID: {Id} and name: {Name}", request.Id, request.Key);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new SettingUpdateValidator(_settingRepository);
@@ -44,17 +44,29 @@ public class SettingUpdateQuery : IRequestHandler<SettingUpdateCommand, Result<i
 
         try
         {
-            // Map to domain entity
-            var settingToUpdate = MapToEntity(request);
+            // Get the existing entity to preserve fields we don't want to overwrite
+            var existingSetting = await _settingRepository.GetByIdAsync(request.Id);
+            if (existingSetting == null)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Setting not found");
+                return result;
+            }
+
+            // Update only the fields that should be modified
+            existingSetting.Key = request.Key;
+            existingSetting.Value = request.Value;
+            existingSetting.DateModified = DateTime.UtcNow;
 
             // Update in database
-            await _settingRepository.UpdateAsync(settingToUpdate);
+            await _settingRepository.UpdateAsync(existingSetting);
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
-            result.Data = settingToUpdate.Id;
+            result.Data = existingSetting.Id;
 
-            _logger.LogInformation("Successfully updated setting with ID: {Id}", settingToUpdate.Id);
+            _logger.LogInformation("Successfully updated setting with ID: {Id}", existingSetting.Id);
         }
         catch (Exception ex)
         {
@@ -68,13 +80,4 @@ public class SettingUpdateQuery : IRequestHandler<SettingUpdateCommand, Result<i
         return result;
     }
 
-    private Domain.Entities.Setting MapToEntity(SettingUpdateCommand command)
-    {
-        return new Domain.Entities.Setting
-        {
-            Id = command.Id,
-            Key = command.Key,
-            Value = command.Value
-        };
-    }
 }

@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Product.Commands.ProductDelete;
 
-public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result<int>>
+public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<ProductDeleteHandler> _logger;
     private readonly IProductRepository _productRepository;
@@ -18,11 +18,9 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
     }
 
-    public async Task<Result<int>> Handle(ProductDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(ProductDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting product with ID: {Id}", request.Id);
-
-        var result = new Result<int>();
 
         // Validate incoming data
         var validator = new ProductDeleteValidator(_productRepository);
@@ -30,43 +28,47 @@ public class ProductDeleteHandler : IRequestHandler<ProductDeleteCommand, Result
 
         if (!validationResult.IsValid)
         {
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.BadRequest;
-            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-
+            var validationErrors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            
             _logger.LogWarning("Validation errors in delete request for {0}: {1}",
-                nameof(ProductDeleteCommand),
-                string.Join(", ", result.Messages));
+                nameof(ProductDeleteCommand), validationErrors);
 
-            return result;
+            return Result<Guid>.Fail(ResultStatusCode.BadRequest, validationErrors);
         }
 
         try
         {
-            // Create entity to delete
-            var productToDelete = new Domain.Entities.Product
+            // Get entity from database first
+            var productToDelete = await _productRepository.GetByIdAsync(request.Id);
+
+            if (productToDelete == null)
             {
-                Id = request.Id
-            };
+                _logger.LogWarning("Product with ID: {Id} not found for deletion", request.Id);
+                return Result<Guid>.Fail(ResultStatusCode.NotFound, "Product not found");
+            }
 
             // Delete from database
             await _productRepository.DeleteAsync(productToDelete);
 
-            result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
-            result.Data = productToDelete.Id;
-
             _logger.LogInformation("Successfully deleted product with ID: {Id}", productToDelete.Id);
+            
+            var result = Result<Guid>.Success(productToDelete.Id);
+            result.StatusCode = ResultStatusCode.NoContent;
+            return result;
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
+        {
+            // Handle concurrent deletion - product was already deleted by another request
+            _logger.LogWarning("Product with ID: {Id} was deleted by another request: {Message}", request.Id, ex.Message);
+            
+            return Result<Guid>.Fail(ResultStatusCode.NotFound, "Product not found");
         }
         catch (Exception ex)
         {
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.InternalServerError;
-            result.Messages.Add($"An error occurred while deleting the product: {ex.Message}");
-
             _logger.LogError("Error deleting product: {Message}", ex.Message);
+            
+            return Result<Guid>.Fail(ResultStatusCode.InternalServerError,
+                $"An error occurred while deleting the product: {ex.Message}");
         }
-
-        return result;
     }
 }

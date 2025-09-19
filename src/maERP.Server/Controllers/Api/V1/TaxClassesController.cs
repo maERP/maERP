@@ -7,6 +7,7 @@ using maERP.Application.Features.TaxClass.Queries.TaxClassList;
 using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using maERP.Server.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,8 @@ public class TaxClassesController : ControllerBase
 
     // GET: api/v1/<TaxClassesController>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginatedResult<TaxClassListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
@@ -35,17 +38,17 @@ public class TaxClassesController : ControllerBase
         }
 
         var response = await _mediator.Send(new TaxClassListQuery(pageNumber, pageSize, searchString, orderBy));
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // GET api/TaxClassesController>/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TaxClassDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<TaxClassDetailDto>> GetDetails(Guid id)
     {
         var response = await _mediator.Send(new TaxClassDetailQuery { Id = id });
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // POST: api/v1/<TaxClassesController>
@@ -55,31 +58,32 @@ public class TaxClassesController : ControllerBase
     public async Task<ActionResult<int>> Create(TaxClassCreateCommand taxClassCreateCommand)
     {
         var response = await _mediator.Send(taxClassCreateCommand);
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // PUT: api/v1/<TaxClassesController>/5
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, TaxClassUpdateCommand taxClassUpdateCommand)
+    public async Task<ActionResult> Update(Guid id, TaxClassUpdateCommand taxClassUpdateCommand)
     {
         taxClassUpdateCommand.Id = id;
         var response = await _mediator.Send(taxClassUpdateCommand);
-        return StatusCode((int)response.StatusCode, response);
+        return response.ToActionResult();
     }
 
     // DELETE: api/v1/<TaxClassesController>/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         var command = new TaxClassDeleteCommand { Id = id };
-        await _mediator.Send(command);
-        return NoContent();
+        var response = await _mediator.Send(command);
+        return response.ToActionResult();
     }
 }

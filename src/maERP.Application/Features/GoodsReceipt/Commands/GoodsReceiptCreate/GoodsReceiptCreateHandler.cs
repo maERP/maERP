@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.GoodsReceipt.Commands.GoodsReceiptCreate;
 
-public class GoodsReceiptCreateHandler : IRequestHandler<GoodsReceiptCreateCommand, Result<int>>
+public class GoodsReceiptCreateHandler : IRequestHandler<GoodsReceiptCreateCommand, Result<Guid>>
 {
     private readonly IAppLogger<GoodsReceiptCreateHandler> _logger;
     private readonly IGoodsReceiptRepository _goodsReceiptRepository;
@@ -24,12 +24,12 @@ public class GoodsReceiptCreateHandler : IRequestHandler<GoodsReceiptCreateComma
         _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
     }
 
-    public async Task<Result<int>> Handle(GoodsReceiptCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(GoodsReceiptCreateCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Creating new goods receipt for Product ID: {ProductId}, Quantity: {Quantity}", 
+        _logger.LogInformation("Creating new goods receipt for Product ID: {ProductId}, Quantity: {Quantity}",
             request.ProductId, request.Quantity);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new GoodsReceiptCreateValidator(_productRepository, _warehouseRepository);
@@ -86,13 +86,13 @@ public class GoodsReceiptCreateHandler : IRequestHandler<GoodsReceiptCreateComma
         return result;
     }
 
-    private async Task UpdateProductStock(int productId, int warehouseId, int quantity)
+    private async Task UpdateProductStock(Guid productId, Guid warehouseId, int quantity)
     {
         try
         {
             // Get existing product stock or create new one
             var existingStock = await _goodsReceiptRepository.GetProductStockAsync(productId, warehouseId);
-            
+
             if (existingStock != null)
             {
                 existingStock.Stock += quantity;
@@ -109,7 +109,7 @@ public class GoodsReceiptCreateHandler : IRequestHandler<GoodsReceiptCreateComma
                 await _goodsReceiptRepository.CreateProductStockAsync(newStock);
             }
 
-            _logger.LogInformation("Updated product stock for Product ID: {ProductId}, Warehouse ID: {WarehouseId}, Added Quantity: {Quantity}", 
+            _logger.LogInformation("Updated product stock for Product ID: {ProductId}, Warehouse ID: {WarehouseId}, Added Quantity: {Quantity}",
                 productId, warehouseId, quantity);
         }
         catch (Exception ex)

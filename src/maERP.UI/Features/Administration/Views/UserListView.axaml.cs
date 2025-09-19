@@ -11,7 +11,7 @@ public partial class UserListView : UserControl
     {
         InitializeComponent();
     }
-    
+
     private void DataGrid_DoubleTapped(object? sender, TappedEventArgs e)
     {
         if (DataContext is UserListViewModel viewModel && viewModel.SelectedUser != null)

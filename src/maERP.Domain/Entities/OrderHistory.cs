@@ -6,8 +6,8 @@ namespace maERP.Domain.Entities;
 
 public class OrderHistory : BaseEntity, IBaseEntity
 {
-    public int UserId { get; set; }
-    public int OrderId { get; set; }
+    public Guid UserId { get; set; }
+    public Guid OrderId { get; set; }
     public OrderStatus? OrderStatusOld { get; set; }
     public OrderStatus? OrderStatusNew { get; set; }
     public PaymentStatus? PaymentStatusOld { get; set; }
@@ -16,4 +16,4 @@ public class OrderHistory : BaseEntity, IBaseEntity
     public string? ShippingStatusNew { get; set; }
     public string Description { get; set; } = string.Empty;
     public bool IsSystemGenerated { get; set; }
-} 
+}

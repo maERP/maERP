@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:maERP.UI.Features.Administration.ViewModels"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="maERP.UI.Features.Administration.Views.UserDetailView">
 
@@ -231,6 +232,406 @@
 						</Grid>
 					</Border>
 					-->
+
+					<!-- Tenant Management Section -->
+					<Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+							BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+							BorderThickness="1"
+							CornerRadius="8"
+							Padding="24">
+						<StackPanel Spacing="24">
+
+							<!-- Section Title -->
+							<TextBlock Text="🏢 Tenant-Verwaltung"
+									   FontSize="16"
+									   FontWeight="SemiBold"
+									   Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+
+							<!-- Two-Column Layout for Management -->
+							<Grid ColumnDefinitions="*,24,*" IsVisible="{Binding CanManageTenants}">
+								
+								<!-- Left Column: Assigned Tenants -->
+								<Border Grid.Column="0"
+										Background="{DynamicResource SystemControlBackgroundAltMediumBrush}"
+										BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+										BorderThickness="1"
+										CornerRadius="6"
+										Padding="16">
+									<StackPanel Spacing="12">
+										
+										<!-- Assigned Tenants Header -->
+										<StackPanel Orientation="Horizontal" Spacing="8">
+											<TextBlock Text="✅ Zugewiesene Tenants"
+													   FontWeight="SemiBold"
+													   FontSize="14"/>
+											<Border Background="#E8F5E8"
+													BorderBrush="#4CAF50"
+													BorderThickness="1"
+													CornerRadius="10"
+													Padding="4,2">
+												<TextBlock Text="{Binding UserTenants.Count}"
+														   FontSize="10"
+														   FontWeight="SemiBold"
+														   Foreground="#2E7D32"/>
+											</Border>
+										</StackPanel>
+
+										<!-- Loading Indicator for Assigned Tenants -->
+										<StackPanel IsVisible="{Binding IsLoadingTenants}"
+													HorizontalAlignment="Center"
+													Orientation="Horizontal"
+													Spacing="8"
+													Margin="0,16">
+											<ProgressBar IsIndeterminate="True" Width="100" Height="4"/>
+											<TextBlock Text="Laden..."
+													   FontSize="12"
+													   Opacity="0.7"/>
+										</StackPanel>
+
+										<!-- Assigned Tenants List -->
+										<ScrollViewer MaxHeight="300" IsVisible="{Binding !IsLoadingTenants}">
+											<ItemsControl ItemsSource="{Binding UserTenants}">
+												<ItemsControl.ItemTemplate>
+													<DataTemplate>
+														<Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+																BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+																BorderThickness="1"
+																CornerRadius="6"
+																Padding="12"
+																Margin="0,0,0,6">
+															<Grid ColumnDefinitions="Auto,*,Auto">
+																
+																<!-- Tenant Icon -->
+																<Border Grid.Column="0"
+																		Background="{DynamicResource SystemAccentColor}"
+																		Width="32"
+																		Height="32"
+																		CornerRadius="16"
+																		Margin="0,0,12,0">
+																	<TextBlock Text="🏢"
+																			   FontSize="14"
+																			   HorizontalAlignment="Center"
+																			   VerticalAlignment="Center"/>
+																</Border>
+
+																<!-- Tenant Info -->
+																<StackPanel Grid.Column="1" 
+																			VerticalAlignment="Center"
+																			Spacing="2">
+																	<StackPanel Orientation="Horizontal" Spacing="6">
+																		<TextBlock Text="{Binding TenantName}"
+																				   FontWeight="SemiBold"
+																				   FontSize="12"/>
+																		<Border Background="#E8F5E8"
+																				BorderBrush="#4CAF50"
+																				BorderThickness="1"
+																				CornerRadius="8"
+																				Padding="4,1"
+																				IsVisible="{Binding IsDefault}">
+																			<TextBlock Text="Standard"
+																					   FontSize="9"
+																					   FontWeight="SemiBold"
+																					   Foreground="#2E7D32"/>
+																		</Border>
+																	</StackPanel>
+																	<TextBlock Text="{Binding TenantCode}"
+																			   FontSize="10"
+																			   Opacity="0.6"/>
+																</StackPanel>
+
+																<!-- Management Buttons -->
+																<StackPanel Grid.Column="2"
+																			Orientation="Horizontal"
+																			Spacing="4"
+																			VerticalAlignment="Center">
+																	
+																	<!-- Set as Default Button -->
+																	<Button Content="⭐"
+																			Command="{Binding $parent[UserControl].((vm:UserDetailViewModel)DataContext).SetDefaultTenantCommand}"
+																			CommandParameter="{Binding}"
+																			IsVisible="{Binding !IsDefault}"
+																			Width="28"
+																			Height="28"
+																			Padding="0"
+																			CornerRadius="14"
+																			Background="#FFF3E0"
+																			BorderBrush="#FFB74D"
+																			BorderThickness="1"
+																			ToolTip.Tip="Als Standard festlegen"/>
+																	
+																	<!-- Remove Button -->
+																	<Button Content="✕"
+																			Command="{Binding $parent[UserControl].((vm:UserDetailViewModel)DataContext).RemoveTenantCommand}"
+																			CommandParameter="{Binding}"
+																			Width="28"
+																			Height="28"
+																			Padding="0"
+																			CornerRadius="14"
+																			Background="#FFEBEE"
+																			BorderBrush="#F44336"
+																			BorderThickness="1"
+																			Foreground="#D32F2F"
+																			ToolTip.Tip="Zuweisung entfernen"/>
+																</StackPanel>
+
+															</Grid>
+														</Border>
+													</DataTemplate>
+												</ItemsControl.ItemTemplate>
+											</ItemsControl>
+										</ScrollViewer>
+
+										<!-- No Assigned Tenants Message -->
+										<Border Background="#FFF3E0"
+												BorderBrush="#FFB74D"
+												BorderThickness="1"
+												CornerRadius="4"
+												Padding="12"
+												IsVisible="{Binding !IsLoadingTenants}">
+											<StackPanel Spacing="4" 
+														IsVisible="{Binding UserTenants.Count, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=0}">
+												<TextBlock Text="ℹ️ Keine Zuweisungen" 
+														   FontWeight="SemiBold"
+														   FontSize="12"/>
+												<TextBlock Text="Diesem Benutzer sind noch keine Tenants zugewiesen"
+														   FontSize="10"
+														   Opacity="0.8"/>
+											</StackPanel>
+										</Border>
+
+									</StackPanel>
+								</Border>
+
+								<!-- Right Column: Available Tenants -->
+								<Border Grid.Column="2"
+										Background="{DynamicResource SystemControlBackgroundAltMediumBrush}"
+										BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+										BorderThickness="1"
+										CornerRadius="6"
+										Padding="16">
+									<StackPanel Spacing="12">
+										
+										<!-- Available Tenants Header -->
+										<StackPanel Orientation="Horizontal" Spacing="8">
+											<TextBlock Text="➕ Verfügbare Tenants"
+													   FontWeight="SemiBold"
+													   FontSize="14"/>
+											<Border Background="#E3F2FD"
+													BorderBrush="#2196F3"
+													BorderThickness="1"
+													CornerRadius="10"
+													Padding="4,2">
+												<TextBlock Text="{Binding AvailableTenants.Count}"
+														   FontSize="10"
+														   FontWeight="SemiBold"
+														   Foreground="#1976D2"/>
+											</Border>
+										</StackPanel>
+
+										<!-- Loading Indicator for Available Tenants -->
+										<StackPanel IsVisible="{Binding IsLoadingAvailableTenants}"
+													HorizontalAlignment="Center"
+													Orientation="Horizontal"
+													Spacing="8"
+													Margin="0,16">
+											<ProgressBar IsIndeterminate="True" Width="100" Height="4"/>
+											<TextBlock Text="Laden..."
+													   FontSize="12"
+													   Opacity="0.7"/>
+										</StackPanel>
+
+										<!-- Available Tenants List -->
+										<ScrollViewer MaxHeight="300" IsVisible="{Binding !IsLoadingAvailableTenants}">
+											<ItemsControl ItemsSource="{Binding AvailableTenants}">
+												<ItemsControl.ItemTemplate>
+													<DataTemplate>
+														<Border Background="{DynamicResource ControlFillColorDefaultBrush}"
+																BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+																BorderThickness="1"
+																CornerRadius="6"
+																Padding="12"
+																Margin="0,0,0,6">
+															<Grid ColumnDefinitions="Auto,*,Auto">
+																
+																<!-- Tenant Icon -->
+																<Border Grid.Column="0"
+																		Background="{DynamicResource SystemAccentColor}"
+																		Width="32"
+																		Height="32"
+																		CornerRadius="16"
+																		Margin="0,0,12,0">
+																	<TextBlock Text="🏢"
+																			   FontSize="14"
+																			   HorizontalAlignment="Center"
+																			   VerticalAlignment="Center"/>
+																</Border>
+
+																<!-- Tenant Info -->
+																<StackPanel Grid.Column="1" 
+																			VerticalAlignment="Center"
+																			Spacing="2">
+																	<TextBlock Text="{Binding Name}"
+																			   FontWeight="SemiBold"
+																			   FontSize="12"/>
+																	<TextBlock Text="{Binding TenantCode}"
+																			   FontSize="10"
+																			   Opacity="0.6"/>
+																</StackPanel>
+
+																<!-- Add Button -->
+																<Button Grid.Column="2"
+																		Content="+"
+																		Command="{Binding $parent[UserControl].((vm:UserDetailViewModel)DataContext).AssignTenantCommand}"
+																		CommandParameter="{Binding}"
+																		Width="28"
+																		Height="28"
+																		Padding="0"
+																		CornerRadius="14"
+																		Background="#E8F5E8"
+																		BorderBrush="#4CAF50"
+																		BorderThickness="1"
+																		Foreground="#2E7D32"
+																		FontWeight="Bold"
+																		VerticalAlignment="Center"
+																		ToolTip.Tip="Tenant zuweisen"/>
+
+															</Grid>
+														</Border>
+													</DataTemplate>
+												</ItemsControl.ItemTemplate>
+											</ItemsControl>
+										</ScrollViewer>
+
+										<!-- No Available Tenants Message -->
+										<Border Background="#E3F2FD"
+												BorderBrush="#2196F3"
+												BorderThickness="1"
+												CornerRadius="4"
+												Padding="12"
+												IsVisible="{Binding !IsLoadingAvailableTenants}">
+											<StackPanel Spacing="4" 
+														IsVisible="{Binding AvailableTenants.Count, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=0}">
+												<TextBlock Text="✅ Alle zugewiesen" 
+														   FontWeight="SemiBold"
+														   FontSize="12"/>
+												<TextBlock Text="Alle verfügbaren Tenants sind bereits zugewiesen"
+														   FontSize="10"
+														   Opacity="0.8"/>
+											</StackPanel>
+										</Border>
+
+									</StackPanel>
+								</Border>
+
+							</Grid>
+
+							<!-- Read-Only View for Non-Superadmins -->
+							<StackPanel Spacing="16" IsVisible="{Binding !CanManageTenants}">
+								
+								<!-- Loading Indicator for Tenants -->
+								<StackPanel IsVisible="{Binding IsLoadingTenants}"
+											HorizontalAlignment="Center"
+											Orientation="Horizontal"
+											Spacing="8"
+											Margin="0,16">
+									<ProgressBar IsIndeterminate="True" Width="120" Height="4"/>
+									<TextBlock Text="Lade Tenant-Zuweisungen..."
+											   FontSize="12"
+											   Opacity="0.7"/>
+								</StackPanel>
+
+								<!-- Tenant List (Read-Only) -->
+								<ItemsControl ItemsSource="{Binding UserTenants}"
+											  IsVisible="{Binding !IsLoadingTenants}">
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<Border Background="{DynamicResource SystemControlBackgroundAltMediumBrush}"
+													BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+													BorderThickness="1"
+													CornerRadius="6"
+													Padding="16"
+													Margin="0,0,0,8">
+												<Grid ColumnDefinitions="Auto,*,Auto">
+													
+													<!-- Tenant Icon -->
+													<Border Grid.Column="0"
+															Background="{DynamicResource SystemAccentColor}"
+															Width="40"
+															Height="40"
+															CornerRadius="20"
+															Margin="0,0,16,0">
+														<TextBlock Text="🏢"
+																   FontSize="20"
+																   HorizontalAlignment="Center"
+																   VerticalAlignment="Center"/>
+													</Border>
+
+													<!-- Tenant Info -->
+													<StackPanel Grid.Column="1" 
+																VerticalAlignment="Center"
+																Spacing="4">
+														<StackPanel Orientation="Horizontal" Spacing="8">
+															<TextBlock Text="{Binding TenantName}"
+																	   FontWeight="SemiBold"
+																	   FontSize="14"/>
+															<Border Background="#E8F5E8"
+																	BorderBrush="#4CAF50"
+																	BorderThickness="1"
+																	CornerRadius="10"
+																	Padding="6,2"
+																	IsVisible="{Binding IsDefault}">
+																<TextBlock Text="Standard"
+																		   FontSize="10"
+																		   FontWeight="SemiBold"
+																		   Foreground="#2E7D32"/>
+															</Border>
+														</StackPanel>
+														<TextBlock Text="{Binding TenantCode, StringFormat=Code: {0}}"
+																   FontSize="12"
+																   Opacity="0.7"/>
+													</StackPanel>
+
+													<!-- Status Icon -->
+													<Border Grid.Column="2"
+															Background="#E3F2FD"
+															CornerRadius="12"
+															Padding="8,4"
+															VerticalAlignment="Center">
+														<TextBlock Text="✓"
+																   FontSize="12"
+																   FontWeight="Bold"
+																   Foreground="#1976D2"/>
+													</Border>
+
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+
+								<!-- No Tenants Message -->
+								<Border Background="#FFF3E0"
+										BorderBrush="#FFB74D"
+										BorderThickness="1"
+										CornerRadius="4"
+										Padding="16"
+										IsVisible="{Binding !IsLoadingTenants}">
+									<StackPanel Spacing="8" 
+												IsVisible="{Binding UserTenants.Count, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=0}">
+										<TextBlock Text="ℹ️ Keine Tenant-Zuweisungen" FontWeight="SemiBold"/>
+										<TextBlock Text="Diesem Benutzer sind noch keine Tenants zugewiesen"
+												   FontSize="12"
+												   Opacity="0.8"/>
+										<TextBlock Text="Wenden Sie sich an einen Superadmin, um Tenant-Zuweisungen zu verwalten"
+												   FontSize="12"
+												   Opacity="0.6"/>
+									</StackPanel>
+								</Border>
+
+							</StackPanel>
+
+						</StackPanel>
+					</Border>
 
 					<!-- Security Information Section -->
 					<Border Background="{DynamicResource ControlFillColorDefaultBrush}"

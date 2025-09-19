@@ -33,7 +33,7 @@ namespace maERP.Application.Specifications
         /// Constructor for finding a specific invoice by ID
         /// </summary>
         /// <param name="id">Invoice ID</param>
-        public InvoiceFilterSpecification(int id)
+        public InvoiceFilterSpecification(Guid id)
         {
             Includes.Add(i => i.InvoiceItems);
             Criteria = i => i.Id == id;

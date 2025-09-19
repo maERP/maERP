@@ -8,7 +8,7 @@ namespace maERP.Application.Specifications;
 /// </summary>
 public class OrderCustomerFilterSpecification : FilterSpecification<Order>
 {
-    public OrderCustomerFilterSpecification(int customerId, string searchString)
+    public OrderCustomerFilterSpecification(Guid customerId, string searchString)
     {
         Includes.Add(c => c.OrderItems);
 
@@ -16,7 +16,9 @@ public class OrderCustomerFilterSpecification : FilterSpecification<Order>
         {
             Criteria = o => o.CustomerId == customerId && (o.InvoiceAddressCompanyName.Contains(searchString) ||
                                                         o.InvoiceAddressFirstName.Contains(searchString) ||
-                                                        o.InvoiceAddressLastName.Contains(searchString));
+                                                        o.InvoiceAddressLastName.Contains(searchString) ||
+                                                        o.Status.ToString().Contains(searchString) ||
+                                                        o.PaymentStatus.ToString().Contains(searchString));
         }
         else
         {

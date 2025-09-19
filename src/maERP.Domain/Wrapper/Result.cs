@@ -1,4 +1,6 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+using System.Text.Json.Serialization;
+
 namespace maERP.Domain.Wrapper;
 
 /// <summary>
@@ -66,6 +68,7 @@ public class Result : IResult
 
 public class Result<T> : Result, IResult<T>
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public T Data { get; set; }
 
     public new static Result<T> Fail()
@@ -81,6 +84,11 @@ public class Result<T> : Result, IResult<T>
     public static Result<T> Fail(ResultStatusCode status, string message)
     {
         return new Result<T> { StatusCode = status, Succeeded = false, Messages = new List<string> { message } };
+    }
+
+    public static Result<T> Fail(ResultStatusCode status, List<string> messages)
+    {
+        return new Result<T> { StatusCode = status, Succeeded = false, Messages = messages };
     }
 
     public new static Result<T> Fail(List<string> messages)
@@ -104,6 +112,11 @@ public class Result<T> : Result, IResult<T>
     public static Task<Result<T>> FailAsync(ResultStatusCode status, string message)
     {
         return Task.FromResult(Fail(status, message));
+    }
+
+    public static Task<Result<T>> FailAsync(ResultStatusCode status, List<string> messages)
+    {
+        return Task.FromResult(Fail(status, messages));
     }
 
     public new static Task<Result<T>> FailAsync(List<string> messages)

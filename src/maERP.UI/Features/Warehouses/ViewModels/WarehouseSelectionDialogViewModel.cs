@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -23,20 +24,20 @@ public partial class WarehouseSelectionDialogViewModel : ViewModelBase
 
     public bool IsValidSelection => SelectedWarehouse != null;
 
-    public int? SelectedWarehouseId => SelectedWarehouse?.Id;
+    public Guid? SelectedWarehouseId => SelectedWarehouse?.Id;
 
     public void Initialize(List<WarehouseListDto> warehouses, string dialogTitle, string dialogMessage)
     {
         AvailableWarehouses = warehouses ?? new List<WarehouseListDto>();
         Title = dialogTitle;
         Message = dialogMessage;
-        
+
         // Auto-select first warehouse if only one available
         if (AvailableWarehouses.Count == 1)
         {
             SelectedWarehouse = AvailableWarehouses.First();
         }
-        
+
         OnPropertyChanged(nameof(IsValidSelection));
     }
 

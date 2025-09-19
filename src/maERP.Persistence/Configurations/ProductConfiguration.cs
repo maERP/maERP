@@ -10,19 +10,19 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
         builder.Property(e => e.Price)
             .HasPrecision(18, 2);
-            
+
         builder.Property(e => e.Msrp)
             .HasPrecision(18, 2);
-            
+
         builder.Property(e => e.Weight)
             .HasPrecision(18, 4);
-            
+
         builder.Property(e => e.Width)
             .HasPrecision(18, 4);
-            
+
         builder.Property(e => e.Height)
             .HasPrecision(18, 4);
-            
+
         builder.Property(e => e.Depth)
             .HasPrecision(18, 4);
     }

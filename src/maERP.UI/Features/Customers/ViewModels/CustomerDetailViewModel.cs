@@ -30,12 +30,12 @@ public partial class CustomerDetailViewModel : ViewModelBase
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
-    private int customerId;
+    private Guid customerId;
 
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && Customer != null;
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToEditCustomer { get; set; }
+    public Func<Guid, Task>? NavigateToEditCustomer { get; set; }
 
     // Computed properties for better display
     public bool HasCompanyName => Customer != null && !string.IsNullOrEmpty(Customer.CompanyName);
@@ -55,30 +55,30 @@ public partial class CustomerDetailViewModel : ViewModelBase
     public string GetFormattedAddress(CustomerAddressListDto address)
     {
         if (address == null) return string.Empty;
-        
+
         var addressLines = new List<string>();
-        
+
         if (!string.IsNullOrEmpty(address.CompanyName))
             addressLines.Add(address.CompanyName);
-        
+
         if (!string.IsNullOrEmpty(address.Firstname) || !string.IsNullOrEmpty(address.Lastname))
             addressLines.Add($"{address.Firstname} {address.Lastname}".Trim());
-        
+
         if (!string.IsNullOrEmpty(address.Street) || !string.IsNullOrEmpty(address.HouseNr))
             addressLines.Add($"{address.Street} {address.HouseNr}".Trim());
-        
+
         if (!string.IsNullOrEmpty(address.Zip) || !string.IsNullOrEmpty(address.City))
             addressLines.Add($"{address.Zip} {address.City}".Trim());
-        
+
         return string.Join("\n", addressLines);
     }
 
-    public string DefaultDeliveryAddressFormatted => DefaultDeliveryAddress != null 
-        ? GetFormattedAddress(DefaultDeliveryAddress) 
+    public string DefaultDeliveryAddressFormatted => DefaultDeliveryAddress != null
+        ? GetFormattedAddress(DefaultDeliveryAddress)
         : "Keine Standard-Lieferadresse";
 
-    public string DefaultInvoiceAddressFormatted => DefaultInvoiceAddress != null 
-        ? GetFormattedAddress(DefaultInvoiceAddress) 
+    public string DefaultInvoiceAddressFormatted => DefaultInvoiceAddress != null
+        ? GetFormattedAddress(DefaultInvoiceAddress)
         : "Keine Standard-Rechnungsadresse";
 
     public CustomerDetailViewModel(IHttpService httpService, IDebugService debugService)
@@ -87,7 +87,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int customerId)
+    public async Task InitializeAsync(Guid customerId)
     {
         CustomerId = customerId;
         await LoadCustomerAsync();
@@ -96,7 +96,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadCustomerAsync()
     {
-        if (CustomerId <= 0) return;
+        if (CustomerId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -164,7 +164,7 @@ public partial class CustomerDetailViewModel : ViewModelBase
     private async Task EditCustomer()
     {
         if (Customer == null || NavigateToEditCustomer == null) return;
-        
+
         await NavigateToEditCustomer(Customer.Id);
     }
 

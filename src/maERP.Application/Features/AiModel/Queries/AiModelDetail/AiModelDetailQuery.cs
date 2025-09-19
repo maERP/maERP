@@ -13,5 +13,5 @@ public class AiModelDetailQuery : IRequest<Result<AiModelDetailDto>>
     /// <summary>
     /// The unique identifier of the AI model to retrieve
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

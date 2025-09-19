@@ -19,9 +19,9 @@ public class GoodsReceiptsController(IMediator mediator) : ControllerBase
     // GET: api/v1/goodsreceipts
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<GoodsReceiptListDto>>> GetAll(
-        int pageNumber = 0, 
-        int pageSize = 50, 
-        string searchTerm = "", 
+        int pageNumber = 0,
+        int pageSize = 50,
+        string searchTerm = "",
         string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
@@ -29,22 +29,22 @@ public class GoodsReceiptsController(IMediator mediator) : ControllerBase
             orderBy = "ReceiptDate Descending";
         }
 
-        var response = await mediator.Send(new GoodsReceiptListQuery 
-        { 
-            PageNumber = pageNumber, 
-            PageSize = pageSize, 
-            SearchTerm = searchTerm, 
-            OrderBy = orderBy 
+        var response = await mediator.Send(new GoodsReceiptListQuery
+        {
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            SearchTerm = searchTerm,
+            OrderBy = orderBy
         });
-        
+
         return StatusCode((int)response.StatusCode, response);
     }
 
     // GET: api/v1/goodsreceipts/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<GoodsReceiptDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<GoodsReceiptDetailDto>> GetDetails(Guid id)
     {
         var response = await mediator.Send(new GoodsReceiptDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);

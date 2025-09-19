@@ -3,8 +3,8 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Warehouse.Commands.WarehouseDelete;
 
-public class WarehouseDeleteCommand : IRequest<Result<int>>
+public class WarehouseDeleteCommand : IRequest<Result<Guid>>
 {
-    public int Id { get; set; }
-    public int? NewWarehouseId { get; set; }
+    public Guid Id { get; set; }
+    public Guid? NewWarehouseId { get; set; }
 }

@@ -128,7 +128,7 @@ public class EbayCustomerImportTask : IHostedService
                             // Weitere Felder können aus der eBay API ergänzt werden
                             CustomerStatus = CustomerStatus.Active,
                             DateEnrollment = DateTime.UtcNow,
-                            
+
                             BillingAddress = new SalesChannelImportCustomerAddress
                             {
                                 Firstname = buyer.TaxAddress?.FirstName ?? "",
@@ -139,16 +139,16 @@ public class EbayCustomerImportTask : IHostedService
                                 Country = buyer.TaxAddress?.CountryCode ?? ""
                             }
                         };
-                        
+
                         // Bei eBay können die Shipping- und Billing-Adressen unterschiedlich sein
                         // Abhängig von der Bestellung
-                        if (ordersResponse.FulfillmentStartInstructions != null && 
+                        if (ordersResponse.FulfillmentStartInstructions != null &&
                             ordersResponse.FulfillmentStartInstructions.Length > 0 &&
                             ordersResponse.FulfillmentStartInstructions[0].ShippingStep != null &&
                             ordersResponse.FulfillmentStartInstructions[0].ShippingStep.ShipTo != null)
                         {
                             var shipTo = ordersResponse.FulfillmentStartInstructions[0].ShippingStep.ShipTo;
-                            
+
                             importCustomer.ShippingAddress = new SalesChannelImportCustomerAddress
                             {
                                 Firstname = shipTo.FirstName ?? "",
@@ -164,15 +164,15 @@ public class EbayCustomerImportTask : IHostedService
                             // Falls keine separate Lieferadresse vorhanden ist, Rechnungsadresse verwenden
                             importCustomer.ShippingAddress = importCustomer.BillingAddress;
                         }
-                        
+
                         await customerImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importCustomer);
                     }
                 }
 
                 offset += limit;
-                
+
                 _logger.LogInformation($"Processed {limit} orders for customer import (offset {offset})");
-                
+
                 // API-Ratenbegrenzung beachten
                 await Task.Delay(new TimeSpan(0, 0, 1));
             }
@@ -184,4 +184,4 @@ public class EbayCustomerImportTask : IHostedService
             }
         }
     }
-} 
+}

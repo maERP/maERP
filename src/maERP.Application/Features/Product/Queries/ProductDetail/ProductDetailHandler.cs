@@ -47,22 +47,17 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
     {
         _logger.LogInformation("Retrieving product details for ID: {Id}", request.Id);
 
-        var result = new Result<ProductDetailDto>();
-
         try
         {
             // Retrieve product with all related details from the repository
-            var product = await _productRepository.GetByIdAsync(request.Id, true);
+            var product = await _productRepository.GetWithDetailsAsync(request.Id);
 
             // If product not found, return a not found result
             if (product == null)
             {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add($"Product with ID {request.Id} not found");
-
                 _logger.LogWarning("Product with ID {Id} not found", request.Id);
-                return result;
+                return Result<ProductDetailDto>.Fail(ResultStatusCode.NotFound, 
+                    $"Product with ID {request.Id} not found");
             }
 
             // Manual mapping instead of using AutoMapper
@@ -99,27 +94,21 @@ public class ProductDetailHandler : IRequestHandler<ProductDetailQuery, Result<P
                     Logo = product.Manufacturer.Logo
                 } : null,
                 // Map related sales channels and stocks
-                ProductSalesChannel = product.ProductSalesChannels?.Select(psc => psc.Id).ToList() ?? new List<int>(),
+                ProductSalesChannel = product.ProductSalesChannels?.Select(psc => psc.Id).ToList() ?? new List<Guid>(),
                 ProductStocks = product.ProductStocks.Select(ps => ps.Id).ToList()
             };
 
-            // Set successful result with the product details
-            result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
-            result.Data = data;
-
             _logger.LogInformation("Product with ID {Id} retrieved successfully", request.Id);
+            
+            return Result<ProductDetailDto>.Success(data);
         }
         catch (Exception ex)
         {
             // Handle any exceptions during product retrieval
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.InternalServerError;
-            result.Messages.Add($"An error occurred while retrieving the product: {ex.Message}");
-
             _logger.LogError("Error retrieving product: {Message}", ex.Message);
+            
+            return Result<ProductDetailDto>.Fail(ResultStatusCode.InternalServerError,
+                $"An error occurred while retrieving the product: {ex.Message}");
         }
-
-        return result;
     }
 }

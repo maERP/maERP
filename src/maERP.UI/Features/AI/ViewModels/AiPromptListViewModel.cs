@@ -43,7 +43,7 @@ public partial class AiPromptListViewModel : ViewModelBase
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
     public Func<Task>? NavigateToCreateAiPrompt { get; set; }
-    public Func<int, Task>? NavigateToAiPromptDetail { get; set; }
+    public Func<Guid, Task>? NavigateToAiPromptDetail { get; set; }
 
     public AiPromptListViewModel(IHttpService httpService, IDebugService debugService)
     {

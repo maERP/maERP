@@ -10,7 +10,7 @@ namespace maERP.Application.Features.Manufacturer.Commands.ManufacturerCreate;
 /// Implements IRequestHandler from MediatR to handle ManufacturerCreateCommand requests
 /// and return the ID of the newly created manufacturer wrapped in a Result.
 /// </summary>
-public class ManufacturerCreateHandler : IRequestHandler<ManufacturerCreateCommand, Result<int>>
+public class ManufacturerCreateHandler : IRequestHandler<ManufacturerCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,11 +41,11 @@ public class ManufacturerCreateHandler : IRequestHandler<ManufacturerCreateComma
     /// <param name="request">The manufacturer creation command with manufacturer details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created manufacturer if successful</returns>
-    public async Task<Result<int>> Handle(ManufacturerCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(ManufacturerCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new manufacturer with name: {Name}", request.Name);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new ManufacturerCreateValidator(_manufacturerRepository);

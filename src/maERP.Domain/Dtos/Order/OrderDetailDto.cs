@@ -5,10 +5,10 @@ namespace maERP.Domain.Dtos.Order;
 
 public class OrderDetailDto
 {
-    public int Id { get; set; }
-    public int SalesChannelId { get; set; }
+    public Guid Id { get; set; }
+    public Guid SalesChannelId { get; set; }
     public string RemoteOrderId { get; set; } = string.Empty;
-    public int CustomerId { get; set; }
+    public Guid CustomerId { get; set; }
 
     public OrderStatus Status { get; set; }
     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
@@ -37,7 +37,7 @@ public class OrderDetailDto
     public string DeliveryAddressPhone { get; set; } = string.Empty;
     public string DeliveryAddressStreet { get; set; } = string.Empty;
     public string DeliveryAddressCity { get; set; } = string.Empty;
-    public string DeliverAddressZip { get; set; } = string.Empty;
+    public string DeliveryAddressZip { get; set; } = string.Empty;
     public string DeliveryAddressCountry { get; set; } = string.Empty;
 
     public string InvoiceAddressFirstName { get; set; } = string.Empty;

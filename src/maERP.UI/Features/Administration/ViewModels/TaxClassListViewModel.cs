@@ -43,7 +43,7 @@ public partial class TaxClassListViewModel : ViewModelBase
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
     public Func<Task>? NavigateToTaxClassInput { get; set; }
-    public Func<int, Task>? NavigateToTaxClassDetail { get; set; }
+    public Func<Guid, Task>? NavigateToTaxClassDetail { get; set; }
 
     public TaxClassListViewModel(IHttpService httpService, IDebugService debugService)
     {
@@ -152,7 +152,7 @@ public partial class TaxClassListViewModel : ViewModelBase
     private async Task ViewTaxClassDetails(TaxClassListDto? taxClass)
     {
         if (taxClass == null || NavigateToTaxClassDetail == null) return;
-        
+
         SelectedTaxClass = taxClass;
         await NavigateToTaxClassDetail(taxClass.Id);
     }

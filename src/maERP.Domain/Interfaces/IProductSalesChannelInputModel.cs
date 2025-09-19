@@ -2,8 +2,8 @@ namespace maERP.Domain.Interfaces;
 
 public interface IProductSalesChannelInputModel
 {
-    int SalesChannelId { get; }
-    int ProductId { get; }
-    int RemoteProductId { get; }
+    Guid SalesChannelId { get; }
+    Guid ProductId { get; }
+    Guid RemoteProductId { get; }
     decimal Price { get; }
 }

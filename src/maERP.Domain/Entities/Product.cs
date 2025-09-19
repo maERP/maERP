@@ -8,12 +8,12 @@ public class Product : BaseEntity, IBaseEntity
 {
     public string Sku { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
-    public string NameOptimized { get; set; } = string.Empty;
-    public string Ean { get; set; } = string.Empty;
-    public string Asin { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public string DescriptionOptimized { get; set; } = string.Empty; 
-    
+    public string? NameOptimized { get; set; }
+    public string? Ean { get; set; }
+    public string? Asin { get; set; }
+    public string? Description { get; set; }
+    public string? DescriptionOptimized { get; set; }
+
     public bool UseOptimized { get; set; }
     public decimal Price { get; set; }
     public decimal Msrp { get; set; }
@@ -22,8 +22,8 @@ public class Product : BaseEntity, IBaseEntity
     public decimal Height { get; set; }
     public decimal Depth { get; set; }
 
-    public int TaxClassId { get; set; }
-    public int? ManufacturerId { get; set; }
+    public Guid TaxClassId { get; set; }
+    public Guid? ManufacturerId { get; set; }
     public Manufacturer? Manufacturer { get; set; }
     public TaxClass? TaxClass { get; set; }
 

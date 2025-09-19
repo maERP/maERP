@@ -32,7 +32,7 @@ public partial class ImportExportOverviewViewModel : ViewModelBase
     private void InitializeCategories()
     {
         Categories.Clear();
-        
+
         Categories.Add(new ImportExportCategoryItem
         {
             Title = "Kunden",

@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 
-public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Result<int>>
+public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<TaxClassUpdateHandler> _logger;
     private readonly ITaxClassRepository _taxClassRepository;
@@ -19,11 +19,11 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Resu
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
 
-    public async Task<Result<int>> Handle(TaxClassUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(TaxClassUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating tax class with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new TaxClassUpdateValidator(_taxClassRepository);
@@ -44,12 +44,20 @@ public class TaxClassUpdateHandler : IRequestHandler<TaxClassUpdateCommand, Resu
 
         try
         {
-            // Manually map to domain entity
-            var taxClassToUpdate = new Domain.Entities.TaxClass
+            // Get the tax class for tracking (required for update)
+            var taxClassToUpdate = await _taxClassRepository.GetByIdAsync(request.Id, true);
+            if (taxClassToUpdate == null)
             {
-                Id = request.Id,
-                TaxRate = request.TaxRate
-            };
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("TaxClass not found or access denied due to tenant isolation.");
+
+                _logger.LogWarning("TaxClass with ID {Id} not found or access denied due to tenant isolation", request.Id);
+                return result;
+            }
+
+            // Update the existing entity properties
+            taxClassToUpdate.TaxRate = request.TaxRate;
 
             // Update in database
             await _taxClassRepository.UpdateAsync(taxClassToUpdate);

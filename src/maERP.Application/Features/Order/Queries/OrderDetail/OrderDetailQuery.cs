@@ -13,5 +13,5 @@ public class OrderDetailQuery : IRequest<Result<OrderDetailDto>>
     /// <summary>
     /// The unique identifier of the order to retrieve
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

@@ -13,14 +13,6 @@ public class ProductDeleteValidator : AbstractValidator<ProductDeleteCommand>
 
         RuleFor(p => p.Id)
             .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
-
-        RuleFor(p => p)
-            .MustAsync(ProductExists).WithMessage("Product does not exist.");
-    }
-
-    private async Task<bool> ProductExists(ProductDeleteCommand command, CancellationToken token)
-    {
-        return await _productRepository.ExistsAsync(command.Id);
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
     }
 }

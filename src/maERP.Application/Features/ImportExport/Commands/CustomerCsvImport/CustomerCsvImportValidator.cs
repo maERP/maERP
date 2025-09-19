@@ -19,8 +19,8 @@ public class CustomerCsvImportValidator : AbstractValidator<CustomerCsvImportCom
             .When(x => x.CsvFile != null);
 
         RuleFor(x => x.CsvFile.ContentType)
-            .Must(contentType => contentType == "text/csv" || 
-                                contentType == "application/vnd.ms-excel" || 
+            .Must(contentType => contentType == "text/csv" ||
+                                contentType == "application/vnd.ms-excel" ||
                                 contentType == "text/plain")
             .WithMessage("File must be a CSV file")
             .When(x => x.CsvFile != null);

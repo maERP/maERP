@@ -12,7 +12,7 @@ public class GoodsReceiptFilterSpecification : FilterSpecification<GoodsReceipt>
 
         if (!string.IsNullOrEmpty(searchString))
         {
-            Criteria = gr => (gr.Product!.Name.Contains(searchString) || 
+            Criteria = gr => (gr.Product!.Name.Contains(searchString) ||
                              gr.Product!.Sku.Contains(searchString) ||
                              gr.Warehouse!.Name.Contains(searchString) ||
                              gr.Supplier.Contains(searchString) ||
@@ -24,7 +24,7 @@ public class GoodsReceiptFilterSpecification : FilterSpecification<GoodsReceipt>
         }
     }
 
-    public GoodsReceiptFilterSpecification(int id)
+    public GoodsReceiptFilterSpecification(Guid id)
     {
         Includes.Add(gr => gr.Product!);
         Includes.Add(gr => gr.Warehouse!);

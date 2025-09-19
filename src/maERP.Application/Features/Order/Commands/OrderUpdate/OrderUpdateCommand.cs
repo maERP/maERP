@@ -4,6 +4,6 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Order.Commands.OrderUpdate;
 
-public class OrderUpdateCommand : OrderInputDto, IRequest<Result<int>>
+public class OrderUpdateCommand : OrderInputDto, IRequest<Result<Guid>>
 {
 }

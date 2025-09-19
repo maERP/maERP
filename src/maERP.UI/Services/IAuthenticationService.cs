@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using maERP.Domain.Dtos.Auth;
+using maERP.Domain.Dtos.Tenant;
 
 namespace maERP.UI.Services;
 
@@ -10,4 +13,6 @@ public interface IAuthenticationService
     bool IsAuthenticated { get; }
     string? Token { get; }
     string? ServerUrl { get; }
+    List<TenantListDto>? AvailableTenants { get; }
+    Guid? CurrentTenantId { get; }
 }

@@ -1,6 +1,7 @@
 using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Exceptions;
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
 using maERP.Domain.Wrapper;
@@ -8,10 +9,11 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Order.Commands.OrderUpdate;
 
-public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int>>
+public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<OrderUpdateHandler> _logger;
     private readonly IOrderRepository _orderRepository;
+    private readonly ICustomerRepository _customerRepository;
     private readonly IInvoiceRepository _invoiceRepository;
     private readonly IPdfService _pdfService;
 
@@ -19,23 +21,25 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
     public OrderUpdateHandler(
         IAppLogger<OrderUpdateHandler> logger,
         IOrderRepository orderRepository,
+        ICustomerRepository customerRepository,
         IInvoiceRepository invoiceRepository,
         IPdfService pdfService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+        _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
         _invoiceRepository = invoiceRepository ?? throw new ArgumentNullException(nameof(invoiceRepository));
         _pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
     }
 
-    public async Task<Result<int>> Handle(OrderUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(OrderUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating order with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
-        var validator = new OrderUpdateValidator(_orderRepository);
+        var validator = new OrderUpdateValidator(_orderRepository, _customerRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
@@ -53,6 +57,35 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
 
         try
         {
+            // First check if order exists globally
+            var existsGlobally = await _orderRepository.ExistsGloballyAsync(request.Id);
+            if (!existsGlobally)
+            {
+                // Order doesn't exist at all
+                _logger.LogWarning("Order not found: {OrderId}", request.Id);
+                throw new NotFoundException("Order", request.Id);
+            }
+
+            // Check tenant isolation - order exists globally but might belong to different tenant
+            var existsForCurrentTenant = await _orderRepository.ExistsAsync(request.Id);
+            if (!existsForCurrentTenant)
+            {
+                // Order exists globally but not for current tenant - cross-tenant access attempt
+                _logger.LogWarning("Cross-tenant access attempt for order {OrderId}", request.Id);
+                throw new NotFoundException("Order", request.Id);
+            }
+
+            // Validate customer belongs to current tenant
+            var customer = await _customerRepository.GetByIdAsync(request.CustomerId);
+            if (customer == null)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Der angegebene Kunde existiert nicht oder gehört nicht zu Ihrem Tenant.");
+                _logger.LogWarning("Cross-tenant customer access attempt for customer {CustomerId}", request.CustomerId);
+                return result;
+            }
+
             // Manuelles Mapping statt AutoMapper
             var orderToUpdate = new Domain.Entities.Order
             {
@@ -77,7 +110,7 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
                 DeliveryAddressPhone = request.DeliveryAddressPhone,
                 DeliveryAddressStreet = request.DeliveryAddressStreet,
                 DeliveryAddressCity = request.DeliveryAddressCity,
-                DeliverAddressZip = request.DeliverAddressZip,
+                DeliveryAddressZip = request.DeliveryAddressZip,
                 DeliveryAddressCountry = request.DeliveryAddressCountry,
                 InvoiceAddressFirstName = request.InvoiceAddressFirstName,
                 InvoiceAddressLastName = request.InvoiceAddressLastName,
@@ -121,6 +154,11 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<int
             result.Data = orderToUpdate.Id;
 
             _logger.LogInformation("Successfully updated order with ID: {Id}", orderToUpdate.Id);
+        }
+        catch (NotFoundException)
+        {
+            // Let NotFoundException bubble up to middleware for proper 404 handling
+            throw;
         }
         catch (Exception ex)
         {

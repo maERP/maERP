@@ -7,7 +7,7 @@ namespace maERP.UI.Shared.Views;
 public partial class ConfirmationDialog : Window
 {
     public ConfirmationDialogViewModel? ViewModel => DataContext as ConfirmationDialogViewModel;
-    
+
     public bool DialogResult { get; private set; }
 
     public ConfirmationDialog()

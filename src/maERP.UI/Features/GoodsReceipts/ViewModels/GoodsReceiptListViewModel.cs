@@ -144,7 +144,7 @@ public partial class GoodsReceiptListViewModel : ViewModelBase
     private async Task CreateNewGoodsReceipt()
     {
         if (NavigateToCreateGoodsReceipt == null) return;
-        
+
         await NavigateToCreateGoodsReceipt();
     }
 

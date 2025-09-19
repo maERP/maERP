@@ -1,14 +1,20 @@
 #nullable disable
 
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using maERP.Application;
+using maERP.Domain.Enums;
+using maERP.Server.Infrastructure.JsonConverters;
 using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
 using maERP.Identity;
 using maERP.Infrastructure;
 using maERP.Persistence;
 using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
 using maERP.Persistence.Repositories;
+using maERP.Persistence.Services;
 using maERP.SalesChannels;
 using maERP.Server;
 using maERP.Server.ServiceRegistrations;
@@ -19,14 +25,15 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
-using Serilog; 
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Logging.AddOpenTelemetry(logging => {
+builder.Logging.AddOpenTelemetry(logging =>
+{
     logging.AddOtlpExporter(options =>
     {
         options.Endpoint = new Uri(builder.Configuration["Telemetry:Endpoint"] ?? "http://localhost:4317");
@@ -57,7 +64,37 @@ builder.Services.AddOpenTelemetryServices(builder.Configuration, "maERP.Server")
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>
-    opts.JsonSerializerOptions.PropertyNamingPolicy = null); // JsonNamingPolicy.CamelCase);
+{
+    opts.JsonSerializerOptions.PropertyNamingPolicy = null; // JsonNamingPolicy.CamelCase);
+    opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<OrderStatus>());
+    opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<PaymentStatus>());
+    opts.JsonSerializerOptions.Converters.Add(new StrictEnumConverter<CustomerStatus>());
+});
+
+// Configure API behavior to return consistent Result<T> format for validation errors
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(x => x.Value.Errors.Count > 0)
+            .SelectMany(x => x.Value.Errors.Select(e => e.ErrorMessage))
+            .ToList();
+
+        var result = new
+        {
+            Succeeded = false,
+            StatusCode = 400,
+            Messages = errors,
+            Data = (object)null
+        };
+
+        return new BadRequestObjectResult(result)
+        {
+            ContentTypes = { "application/json" }
+        };
+    };
+});
 
 builder.Services.AddResponseCaching(options =>
 {
@@ -71,6 +108,7 @@ if (!builder.Environment.IsEnvironment("Testing"))
     builder.Services.AddSalesChannelServices();
 }
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
@@ -97,6 +135,9 @@ builder.Services.AddScoped<IManufacturerRepository, ManufacturerRepository>();
 builder.Services.AddScoped<ITaxClassRepository, TaxClassRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGoodsReceiptRepository, GoodsReceiptRepository>();
+builder.Services.AddScoped<ITenantRepository, TenantRepository>();
+builder.Services.AddScoped<IUserTenantRepository, UserTenantRepository>();
+builder.Services.AddScoped<ITenantPermissionService, TenantPermissionService>();
 
 // Register SettingsInitializer service
 builder.Services.AddTransient<SettingsInitializer>();
@@ -108,7 +149,7 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var dbOptions = scope.ServiceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-    
+
     if (context.Database.IsRelational() && context.Database.GetPendingMigrations().Any())
     {
         app.Logger.LogInformation("Applying pending migrations for {Provider} database", dbOptions.Provider);
@@ -123,6 +164,7 @@ using (var scope = app.Services.CreateScope())
     app.Logger.LogInformation("Settings initialization completed");
 }
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseStaticFiles();
@@ -132,18 +174,18 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Web}/{action=Index}/{id?}");
 
-if(app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 {
-    app.MapControllers().AllowAnonymous();
-}    
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    if (app.Environment.IsDevelopment())
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
-    });
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
+        });
+    }
+
+    app.MapControllers().AllowAnonymous();
 }
 else
 {
@@ -159,16 +201,17 @@ else
             };
 
         context.Response.Headers[HeaderNames.Vary] =
-            new[] { "Accept-Encoding" };
+            new[] { "Accept-Encoding", "X-Tenant-Id" };
 
         await next();
     });
 
     app.UseSerilogRequestLogging();
-    app.MapControllers();    
+    app.MapControllers();
 }
 
 app.UseAuthentication(); // who are you?
+app.UseMiddleware<maERP.Server.Middleware.TenantMiddleware>(); // set tenant context
 app.UseAuthorization(); // what are you allowed to do?
 
 // Add health check endpoint

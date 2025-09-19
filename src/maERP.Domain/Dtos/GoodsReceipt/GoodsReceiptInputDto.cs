@@ -8,14 +8,14 @@ public class GoodsReceiptInputDto
     public DateTime ReceiptDate { get; set; } = DateTime.Today;
 
     [Required(ErrorMessage = "Product is required")]
-    public int ProductId { get; set; }
+    public Guid ProductId { get; set; }
 
     [Required(ErrorMessage = "Quantity is required")]
     [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than 0")]
     public int Quantity { get; set; }
 
     [Required(ErrorMessage = "Warehouse is required")]
-    public int WarehouseId { get; set; }
+    public Guid WarehouseId { get; set; }
 
     [StringLength(255, ErrorMessage = "Supplier cannot exceed 255 characters")]
     public string Supplier { get; set; } = string.Empty;

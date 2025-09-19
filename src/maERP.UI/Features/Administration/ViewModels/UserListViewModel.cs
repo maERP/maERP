@@ -145,7 +145,7 @@ public partial class UserListViewModel : ViewModelBase
     private async Task ViewUserDetails(UserListDto? user)
     {
         if (user == null || NavigateToUserDetail == null) return;
-        
+
         SelectedUser = user;
         await NavigateToUserDetail(user.Id);
     }
@@ -154,7 +154,7 @@ public partial class UserListViewModel : ViewModelBase
     private async Task CreateNewUser()
     {
         if (NavigateToCreateUser == null) return;
-        
+
         await NavigateToCreateUser();
     }
 

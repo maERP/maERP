@@ -4,8 +4,8 @@ namespace maERP.Domain.Dtos.AiPrompt;
 
 public class AiPromptInputDto : IAiPromptInputModel
 {
-    public int Id { get; set; }
-    public int AiModelId { get; set; }
+    public Guid Id { get; set; }
+    public Guid AiModelId { get; set; }
     public string Identifier { get; set; } = string.Empty;
     public string PromptText { get; set; } = string.Empty;
 }

@@ -16,7 +16,7 @@ namespace maERP.Server.UI.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private const string ServiceName = "maERP.Server";
-    
+
     public MainWindowViewModel()
     {
         PropertyChanged += OnPropertyChanged;
@@ -127,9 +127,9 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             var connectionString = GenerateConnectionString();
             var port = int.Parse(ServerPort);
-            
+
             var success = await ServerManager.StartServerAsync(port, SelectedDatabaseProvider, connectionString);
-            
+
             if (success)
             {
                 IsServerRunning = true;
@@ -152,11 +152,11 @@ public partial class MainWindowViewModel : ViewModelBase
         try
         {
             ServerManager.StopServer();
-            
+
             IsServerRunning = false;
             ServerStatus = "Status: maERP.Server gestoppt";
             ServerButtonText = "maERP.Server starten";
-            
+
             await Task.Delay(500);
         }
         catch
@@ -285,7 +285,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task InstallService()
     {
         ServiceStatus = "Windows-Service wird installiert...";
-        
+
         var executablePath = Process.GetCurrentProcess().MainModule?.FileName;
         if (string.IsNullOrEmpty(executablePath))
         {
@@ -293,7 +293,7 @@ public partial class MainWindowViewModel : ViewModelBase
         }
 
         var serverExePath = executablePath.Replace("maERP.Server.UI.exe", "maERP.Server.exe");
-        
+
         var startInfo = new ProcessStartInfo
         {
             FileName = "sc.exe",
@@ -308,7 +308,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (process != null)
         {
             await process.WaitForExitAsync();
-            
+
             if (process.ExitCode == 0)
             {
                 ServiceStatus = "Windows-Service erfolgreich installiert";
@@ -327,7 +327,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task UninstallService()
     {
         ServiceStatus = "Windows-Service wird entfernt...";
-        
+
         var startInfo = new ProcessStartInfo
         {
             FileName = "sc.exe",
@@ -342,7 +342,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (process != null)
         {
             await process.WaitForExitAsync();
-            
+
             if (process.ExitCode == 0)
             {
                 ServiceStatus = "Windows-Service erfolgreich entfernt";

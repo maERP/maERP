@@ -7,14 +7,15 @@ namespace maERP.Persistence.Configurations;
 
 public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 {
-    public void Configure(EntityTypeBuilder<Customer> modelBuilder)
+    public void Configure(EntityTypeBuilder<Customer> builder)
     {
         // DateEnrollment is now DateTimeOffset and works consistently across all database providers
 
-        modelBuilder.HasData(
+        builder.HasData(
             new Customer
             {
-                Id = 1,
+                Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 Firstname = "Max",
                 Lastname = "Mustermann",
                 Email = "max.mustermann@maerp.de",
@@ -29,7 +30,8 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                 {
                     new CustomerAddress
                     {
-                        Id = 1,
+                        Id = new Guid("22222222-2222-2222-2222-222222222221"),
+                        TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                         Firstname = "Max",
                         Lastname = "Mustermann",
                         CompanyName = "maERP",
@@ -39,11 +41,12 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                         City = "Musterstadt",
                         DefaultDeliveryAddress = true,
                         DefaultInvoiceAddress = true,
-                        CountryId = 1
+                        CountryId = new Guid("00000000-0000-0000-0000-000000000001") // Germany from CountryConfiguration
                     },
                     new CustomerAddress
                     {
-                        Id = 2,
+                        Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                        TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                         Firstname = "Max",
                         Lastname = "Mustermann",
                         CompanyName = "maERP",
@@ -53,7 +56,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                         City = "Musterstadt",
                         DefaultDeliveryAddress = true,
                         DefaultInvoiceAddress = true,
-                        CountryId = 1
+                        CountryId = new Guid("00000000-0000-0000-0000-000000000001") // Germany from CountryConfiguration
                     }
                 }
             }

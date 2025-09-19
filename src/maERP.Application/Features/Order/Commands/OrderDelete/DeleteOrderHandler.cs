@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Order.Commands.OrderDelete;
 
-public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, Result<int>>
+public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, Result<Guid>>
 {
     private readonly IAppLogger<DeleteOrderHandler> _logger;
     private readonly IOrderRepository _orderRepository;
@@ -18,11 +18,11 @@ public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand, Result<int
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
     }
 
-    public async Task<Result<int>> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting order with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new DeleteOrderValidator(_orderRepository);

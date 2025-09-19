@@ -12,5 +12,17 @@ public class ProductBaseValidator<T> : AbstractValidator<T> where T : IProductIn
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .MinimumLength(3).WithMessage("{PropertyName} must be more than {MinLength} characters.")
             .MaximumLength(255).WithMessage("{PropertyName} must be less than {MaxLength} characters.");
+
+        RuleFor(p => p.Name)
+            .NotNull().WithMessage("{PropertyName} is required.")
+            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .MaximumLength(255).WithMessage("{PropertyName} must be less than {MaxLength} characters.");
+
+        RuleFor(p => p.Price)
+            .NotNull().WithMessage("{PropertyName} is required.")
+            .GreaterThan(0).WithMessage("{PropertyName} must be greater than {ComparisonValue}.");
+
+        RuleFor(p => p.TaxClassId)
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
     }
 }

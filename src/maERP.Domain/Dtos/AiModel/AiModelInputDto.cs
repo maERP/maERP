@@ -5,7 +5,7 @@ namespace maERP.Domain.Dtos.AiModel;
 
 public class AiModelInputDto : IAiModelInputModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public AiModelType AiModelType { get; set; }
     public string Name { get; set; } = string.Empty;
     public string ApiUsername { get; set; } = string.Empty;

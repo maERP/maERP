@@ -21,4 +21,11 @@
 	<ItemGroup>
 		<ProjectReference Include="../../src/maERP.Server/maERP.Server.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Features\" />
+	  <Folder Include="Infrastructure\" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 </Project>

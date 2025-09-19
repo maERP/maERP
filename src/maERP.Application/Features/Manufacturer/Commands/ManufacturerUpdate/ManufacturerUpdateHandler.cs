@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Manufacturer.Commands.ManufacturerUpdate;
 
-public class ManufacturerUpdateHandler : IRequestHandler<ManufacturerUpdateCommand, Result<int>>
+public class ManufacturerUpdateHandler : IRequestHandler<ManufacturerUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<ManufacturerUpdateHandler> _logger;
     private readonly IManufacturerRepository _manufacturerRepository;
@@ -18,11 +18,11 @@ public class ManufacturerUpdateHandler : IRequestHandler<ManufacturerUpdateComma
         _manufacturerRepository = manufacturerRepository ?? throw new ArgumentNullException(nameof(manufacturerRepository));
     }
 
-    public async Task<Result<int>> Handle(ManufacturerUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(ManufacturerUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating manufacturer with ID: {Id}, Name: {Name}", request.Id, request.Name);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new ManufacturerUpdateValidator(_manufacturerRepository);
@@ -43,30 +43,37 @@ public class ManufacturerUpdateHandler : IRequestHandler<ManufacturerUpdateComma
 
         try
         {
-            // Manual mapping to domain entity
-            var manufacturerToUpdate = new Domain.Entities.Manufacturer
+            // Load existing manufacturer from database
+            var existingManufacturer = await _manufacturerRepository.GetByIdAsync(request.Id);
+
+            if (existingManufacturer == null)
             {
-                Id = request.Id,
-                Name = request.Name,
-                Street = request.Street,
-                City = request.City,
-                State = request.State,
-                Country = request.Country,
-                ZipCode = request.ZipCode,
-                Phone = request.Phone,
-                Email = request.Email,
-                Website = request.Website,
-                Logo = request.Logo
-            };
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add($"Manufacturer with ID {request.Id} not found");
+                return result;
+            }
+
+            // Update only the provided fields, preserving system fields like TenantId, DateCreated, etc.
+            existingManufacturer.Name = request.Name;
+            existingManufacturer.Street = request.Street;
+            existingManufacturer.City = request.City;
+            existingManufacturer.State = request.State;
+            existingManufacturer.Country = request.Country;
+            existingManufacturer.ZipCode = request.ZipCode;
+            existingManufacturer.Phone = request.Phone;
+            existingManufacturer.Email = request.Email;
+            existingManufacturer.Website = request.Website;
+            existingManufacturer.Logo = request.Logo;
 
             // Update in database
-            await _manufacturerRepository.UpdateAsync(manufacturerToUpdate);
+            await _manufacturerRepository.UpdateAsync(existingManufacturer);
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
-            result.Data = manufacturerToUpdate.Id;
+            result.Data = existingManufacturer.Id;
 
-            _logger.LogInformation("Successfully updated manufacturer with ID: {Id}", manufacturerToUpdate.Id);
+            _logger.LogInformation("Successfully updated manufacturer with ID: {Id}", existingManufacturer.Id);
         }
         catch (Exception ex)
         {

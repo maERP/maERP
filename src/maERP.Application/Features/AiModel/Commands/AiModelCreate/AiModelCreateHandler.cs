@@ -12,7 +12,7 @@ namespace maERP.Application.Features.AiModel.Commands.AiModelCreate;
 /// Implements IRequestHandler from MediatR to handle AiModelCreateCommand requests
 /// and return the ID of the newly created AI model wrapped in a Result.
 /// </summary>
-public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result<int>>
+public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -43,11 +43,11 @@ public class AiModelCreateHandler : IRequestHandler<AiModelCreateCommand, Result
     /// <param name="request">The AI model creation command with model details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created AI model if successful</returns>
-    public async Task<Result<int>> Handle(AiModelCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(AiModelCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new AI model with name: {Name}", request.Name);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new AiModelCreateValidator(_aiModelRepository);

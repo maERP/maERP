@@ -37,11 +37,10 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
 
-        // Register HttpClient and global HttpService
-        services.AddHttpClient<IHttpService, HttpService>();
-
-        // Register services
+        // Register HttpClient and services
+        services.AddHttpClient<HttpService>();
         services.AddSingleton<IHttpService, HttpService>();
+        services.AddSingleton<ITenantService, TenantService>();
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<IDialogService, DialogService>();
@@ -50,7 +49,8 @@ public partial class App : Application
         // Register ViewModels
         services.AddSingleton<MainViewModel>();
         services.AddTransient<LoginViewModel>();
-        
+        services.AddSingleton<TenantSelectorViewModel>();
+
         services.AddTransient<AiModelListViewModel>();
         services.AddTransient<AiModelDetailViewModel>();
         services.AddTransient<AiModelInputViewModel>();
@@ -71,13 +71,14 @@ public partial class App : Application
         services.AddTransient<ProductInputViewModel>();
         services.AddTransient<SalesChannelListViewModel>();
         services.AddTransient<SalesChannelDetailViewModel>();
-        services.AddTransient<SalesChannelInputViewModel>();        
-        services.AddTransient<TaxClassListViewModel>();        
-        services.AddTransient<TaxClassInputViewModel>();        
-        services.AddTransient<TaxClassDetailViewModel>();        
-        services.AddTransient<UserListViewModel>();        
-        services.AddTransient<UserDetailViewModel>();        
-        services.AddTransient<UserInputViewModel>();        
+        services.AddTransient<SalesChannelInputViewModel>();
+        services.AddTransient<TaxClassListViewModel>();
+        services.AddTransient<TaxClassInputViewModel>();
+        services.AddTransient<TaxClassDetailViewModel>();
+        services.AddTransient<TenantDetailViewModel>();
+        services.AddTransient<UserListViewModel>();
+        services.AddTransient<UserDetailViewModel>();
+        services.AddTransient<UserInputViewModel>();
         services.AddTransient<WarehouseListViewModel>();
         services.AddTransient<WarehouseDetailViewModel>();
         services.AddTransient<WarehouseInputViewModel>();

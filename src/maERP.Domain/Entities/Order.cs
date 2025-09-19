@@ -6,11 +6,11 @@ namespace maERP.Domain.Entities;
 
 public class Order : BaseEntity, IBaseEntity
 {
-    public int SalesChannelId { get; set; }
+    public Guid SalesChannelId { get; set; }
     public string RemoteOrderId { get; set; } = string.Empty;
 
     [Required]
-    public int CustomerId { get; set; }
+    public Guid CustomerId { get; set; }
     public Customer Customer { get; set; } = null!;
 
     [Required]
@@ -35,7 +35,7 @@ public class Order : BaseEntity, IBaseEntity
     public string DeliveryAddressPhone { get; set; } = string.Empty;
     public string DeliveryAddressStreet { get; set; } = string.Empty;
     public string DeliveryAddressCity { get; set; } = string.Empty;
-    public string DeliverAddressZip { get; set; } = string.Empty;
+    public string DeliveryAddressZip { get; set; } = string.Empty;
     public string DeliveryAddressCountry { get; set; } = string.Empty;
 
     public string InvoiceAddressFirstName { get; set; } = string.Empty;
@@ -52,6 +52,6 @@ public class Order : BaseEntity, IBaseEntity
     public bool ShippingInformationSent { get; set; }
 
     public DateTime DateOrdered { get; set; }
-    
+
     public ICollection<OrderHistory> OrderHistories { get; set; } = new List<OrderHistory>();
 }

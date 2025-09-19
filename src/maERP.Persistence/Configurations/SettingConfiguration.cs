@@ -6,9 +6,9 @@ namespace maERP.Persistence.Configurations;
 
 public class SettingConfiguration : IEntityTypeConfiguration<Setting>
 {
-    public void Configure(EntityTypeBuilder<Setting> modelBuilder)
+    public void Configure(EntityTypeBuilder<Setting> builder)
     {
-        modelBuilder.HasData(
+        builder.HasData(
             new Setting
             {
                 Key = "server_hostname",
@@ -16,7 +16,7 @@ public class SettingConfiguration : IEntityTypeConfiguration<Setting>
             }
         );
 
-        modelBuilder
+        builder
             .HasIndex(s => s.Key)
             .IsUnique();
     }

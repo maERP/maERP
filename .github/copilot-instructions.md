@@ -26,6 +26,7 @@ The codebase implements:
 - Repository pattern for data access
 - JWT authentication
 - No Automapper, using manual mapping instead
+- No MediatR, using manual Mediator instead
 - Avalonia with CommunityToolkit.MVVM for cross-platform UI
 - UI projects not using direct database acces, using REST-API instead
 
@@ -107,6 +108,7 @@ dotnet format
 - Authentication is JWT-based
 - maERP.Server is built with .NET 9 ASP.NET Core
 - maERP.Server uses MediatR for CQRS pattern
+- The project is multi tenancy enabled
 - The project uses Entity Framework Core for database access
 - The project uses C# 10+ features when appropriate
 - The project uses FluentValidation for validation
@@ -124,6 +126,10 @@ dotnet format
 - when implementing new features, always consider the performance and scalability of the solution
 - when implementing new features, always consider the security implications of the solution
 - when adding new axaml files, proof if the DataTemplate neeed to be added to MainView.axaml
-- IMPORTANT: when implementing new layouts, always heavily think about the user experience and usability 
+- IMPORTANT: data isolation of tenants must always be ensured. In most cases with global EF Core query filters.
+- IMPORTANT: when implementing new layouts, always heavily think about the user experience and usability
 - IMPORTANT: on layout changes, always look if there is a similar layout and write consistent code
 - When implementing new features or functions, YOU MUST look if there is a similar feature or function and write consistent code
+- Tests are using own Factory-Instances instead of shared Fixtures
+- Don't use FluentAssertions
+- Use RFC 7807 for problem details

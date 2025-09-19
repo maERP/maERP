@@ -6,17 +6,18 @@ namespace maERP.Persistence.Configurations;
 
 public class WarehouseConfiguration : IEntityTypeConfiguration<Warehouse>
 {
-    public void Configure(EntityTypeBuilder<Warehouse> modelBuilder)
+    public void Configure(EntityTypeBuilder<Warehouse> builder)
     {
-        modelBuilder.HasData(
+        builder.HasData(
             new Warehouse
             {
-                Id = 1,
+                Id = new Guid("33333333-3333-3333-3333-333333333333"),
+                TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 Name = "Hauptlager"
             }
         );
 
-        modelBuilder.Property(q => q.Name)
+        builder.Property(q => q.Name)
             .IsRequired()
             .HasMaxLength(100);
     }

@@ -4,6 +4,6 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Warehouse.Commands.WarehouseUpdate;
 
-public class WarehouseUpdateCommand : WarehouseInputDto, IRequest<Result<int>>
+public class WarehouseUpdateCommand : WarehouseInputDto, IRequest<Result<Guid>>
 {
 }

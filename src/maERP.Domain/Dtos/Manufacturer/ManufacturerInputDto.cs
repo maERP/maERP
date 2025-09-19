@@ -5,7 +5,7 @@ namespace maERP.Domain.Dtos.Manufacturer;
 
 public class ManufacturerInputDto : IManufacturerInputModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required(ErrorMessage = "Name is required")]
     [Display(Name = "Name")]
@@ -38,7 +38,6 @@ public class ManufacturerInputDto : IManufacturerInputModel
 
     [Display(Name = "Email")]
     [StringLength(255)]
-    [EmailAddress]
     public string Email { get; set; } = string.Empty;
 
     [Display(Name = "Website")]

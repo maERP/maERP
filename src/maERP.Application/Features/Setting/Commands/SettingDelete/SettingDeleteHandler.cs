@@ -5,7 +5,7 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Setting.Commands.SettingDelete;
 
-public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result<int>>
+public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result<Guid>>
 {
     private readonly IAppLogger<SettingDeleteHandler> _logger;
     private readonly ISettingRepository _settingRepository;
@@ -18,11 +18,11 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
     }
 
-    public async Task<Result<int>> Handle(SettingDeleteCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(SettingDeleteCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Deleting setting with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new SettingDeleteValidator(_settingRepository);
@@ -31,8 +31,21 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.BadRequest;
-            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+
+            // Check if the validation error is about setting not found
+            var settingNotFoundError = validationResult.Errors
+                .FirstOrDefault(e => e.ErrorMessage.Contains("Setting not found"));
+
+            if (settingNotFoundError != null)
+            {
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Setting not found.");
+            }
+            else
+            {
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
+            }
 
             _logger.LogWarning("Validation errors in delete request for {0}: {1}",
                 nameof(SettingDeleteCommand),
@@ -53,7 +66,7 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
             await _settingRepository.DeleteAsync(settingToDelete);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.NoContent;
             result.Data = settingToDelete.Id;
 
             _logger.LogInformation("Successfully deleted setting with ID: {Id}", settingToDelete.Id);
@@ -61,10 +74,29 @@ public class SettingDeleteHandler : IRequestHandler<SettingDeleteCommand, Result
         catch (Exception ex)
         {
             result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.InternalServerError;
-            result.Messages.Add($"An error occurred while deleting the setting: {ex.Message}");
 
-            _logger.LogError("Error deleting setting: {Message}", ex.Message);
+            var exceptionMessage = ex.Message ?? string.Empty;
+
+            // Treat missing entity scenarios (including concurrent deletes) as NotFound
+            if (ex is maERP.Application.Exceptions.NotFoundException ||
+                ex is InvalidOperationException && exceptionMessage.Contains("not found", StringComparison.OrdinalIgnoreCase) ||
+                exceptionMessage.Contains("does not exist in the store", StringComparison.OrdinalIgnoreCase) ||
+                exceptionMessage.Contains("entity that does not exist", StringComparison.OrdinalIgnoreCase) ||
+                exceptionMessage.Contains("not found", StringComparison.OrdinalIgnoreCase))
+            {
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("Setting not found.");
+                _logger.LogWarning(
+                    "Setting with ID: {Id} not found for deletion. Reason: {Reason}",
+                    request.Id,
+                    exceptionMessage);
+            }
+            else
+            {
+                result.StatusCode = ResultStatusCode.InternalServerError;
+                result.Messages.Add($"An error occurred while deleting the setting: {exceptionMessage}");
+                _logger.LogError("Error deleting setting: {Message}", exceptionMessage);
+            }
         }
 
         return result;

@@ -14,7 +14,7 @@ public class ManufacturerUpdateValidator : ManufacturerBaseValidator<Manufacture
 
         RuleFor(p => p.Id)
             .NotNull().WithMessage("{PropertyName} must not be null.")
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
         RuleFor(m => m)
             .MustAsync(ManufacturerExists).WithMessage("Manufacturer not found")

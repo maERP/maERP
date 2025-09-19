@@ -32,7 +32,7 @@ public class CustomerImportRepository : ICustomerImportRepository
         if (existingCustomer == null && !string.IsNullOrEmpty(importCustomer.Email))
         {
             existingCustomer = await _customerRepository.GetCustomerByEmailAsync(importCustomer.Email);
-            
+
             // Wenn nach E-Mail gefunden, Verknüpfung mit SalesChannel herstellen
             if (existingCustomer != null)
             {
@@ -40,7 +40,7 @@ public class CustomerImportRepository : ICustomerImportRepository
                 _logger.LogInformation($"CustomerSalesChannel hinzugefügt für Kunden {existingCustomer.Id}");
             }
         }
-        
+
         // Wenn Kunde nicht existiert, neu anlegen
         if (existingCustomer == null)
         {
@@ -60,11 +60,11 @@ public class CustomerImportRepository : ICustomerImportRepository
 
             await _customerRepository.CreateAsync(newCustomer);
             _logger.LogInformation($"Kunde {importCustomer.Email} erstellt");
-            
+
             // Verknüpfung mit SalesChannel herstellen
             await _customerRepository.AddCustomerToSalesChannelAsync(newCustomer.Id, salesChannel.Id, importCustomer.RemoteCustomerId);
             _logger.LogInformation($"CustomerSalesChannel hinzugefügt für Kunden {newCustomer.Id}");
-            
+
             existingCustomer = newCustomer;
         }
         else
@@ -75,25 +75,25 @@ public class CustomerImportRepository : ICustomerImportRepository
             existingCustomer.Lastname = !string.IsNullOrEmpty(importCustomer.Lastname) ? importCustomer.Lastname : existingCustomer.Lastname;
             existingCustomer.CompanyName = !string.IsNullOrEmpty(importCustomer.CompanyName) ? importCustomer.CompanyName : existingCustomer.CompanyName;
             existingCustomer.Phone = !string.IsNullOrEmpty(importCustomer.Phone) ? importCustomer.Phone : existingCustomer.Phone;
-            
+
             await _customerRepository.UpdateAsync(existingCustomer);
             _logger.LogInformation($"Kunde {existingCustomer.Id} aktualisiert");
         }
-        
+
         // Adressen verarbeiten
         if (importCustomer.BillingAddress != null)
         {
             await ProcessAddress(existingCustomer, importCustomer.BillingAddress);
         }
-        
-        if (importCustomer.ShippingAddress != null && 
-            (importCustomer.BillingAddress == null || 
+
+        if (importCustomer.ShippingAddress != null &&
+            (importCustomer.BillingAddress == null ||
              !AreAddressesEqual(importCustomer.BillingAddress, importCustomer.ShippingAddress)))
         {
             await ProcessAddress(existingCustomer, importCustomer.ShippingAddress);
         }
     }
-    
+
     private async Task ProcessAddress(Customer customer, SalesChannelImportCustomerAddress address)
     {
         // Land aus ISO-Code ermitteln
@@ -103,15 +103,15 @@ public class CustomerImportRepository : ICustomerImportRepository
             _logger.LogWarning($"Land mit ISO-Code {address.Country} nicht gefunden");
             return;
         }
-        
+
         // Prüfen, ob Adresse bereits existiert
         var existingAddresses = await _customerRepository.GetCustomerAddressByCustomerIdAsync(customer.Id);
-        bool addressExists = existingAddresses.Any(a => 
-            a.Street == address.Street && 
-            a.City == address.City && 
-            a.Zip == address.Zip && 
+        bool addressExists = existingAddresses.Any(a =>
+            a.Street == address.Street &&
+            a.City == address.City &&
+            a.Zip == address.Zip &&
             a.CountryId == country.Id);
-        
+
         if (!addressExists)
         {
             var newAddress = new CustomerAddress
@@ -125,12 +125,12 @@ public class CustomerImportRepository : ICustomerImportRepository
                 Zip = address.Zip,
                 CountryId = country.Id
             };
-            
+
             await _customerRepository.AddCustomerAddressAsync(newAddress);
             _logger.LogInformation($"Neue Adresse für Kunden {customer.Id} hinzugefügt");
         }
     }
-    
+
     private bool AreAddressesEqual(SalesChannelImportCustomerAddress address1, SalesChannelImportCustomerAddress address2)
     {
         return address1.Street == address2.Street &&
@@ -138,4 +138,4 @@ public class CustomerImportRepository : ICustomerImportRepository
                address1.Zip == address2.Zip &&
                address1.Country == address2.Country;
     }
-} 
+}

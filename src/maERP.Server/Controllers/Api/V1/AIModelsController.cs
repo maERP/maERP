@@ -34,10 +34,16 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     // GET: api/v1/<AiModelsController>/5
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AiModelDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<AiModelDetailDto>> GetDetails(string id)
     {
-        var response = await mediator.Send(new AiModelDetailQuery { Id = id });
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            return BadRequest(Result<AiModelDetailDto>.Fail(ResultStatusCode.BadRequest, "Invalid GUID format"));
+        }
+        
+        var response = await mediator.Send(new AiModelDetailQuery { Id = guidId });
         return StatusCode((int)response.StatusCode, response);
     }
 
@@ -57,9 +63,14 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<AiModelDetailDto>> Update(int id, AiModelUpdateCommand aiModelUpdateCommand)
+    public async Task<ActionResult<AiModelDetailDto>> Update(string id, AiModelUpdateCommand aiModelUpdateCommand)
     {
-        aiModelUpdateCommand.Id = id;
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            return BadRequest(Result<Guid>.Fail(ResultStatusCode.BadRequest, "Invalid GUID format"));
+        }
+        
+        aiModelUpdateCommand.Id = guidId;
         var response = await mediator.Send(aiModelUpdateCommand);
         return StatusCode((int)response.StatusCode, response);
     }
@@ -70,9 +81,14 @@ public class AiModelsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(string id)
     {
-        var command = new AiModelDeleteCommand { Id = id };
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            return BadRequest(Result.Fail("Invalid GUID format"));
+        }
+        
+        var command = new AiModelDeleteCommand { Id = guidId };
         await mediator.Send(command);
         return NoContent();
     }

@@ -1,5 +1,6 @@
 ﻿using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
+using maERP.Application.Contracts.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.Tests;
@@ -13,7 +14,22 @@ public class ApplicationDbContextTests
         var dbOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
 
-        _applicationDbContext = new ApplicationDbContext(dbOptions);
+        var mockTenantContext = new TestTenantContext();
+
+        _applicationDbContext = new ApplicationDbContext(dbOptions, mockTenantContext);
+    }
+
+    private class TestTenantContext : ITenantContext
+    {
+        private Guid? _tenantId = null;
+        private HashSet<Guid> _assignedTenantIds = new HashSet<Guid>();
+
+        public Guid? GetCurrentTenantId() => _tenantId;
+        public void SetCurrentTenantId(Guid? tenantId) => _tenantId = tenantId;
+        public bool HasTenant() => _tenantId.HasValue;
+        public IReadOnlyCollection<Guid> GetAssignedTenantIds() => _assignedTenantIds;
+        public void SetAssignedTenantIds(IEnumerable<Guid> tenantIds) => _assignedTenantIds = new HashSet<Guid>(tenantIds ?? new List<Guid>());
+        public bool IsAssignedToTenant(Guid tenantId) => _assignedTenantIds.Contains(tenantId);
     }
 
     [Fact]
@@ -22,7 +38,7 @@ public class ApplicationDbContextTests
         // Arrange
         var warehouse = new Warehouse
         {
-            Id = 1,
+            Id = Guid.NewGuid(),
             Name = "Test Warehouse 1"
         };
 
@@ -40,7 +56,7 @@ public class ApplicationDbContextTests
         // Arrange
         var warehouse = new Warehouse
         {
-            Id = 1,
+            Id = Guid.NewGuid(),
             Name = "Test Warehouse 1"
         };
 

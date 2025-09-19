@@ -13,5 +13,5 @@ public class SettingDetailQuery : IRequest<Result<SettingDetailDto>>
     /// <summary>
     /// The unique identifier of the setting to retrieve
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

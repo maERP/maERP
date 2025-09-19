@@ -4,6 +4,6 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.TaxClass.Commands.TaxClassUpdate;
 
-public class TaxClassUpdateCommand : TaxClassInputDto, IRequest<Result<int>>
+public class TaxClassUpdateCommand : TaxClassInputDto, IRequest<Result<Guid>>
 {
 }

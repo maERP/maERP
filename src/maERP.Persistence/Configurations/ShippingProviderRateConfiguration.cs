@@ -10,13 +10,13 @@ public class ShippingProviderRateConfiguration : IEntityTypeConfiguration<Shippi
     {
         builder.Property(e => e.MaxLength)
             .HasPrecision(18, 4);
-            
+
         builder.Property(e => e.MaxWidth)
             .HasPrecision(18, 4);
-            
+
         builder.Property(e => e.MaxHeight)
             .HasPrecision(18, 4);
-            
+
         builder.Property(e => e.MaxWeight)
             .HasPrecision(18, 4);
     }

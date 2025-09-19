@@ -27,19 +27,19 @@ public partial class OrderDetailViewModel : ViewModelBase
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
-    private int orderId;
+    private Guid orderId;
 
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && Order != null;
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToOrderEdit { get; set; }
+    public Func<Guid, Task>? NavigateToOrderEdit { get; set; }
 
     // Address properties for better UI binding
     public string DeliveryAddress => Order != null
         ? $"{Order.DeliveryAddressCompanyName}{(!string.IsNullOrEmpty(Order.DeliveryAddressCompanyName) ? "\n" : "")}" +
           $"{Order.DeliveryAddressFirstName} {Order.DeliveryAddressLastName}\n" +
           $"{Order.DeliveryAddressStreet}\n" +
-          $"{Order.DeliverAddressZip} {Order.DeliveryAddressCity}\n" +
+          $"{Order.DeliveryAddressZip} {Order.DeliveryAddressCity}\n" +
           $"{Order.DeliveryAddressCountry}" +
           (!string.IsNullOrEmpty(Order.DeliveryAddressPhone) ? $"\nTel: {Order.DeliveryAddressPhone}" : "")
         : string.Empty;
@@ -66,7 +66,7 @@ public partial class OrderDetailViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int orderId)
+    public async Task InitializeAsync(Guid orderId)
     {
         OrderId = orderId;
         await LoadOrderAsync();
@@ -75,7 +75,7 @@ public partial class OrderDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadOrderAsync()
     {
-        if (OrderId <= 0) return;
+        if (OrderId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;

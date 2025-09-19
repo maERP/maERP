@@ -14,7 +14,7 @@ public class SettingUpdateValidator : SettingBaseValidator<SettingUpdateCommand>
 
         RuleFor(p => p.Id)
             .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
         RuleFor(s => s)
             .MustAsync(IsUnique).WithMessage("Setting is not unique.");

@@ -59,7 +59,7 @@ public class InvoiceDetailHandler : IRequestHandler<InvoiceDetailQuery, Result<I
         try
         {
             // Retrieve invoice with all related details from the repository
-            var invoice = await _invoiceRepository.GetByIdAsync(request.Id);
+            var invoice = await _invoiceRepository.GetInvoiceWithDetailsAsync(request.Id);
 
             // If invoice not found, return a not found result
             if (invoice == null)

@@ -18,7 +18,7 @@ public partial class ManufacturerInputViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
     [NotifyPropertyChangedFor(nameof(PageTitle))]
-    private int manufacturerId;
+    private Guid manufacturerId;
 
     [ObservableProperty]
     [Required(ErrorMessage = "Herstellername ist erforderlich")]
@@ -76,12 +76,12 @@ public partial class ManufacturerInputViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
     private bool isSaving;
 
-    public bool IsEditMode => ManufacturerId > 0;
+    public bool IsEditMode => ManufacturerId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"🏭 Hersteller #{ManufacturerId} bearbeiten" : "🏭 Neuen Hersteller erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToManufacturerDetail { get; set; }
+    public Func<Guid, Task>? NavigateToManufacturerDetail { get; set; }
 
     public ManufacturerInputViewModel(IHttpService httpService, IDebugService debugService)
     {
@@ -89,10 +89,10 @@ public partial class ManufacturerInputViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int manufacturerId = 0)
+    public async Task InitializeAsync(Guid manufacturerId = default)
     {
         ManufacturerId = manufacturerId;
-        
+
         if (IsEditMode)
         {
             await LoadAsync();
@@ -106,7 +106,7 @@ public partial class ManufacturerInputViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAsync()
     {
-        if (ManufacturerId <= 0) return;
+        if (ManufacturerId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -160,11 +160,11 @@ public partial class ManufacturerInputViewModel : ViewModelBase
         try
         {
             var dto = CreateDtoFromForm();
-            
+
             if (IsEditMode)
             {
                 // Update existing manufacturer
-                var result = await _httpService.PutAsync<ManufacturerInputDto, int>($"manufacturers/{ManufacturerId}", dto);
+                var result = await _httpService.PutAsync<ManufacturerInputDto, Guid>($"manufacturers/{ManufacturerId}", dto);
 
                 if (result == null)
                 {
@@ -174,7 +174,7 @@ public partial class ManufacturerInputViewModel : ViewModelBase
                 else if (result.Succeeded)
                 {
                     _debugService.LogInfo($"Successfully updated manufacturer {ManufacturerId}");
-                    
+
                     if (NavigateToManufacturerDetail != null)
                     {
                         await NavigateToManufacturerDetail(ManufacturerId);
@@ -203,7 +203,7 @@ public partial class ManufacturerInputViewModel : ViewModelBase
                 else if (result.Succeeded && result.Data != null)
                 {
                     _debugService.LogInfo($"Successfully created manufacturer {result.Data.Id}");
-                    
+
                     if (NavigateToManufacturerDetail != null)
                     {
                         await NavigateToManufacturerDetail(result.Data.Id);

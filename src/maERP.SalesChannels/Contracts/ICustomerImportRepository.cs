@@ -6,4 +6,4 @@ namespace maERP.SalesChannels.Contracts;
 public interface ICustomerImportRepository
 {
     Task ImportOrUpdateFromSalesChannel(SalesChannel salesChannel, SalesChannelImportCustomer importCustomer);
-} 
+}

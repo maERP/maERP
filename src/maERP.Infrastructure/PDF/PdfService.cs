@@ -35,14 +35,18 @@ public class PdfService : IPdfService
     public PdfService(ISettingRepository settingRepository)
     {
         // Den PDFsharp FontResolver initialisieren, falls er noch nicht gesetzt ist
-        if (GlobalFontSettings.FontResolver == null)
+        try
         {
-            GlobalFontSettings.FontResolver = new StandardFontResolver();
+            if (GlobalFontSettings.FontResolver == null)
+            {
+                GlobalFontSettings.FontResolver = new CustomFontResolver();
+            }
         }
-        
-        // Explizit den FontCache aktivieren um Null-Referenzen zu verhindern
-        PdfSharp.Fonts.GlobalFontSettings.FontResolver = new StandardFontResolver();
-        
+        catch
+        {
+            // Ignore font resolver issues - wird zur Laufzeit behandelt
+        }
+
         _settingRepository = settingRepository;
         LoadCompanySettings();
     }
@@ -50,7 +54,7 @@ public class PdfService : IPdfService
     private void LoadCompanySettings()
     {
         var settings = _settingRepository.GetAllAsync().Result;
-        
+
         if (settings != null)
         {
             _companyName = GetSettingValue(settings, "Company.Name");
@@ -116,7 +120,7 @@ public class PdfService : IPdfService
                 pdfRenderer.PdfDocument.Save(stream, false);
                 return stream.ToArray();
             }
-            
+
             pdfRenderer.PdfDocument.Save(outputPath);
             return null;
         }
@@ -133,7 +137,7 @@ public class PdfService : IPdfService
     {
         // Sicherstellen, dass die richtige Kodierung für deutsche Zeichen verwendet wird
         Document document = new Document();
-        
+
         // Stil für den gesamten Text definieren
         var style = document.Styles["Normal"];
         style!.Font.Name = "Helvetica"; // Standard-PDF-Schriftart verwenden
@@ -160,35 +164,35 @@ public class PdfService : IPdfService
 
         // Abschnitt erstellen
         var section = document.AddSection();
-        
+
         // PageSetup für den Abschnitt setzen
         section.PageSetup.PageFormat = PageFormat.A4;
         section.PageSetup.TopMargin = Unit.FromCentimeter(2);
         section.PageSetup.LeftMargin = Unit.FromCentimeter(2);
         section.PageSetup.RightMargin = Unit.FromCentimeter(2);
         section.PageSetup.BottomMargin = Unit.FromCentimeter(2);
-        
+
         // Header mit Logo und Firmeninfos
         CreateHeader(section, invoice);
-        
+
         // Rechnungsadresse und ggf. Lieferadresse
         CreateAddresses(section, invoice);
-        
+
         // Artikeltabelle
         CreateItemsTable(section, invoice);
-        
+
         // Zusammenfassung
         CreateSummary(section, invoice);
-        
+
         // Zahlungsinfos
         CreatePaymentInfo(section, invoice);
-        
+
         // Anmerkungen
         if (!string.IsNullOrEmpty(invoice.Notes))
         {
             CreateNotes(section, invoice);
         }
-        
+
         // Footer
         CreateFooter(section);
 
@@ -200,28 +204,28 @@ public class PdfService : IPdfService
         // Sicherstellen, dass section nicht null ist
         if (section == null)
             throw new ArgumentNullException(nameof(section));
-            
+
         // Tabelle erstellen und konfigurieren
         var table = section.AddTable();
         if (table == null)
             throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
-            
-        table.Borders = table.Borders ?? new Borders();
+
+        table.Borders = new Borders();
         table.Borders.Visible = false;
-        
+
         // Spalten hinzufügen
         var column1 = table.AddColumn(Unit.FromCentimeter(10));
         var column2 = table.AddColumn(Unit.FromCentimeter(7));
 
         // Zeile erstellen
         var row = table.AddRow();
-        if (row == null || row.Cells.Count < 2)
-            throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
+        if (row == null)
+            throw new InvalidOperationException("Tabellenzeile konnte nicht erstellt werden");
 
         // Linke Spalte: Logo und Firmeninfos
         var cell = row.Cells[0];
         var paragraph = cell.AddParagraph();
-        
+
         if (!string.IsNullOrEmpty(_logoPath) && File.Exists(_logoPath))
         {
             var logo = paragraph.AddImage(_logoPath);
@@ -248,7 +252,7 @@ public class PdfService : IPdfService
 
         paragraph = cell.AddParagraph($"Rechnungsnummer: {invoice.InvoiceNumber}");
         paragraph.Format.Alignment = ParagraphAlignment.Right;
-        
+
         paragraph = cell.AddParagraph($"Rechnungsdatum: {invoice.InvoiceDate:dd.MM.yyyy}");
         paragraph.Format.Alignment = ParagraphAlignment.Right;
 
@@ -269,42 +273,42 @@ public class PdfService : IPdfService
     {
         if (section == null)
             throw new ArgumentNullException(nameof(section));
-            
+
         var table = section.AddTable();
         if (table == null)
             throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
-            
-        table.Borders = table.Borders ?? new Borders();
+
+        table.Borders = new Borders();
         table.Borders.Visible = false;
-        
+
         table.AddColumn(Unit.FromCentimeter(8.5));
         table.AddColumn(Unit.FromCentimeter(8.5));
-        
+
         var row = table.AddRow();
-        if (row == null || row.Cells.Count < 2)
+        if (row == null)
             throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
 
         // Rechnungsadresse
         var cell = row.Cells[0];
         var paragraph = cell.AddParagraph("Rechnungsadresse:");
         paragraph.Format.Font.Bold = true;
-        
-        var recipientName = !string.IsNullOrEmpty(invoice.InvoiceAddressCompanyName) 
-            ? invoice.InvoiceAddressCompanyName 
+
+        var recipientName = !string.IsNullOrEmpty(invoice.InvoiceAddressCompanyName)
+            ? invoice.InvoiceAddressCompanyName
             : $"{invoice.InvoiceAddressFirstName} {invoice.InvoiceAddressLastName}";
 
         cell.AddParagraph(recipientName);
         cell.AddParagraph(invoice.InvoiceAddressStreet);
         cell.AddParagraph($"{invoice.InvoiceAddressZip} {invoice.InvoiceAddressCity}");
         cell.AddParagraph(invoice.InvoiceAddressCountry);
-        
+
         if (!string.IsNullOrEmpty(invoice.InvoiceAddressPhone))
         {
             cell.AddParagraph($"Tel: {invoice.InvoiceAddressPhone}");
         }
 
         // Lieferadresse (wenn unterschiedlich)
-        if (!string.IsNullOrEmpty(invoice.DeliveryAddressStreet) && 
+        if (!string.IsNullOrEmpty(invoice.DeliveryAddressStreet) &&
             (invoice.DeliveryAddressStreet != invoice.InvoiceAddressStreet ||
              invoice.DeliveryAddressZip != invoice.InvoiceAddressZip ||
              invoice.DeliveryAddressCity != invoice.InvoiceAddressCity))
@@ -312,16 +316,16 @@ public class PdfService : IPdfService
             cell = row.Cells[1];
             paragraph = cell.AddParagraph("Lieferadresse:");
             paragraph.Format.Font.Bold = true;
-            
-            recipientName = !string.IsNullOrEmpty(invoice.DeliveryAddressCompanyName) 
-                ? invoice.DeliveryAddressCompanyName 
+
+            recipientName = !string.IsNullOrEmpty(invoice.DeliveryAddressCompanyName)
+                ? invoice.DeliveryAddressCompanyName
                 : $"{invoice.DeliveryAddressFirstName} {invoice.DeliveryAddressLastName}";
 
             cell.AddParagraph(recipientName);
             cell.AddParagraph(invoice.DeliveryAddressStreet);
             cell.AddParagraph($"{invoice.DeliveryAddressZip} {invoice.DeliveryAddressCity}");
             cell.AddParagraph(invoice.DeliveryAddressCountry);
-            
+
             if (!string.IsNullOrEmpty(invoice.DeliveryAddressPhone))
             {
                 cell.AddParagraph($"Tel: {invoice.DeliveryAddressPhone}");
@@ -336,14 +340,14 @@ public class PdfService : IPdfService
     {
         if (section == null)
             throw new ArgumentNullException(nameof(section));
-            
+
         var table = section.AddTable();
         if (table == null)
             throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
-            
-        table.Borders = table.Borders ?? new Borders();
+
+        table.Borders = new Borders();
         table.Borders.Width = 0.5;
-        
+
         // Spalten definieren
         table.AddColumn(Unit.FromCentimeter(7)); // Beschreibung
         table.AddColumn(Unit.FromCentimeter(2)); // Menge
@@ -354,12 +358,12 @@ public class PdfService : IPdfService
 
         // Header-Zeile
         var headerRow = table.AddRow();
-        if (headerRow == null || headerRow.Cells.Count < 6)
+        if (headerRow == null)
             throw new InvalidOperationException("Header-Zeile konnte nicht korrekt erstellt werden");
         headerRow.HeadingFormat = true;
         headerRow.Format.Font.Bold = true;
         headerRow.Shading.Color = new Color(230, 230, 230);
-        
+
         headerRow.Cells[0].AddParagraph("Artikel");
         headerRow.Cells[1].AddParagraph("Menge");
         headerRow.Cells[2].AddParagraph("Einheit");
@@ -371,34 +375,34 @@ public class PdfService : IPdfService
         foreach (var item in invoice.InvoiceItems)
         {
             var row = table.AddRow();
-            
+
             // Artikel-Beschreibung
             var cell = row.Cells[0];
             var paragraph = cell.AddParagraph(item.Name);
             paragraph.Format.Font.Bold = true;
-            
+
             if (!string.IsNullOrEmpty(item.Description))
             {
                 cell.AddParagraph(item.Description);
             }
-            
+
             if (!string.IsNullOrEmpty(item.SKU))
             {
                 cell.AddParagraph($"Art.-Nr.: {item.SKU}");
             }
-            
+
             // Menge
             row.Cells[1].AddParagraph(item.Quantity.ToString("0.##", CultureInfo.InvariantCulture));
-            
+
             // Einheit
             row.Cells[2].AddParagraph(item.Unit);
-            
+
             // Einzelpreis
             row.Cells[3].AddParagraph($"{item.UnitPrice:0.00} €");
-            
+
             // MwSt.
             row.Cells[4].AddParagraph($"{item.TaxRate:0.#}%");
-            
+
             // Gesamtpreis
             row.Cells[5].AddParagraph($"{item.TotalPrice:0.00} €");
         }
@@ -411,19 +415,19 @@ public class PdfService : IPdfService
     {
         if (section == null)
             throw new ArgumentNullException(nameof(section));
-            
+
         var table = section.AddTable();
         if (table == null)
             throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
-            
-        table.Borders = table.Borders ?? new Borders();
+
+        table.Borders = new Borders();
         table.Borders.Visible = false;
-        
+
         table.AddColumn(Unit.FromCentimeter(12));
         table.AddColumn(Unit.FromCentimeter(5));
-        
+
         var row = table.AddRow();
-        if (row == null || row.Cells.Count < 2)
+        if (row == null)
             throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
 
         // Leere linke Zelle
@@ -432,7 +436,7 @@ public class PdfService : IPdfService
         // Rechte Zelle: Zusammenfassung
         var cell = row.Cells[1];
         var paragraph = cell.AddParagraph($"Zwischensumme (netto): {invoice.Subtotal:0.00} €");
-        
+
         // MwSt. nach Sätzen gruppieren
         var taxGroups = invoice.InvoiceItems
             .GroupBy(item => item.TaxRate)
@@ -452,7 +456,7 @@ public class PdfService : IPdfService
         {
             cell.AddParagraph($"Versandkosten: {invoice.ShippingCost:0.00} €");
         }
-        
+
         // Gesamtbetrag
         paragraph = cell.AddParagraph($"Gesamtbetrag: {invoice.Total:0.00} €");
         paragraph.Format.Font.Bold = true;
@@ -460,7 +464,7 @@ public class PdfService : IPdfService
         paragraph.Format.Borders.Top.Width = 1;
         paragraph.Format.Borders.Top.Color = Colors.Black;
         paragraph.Format.SpaceBefore = 5;
-        
+
         // Abstand nach Zusammenfassung
         section.AddParagraph().Format.SpaceAfter = Unit.FromCentimeter(0.5);
     }
@@ -470,21 +474,21 @@ public class PdfService : IPdfService
         var paragraph = section.AddParagraph("Zahlungsinformationen:");
         paragraph.Format.Font.Bold = true;
         paragraph.Format.SpaceBefore = Unit.FromCentimeter(0.5);
-        
+
         section.AddParagraph($"Zahlungsmethode: {invoice.PaymentMethod}");
-        
+
         if (!string.IsNullOrEmpty(invoice.PaymentTransactionId))
         {
             section.AddParagraph($"Transaktions-ID: {invoice.PaymentTransactionId}");
         }
-        
+
         section.AddParagraph($"Zahlungsstatus: {invoice.PaymentStatus}");
-        
+
         // Bankverbindung
         paragraph = section.AddParagraph("Bankverbindung:");
         paragraph.Format.Font.Bold = true;
         paragraph.Format.SpaceBefore = Unit.FromCentimeter(0.3);
-        
+
         section.AddParagraph($"Bank: {_companyBankName}");
         section.AddParagraph($"IBAN: {_companyIban}");
         section.AddParagraph($"BIC: {_companyBic}");
@@ -495,7 +499,7 @@ public class PdfService : IPdfService
         var paragraph = section.AddParagraph("Anmerkungen:");
         paragraph.Format.Font.Bold = true;
         paragraph.Format.SpaceBefore = Unit.FromCentimeter(0.5);
-        
+
         section.AddParagraph(invoice.Notes);
     }
 
@@ -503,47 +507,47 @@ public class PdfService : IPdfService
     {
         if (section == null)
             throw new ArgumentNullException(nameof(section));
-            
+
         var paragraph = section.AddParagraph();
         paragraph.Format.SpaceBefore = Unit.FromCentimeter(1);
-        paragraph.Format.Borders = paragraph.Format.Borders ?? new Borders();
-        paragraph.Format.Borders.Top = paragraph.Format.Borders.Top ?? new Border();
+        paragraph.Format.Borders = new Borders();
+        paragraph.Format.Borders.Top = new Border();
         paragraph.Format.Borders.Top.Width = 1;
         paragraph.Format.Borders.Top.Color = new Color(180, 180, 180);
-        
+
         var table = section.AddTable();
         if (table == null)
             throw new InvalidOperationException("Tabelle konnte nicht erstellt werden");
-            
-        table.Borders = table.Borders ?? new Borders();
+
+        table.Borders = new Borders();
         table.Borders.Visible = false;
-        
+
         table.AddColumn(Unit.FromCentimeter(5.5));
         table.AddColumn(Unit.FromCentimeter(5.5));
         table.AddColumn(Unit.FromCentimeter(6));
-        
+
         var row = table.AddRow();
-        if (row == null || row.Cells.Count < 3)
+        if (row == null)
             throw new InvalidOperationException("Tabellenzeile konnte nicht korrekt erstellt werden");
-        
+
         // Firmendaten
         var cell = row.Cells[0];
         cell.AddParagraph(_companyName);
         cell.AddParagraph($"USt-IdNr.: {_companyVatId}");
         cell.AddParagraph($"Steuernummer: {_companyTaxId}");
-        
+
         // Bankdaten
         cell = row.Cells[1];
         cell.AddParagraph(_companyBankName);
         cell.AddParagraph($"IBAN: {_companyIban}");
         cell.AddParagraph($"BIC: {_companyBic}");
-        
+
         // Kontaktdaten
         cell = row.Cells[2];
         cell.AddParagraph(_companyPhone);
         cell.AddParagraph(_companyEmail);
         cell.AddParagraph(_companyWebsite);
-        
+
         // Seitenzahl
         paragraph = section.AddParagraph("Seite ");
         paragraph.Format.Alignment = ParagraphAlignment.Center;

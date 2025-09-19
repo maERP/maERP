@@ -4,9 +4,9 @@ namespace maERP.Domain.Dtos.Order;
 
 public class OrderHistoryDto
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
-    public int OrderId { get; set; }
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
+    public Guid OrderId { get; set; }
     public string Action { get; set; } = string.Empty;
     public OrderStatus? OrderStatusOld { get; set; }
     public OrderStatus? OrderStatusNew { get; set; }

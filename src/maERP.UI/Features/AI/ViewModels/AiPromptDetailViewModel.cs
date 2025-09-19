@@ -25,7 +25,7 @@ public partial class AiPromptDetailViewModel : ViewModelBase
     private string errorMessage = string.Empty;
 
     [ObservableProperty]
-    private int aiPromptId;
+    private Guid aiPromptId;
 
     [ObservableProperty]
     private bool isDeleting;
@@ -33,7 +33,7 @@ public partial class AiPromptDetailViewModel : ViewModelBase
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage) && AiPrompt != null;
 
     public Action? GoBackAction { get; set; }
-    public Func<int, Task>? NavigateToEditAiPrompt { get; set; }
+    public Func<Guid, Task>? NavigateToEditAiPrompt { get; set; }
 
     public bool HasIdentifier => AiPrompt != null && !string.IsNullOrEmpty(AiPrompt.Identifier);
     public bool HasPromptText => AiPrompt != null && !string.IsNullOrEmpty(AiPrompt.PromptText);
@@ -44,7 +44,7 @@ public partial class AiPromptDetailViewModel : ViewModelBase
         _debugService = debugService;
     }
 
-    public async Task InitializeAsync(int aiPromptId)
+    public async Task InitializeAsync(Guid aiPromptId)
     {
         AiPromptId = aiPromptId;
         await LoadAiPromptAsync();
@@ -53,7 +53,7 @@ public partial class AiPromptDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task LoadAiPromptAsync()
     {
-        if (AiPromptId <= 0) return;
+        if (AiPromptId == Guid.Empty) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -110,7 +110,7 @@ public partial class AiPromptDetailViewModel : ViewModelBase
     private async Task EditAiPrompt()
     {
         if (AiPrompt == null || NavigateToEditAiPrompt == null) return;
-        
+
         await NavigateToEditAiPrompt(AiPrompt.Id);
     }
 
@@ -126,7 +126,7 @@ public partial class AiPromptDetailViewModel : ViewModelBase
     private void TestPrompt()
     {
         if (AiPrompt == null) return;
-        
+
         _debugService.LogDebug($"Testing prompt {AiPrompt.Id} with model {AiPrompt.AiModelId}");
     }
 
@@ -179,11 +179,11 @@ public partial class AiPromptDetailViewModel : ViewModelBase
         try
         {
             if (AiPrompt == null) return false;
-            
+
             // For now we'll use debug output to simulate confirmation
             // In a real implementation, you'd show a confirmation dialog
             _debugService.LogDebug($"Confirming deletion of AI prompt: {AiPrompt.Identifier}");
-            
+
             // Simulate user confirming deletion
             await Task.Delay(100);
             return true;

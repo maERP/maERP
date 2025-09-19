@@ -4,6 +4,6 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Setting.Commands.SettingUpdate;
 
-public class SettingUpdateCommand : SettingInputDto, IRequest<Result<int>>
+public class SettingUpdateCommand : SettingInputDto, IRequest<Result<Guid>>
 {
 }

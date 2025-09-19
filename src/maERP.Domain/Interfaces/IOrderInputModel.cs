@@ -4,9 +4,9 @@ namespace maERP.Domain.Interfaces;
 
 public interface IOrderInputModel
 {
-    int SalesChannelId { get; }
+    Guid SalesChannelId { get; }
     string RemoteOrderId { get; }
-    int CustomerId { get; }
+    Guid CustomerId { get; }
     OrderStatus Status { get; }
     decimal Subtotal { get; }
     decimal ShippingCost { get; }
@@ -24,7 +24,7 @@ public interface IOrderInputModel
     string DeliveryAddressPhone { get; }
     string DeliveryAddressStreet { get; }
     string DeliveryAddressCity { get; }
-    string DeliverAddressZip { get; }
+    string DeliveryAddressZip { get; }
     string DeliveryAddressCountry { get; }
     string InvoiceAddressFirstName { get; }
     string InvoiceAddressLastName { get; }

@@ -12,7 +12,8 @@ namespace maERP.Application.Specifications
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = w => (w.Key.Contains(searchString));
+                Criteria = w => (w.Key.ToLower().Contains(searchString.ToLower()) ||
+                                w.Value.ToLower().Contains(searchString.ToLower()));
             }
             else
             {
@@ -20,7 +21,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public SettingFilterSpecification(int id)
+        public SettingFilterSpecification(Guid id)
         {
             Criteria = o => o.Id == id;
         }

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace maERP.Domain.Dtos.User;
@@ -21,4 +21,10 @@ public class UserUpdateDto
     [JsonIgnore]
     [Compare("Password", ErrorMessage = "Die Passwörter stimmen nicht überein.")]
     public string PasswordConfirm { get; set; } = string.Empty;
+
+    // Default tenant for the user
+    public Guid? DefaultTenantId { get; set; }
+
+    // List of tenant IDs this user should be assigned to
+    public List<Guid> TenantIds { get; set; } = new List<Guid>();
 }

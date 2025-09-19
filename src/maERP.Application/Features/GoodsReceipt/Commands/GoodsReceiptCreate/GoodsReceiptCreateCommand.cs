@@ -4,6 +4,6 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.GoodsReceipt.Commands.GoodsReceiptCreate;
 
-public class GoodsReceiptCreateCommand : GoodsReceiptInputDto, IRequest<Result<int>>
+public class GoodsReceiptCreateCommand : GoodsReceiptInputDto, IRequest<Result<Guid>>
 {
 }

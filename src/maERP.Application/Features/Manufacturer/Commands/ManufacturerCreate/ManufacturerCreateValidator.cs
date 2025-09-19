@@ -26,7 +26,8 @@ public class ManufacturerCreateValidator : ManufacturerBaseValidator<Manufacture
 
         // Add rule to check if the manufacturer name is unique before creating
         RuleFor(q => q)
-            .MustAsync(IsUniqueAsync).WithMessage("Manufacturer with the same name already exists.");
+            .MustAsync(IsUniqueAsync).WithMessage("Manufacturer with the same name already exists.")
+            .When(q => !string.IsNullOrEmpty(q.Name));
     }
 
     /// <summary>

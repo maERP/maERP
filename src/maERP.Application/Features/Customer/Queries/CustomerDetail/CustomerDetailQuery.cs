@@ -13,5 +13,5 @@ public class CustomerDetailQuery : IRequest<Result<CustomerDetailDto>>
     /// <summary>
     /// The unique identifier of the customer to retrieve
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

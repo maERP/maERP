@@ -17,6 +17,7 @@ public class HttpService : IHttpService
     private readonly IDebugService _debugService;
     private string? _token;
     private string? _serverUrl;
+    private Guid? _currentTenantId;
     private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
     {
         PropertyNameCaseInsensitive = true,
@@ -32,6 +33,21 @@ public class HttpService : IHttpService
     public string? ServerUrl => _serverUrl;
     public string? Token => _token;
     public bool IsAuthenticated => !string.IsNullOrEmpty(_token);
+
+    public void SetCurrentTenant(Guid? tenantId)
+    {
+        _currentTenantId = tenantId;
+        UpdateTenantHeader();
+    }
+
+    private void UpdateTenantHeader()
+    {
+        _httpClient.DefaultRequestHeaders.Remove("X-Tenant-Id");
+        if (_currentTenantId.HasValue)
+        {
+            _httpClient.DefaultRequestHeaders.Add("X-Tenant-Id", _currentTenantId.Value.ToString());
+        }
+    }
 
     public async Task<LoginResponseDto> LoginAsync(string email, string password, string serverUrl)
     {
@@ -51,7 +67,8 @@ public class HttpService : IHttpService
 
             var loginUrl = $"{_serverUrl}/api/v1/auth/login";
             var response = await _httpClient.PostAsync(loginUrl, content);
-            var authResponse = await response.Content.ReadFromJsonAsync<LoginResponseDto>(_jsonOptions);
+            var httpResult = await response.Content.ReadFromJsonAsync<Result<LoginResponseDto>>(_jsonOptions);
+            var authResponse = httpResult?.Data;
 
             if (authResponse?.Token != null)
             {
@@ -59,16 +76,31 @@ public class HttpService : IHttpService
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
+                _debugService.LogInfo($"Login Response - AvailableTenants Count: {authResponse.AvailableTenants?.Count ?? 0}");
+                _debugService.LogInfo($"Login Response - CurrentTenantId: {authResponse.CurrentTenantId}");
+
+                // Falls AvailableTenants in der Response leer sind, versuche sie aus dem JWT Token zu extrahieren
+                if (authResponse.AvailableTenants == null || authResponse.AvailableTenants.Count == 0)
+                {
+                    authResponse.AvailableTenants = JwtTokenParser.ExtractAvailableTenants(_token);
+                    _debugService.LogInfo($"Extracted from JWT - AvailableTenants Count: {authResponse.AvailableTenants.Count}");
+                }
+
+                // Falls CurrentTenantId nicht gesetzt ist, versuche es aus dem JWT Token zu extrahieren
+                if (authResponse.CurrentTenantId == null)
+                {
+                    authResponse.CurrentTenantId = JwtTokenParser.ExtractCurrentTenantId(_token);
+                    _debugService.LogInfo($"Extracted from JWT - CurrentTenantId: {authResponse.CurrentTenantId}");
+                }
+
                 return authResponse;
             }
-            else
+
+            return new LoginResponseDto
             {
-                return new LoginResponseDto
-                {
-                    Succeeded = false,
-                    Message = $"Login failed with status: {response.StatusCode}"
-                };
-            }
+                Succeeded = false,
+                Message = $"Login failed with status: {response.StatusCode}"
+            };
         }
         catch (Exception ex)
         {
@@ -84,7 +116,9 @@ public class HttpService : IHttpService
     {
         _token = null;
         _serverUrl = null;
+        _currentTenantId = null;
         _httpClient.DefaultRequestHeaders.Authorization = null;
+        _httpClient.DefaultRequestHeaders.Remove("X-Tenant-Id");
         return Task.CompletedTask;
     }
 
@@ -256,19 +290,19 @@ public class HttpService : IHttpService
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsByteArrayAsync();
-                
+
                 // Get the Downloads folder path
                 var downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 downloadsPath = Path.Combine(downloadsPath, "Downloads");
-                
+
                 // Ensure the Downloads directory exists
                 Directory.CreateDirectory(downloadsPath);
-                
+
                 // Generate unique filename if file already exists
                 var fileName = suggestedFileName;
                 var fullPath = Path.Combine(downloadsPath, fileName);
                 var counter = 1;
-                
+
                 while (File.Exists(fullPath))
                 {
                     var nameWithoutExtension = Path.GetFileNameWithoutExtension(suggestedFileName);
@@ -277,10 +311,10 @@ public class HttpService : IHttpService
                     fullPath = Path.Combine(downloadsPath, fileName);
                     counter++;
                 }
-                
+
                 // Write the file
                 await File.WriteAllBytesAsync(fullPath, content);
-                
+
                 return new FileDownloadResult
                 {
                     Success = true,

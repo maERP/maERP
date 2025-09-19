@@ -10,7 +10,7 @@ namespace maERP.Application.Features.Customer.Commands.CustomerCreate;
 /// Implements IRequestHandler from custom mediator to handle CustomerCreateCommand requests
 /// and return the ID of the newly created customer wrapped in a Result.
 /// </summary>
-public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Result<int>>
+public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,12 +41,10 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
     /// <param name="request">The customer creation command with customer details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created customer if successful</returns>
-    public async Task<Result<int>> Handle(CustomerCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CustomerCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new customer with firstname: {Firstname}, lastname: {Lastname}",
             request.Firstname, request.Lastname);
-
-        var result = new Result<int>();
 
         // Validate incoming data
         var validator = new CustomerCreateValidator(_customerRepository);
@@ -55,15 +53,12 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
         // If validation fails, return a bad request result with validation error messages
         if (!validationResult.IsValid)
         {
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.BadRequest;
-            result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-
+            var validationErrors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            
             _logger.LogWarning("Validation errors in create request for {0}: {1}",
-                nameof(CustomerCreateCommand),
-                string.Join(", ", result.Messages));
+                nameof(CustomerCreateCommand), validationErrors);
 
-            return result;
+            return Result<Guid>.Fail(ResultStatusCode.BadRequest, validationErrors);
         }
 
         try
@@ -87,23 +82,19 @@ public class CustomerCreateHandler : IRequestHandler<CustomerCreateCommand, Resu
             // Add the new customer to the database
             await _customerRepository.CreateAsync(customerToCreate);
 
-            // Set successful result with the new customer ID
-            result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Created;
-            result.Data = customerToCreate.Id;
-
             _logger.LogInformation("Successfully created customer with ID: {Id}", customerToCreate.Id);
+            
+            var result = Result<Guid>.Success(customerToCreate.Id);
+            result.StatusCode = ResultStatusCode.Created;
+            return result;
         }
         catch (Exception ex)
         {
             // Handle any exceptions during customer creation
-            result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.InternalServerError;
-            result.Messages.Add($"An error occurred while creating the customer: {ex.Message}");
-
             _logger.LogError("Error creating customer: {Message}", ex.Message);
+            
+            return Result<Guid>.Fail(ResultStatusCode.InternalServerError,
+                $"An error occurred while creating the customer: {ex.Message}");
         }
-
-        return result;
     }
 }

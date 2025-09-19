@@ -42,8 +42,8 @@ public partial class SalesChannelListViewModel : ViewModelBase
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
-    public Func<int, Task>? NavigateToSalesChannelDetail { get; set; }
-    public Func<int, Task>? NavigateToSalesChannelInput { get; set; }
+    public Func<Guid, Task>? NavigateToSalesChannelDetail { get; set; }
+    public Func<Guid, Task>? NavigateToSalesChannelInput { get; set; }
 
     public SalesChannelListViewModel(IHttpService httpService, IDebugService debugService)
     {
@@ -145,7 +145,7 @@ public partial class SalesChannelListViewModel : ViewModelBase
     private async Task ViewSalesChannelDetails(SalesChannelListDto? salesChannel)
     {
         if (salesChannel == null || NavigateToSalesChannelDetail == null) return;
-        
+
         SelectedSalesChannel = salesChannel;
         await NavigateToSalesChannelDetail(salesChannel.Id);
     }
@@ -154,8 +154,8 @@ public partial class SalesChannelListViewModel : ViewModelBase
     private async Task CreateSalesChannel()
     {
         if (NavigateToSalesChannelInput == null) return;
-        
-        await NavigateToSalesChannelInput(0); // 0 indicates create new
+
+        await NavigateToSalesChannelInput(Guid.Empty); // Guid.Empty indicates create new
     }
 
     public bool CanGoNext => (CurrentPage + 1) * PageSize < TotalCount;

@@ -2,21 +2,34 @@
 using maERP.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Collections.Generic;
 
 namespace maERP.Persistence.Configurations;
 
 public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
 {
-    public void Configure(EntityTypeBuilder<SalesChannel> modelBuilder)
+    public void Configure(EntityTypeBuilder<SalesChannel> builder)
     {
-        modelBuilder.HasMany(sc => sc.Warehouses)
+        builder.HasMany(sc => sc.Warehouses)
             .WithMany(w => w.SalesChannels)
-            .UsingEntity(j => j.ToTable("SalesChannelWarehouses"));
+            .UsingEntity<Dictionary<string, object>>(
+                "SalesChannelWarehouses",
+                j => j
+                    .HasOne<Warehouse>()
+                    .WithMany()
+                    .HasForeignKey("WarehousesId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j
+                    .HasOne<SalesChannel>()
+                    .WithMany()
+                    .HasForeignKey("SalesChannelsId")
+                    .OnDelete(DeleteBehavior.Cascade));
 
-        modelBuilder.HasData(
+        builder.HasData(
             new SalesChannel
             {
-                Id = 1,
+                Id = new Guid("88888888-8888-8888-8888-888888888888"),
+                TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 Name = "Kasse Ladengeschäft",
                 Type = SalesChannelType.PointOfSale,
                 Url = string.Empty,
@@ -31,7 +44,7 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
             }
         );
 
-        modelBuilder.Property(q => q.Name)
+        builder.Property(q => q.Name)
             .IsRequired()
             .HasMaxLength(100);
     }

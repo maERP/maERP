@@ -6,4 +6,4 @@ public class StatisticSalesDto
     public decimal Sales7Days { get; set; }
     public decimal Sales30Days { get; set; }
     public decimal Sales365Days { get; set; }
-} 
+}

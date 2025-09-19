@@ -13,12 +13,12 @@ public class SalesChannelImportOrder
 
     [Required]
     public OrderStatus Status { get; set; }
-    
+
     // Kundeninformationen
     public SalesChannelImportCustomer? Customer { get; set; }
     public SalesChannelImportCustomerAddress BillingAddress { get; set; } = new();
     public SalesChannelImportCustomerAddress ShippingAddress { get; set; } = new();
-    
+
     // Bestellpositionen (durch OrderItems ersetzen, da es im Repository verwendet wird)
     public ICollection<SalesChannelImportOrderItem> OrderItems { get; set; } = new List<SalesChannelImportOrderItem>();
 
@@ -43,7 +43,7 @@ public class SalesChannelImportOrder
     public string DeliveryAddressPhone { get; set; } = string.Empty;
     public string DeliveryAddressStreet { get; set; } = string.Empty;
     public string DeliveryAddressCity { get; set; } = string.Empty;
-    public string DeliverAddressZip { get; set; } = string.Empty;
+    public string DeliveryAddressZip { get; set; } = string.Empty;
     public string DeliveryAddressCountry { get; set; } = string.Empty;
 
     public string InvoiceAddressFirstName { get; set; } = string.Empty;

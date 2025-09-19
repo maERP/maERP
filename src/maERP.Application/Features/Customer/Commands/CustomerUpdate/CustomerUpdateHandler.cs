@@ -6,11 +6,10 @@ using maERP.Domain.Entities;
 
 namespace maERP.Application.Features.Customer.Commands.CustomerUpdate;
 
-public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Result<int>>
+public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Result<Guid>>
 {
     private readonly IAppLogger<CustomerUpdateHandler> _logger;
     private readonly ICustomerRepository _customerRepository;
-
 
     public CustomerUpdateHandler(
         IAppLogger<CustomerUpdateHandler> logger,
@@ -20,11 +19,11 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
         _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
 
-    public async Task<Result<int>> Handle(CustomerUpdateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CustomerUpdateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Updating customer with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new CustomerUpdateValidator(_customerRepository);
@@ -33,7 +32,17 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
         if (!validationResult.IsValid)
         {
             result.Succeeded = false;
-            result.StatusCode = ResultStatusCode.BadRequest;
+
+            // Check if the validation error is about customer not found
+            if (validationResult.Errors.Any(e => e.ErrorMessage.Contains("Customer not found")))
+            {
+                result.StatusCode = ResultStatusCode.NotFound;
+            }
+            else
+            {
+                result.StatusCode = ResultStatusCode.BadRequest;
+            }
+
             result.Messages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
 
             _logger.LogWarning("Validation errors in update request for {0}: {1}",
@@ -45,14 +54,16 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
 
         try
         {
-            // Manual mapping instead of AutoMapper
+            // Get the customer for tracking (required for update)
             var customerToUpdate = await _customerRepository.GetByIdAsync(request.Id);
 
             if (customerToUpdate == null)
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add($"Customer with ID {request.Id} not found");
+                result.Messages.Add("Customer not found or access denied due to tenant isolation.");
+
+                _logger.LogWarning("Customer with ID {Id} not found or access denied due to tenant isolation", request.Id);
                 return result;
             }
 
@@ -92,7 +103,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
                         existingAddress.DefaultDeliveryAddress = addressDto.DefaultDeliveryAddress;
                         existingAddress.DefaultInvoiceAddress = addressDto.DefaultInvoiceAddress;
                     }
-                    else if (addressDto.Id == 0)
+                    else if (addressDto.Id == Guid.Empty)
                     {
                         // Add new address
                         var newAddress = new CustomerAddress
@@ -108,7 +119,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
                             DefaultDeliveryAddress = addressDto.DefaultDeliveryAddress,
                             DefaultInvoiceAddress = addressDto.DefaultInvoiceAddress,
                             // Using a fixed default value for CountryId as it's missing in CustomerAddressListDto
-                            CountryId = 1 // Default country (needs to be adjusted)
+                            CountryId = Guid.Empty // TODO: Need to get proper Country ID
                         };
 
                         await _customerRepository.AddCustomerAddressAsync(newAddress);
@@ -120,7 +131,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
             await _customerRepository.UpdateAsync(customerToUpdate);
 
             result.Succeeded = true;
-            result.StatusCode = ResultStatusCode.Ok;
+            result.StatusCode = ResultStatusCode.NoContent;
             result.Data = customerToUpdate.Id;
 
             _logger.LogInformation("Successfully updated customer with ID: {Id}", customerToUpdate.Id);

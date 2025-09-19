@@ -10,7 +10,7 @@ namespace maERP.Application.Features.Order.Commands.OrderCreate;
 /// Implements IRequestHandler from MediatR to handle OrderCreateCommand requests
 /// and return the ID of the newly created order wrapped in a Result.
 /// </summary>
-public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int>>
+public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -23,16 +23,24 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
     private readonly IOrderRepository _orderRepository;
 
     /// <summary>
+    /// Repository for customer data operations
+    /// </summary>
+    private readonly ICustomerRepository _customerRepository;
+
+    /// <summary>
     /// Constructor that initializes the handler with required dependencies
     /// </summary>
     /// <param name="logger">Logger for recording operations</param>
     /// <param name="orderRepository">Repository for order data access</param>
+    /// <param name="customerRepository">Repository for customer data access</param>
     public OrderCreateHandler(
         IAppLogger<OrderCreateHandler> logger,
-        IOrderRepository orderRepository)
+        IOrderRepository orderRepository,
+        ICustomerRepository customerRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
+        _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
     }
 
     /// <summary>
@@ -41,14 +49,14 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
     /// <param name="request">The order creation command with order details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created order if successful</returns>
-    public async Task<Result<int>> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(OrderCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new order with ID: {Id}", request.Id);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
-        var validator = new OrderCreateValidator(_orderRepository);
+        var validator = new OrderCreateValidator(_orderRepository, _customerRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
         // If validation fails, return a bad request result with validation error messages
@@ -90,7 +98,7 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<int
                 DeliveryAddressPhone = request.DeliveryAddressPhone,
                 DeliveryAddressStreet = request.DeliveryAddressStreet,
                 DeliveryAddressCity = request.DeliveryAddressCity,
-                DeliverAddressZip = request.DeliverAddressZip,
+                DeliveryAddressZip = request.DeliveryAddressZip,
                 DeliveryAddressCountry = request.DeliveryAddressCountry,
                 InvoiceAddressFirstName = request.InvoiceAddressFirstName,
                 InvoiceAddressLastName = request.InvoiceAddressLastName,

@@ -10,7 +10,7 @@ public class ProductSalesChannelConfiguration : IEntityTypeConfiguration<Product
     {
         builder.Property(e => e.Price)
             .HasPrecision(18, 2);
-            
+
         builder.Property(e => e.MinimumProfit)
             .HasPrecision(18, 2);
     }

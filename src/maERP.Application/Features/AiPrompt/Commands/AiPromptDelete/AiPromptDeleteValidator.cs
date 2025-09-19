@@ -1,28 +1,16 @@
 ﻿using FluentValidation;
-using maERP.Application.Contracts.Persistence;
 
 namespace maERP.Application.Features.AiPrompt.Commands.AiPromptDelete;
 
 public class AiPromptDeleteValidator : AbstractValidator<AiPromptDeleteCommand>
 {
-    private readonly IAiPromptRepository _aIPromptRepository;
-
-    public AiPromptDeleteValidator(IAiPromptRepository aIPromptRepository)
+    public AiPromptDeleteValidator()
     {
-        _aIPromptRepository = aIPromptRepository;
-
         RuleFor(p => p.Id)
             .NotNull()
-            .GreaterThan(0).WithMessage("{PropertyName} must be greater than 0.");
+            .NotEqual(Guid.Empty).WithMessage("{PropertyName} cannot be empty.");
 
-        RuleFor(w => w)
-            .MustAsync(AiPromptExists).WithMessage("AiPrompt not found");
-
-        // TODO: Implement check if warehouse is not used in a sales channel
-    }
-
-    private async Task<bool> AiPromptExists(AiPromptDeleteCommand command, CancellationToken cancellationToken)
-    {
-        return await _aIPromptRepository.ExistsAsync(command.Id);
+        // Note: Existence check is performed in the handler to return proper 404 status
+        // TODO: Implement check if AI prompt is not used in other entities
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using FluentValidation;
 using maERP.Domain.Enums;
 using maERP.Domain.Interfaces;
@@ -14,13 +15,15 @@ public class InvoiceBaseValidator<T> : AbstractValidator<T> where T : IInvoiceIn
     {
         // Basic invoice validation
         RuleFor(x => x.InvoiceNumber)
-            .NotEmpty().WithMessage("Die Rechnungsnummer darf nicht leer sein.");
-            
+            .NotEmpty().WithMessage("Die Rechnungsnummer darf nicht leer sein.")
+            .MaximumLength(128).WithMessage("Die Rechnungsnummer darf maximal 128 Zeichen lang sein.");
+
         RuleFor(x => x.InvoiceDate)
-            .NotEmpty().WithMessage("Das Rechnungsdatum darf nicht leer sein.");
-            
+            .NotEmpty().WithMessage("Das Rechnungsdatum darf nicht leer sein.")
+            .LessThanOrEqualTo(_ => DateTime.UtcNow.AddDays(1)).WithMessage("Das Rechnungsdatum darf nicht in der Zukunft liegen.");
+
         RuleFor(x => x.CustomerId)
-            .GreaterThan(0).WithMessage("Bitte wählen Sie einen Kunden aus.");
+            .NotEqual(Guid.Empty).WithMessage("Bitte wählen Sie einen Kunden aus.");
 
         // Payment information validation
         RuleFor(x => x.PaymentMethod)

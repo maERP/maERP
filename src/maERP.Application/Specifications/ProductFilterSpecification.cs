@@ -15,7 +15,7 @@ namespace maERP.Application.Specifications
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = p => (p.Sku.Contains(searchString) || p.Name.Contains(searchString));
+                Criteria = p => (p.Sku.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase));
             }
             else
             {
@@ -23,7 +23,7 @@ namespace maERP.Application.Specifications
             }
         }
 
-        public ProductFilterSpecification(int id)
+        public ProductFilterSpecification(Guid id)
         {
             Includes.Add(p => p.ProductStocks);
             // Includes.Add(p => p.ProductSalesChannels):

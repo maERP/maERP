@@ -12,16 +12,16 @@ public partial class DebugWindow : Window
     public DebugWindow()
     {
         InitializeComponent();
-        
+
         KeyDown += OnKeyDown;
-        
+
         Loaded += OnLoaded;
     }
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         _logScrollViewer = this.FindControl<ScrollViewer>("LogScrollViewer");
-        
+
         if (DataContext is DebugWindowViewModel viewModel)
         {
             viewModel.ScrollToBottomRequested += OnScrollToBottomRequested;

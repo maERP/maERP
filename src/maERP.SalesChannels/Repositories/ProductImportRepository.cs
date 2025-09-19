@@ -22,7 +22,7 @@ public class ProductImportRepository : IProductImportRepository
         _taxClassRepository = taxClassRepository;
     }
 
-    public async Task ImportOrUpdateFromSalesChannel(int salesChannelId, SalesChannelImportProduct importProduct)
+    public async Task ImportOrUpdateFromSalesChannel(Guid salesChannelId, SalesChannelImportProduct importProduct)
     {
         var taxClass = await _taxClassRepository.GetByTaxRateAsync(importProduct.TaxRate);
 
@@ -36,7 +36,7 @@ public class ProductImportRepository : IProductImportRepository
 
         if (existingProduct == null)
         {
-            _logger.LogInformation("Product {0} does not exist, creating Product and SalesChannel", importProduct.Sku);   
+            _logger.LogInformation("Product {0} does not exist, creating Product and SalesChannel", importProduct.Sku);
 
             var newProduct = new Product
             {
@@ -45,14 +45,14 @@ public class ProductImportRepository : IProductImportRepository
                 Price = importProduct.Price,
                 Sku = importProduct.Sku,
                 TaxClass = taxClass,
-                ProductStocks = [new ProductStock { WarehouseId = 1, Stock = 1 }],
+                ProductStocks = [new ProductStock { WarehouseId = Guid.NewGuid(), Stock = 1 }],
                 ProductSalesChannels =
                 [
                     new ProductSalesChannel
                     {
                         SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId) ?? throw new NotFoundException("SalesChannel {0} not found", salesChannelId),
                         SalesChannelId = salesChannelId,
-                        RemoteProductId = importProduct.RemoteProductId, 
+                        RemoteProductId = new Guid(importProduct.RemoteProductId.ToString("D").PadLeft(32, '0')),
                         Price = importProduct.Price
                     }
                 ],
@@ -60,7 +60,7 @@ public class ProductImportRepository : IProductImportRepository
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now
             };
-            
+
             await _productRepository.CreateAsync(newProduct);
             _logger.LogInformation("Product {0} created", importProduct.Sku);
         }
@@ -69,28 +69,28 @@ public class ProductImportRepository : IProductImportRepository
             _logger.LogInformation("Product {0} already exists, check for SalesChannel", existingProduct.Sku);
             bool somethingChanged = false;
             bool salesChannelExist = false;
-            
-            if(existingProduct.ProductSalesChannels != null)
+
+            if (existingProduct.ProductSalesChannels != null)
             {
                 salesChannelExist = existingProduct.ProductSalesChannels.Any(s => s.SalesChannelId == salesChannelId);
             }
 
             // TODO update price when salesChannelExist is true
-            if(!salesChannelExist)
+            if (!salesChannelExist)
             {
                 _logger.LogInformation("Creating SalesChannel entry for Product {0}", importProduct.Sku);
 
-                existingProduct.ProductSalesChannels = 
+                existingProduct.ProductSalesChannels =
                 [
                     new ProductSalesChannel
                     {
                         SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId) ?? throw new NotFoundException("SalesChannel {0} not found", salesChannelId),
                         SalesChannelId = salesChannelId,
-                        RemoteProductId = importProduct.RemoteProductId,
+                        RemoteProductId = new Guid(importProduct.RemoteProductId.ToString("D").PadLeft(32, '0')),
                         Price = importProduct.Price
                     }
                 ];
-                
+
                 somethingChanged = true;
             }
 

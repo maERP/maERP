@@ -10,7 +10,7 @@ namespace maERP.Application.Features.Warehouse.Commands.WarehouseCreate;
 /// Implements IRequestHandler from MediatR to handle WarehouseCreateCommand requests
 /// and return the ID of the newly created warehouse wrapped in a Result.
 /// </summary>
-public class WarehouseCreateHandler : IRequestHandler<WarehouseCreateCommand, Result<int>>
+public class WarehouseCreateHandler : IRequestHandler<WarehouseCreateCommand, Result<Guid>>
 {
     /// <summary>
     /// Logger for recording handler operations
@@ -41,11 +41,11 @@ public class WarehouseCreateHandler : IRequestHandler<WarehouseCreateCommand, Re
     /// <param name="request">The warehouse creation command with warehouse details</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Result containing the ID of the newly created warehouse if successful</returns>
-    public async Task<Result<int>> Handle(WarehouseCreateCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(WarehouseCreateCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating new warehouse with name: {Name}", request.Name);
 
-        var result = new Result<int>();
+        var result = new Result<Guid>();
 
         // Validate incoming data
         var validator = new WarehouseCreateValidator(_warehouseRepository);

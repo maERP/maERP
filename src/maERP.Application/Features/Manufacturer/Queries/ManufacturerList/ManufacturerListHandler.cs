@@ -21,7 +21,7 @@ public class ManufacturerListHandler : IRequestHandler<ManufacturerListQuery, Pa
         _logger = logger;
         _manufacturerRepository = manufacturerRepository;
     }
-    
+
     public async Task<PaginatedResult<ManufacturerListDto>> Handle(ManufacturerListQuery request, CancellationToken cancellationToken)
     {
         var manufacturerFilterSpec = new ManufacturerFilterSpecification(request.SearchString);

@@ -9,6 +9,6 @@ namespace maERP.Application.Features.Manufacturer.Commands.ManufacturerCreate;
 /// Inherits from ManufacturerInputDto to get all manufacturer properties and implements IRequest
 /// to work with MediatR, returning the ID of the newly created manufacturer wrapped in a Result.
 /// </summary>
-public class ManufacturerCreateCommand : ManufacturerInputDto, IRequest<Result<int>>
+public class ManufacturerCreateCommand : ManufacturerInputDto, IRequest<Result<Guid>>
 {
 }

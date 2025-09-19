@@ -17,13 +17,13 @@ public static class PersistenceServiceRegistration
         {
             var dbOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
             var connectionString = dbOptions.GetConnectionString();
-            
+
             options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 
             switch (dbOptions.Provider.ToUpperInvariant())
             {
                 case "MYSQL":
-                    options.UseMySql(connectionString, 
+                    options.UseMySql(connectionString,
                         ServerVersion.AutoDetect(connectionString),
                         b => b.MigrationsAssembly("maERP.Persistence.MySQL"));
                     break;

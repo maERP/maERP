@@ -29,7 +29,7 @@ public class CustomMediator : IMediator
 
         var requestType = request.GetType();
         var handlerType = typeof(IRequestHandler<,>).MakeGenericType(requestType, typeof(TResponse));
-        
+
         var handler = _serviceProvider.GetService(handlerType);
         if (handler == null)
         {

@@ -8,8 +8,6 @@ public class GoodsReceiptConfiguration : IEntityTypeConfiguration<GoodsReceipt>
 {
     public void Configure(EntityTypeBuilder<GoodsReceipt> builder)
     {
-        builder.ToTable("GoodsReceipts");
-
         builder.HasKey(gr => gr.Id);
 
         builder.Property(gr => gr.ReceiptDate)

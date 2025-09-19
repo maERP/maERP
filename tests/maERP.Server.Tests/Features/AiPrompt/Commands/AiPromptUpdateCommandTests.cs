@@ -1,0 +1,505 @@
+using System.Net;
+using maERP.Domain.Dtos.AiPrompt;
+using maERP.Domain.Wrapper;
+using maERP.Server.Tests.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
+using maERP.Domain.Constants;
+
+namespace maERP.Server.Tests.Features.AiPrompt.Commands;
+
+public class AiPromptUpdateCommandTests : TenantIsolatedTestBase
+{
+    private async Task<Guid> SeedTestDataAsync()
+    {
+        var hasData = await DbContext.AiPrompt.IgnoreQueryFilters().AnyAsync();
+        if (!hasData)
+        {
+            await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        }
+
+        // Return the ID of the first prompt for tenant 1
+        var prompt = await DbContext.AiPrompt.IgnoreQueryFilters()
+            .FirstOrDefaultAsync(p => p.TenantId == TenantConstants.TestTenant1Id);
+        return prompt?.Id ?? Guid.Parse("00000001-0001-0001-0005-000000000001");
+    }
+
+    private AiPromptInputDto CreateUpdateAiPromptDto(Guid id)
+    {
+        return new AiPromptInputDto
+        {
+            Id = id,
+            AiModelId = Guid.Parse("20000001-0001-0001-0001-000000000001"),
+            Identifier = "Updated Test Prompt",
+            PromptText = "This is an updated test prompt"
+        };
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithValidData_ShouldReturnOk()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertEqual(promptId, result.Data);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithValidData_ShouldUpdateInDatabase()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
+
+        // Verify through API that prompt was updated
+        var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{promptId}");
+        TestAssertions.AssertHttpSuccess(getResponse);
+        var promptDetail = await ReadResponseAsync<Result<AiPromptDetailDto>>(getResponse);
+        TestAssertions.AssertNotNull(promptDetail?.Data);
+        TestAssertions.AssertEqual(updateDto.Identifier, promptDetail!.Data.Identifier);
+        TestAssertions.AssertEqual(updateDto.PromptText, promptDetail.Data.PromptText);
+        TestAssertions.AssertEqual(updateDto.AiModelId, promptDetail.Data.AiModelId);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithNonExistentId_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(Guid.Parse("99999999-9999-9999-9999-999999999999"));
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{updateDto.Id}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithWrongTenant_ShouldReturnNotFound()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant2Id); // Prompt belongs to tenant 1, accessing with tenant 2
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.AiModelId = Guid.Parse("20000003-0003-0003-0003-000000000003"); // Use AiModel that belongs to tenant 2 to avoid validation error
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithMissingRequiredFields_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = new AiPromptInputDto
+        {
+            Id = promptId,
+            // Missing required fields like Identifier, PromptText, AiModelId
+        };
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithEmptyIdentifier_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.Identifier = string.Empty;
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithEmptyPromptText_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.PromptText = string.Empty;
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithInvalidAiModelId_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.AiModelId = Guid.NewGuid(); // Non-existent AI model
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithDifferentTenantAiModel_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.AiModelId = Guid.Parse("20000003-0003-0003-0003-000000000003"); // AI Model belongs to tenant 2
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithDuplicateIdentifier_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        // Get identifier of another prompt from test data
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.Identifier = "Test Prompt 2 Tenant 1"; // Existing identifier from test data
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithoutTenantHeader_ShouldReturnNotFound()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+
+        // Act (no tenant header set)
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithInvalidTenantHeader_ShouldReturnNotFound()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetInvalidTenantHeader();
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_TenantIsolation_ShouldOnlyUpdateInCorrectTenant()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.Identifier = "Updated in Tenant 1";
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
+
+        // Verify prompt was updated in tenant 1
+        var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{promptId}");
+        TestAssertions.AssertHttpSuccess(getResponse);
+        var promptDetail = await ReadResponseAsync<Result<AiPromptDetailDto>>(getResponse);
+        TestAssertions.AssertEqual("Updated in Tenant 1", promptDetail?.Data?.Identifier);
+
+        // Verify prompt is not accessible from tenant 2
+        SetTenantHeader(TenantConstants.TestTenant2Id);
+        var getResponseTenant2 = await Client.GetAsync($"/api/v1/AiPrompts/{promptId}");
+        TestAssertions.AssertHttpStatusCode(getResponseTenant2, HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_ResponseStructure_ShouldHaveCorrectFormat()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertEqual(promptId, result.Data);
+        TestAssertions.AssertEqual(ResultStatusCode.Ok, result.StatusCode);
+        TestAssertions.AssertNotNull(result.Messages);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithInvalidJson_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var invalidJson = "{ invalid json }";
+        var content = new StringContent(invalidJson, System.Text.Encoding.UTF8, "application/json");
+
+        // Act
+        var response = await Client.PutAsync($"/api/v1/AiPrompts/{promptId}", content);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithMismatchedIds_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var nonMatchingId = Guid.NewGuid();
+        var updateDto = CreateUpdateAiPromptDto(nonMatchingId); // Different ID in DTO than in URL
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Microsoft.AspNetCore.Mvc.ProblemDetails>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertEqual("Invalid Request", result.Title);
+        TestAssertions.AssertEqual($"ID in URL ({promptId}) must match ID in request body ({nonMatchingId})", result.Detail);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithZeroId_ShouldReturnBadRequest()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(Guid.Empty);
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{Guid.Empty}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithNegativeId_ShouldReturnNotFound()
+    {
+        // Arrange
+        await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var negativeId = Guid.NewGuid();
+        var updateDto = CreateUpdateAiPromptDto(negativeId);
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{negativeId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_PartialUpdate_ShouldUpdateOnlyProvidedFields()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        // Use known test data values instead of reading from API to avoid context issues
+        var updateDto = new AiPromptInputDto
+        {
+            Id = promptId,
+            AiModelId = Guid.Parse("20000001-0001-0001-0001-000000000001"), // Known value from test data 
+            Identifier = "Only Identifier Updated",
+            PromptText = "This is a test prompt for tenant 1" // Known value from test data
+        };
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
+
+        // Verify only identifier was updated
+        var verifyResponse = await Client.GetAsync($"/api/v1/AiPrompts/{promptId}");
+        var updatedPrompt = await ReadResponseAsync<Result<AiPromptDetailDto>>(verifyResponse);
+        TestAssertions.AssertEqual("Only Identifier Updated", updatedPrompt?.Data?.Identifier);
+        TestAssertions.AssertEqual("This is a test prompt for tenant 1", updatedPrompt?.Data?.PromptText); // Should remain unchanged
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_ChangeAiModel_ShouldUpdateSuccessfully()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.AiModelId = Guid.Parse("20000002-0002-0002-0002-000000000002"); // Change to different AI model (still in tenant 1)
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
+
+        // Verify AI model was updated
+        var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{promptId}");
+        var promptDetail = await ReadResponseAsync<Result<AiPromptDetailDto>>(getResponse);
+        TestAssertions.AssertEqual(Guid.Parse("20000002-0002-0002-0002-000000000002"), promptDetail?.Data?.AiModelId);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithTooLongIdentifier_ShouldReturnBadRequest()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.Identifier = new string('A', 256); // Exceeds maximum length
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_WithLongPromptText_ShouldHandleCorrectly()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateAiPromptDto(promptId);
+        updateDto.PromptText = new string('B', 2000); // Long prompt text
+
+        // Act
+        var response = await PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto);
+
+        // Assert
+        TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertTrue(result.Succeeded);
+    }
+
+    [Fact]
+    public async Task UpdateAiPrompt_ConcurrentUpdates_ShouldHandleCorrectly()
+    {
+        // Arrange
+        var promptId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var tasks = new List<Task<HttpResponseMessage>>();
+        for (int i = 1; i <= 3; i++)
+        {
+            var updateDto = CreateUpdateAiPromptDto(promptId);
+            updateDto.Identifier = $"Concurrent Update {i}";
+            updateDto.PromptText = $"Concurrent update number {i}";
+            tasks.Add(PutAsJsonAsync($"/api/v1/AiPrompts/{promptId}", updateDto));
+        }
+
+        // Act
+        var responses = await Task.WhenAll(tasks);
+
+        // Assert - At least one should succeed
+        var successfulResponses = responses.Where(r => r.StatusCode == HttpStatusCode.OK).ToList();
+        TestAssertions.AssertTrue(successfulResponses.Count >= 1);
+
+        // Verify final state
+        var getResponse = await Client.GetAsync($"/api/v1/AiPrompts/{promptId}");
+        TestAssertions.AssertHttpSuccess(getResponse);
+        var promptDetail = await ReadResponseAsync<Result<AiPromptDetailDto>>(getResponse);
+        TestAssertions.AssertNotNull(promptDetail?.Data);
+        TestAssertions.AssertTrue(promptDetail!.Data!.Identifier.Contains("Concurrent Update"));
+    }
+}

@@ -29,44 +29,25 @@ public class SettingListHandler : IRequestHandler<SettingListQuery, PaginatedRes
 
         _logger.LogInformation("Handle SettingListQuery: {0}", request);
 
-        List<Domain.Entities.Setting> entities;
+        IQueryable<Domain.Entities.Setting> query = _SettingRepository.Entities.Specify(settingFilterSpec);
 
-        if (request.OrderBy.Any() != true)
-        {
-            entities = await _SettingRepository.Entities
-               .Specify(settingFilterSpec)
-               .ToListAsync(cancellationToken);
-        }
-        else
+        if (request.OrderBy.Any())
         {
             var ordering = string.Join(",", request.OrderBy);
-
-            entities = await _SettingRepository.Entities
-                .Specify(settingFilterSpec)
-                .OrderBy(ordering)
-                .ToListAsync(cancellationToken);
+            query = query.OrderBy(ordering);
         }
 
-        return MapToListDtoAndPaginate(entities, request.PageNumber, request.PageSize);
-    }
+        // Use the standard pagination extension which handles zero-based pagination correctly
+        var paginatedEntities = await query.ToPaginatedListAsync(request.PageNumber, request.PageSize);
 
-    private PaginatedResult<SettingListDto> MapToListDtoAndPaginate(
-        List<Domain.Entities.Setting> entities, int pageNumber, int pageSize)
-    {
-        var dtos = entities.Select(entity => new SettingListDto
+        // Map to DTOs
+        var dtos = paginatedEntities.Data.Select(entity => new SettingListDto
         {
             Id = entity.Id,
             Key = entity.Key,
             Value = entity.Value
         }).ToList();
 
-        // Erstelle paginierte Ergebnisse
-        var totalCount = dtos.Count;
-        var pagedItems = dtos
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-        return PaginatedResult<SettingListDto>.Success(pagedItems, totalCount, pageNumber, pageSize);
+        return PaginatedResult<SettingListDto>.Success(dtos, paginatedEntities.TotalCount, paginatedEntities.CurrentPage, paginatedEntities.PageSize);
     }
 }

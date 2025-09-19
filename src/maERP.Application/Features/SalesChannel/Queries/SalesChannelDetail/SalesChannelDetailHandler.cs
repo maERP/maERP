@@ -52,18 +52,9 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
         try
         {
             // Retrieve sales channel with all related details from the repository
-            var salesChannel = await _salesChannelRepository.GetByIdAsync(request.Id, true);
+            var salesChannel = await _salesChannelRepository.GetDetails(request.Id);
 
-            // If sales channel not found, return a not found result
-            if (salesChannel == null)
-            {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add($"Sales channel with ID {request.Id} not found");
-
-                _logger.LogWarning("Sales channel with ID {Id} not found", request.Id);
-                return result;
-            }
+            // Note: GetDetails method throws NotFoundException if not found, so no null check needed here
 
             // Map entity to DTO using the mapping method
             var data = MapToDetailDto(salesChannel);
@@ -75,9 +66,18 @@ public class SalesChannelDetailHandler : IRequestHandler<SalesChannelDetailQuery
 
             _logger.LogInformation("Sales channel with ID {Id} retrieved successfully", request.Id);
         }
+        catch (Application.Exceptions.NotFoundException)
+        {
+            // Handle not found exceptions specifically
+            result.Succeeded = false;
+            result.StatusCode = ResultStatusCode.NotFound;
+            result.Messages.Add($"Sales channel with ID {request.Id} not found");
+
+            _logger.LogWarning("Sales channel with ID {Id} not found", request.Id);
+        }
         catch (Exception ex)
         {
-            // Handle any exceptions during sales channel retrieval
+            // Handle any other exceptions during sales channel retrieval
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while retrieving the sales channel: {ex.Message}");

@@ -7,6 +7,7 @@ using maERP.Application.Features.AiPrompt.Queries.AiPromptList;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using maERP.Server.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,10 +33,10 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/<AiPromptsController>/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AiPromptDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<AiPromptDetailDto>> GetDetails(Guid id)
     {
         var response = await mediator.Send(new AiPromptDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
@@ -52,13 +53,37 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     }
 
     // PUT: api/v1/<AiPromptsController>/5
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<AiPromptDetailDto>> Update(int id, AiPromptUpdateCommand aIPromptUpdateCommand)
+    public async Task<ActionResult<AiPromptDetailDto>> Update(Guid id, AiPromptUpdateCommand aIPromptUpdateCommand)
     {
+        // Validate ID is not zero
+        if (id == Guid.Empty)
+        {
+            var invalidIdResponse = ProblemDetailsResult.BadRequest(
+                "Invalid Request", 
+                $"AiPrompt ID must be greater than zero",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                $"/api/v1/aiprompts/{id}"
+            );
+            return invalidIdResponse.ToActionResult();
+        }
+
+        // Validate ID consistency between URL and body if ID is provided in body and differs
+        if (aIPromptUpdateCommand.Id != Guid.Empty && aIPromptUpdateCommand.Id != id)
+        {
+            var errorResponse = ProblemDetailsResult.BadRequest(
+                "Invalid Request", 
+                $"ID in URL ({id}) must match ID in request body ({aIPromptUpdateCommand.Id})",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                $"/api/v1/aiprompts/{id}"
+            );
+            return errorResponse.ToActionResult();
+        }
+
         aIPromptUpdateCommand.Id = id;
         var response = await mediator.Send(aIPromptUpdateCommand);
         return StatusCode((int)response.StatusCode, response);
@@ -70,10 +95,34 @@ public class AiPromptsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult<Result<int>>> Delete(string id)
     {
-        var command = new AiPromptDeleteCommand { Id = id };
-        await mediator.Send(command);
-        return NoContent();
+        // Validate ID format
+        if (!Guid.TryParse(id, out var guidId))
+        {
+            var invalidIdResponse = ProblemDetailsResult.BadRequest(
+                "Invalid Request", 
+                $"AiPrompt ID must be a valid GUID",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                $"/api/v1/aiprompts/{id}"
+            );
+            return invalidIdResponse.ToActionResult();
+        }
+
+        // Validate ID is not empty
+        if (guidId == Guid.Empty)
+        {
+            var emptyIdResponse = ProblemDetailsResult.BadRequest(
+                "Invalid Request", 
+                $"AiPrompt ID cannot be empty",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                $"/api/v1/aiprompts/{id}"
+            );
+            return emptyIdResponse.ToActionResult();
+        }
+
+        var command = new AiPromptDeleteCommand { Id = guidId };
+        var response = await mediator.Send(command);
+        return response.ToActionResult();
     }
 }

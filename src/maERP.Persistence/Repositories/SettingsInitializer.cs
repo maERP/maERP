@@ -26,7 +26,7 @@ namespace maERP.Persistence.Repositories
 
             // Get all required settings
             var requiredSettings = GetRequiredSettings();
-            
+
             // Get existing settings from database
             var existingSettings = await _context.Setting.ToListAsync();
             var existingKeys = existingSettings.Select(s => s.Key).ToHashSet();

@@ -14,7 +14,7 @@ public class CustomerAddress : BaseEntity, IBaseEntity
     public bool DefaultDeliveryAddress { get; set; }
     public bool DefaultInvoiceAddress { get; set; }
     public Country? Country { get; set; }
-    public int CountryId { get; set; }
+    public Guid CountryId { get; set; }
     public Customer? Customer { get; set; }
-    public int CustomerId { get; set; }
+    public Guid CustomerId { get; set; }
 }

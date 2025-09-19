@@ -35,8 +35,8 @@ public class OrdersController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/<OrdersController>/customer/{customerId}
-    [HttpGet("customer/{customerId}")]
-    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetByCustomer(int customerId, int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    [HttpGet("customer/{customerId:guid}")]
+    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetByCustomer(Guid customerId, int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {
@@ -47,8 +47,8 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return Ok(orders);
     }
 
-    // GET: api/v1/<OrdersController>/readyfordelivery
-    [HttpGet("readyfordelivery")]
+    // GET: api/v1/<OrdersController>/ready-for-delivery
+    [HttpGet("ready-for-delivery")]
     public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetReadyForDelivery(int pageNumber = 0, int pageSize = 10, string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
@@ -60,8 +60,8 @@ public class OrdersController(IMediator mediator) : ControllerBase
         return Ok(orders);
     }
 
-    // GET: api/v1/<OrdersController>/notpaid
-    [HttpGet("notpaid")]
+    // GET: api/v1/<OrdersController>/not-paid
+    [HttpGet("not-paid")]
     public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetNotPaid(int pageNumber = 0, int pageSize = 10, string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
@@ -74,10 +74,10 @@ public class OrdersController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/<OrdersController>/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<OrderDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<OrderDetailDto>> GetDetails(Guid id)
     {
         var response = await mediator.Send(new OrderDetailQuery { Id = id });
         return StatusCode((int)response.StatusCode, response);
@@ -89,29 +89,40 @@ public class OrdersController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> Create(OrderCreateCommand orderCreateCommand)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
         var response = await mediator.Send(orderCreateCommand);
         return StatusCode((int)response.StatusCode, response);
     }
 
     // PUT: api/v1/<OrdersController>/5
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Update(int id, OrderUpdateCommand orderUpdateCommand)
+    public async Task<ActionResult> Update(Guid id, OrderUpdateCommand orderUpdateCommand)
     {
+        // Check for ID mismatch
+        if (orderUpdateCommand.Id != Guid.Empty && orderUpdateCommand.Id != id)
+        {
+            return BadRequest("ID mismatch between route and payload");
+        }
+        
         orderUpdateCommand.Id = id;
-        var response =await mediator.Send(orderUpdateCommand);
+        var response = await mediator.Send(orderUpdateCommand);
         return StatusCode((int)response.StatusCode, response);
     }
 
     // DELETE: api/v1/<OrderController>/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         var command = new DeleteOrderCommand { Id = id };
         await mediator.Send(command);

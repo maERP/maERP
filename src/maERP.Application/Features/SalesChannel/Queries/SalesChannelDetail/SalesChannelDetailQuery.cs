@@ -13,5 +13,5 @@ public class SalesChannelDetailQuery : IRequest<Result<SalesChannelDetailDto>>
     /// <summary>
     /// The unique identifier of the sales channel to retrieve
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 }

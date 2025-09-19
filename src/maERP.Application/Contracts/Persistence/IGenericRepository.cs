@@ -6,11 +6,12 @@ public interface IGenericRepository<T> where T : class
     IQueryable<TCt> GetContext<TCt>() where TCt : class;
     void Attach(T entity);
     void AttachRange(IEnumerable<T> entities);
-    Task<int> CreateAsync(T entity);
+    Task<Guid> CreateAsync(T entity);
     Task<ICollection<T>> GetAllAsync();
-    Task<T?> GetByIdAsync(int id, bool asNoTracking = false);
+    Task<T?> GetByIdAsync(Guid id, bool asNoTracking = false);
     Task UpdateAsync(T entity);
     Task DeleteAsync(T entity);
-    Task<bool> ExistsAsync(int id);
-    Task<bool> IsUniqueAsync(T entity, int? id = null);
+    Task<bool> ExistsAsync(Guid id);
+    Task<bool> ExistsGloballyAsync(Guid id);
+    Task<bool> IsUniqueAsync(T entity, Guid? id = null);
 }

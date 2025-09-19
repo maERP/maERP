@@ -142,7 +142,7 @@ public partial class GoodsReceiptInputViewModel : ViewModelBase
             {
                 SuccessMessage = "Wareneingang erfolgreich gespeichert!";
                 _debugService.LogInfo($"Successfully saved goods receipt with ID: {result.Data}");
-                
+
                 // Auto-clear success message after 3 seconds
                 _ = Task.Delay(3000).ContinueWith(t => SuccessMessage = string.Empty);
             }
@@ -190,10 +190,10 @@ public partial class GoodsReceiptInputViewModel : ViewModelBase
             {
                 SuccessMessage = "Wareneingang gespeichert! Bereit für nächsten Eingang.";
                 _debugService.LogInfo($"Successfully saved goods receipt with ID: {result.Data}");
-                
+
                 // Reset form for next entry
                 ResetForm();
-                
+
                 // Auto-clear success message after 2 seconds
                 _ = Task.Delay(2000).ContinueWith(t => SuccessMessage = string.Empty);
             }
