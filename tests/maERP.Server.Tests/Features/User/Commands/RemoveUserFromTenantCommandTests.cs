@@ -220,7 +220,7 @@ public class RemoveUserFromTenantCommandTests : IDisposable
         // Verify assignment is removed from database
         var assignmentAfter = await DbContext.UserTenant
             .FirstOrDefaultAsync(ut => ut.UserId == userId1 && ut.TenantId == TenantConstants.TestTenant2Id);
-        TestAssertions.AssertNotNull(assignmentAfter); // Should be null but TestAssertions.AssertNull doesn't exist
+        TestAssertions.AssertNull(assignmentAfter);
     }
 
     [Fact]

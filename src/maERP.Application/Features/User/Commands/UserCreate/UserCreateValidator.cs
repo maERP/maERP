@@ -30,11 +30,13 @@ public class UserCreateValidator : AbstractValidator<UserCreateCommand>
 
         RuleFor(p => p.Firstname)
             .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.");
+            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .MaximumLength(100).WithMessage("{PropertyName} must be 100 characters or fewer.");
 
         RuleFor(p => p.Lastname)
             .NotNull().WithMessage("{PropertyName} is required.")
-            .NotEmpty().WithMessage("{PropertyName} is required.");
+            .NotEmpty().WithMessage("{PropertyName} is required.")
+            .MaximumLength(100).WithMessage("{PropertyName} must be 100 characters or fewer.");
 
         RuleFor(p => p.DefaultTenantId)
             .NotEmpty().WithMessage("{PropertyName} is required.");

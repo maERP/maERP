@@ -88,6 +88,13 @@ public class UsersController : ControllerBase
     }
 
     // DELETE: api/v1/<UsersController>/5
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult Delete()
+    {
+        return NotFound();
+    }
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -96,6 +103,11 @@ public class UsersController : ControllerBase
     {
         var command = new UserDeleteCommand { Id = id };
         var response = await _mediator.Send(command);
+        if (response.StatusCode == ResultStatusCode.NoContent)
+        {
+            return NoContent();
+        }
+
         return StatusCode((int)response.StatusCode, response);
     }
 
@@ -144,17 +156,23 @@ public class UsersController : ControllerBase
     /// <param name="id">User ID</param>
     /// <param name="tenantId">Tenant ID</param>
     /// <returns>No content if successful</returns>
-    [HttpDelete("{id}/tenants/{tenantId:guid}")]
+    [HttpDelete("{id}/tenants/{tenantId}")]
     [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> RemoveUserFromTenant(string id, Guid tenantId)
+    public async Task<ActionResult> RemoveUserFromTenant(string id, string tenantId)
     {
+        if (!Guid.TryParse(tenantId, out var parsedTenantId) || parsedTenantId == Guid.Empty)
+        {
+            var invalidResult = Result<bool>.Fail(ResultStatusCode.BadRequest, "Invalid tenant identifier.");
+            return BadRequest(invalidResult);
+        }
+
         var command = new RemoveUserFromTenantCommand
         {
             UserId = id,
-            TenantId = tenantId
+            TenantId = parsedTenantId
         };
 
         var response = await _mediator.Send(command);

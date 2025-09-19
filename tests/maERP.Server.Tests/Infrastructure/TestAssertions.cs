@@ -21,6 +21,11 @@ public static class TestAssertions
         Assert.NotNull(value);
     }
 
+    public static void AssertNull<T>(T? value, string? message = null)
+    {
+        Assert.Null(value);
+    }
+
     public static void AssertEqual<T>(T expected, T actual)
     {
         Assert.Equal(expected, actual);

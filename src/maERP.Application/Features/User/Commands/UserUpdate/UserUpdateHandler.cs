@@ -96,32 +96,6 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
             var isSuperadmin = currentUser?.IsInRole("Superadmin") ?? false;
             var currentUserId = httpContext.GetUserId() ?? string.Empty;
 
-            if (!isSuperadmin)
-            {
-                if (string.IsNullOrWhiteSpace(currentUserId))
-                {
-                    result.Succeeded = false;
-                    result.StatusCode = ResultStatusCode.Unauthorized;
-                    result.Messages.Add("User context is required to evaluate permissions.");
-                    return result;
-                }
-
-                if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
-                {
-                    result.Succeeded = false;
-                    result.StatusCode = ResultStatusCode.BadRequest;
-                    result.Messages.Add("Tenant context is required to update a user.");
-                    return result;
-                }
-            }
-            else if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
-            {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.BadRequest;
-                result.Messages.Add("Tenant context is required to update a user.");
-                return result;
-            }
-
             // Get existing user with tenant assignments
             var existingUser = await _userRepository.GetByIdWithTenantsAsync(request.Id);
             if (existingUser == null)
@@ -132,10 +106,34 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
                 return result;
             }
 
-            if (!currentTenantId.HasValue && existingUser.UserTenants != null && existingUser.UserTenants.Any())
+            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+            {
+                if (request.DefaultTenantId.HasValue && request.DefaultTenantId.Value != Guid.Empty)
+                {
+                    currentTenantId = request.DefaultTenantId.Value;
+                }
+            }
+
+            if ((!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty) && existingUser.UserTenants != null && existingUser.UserTenants.Any())
             {
                 currentTenantId = existingUser.UserTenants.FirstOrDefault(ut => ut.IsDefault)?.TenantId
                                   ?? existingUser.UserTenants.First().TenantId;
+            }
+
+            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Tenant context is required to update a user.");
+                return result;
+            }
+
+            if (!isSuperadmin && string.IsNullOrWhiteSpace(currentUserId))
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.Unauthorized;
+                result.Messages.Add("User context is required to evaluate permissions.");
+                return result;
             }
 
             if (!isSuperadmin && currentTenantId.HasValue && (existingUser.UserTenants == null || !existingUser.UserTenants.Any(ut => ut.TenantId == currentTenantId.Value)))
@@ -147,7 +145,7 @@ public class UserUpdateHandler : IRequestHandler<UserUpdateCommand, Result<strin
             }
 
             var canManageUsers = isSuperadmin;
-            if (!isSuperadmin && currentTenantId.HasValue)
+            if (!isSuperadmin)
             {
                 canManageUsers = await _tenantPermissionService.CanManageUsersAsync(
                     currentUserId,

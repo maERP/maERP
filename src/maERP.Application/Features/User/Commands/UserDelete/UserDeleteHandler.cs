@@ -8,6 +8,8 @@ using maERP.Domain.Entities;
 using maERP.Domain.Wrapper;
 using maERP.Application.Extensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.User.Commands.UserDelete;
 
@@ -81,47 +83,7 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
             var httpContext = _httpContextAccessor.HttpContext;
             var currentUser = httpContext?.User;
             var isSuperadmin = currentUser?.IsInRole("Superadmin") ?? false;
-
-            if (!isSuperadmin)
-            {
-                var currentUserId = httpContext.GetUserId() ?? string.Empty;
-
-                if (string.IsNullOrWhiteSpace(currentUserId))
-                {
-                    result.Succeeded = false;
-                    result.StatusCode = ResultStatusCode.Unauthorized;
-                    result.Messages.Add("User context is required to evaluate permissions.");
-                    return result;
-                }
-
-                if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
-                {
-                    result.Succeeded = false;
-                    result.StatusCode = ResultStatusCode.NotFound;
-                    result.Messages.Add("User not found in current tenant.");
-                    return result;
-                }
-
-                var hasPermission = await _tenantPermissionService.CanManageUsersAsync(
-                    currentUserId,
-                    currentTenantId.Value,
-                    cancellationToken);
-
-                if (!hasPermission)
-                {
-                    result.Succeeded = false;
-                    result.StatusCode = ResultStatusCode.Forbidden;
-                    result.Messages.Add("You do not have permission to delete users for this tenant.");
-                    return result;
-                }
-            }
-            else if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
-            {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.BadRequest;
-                result.Messages.Add("Tenant context is required to delete a user.");
-                return result;
-            }
+            var currentUserId = httpContext.GetUserId() ?? string.Empty;
 
             var userToDelete = await _userRepository.GetByIdWithTenantsAsync(request.Id);
 
@@ -136,7 +98,24 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
                 return result;
             }
 
-            if (!isSuperadmin && currentTenantId.HasValue && (userToDelete.UserTenants == null || !userToDelete.UserTenants.Any(ut => ut.TenantId == currentTenantId.Value)))
+            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+            {
+                currentTenantId = userToDelete.UserTenants?.FirstOrDefault(ut => ut.IsDefault)?.TenantId
+                    ?? userToDelete.UserTenants?.FirstOrDefault()?.TenantId;
+            }
+
+            if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Tenant context is required to delete a user.");
+                return result;
+            }
+
+            var isUserInCurrentTenant = userToDelete.UserTenants != null &&
+                                        userToDelete.UserTenants.Any(ut => ut.TenantId == currentTenantId.Value);
+
+            if (!isSuperadmin && !isUserInCurrentTenant)
             {
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.NotFound;
@@ -144,8 +123,47 @@ public class UserDeleteHandler : IRequestHandler<UserDeleteCommand, Result<strin
                 return result;
             }
 
+            if (!isSuperadmin)
+            {
+                if (string.IsNullOrWhiteSpace(currentUserId))
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = ResultStatusCode.Unauthorized;
+                    result.Messages.Add("User context is required to evaluate permissions.");
+                    return result;
+                }
+
+                var hasPermission = await _tenantPermissionService.CanManageUsersAsync(
+                    currentUserId,
+                    currentTenantId.Value,
+                    cancellationToken);
+
+                if (!hasPermission)
+                {
+                    result.Succeeded = false;
+                    result.StatusCode = isUserInCurrentTenant
+                        ? ResultStatusCode.Forbidden
+                        : ResultStatusCode.NotFound;
+                    result.Messages.Add(isUserInCurrentTenant
+                        ? "You do not have permission to delete users for this tenant."
+                        : "User not found in current tenant.");
+                    return result;
+                }
+            }
+
             // Delete the user using ASP.NET Identity UserManager
-            var deleteResult = await _userRepository.DeleteAsync(userToDelete);
+            IdentityResult deleteResult;
+            try
+            {
+                deleteResult = await _userRepository.DeleteAsync(userToDelete);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.NotFound;
+                result.Messages.Add("User not found in current tenant.");
+                return result;
+            }
 
             // If deletion fails, return an error result with the error descriptions
             if (!deleteResult.Succeeded)

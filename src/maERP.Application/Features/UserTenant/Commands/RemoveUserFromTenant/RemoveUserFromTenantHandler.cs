@@ -2,6 +2,8 @@ using FluentValidation;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace maERP.Application.Features.UserTenant.Commands.RemoveUserFromTenant;
 
@@ -23,20 +25,30 @@ public class RemoveUserFromTenantHandler : IRequestHandler<RemoveUserFromTenantC
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return await Result<bool>.FailAsync(validationResult.ToString());
+            var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            return Result<bool>.Fail(ResultStatusCode.BadRequest, errors);
         }
 
         // Find the assignment
-        var userTenant = _userTenantRepository.Entities
-            .FirstOrDefault(ut => ut.UserId == request.UserId && ut.TenantId == request.TenantId);
+        var userTenant = await _userTenantRepository.Entities
+            .FirstOrDefaultAsync(ut => ut.UserId == request.UserId && ut.TenantId == request.TenantId, cancellationToken);
 
         if (userTenant == null)
         {
-            return await Result<bool>.FailAsync("User is not assigned to this tenant");
+            return Result<bool>.Fail(ResultStatusCode.BadRequest, "User is not assigned to this tenant");
         }
 
-        await _userTenantRepository.DeleteAsync(userTenant);
+        try
+        {
+            await _userTenantRepository.DeleteAsync(userTenant);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return Result<bool>.Fail(ResultStatusCode.BadRequest, "User is not assigned to this tenant");
+        }
 
-        return await Result<bool>.SuccessAsync(true, "User successfully removed from tenant");
+        var success = Result<bool>.Success(true, "User successfully removed from tenant");
+        success.StatusCode = ResultStatusCode.Ok;
+        return success;
     }
 }

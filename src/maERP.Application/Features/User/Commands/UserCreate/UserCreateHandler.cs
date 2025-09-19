@@ -84,15 +84,44 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
 
         try
         {
-            var currentTenantId = ResolveTenantId(_tenantContext.GetCurrentTenantId());
             var httpContext = _httpContextAccessor.HttpContext;
             var currentUser = httpContext?.User;
+            var currentUserId = httpContext.GetUserId() ?? string.Empty;
             var isSuperadmin = currentUser?.IsInRole("Superadmin") ?? false;
+
+            var resolvedTenantId = ResolveTenantId(_tenantContext.GetCurrentTenantId());
+            var desiredDefaultTenantId = request.DefaultTenantId != Guid.Empty
+                ? request.DefaultTenantId
+                : resolvedTenantId;
+
+            if (!desiredDefaultTenantId.HasValue || desiredDefaultTenantId.Value == Guid.Empty)
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("Default tenant is required to create a user.");
+                return result;
+            }
+
+            request.DefaultTenantId = desiredDefaultTenantId.Value;
+
+            var normalizedAdditionalIds = request.AdditionalTenantIds?
+                .Where(id => id != Guid.Empty && id != request.DefaultTenantId)
+                .Distinct()
+                .ToList() ?? new List<Guid>();
+
+            var allTenantIds = new List<Guid> { request.DefaultTenantId };
+            allTenantIds.AddRange(normalizedAdditionalIds);
+
+            if (!await _userRepository.TenantsExistAsync(allTenantIds))
+            {
+                result.Succeeded = false;
+                result.StatusCode = ResultStatusCode.BadRequest;
+                result.Messages.Add("One or more provided tenant IDs do not exist.");
+                return result;
+            }
 
             if (!isSuperadmin)
             {
-                var currentUserId = httpContext.GetUserId() ?? string.Empty;
-
                 if (string.IsNullOrWhiteSpace(currentUserId))
                 {
                     result.Succeeded = false;
@@ -101,47 +130,24 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
                     return result;
                 }
 
-                if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
+                foreach (var tenantId in allTenantIds.Distinct())
                 {
-                    result.Succeeded = false;
-                    result.StatusCode = ResultStatusCode.BadRequest;
-                    result.Messages.Add("Tenant context is required to create a user.");
-                    return result;
-                }
+                    var hasPermission = await _tenantPermissionService.CanManageUsersAsync(
+                        currentUserId,
+                        tenantId,
+                        cancellationToken);
 
-                var hasPermission = await _tenantPermissionService.CanManageUsersAsync(
-                    currentUserId,
-                    currentTenantId.Value,
-                    cancellationToken);
-
-                if (!hasPermission)
-                {
-                    result.Succeeded = false;
-                    result.StatusCode = ResultStatusCode.Forbidden;
-                    result.Messages.Add("You do not have permission to create users for this tenant.");
-                    return result;
+                    if (!hasPermission)
+                    {
+                        result.Succeeded = false;
+                        result.StatusCode = ResultStatusCode.Forbidden;
+                        result.Messages.Add("You do not have permission to create users for this tenant.");
+                        return result;
+                    }
                 }
             }
-            else if (!currentTenantId.HasValue || currentTenantId.Value == Guid.Empty)
-            {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.BadRequest;
-                result.Messages.Add("Tenant context is required to create a user.");
-                return result;
-            }
 
-            if (request.DefaultTenantId == Guid.Empty)
-            {
-                request.DefaultTenantId = currentTenantId!.Value;
-            }
-
-            if (request.DefaultTenantId != currentTenantId.Value)
-            {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.NotFound;
-                result.Messages.Add("Cannot create users for another tenant.");
-                return result;
-            }
+            request.AdditionalTenantIds = normalizedAdditionalIds;
 
             // Manual mapping from command to entity (instead of using AutoMapper)
             var userToCreate = new ApplicationUser
@@ -164,22 +170,6 @@ public class UserCreateHandler : IRequestHandler<UserCreateCommand, Result<strin
                 result.Succeeded = false;
                 result.StatusCode = ResultStatusCode.BadRequest;
                 result.Messages.AddRange(createResult.Select(e => e.Description));
-                return result;
-            }
-
-            // Combine default tenant with additional tenants to assign all at once
-            var allTenantIds = new List<Guid> { request.DefaultTenantId };
-            if (request.AdditionalTenantIds != null && request.AdditionalTenantIds.Any())
-            {
-                // Add any additional tenants that aren't already included
-                allTenantIds.AddRange(request.AdditionalTenantIds.Where(id => id != request.DefaultTenantId));
-            }
-
-            if (!await _userRepository.TenantsExistAsync(allTenantIds))
-            {
-                result.Succeeded = false;
-                result.StatusCode = ResultStatusCode.BadRequest;
-                result.Messages.Add("One or more provided tenant IDs do not exist.");
                 return result;
             }
 

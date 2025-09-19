@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
@@ -455,7 +456,9 @@ public class UserDeleteCommandTests : IDisposable
 
         // Create two clients to simulate concurrent requests
         using var client2 = Factory.CreateClient();
-        client2.DefaultRequestHeaders.Add("X-Tenant-Id", "1");
+        client2.DefaultRequestHeaders.Add("X-Tenant-Id", TenantConstants.TestTenant1Id.ToString());
+        await CurrentUserHelper.EnsureUserAsync(client2, DbContext, TenantConstants.TestTenant1Id, true);
+        await CurrentUserHelper.SyncAssignmentsAsync(client2, DbContext, new[] { TenantConstants.TestTenant1Id }, true, TenantConstants.TestTenant1Id);
 
         // Attempt to delete the same user concurrently
         var task1 = Client.DeleteAsync($"/api/v1/Users/{userId1}");
