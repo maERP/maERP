@@ -8,16 +8,10 @@ using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Setting.Commands;
 
-public class SettingDeleteCommandTests : TenantIsolatedTestBase
+public class SettingDeleteCommandTests : GlobalTestBase
 {
-    private async Task SeedTestDataAsync()
+    private async Task<Guid> CreateTestSettingAsync(string key = "test.delete.key", string value = "delete_value")
     {
-        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-    }
-
-    private async Task<Guid> CreateTestSettingAsync(Guid tenantId, string key = "test.delete.key", string value = "delete_value")
-    {
-        SetTenantHeader(tenantId);
         var settingDto = new SettingInputDto
         {
             Key = key,
@@ -26,15 +20,13 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
 
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
         var result = await ReadResponseAsync<Result<Guid>>(response);
-        return result.Data;
+        return result!.Data;
     }
 
     [Fact]
     public async Task DeleteSetting_WithValidId_ShouldReturnNoContent()
     {
-        await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var settingId = await CreateTestSettingAsync();
 
         var response = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
 
@@ -44,9 +36,7 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_WithValidId_ShouldRemoveFromDatabase()
     {
-        await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "test.delete.persist", "persistent_value");
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var settingId = await CreateTestSettingAsync("test.delete.persist", "persistent_value");
 
         var response = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
 
@@ -60,8 +50,6 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_WithNonExistentId_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Settings/{Guid.NewGuid()}");
 
@@ -71,8 +59,6 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_WithInvalidId_ShouldReturnBadRequest()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Settings/invalid");
 
@@ -81,77 +67,33 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact]
-    public async Task DeleteSetting_WithWrongTenant_ShouldReturnNotFound()
+    [Fact(Skip = "Settings are now global entities, no tenant restrictions")]
+    public Task DeleteSetting_WithWrongTenant_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
-
-        // Try to delete from tenant 2
-        SetTenantHeader(TenantConstants.TestTenant2Id);
-
-        var response = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-
-        // Verify setting still exists for tenant 1
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var getResponse = await Client.GetAsync($"/api/v1/Settings/{settingId}");
-        TestAssertions.AssertHttpSuccess(getResponse);
+        // This test is no longer relevant since Settings are global
+        return Task.CompletedTask;
     }
 
-    [Fact]
-    public async Task DeleteSetting_TenantIsolation_ShouldOnlyDeleteFromCorrectTenant()
+    [Fact(Skip = "Settings are now global entities without tenant isolation")]
+    public Task DeleteSetting_TenantIsolation_ShouldOnlyDeleteFromCorrectTenant()
     {
-        await SeedTestDataAsync();
-        var tenant1SettingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "isolation.delete.test", "tenant1_value");
-        var tenant2SettingId = await CreateTestSettingAsync(TenantConstants.TestTenant2Id, "isolation.delete.test", "tenant2_value");
-
-        // Delete tenant 1 setting
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var deleteResponse = await Client.DeleteAsync($"/api/v1/Settings/{tenant1SettingId}");
-        TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse.StatusCode);
-
-        // Verify tenant 1 setting is deleted
-        var getResponse1 = await Client.GetAsync($"/api/v1/Settings/{tenant1SettingId}");
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse1.StatusCode);
-
-        // Verify tenant 2 setting still exists
-        SetTenantHeader(TenantConstants.TestTenant2Id);
-        var getResponse2 = await Client.GetAsync($"/api/v1/Settings/{tenant2SettingId}");
-        TestAssertions.AssertHttpSuccess(getResponse2);
-        var setting2Detail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse2);
-        TestAssertions.AssertEqual("tenant2_value", setting2Detail.Data!.Value);
+        // This test is no longer relevant since Settings are global
+        return Task.CompletedTask;
     }
 
-    [Fact]
-    public async Task DeleteSetting_WithoutTenantHeader_ShouldReturnNotFoundForTenantSpecificSetting()
+    [Fact(Skip = "Settings are now global entities, no tenant header required")]
+    public Task DeleteSetting_WithoutTenantHeader_ShouldReturnNotFoundForTenantSpecificSetting()
     {
-        await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
-
-        // Remove tenant header
-        RemoveTenantHeader();
-
-        var response = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-
-        // Verify setting still exists for tenant 1
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var getResponse = await Client.GetAsync($"/api/v1/Settings/{settingId}");
-        TestAssertions.AssertHttpSuccess(getResponse);
+        // This test is no longer relevant since Settings are global
+        return Task.CompletedTask;
     }
 
     [Fact]
     public async Task DeleteSetting_MultipleSettings_ShouldDeleteOnlySpecifiedSetting()
     {
-        await SeedTestDataAsync();
-        var setting1Id = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "multi.delete.test1", "value1");
-        var setting2Id = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "multi.delete.test2", "value2");
-        var setting3Id = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "multi.delete.test3", "value3");
-
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var setting1Id = await CreateTestSettingAsync("multi.delete.test1", "value1");
+        var setting2Id = await CreateTestSettingAsync("multi.delete.test2", "value2");
+        var setting3Id = await CreateTestSettingAsync("multi.delete.test3", "value3");
 
         // Delete only the second setting
         var deleteResponse = await Client.DeleteAsync($"/api/v1/Settings/{setting2Id}");
@@ -171,8 +113,6 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_WithZeroId_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Settings/{Guid.Empty}");
 
@@ -182,8 +122,6 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_WithNegativeId_ShouldReturnBadRequest()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync("/api/v1/Settings/invalid-guid");
 
@@ -195,9 +133,7 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_IdempotentDelete_ShouldReturnNotFoundOnSecondDelete()
     {
-        await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var settingId = await CreateTestSettingAsync();
 
         // First delete should succeed
         var firstResponse = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
@@ -211,9 +147,7 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_ConcurrentDeletes_ShouldHandleRaceConditions()
     {
-        await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var settingId = await CreateTestSettingAsync();
 
         // Create multiple tasks that try to delete the same setting simultaneously
         var tasks = new List<Task<HttpResponseMessage>>();
@@ -235,8 +169,6 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_WithLargeId_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
 
         var response = await Client.DeleteAsync($"/api/v1/Settings/{Guid.NewGuid()}"); // Non-existent Guid
 
@@ -246,9 +178,7 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_ResponseHeaders_ShouldNotContainContent()
     {
-        await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var settingId = await CreateTestSettingAsync();
 
         var response = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
 
@@ -260,9 +190,7 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_VerifyDatabaseConsistency_ShouldMaintainIntegrity()
     {
-        await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "database.consistency.test", "consistency_value");
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var settingId = await CreateTestSettingAsync("database.consistency.test", "consistency_value");
 
         // Verify setting exists in database before deletion
         var settingBefore = await DbContext.Setting.FindAsync(settingId);
@@ -281,10 +209,7 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_SystemSettings_ShouldDeleteWithoutTenantRestriction()
     {
-        await SeedTestDataAsync();
-
-        // Create a system setting (no tenant header)
-        RemoveTenantHeader();
+        // Create a system setting
         var settingDto = new SettingInputDto
         {
             Key = "system.delete.test",
@@ -292,9 +217,9 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
         };
         var createResponse = await PostAsJsonAsync("/api/v1/Settings", settingDto);
         var createResult = await ReadResponseAsync<Result<Guid>>(createResponse);
-        var systemSettingId = createResult.Data;
+        var systemSettingId = createResult!.Data;
 
-        // Delete system setting (still no tenant header)
+        // Delete system setting
         var response = await Client.DeleteAsync($"/api/v1/Settings/{systemSettingId}");
 
         TestAssertions.AssertEqual(HttpStatusCode.NoContent, response.StatusCode);
@@ -307,11 +232,8 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task DeleteSetting_AfterMultipleOperations_ShouldMaintainConsistency()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-
         // Create a setting
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "operations.test", "original_value");
+        var settingId = await CreateTestSettingAsync("operations.test", "original_value");
 
         // Update it
         var updateDto = new SettingInputDto
@@ -334,80 +256,35 @@ public class SettingDeleteCommandTests : TenantIsolatedTestBase
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse.StatusCode);
     }
 
-    [Fact]
-    public async Task DeleteSetting_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized()
+    [Fact(Skip = "Settings are now global entities, no tenant header validation")]
+    public Task DeleteSetting_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized()
     {
-        await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
-
-        // Set invalid tenant header
-        SetInvalidTenantHeaderValue("invalid_tenant");
-
-        var response = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-
-        // Verify setting still exists for tenant 1
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var getResponse = await Client.GetAsync($"/api/v1/Settings/{settingId}");
-        TestAssertions.AssertHttpSuccess(getResponse);
+        // This test is no longer relevant since Settings are global
+        return Task.CompletedTask;
     }
 
-    [Fact]
-    public async Task DeleteSetting_WithNonExistentValidTenant_ShouldReturnNotFound()
+    [Fact(Skip = "Settings are now global entities, no tenant header validation")]
+    public Task DeleteSetting_WithNonExistentValidTenant_ShouldReturnNotFound()
     {
-        await SeedTestDataAsync();
-        var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id);
-
-        // Set valid GUID but non-existent tenant
-        SetInvalidTenantHeader();
-
-        var response = await Client.DeleteAsync($"/api/v1/Settings/{settingId}");
-
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-
-        // Verify setting still exists for tenant 1
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var getResponse = await Client.GetAsync($"/api/v1/Settings/{settingId}");
-        TestAssertions.AssertHttpSuccess(getResponse);
+        // This test is no longer relevant since Settings are global
+        return Task.CompletedTask;
     }
 
-    [Fact]
-    public async Task DeleteSetting_CrossTenantAttempt_ShouldPreventUnauthorizedDeletion()
+    [Fact(Skip = "Settings are now global entities without tenant isolation")]
+    public Task DeleteSetting_CrossTenantAttempt_ShouldPreventUnauthorizedDeletion()
     {
-        await SeedTestDataAsync();
-        var tenant1SettingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, "cross.tenant.delete", "tenant1_value");
-        var tenant2SettingId = await CreateTestSettingAsync(TenantConstants.TestTenant2Id, "cross.tenant.delete", "tenant2_value");
-
-        // Tenant 2 tries to delete tenant 1's setting
-        SetTenantHeader(TenantConstants.TestTenant2Id);
-        var deleteResponse = await Client.DeleteAsync($"/api/v1/Settings/{tenant1SettingId}");
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, deleteResponse.StatusCode);
-
-        // Verify tenant 1's setting is still intact
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var getResponse1 = await Client.GetAsync($"/api/v1/Settings/{tenant1SettingId}");
-        TestAssertions.AssertHttpSuccess(getResponse1);
-        var setting1Detail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse1);
-        TestAssertions.AssertEqual("tenant1_value", setting1Detail.Data!.Value);
-
-        // Verify tenant 2 can still delete their own setting
-        SetTenantHeader(TenantConstants.TestTenant2Id);
-        var deleteResponse2 = await Client.DeleteAsync($"/api/v1/Settings/{tenant2SettingId}");
-        TestAssertions.AssertEqual(HttpStatusCode.NoContent, deleteResponse2.StatusCode);
+        // This test is no longer relevant since Settings are global
+        return Task.CompletedTask;
     }
 
     [Fact]
     public async Task DeleteSetting_BulkOperation_ShouldHandleMultipleIndependentDeletes()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-
         // Create multiple settings
         var settingIds = new List<Guid>();
         for (int i = 0; i < 5; i++)
         {
-            var settingId = await CreateTestSettingAsync(TenantConstants.TestTenant1Id, $"bulk.delete.test{i}", $"value{i}");
+            var settingId = await CreateTestSettingAsync($"bulk.delete.test{i}", $"value{i}");
             settingIds.Add(settingId);
         }
 

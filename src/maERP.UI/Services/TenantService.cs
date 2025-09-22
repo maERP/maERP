@@ -26,29 +26,48 @@ public class TenantService : ITenantService
         {
             AvailableTenants.Add(tenant);
         }
+
+        // Ensure a tenant is selected when new data arrives
+        if (CurrentTenant == null || !AvailableTenants.Any(t => t.Id == CurrentTenant.Id))
+        {
+            SetCurrentTenant(AvailableTenants.FirstOrDefault()?.Id);
+        }
+        else
+        {
+            // Refresh the tenant header with the existing selection
+            _httpService.SetCurrentTenant(CurrentTenant.Id);
+        }
     }
 
     public void SetCurrentTenant(Guid? tenantId)
     {
+        Console.WriteLine($"🏢 TenantService.SetCurrentTenant called with: {tenantId}");
+        Console.WriteLine($"📊 Available tenants count: {AvailableTenants.Count}");
+        
         var tenant = tenantId.HasValue
             ? AvailableTenants.FirstOrDefault(t => t.Id == tenantId.Value)
             : AvailableTenants.FirstOrDefault();
 
-        // If no specific tenant was requested and no tenant was found, 
-        // and we have available tenants, select the first one
+        // Fallback to the first available tenant when no explicit tenant is provided
         if (tenant == null && !tenantId.HasValue && AvailableTenants.Any())
         {
             tenant = AvailableTenants.First();
         }
 
+        Console.WriteLine($"🎯 Selected tenant: {tenant?.Name} (ID: {tenant?.Id})");
+
+        // Always update the HTTP header so API calls receive the current tenant context
+        _httpService.SetCurrentTenant(tenant?.Id);
+
         if (CurrentTenant?.Id != tenant?.Id)
         {
             CurrentTenant = tenant;
-
-            // Inform HttpService about the tenant change
-            _httpService.SetCurrentTenant(tenant?.Id);
-
+            Console.WriteLine($"🔄 Current tenant changed to: {CurrentTenant?.Name}");
             TenantChanged?.Invoke(this, EventArgs.Empty);
+        }
+        else
+        {
+            Console.WriteLine($"✅ Tenant unchanged: {CurrentTenant?.Name}");
         }
     }
 

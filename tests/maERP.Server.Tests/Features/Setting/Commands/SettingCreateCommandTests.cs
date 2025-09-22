@@ -29,8 +29,8 @@ public class SettingCreateCommandTests : GlobalTestBase
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertNotEqual(Guid.Empty, result.Data);
+        TestAssertions.AssertTrue(result!.Succeeded);
+        TestAssertions.AssertNotEqual(Guid.Empty, result!.Data);
     }
 
     [Fact]
@@ -43,15 +43,15 @@ public class SettingCreateCommandTests : GlobalTestBase
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertNotEqual(Guid.Empty, result.Data);
+        TestAssertions.AssertTrue(result!.Succeeded);
+        TestAssertions.AssertNotEqual(Guid.Empty, result!.Data);
 
         // Verify through API that setting exists
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{result.Data}");
         TestAssertions.AssertHttpSuccess(getResponse);
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
         TestAssertions.AssertNotNull(settingDetail?.Data);
-        TestAssertions.AssertEqual(settingDto.Key, settingDetail!.Data.Key);
+        TestAssertions.AssertEqual(settingDto.Key, settingDetail!.Data!.Key);
         TestAssertions.AssertEqual(settingDto.Value, settingDetail.Data.Value);
     }
 
@@ -82,8 +82,8 @@ public class SettingCreateCommandTests : GlobalTestBase
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertNotEqual(Guid.Empty, result.Data);
+        TestAssertions.AssertTrue(result!.Succeeded);
+        TestAssertions.AssertNotEqual(Guid.Empty, result!.Data);
     }
 
     [Fact]
@@ -101,8 +101,8 @@ public class SettingCreateCommandTests : GlobalTestBase
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertNotEmpty(result.Messages);
+        TestAssertions.AssertFalse(result!.Succeeded);
+        TestAssertions.AssertNotEmpty(result!.Messages);
     }
 
     [Fact]
@@ -115,16 +115,14 @@ public class SettingCreateCommandTests : GlobalTestBase
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertNotEqual(Guid.Empty, result.Data);
+        TestAssertions.AssertTrue(result!.Succeeded);
+        TestAssertions.AssertNotEqual(Guid.Empty, result!.Data);
     }
 
 
     [Fact]
     public async Task CreateSetting_WithSpecialCharacters_ShouldAcceptValidCharacters()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
         var settingDto = CreateValidSettingDto("test.special-chars_key.123", "value with spaces and symbols: @#$%");
 
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
@@ -132,15 +130,13 @@ public class SettingCreateCommandTests : GlobalTestBase
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertNotEqual(Guid.Empty, result.Data);
+        TestAssertions.AssertTrue(result!.Succeeded);
+        TestAssertions.AssertNotEqual(Guid.Empty, result!.Data);
     }
 
     [Fact]
     public async Task CreateSetting_WithLongValues_ShouldHandleLargeData()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
         var longValue = new string('x', 1000); // 1000 character string
         var settingDto = CreateValidSettingDto("test.long.value", longValue);
 
@@ -149,59 +145,56 @@ public class SettingCreateCommandTests : GlobalTestBase
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-        TestAssertions.AssertNotEqual(Guid.Empty, result.Data);
+        TestAssertions.AssertTrue(result!.Succeeded);
+        TestAssertions.AssertNotEqual(Guid.Empty, result!.Data);
 
         // Verify the long value is preserved
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{result.Data}");
         TestAssertions.AssertHttpSuccess(getResponse);
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
-        TestAssertions.AssertEqual(longValue, settingDetail.Data!.Value);
+        TestAssertions.AssertEqual(longValue, settingDetail!.Data!.Value);
     }
 
     [Fact]
     public async Task CreateSetting_WithNumericValues_ShouldStoreAsString()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var settingDto = CreateValidSettingDto("test.numeric.value", "12345.67");
 
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
-        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertTrue(result!.Succeeded);
 
         // Verify it's stored as string
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{result.Data}");
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
-        TestAssertions.AssertEqual("12345.67", settingDetail.Data!.Value);
+        TestAssertions.AssertEqual("12345.67", settingDetail!.Data!.Value);
     }
 
     [Fact]
     public async Task CreateSetting_WithBooleanValues_ShouldStoreAsString()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var settingDto = CreateValidSettingDto("test.boolean.value", "true");
 
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
-        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertTrue(result!.Succeeded);
 
         // Verify it's stored as string
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{result.Data}");
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
-        TestAssertions.AssertEqual("true", settingDetail.Data!.Value);
+        TestAssertions.AssertEqual("true", settingDetail!.Data!.Value);
     }
 
     [Fact]
     public async Task CreateSetting_WithJsonValue_ShouldStoreJsonAsString()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var jsonValue = "{\"name\":\"test\",\"enabled\":true,\"count\":42}";
         var settingDto = CreateValidSettingDto("test.json.value", jsonValue);
 
@@ -209,19 +202,18 @@ public class SettingCreateCommandTests : GlobalTestBase
 
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
-        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertTrue(result!.Succeeded);
 
         // Verify the JSON is preserved as string
         var getResponse = await Client.GetAsync($"/api/v1/Settings/{result.Data}");
         var settingDetail = await ReadResponseAsync<Result<SettingDetailDto>>(getResponse);
-        TestAssertions.AssertEqual(jsonValue, settingDetail.Data!.Value);
+        TestAssertions.AssertEqual(jsonValue, settingDetail!.Data!.Value);
     }
 
     [Fact]
     public async Task CreateSetting_WithNullValues_ShouldReturnBadRequest()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+
 
         // Test with null in JSON - this should be handled by model validation
         var jsonContent = "{\"Key\":\"test.null.key\",\"Value\":null}";
@@ -253,14 +245,13 @@ public class SettingCreateCommandTests : GlobalTestBase
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response2.StatusCode);
 
         var result2 = await ReadResponseAsync<Result<Guid>>(response2);
-        TestAssertions.AssertFalse(result2.Succeeded);
+        TestAssertions.AssertFalse(result2!.Succeeded);
     }
 
     [Fact]
     public async Task CreateSetting_WithLongKey_ShouldReturnBadRequest()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var longKey = new string('x', 100); // Exceeds 50 character limit
         var settingDto = new SettingInputDto
         {
@@ -272,15 +263,14 @@ public class SettingCreateCommandTests : GlobalTestBase
 
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
-        TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertNotEmpty(result.Messages);
+        TestAssertions.AssertFalse(result!.Succeeded);
+        TestAssertions.AssertNotEmpty(result!.Messages);
     }
 
     [Fact]
     public async Task CreateSetting_ResponseStructure_ShouldHaveCorrectFormat()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+
         var settingDto = CreateValidSettingDto("test.response.structure", "response_value");
 
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
@@ -288,47 +278,30 @@ public class SettingCreateCommandTests : GlobalTestBase
         TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertTrue(result!.Succeeded);
         TestAssertions.AssertNotNull(result.Messages);
-        TestAssertions.AssertNotEqual(Guid.Empty, result.Data);
-        TestAssertions.AssertEqual(ResultStatusCode.Created, result.StatusCode);
+        TestAssertions.AssertNotEqual(Guid.Empty, result!.Data);
+        TestAssertions.AssertEqual(ResultStatusCode.Created, result!.StatusCode);
     }
 
-    [Fact]
-    public async Task CreateSetting_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized()
+    [Fact(Skip = "Settings are now global entities, no tenant header validation")]
+    public Task CreateSetting_WithInvalidTenantHeaderValue_ShouldReturnUnauthorized()
     {
-        await SeedTestDataAsync();
-        SetInvalidTenantHeaderValue("invalid_tenant_id");
-
-        var settingDto = CreateValidSettingDto("test.invalid.tenant", "invalid_tenant_value");
-
-        var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
-
-        // Should return unauthorized for invalid header format
-        TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        // This test is no longer relevant since Settings are global
+        return Task.CompletedTask;
     }
 
-    [Fact]
-    public async Task CreateSetting_WithNonExistentValidTenant_ShouldCreateSuccessfully()
+    [Fact(Skip = "Settings are now global entities, no tenant header validation")]
+    public Task CreateSetting_WithNonExistentValidTenant_ShouldCreateSuccessfully()
     {
-        await SeedTestDataAsync();
-        SetInvalidTenantHeader(); // Uses a valid GUID but non-existent tenant
-
-        var settingDto = CreateValidSettingDto("test.nonexistent.tenant", "nonexistent_tenant_value");
-
-        var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
-
-        // API creates successfully even with non-existent tenant (creates as system setting)
-        TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
-        TestAssertions.AssertTrue(result.Succeeded);
+        // This test is no longer relevant since Settings are global
+        return Task.CompletedTask;
     }
 
     [Fact]
     public async Task CreateSetting_ConcurrentCreation_ShouldHandleRaceConditions()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
+
 
         // Create multiple tasks that try to create settings simultaneously
         var tasks = new List<Task<HttpResponseMessage>>();

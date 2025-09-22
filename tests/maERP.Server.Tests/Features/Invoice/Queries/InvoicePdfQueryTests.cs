@@ -78,7 +78,8 @@ public class InvoicePdfQueryTests : IDisposable
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant1Id,
+
                 };
 
                 var customer2 = new maERP.Domain.Entities.Customer
@@ -87,7 +88,8 @@ public class InvoicePdfQueryTests : IDisposable
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
-                    TenantId = TenantConstants.TestTenant2Id
+                    TenantId = TenantConstants.TestTenant2Id,
+
                 };
 
                 DbContext.Customer.AddRange(customer1, customer2);
@@ -100,7 +102,8 @@ public class InvoicePdfQueryTests : IDisposable
                     Sku = "TEST-001",
                     Name = "Test Product 1",
                     Price = 100.00m,
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant1Id,
+
                 };
 
                 DbContext.Product.Add(product1);
@@ -131,7 +134,8 @@ public class InvoicePdfQueryTests : IDisposable
                     InvoiceAddressCity = "Test City",
                     InvoiceAddressZip = "12345",
                     InvoiceAddressCountry = "Test Country",
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant1Id,
+
                 };
 
                 _invoice2Id = Guid.NewGuid();
@@ -147,7 +151,8 @@ public class InvoicePdfQueryTests : IDisposable
                     Total = 119.00m,
                     PaymentStatus = maERP.Domain.Enums.PaymentStatus.CompletelyPaid,
                     InvoiceStatus = maERP.Domain.Enums.InvoiceStatus.Sent,
-                    TenantId = TenantConstants.TestTenant2Id
+                    TenantId = TenantConstants.TestTenant2Id,
+
                 };
 
                 DbContext.Invoice.AddRange(invoice1Tenant1, invoice2Tenant2);
@@ -159,7 +164,8 @@ public class InvoicePdfQueryTests : IDisposable
                     ProductId = product1Id,
                     Name = "Test Product 1",
                     UnitPrice = 100.00m,
-                    TenantId = TenantConstants.TestTenant1Id
+                    TenantId = TenantConstants.TestTenant1Id,
+
                 };
 
                 DbContext.InvoiceItem.Add(invoiceItem1);
@@ -169,7 +175,7 @@ public class InvoicePdfQueryTests : IDisposable
                     Id = Guid.NewGuid(),
                     Key = "CompanyName",
                     Value = "Test Company Ltd",
-                    TenantId = TenantConstants.TestTenant1Id
+
                 };
 
                 var setting2 = new maERP.Domain.Entities.Setting
@@ -177,7 +183,7 @@ public class InvoicePdfQueryTests : IDisposable
                     Id = Guid.NewGuid(),
                     Key = "CompanyAddress",
                     Value = "123 Business St",
-                    TenantId = TenantConstants.TestTenant1Id
+
                 };
 
                 DbContext.Setting.AddRange(setting1, setting2);

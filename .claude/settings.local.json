@@ -36,7 +36,11 @@
       "WebFetch(domain:platform.openai.com)",
       "WebSearch",
       "WebFetch(domain:m3.material.io)",
-      "mcp__jetbrains__get_file_problems"
+      "mcp__jetbrains__get_file_problems",
+      "mcp__postgres__list_schemas",
+      "mcp__postgres__list_objects",
+      "mcp__postgres__get_object_details",
+      "mcp__postgres__execute_sql"
     ],
     "deny": [],
     "ask": []

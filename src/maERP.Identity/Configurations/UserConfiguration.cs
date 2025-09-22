@@ -1,4 +1,5 @@
 using maERP.Domain.Entities;
+using maERP.Domain.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

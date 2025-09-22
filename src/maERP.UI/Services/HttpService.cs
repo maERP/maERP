@@ -46,6 +46,16 @@ public class HttpService : IHttpService
         if (_currentTenantId.HasValue)
         {
             _httpClient.DefaultRequestHeaders.Add("X-Tenant-Id", _currentTenantId.Value.ToString());
+            _debugService.LogInfo($"✅ X-Tenant-Id header set to: {_currentTenantId.Value}");
+            
+            // Verify the header was actually set
+            var headerExists = _httpClient.DefaultRequestHeaders.Contains("X-Tenant-Id");
+            var headerValue = headerExists ? string.Join(",", _httpClient.DefaultRequestHeaders.GetValues("X-Tenant-Id")) : "NOT FOUND";
+            _debugService.LogInfo($"🔍 Header verification - Exists: {headerExists}, Value: {headerValue}");
+        }
+        else
+        {
+            _debugService.LogInfo("❌ X-Tenant-Id header cleared (no tenant set)");
         }
     }
 
@@ -76,21 +86,43 @@ public class HttpService : IHttpService
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
-                _debugService.LogInfo($"Login Response - AvailableTenants Count: {authResponse.AvailableTenants?.Count ?? 0}");
-                _debugService.LogInfo($"Login Response - CurrentTenantId: {authResponse.CurrentTenantId}");
+                _debugService.LogInfo($"🔐 Login successful! Processing tenant data...");
+                _debugService.LogInfo($"📊 Login Response - AvailableTenants Count: {authResponse.AvailableTenants?.Count ?? 0}");
+                _debugService.LogInfo($"🏢 Login Response - CurrentTenantId: {authResponse.CurrentTenantId}");
+                
+                // Log available tenants details
+                if (authResponse.AvailableTenants != null && authResponse.AvailableTenants.Count > 0)
+                {
+                    foreach (var tenant in authResponse.AvailableTenants)
+                    {
+                        _debugService.LogInfo($"   📋 Tenant: {tenant.Name} (ID: {tenant.Id})");
+                    }
+                }
+                else
+                {
+                    _debugService.LogWarning($"⚠️ No tenants in login response! Trying JWT extraction...");
+                }
 
                 // Falls AvailableTenants in der Response leer sind, versuche sie aus dem JWT Token zu extrahieren
                 if (authResponse.AvailableTenants == null || authResponse.AvailableTenants.Count == 0)
                 {
                     authResponse.AvailableTenants = JwtTokenParser.ExtractAvailableTenants(_token);
-                    _debugService.LogInfo($"Extracted from JWT - AvailableTenants Count: {authResponse.AvailableTenants.Count}");
+                    _debugService.LogInfo($"🔍 Extracted from JWT - AvailableTenants Count: {authResponse.AvailableTenants.Count}");
+                    
+                    if (authResponse.AvailableTenants.Count > 0)
+                    {
+                        foreach (var tenant in authResponse.AvailableTenants)
+                        {
+                            _debugService.LogInfo($"   📋 JWT Tenant: {tenant.Name} (ID: {tenant.Id})");
+                        }
+                    }
                 }
 
                 // Falls CurrentTenantId nicht gesetzt ist, versuche es aus dem JWT Token zu extrahieren
                 if (authResponse.CurrentTenantId == null)
                 {
                     authResponse.CurrentTenantId = JwtTokenParser.ExtractCurrentTenantId(_token);
-                    _debugService.LogInfo($"Extracted from JWT - CurrentTenantId: {authResponse.CurrentTenantId}");
+                    _debugService.LogInfo($"🔍 Extracted from JWT - CurrentTenantId: {authResponse.CurrentTenantId}");
                 }
 
                 return authResponse;
@@ -134,6 +166,12 @@ public class HttpService : IHttpService
             var queryParams = $"?pageNumber={pageNumber}&pageSize={pageSize}&searchString={searchString}&orderBy={orderBy}";
             var url = $"{_serverUrl}/api/v1/{endpoint.TrimStart('/')}{queryParams}";
 
+            // Debug: Log current tenant header before request
+            var hasHeader = _httpClient.DefaultRequestHeaders.Contains("X-Tenant-Id");
+            var headerValue = hasHeader ? string.Join(",", _httpClient.DefaultRequestHeaders.GetValues("X-Tenant-Id")) : "MISSING";
+            _debugService.LogInfo($"🚀 Making GET request to: {url}");
+            _debugService.LogInfo($"📋 Current X-Tenant-Id header: {(hasHeader ? headerValue : "MISSING")}");
+
             var response = await _httpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
@@ -143,6 +181,8 @@ public class HttpService : IHttpService
             }
             else
             {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _debugService.LogWarning($"❌ GET {url} failed: {response.StatusCode} - {errorContent}");
                 return PaginatedResult<T>.Failure(new List<string> { $"Failed to load data: {response.StatusCode}" });
             }
         }
@@ -171,6 +211,8 @@ public class HttpService : IHttpService
             }
             else
             {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _debugService.LogWarning($"GET {url} failed: {response.StatusCode} - {errorContent}");
                 return Result<T>.Fail($"Failed to load data: {response.StatusCode}");
             }
         }
@@ -202,6 +244,8 @@ public class HttpService : IHttpService
             }
             else
             {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _debugService.LogWarning($"POST {url} failed: {response.StatusCode} - {errorContent}");
                 return Result<TResponse>.Fail($"Failed to post data: {response.StatusCode}");
             }
         }
@@ -233,6 +277,8 @@ public class HttpService : IHttpService
             }
             else
             {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _debugService.LogWarning($"PUT {url} failed: {response.StatusCode} - {errorContent}");
                 return Result<TResponse>.Fail($"Failed to update data: {response.StatusCode}");
             }
         }
@@ -260,6 +306,8 @@ public class HttpService : IHttpService
             }
             else
             {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _debugService.LogWarning($"DELETE {url} failed: {response.StatusCode} - {errorContent}");
                 return (Result)Result.Fail($"Failed to delete data: {response.StatusCode}");
             }
         }
