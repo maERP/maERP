@@ -14,6 +14,9 @@ public partial class LoginViewModel : ViewModelBase
     private readonly IAuthenticationService _authenticationService;
     private readonly ISettingsService _settingsService;
 
+    private const string DebugEmail = "admin@localhost.com";
+    private const string DebugPassword = "P@ssword1";
+
     [ObservableProperty]
     [Required(ErrorMessage = "Email ist erforderlich")]
     [EmailAddress(ErrorMessage = "Ungültige Email-Adresse")]
@@ -46,15 +49,26 @@ public partial class LoginViewModel : ViewModelBase
         _authenticationService = authenticationService;
         _settingsService = settingsService;
 
+        if (Debugger.IsAttached)
+        {
+            Email = DebugEmail;
+            Password = DebugPassword;
+        }
+
         _ = InitializeAsync();
     }
 
     private async Task InitializeAsync()
     {
-        // Lade gespeicherte Einstellungen
+        // Load saved settings as baseline
         RememberMe = await _settingsService.GetRememberMeAsync();
 
-        // Lade gespeicherte Credentials wenn RememberMe aktiviert ist
+        if (Debugger.IsAttached)
+        {
+            // Keep debug defaults and skip loading stored credentials
+            return;
+        }
+
         if (RememberMe)
         {
             var savedCredentials = await _settingsService.LoadLoginCredentialsAsync();
@@ -64,13 +78,6 @@ public partial class LoginViewModel : ViewModelBase
                 Password = savedCredentials.Value.Password;
                 ServerUrl = savedCredentials.Value.ServerUrl;
             }
-        }
-
-        // Setze Default-Credentials wenn im Debugger (überschreibt gespeicherte Werte)
-        if (Debugger.IsAttached)
-        {
-            Email = "admin@localhost.com";
-            Password = "P@ssword1";
         }
     }
 

@@ -10,38 +10,38 @@
     
     <!-- Header with customer info and actions -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
-            Padding="32,20"
-            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            Background="{DynamicResource SurfaceContainerBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource OutlineVariantBrush}"
             BorderThickness="0,0,0,1"
-            CornerRadius="8,8,0,0"
-            Margin="0,0,0,8">
+            CornerRadius="6,6,0,0"
+            Margin="0,0,0,6">
       
       <Grid ColumnDefinitions="*,Auto">
         
         <!-- Title and basic info -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
-          <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,6">
+          <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,4">
             <TextBlock Text="{Binding Customer.FullName, StringFormat=👥 {0}}" 
-                       FontSize="28" 
+                       FontSize="{DynamicResource FontSizeHeadlineL}" 
                        FontWeight="SemiBold"
-                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                       Foreground="{DynamicResource OnSurfaceBrush}"/>
             <TextBlock Text="{Binding Customer.Id, StringFormat=ID #{0}}" 
-                       FontSize="20" 
-                       FontWeight="SemiBold"
-                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-            <Border Background="#E8F5E8" 
-                    CornerRadius="12" 
-                    Padding="8,4">
+                       FontSize="{DynamicResource FontSizeHeadlineS}" 
+                       FontWeight="Medium"
+                       Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
+            <Border Background="{DynamicResource SecondaryContainerBrush}" 
+                    CornerRadius="8" 
+                    Padding="6,3">
               <TextBlock Text="{Binding Customer.CustomerStatus}" 
-                         FontSize="12" 
-                         FontWeight="SemiBold"
-                         Foreground="#2E7D32"/>
+                         FontSize="{DynamicResource FontSizeLabelS}" 
+                         FontWeight="Medium"
+                         Foreground="{DynamicResource OnSecondaryContainerBrush}"/>
             </Border>
           </StackPanel>
           <TextBlock Text="{Binding Customer.DateEnrollment, StringFormat=Kunde seit: \{0:dd.MM.yyyy\}}" 
-                     FontSize="14" 
-                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                     FontSize="{DynamicResource FontSizeBodyS}" 
+                     Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
         </StackPanel>
         
         <!-- Action buttons -->

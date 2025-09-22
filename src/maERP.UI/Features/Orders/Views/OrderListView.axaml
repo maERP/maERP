@@ -10,66 +10,69 @@
     
     <!-- Header mit Titel und Suche -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
-            Padding="32,20"
-            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            Background="{DynamicResource SurfaceContainerBrush}"
+            Padding="20,12"
+            BorderBrush="{DynamicResource OutlineVariantBrush}"
             BorderThickness="0,0,0,1"
-            CornerRadius="8,8,0,0"
-            Margin="0,0,0,8">
+            CornerRadius="0"
+            Margin="0">
       
       <Grid ColumnDefinitions="*,Auto,Auto">
         
         <!-- Titel -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
           <TextBlock Text="🛒 Bestellungen" 
-                     FontSize="{DynamicResource FontSizeTitle}" 
+                     FontSize="{DynamicResource FontSizeHeadlineL}" 
                      FontWeight="SemiBold"
-                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                     Margin="0,0,0,6"/>
+                     Foreground="{DynamicResource OnSurfaceBrush}"
+                     Margin="0,0,0,4"/>
           <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Bestellungen}" 
-                     FontSize="{DynamicResource FontSizeBody}" 
-                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                     FontSize="{DynamicResource FontSizeBodyS}" 
+                     Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
         </StackPanel>
         
         <!-- Suchfeld -->
         <StackPanel Grid.Column="1" 
                     Orientation="Horizontal" 
-                    Spacing="8" 
+                    Spacing="4" 
                     VerticalAlignment="Center"
-                    Margin="16,0">
+                    Margin="8,0">
           
           <TextBox Text="{Binding SearchText}" 
                    Watermark="Nach Bestellungen suchen..."
-                   Width="240"
+                   Width="200"
                    VerticalAlignment="Center"
-                   CornerRadius="6"
-                   Padding="12,8"/>
+                   CornerRadius="3"
+                   Padding="8,5"
+                   FontSize="{DynamicResource FontSizeBodyS}"/>
           
           <Button Content="🔍" 
                   Command="{Binding SearchOrdersCommand}"
                   VerticalAlignment="Center"
-                  Padding="12,8"
-                  CornerRadius="6"/>
+                  Padding="8,5"
+                  CornerRadius="3"/>
           
         </StackPanel>
         
         <!-- Action Buttons -->
         <StackPanel Grid.Column="2" 
                     Orientation="Horizontal" 
-                    Spacing="8" 
+                    Spacing="4" 
                     VerticalAlignment="Center">
           <Button Content="➕ Neu" 
                   Command="{Binding CreateOrderCommand}"
-                  Padding="16,10"
-                  CornerRadius="6"
-                  Background="{DynamicResource AccentFillColorDefaultBrush}"
-                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+                  Padding="10,6"
+                  CornerRadius="3"
+                  FontSize="{DynamicResource FontSizeBodyS}"
+                  Background="{DynamicResource PrimaryBrush}"
+                  Foreground="{DynamicResource OnPrimaryBrush}"/>
           <Button Content="🔄" 
                   Command="{Binding RefreshCommand}"
-                  Padding="12,10"
-                  CornerRadius="6"
-                  Background="{DynamicResource ControlFillColorDefaultBrush}"
-                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  Padding="7,6"
+                  CornerRadius="3"
+                  FontSize="{DynamicResource FontSizeBodyS}"
+                  Background="{DynamicResource SurfaceContainerHighBrush}"
+                  BorderBrush="{DynamicResource OutlineBrush}"
                   BorderThickness="1"
                   ToolTip.Tip="Aktualisieren"/>
         </StackPanel>
@@ -179,12 +182,12 @@
     
     <!-- Pagination Footer -->
     <Border Grid.Row="2" 
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
-            Padding="20,16"
-            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            Background="{DynamicResource SurfaceContainerBrush}"
+            Padding="16,12"
+            BorderBrush="{DynamicResource OutlineVariantBrush}"
             BorderThickness="0,1,0,0"
-            CornerRadius="0,0,8,8"
-            Margin="0,8,0,0"
+            CornerRadius="0,0,6,6"
+            Margin="0,6,0,0"
             IsVisible="{Binding !IsLoading}">
       
       <Grid ColumnDefinitions="*,Auto,*">
@@ -193,32 +196,37 @@
         <StackPanel Grid.Column="0" 
                     Orientation="Horizontal" 
                     VerticalAlignment="Center"
-                    Spacing="8">
+                    Spacing="6">
           <TextBlock Text="{Binding DisplayPageNumber, StringFormat=Seite \{0\}}" 
+                     FontSize="{DynamicResource FontSizeBodyS}"
                      VerticalAlignment="Center"/>
           <TextBlock Text="von" 
+                     FontSize="{DynamicResource FontSizeBodyS}"
                      Opacity="0.7" 
                      VerticalAlignment="Center"/>
           <TextBlock Text="{Binding TotalPages}" 
+                     FontSize="{DynamicResource FontSizeBodyS}"
                      VerticalAlignment="Center"/>
         </StackPanel>
         
         <!-- Navigation Buttons -->
         <StackPanel Grid.Column="1" 
                     Orientation="Horizontal" 
-                    Spacing="8">
+                    Spacing="6">
           
           <Button Content="◀ Zurück" 
                   Command="{Binding PreviousPageCommand}"
                   IsEnabled="{Binding CanGoPrevious}"
-                  Padding="16,10"
-                  CornerRadius="6"/>
+                  Padding="12,8"
+                  FontSize="{DynamicResource FontSizeBodyS}"
+                  CornerRadius="4"/>
           
           <Button Content="Weiter ▶" 
                   Command="{Binding NextPageCommand}"
                   IsEnabled="{Binding CanGoNext}"
-                  Padding="16,10"
-                  CornerRadius="6"/>
+                  Padding="12,8"
+                  FontSize="{DynamicResource FontSizeBodyS}"
+                  CornerRadius="4"/>
           
         </StackPanel>
         
@@ -227,12 +235,15 @@
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Spacing="4">
+                    Spacing="3">
           <TextBlock Text="{Binding Orders.Count, StringFormat=\{0\} Einträge}" 
+                     FontSize="{DynamicResource FontSizeBodyS}"
                      Opacity="0.7"/>
           <TextBlock Text="von" 
+                     FontSize="{DynamicResource FontSizeBodyS}"
                      Opacity="0.7"/>
           <TextBlock Text="{Binding TotalCount}" 
+                     FontSize="{DynamicResource FontSizeBodyS}"
                      Opacity="0.7"/>
         </StackPanel>
         

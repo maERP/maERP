@@ -10,25 +10,25 @@
     
     <!-- Header -->
     <Border Grid.Row="0" 
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
-            Padding="32,20"
-            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            Background="{DynamicResource SurfaceContainerBrush}"
+            Padding="24,16"
+            BorderBrush="{DynamicResource OutlineVariantBrush}"
             BorderThickness="0,0,0,1"
-            CornerRadius="8,8,0,0"
-            Margin="0,0,0,8">
+            CornerRadius="6,6,0,0"
+            Margin="0,0,0,6">
       
       <Grid ColumnDefinitions="*,Auto">
         
         <!-- Title -->
         <StackPanel Grid.Column="0" VerticalAlignment="Center">
           <TextBlock Text="{Binding PageTitle}" 
-                     FontSize="28" 
+                     FontSize="{DynamicResource FontSizeHeadlineL}" 
                      FontWeight="SemiBold"
-                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                     Margin="0,0,0,6"/>
+                     Foreground="{DynamicResource OnSurfaceBrush}"
+                     Margin="0,0,0,4"/>
           <TextBlock Text="Kunde bearbeiten oder erstellen" 
-                     FontSize="14" 
-                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                     FontSize="{DynamicResource FontSizeBodyS}" 
+                     Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
         </StackPanel>
         
         <!-- Action buttons -->
