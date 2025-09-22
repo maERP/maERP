@@ -6,7 +6,7 @@ namespace maERP.Application.Specifications
     /// <summary>
     /// Specification for filtering settings
     /// </summary>
-    public class SettingFilterSpecification : FilterSpecification<Setting>
+    public class SettingFilterSpecification : FilterSpecificationWithoutTenant<Setting>
     {
         public SettingFilterSpecification(string searchString)
         {

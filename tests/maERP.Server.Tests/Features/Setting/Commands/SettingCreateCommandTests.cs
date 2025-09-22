@@ -4,16 +4,11 @@ using maERP.Domain.Dtos.Setting;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
 using Xunit;
-using maERP.Domain.Constants;
 
 namespace maERP.Server.Tests.Features.Setting.Commands;
 
-public class SettingCreateCommandTests : TenantIsolatedTestBase
+public class SettingCreateCommandTests : GlobalTestBase
 {
-    private async Task SeedTestDataAsync()
-    {
-        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-    }
 
     private static SettingInputDto CreateValidSettingDto(string key = "test.create.key", string value = "test_value")
     {
@@ -27,8 +22,6 @@ public class SettingCreateCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task CreateSetting_WithValidData_ShouldReturnCreated()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
         var settingDto = CreateValidSettingDto();
 
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
@@ -43,8 +36,6 @@ public class SettingCreateCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task CreateSetting_WithValidData_ShouldPersistInDatabase()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
         var settingDto = CreateValidSettingDto("test.persist.key", "persist_value");
 
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
@@ -67,9 +58,6 @@ public class SettingCreateCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task CreateSetting_WithNullKey_ShouldHandleGracefully()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-
         // Test with null in JSON
         var jsonContent = "{\"Key\":null,\"Value\":\"test value\"}";
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
@@ -83,8 +71,6 @@ public class SettingCreateCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task CreateSetting_WithEmptyValue_ShouldSucceed()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
         var settingDto = new SettingInputDto
         {
             Key = "test.empty.value",
@@ -103,9 +89,6 @@ public class SettingCreateCommandTests : TenantIsolatedTestBase
     [Fact]
     public async Task CreateSetting_WithDuplicateKey_ShouldReturnBadRequest()
     {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-
         // Create first setting
         var firstSetting = CreateValidSettingDto("test.duplicate.key", "value1");
         await PostAsJsonAsync("/api/v1/Settings", firstSetting);
@@ -123,10 +106,9 @@ public class SettingCreateCommandTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task CreateSetting_WithoutTenantHeader_ShouldCreateSystemSetting()
+    public async Task CreateSetting_ShouldCreateGlobalSetting()
     {
-        await SeedTestDataAsync();
-        var settingDto = CreateValidSettingDto("test.system.key", "system_value");
+        var settingDto = CreateValidSettingDto("test.global.key", "global_value");
 
         var response = await PostAsJsonAsync("/api/v1/Settings", settingDto);
 
@@ -137,28 +119,6 @@ public class SettingCreateCommandTests : TenantIsolatedTestBase
         TestAssertions.AssertNotEqual(Guid.Empty, result.Data);
     }
 
-    [Fact]
-    public async Task CreateSetting_WithTenant1_ShouldIsolateFromTenant2()
-    {
-        await SeedTestDataAsync();
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var settingDto = CreateValidSettingDto("test.tenant1.isolation", "tenant1_value");
-
-        var createResponse = await PostAsJsonAsync("/api/v1/Settings", settingDto);
-        TestAssertions.AssertEqual(HttpStatusCode.Created, createResponse.StatusCode);
-        var createResult = await ReadResponseAsync<Result<Guid>>(createResponse);
-        var settingId = createResult.Data;
-
-        // Verify tenant 1 can access it
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var getResponse1 = await Client.GetAsync($"/api/v1/Settings/{settingId}");
-        TestAssertions.AssertHttpSuccess(getResponse1);
-
-        // Verify tenant 2 cannot access it
-        SetTenantHeader(TenantConstants.TestTenant2Id);
-        var getResponse2 = await Client.GetAsync($"/api/v1/Settings/{settingId}");
-        TestAssertions.AssertEqual(HttpStatusCode.NotFound, getResponse2.StatusCode);
-    }
 
     [Fact]
     public async Task CreateSetting_WithSpecialCharacters_ShouldAcceptValidCharacters()
@@ -280,28 +240,20 @@ public class SettingCreateCommandTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task CreateSetting_MultipleTenants_ShouldMaintainSeparateNamespaces()
+    public async Task CreateSetting_WithSameKey_ShouldReturnBadRequest()
     {
-        await SeedTestDataAsync();
-
-        // Create setting for tenant 1
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-        var setting1 = CreateValidSettingDto("shared.key.name", "value_for_tenant_1");
+        // Create first setting
+        var setting1 = CreateValidSettingDto("shared.key.name", "value_1");
         var response1 = await PostAsJsonAsync("/api/v1/Settings", setting1);
         TestAssertions.AssertEqual(HttpStatusCode.Created, response1.StatusCode);
 
-        // Create setting for tenant 2 with same key
-        SetTenantHeader(TenantConstants.TestTenant2Id);
-        var setting2 = CreateValidSettingDto("shared.key.name", "value_for_tenant_2");
+        // Try to create setting with same key (should fail since settings are global)
+        var setting2 = CreateValidSettingDto("shared.key.name", "value_2");
         var response2 = await PostAsJsonAsync("/api/v1/Settings", setting2);
-        TestAssertions.AssertEqual(HttpStatusCode.Created, response2.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response2.StatusCode);
 
-        // Both should succeed because they are in different tenant contexts
-        var result1 = await ReadResponseAsync<Result<Guid>>(response1);
         var result2 = await ReadResponseAsync<Result<Guid>>(response2);
-        TestAssertions.AssertTrue(result1.Succeeded);
-        TestAssertions.AssertTrue(result2.Succeeded);
-        TestAssertions.AssertNotEqual(result1.Data, result2.Data);
+        TestAssertions.AssertFalse(result2.Succeeded);
     }
 
     [Fact]
