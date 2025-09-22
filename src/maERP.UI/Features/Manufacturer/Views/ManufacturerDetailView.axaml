@@ -7,76 +7,79 @@
 
   <Grid RowDefinitions="Auto,*">
     
-    <!-- Header with manufacturer info and actions -->
-    <Border Grid.Row="0" 
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
-            Padding="32,20"
-            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-            BorderThickness="0,0,0,1"
-            CornerRadius="8,8,0,0"
-            Margin="0,0,0,8">
-      
-      <Grid ColumnDefinitions="*,Auto">
-        
-        <!-- Title and basic info -->
-        <StackPanel Grid.Column="0" VerticalAlignment="Center">
-          <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
-            <TextBlock Text="{Binding Manufacturer.Name, StringFormat=🏭 {0}}" 
-                       FontSize="24" 
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,32">
+      <!-- Title and info -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,8">
+          <TextBlock Text="{Binding Manufacturer.Name}" 
+                     FontSize="28" 
+                     FontWeight="SemiBold"
+                     Foreground="#111827"/>
+          <TextBlock Text="{Binding Manufacturer.Id, StringFormat=ID #{0}}" 
+                     FontSize="18" 
+                     FontWeight="Medium"
+                     Foreground="#6B7280"
+                     VerticalAlignment="Bottom"/>
+          <Border Background="#E0F2FE" 
+                  CornerRadius="6" 
+                  Padding="8,4"
+                  IsVisible="{Binding Manufacturer.Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <TextBlock Text="Aktiv" 
+                       FontSize="12" 
                        FontWeight="SemiBold"
-                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
-            <Border Background="#E8F5E8" 
-                    CornerRadius="12" 
-                    Padding="8,4"
-                    IsVisible="{Binding Manufacturer.Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
-              <TextBlock Text="Aktiv" 
-                         FontSize="12" 
-                         FontWeight="SemiBold"
-                         Foreground="#2E7D32"/>
-            </Border>
-          </StackPanel>
-          <TextBlock Text="{Binding Manufacturer.City, StringFormat=Standort: \{0\}}" 
-                     FontSize="14" 
-                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                     IsVisible="{Binding Manufacturer.City, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                       Foreground="#0369A1"/>
+          </Border>
         </StackPanel>
-        
-        <!-- Action buttons -->
-        <StackPanel Grid.Column="1" 
-                    Orientation="Horizontal" 
-                    Spacing="8" 
-                    VerticalAlignment="Center">
-          <Button Content="✏️ Bearbeiten" 
-                  Command="{Binding EditManufacturerCommand}"
-                  Padding="12,6"
-                  CornerRadius="6"
-                  Background="{DynamicResource AccentFillColorDefaultBrush}"
-                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
-          <Button Content="🗑️ Löschen" 
-                  Command="{Binding DeleteManufacturerCommand}"
-                  Padding="12,6"
-                  CornerRadius="6"
-                  Background="#DC3545"
-                  Foreground="White"/>
-          <Button Content="🔄 Aktualisieren" 
-                  Command="{Binding RefreshCommand}"
-                  Padding="12,6"
-                  CornerRadius="6"
-                  Background="{DynamicResource ControlFillColorDefaultBrush}"
-                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                  BorderThickness="1"/>
-          <Button Content="← Zurück" 
-                  Command="{Binding GoBackCommand}"
-                  Padding="12,6"
-                  CornerRadius="6"
-                  Background="{DynamicResource ControlFillColorDefaultBrush}"
-                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                  BorderThickness="1"/>
-        </StackPanel>
-        
-      </Grid>
+        <TextBlock Text="{Binding Manufacturer.City, StringFormat=Standort: \{0\}}" 
+                   FontSize="14" 
+                   Foreground="#6B7280"
+                   IsVisible="{Binding Manufacturer.City, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+      </StackPanel>
       
-    </Border>
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1" 
+                  Orientation="Horizontal" 
+                  Spacing="8" 
+                  VerticalAlignment="Center">
+        <Button Content="✏️" 
+                Command="{Binding EditManufacturerCommand}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#3B82F6"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTip.Tip="Hersteller bearbeiten"/>
+        <Button Content="🗑️" 
+                Command="{Binding DeleteManufacturerCommand}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#EF4444"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTip.Tip="Hersteller löschen"/>
+        <Button Content="🔄" 
+                Command="{Binding RefreshCommand}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#F3F4F6"
+                Foreground="#374151"
+                BorderThickness="0"
+                ToolTip.Tip="Aktualisieren"/>
+        <Button Content="←" 
+                Command="{Binding GoBackCommand}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#F3F4F6"
+                Foreground="#374151"
+                BorderThickness="0"
+                ToolTip.Tip="Zurück zur Liste"/>
+      </StackPanel>
+    </Grid>
     
     <!-- Main content -->
     <Grid Grid.Row="1">

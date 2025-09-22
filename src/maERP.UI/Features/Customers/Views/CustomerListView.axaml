@@ -6,83 +6,74 @@
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
              x:Class="maERP.UI.Features.Customers.Views.CustomerListView">
 
-  <Grid RowDefinitions="Auto,*,Auto">
+  <Grid RowDefinitions="Auto,Auto,*,Auto">
     
-    <!-- Header mit Titel und Suche -->
-    <Border Grid.Row="0" 
-            Background="{DynamicResource SurfaceContainerBrush}"
-            Padding="20,12"
-            BorderBrush="{DynamicResource OutlineVariantBrush}"
-            BorderThickness="0,0,0,1"
-            CornerRadius="0"
-            Margin="0">
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,24">
+      <!-- Title -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <TextBlock Text="Kunden" 
+                   FontSize="24" 
+                   FontWeight="SemiBold"
+                   Foreground="#111827"
+                   Margin="0,0,0,4"/>
+        <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Kunden}" 
+                   FontSize="14" 
+                   Foreground="#6B7280"/>
+      </StackPanel>
       
-      <Grid ColumnDefinitions="*,Auto,Auto">
-        
-        <!-- Titel -->
-        <StackPanel Grid.Column="0" VerticalAlignment="Center">
-          <TextBlock Text="👥 Kunden" 
-                     FontSize="{DynamicResource FontSizeHeadlineL}" 
-                     FontWeight="SemiBold"
-                     Foreground="{DynamicResource OnSurfaceBrush}"
-                     Margin="0,0,0,4"/>
-          <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Kunden}" 
-                     FontSize="{DynamicResource FontSizeBodyS}" 
-                     Foreground="{DynamicResource OnSurfaceVariantBrush}"/>
-        </StackPanel>
-        
-        <!-- Suchfeld -->
-        <StackPanel Grid.Column="1" 
-                    Orientation="Horizontal" 
-                    Spacing="4" 
-                    VerticalAlignment="Center"
-                    Margin="8,0">
-          
-          <TextBox Text="{Binding SearchText}" 
-                   Watermark="Nach Kunden suchen..."
-                   Width="200"
-                   VerticalAlignment="Center"
-                   CornerRadius="3"
-                   Padding="8,5"
-                   FontSize="{DynamicResource FontSizeBodyS}"/>
-          
-          <Button Content="🔍" 
-                  Command="{Binding SearchCustomersCommand}"
-                  VerticalAlignment="Center"
-                  Padding="8,5"
-                  CornerRadius="3"/>
-          
-        </StackPanel>
-        
-        <!-- Action Buttons -->
-        <StackPanel Grid.Column="2" 
-                    Orientation="Horizontal" 
-                    Spacing="4" 
-                    VerticalAlignment="Center">
-          <Button Content="➕ Neu" 
-                  Command="{Binding CreateNewCustomerCommand}"
-                  Padding="10,6"
-                  CornerRadius="3"
-                  FontSize="{DynamicResource FontSizeBodyS}"
-                  Background="{DynamicResource PrimaryBrush}"
-                  Foreground="{DynamicResource OnPrimaryBrush}"/>
-          <Button Content="🔄" 
-                  Command="{Binding RefreshCommand}"
-                  Padding="7,6"
-                  CornerRadius="3"
-                  FontSize="{DynamicResource FontSizeBodyS}"
-                  Background="{DynamicResource SurfaceContainerHighBrush}"
-                  BorderBrush="{DynamicResource OutlineBrush}"
-                  BorderThickness="1"
-                  ToolTip.Tip="Aktualisieren"/>
-        </StackPanel>
-        
-      </Grid>
-      
-    </Border>
+      <!-- Action Buttons -->
+      <StackPanel Grid.Column="1" 
+                  Orientation="Horizontal" 
+                  Spacing="8" 
+                  VerticalAlignment="Center">
+        <Button Content="➕" 
+                Command="{Binding CreateNewCustomerCommand}"
+                Padding="8"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#3B82F6"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTip.Tip="Neuen Kunden erstellen"/>
+        <Button Content="🔄" 
+                Command="{Binding RefreshCommand}"
+                Padding="8"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#F3F4F6"
+                Foreground="#374151"
+                BorderThickness="0"
+                ToolTip.Tip="Aktualisieren"/>
+      </StackPanel>
+    </Grid>
+    
+    <!-- Search Bar -->
+    <Grid Grid.Row="1" Margin="0,0,0,16">
+      <StackPanel Orientation="Horizontal" 
+                  Spacing="8" 
+                  HorizontalAlignment="Left">
+        <TextBox Text="{Binding SearchText}" 
+                 Watermark="Nach Kunden suchen..."
+                 Width="300"
+                 CornerRadius="6"
+                 Padding="12,8"
+                 FontSize="14"
+                 BorderBrush="#D1D5DB"
+                 BorderThickness="1"/>
+        <Button Content="🔍" 
+                Command="{Binding SearchCustomersCommand}"
+                Padding="8"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#F3F4F6"
+                Foreground="#374151"
+                BorderThickness="0"/>
+      </StackPanel>
+    </Grid>
     
     <!-- Loading/Error/Content -->
-    <Grid Grid.Row="1">
+    <Grid Grid.Row="2">
       
       <!-- Loading Indicator -->
       <StackPanel IsVisible="{Binding IsLoading}" 
@@ -176,70 +167,74 @@
     </Grid>
     
     <!-- Pagination Footer -->
-    <Border Grid.Row="2" 
-            Background="{DynamicResource SurfaceContainerBrush}"
-            Padding="16,12"
-            BorderBrush="{DynamicResource OutlineVariantBrush}"
-            BorderThickness="0,1,0,0"
-            CornerRadius="0,0,6,6"
-            Margin="0,6,0,0"
+    <Border Grid.Row="3" 
+            Background="Transparent"
+            Padding="0,16,0,0"
             IsVisible="{Binding !IsLoading}">
       
       <Grid ColumnDefinitions="*,Auto,*">
         
-        <!-- Page Info Links -->
+        <!-- Page Info -->
         <StackPanel Grid.Column="0" 
                     Orientation="Horizontal" 
                     VerticalAlignment="Center"
                     Spacing="6">
           <TextBlock Text="{Binding DisplayPageNumber, StringFormat=Seite \{0\}}" 
-                     FontSize="{DynamicResource FontSizeBodyS}"
+                     FontSize="14"
+                     Foreground="#6B7280"
                      VerticalAlignment="Center"/>
           <TextBlock Text="von" 
-                     FontSize="{DynamicResource FontSizeBodyS}"
-                     Opacity="0.7" 
+                     FontSize="14"
+                     Foreground="#9CA3AF" 
                      VerticalAlignment="Center"/>
           <TextBlock Text="{Binding TotalPages}" 
-                     FontSize="{DynamicResource FontSizeBodyS}"
+                     FontSize="14"
+                     Foreground="#6B7280"
                      VerticalAlignment="Center"/>
         </StackPanel>
         
         <!-- Navigation Buttons -->
         <StackPanel Grid.Column="1" 
                     Orientation="Horizontal" 
-                    Spacing="6">
+                    Spacing="8">
           
           <Button Content="◀ Zurück" 
                   Command="{Binding PreviousPageCommand}"
                   IsEnabled="{Binding CanGoPrevious}"
                   Padding="12,8"
-                  FontSize="{DynamicResource FontSizeBodyS}"
-                  CornerRadius="4"/>
+                  FontSize="14"
+                  CornerRadius="6"
+                  Background="#F3F4F6"
+                  Foreground="#374151"
+                  BorderThickness="0"/>
           
           <Button Content="Weiter ▶" 
                   Command="{Binding NextPageCommand}"
                   IsEnabled="{Binding CanGoNext}"
                   Padding="12,8"
-                  FontSize="{DynamicResource FontSizeBodyS}"
-                  CornerRadius="4"/>
+                  FontSize="14"
+                  CornerRadius="6"
+                  Background="#F3F4F6"
+                  Foreground="#374151"
+                  BorderThickness="0"/>
           
         </StackPanel>
         
-        <!-- Items Info Rechts -->
+        <!-- Items Info -->
         <StackPanel Grid.Column="2" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Spacing="3">
+                    Spacing="4">
           <TextBlock Text="{Binding Customers.Count, StringFormat=\{0\} Einträge}" 
-                     FontSize="{DynamicResource FontSizeBodyS}"
-                     Opacity="0.7"/>
+                     FontSize="14"
+                     Foreground="#9CA3AF"/>
           <TextBlock Text="von" 
-                     FontSize="{DynamicResource FontSizeBodyS}"
-                     Opacity="0.7"/>
+                     FontSize="14"
+                     Foreground="#9CA3AF"/>
           <TextBlock Text="{Binding TotalCount}" 
-                     FontSize="{DynamicResource FontSizeBodyS}"
-                     Opacity="0.7"/>
+                     FontSize="14"
+                     Foreground="#9CA3AF"/>
         </StackPanel>
         
       </Grid>

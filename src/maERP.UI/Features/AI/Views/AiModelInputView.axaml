@@ -8,61 +8,56 @@
 
   <Grid RowDefinitions="Auto,*,Auto">
     
-    <!-- Header -->
-    <Border Grid.Row="0" 
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
-            Padding="32,20"
-            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-            BorderThickness="0,0,0,1"
-            CornerRadius="8,8,0,0"
-            Margin="0,0,0,8">
-      
-      <Grid ColumnDefinitions="*,Auto">
-        
-        <!-- Title -->
-        <StackPanel Grid.Column="0" VerticalAlignment="Center">
-          <TextBlock Text="{Binding PageTitle}" 
-                     FontSize="24" 
-                     FontWeight="SemiBold"
-                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                     Margin="0,0,0,4"/>
-          <TextBlock Text="AI-Modell bearbeiten oder erstellen" 
-                     FontSize="14" 
-                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-        </StackPanel>
-        
-        <!-- Action buttons -->
-        <StackPanel Grid.Column="1" 
-                    Orientation="Horizontal" 
-                    Spacing="8" 
-                    VerticalAlignment="Center">
-          <Button Content="🔄 Formular leeren" 
-                  Command="{Binding ClearFormCommand}"
-                  Padding="12,8"
-                  CornerRadius="6"
-                  Background="{DynamicResource ControlFillColorDefaultBrush}"
-                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                  BorderThickness="1"
-                  IsVisible="{Binding !IsEditMode}"/>
-          <Button Content="← Zurück" 
-                  Command="{Binding CancelCommand}"
-                  Padding="12,8"
-                  CornerRadius="6"
-                  Background="{DynamicResource ControlFillColorDefaultBrush}"
-                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                  BorderThickness="1"/>
-          <Button Content="💾 Speichern" 
-                  Command="{Binding SaveCommand}"
-                  IsEnabled="{Binding !IsSaving}"
-                  Padding="16,8"
-                  CornerRadius="6"
-                  Background="{DynamicResource AccentFillColorDefaultBrush}"
-                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
-        </StackPanel>
-        
-      </Grid>
-      
-    </Border>
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,32">
+      <!-- Title -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <TextBlock Text="{Binding PageTitle}"
+                   FontSize="28"
+                   FontWeight="SemiBold"
+                   Foreground="#111827"
+                   Margin="0,0,0,8"/>
+        <TextBlock Text="AI-Modell bearbeiten oder erstellen"
+                   FontSize="14"
+                   Foreground="#6B7280"/>
+      </StackPanel>
+
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="8"
+                  VerticalAlignment="Center">
+        <Button Content="🔄"
+                Command="{Binding ClearFormCommand}"
+                IsVisible="{Binding !IsEditMode}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#F3F4F6"
+                Foreground="#374151"
+                BorderThickness="0"
+                ToolTip.Tip="Formular leeren"/>
+        <Button Content="←"
+                Command="{Binding CancelCommand}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#F3F4F6"
+                Foreground="#374151"
+                BorderThickness="0"
+                ToolTip.Tip="Zurück"/>
+        <Button Content="💾"
+                Command="{Binding SaveCommand}"
+                IsEnabled="{Binding !IsSaving}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#10B981"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTip.Tip="Speichern"/>
+      </StackPanel>
+    </Grid>
     
     <!-- Main content -->
     <Grid Grid.Row="1">

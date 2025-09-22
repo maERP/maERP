@@ -35,7 +35,8 @@
       "mcp__jetbrains__list_directory_tree",
       "WebFetch(domain:platform.openai.com)",
       "WebSearch",
-      "WebFetch(domain:m3.material.io)"
+      "WebFetch(domain:m3.material.io)",
+      "mcp__jetbrains__get_file_problems"
     ],
     "deny": [],
     "ask": []

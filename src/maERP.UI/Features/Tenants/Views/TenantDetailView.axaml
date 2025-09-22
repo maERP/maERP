@@ -6,49 +6,91 @@
              mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
              x:Class="maERP.UI.Features.Tenants.Views.TenantDetailView">
 
-  <Grid RowDefinitions="Auto,*,Auto">
+  <Grid RowDefinitions="Auto,*">
 
-    <!-- Header -->
-    <Border Grid.Row="0"
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
-            Padding="28,20"
-            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-            BorderThickness="0,0,0,1"
-            CornerRadius="8,8,0,0">
-      <Grid ColumnDefinitions="*,Auto">
-        <StackPanel>
-          <TextBlock Text="🏢 Tenant-Details"
-                     FontSize="{DynamicResource FontSizeTitle}"
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,32">
+      <!-- Title and info -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,8">
+          <TextBlock Text="{Binding Tenant.DisplayName}" 
+                     FontSize="28" 
                      FontWeight="SemiBold"
-                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
-          <TextBlock Text="{Binding Tenant.Identifier, StringFormat=Kennung: \{0\}}"
-                     FontSize="{DynamicResource FontSizeBody}"
-                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                     Foreground="#111827"/>
+          <TextBlock Text="{Binding Tenant.Id, StringFormat=ID #{0}}" 
+                     FontSize="18" 
+                     FontWeight="Medium"
+                     Foreground="#6B7280"
+                     VerticalAlignment="Bottom"/>
+          <Border Background="#E0F2FE" 
+                  CornerRadius="6" 
+                  Padding="8,4">
+            <TextBlock Text="{Binding StatusText}" 
+                       FontSize="12" 
+                       FontWeight="SemiBold"
+                       Foreground="#0369A1"/>
+          </Border>
         </StackPanel>
-
-        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-          <Button Content="✅ Aktivieren"
-                  Command="{Binding ActivateTenantCommand}"
-                  IsVisible="{Binding CanActivate}"
-                  Padding="16,10"
-                  CornerRadius="6"/>
-          <Button Content="⏸️ Deaktivieren"
-                  Command="{Binding DeactivateTenantCommand}"
-                  IsVisible="{Binding CanDeactivate}"
-                  Padding="16,10"
-                  CornerRadius="6"/>
-          <Button Content="✏️ Bearbeiten"
-                  Command="{Binding EditTenantCommand}"
-                  IsEnabled="{Binding Tenant}"
-                  Padding="16,10"
-                  CornerRadius="6"/>
-          <Button Content="↩️ Zurück"
-                  Command="{Binding GoBackCommand}"
-                  Padding="16,10"
-                  CornerRadius="6"/>
-        </StackPanel>
-      </Grid>
-    </Border>
+        <TextBlock Text="{Binding Tenant.Identifier, StringFormat=Kennung: \{0\}}" 
+                   FontSize="14" 
+                   Foreground="#6B7280"/>
+      </StackPanel>
+      
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1" 
+                  Orientation="Horizontal" 
+                  Spacing="8" 
+                  VerticalAlignment="Center">
+        <Button Content="✅" 
+                Command="{Binding ActivateTenantCommand}"
+                IsVisible="{Binding CanActivate}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#10B981"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTip.Tip="Tenant aktivieren"/>
+        <Button Content="⏸️" 
+                Command="{Binding DeactivateTenantCommand}"
+                IsVisible="{Binding CanDeactivate}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#EF4444"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTip.Tip="Tenant deaktivieren"/>
+        <Button Content="✏️" 
+                Command="{Binding EditTenantCommand}"
+                IsEnabled="{Binding Tenant}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#3B82F6"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTip.Tip="Tenant bearbeiten"/>
+        <Button Content="🔄" 
+                Command="{Binding RefreshCommand}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#F3F4F6"
+                Foreground="#374151"
+                BorderThickness="0"
+                ToolTip.Tip="Aktualisieren"/>
+        <Button Content="←" 
+                Command="{Binding GoBackCommand}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#F3F4F6"
+                Foreground="#374151"
+                BorderThickness="0"
+                ToolTip.Tip="Zurück zur Liste"/>
+      </StackPanel>
+    </Grid>
 
     <!-- Content -->
     <Grid Grid.Row="1" Margin="0,12" RowDefinitions="Auto,*">
@@ -187,24 +229,7 @@
 
     </Grid>
 
-    <!-- Footer -->
-    <Border Grid.Row="2"
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
-            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-            BorderThickness="0,1,0,0"
-            CornerRadius="0,0,8,8"
-            Padding="20">
-      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-        <Button Content="🔁 Aktualisieren"
-                Command="{Binding RefreshCommand}"
-                Padding="16,10"
-                CornerRadius="6"/>
-        <Button Content="↩️ Zurück"
-                Command="{Binding GoBackCommand}"
-                Padding="16,10"
-                CornerRadius="6"/>
-      </StackPanel>
-    </Border>
+
 
   </Grid>
 

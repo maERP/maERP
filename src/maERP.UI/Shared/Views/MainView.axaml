@@ -42,59 +42,65 @@
       <authViews:LoginView DataContext="{Binding LoginViewModel}"/>
     </Panel>
 
-    <!-- Hauptanwendung mit Sidebar wenn authentifiziert -->
-    <Grid IsVisible="{Binding IsAuthenticated}" ColumnDefinitions="260,*">
+    <!-- Hauptanwendung mit Header und Sidebar wenn authentifiziert -->
+    <Grid IsVisible="{Binding IsAuthenticated}" RowDefinitions="60,*" ColumnDefinitions="260,*">
     
-    <!-- Sidebar -->
-    <Border Grid.Column="0" 
-            Background="{DynamicResource SurfaceContainerBrush}"
-            BorderBrush="{DynamicResource OutlineVariantBrush}"
-            BorderThickness="0,0,1,0"
-            BoxShadow="{DynamicResource ElevationLevel1}">
-      
-      <DockPanel>
-        
-        <!-- Logo/Header - docked to top -->
-        <Border DockPanel.Dock="Top" 
-                Background="{DynamicResource PrimaryBrush}" 
-                Padding="20,16" 
-                Margin="12,12,12,16"
-                CornerRadius="{DynamicResource CornerRadiusM}"
-                BoxShadow="{DynamicResource ElevationLevel1}">
-          <StackPanel Spacing="2">
+    <!-- Top Header -->
+    <Border Grid.Row="0" Grid.ColumnSpan="2"
+            Background="#F7F7F8"
+            BorderBrush="#E4E4E7"
+            BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="260,*">
+        <!-- Logo section aligned with sidebar -->
+        <Border Grid.Column="0" 
+                Padding="20,0" 
+                BorderBrush="#E4E4E7"
+                BorderThickness="0,0,1,0">
+          <StackPanel Orientation="Horizontal" 
+                      VerticalAlignment="Center" 
+                      Spacing="8">
             <TextBlock Text="maERP" 
-                       FontSize="{DynamicResource FontSizeHeadlineS}" 
+                       FontSize="18" 
                        FontWeight="SemiBold" 
-                       Foreground="{DynamicResource OnPrimaryBrush}"
-                       HorizontalAlignment="Center"/>
+                       Foreground="#1F2937"/>
             <TextBlock Text="Enterprise Resource Planning" 
-                       FontSize="{DynamicResource FontSizeLabelS}" 
-                       Foreground="{DynamicResource OnPrimaryBrush}" 
-                       Opacity="0.9"
-                       HorizontalAlignment="Center"/>
+                       FontSize="12" 
+                       Foreground="#6B7280" 
+                       VerticalAlignment="Center"/>
           </StackPanel>
         </Border>
         
-        <!-- Logout Button at bottom - docked to bottom -->
-        <Border DockPanel.Dock="Bottom" 
-                VerticalAlignment="Bottom" 
-                Margin="12,24,12,12">
-          <Button Content="🚪 Abmelden"
-                  Command="{Binding LogoutCommand}"
-                  HorizontalAlignment="Stretch"
-                  HorizontalContentAlignment="Left"
-                  Padding="16,12"
-                  CornerRadius="{DynamicResource CornerRadiusM}"
-                  Background="{DynamicResource SurfaceContainerHighBrush}"
-                  BorderBrush="{DynamicResource OutlineBrush}"
-                  BorderThickness="1"
-                  FontSize="{DynamicResource FontSizeBodyS}"/>
-        </Border>
+        <!-- Right header content -->
+        <Grid Grid.Column="1" Margin="20,0">
+          <StackPanel Orientation="Horizontal" 
+                      HorizontalAlignment="Right" 
+                      VerticalAlignment="Center" 
+                      Spacing="12">
+            <Button Content="🚪"
+                    Command="{Binding LogoutCommand}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="8"
+                    CornerRadius="6"
+                    ToolTip.Tip="Abmelden"
+                    FontSize="16"/>
+          </StackPanel>
+        </Grid>
+      </Grid>
+    </Border>
+    
+    <!-- Sidebar -->
+    <Border Grid.Row="1" Grid.Column="0" 
+            Background="#F7F7F8"
+            BorderBrush="#E4E4E7"
+            BorderThickness="0,0,1,0">
+      
+      <DockPanel>
         
-        <!-- Navigation Menu - scrollable center area -->
+        <!-- Navigation Menu - scrollable area -->
         <ScrollViewer VerticalScrollBarVisibility="Auto" 
                       HorizontalScrollBarVisibility="Disabled">
-          <StackPanel Margin="12,8">
+          <StackPanel Margin="0,16">
             
             <!-- Dashboard -->
             <Button Content="📊 Dashboard"
@@ -103,21 +109,20 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <!-- Separators and menu sections -->
             <Rectangle Height="1" 
-                       Fill="{DynamicResource OutlineVariantBrush}" 
-                       Margin="0,8" 
-                       Opacity="0.3"/>
+                       Fill="#E4E4E7" 
+                       Margin="20,12" 
+                       Opacity="0.5"/>
             
-            <TextBlock Text="Verkauf" 
-                       FontSize="{DynamicResource FontSizeLabelM}" 
-                       FontWeight="Medium" 
-                       Foreground="{DynamicResource OnSurfaceVariantBrush}" 
-                       Margin="16,8,16,4"/>
+            <TextBlock Text="VERKAUF" 
+                       FontSize="12" 
+                       FontWeight="SemiBold" 
+                       Foreground="#6B7280" 
+                       Margin="20,12,20,8"/>
             
             <Button Content="👥 Kunden"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -125,9 +130,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Button Content="🛒 Bestellungen"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -135,9 +139,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Button Content="🧾 Rechnungen"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -145,20 +148,19 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Rectangle Height="1" 
-                       Fill="{DynamicResource OutlineVariantBrush}" 
-                       Margin="0,8" 
-                       Opacity="0.3"/>
+                       Fill="#E4E4E7" 
+                       Margin="20,12" 
+                       Opacity="0.5"/>
             
-            <TextBlock Text="Lager" 
-                       FontSize="{DynamicResource FontSizeLabelM}" 
+            <TextBlock Text="LAGER" 
+                       FontSize="12" 
                        FontWeight="SemiBold" 
-                       Foreground="{DynamicResource OnSurfaceVariantBrush}" 
-                       Margin="16,8,16,4"/>
+                       Foreground="#6B7280" 
+                       Margin="20,12,20,8"/>
             
             <Button Content="📦 Produkte"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -166,9 +168,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Button Content="🏭 Hersteller"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -176,9 +177,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Button Content="🏪 Lager"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -186,9 +186,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Button Content="📦📥 Wareneingänge"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -196,20 +195,19 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Rectangle Height="1" 
-                       Fill="{DynamicResource OutlineVariantBrush}" 
-                       Margin="0,8" 
-                       Opacity="0.3"/>
+                       Fill="#E4E4E7" 
+                       Margin="20,12" 
+                       Opacity="0.5"/>
             
-            <TextBlock Text="Vertrieb" 
-                       FontSize="{DynamicResource FontSizeLabelM}" 
+            <TextBlock Text="VERTRIEB" 
+                       FontSize="12" 
                        FontWeight="SemiBold" 
-                       Foreground="{DynamicResource OnSurfaceVariantBrush}" 
-                       Margin="16,8,16,4"/>
+                       Foreground="#6B7280" 
+                       Margin="20,12,20,8"/>
             
             <Button Content="🌐 Vertriebskanäle"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -217,20 +215,19 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Rectangle Height="1" 
-                       Fill="{DynamicResource OutlineVariantBrush}" 
-                       Margin="0,8" 
-                       Opacity="0.3"/>
+                       Fill="#E4E4E7" 
+                       Margin="20,12" 
+                       Opacity="0.5"/>
             
-            <TextBlock Text="System" 
-                       FontSize="{DynamicResource FontSizeLabelM}" 
+            <TextBlock Text="SYSTEM" 
+                       FontSize="12" 
                        FontWeight="SemiBold" 
-                       Foreground="{DynamicResource OnSurfaceVariantBrush}" 
-                       Margin="16,8,16,4"/>
+                       Foreground="#6B7280" 
+                       Margin="20,12,20,8"/>
             
             <Button Content="🤖 AI-Modelle"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -238,9 +235,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Button Content="💬 AI-Prompts"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -248,9 +244,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Button Content="💰 Steuerklassen"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -258,9 +253,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Button Content="🏢 Tenants"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -268,9 +262,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusM}"
+                    Padding="20,12"
+                    Margin="0,1"
                     IsVisible="{Binding IsSuperAdmin}"/>
             
             <Button Content="👤 Benutzer"
@@ -279,9 +272,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
             <Button Content="📥📤 Import/Export"
                     Command="{Binding NavigateToMenuItemCommand}"
@@ -289,9 +281,8 @@
                     Classes="nav-button"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
-                    Padding="16,10"
-                    Margin="0,2"
-                    CornerRadius="{DynamicResource CornerRadiusS}"/>
+                    Padding="20,12"
+                    Margin="0,1"/>
             
           </StackPanel>
         </ScrollViewer>
@@ -301,13 +292,11 @@
     </Border>
     
     <!-- Main Content Area -->
-    <Border Grid.Column="1" 
-            Background="{DynamicResource BackgroundBrush}"
-            CornerRadius="6,0,0,0"
-            Margin="0,6,6,6">
+    <Border Grid.Row="1" Grid.Column="1" 
+            Background="White">
       <ScrollViewer VerticalScrollBarVisibility="Auto" 
                     HorizontalScrollBarVisibility="Disabled"
-                    Margin="24">
+                    Margin="32,24">
         <ContentControl Content="{Binding CurrentView}">
           <ContentControl.DataTemplates>
             
@@ -471,22 +460,23 @@
     <Style Selector="Button.nav-button">
       <Setter Property="Background" Value="Transparent"/>
       <Setter Property="BorderThickness" Value="0"/>
-      <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
-      <Setter Property="FontSize" Value="{DynamicResource FontSizeBodyS}"/>
+      <Setter Property="Foreground" Value="#374151"/>
+      <Setter Property="FontSize" Value="14"/>
       <Setter Property="FontWeight" Value="Normal"/>
       <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="CornerRadius" Value="6"/>
     </Style>
     <Style Selector="Button.nav-button:pointerover">
-      <Setter Property="Background" Value="{DynamicResource SecondaryContainerBrush}"/>
-      <Setter Property="Foreground" Value="{DynamicResource OnSecondaryContainerBrush}"/>
+      <Setter Property="Background" Value="#F3F4F6"/>
+      <Setter Property="Foreground" Value="#111827"/>
     </Style>
     <Style Selector="Button.nav-button:pressed">
-      <Setter Property="Background" Value="{DynamicResource PrimaryContainerBrush}"/>
-      <Setter Property="Foreground" Value="{DynamicResource OnPrimaryContainerBrush}"/>
+      <Setter Property="Background" Value="#E5E7EB"/>
+      <Setter Property="Foreground" Value="#111827"/>
     </Style>
     <Style Selector="Button.nav-button:focus">
-      <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
-      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="#3B82F6"/>
+      <Setter Property="BorderThickness" Value="2"/>
     </Style>
   </UserControl.Styles>
 

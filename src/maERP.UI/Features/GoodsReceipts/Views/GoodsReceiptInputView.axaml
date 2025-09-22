@@ -7,46 +7,36 @@
 
   <Grid RowDefinitions="Auto,*,Auto">
     
-    <!-- Header -->
-    <Border Grid.Row="0" 
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
-            Padding="32,20"
-            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-            BorderThickness="0,0,0,1"
-            CornerRadius="8,8,0,0"
-            Margin="0,0,0,8">
-      
-      <Grid ColumnDefinitions="*,Auto">
-        
-        <!-- Title -->
-        <StackPanel Grid.Column="0" VerticalAlignment="Center">
-          <TextBlock Text="{Binding PageTitle}" 
-                     FontSize="28" 
-                     FontWeight="SemiBold"
-                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                     Margin="0,0,0,6"/>
-          <TextBlock Text="Wareneingänge schnell und einfach erfassen" 
-                     FontSize="14" 
-                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-        </StackPanel>
-        
-        <!-- Action buttons -->
-        <StackPanel Grid.Column="1" 
-                    Orientation="Horizontal" 
-                    Spacing="8" 
-                    VerticalAlignment="Center">
-          <Button Content="◀️ Zurück" 
-                  Command="{Binding GoBackCommand}"
-                  Padding="12,8"
-                  CornerRadius="6"
-                  Background="{DynamicResource ControlFillColorDefaultBrush}"
-                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                  BorderThickness="1"/>
-        </StackPanel>
-        
-      </Grid>
-      
-    </Border>
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,32">
+      <!-- Title -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <TextBlock Text="{Binding PageTitle}"
+                   FontSize="28"
+                   FontWeight="SemiBold"
+                   Foreground="#111827"
+                   Margin="0,0,0,8"/>
+        <TextBlock Text="Wareneingänge schnell und einfach erfassen"
+                   FontSize="14"
+                   Foreground="#6B7280"/>
+      </StackPanel>
+
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="8"
+                  VerticalAlignment="Center">
+        <Button Content="◀️"
+                Command="{Binding GoBackCommand}"
+                Padding="10"
+                CornerRadius="6"
+                FontSize="16"
+                Background="#F3F4F6"
+                Foreground="#374151"
+                BorderThickness="0"
+                ToolTip.Tip="Zurück"/>
+      </StackPanel>
+    </Grid>
     
     <!-- Main content -->
     <Grid Grid.Row="1">
