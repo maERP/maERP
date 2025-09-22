@@ -197,9 +197,17 @@ public partial class AiPromptInputViewModel : ViewModelBase
                 {
                     await NavigateToAiPromptDetail(AiPromptId);
                 }
-                else if (!IsEditMode && result.Data != Guid.Empty && NavigateToAiPromptDetail != null)
+                else if (!IsEditMode && NavigateToAiPromptDetail != null)
                 {
-                    await NavigateToAiPromptDetail(result.Data);
+                    var createdPromptId = result.Data;
+                    if (createdPromptId != Guid.Empty)
+                    {
+                        await NavigateToAiPromptDetail(createdPromptId);
+                    }
+                    else
+                    {
+                        GoBackAction?.Invoke();
+                    }
                 }
                 else
                 {

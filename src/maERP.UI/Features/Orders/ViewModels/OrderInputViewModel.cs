@@ -383,9 +383,17 @@ public partial class OrderInputViewModel : ViewModelBase
                 {
                     await NavigateToOrderDetail(OrderId);
                 }
-                else if (!IsEditMode && result.Data != null && NavigateToOrderDetail != null)
+                else if (!IsEditMode && NavigateToOrderDetail != null)
                 {
-                    await NavigateToOrderDetail(result.Data);
+                    var createdOrderId = result.Data;
+                    if (createdOrderId != Guid.Empty)
+                    {
+                        await NavigateToOrderDetail(createdOrderId);
+                    }
+                    else
+                    {
+                        GoBack();
+                    }
                 }
                 else
                 {

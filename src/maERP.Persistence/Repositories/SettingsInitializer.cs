@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace maERP.Persistence.Repositories
@@ -95,8 +96,24 @@ namespace maERP.Persistence.Repositories
                 new Setting { Key = "Notification.OrderEmail", Value = "True" },
                 new Setting { Key = "Notification.InvoiceEmail", Value = "True" },
                 new Setting { Key = "Notification.LowStockAlert", Value = "True" },
-                new Setting { Key = "Notification.LowStockThreshold", Value = "5" }
+                new Setting { Key = "Notification.LowStockThreshold", Value = "5" },
+                
+                // JWT Settings
+                new Setting { Key = "Jwt.Key", Value = GenerateJwtSecretKey() },
+                new Setting { Key = "Jwt.Issuer", Value = "maERP.Server" },
+                new Setting { Key = "Jwt.Audience", Value = "maERP.Client" },
+                new Setting { Key = "Jwt.DurationInMinutes", Value = "60" },
+                new Setting { Key = "Jwt.RefreshTokenExpireDays", Value = "7" }
             };
+        }
+
+        private static string GenerateJwtSecretKey()
+        {
+            // Generate a cryptographically secure 256-bit (32 bytes) key
+            using var rng = RandomNumberGenerator.Create();
+            var keyBytes = new byte[32];
+            rng.GetBytes(keyBytes);
+            return Convert.ToBase64String(keyBytes);
         }
     }
 }

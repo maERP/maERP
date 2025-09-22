@@ -250,9 +250,17 @@ public partial class CustomerInputViewModel : ViewModelBase
                 {
                     await NavigateToCustomerDetail(CustomerId);
                 }
-                else if (!IsEditMode && result.Data != Guid.Empty && NavigateToCustomerDetail != null)
+                else if (!IsEditMode && NavigateToCustomerDetail != null)
                 {
-                    await NavigateToCustomerDetail(result.Data);
+                    var createdCustomerId = result.Data;
+                    if (createdCustomerId != Guid.Empty)
+                    {
+                        await NavigateToCustomerDetail(createdCustomerId);
+                    }
+                    else
+                    {
+                        GoBack();
+                    }
                 }
                 else
                 {

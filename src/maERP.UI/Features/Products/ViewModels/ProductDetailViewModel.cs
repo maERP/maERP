@@ -35,13 +35,31 @@ public partial class ProductDetailViewModel : ViewModelBase
     public Func<Guid, Task>? NavigateToProductInput { get; set; }
 
     // Computed properties for better display
-    public string DisplayName => Product.UseOptimized && !string.IsNullOrEmpty(Product.NameOptimized)
-        ? Product.NameOptimized
-        : Product?.Name ?? string.Empty;
+    public string DisplayName
+    {
+        get
+        {
+            if (Product?.UseOptimized == true && !string.IsNullOrEmpty(Product.NameOptimized))
+            {
+                return Product.NameOptimized;
+            }
 
-    public string DisplayDescription => Product.UseOptimized && !string.IsNullOrEmpty(Product.DescriptionOptimized)
-        ? Product.DescriptionOptimized
-        : Product?.Description ?? string.Empty;
+            return Product?.Name ?? string.Empty;
+        }
+    }
+
+    public string DisplayDescription
+    {
+        get
+        {
+            if (Product?.UseOptimized == true && !string.IsNullOrEmpty(Product.DescriptionOptimized))
+            {
+                return Product.DescriptionOptimized;
+            }
+
+            return Product?.Description ?? string.Empty;
+        }
+    }
 
     public bool HasDescription => !string.IsNullOrEmpty(DisplayDescription);
     public bool HasEan => Product != null && !string.IsNullOrEmpty(Product.Ean);
@@ -52,9 +70,21 @@ public partial class ProductDetailViewModel : ViewModelBase
     public bool HasStocks => Product?.ProductStocks?.Any() == true;
 
     // Pricing calculations
-    public decimal DiscountPercentage => Product?.Msrp > 0 && Product?.Price > 0 && Product.Msrp > Product.Price
-        ? Math.Round(((Product.Msrp - Product.Price) / Product.Msrp) * 100, 2)
-        : 0;
+    public decimal DiscountPercentage
+    {
+        get
+        {
+            var msrp = Product?.Msrp ?? 0;
+            var price = Product?.Price ?? 0;
+
+            if (msrp <= 0 || price <= 0 || msrp <= price)
+            {
+                return 0;
+            }
+
+            return Math.Round(((msrp - price) / msrp) * 100, 2);
+        }
+    }
 
     public bool HasDiscount => DiscountPercentage > 0;
 

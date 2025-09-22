@@ -1,0 +1,260 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="maERP.UI.Features.Tenants.Views.TenantListView">
+
+  <Grid RowDefinitions="Auto,*,Auto">
+
+    <!-- Header mit Titel und Suche -->
+    <Border Grid.Row="0"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
+
+      <Grid ColumnDefinitions="*,Auto,Auto">
+
+        <!-- Titel -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="🏢 Tenants"
+                     FontSize="{DynamicResource FontSizeTitle}"
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                     Margin="0,0,0,6"/>
+          <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Tenants}"
+                     FontSize="{DynamicResource FontSizeBody}"
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+        </StackPanel>
+
+        <!-- Suchfeld -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    VerticalAlignment="Center"
+                    Margin="16,0">
+
+          <TextBox Text="{Binding SearchText}"
+                   Watermark="Nach Tenants suchen..."
+                   Width="240"
+                   VerticalAlignment="Center"
+                   CornerRadius="6"
+                   Padding="12,8"/>
+
+          <Button Content="🔍"
+                  Command="{Binding SearchTenantsCommand}"
+                  VerticalAlignment="Center"
+                  Padding="12,8"
+                  CornerRadius="6"/>
+
+        </StackPanel>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="2"
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    VerticalAlignment="Center">
+          <Button Content="➕ Neu"
+                  Command="{Binding CreateTenantCommand}"
+                  Padding="16,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource AccentFillColorDefaultBrush}"
+                  Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                  ToolTip.Tip="Neuen Tenant erstellen"/>
+          <Button Content="🔄"
+                  Command="{Binding RefreshCommand}"
+                  Padding="12,10"
+                  CornerRadius="6"
+                  Background="{DynamicResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  ToolTip.Tip="Aktualisieren"/>
+        </StackPanel>
+
+      </Grid>
+
+    </Border>
+
+    <!-- Loading/Error/Content -->
+    <Grid Grid.Row="1">
+
+      <!-- Loading Indicator -->
+      <StackPanel IsVisible="{Binding IsLoading}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressBar IsIndeterminate="True" Width="200"/>
+        <TextBlock Text="Tenants werden geladen..."
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+
+      <!-- Error Message -->
+      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+              Background="#FFF3CD"
+              BorderBrush="#D6B656"
+              BorderThickness="1"
+              CornerRadius="8"
+              Padding="20"
+              Margin="20"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+          <Button Content="Erneut versuchen"
+                  Command="{Binding RefreshCommand}"
+                  HorizontalAlignment="Left"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Tenants DataGrid -->
+      <ScrollViewer IsVisible="{Binding ShouldShowDataGrid}">
+        <controls:DataGrid ItemsSource="{Binding Tenants}"
+                           SelectedItem="{Binding SelectedTenant}"
+                           AutoGenerateColumns="False"
+                           CanUserReorderColumns="True"
+                           CanUserResizeColumns="True"
+                           CanUserSortColumns="True"
+                           GridLinesVisibility="Horizontal"
+                           HeadersVisibility="Column"
+                           IsReadOnly="True"
+                           SelectionMode="Single"
+                           DoubleTapped="DataGrid_DoubleTapped">
+
+          <controls:DataGrid.Columns>
+
+            <controls:DataGridTextColumn Header="Tenant-ID"
+                                         Binding="{Binding Id}"
+                                         Width="150"
+                                         CanUserSort="True"/>
+
+            <controls:DataGridTextColumn Header="Kennung"
+                                         Binding="{Binding Identifier}"
+                                         Width="150"
+                                         CanUserSort="True"/>
+
+            <controls:DataGridTextColumn Header="Name"
+                                         Binding="{Binding DisplayName}"
+                                         Width="200"
+                                         CanUserSort="True"/>
+
+            <controls:DataGridTextColumn Header="Domain"
+                                         Binding="{Binding Domain}"
+                                         Width="200"
+                                         CanUserSort="True"/>
+
+            <controls:DataGridTextColumn Header="Admin-E-Mail"
+                                         Binding="{Binding AdminEmail}"
+                                         Width="200"
+                                         CanUserSort="True"/>
+
+            <controls:DataGridTextColumn Header="Gültig bis"
+                                         Binding="{Binding ValidUntil, StringFormat=\{0:dd.MM.yyyy\}}"
+                                         Width="140"
+                                         CanUserSort="True"/>
+
+            <controls:DataGridCheckBoxColumn Header="Aktiv"
+                                             Binding="{Binding IsActive}"
+                                             Width="80"
+                                             CanUserSort="True"/>
+
+            <controls:DataGridTextColumn Header="Erstellt am"
+                                         Binding="{Binding CreatedAt, StringFormat=\{0:dd.MM.yyyy\}}"
+                                         Width="140"
+                                         CanUserSort="True"/>
+
+            <controls:DataGridTextColumn Header="Aktualisiert am"
+                                         Binding="{Binding LastUpdatedAt, StringFormat=\{0:dd.MM.yyyy\}}"
+                                         Width="140"
+                                         CanUserSort="True"/>
+
+          </controls:DataGrid.Columns>
+
+          <controls:DataGrid.Styles>
+            <Style Selector="DataGridRow">
+              <Setter Property="Cursor" Value="Hand"/>
+            </Style>
+            <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+              <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
+            </Style>
+            <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+              <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+              <Setter Property="Opacity" Value="0.1"/>
+            </Style>
+          </controls:DataGrid.Styles>
+
+        </controls:DataGrid>
+      </ScrollViewer>
+
+    </Grid>
+
+    <!-- Pagination Footer -->
+    <Border Grid.Row="2"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Padding="20,16"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0"
+            IsVisible="{Binding !IsLoading}">
+
+      <Grid ColumnDefinitions="*,Auto,*">
+
+        <!-- Page Info Links -->
+        <StackPanel Grid.Column="0"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    Spacing="8">
+          <TextBlock Text="{Binding DisplayPageNumber, StringFormat=Seite \{0\}}"
+                     VerticalAlignment="Center"/>
+          <TextBlock Text="von"
+                     Opacity="0.7"
+                     VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding TotalPages}"
+                     VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Navigation Buttons -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="8">
+
+          <Button Content="◀ Zurück"
+                  Command="{Binding PreviousPageCommand}"
+                  IsEnabled="{Binding CanGoPrevious}"
+                  Padding="16,10"
+                  CornerRadius="6"/>
+
+          <Button Content="Weiter ▶"
+                  Command="{Binding NextPageCommand}"
+                  IsEnabled="{Binding CanGoNext}"
+                  Padding="16,10"
+                  CornerRadius="6"/>
+
+        </StackPanel>
+
+        <!-- Items Info Rechts -->
+        <StackPanel Grid.Column="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Spacing="4">
+          <TextBlock Text="{Binding Tenants.Count, StringFormat=\{0\} Einträge}"
+                     Opacity="0.7"/>
+          <TextBlock Text="von"
+                     Opacity="0.7"/>
+          <TextBlock Text="{Binding TotalCount}"
+                     Opacity="0.7"/>
+        </StackPanel>
+
+      </Grid>
+
+    </Border>
+
+  </Grid>
+
+</UserControl>

@@ -3,23 +3,25 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
-
-using maERP.UI.Shared.ViewModels;
-using maERP.UI.Shared.Views;
-using maERP.UI.Features.Authentication.ViewModels;
-using maERP.UI.Features.Dashboard.ViewModels;
-using maERP.UI.Features.Customers.ViewModels;
-using maERP.UI.Features.ImportExport.ViewModels;
-using maERP.UI.Features.Products.ViewModels;
-using maERP.UI.Features.Orders.ViewModels;
-using maERP.UI.Features.Warehouses.ViewModels;
-using maERP.UI.Features.SalesChannels.ViewModels;
-using maERP.UI.Features.Invoices.ViewModels;
 using maERP.UI.Features.AI.ViewModels;
 using maERP.UI.Features.Administration.ViewModels;
+using maERP.UI.Features.Authentication.ViewModels;
+using maERP.UI.Features.Customers.ViewModels;
+using maERP.UI.Features.Dashboard.ViewModels;
 using maERP.UI.Features.GoodsReceipts.ViewModels;
+using maERP.UI.Features.ImportExport.ViewModels;
+using maERP.UI.Features.Invoices.ViewModels;
 using maERP.UI.Features.Manufacturer.ViewModels;
+using maERP.UI.Features.Orders.ViewModels;
+using maERP.UI.Features.Products.ViewModels;
+using maERP.UI.Features.SalesChannels.ViewModels;
+using maERP.UI.Features.Warehouses.ViewModels;
 using maERP.UI.Services;
+using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Views;
+using TenantListViewModel = maERP.UI.Features.Tenants.ViewModels.TenantListViewModel;
+using TenantDetailViewModel = maERP.UI.Features.Tenants.ViewModels.TenantDetailViewModel;
+using TenantInputViewModel = maERP.UI.Features.Tenants.ViewModels.TenantInputViewModel;
 
 namespace maERP.UI;
 
@@ -37,8 +39,8 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
 
-        // Register HttpClient and services
         services.AddHttpClient<HttpService>();
+
         services.AddSingleton<IHttpService, HttpService>();
         services.AddSingleton<ITenantService, TenantService>();
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
@@ -46,7 +48,6 @@ public partial class App : Application
         services.AddSingleton<IDialogService, DialogService>();
         services.AddSingleton<IDebugService, DebugService>();
 
-        // Register ViewModels
         services.AddSingleton<MainViewModel>();
         services.AddTransient<LoginViewModel>();
         services.AddSingleton<TenantSelectorViewModel>();
@@ -69,13 +70,15 @@ public partial class App : Application
         services.AddTransient<ProductListViewModel>();
         services.AddTransient<ProductDetailViewModel>();
         services.AddTransient<ProductInputViewModel>();
+        services.AddTransient<TenantListViewModel>();
+        services.AddTransient<TenantDetailViewModel>();
+        services.AddTransient<TenantInputViewModel>();
         services.AddTransient<SalesChannelListViewModel>();
         services.AddTransient<SalesChannelDetailViewModel>();
         services.AddTransient<SalesChannelInputViewModel>();
         services.AddTransient<TaxClassListViewModel>();
         services.AddTransient<TaxClassInputViewModel>();
         services.AddTransient<TaxClassDetailViewModel>();
-        services.AddTransient<TenantDetailViewModel>();
         services.AddTransient<UserListViewModel>();
         services.AddTransient<UserDetailViewModel>();
         services.AddTransient<UserInputViewModel>();
@@ -96,8 +99,6 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        // Line below is needed to remove Avalonia data validation.
-        // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
 
         var mainViewModel = _serviceProvider?.GetRequiredService<MainViewModel>();
