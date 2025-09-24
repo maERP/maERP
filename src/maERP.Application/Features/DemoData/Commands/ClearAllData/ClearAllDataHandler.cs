@@ -2,6 +2,7 @@ using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
+using System.Diagnostics;
 
 namespace maERP.Application.Features.DemoData.Commands.ClearAllData;
 
@@ -53,6 +54,11 @@ public class ClearAllDataHandler : IRequestHandler<ClearAllDataCommand, Result<s
 
     public async Task<Result<string>> Handle(ClearAllDataCommand request, CancellationToken cancellationToken)
     {
+        if (!Debugger.IsAttached)
+        {
+            return Result<string>.Fail("Demo data clearing is only available when debugger is attached.");
+        }
+
         _logger.LogInformation("Starting to clear all data from database");
 
         var result = new Result<string>();

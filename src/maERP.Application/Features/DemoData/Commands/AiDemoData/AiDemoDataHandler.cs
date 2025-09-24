@@ -6,6 +6,7 @@ using maERP.Domain.Constants;
 using maERP.Application.Mediator;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Contracts.Services;
+using System.Diagnostics;
 
 namespace maERP.Application.Features.DemoData.Commands.AiDemoData;
 
@@ -30,6 +31,11 @@ public class AiDemoDataHandler : IRequestHandler<AiDemoDataCommand, Result<strin
 
     public async Task<Result<string>> Handle(AiDemoDataCommand request, CancellationToken cancellationToken)
     {
+        if (!Debugger.IsAttached)
+        {
+            return Result<string>.Fail("Demo data creation is only available when debugger is attached.");
+        }
+
         _logger.LogInformation("Starting to create AI demo data (models and prompts)");
 
         var result = new Result<string>();

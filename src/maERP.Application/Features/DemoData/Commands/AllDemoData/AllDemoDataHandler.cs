@@ -5,6 +5,7 @@ using maERP.Domain.Wrapper;
 using maERP.Domain.Constants;
 using maERP.Application.Mediator;
 using maERP.Application.Contracts.Services;
+using System.Diagnostics;
 
 namespace maERP.Application.Features.DemoData.Commands.AllDemoData;
 
@@ -41,6 +42,11 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
 
     public async Task<Result<string>> Handle(AllDemoDataCommand request, CancellationToken cancellationToken)
     {
+        if (!Debugger.IsAttached)
+        {
+            return Result<string>.Fail("Demo data creation is only available when debugger is attached.");
+        }
+
         _logger.LogInformation("Starting to create all demo data");
 
         var result = new Result<string>();

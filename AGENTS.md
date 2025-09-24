@@ -72,6 +72,7 @@ Avoid committing secrets; configure via `DatabaseConfig__ConnectionStrings__{Pro
 - IMPORTANT: cascade deletes must be implemented in the handler or repository
 - Pagination is zero-based and defined in QueryableExtensions.cs
 - IMPORTANT: all Entities are using System.Guid for Id, defined in BaseEntity.cs
+- - EnsureSuperadminAccessAsync() is only for running Tests
 
 ## Multi-Tenant Testing Guidelines
 - IMPORTANT: All multi-tenant tests MUST inherit from TenantIsolatedTestBase for proper isolation

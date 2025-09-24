@@ -4,6 +4,7 @@ using maERP.Application.Mediator;
 using maERP.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Diagnostics;
 using TenantEntity = maERP.Domain.Entities.Tenant;
 using UserTenantEntity = maERP.Domain.Entities.UserTenant;
 
@@ -24,6 +25,11 @@ public class TenantDemoDataHandler : IRequestHandler<TenantDemoDataCommand, Resu
 
     public async Task<Result<string>> Handle(TenantDemoDataCommand request, CancellationToken cancellationToken)
     {
+        if (!Debugger.IsAttached)
+        {
+            return Result<string>.Fail("Demo data creation is only available when debugger is attached.");
+        }
+
         try
         {
             // Check if demo tenants already exist

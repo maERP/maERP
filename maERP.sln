@@ -7,11 +7,9 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Projektmappenelemente", "{829B9490-4CCA-40BC-4DD4-7D38DB01FE48}"
 	ProjectSection(SolutionItems) = preProject
-		.cursorrules = .cursorrules
 		.dockerignore = .dockerignore
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		.windsurfrules = .windsurfrules
 		CLAUDE.md = CLAUDE.md
 		.github\codeql\codeql-config.yml = .github\codeql\codeql-config.yml
 		.github\workflows\codeql.yml = .github\workflows\codeql.yml

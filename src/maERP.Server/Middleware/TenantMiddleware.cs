@@ -20,10 +20,11 @@ public class TenantMiddleware
         var isTestEnvironment = context.RequestServices.GetService<IWebHostEnvironment>()?.EnvironmentName == "Testing";
         var isAuthenticated = user?.Identity?.IsAuthenticated == true;
 
-        // Skip tenant validation for auth endpoints (login, register)
+        // Skip tenant validation for auth endpoints (login, register) and demo data endpoints (superadmin only)
         var path = context.Request.Path.Value?.ToLower();
         var isAuthEndpoint = path != null && (path.EndsWith("/auth/login") || path.EndsWith("/auth/register"));
-        if (isAuthEndpoint)
+        var isDemoDataEndpoint = path != null && path.Contains("/demodata");
+        if (isAuthEndpoint || isDemoDataEndpoint)
         {
             await _next(context);
             return;

@@ -207,3 +207,4 @@ dotnet format
 - IMPORTANT: Test both authenticated and unauthenticated scenarios using helper methods
 - IMPORTANT: Verify proper HTTP status codes for missing/invalid tenant headers (Unauthorized for invalid format, NotFound for valid but non-existent tenant)
 - IMPORTANT: When creating new multi-tenant features, add comprehensive tests covering all tenant scenarios
+- EnsureSuperadminAccessAsync() is only for running Tests
