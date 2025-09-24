@@ -6,6 +6,7 @@ namespace maERP.Domain.Dtos.Customer;
 public class CustomerDetailDto
 {
     public Guid Id { get; set; }
+    public int CustomerId { get; set; }
     public string Firstname { get; set; } = string.Empty;
     public string Lastname { get; set; } = string.Empty;
 

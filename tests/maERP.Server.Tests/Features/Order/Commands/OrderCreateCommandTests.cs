@@ -74,6 +74,7 @@ public class OrderCreateCommandTests : TenantIsolatedTestBase
     {
         return new OrderInputDto
         {
+            OrderId = 12345,
             CustomerId = Customer1Id,
             SalesChannelId = Guid.NewGuid(),
             Status = OrderStatus.Pending,

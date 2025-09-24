@@ -130,7 +130,7 @@
           <controls:DataGrid.Columns>
             
             <controls:DataGridTextColumn Header="Kunden-Nr." 
-                                Binding="{Binding Id}" 
+                                Binding="{Binding CustomerId}" 
                                 Width="100"
                                 CanUserSort="True"/>
             

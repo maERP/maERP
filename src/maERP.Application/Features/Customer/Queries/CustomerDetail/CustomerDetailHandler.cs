@@ -86,6 +86,7 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
             var data = new CustomerDetailDto
             {
                 Id = customer.Id,
+                CustomerId = customer.CustomerId,
                 Firstname = customer.Firstname,
                 Lastname = customer.Lastname,
                 CompanyName = customer.CompanyName,

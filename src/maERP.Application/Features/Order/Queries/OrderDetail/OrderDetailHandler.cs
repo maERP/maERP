@@ -71,6 +71,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
             var data = new OrderDetailDto
             {
                 Id = order.Id,
+                OrderId = order.OrderId,
                 SalesChannelId = order.SalesChannelId,
                 RemoteOrderId = order.RemoteOrderId,
                 CustomerId = order.CustomerId,

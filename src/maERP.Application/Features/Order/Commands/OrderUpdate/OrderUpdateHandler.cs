@@ -90,6 +90,7 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<Gui
             var orderToUpdate = new Domain.Entities.Order
             {
                 Id = request.Id,
+                OrderId = request.OrderId,
                 SalesChannelId = request.SalesChannelId,
                 RemoteOrderId = request.RemoteOrderId,
                 CustomerId = request.CustomerId,

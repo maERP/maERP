@@ -98,6 +98,23 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         return customerAddress;
     }
 
+    public new async Task<Guid> CreateAsync(Customer entity)
+    {
+        // Auto-generate CustomerId
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        
+        var query = Context.Customer.AsQueryable();
+        if (currentTenantId.HasValue)
+        {
+            query = query.Where(c => c.TenantId == currentTenantId.Value);
+        }
+        
+        var maxCustomerId = await query.MaxAsync(c => (int?)c.CustomerId) ?? 0;
+        entity.CustomerId = maxCustomerId + 1;
+        
+        return await base.CreateAsync(entity);
+    }
+
     public override async Task<bool> IsUniqueAsync(Customer entity, Guid? id = null)
     {
         var currentTenantId = TenantContext.GetCurrentTenantId();

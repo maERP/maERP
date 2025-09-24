@@ -438,4 +438,48 @@ public class CustomerCreateCommandTests : TenantIsolatedTestBase
         TestAssertions.AssertEqual("José", createdCustomer!.Firstname);
         TestAssertions.AssertEqual("García", createdCustomer.Lastname);
     }
+
+    [Fact]
+    public async Task CreateCustomer_ShouldAutoGenerateCustomerId()
+    {
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        var customerData = CreateValidCustomerInputDto();
+        var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
+
+        TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertTrue(result.Succeeded);
+
+        var createdCustomer = await DbContext.Customer.FindAsync(result.Data);
+        TestAssertions.AssertNotNull(createdCustomer);
+        TestAssertions.AssertTrue(createdCustomer!.CustomerId > 0);
+    }
+
+    [Fact]
+    public async Task CreateCustomer_ShouldIncrementCustomerIdSequentially()
+    {
+        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+
+        // Create first customer
+        var customerData1 = CreateValidCustomerInputDto();
+        customerData1.Email = "first@testcompany.com";
+        var response1 = await PostAsJsonAsync("/api/v1/Customers", customerData1);
+        var result1 = await ReadResponseAsync<Result<Guid>>(response1);
+        var customer1 = await DbContext.Customer.FindAsync(result1.Data);
+
+        // Create second customer
+        var customerData2 = CreateValidCustomerInputDto();
+        customerData2.Email = "second@testcompany.com";
+        customerData2.Lastname = "Smith"; // Different lastname to avoid uniqueness conflict
+        var response2 = await PostAsJsonAsync("/api/v1/Customers", customerData2);
+        var result2 = await ReadResponseAsync<Result<Guid>>(response2);
+        var customer2 = await DbContext.Customer.FindAsync(result2.Data);
+
+        TestAssertions.AssertNotNull(customer1);
+        TestAssertions.AssertNotNull(customer2);
+        TestAssertions.AssertTrue(customer2!.CustomerId > customer1!.CustomerId);
+    }
 }

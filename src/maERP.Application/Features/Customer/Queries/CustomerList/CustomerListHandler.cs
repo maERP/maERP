@@ -34,6 +34,7 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
                .Select(c => new CustomerListDto
                {
                    Id = c.Id,
+                   CustomerId = c.CustomerId,
                    Firstname = c.Firstname,
                    Lastname = c.Lastname,
                    DateEnrollment = c.DateEnrollment
@@ -49,6 +50,7 @@ public class CustomerListHandler : IRequestHandler<CustomerListQuery, PaginatedR
             .Select(c => new CustomerListDto
             {
                 Id = c.Id,
+                CustomerId = c.CustomerId,
                 Firstname = c.Firstname,
                 Lastname = c.Lastname,
                 DateEnrollment = c.DateEnrollment

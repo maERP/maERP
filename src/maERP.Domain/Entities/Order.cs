@@ -6,6 +6,7 @@ namespace maERP.Domain.Entities;
 
 public class Order : BaseEntity, IBaseEntity
 {
+    public int OrderId { get; set; }
     public Guid SalesChannelId { get; set; }
     public string RemoteOrderId { get; set; } = string.Empty;
 

@@ -78,6 +78,7 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<Gui
             // Manual mapping instead of using AutoMapper
             var orderToCreate = new Domain.Entities.Order
             {
+                OrderId = request.OrderId,
                 SalesChannelId = request.SalesChannelId,
                 RemoteOrderId = request.RemoteOrderId,
                 CustomerId = request.CustomerId,

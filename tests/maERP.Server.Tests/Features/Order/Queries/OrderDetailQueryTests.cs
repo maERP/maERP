@@ -60,6 +60,7 @@ public class OrderDetailQueryTests : TenantIsolatedTestBase
                 var order1Tenant1 = new Domain.Entities.Order
                 {
                     Id = Order1Id,
+                    OrderId = 20001,
                     CustomerId = Customer1Id,
                     SalesChannelId = SalesChannel1Id,
                     RemoteOrderId = "ORDER-001",
@@ -93,6 +94,7 @@ public class OrderDetailQueryTests : TenantIsolatedTestBase
                 var order1Tenant2 = new Domain.Entities.Order
                 {
                     Id = Order2Id,
+                    OrderId = 20002,
                     CustomerId = Customer2Id,
                     SalesChannelId = SalesChannel2Id,
                     RemoteOrderId = "ORDER-002",

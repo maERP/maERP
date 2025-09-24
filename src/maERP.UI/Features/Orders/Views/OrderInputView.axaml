@@ -98,37 +98,44 @@
               
               <!-- Form Fields Grid -->
               <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="20" RowSpacing="16">
-                
-                <!-- Row 1: Status, Customer, Sales Channel -->
+
+                <!-- Row 1: OrderId, Status, Customer -->
                 <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Bestell-Nr." FontWeight="SemiBold"/>
+                  <NumericUpDown Value="{Binding OrderId}"
+                                 Minimum="1"
+                                 Watermark="Bestell-Nr. eingeben..."/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
                   <TextBlock Text="Status *" FontWeight="SemiBold"/>
                   <ComboBox ItemsSource="{Binding AvailableOrderStatuses}"
                             SelectedItem="{Binding Status}"
                             HorizontalAlignment="Stretch"/>
                 </StackPanel>
                 
-                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                <StackPanel Grid.Row="0" Grid.Column="2" Spacing="4">
                   <TextBlock Text="Kunde ID *" FontWeight="SemiBold"/>
-                  <NumericUpDown Value="{Binding CustomerId}" 
+                  <NumericUpDown Value="{Binding CustomerId}"
                                  Minimum="1"
                                  Watermark="Kunde ID eingeben..."/>
                 </StackPanel>
                 
-                <StackPanel Grid.Row="0" Grid.Column="2" Spacing="4">
+                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
                   <TextBlock Text="Sales Channel ID *" FontWeight="SemiBold"/>
-                  <NumericUpDown Value="{Binding SalesChannelId}" 
+                  <NumericUpDown Value="{Binding SalesChannelId}"
                                  Minimum="1"
                                  Watermark="Sales Channel ID eingeben..."/>
                 </StackPanel>
                 
                 <!-- Row 2: Remote Order ID, Order Date -->
-                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
                   <TextBlock Text="Remote Order ID" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding RemoteOrderId}" 
+                  <TextBox Text="{Binding RemoteOrderId}"
                            Watermark="Remote Order ID eingeben..."/>
                 </StackPanel>
                 
-                <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                <StackPanel Grid.Row="1" Grid.Column="2" Spacing="4">
                   <TextBlock Text="Bestelldatum" FontWeight="SemiBold"/>
                   <DatePicker SelectedDate="{Binding DateOrdered}"
                               HorizontalAlignment="Stretch"/>

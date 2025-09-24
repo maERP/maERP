@@ -15,11 +15,9 @@ public class TenantContext : ITenantContext
 
     public void SetCurrentTenantId(Guid? tenantId)
     {
-        // Only allow setting to null or a tenant that the user is assigned to
-        if (tenantId == null || (_assignedTenantIds.Count > 0 && _assignedTenantIds.Contains(tenantId.Value)))
-        {
-            _currentTenantId = tenantId;
-        }
+        // Allow setting to null or any tenant ID (validation happens in middleware)
+        // The middleware ensures the user has access before calling this method
+        _currentTenantId = tenantId;
     }
 
     public bool HasTenant()

@@ -70,6 +70,7 @@ public class OrderUpdateCommandTests : TenantIsolatedTestBase
                 var order1 = new Domain.Entities.Order
                 {
                     Id = Order1Id,
+                    OrderId = 10001,
                     SalesChannelId = SalesChannel1Id,
                     CustomerId = Customer1Id,
                     Status = OrderStatus.Processing,
@@ -87,6 +88,7 @@ public class OrderUpdateCommandTests : TenantIsolatedTestBase
                 var order2 = new Domain.Entities.Order
                 {
                     Id = Order2Id,
+                    OrderId = 10002,
                     SalesChannelId = SalesChannel1Id,
                     CustomerId = Customer2Id,
                     Status = OrderStatus.Pending,
@@ -104,6 +106,7 @@ public class OrderUpdateCommandTests : TenantIsolatedTestBase
                 var order3 = new Domain.Entities.Order
                 {
                     Id = Order3Id,
+                    OrderId = 10003,
                     SalesChannelId = SalesChannel1Id,
                     CustomerId = Customer3Id,
                     Status = OrderStatus.Processing,
@@ -139,6 +142,7 @@ public class OrderUpdateCommandTests : TenantIsolatedTestBase
         return new OrderInputDto
         {
             Id = id,
+            OrderId = 12345,
             SalesChannelId = SalesChannel1Id,
             CustomerId = Customer1Id,
             Status = OrderStatus.ReadyForDelivery,

@@ -7,6 +7,7 @@ namespace maERP.Domain.Dtos.Order;
 public class OrderInputDto : IOrderInputModel
 {
     public Guid Id { get; set; }
+    public int OrderId { get; set; }
     public Guid SalesChannelId { get; set; }
     public string RemoteOrderId { get; set; } = string.Empty;
     public Guid CustomerId { get; set; }

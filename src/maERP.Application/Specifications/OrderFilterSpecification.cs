@@ -14,11 +14,12 @@ namespace maERP.Application.Specifications
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = o => (o.InvoiceAddressCompanyName.Contains(searchString) || 
-                                o.InvoiceAddressFirstName.Contains(searchString) || 
+                Criteria = o => (o.InvoiceAddressCompanyName.Contains(searchString) ||
+                                o.InvoiceAddressFirstName.Contains(searchString) ||
                                 o.InvoiceAddressLastName.Contains(searchString) ||
                                 o.PaymentStatus.ToString().Contains(searchString) ||
-                                o.Status.ToString().Contains(searchString));
+                                o.Status.ToString().Contains(searchString) ||
+                                o.OrderId.ToString().Contains(searchString));
             }
             else
             {

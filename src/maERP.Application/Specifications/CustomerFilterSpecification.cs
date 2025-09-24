@@ -17,7 +17,8 @@ namespace maERP.Application.Specifications
                 var lowerSearchString = searchString.ToLower();
                 Criteria = c => (c.CompanyName.ToLower().Contains(lowerSearchString) ||
                                 c.Firstname.ToLower().Contains(lowerSearchString) ||
-                                c.Lastname.ToLower().Contains(lowerSearchString));
+                                c.Lastname.ToLower().Contains(lowerSearchString) ||
+                                c.CustomerId.ToString().Contains(searchString));
             }
             else
             {

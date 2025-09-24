@@ -83,6 +83,9 @@ public static class SwaggerRegistrationService
             options.OperationFilter<ProblemDetailsOperationFilter>();
             options.SchemaFilter<ProblemDetailsSchemaFilter>();
 
+            // Add tenant header support
+            options.OperationFilter<TenantHeaderOperationFilter>();
+
             // Custom schema IDs for better documentation
             options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
         });

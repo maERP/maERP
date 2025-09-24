@@ -17,7 +17,7 @@
                      FontSize="28" 
                      FontWeight="SemiBold"
                      Foreground="#111827"/>
-          <TextBlock Text="{Binding Customer.Id, StringFormat=ID #{0}}" 
+          <TextBlock Text="{Binding Customer.CustomerId, StringFormat=Kunden-Nr. #{0}}" 
                      FontSize="18" 
                      FontWeight="Medium"
                      Foreground="#6B7280"
@@ -125,8 +125,8 @@
               <!-- Left Column -->
               <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
                 <StackPanel Orientation="Horizontal">
-                  <TextBlock Text="Kunden-ID:" FontWeight="SemiBold" Width="140"/>
-                  <TextBlock Text="{Binding Customer.Id}"/>
+                  <TextBlock Text="Kunden-Nr.:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Customer.CustomerId}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                   <TextBlock Text="Vorname:" FontWeight="SemiBold" Width="140"/>

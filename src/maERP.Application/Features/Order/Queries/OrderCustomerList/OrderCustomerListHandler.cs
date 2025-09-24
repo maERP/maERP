@@ -35,6 +35,7 @@ public class OrderCustomerListHandler : IRequestHandler<OrderCustomerListQuery, 
                .Select(o => new OrderListDto
                {
                    Id = o.Id,
+                   OrderId = o.OrderId,
                    CustomerId = o.CustomerId,
                    InvoiceAddressFirstName = o.InvoiceAddressFirstName,
                    InvoiceAddressLastName = o.InvoiceAddressLastName,
@@ -54,6 +55,7 @@ public class OrderCustomerListHandler : IRequestHandler<OrderCustomerListQuery, 
             .Select(o => new OrderListDto
             {
                 Id = o.Id,
+                OrderId = o.OrderId,
                 CustomerId = o.CustomerId,
                 InvoiceAddressFirstName = o.InvoiceAddressFirstName,
                 InvoiceAddressLastName = o.InvoiceAddressLastName,

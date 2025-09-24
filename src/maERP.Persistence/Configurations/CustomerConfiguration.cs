@@ -15,6 +15,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             new Customer
             {
                 Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                CustomerId = 1,
                 TenantId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Demo tenant ID
                 Firstname = "Max",
                 Lastname = "Mustermann",

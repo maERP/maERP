@@ -18,7 +18,8 @@ public class OrderCustomerFilterSpecification : FilterSpecification<Order>
                                                         o.InvoiceAddressFirstName.Contains(searchString) ||
                                                         o.InvoiceAddressLastName.Contains(searchString) ||
                                                         o.Status.ToString().Contains(searchString) ||
-                                                        o.PaymentStatus.ToString().Contains(searchString));
+                                                        o.PaymentStatus.ToString().Contains(searchString) ||
+                                                        o.OrderId.ToString().Contains(searchString));
         }
         else
         {

@@ -129,8 +129,8 @@
           
           <controls:DataGrid.Columns>
             
-            <controls:DataGridTextColumn Header="Bestell-Nr." 
-                                Binding="{Binding Id}" 
+            <controls:DataGridTextColumn Header="Bestell-Nr."
+                                Binding="{Binding OrderId}"
                                 Width="100"
                                 CanUserSort="True"/>
             

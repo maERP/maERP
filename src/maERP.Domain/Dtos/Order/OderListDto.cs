@@ -3,6 +3,7 @@
 public class OrderListDto
 {
     public Guid Id { get; set; }
+    public int OrderId { get; set; }
     public Guid CustomerId { get; set; }
     public string InvoiceAddressFirstName { get; set; } = string.Empty;
     public string InvoiceAddressLastName { get; set; } = string.Empty;
