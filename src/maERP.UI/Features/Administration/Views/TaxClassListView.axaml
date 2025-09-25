@@ -46,10 +46,10 @@
                 CornerRadius="6"
                 FontSize="14"
                 FontWeight="Medium"
-                Background="#F2F2F7"
-                Foreground="#1C1C1E"
+                Background="{DynamicResource SurfaceContainerBrush}"
+                Foreground="{DynamicResource OnSurfaceBrush}"
                 BorderThickness="1"
-                BorderBrush="#D1D1D6"
+                BorderBrush="{DynamicResource OutlineVariantBrush}"
                 MinWidth="36"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
@@ -75,8 +75,8 @@
                 Padding="8"
                 CornerRadius="6"
                 FontSize="16"
-                Background="#F3F4F6"
-                Foreground="#374151"
+                Background="{DynamicResource SurfaceContainerBrush}"
+                Foreground="{DynamicResource OnSurfaceBrush}"
                 BorderThickness="0"/>
       </StackPanel>
     </Grid>
@@ -197,8 +197,8 @@
                   Padding="12,8"
                   FontSize="14"
                   CornerRadius="6"
-                  Background="#F3F4F6"
-                  Foreground="#374151"
+                  Background="{DynamicResource SurfaceContainerBrush}"
+                  Foreground="{DynamicResource OnSurfaceBrush}"
                   BorderThickness="0"/>
 
           <Button Content="Weiter ▶"
@@ -207,8 +207,8 @@
                   Padding="12,8"
                   FontSize="14"
                   CornerRadius="6"
-                  Background="#F3F4F6"
-                  Foreground="#374151"
+                  Background="{DynamicResource SurfaceContainerBrush}"
+                  Foreground="{DynamicResource OnSurfaceBrush}"
                   BorderThickness="0"/>
 
         </StackPanel>

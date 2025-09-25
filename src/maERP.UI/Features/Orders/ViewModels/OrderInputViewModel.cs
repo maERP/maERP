@@ -35,7 +35,7 @@ public partial class OrderInputViewModel : ViewModelBase
     [ObservableProperty]
     [Required(ErrorMessage = "Kunde ist erforderlich")]
     [NotifyDataErrorInfo]
-    private Guid customerId;
+    private int customerId;
 
     [ObservableProperty]
     private OrderStatus status = OrderStatus.Pending;
@@ -433,7 +433,7 @@ public partial class OrderInputViewModel : ViewModelBase
     {
         SalesChannelId = Guid.Empty;
         RemoteOrderId = string.Empty;
-        CustomerId = Guid.Empty;
+        CustomerId = 0;
         Status = OrderStatus.Pending;
         OrderItems.Clear();
         PaymentMethod = string.Empty;

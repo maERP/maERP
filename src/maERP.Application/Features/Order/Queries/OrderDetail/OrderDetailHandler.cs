@@ -74,7 +74,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
                 OrderId = order.OrderId,
                 SalesChannelId = order.SalesChannelId,
                 RemoteOrderId = order.RemoteOrderId,
-                CustomerId = order.CustomerId,
+                CustomerId = order.Customer.CustomerId,
                 Status = order.Status,
                 OrderItems = order.OrderItems.ToList(),
                 OrderHistory = MapOrderHistoryToDto(orderHistory),

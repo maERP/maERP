@@ -29,20 +29,20 @@
                   VerticalAlignment="Center">
         <Button Content="❌"
                 Command="{Binding CancelCommand}"
-                Padding="10"
+                Padding="12,8"
                 CornerRadius="6"
-                FontSize="16"
-                Background="#F3F4F6"
-                Foreground="#374151"
+                FontSize="16"                FontWeight="Medium"                MinWidth="36"                HorizontalContentAlignment="Center"                VerticalContentAlignment="Center"
+                Background="{DynamicResource SurfaceContainerBrush}"
+                Foreground="{DynamicResource OnSurfaceBrush}"
                 BorderThickness="0"
                 ToolTip.Tip="Abbrechen"/>
         <Button Content="💾"
                 Command="{Binding SaveCommand}"
-                Padding="10"
+                Padding="12,8"
                 CornerRadius="6"
-                FontSize="16"
-                Background="#10B981"
-                Foreground="White"
+                FontSize="16"                FontWeight="Medium"                MinWidth="36"                HorizontalContentAlignment="Center"                VerticalContentAlignment="Center"
+                Background="{DynamicResource PrimaryBrush}"
+                Foreground="{DynamicResource OnPrimaryBrush}"
                 BorderThickness="0"
                 ToolTip.Tip="Speichern"/>
       </StackPanel>
@@ -187,11 +187,11 @@
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
         <Button Content="💾 Speichern"
                 Command="{Binding SaveCommand}"
-                Padding="16,10"
+                Padding="12,8"
                 CornerRadius="6"/>
         <Button Content="✖️ Abbrechen"
                 Command="{Binding CancelCommand}"
-                Padding="16,10"
+                Padding="12,8"
                 CornerRadius="6"/>
       </StackPanel>
     </Border>

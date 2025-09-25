@@ -48,7 +48,7 @@
                 CornerRadius="6"
                 FontSize="16"
                 Background="#10B981"
-                Foreground="White"
+                Foreground="{DynamicResource OnPrimaryBrush}"
                 BorderThickness="0"
                 ToolTip.Tip="Tenant aktivieren"/>
         <Button Content="⏸️" 
@@ -58,7 +58,7 @@
                 CornerRadius="6"
                 FontSize="16"
                 Background="#EF4444"
-                Foreground="White"
+                Foreground="{DynamicResource OnPrimaryBrush}"
                 BorderThickness="0"
                 ToolTip.Tip="Tenant deaktivieren"/>
         <Button Content="✏️" 
@@ -67,8 +67,8 @@
                 Padding="10"
                 CornerRadius="6"
                 FontSize="16"
-                Background="#3B82F6"
-                Foreground="White"
+                Background="{DynamicResource PrimaryBrush}"
+                Foreground="{DynamicResource OnPrimaryBrush}"
                 BorderThickness="0"
                 ToolTip.Tip="Tenant bearbeiten"/>
         <Button Content="🔄" 
@@ -76,8 +76,8 @@
                 Padding="10"
                 CornerRadius="6"
                 FontSize="16"
-                Background="#F3F4F6"
-                Foreground="#374151"
+                Background="{DynamicResource SurfaceContainerBrush}"
+                Foreground="{DynamicResource OnSurfaceBrush}"
                 BorderThickness="0"
                 ToolTip.Tip="Aktualisieren"/>
         <Button Content="←" 
@@ -85,8 +85,8 @@
                 Padding="10"
                 CornerRadius="6"
                 FontSize="16"
-                Background="#F3F4F6"
-                Foreground="#374151"
+                Background="{DynamicResource SurfaceContainerBrush}"
+                Foreground="{DynamicResource OnSurfaceBrush}"
                 BorderThickness="0"
                 ToolTip.Tip="Zurück zur Liste"/>
       </StackPanel>

@@ -28,11 +28,11 @@
                   VerticalAlignment="Center">
         <Button Content="◀️"
                 Command="{Binding GoBackCommand}"
-                Padding="10"
+                Padding="12,8"
                 CornerRadius="6"
                 FontSize="16"
-                Background="#F3F4F6"
-                Foreground="#374151"
+                Background="{DynamicResource SurfaceContainerBrush}"
+                Foreground="{DynamicResource OnSurfaceBrush}"
                 BorderThickness="0"
                 ToolTip.Tip="Zurück"/>
       </StackPanel>
@@ -196,7 +196,7 @@
                           FontSize="16"
                           FontWeight="SemiBold"
                           Background="{DynamicResource SystemFillColorSuccessBrush}"
-                          Foreground="White"
+                          Foreground="{DynamicResource OnPrimaryBrush}"
                           MinWidth="200"
                           ToolTip.Tip="Speichert den aktuellen Wareneingang und bereitet das Formular für den nächsten vor"/>
                   
