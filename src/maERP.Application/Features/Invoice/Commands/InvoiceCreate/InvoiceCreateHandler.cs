@@ -96,7 +96,7 @@ public class InvoiceCreateHandler : IRequestHandler<InvoiceCreateCommand, Result
                 return result;
             }
 
-            var customer = await _customerRepository.GetByIdAsync(request.CustomerId);
+            var customer = await _customerRepository.GetByCustomerIdAsync(request.CustomerId);
             if (customer == null || customer.TenantId != currentTenantId.Value)
             {
                 result.Succeeded = false;

@@ -73,7 +73,7 @@ public class InvoiceDetailHandler : IRequestHandler<InvoiceDetailQuery, Result<I
             }
 
             // Get customer data to include customer name
-            var customer = await _customerRepository.GetByIdAsync(invoice.CustomerId);
+            var customer = await _customerRepository.GetByCustomerIdAsync(invoice.CustomerId);
             var customerName = customer != null
                 ? $"{customer.Firstname} {customer.Lastname}".Trim()
                 : string.Empty;

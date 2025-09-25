@@ -8,7 +8,7 @@ namespace maERP.Application.Specifications;
 /// </summary>
 public class OrderCustomerFilterSpecification : FilterSpecification<Order>
 {
-    public OrderCustomerFilterSpecification(Guid customerId, string searchString)
+    public OrderCustomerFilterSpecification(int customerId, string searchString)
     {
         Includes.Add(c => c.OrderItems);
 

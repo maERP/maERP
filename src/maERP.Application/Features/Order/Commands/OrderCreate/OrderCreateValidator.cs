@@ -50,9 +50,9 @@ public class OrderCreateValidator : OrderBaseValidator<OrderCreateCommand>
     /// <param name="customerId">The customer ID to validate</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>True if the customer exists and belongs to current tenant, false otherwise</returns>
-    private async Task<bool> CustomerExistsAndBelongsToCurrentTenant(Guid customerId, CancellationToken cancellationToken)
+    private async Task<bool> CustomerExistsAndBelongsToCurrentTenant(int customerId, CancellationToken cancellationToken)
     {
-        var customer = await _customerRepository.GetByIdAsync(customerId);
+        var customer = await _customerRepository.GetByCustomerIdAsync(customerId);
         return customer != null; // EF Core Global Query Filter ensures tenant isolation
     }
 

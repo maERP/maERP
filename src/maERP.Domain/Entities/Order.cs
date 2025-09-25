@@ -11,7 +11,7 @@ public class Order : BaseEntity, IBaseEntity
     public string RemoteOrderId { get; set; } = string.Empty;
 
     [Required]
-    public Guid CustomerId { get; set; }
+    public int CustomerId { get; set; }
     public Customer Customer { get; set; } = null!;
 
     [Required]

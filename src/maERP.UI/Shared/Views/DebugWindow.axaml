@@ -63,28 +63,28 @@
                       Margin="0,2"
                       Padding="8,4">
                 <Grid ColumnDefinitions="Auto,Auto,*">
-                  <TextBlock Grid.Column="0" 
-                             Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss.fff}'}"
-                             FontFamily="Consolas,Monaco,monospace"
-                             FontSize="11"
-                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                             Margin="0,0,8,0"/>
-                  
-                  <TextBlock Grid.Column="1" 
-                             Text="{Binding Level}"
-                             FontFamily="Consolas,Monaco,monospace"
-                             FontSize="11"
-                             FontWeight="SemiBold"
-                             Foreground="{Binding LevelForeground}"
-                             MinWidth="50"
-                             Margin="0,0,8,0"/>
-                  
-                  <TextBlock Grid.Column="2" 
-                             Text="{Binding Message}"
-                             FontFamily="Consolas,Monaco,monospace"
-                             FontSize="11"
-                             TextWrapping="Wrap"
-                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                  <SelectableTextBlock Grid.Column="0"
+                                       Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss.fff}'}"
+                                       FontFamily="Consolas,Monaco,monospace"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       Margin="0,0,8,0"/>
+
+                  <SelectableTextBlock Grid.Column="1"
+                                       Text="{Binding Level}"
+                                       FontFamily="Consolas,Monaco,monospace"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="{Binding LevelForeground}"
+                                       MinWidth="50"
+                                       Margin="0,0,8,0"/>
+
+                  <SelectableTextBlock Grid.Column="2"
+                                       Text="{Binding Message}"
+                                       FontFamily="Consolas,Monaco,monospace"
+                                       FontSize="11"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 </Grid>
               </Border>
             </DataTemplate>

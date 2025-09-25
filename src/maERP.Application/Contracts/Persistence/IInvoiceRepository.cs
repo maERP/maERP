@@ -20,7 +20,7 @@ public interface IInvoiceRepository : IGenericRepository<Invoice>
     /// </summary>
     /// <param name="customerId">The customer ID</param>
     /// <returns>Collection of invoices for the customer</returns>
-    Task<ICollection<Invoice>> GetInvoicesByCustomerIdAsync(Guid customerId);
+    Task<ICollection<Invoice>> GetInvoicesByCustomerIdAsync(int customerId);
 
     /// <summary>
     /// Gets invoices by their status

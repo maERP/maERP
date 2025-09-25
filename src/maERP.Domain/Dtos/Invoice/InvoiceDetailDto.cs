@@ -10,7 +10,7 @@ public class InvoiceDetailDto
     public DateTime CreatedDate { get; set; }
     public DateTime? LastModifiedDate { get; set; }
 
-    public Guid CustomerId { get; set; }
+    public int CustomerId { get; set; }
     public string CustomerName { get; set; } = string.Empty;
 
     public Guid? OrderId { get; set; }

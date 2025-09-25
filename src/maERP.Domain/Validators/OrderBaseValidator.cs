@@ -11,7 +11,7 @@ public class OrderBaseValidator<T> : AbstractValidator<T> where T : IOrderInputM
     {
         // Basic order validation
         RuleFor(x => x.CustomerId)
-            .NotEqual(Guid.Empty).WithMessage("Bitte wählen Sie einen Kunden aus.");
+            .GreaterThanOrEqualTo(1).WithMessage("Bitte wählen Sie einen Kunden aus.");
 
         RuleFor(x => x.SalesChannelId)
             .NotEqual(Guid.Empty).WithMessage("Bitte wählen Sie einen Vertriebskanal aus.");

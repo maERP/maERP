@@ -6,7 +6,7 @@ public interface IOrderInputModel
 {
     Guid SalesChannelId { get; }
     string RemoteOrderId { get; }
-    Guid CustomerId { get; }
+    int CustomerId { get; }
     OrderStatus Status { get; }
     decimal Subtotal { get; }
     decimal ShippingCost { get; }

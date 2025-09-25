@@ -32,6 +32,21 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
             .FirstOrDefaultAsync() ?? null;
     }
 
+    public async Task<Customer?> GetByCustomerIdAsync(int customerId)
+    {
+        var query = Context.Customer
+            .Where(x => x.CustomerId == customerId);
+
+        // Apply manual tenant filtering
+        var currentTenantId = TenantContext.GetCurrentTenantId();
+        if (currentTenantId.HasValue)
+        {
+            query = query.Where(x => x.TenantId == null || x.TenantId == currentTenantId.Value);
+        }
+
+        return await query.FirstOrDefaultAsync() ?? null;
+    }
+
     public async Task<Customer?> GetCustomerByEmailAsync(string email)
     {
         var query = Context.Customer

@@ -167,7 +167,7 @@ public class OrderImportRepository : IOrderImportRepository
             {
                 SalesChannelId = salesChannel.Id,
                 RemoteOrderId = importOrder.RemoteOrderId,
-                CustomerId = customer.Id,
+                CustomerId = customer.CustomerId,
                 Status = importOrder.Status,
 
                 PaymentStatus = importOrder.PaymentStatus,

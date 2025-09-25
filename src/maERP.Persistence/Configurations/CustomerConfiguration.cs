@@ -11,6 +11,10 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
     {
         // DateEnrollment is now DateTimeOffset and works consistently across all database providers
 
+        // Unique constraint for CustomerId per tenant
+        builder.HasIndex(x => new { x.CustomerId, x.TenantId })
+            .IsUnique();
+
         builder.HasData(
             new Customer
             {

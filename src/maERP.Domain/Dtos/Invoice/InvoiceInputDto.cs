@@ -15,7 +15,7 @@ public class InvoiceInputDto : IInvoiceInputModel
     public DateTime InvoiceDate { get; set; }
 
     [Required]
-    public Guid CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
     public Guid? OrderId { get; set; }
 

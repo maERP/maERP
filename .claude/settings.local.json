@@ -41,7 +41,9 @@
       "mcp__postgres__list_objects",
       "mcp__postgres__get_object_details",
       "mcp__postgres__execute_sql",
-      "Bash(dotnet ef migrations add:*)"
+      "Bash(dotnet ef migrations add:*)",
+      "Bash(dotnet ef database update:*)",
+      "Bash(dotnet ef migrations remove:*)"
     ],
     "deny": [],
     "ask": []

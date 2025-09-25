@@ -76,7 +76,7 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<Gui
             }
 
             // Validate customer belongs to current tenant
-            var customer = await _customerRepository.GetByIdAsync(request.CustomerId);
+            var customer = await _customerRepository.GetByCustomerIdAsync(request.CustomerId);
             if (customer == null)
             {
                 result.Succeeded = false;

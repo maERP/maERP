@@ -331,7 +331,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
 
             orders.Add(new Domain.Entities.Order
             {
-                CustomerId = customer.Id,
+                CustomerId = customer.CustomerId,
                 RemoteOrderId = $"DEMO-{i:D4}",
                 SalesChannelId = TenantConstants.DefaultTenantId, // Using default tenant ID as placeholder
                 Status = orderStatuses[random.Next(orderStatuses.Length)],

@@ -23,7 +23,7 @@ public class InvoiceBaseValidator<T> : AbstractValidator<T> where T : IInvoiceIn
             .LessThanOrEqualTo(_ => DateTime.UtcNow.AddDays(1)).WithMessage("Das Rechnungsdatum darf nicht in der Zukunft liegen.");
 
         RuleFor(x => x.CustomerId)
-            .NotEqual(Guid.Empty).WithMessage("Bitte wählen Sie einen Kunden aus.");
+            .GreaterThan(0).WithMessage("Bitte wählen Sie einen Kunden aus.");
 
         // Payment information validation
         RuleFor(x => x.PaymentMethod)

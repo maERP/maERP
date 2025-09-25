@@ -6,13 +6,13 @@ namespace maERP.Application.Features.Order.Queries.OrderCustomerList;
 
 public class OrderCustomerListQuery : IRequest<PaginatedResult<OrderListDto>>
 {
-    public Guid CustomerId { get; set; }
+    public int CustomerId { get; set; }
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
     public string SearchString { get; set; }
     public string[] OrderBy { get; set; }
 
-    public OrderCustomerListQuery(Guid customerId, int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public OrderCustomerListQuery(int customerId, int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         CustomerId = customerId;
         PageNumber = pageNumber;

@@ -13,7 +13,7 @@ public class Invoice : BaseEntity, IBaseEntity
     public DateTime InvoiceDate { get; set; }
 
     [Required]
-    public Guid CustomerId { get; set; }
+    public int CustomerId { get; set; }
     public Customer Customer { get; set; } = null!;
 
     public Guid? OrderId { get; set; }

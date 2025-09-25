@@ -8,7 +8,7 @@ public class InvoiceListDto
     public string InvoiceNumber { get; set; } = string.Empty;
     public DateTime InvoiceDate { get; set; }
 
-    public Guid CustomerId { get; set; }
+    public int CustomerId { get; set; }
     public string CustomerName { get; set; } = string.Empty;
 
     public Guid? OrderId { get; set; }

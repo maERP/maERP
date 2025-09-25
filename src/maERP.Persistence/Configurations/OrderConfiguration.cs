@@ -19,5 +19,19 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.Property(e => e.Total)
             .HasPrecision(18, 2);
+
+        // Configure CustomerId as int
+        builder.Property(e => e.CustomerId)
+            .HasColumnType("int");
+
+        // Configure the relationship with Customer entity
+        builder.HasOne(e => e.Customer)
+            .WithMany(c => c.Orders)
+            .HasForeignKey(e => e.CustomerId)
+            .HasPrincipalKey(c => c.CustomerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(e => new { e.OrderId, e.TenantId })
+            .IsUnique();
     }
 }

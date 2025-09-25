@@ -200,6 +200,9 @@ dotnet format
 - IMPORTANT: cascade deletes must be implemented in the handler or repository
 - Pagination is zero-based and defined in QueryableExtensions.cs
 - IMPORTANT: all Entities are using System.Guid for Id, defined in BaseEntity.cs
+- IMPORTANT: never create db migrations before asking
+- EnsureSuperadminAccessAsync() is only for running Tests
+
 # Multi-Tenant Testing Guidelines
 - IMPORTANT: All multi-tenant tests MUST inherit from TenantIsolatedTestBase for proper isolation
 - IMPORTANT: Use TestDataSeeder.SeedTestDataAsync() to populate test data across tenants
@@ -207,4 +210,3 @@ dotnet format
 - IMPORTANT: Test both authenticated and unauthenticated scenarios using helper methods
 - IMPORTANT: Verify proper HTTP status codes for missing/invalid tenant headers (Unauthorized for invalid format, NotFound for valid but non-existent tenant)
 - IMPORTANT: When creating new multi-tenant features, add comprehensive tests covering all tenant scenarios
-- EnsureSuperadminAccessAsync() is only for running Tests

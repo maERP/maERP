@@ -35,8 +35,8 @@ public class OrdersController(IMediator mediator) : ControllerBase
     }
 
     // GET: api/v1/<OrdersController>/customer/{customerId}
-    [HttpGet("customer/{customerId:guid}")]
-    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetByCustomer(Guid customerId, int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    [HttpGet("customer/{customerId:int}")]
+    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetByCustomer(int customerId, int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
         {

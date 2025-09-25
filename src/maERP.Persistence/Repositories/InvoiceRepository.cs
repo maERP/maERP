@@ -63,7 +63,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
     /// </summary>
     /// <param name="customerId">The customer ID</param>
     /// <returns>Collection of invoices for the customer</returns>
-    public async Task<ICollection<Invoice>> GetInvoicesByCustomerIdAsync(Guid customerId)
+    public async Task<ICollection<Invoice>> GetInvoicesByCustomerIdAsync(int customerId)
     {
         return await Context.Set<Invoice>()
             .Where(x => x.CustomerId == customerId)
