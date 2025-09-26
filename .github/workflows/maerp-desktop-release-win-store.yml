@@ -30,11 +30,11 @@ jobs:
       id: version
       shell: pwsh
       run: |
-        # Generate version in format: YYYY.M.D.BUILD (e.g., 2024.1.15.123)
+        # Generate version in format: YYYY.MM.DD.BUILD (e.g., 2024.01.15.123)
         $year = Get-Date -Format "yyyy"
-        $month = Get-Date -Format "M"
-        $day = Get-Date -Format "d"
-        $build = $env:GITHUB_RUN_NUMBER
+        $month = Get-Date -Format "MM"
+        $day = Get-Date -Format "dd"
+        $build = if ($env:GITHUB_RUN_NUMBER) { $env:GITHUB_RUN_NUMBER } else { "1" }
         $version = "$year.$month.$day.$build"
         echo "VERSION=$version" >> $env:GITHUB_OUTPUT
         echo "Generated version: $version"
@@ -51,17 +51,7 @@ jobs:
     - name: Build for Windows Store (MSIX)
       shell: pwsh
       run: |
-        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj `
-          --configuration Release `
-          --runtime win-x64 `
-          --self-contained false `
-          --output ./publish/msix `
-          -p:PublishSingleFile=false `
-          -p:PublishReadyToRun=false `
-          -p:Version=${{ steps.version.outputs.VERSION }} `
-          -p:AssemblyVersion=${{ steps.version.outputs.VERSION }} `
-          -p:FileVersion=${{ steps.version.outputs.VERSION }} `
-          -p:UseAppHost=true
+        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj --configuration Release --runtime win-x64 --self-contained false --output ./publish/msix -p:PublishSingleFile=false -p:PublishReadyToRun=false -p:Version="${{ steps.version.outputs.VERSION }}" -p:AssemblyVersion="${{ steps.version.outputs.VERSION }}" -p:FileVersion="${{ steps.version.outputs.VERSION }}" -p:UseAppHost=true
 
     - name: Create MSIX Package
       shell: pwsh

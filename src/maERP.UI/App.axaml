@@ -11,93 +11,125 @@
     </Application.Styles>
 
     <Application.Resources>
-        <!-- Modern Material 3 Design System -->
-        
-        <!-- Corner Radius System (Material 3 inspired) -->
-        <CornerRadius x:Key="CornerRadiusXS">2</CornerRadius>
-        <CornerRadius x:Key="CornerRadiusS">4</CornerRadius>
-        <CornerRadius x:Key="CornerRadiusM">8</CornerRadius>
-        <CornerRadius x:Key="CornerRadiusL">12</CornerRadius>
-        <CornerRadius x:Key="CornerRadiusXL">16</CornerRadius>
-        <CornerRadius x:Key="CornerRadiusXXL">20</CornerRadius>
-        
-        <!-- Material 3 Elevation System -->
-        <BoxShadows x:Key="ElevationLevel0">0 0 0 0 #00000000</BoxShadows>
-        <BoxShadows x:Key="ElevationLevel1">0 1 3 1 #1F000000, 0 1 2 0 #14000000</BoxShadows>
-        <BoxShadows x:Key="ElevationLevel2">0 2 6 2 #1F000000, 0 1 2 0 #14000000</BoxShadows>
-        <BoxShadows x:Key="ElevationLevel3">0 4 8 3 #1F000000, 0 1 3 0 #14000000</BoxShadows>
-        <BoxShadows x:Key="ElevationLevel4">0 6 10 4 #1F000000, 0 2 3 0 #14000000</BoxShadows>
-        <BoxShadows x:Key="ElevationLevel5">0 8 12 6 #1F000000, 0 4 4 0 #14000000</BoxShadows>
-        
-        <x:Double x:Key="SpaceXXS">2</x:Double>
-        <x:Double x:Key="SpaceXS">4</x:Double>
-        <x:Double x:Key="SpaceS">6</x:Double>
-        <x:Double x:Key="SpaceM">8</x:Double>
-        <x:Double x:Key="SpaceL">12</x:Double>
-        <x:Double x:Key="SpaceXL">16</x:Double>
-        <x:Double x:Key="SpaceXXL">20</x:Double>
-        <x:Double x:Key="SpaceXXXL">24</x:Double>
-        <x:Double x:Key="Space4XL">32</x:Double>
-        <x:Double x:Key="Space5XL">40</x:Double>
-        
-        <x:Double x:Key="FontSizeDisplayL">48</x:Double>
-        <x:Double x:Key="FontSizeDisplayM">36</x:Double>
-        <x:Double x:Key="FontSizeDisplayS">32</x:Double>
-        <x:Double x:Key="FontSizeHeadlineL">24</x:Double>
-        <x:Double x:Key="FontSizeHeadlineM">20</x:Double>
-        <x:Double x:Key="FontSizeHeadlineS">18</x:Double>
-        <x:Double x:Key="FontSizeTitleL">16</x:Double>
-        <x:Double x:Key="FontSizeTitleM">15</x:Double>
-        <x:Double x:Key="FontSizeTitleS">14</x:Double>
-        <x:Double x:Key="FontSizeBodyL">15</x:Double>
-        <x:Double x:Key="FontSizeBodyM">14</x:Double>
-        <x:Double x:Key="FontSizeBodyS">13</x:Double>
-        <x:Double x:Key="FontSizeLabelL">13</x:Double>
-        <x:Double x:Key="FontSizeLabelM">12</x:Double>
-        <x:Double x:Key="FontSizeLabelS">11</x:Double>
-        
-        <!-- Legacy font size references for compatibility -->
-        <x:Double x:Key="FontSizeCaption">12</x:Double>
-        <x:Double x:Key="FontSizeBody">14</x:Double>
-        <x:Double x:Key="FontSizeSubtitle">18</x:Double>
-        <x:Double x:Key="FontSizeTitle">24</x:Double>
-        <x:Double x:Key="FontSizeDisplay">36</x:Double>
-        
-        <!-- Primary Colors - consistent across themes -->
-        <SolidColorBrush x:Key="PrimaryBrush" Color="#10a37f"/>
-        <SolidColorBrush x:Key="OnPrimaryBrush" Color="#ffffff"/>
-        <SolidColorBrush x:Key="PrimaryContainerBrush" Color="#0d8563"/>
-        <SolidColorBrush x:Key="OnPrimaryContainerBrush" Color="#ffffff"/>
+        <ResourceDictionary>
+            <!-- Modern Material 3 Design System -->
 
-        <!-- Header Colors (Light background) -->
-        <SolidColorBrush x:Key="AppHeaderBrush" Color="#ffffff"/>
-        <SolidColorBrush x:Key="AppHeaderTextBrush" Color="#1f2937"/>
-        <SolidColorBrush x:Key="AppHeaderSubtextBrush" Color="#6b7280"/>
-        <SolidColorBrush x:Key="AppHeaderBorderBrush" Color="#e5e7eb"/>
+            <!-- Corner Radius System (Material 3 inspired) -->
+            <CornerRadius x:Key="CornerRadiusXS">2</CornerRadius>
+            <CornerRadius x:Key="CornerRadiusS">4</CornerRadius>
+            <CornerRadius x:Key="CornerRadiusM">8</CornerRadius>
+            <CornerRadius x:Key="CornerRadiusL">12</CornerRadius>
+            <CornerRadius x:Key="CornerRadiusXL">16</CornerRadius>
+            <CornerRadius x:Key="CornerRadiusXXL">20</CornerRadius>
 
-        <!-- Sidebar Colors (Light gray background) -->
-        <SolidColorBrush x:Key="AppSidebarBrush" Color="#f9fafb"/>
-        <SolidColorBrush x:Key="AppSidebarTextBrush" Color="#374151"/>
-        <SolidColorBrush x:Key="AppSidebarLabelBrush" Color="#6b7280"/>
-        <SolidColorBrush x:Key="AppSidebarHoverBrush" Color="#f3f4f6"/>
-        <SolidColorBrush x:Key="AppSidebarActiveBrush" Color="#e5e7eb"/>
-        <SolidColorBrush x:Key="AppSidebarBorderBrush" Color="#e5e7eb"/>
+            <!-- Material 3 Elevation System -->
+            <BoxShadows x:Key="ElevationLevel0">0 0 0 0 #00000000</BoxShadows>
+            <BoxShadows x:Key="ElevationLevel1">0 1 3 1 #1F000000, 0 1 2 0 #14000000</BoxShadows>
+            <BoxShadows x:Key="ElevationLevel2">0 2 6 2 #1F000000, 0 1 2 0 #14000000</BoxShadows>
+            <BoxShadows x:Key="ElevationLevel3">0 4 8 3 #1F000000, 0 1 3 0 #14000000</BoxShadows>
+            <BoxShadows x:Key="ElevationLevel4">0 6 10 4 #1F000000, 0 2 3 0 #14000000</BoxShadows>
+            <BoxShadows x:Key="ElevationLevel5">0 8 12 6 #1F000000, 0 4 4 0 #14000000</BoxShadows>
 
-        <!-- Flyout/Menu Colors -->
-        <SolidColorBrush x:Key="AppFlyoutBrush" Color="#ffffff"/>
-        <SolidColorBrush x:Key="AppFlyoutTextBrush" Color="#374151"/>
-        <SolidColorBrush x:Key="AppFlyoutHoverBrush" Color="#f9fafb"/>
-        <SolidColorBrush x:Key="AppFlyoutBorderBrush" Color="#e5e7eb"/>
-        <SolidColorBrush x:Key="AppFlyoutSeparatorBrush" Color="#f3f4f6"/>
+            <x:Double x:Key="SpaceXXS">2</x:Double>
+            <x:Double x:Key="SpaceXS">4</x:Double>
+            <x:Double x:Key="SpaceS">6</x:Double>
+            <x:Double x:Key="SpaceM">8</x:Double>
+            <x:Double x:Key="SpaceL">12</x:Double>
+            <x:Double x:Key="SpaceXL">16</x:Double>
+            <x:Double x:Key="SpaceXXL">20</x:Double>
+            <x:Double x:Key="SpaceXXXL">24</x:Double>
+            <x:Double x:Key="Space4XL">32</x:Double>
+            <x:Double x:Key="Space5XL">40</x:Double>
 
-        <!-- Semantic Colors -->
-        <SolidColorBrush x:Key="SuccessBrush" Color="#10b981"/>
-        <SolidColorBrush x:Key="WarningBrush" Color="#f59e0b"/>
-        <SolidColorBrush x:Key="InfoBrush" Color="#3b82f6"/>
-        <SolidColorBrush x:Key="ErrorBrush" Color="#ef4444"/>
-        <SolidColorBrush x:Key="OnErrorBrush" Color="#ffffff"/>
+            <x:Double x:Key="FontSizeDisplayL">48</x:Double>
+            <x:Double x:Key="FontSizeDisplayM">36</x:Double>
+            <x:Double x:Key="FontSizeDisplayS">32</x:Double>
+            <x:Double x:Key="FontSizeHeadlineL">24</x:Double>
+            <x:Double x:Key="FontSizeHeadlineM">20</x:Double>
+            <x:Double x:Key="FontSizeHeadlineS">18</x:Double>
+            <x:Double x:Key="FontSizeTitleL">16</x:Double>
+            <x:Double x:Key="FontSizeTitleM">15</x:Double>
+            <x:Double x:Key="FontSizeTitleS">14</x:Double>
+            <x:Double x:Key="FontSizeBodyL">15</x:Double>
+            <x:Double x:Key="FontSizeBodyM">14</x:Double>
+            <x:Double x:Key="FontSizeBodyS">13</x:Double>
+            <x:Double x:Key="FontSizeLabelL">13</x:Double>
+            <x:Double x:Key="FontSizeLabelM">12</x:Double>
+            <x:Double x:Key="FontSizeLabelS">11</x:Double>
 
-        <!-- Legacy accent color for compatibility -->
-        <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#10a37f"/>
+            <!-- Legacy font size references for compatibility -->
+            <x:Double x:Key="FontSizeCaption">12</x:Double>
+            <x:Double x:Key="FontSizeBody">14</x:Double>
+            <x:Double x:Key="FontSizeSubtitle">18</x:Double>
+            <x:Double x:Key="FontSizeTitle">24</x:Double>
+            <x:Double x:Key="FontSizeDisplay">36</x:Double>
+
+            <!-- Primary Colors - consistent across themes -->
+            <SolidColorBrush x:Key="PrimaryBrush" Color="#10a37f"/>
+            <SolidColorBrush x:Key="OnPrimaryBrush" Color="#ffffff"/>
+            <SolidColorBrush x:Key="PrimaryContainerBrush" Color="#0d8563"/>
+            <SolidColorBrush x:Key="OnPrimaryContainerBrush" Color="#ffffff"/>
+
+            <!-- Theme-specific colors using ThemeDictionaries -->
+            <ResourceDictionary.ThemeDictionaries>
+            <!-- Light Theme Colors -->
+            <ResourceDictionary x:Key="Light">
+                <!-- Header Colors (Light background) -->
+                <SolidColorBrush x:Key="AppHeaderBrush" Color="#ffffff"/>
+                <SolidColorBrush x:Key="AppHeaderTextBrush" Color="#1f2937"/>
+                <SolidColorBrush x:Key="AppHeaderSubtextBrush" Color="#6b7280"/>
+                <SolidColorBrush x:Key="AppHeaderBorderBrush" Color="#e5e7eb"/>
+
+                <!-- Sidebar Colors (Light gray background) -->
+                <SolidColorBrush x:Key="AppSidebarBrush" Color="#f9fafb"/>
+                <SolidColorBrush x:Key="AppSidebarTextBrush" Color="#374151"/>
+                <SolidColorBrush x:Key="AppSidebarLabelBrush" Color="#6b7280"/>
+                <SolidColorBrush x:Key="AppSidebarHoverBrush" Color="#f3f4f6"/>
+                <SolidColorBrush x:Key="AppSidebarActiveBrush" Color="#e5e7eb"/>
+                <SolidColorBrush x:Key="AppSidebarBorderBrush" Color="#e5e7eb"/>
+
+                <!-- Flyout/Menu Colors -->
+                <SolidColorBrush x:Key="AppFlyoutBrush" Color="#ffffff"/>
+                <SolidColorBrush x:Key="AppFlyoutTextBrush" Color="#374151"/>
+                <SolidColorBrush x:Key="AppFlyoutHoverBrush" Color="#f9fafb"/>
+                <SolidColorBrush x:Key="AppFlyoutBorderBrush" Color="#e5e7eb"/>
+                <SolidColorBrush x:Key="AppFlyoutSeparatorBrush" Color="#f3f4f6"/>
+            </ResourceDictionary>
+
+            <!-- Dark Theme Colors -->
+            <ResourceDictionary x:Key="Dark">
+                <!-- Header Colors (Dark background) -->
+                <SolidColorBrush x:Key="AppHeaderBrush" Color="#191919"/>
+                <SolidColorBrush x:Key="AppHeaderTextBrush" Color="#dcdcdc"/>
+                <SolidColorBrush x:Key="AppHeaderSubtextBrush" Color="#a0a0a0"/>
+                <SolidColorBrush x:Key="AppHeaderBorderBrush" Color="#404040"/>
+
+                <!-- Sidebar Colors (Dark background) -->
+                <SolidColorBrush x:Key="AppSidebarBrush" Color="#191919"/>
+                <SolidColorBrush x:Key="AppSidebarTextBrush" Color="#dcdcdc"/>
+                <SolidColorBrush x:Key="AppSidebarLabelBrush" Color="#a0a0a0"/>
+                <SolidColorBrush x:Key="AppSidebarHoverBrush" Color="#404040"/>
+                <SolidColorBrush x:Key="AppSidebarActiveBrush" Color="#505050"/>
+                <SolidColorBrush x:Key="AppSidebarBorderBrush" Color="#404040"/>
+
+                <!-- Flyout/Menu Colors -->
+                <SolidColorBrush x:Key="AppFlyoutBrush" Color="#212121"/>
+                <SolidColorBrush x:Key="AppFlyoutTextBrush" Color="#dcdcdc"/>
+                <SolidColorBrush x:Key="AppFlyoutHoverBrush" Color="#404040"/>
+                <SolidColorBrush x:Key="AppFlyoutBorderBrush" Color="#404040"/>
+                <SolidColorBrush x:Key="AppFlyoutSeparatorBrush" Color="#505050"/>
+            </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+
+            <!-- Semantic Colors -->
+            <SolidColorBrush x:Key="SuccessBrush" Color="#10b981"/>
+            <SolidColorBrush x:Key="WarningBrush" Color="#f59e0b"/>
+            <SolidColorBrush x:Key="InfoBrush" Color="#3b82f6"/>
+            <SolidColorBrush x:Key="ErrorBrush" Color="#ef4444"/>
+            <SolidColorBrush x:Key="OnErrorBrush" Color="#ffffff"/>
+
+            <!-- Legacy accent color for compatibility -->
+            <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#10a37f"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

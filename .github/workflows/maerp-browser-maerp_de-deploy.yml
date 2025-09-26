@@ -4,10 +4,11 @@ on:
   push:
     branches: [ main ]
     paths:
+      - 'src/maERP.Application/**'
+      - 'src/maERP.Domain/**'
       - 'src/maERP.UI/**'
       - 'src/maERP.UI.Browser/**'
-      - 'src/maERP.Domain/**'
-      - 'src/maERP.Application/**'
+
   workflow_dispatch:
 
 env:
@@ -39,7 +40,7 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore --verbosity minimal
+        run: dotnet restore maERP.sln --verbosity minimal
 
       - name: Build maERP.UI.Browser
         run: dotnet build src/maERP.UI.Browser/maERP.UI.Browser.csproj --configuration Release --no-restore --verbosity minimal

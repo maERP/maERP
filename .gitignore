@@ -373,3 +373,4 @@ src/maERP.Server/maerp.db-shm
 src/maERP.Server/maerp.db-wal
 /.run
 src/maERP.Server/appsettings.Production.json
+.claude/settings.local.json
