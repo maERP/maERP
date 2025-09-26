@@ -1,7 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="maERP.UI.App"
-             RequestedThemeVariant="Dark">
+             RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.Styles>
@@ -29,7 +29,6 @@
         <BoxShadows x:Key="ElevationLevel4">0 6 10 4 #1F000000, 0 2 3 0 #14000000</BoxShadows>
         <BoxShadows x:Key="ElevationLevel5">0 8 12 6 #1F000000, 0 4 4 0 #14000000</BoxShadows>
         
-        <!-- OpenAI-inspired Spacing System (4px base) -->
         <x:Double x:Key="SpaceXXS">2</x:Double>
         <x:Double x:Key="SpaceXS">4</x:Double>
         <x:Double x:Key="SpaceS">6</x:Double>
@@ -41,7 +40,6 @@
         <x:Double x:Key="Space4XL">32</x:Double>
         <x:Double x:Key="Space5XL">40</x:Double>
         
-        <!-- OpenAI-inspired Typography Scale -->
         <x:Double x:Key="FontSizeDisplayL">48</x:Double>
         <x:Double x:Key="FontSizeDisplayM">36</x:Double>
         <x:Double x:Key="FontSizeDisplayS">32</x:Double>
@@ -65,86 +63,41 @@
         <x:Double x:Key="FontSizeTitle">24</x:Double>
         <x:Double x:Key="FontSizeDisplay">36</x:Double>
         
-        <!-- OpenAI Dark theme colors - Override all resources directly -->
-
-        <!-- Background Colors -->
-        <SolidColorBrush x:Key="BackgroundBrush" Color="#0d1117"/>
-        <SolidColorBrush x:Key="OnBackgroundBrush" Color="#f0f6fc"/>
-
-        <!-- Surface Colors -->
-        <SolidColorBrush x:Key="SurfaceBrush" Color="#161b22"/>
-        <SolidColorBrush x:Key="OnSurfaceBrush" Color="#f0f6fc"/>
-        <SolidColorBrush x:Key="SurfaceVariantBrush" Color="#21262d"/>
-        <SolidColorBrush x:Key="OnSurfaceVariantBrush" Color="#8b949e"/>
-        <SolidColorBrush x:Key="SurfaceContainerLowestBrush" Color="#0d1117"/>
-        <SolidColorBrush x:Key="SurfaceContainerLowBrush" Color="#161b22"/>
-        <SolidColorBrush x:Key="SurfaceContainerBrush" Color="#21262d"/>
-        <SolidColorBrush x:Key="SurfaceContainerHighBrush" Color="#30363d"/>
-        <SolidColorBrush x:Key="SurfaceContainerHighestBrush" Color="#484f58"/>
-
-        <!-- Primary Colors (OpenAI green) -->
+        <!-- Primary Colors - consistent across themes -->
         <SolidColorBrush x:Key="PrimaryBrush" Color="#10a37f"/>
         <SolidColorBrush x:Key="OnPrimaryBrush" Color="#ffffff"/>
         <SolidColorBrush x:Key="PrimaryContainerBrush" Color="#0d8563"/>
         <SolidColorBrush x:Key="OnPrimaryContainerBrush" Color="#ffffff"/>
 
-        <!-- Secondary Colors -->
-        <SolidColorBrush x:Key="SecondaryBrush" Color="#8b949e"/>
-        <SolidColorBrush x:Key="OnSecondaryBrush" Color="#0d1117"/>
-        <SolidColorBrush x:Key="SecondaryContainerBrush" Color="#30363d"/>
-        <SolidColorBrush x:Key="OnSecondaryContainerBrush" Color="#f0f6fc"/>
+        <!-- Header Colors (Light background) -->
+        <SolidColorBrush x:Key="AppHeaderBrush" Color="#ffffff"/>
+        <SolidColorBrush x:Key="AppHeaderTextBrush" Color="#1f2937"/>
+        <SolidColorBrush x:Key="AppHeaderSubtextBrush" Color="#6b7280"/>
+        <SolidColorBrush x:Key="AppHeaderBorderBrush" Color="#e5e7eb"/>
 
-        <!-- Tertiary Colors -->
-        <SolidColorBrush x:Key="TertiaryBrush" Color="#58a6ff"/>
-        <SolidColorBrush x:Key="OnTertiaryBrush" Color="#ffffff"/>
-        <SolidColorBrush x:Key="TertiaryContainerBrush" Color="#1f6feb"/>
-        <SolidColorBrush x:Key="OnTertiaryContainerBrush" Color="#ffffff"/>
+        <!-- Sidebar Colors (Light gray background) -->
+        <SolidColorBrush x:Key="AppSidebarBrush" Color="#f9fafb"/>
+        <SolidColorBrush x:Key="AppSidebarTextBrush" Color="#374151"/>
+        <SolidColorBrush x:Key="AppSidebarLabelBrush" Color="#6b7280"/>
+        <SolidColorBrush x:Key="AppSidebarHoverBrush" Color="#f3f4f6"/>
+        <SolidColorBrush x:Key="AppSidebarActiveBrush" Color="#e5e7eb"/>
+        <SolidColorBrush x:Key="AppSidebarBorderBrush" Color="#e5e7eb"/>
 
-        <!-- Outline Colors -->
-        <SolidColorBrush x:Key="OutlineBrush" Color="#30363d"/>
-        <SolidColorBrush x:Key="OutlineVariantBrush" Color="#21262d"/>
-
-        <!-- Error Colors -->
-        <SolidColorBrush x:Key="ErrorBrush" Color="#f85149"/>
-        <SolidColorBrush x:Key="OnErrorBrush" Color="#ffffff"/>
-        <SolidColorBrush x:Key="ErrorContainerBrush" Color="#da3633"/>
-        <SolidColorBrush x:Key="OnErrorContainerBrush" Color="#ffffff"/>
-
-        <!-- Inverse Colors -->
-        <SolidColorBrush x:Key="InverseSurfaceBrush" Color="#f0f6fc"/>
-        <SolidColorBrush x:Key="InverseOnSurfaceBrush" Color="#0d1117"/>
-        <SolidColorBrush x:Key="InversePrimaryBrush" Color="#0d8563"/>
-
-        <!-- Additional Colors -->
-        <SolidColorBrush x:Key="ShadowBrush" Color="#000000"/>
-        <SolidColorBrush x:Key="SurfaceTintBrush" Color="#10a37f"/>
-        <SolidColorBrush x:Key="ScrimBrush" Color="#000000"/>
+        <!-- Flyout/Menu Colors -->
+        <SolidColorBrush x:Key="AppFlyoutBrush" Color="#ffffff"/>
+        <SolidColorBrush x:Key="AppFlyoutTextBrush" Color="#374151"/>
+        <SolidColorBrush x:Key="AppFlyoutHoverBrush" Color="#f9fafb"/>
+        <SolidColorBrush x:Key="AppFlyoutBorderBrush" Color="#e5e7eb"/>
+        <SolidColorBrush x:Key="AppFlyoutSeparatorBrush" Color="#f3f4f6"/>
 
         <!-- Semantic Colors -->
-        <SolidColorBrush x:Key="SuccessBrush" Color="#3fb950"/>
-        <SolidColorBrush x:Key="WarningBrush" Color="#f0883e"/>
-        <SolidColorBrush x:Key="InfoBrush" Color="#58a6ff"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#10b981"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="#f59e0b"/>
+        <SolidColorBrush x:Key="InfoBrush" Color="#3b82f6"/>
+        <SolidColorBrush x:Key="ErrorBrush" Color="#ef4444"/>
+        <SolidColorBrush x:Key="OnErrorBrush" Color="#ffffff"/>
 
-        <!-- Legacy color references for compatibility - updated to dark theme -->
-        <SolidColorBrush x:Key="LayerFillColorDefaultBrush" Color="#0d1117"/>
-        <SolidColorBrush x:Key="CardStrokeColorDefaultBrush" Color="#21262d"/>
+        <!-- Legacy accent color for compatibility -->
         <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#10a37f"/>
-        <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush" Color="#ffffff"/>
-        <SolidColorBrush x:Key="TextOnAccentFillColorSecondaryBrush" Color="#e6ffffff"/>
-        <SolidColorBrush x:Key="ControlFillColorDefaultBrush" Color="#161b22"/>
-        <SolidColorBrush x:Key="ControlStrokeColorDefaultBrush" Color="#30363d"/>
-        <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="#f0f6fc"/>
-        <SolidColorBrush x:Key="TextFillColorSecondaryBrush" Color="#8b949e"/>
-        <SolidColorBrush x:Key="SubtleFillColorSecondaryBrush" Color="#161b22"/>
-        <SolidColorBrush x:Key="SubtleFillColorTertiaryBrush" Color="#21262d"/>
-        <SolidColorBrush x:Key="SystemFillColorSuccessBrush" Color="#3fb950"/>
-        <SolidColorBrush x:Key="SystemFillColorCautionBrush" Color="#f0883e"/>
-        <SolidColorBrush x:Key="SystemFillColorCriticalBrush" Color="#f85149"/>
-        <SolidColorBrush x:Key="SystemFillColorNeutralBrush" Color="#8b949e"/>
     </Application.Resources>
-
-    <!-- DataTemplates werden zur Laufzeit über die ViewModels und Views verknüpft -->
-    <Application.DataTemplates>
-        <!-- DataTemplates werden in der Zukunft wieder hinzugefügt wenn alle Namespace-Referenzen repariert sind -->
-    </Application.DataTemplates>
 </Application>

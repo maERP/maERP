@@ -47,14 +47,14 @@
     
     <!-- Top Header -->
     <Border Grid.Row="0" Grid.ColumnSpan="2"
-            Background="{DynamicResource SurfaceBrush}"
-            BorderBrush="{DynamicResource OutlineVariantBrush}"
+            Background="{DynamicResource AppHeaderBrush}"
+            BorderBrush="{DynamicResource AppHeaderBorderBrush}"
             BorderThickness="0,0,0,1">
       <Grid ColumnDefinitions="260,*">
         <!-- Logo section aligned with sidebar -->
         <Border Grid.Column="0"
                 Padding="20,0"
-                BorderBrush="{DynamicResource OutlineVariantBrush}"
+                BorderBrush="{DynamicResource AppHeaderBorderBrush}"
                 BorderThickness="0,0,1,0">
           <StackPanel Orientation="Horizontal" 
                       VerticalAlignment="Center" 
@@ -62,28 +62,51 @@
             <TextBlock Text="maERP"
                        FontSize="18"
                        FontWeight="SemiBold"
-                       Foreground="{DynamicResource OnSurfaceBrush}"/>
+                       Foreground="{DynamicResource AppHeaderTextBrush}"/>
             <TextBlock Text="Enterprise Resource Planning"
                        FontSize="12"
-                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                       Foreground="{DynamicResource AppHeaderSubtextBrush}"
                        VerticalAlignment="Center"/>
           </StackPanel>
         </Border>
         
         <!-- Right header content -->
         <Grid Grid.Column="1" Margin="20,0">
-          <StackPanel Orientation="Horizontal" 
-                      HorizontalAlignment="Right" 
-                      VerticalAlignment="Center" 
+          <StackPanel Orientation="Horizontal"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Center"
                       Spacing="12">
-            <Button Content="🚪"
-                    Command="{Binding LogoutCommand}"
+            <!-- User Menu -->
+            <Button x:Name="UserMenuButton"
+                    Content="⚙️"
                     Background="Transparent"
                     BorderThickness="0"
                     Padding="8"
                     CornerRadius="6"
-                    ToolTip.Tip="Abmelden"
-                    FontSize="16"/>
+                    ToolTip.Tip="Benutzermenü"
+                    FontSize="16">
+              <Button.Flyout>
+                <MenuFlyout>
+                  <MenuItem Header="Theme wechseln"
+                            Command="{Binding ToggleThemeCommand}">
+                    <MenuItem.Icon>
+                      <TextBlock Text="🌓"
+                                 FontSize="16"
+                                 VerticalAlignment="Center"/>
+                    </MenuItem.Icon>
+                  </MenuItem>
+                  <Separator />
+                  <MenuItem Header="Abmelden"
+                            Command="{Binding LogoutCommand}">
+                    <MenuItem.Icon>
+                      <TextBlock Text="🚪"
+                                 FontSize="16"
+                                 VerticalAlignment="Center"/>
+                    </MenuItem.Icon>
+                  </MenuItem>
+                </MenuFlyout>
+              </Button.Flyout>
+            </Button>
           </StackPanel>
         </Grid>
       </Grid>
@@ -91,8 +114,8 @@
     
     <!-- Sidebar -->
     <Border Grid.Row="1" Grid.Column="0"
-            Background="{DynamicResource SurfaceVariantBrush}"
-            BorderBrush="{DynamicResource OutlineVariantBrush}"
+            Background="{DynamicResource AppSidebarBrush}"
+            BorderBrush="{DynamicResource AppSidebarBorderBrush}"
             BorderThickness="0,0,1,0">
       
       <DockPanel>
@@ -114,14 +137,14 @@
             
             <!-- Separators and menu sections -->
             <Rectangle Height="1"
-                       Fill="{DynamicResource OutlineVariantBrush}"
+                       Fill="{DynamicResource AppSidebarBorderBrush}"
                        Margin="20,12"
-                       Opacity="0.5"/>
+                       Opacity="0.6"/>
 
             <TextBlock Text="VERKAUF"
                        FontSize="12"
                        FontWeight="SemiBold"
-                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                       Foreground="{DynamicResource AppSidebarLabelBrush}"
                        Margin="20,12,20,8"/>
             
             <Button Content="👥 Kunden"
@@ -152,14 +175,14 @@
                     Margin="0,1"/>
             
             <Rectangle Height="1"
-                       Fill="{DynamicResource OutlineVariantBrush}"
+                       Fill="{DynamicResource AppSidebarBorderBrush}"
                        Margin="20,12"
-                       Opacity="0.5"/>
+                       Opacity="0.6"/>
 
             <TextBlock Text="LAGER"
                        FontSize="12"
                        FontWeight="SemiBold"
-                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                       Foreground="{DynamicResource AppSidebarLabelBrush}"
                        Margin="20,12,20,8"/>
             
             <Button Content="📦 Produkte"
@@ -199,14 +222,14 @@
                     Margin="0,1"/>
             
             <Rectangle Height="1"
-                       Fill="{DynamicResource OutlineVariantBrush}"
+                       Fill="{DynamicResource AppSidebarBorderBrush}"
                        Margin="20,12"
-                       Opacity="0.5"/>
+                       Opacity="0.6"/>
 
             <TextBlock Text="VERTRIEB"
                        FontSize="12"
                        FontWeight="SemiBold"
-                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                       Foreground="{DynamicResource AppSidebarLabelBrush}"
                        Margin="20,12,20,8"/>
             
             <Button Content="🌐 Vertriebskanäle"
@@ -219,14 +242,14 @@
                     Margin="0,1"/>
             
             <Rectangle Height="1"
-                       Fill="{DynamicResource OutlineVariantBrush}"
+                       Fill="{DynamicResource AppSidebarBorderBrush}"
                        Margin="20,12"
-                       Opacity="0.5"/>
+                       Opacity="0.6"/>
 
             <TextBlock Text="SYSTEM"
                        FontSize="12"
                        FontWeight="SemiBold"
-                       Foreground="{DynamicResource OnSurfaceVariantBrush}"
+                       Foreground="{DynamicResource AppSidebarLabelBrush}"
                        Margin="20,12,20,8"/>
             
             <Button Content="🤖 AI-Modelle"
@@ -293,7 +316,7 @@
     
     <!-- Main Content Area -->
     <Border Grid.Row="1" Grid.Column="1"
-            Background="{DynamicResource BackgroundBrush}">
+            Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
       <ScrollViewer VerticalScrollBarVisibility="Auto" 
                     HorizontalScrollBarVisibility="Disabled"
                     Margin="32,24">
@@ -460,23 +483,38 @@
     <Style Selector="Button.nav-button">
       <Setter Property="Background" Value="Transparent"/>
       <Setter Property="BorderThickness" Value="0"/>
-      <Setter Property="Foreground" Value="{DynamicResource OnSurfaceVariantBrush}"/>
+      <Setter Property="Foreground" Value="{DynamicResource AppSidebarTextBrush}"/>
       <Setter Property="FontSize" Value="14"/>
       <Setter Property="FontWeight" Value="Normal"/>
       <Setter Property="Cursor" Value="Hand"/>
       <Setter Property="CornerRadius" Value="6"/>
     </Style>
     <Style Selector="Button.nav-button:pointerover">
-      <Setter Property="Background" Value="{DynamicResource SurfaceContainerBrush}"/>
-      <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+      <Setter Property="Background" Value="{DynamicResource AppSidebarHoverBrush}"/>
+      <Setter Property="Foreground" Value="{DynamicResource AppSidebarTextBrush}"/>
     </Style>
     <Style Selector="Button.nav-button:pressed">
-      <Setter Property="Background" Value="{DynamicResource SurfaceContainerHighBrush}"/>
-      <Setter Property="Foreground" Value="{DynamicResource OnSurfaceBrush}"/>
+      <Setter Property="Background" Value="{DynamicResource AppSidebarActiveBrush}"/>
+      <Setter Property="Foreground" Value="{DynamicResource AppSidebarTextBrush}"/>
     </Style>
     <Style Selector="Button.nav-button:focus">
       <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
       <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <!-- App User Menu Styles -->
+    <Style Selector="Button#UserMenuButton MenuItem">
+      <Setter Property="Foreground" Value="{DynamicResource AppFlyoutTextBrush}"/>
+      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <Style Selector="Button#UserMenuButton MenuItem:pointerover">
+      <Setter Property="Background" Value="{DynamicResource AppFlyoutHoverBrush}"/>
+    </Style>
+
+    <Style Selector="Button#UserMenuButton MenuItem TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource AppFlyoutTextBrush}"/>
     </Style>
   </UserControl.Styles>
 

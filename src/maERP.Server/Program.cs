@@ -248,7 +248,7 @@ Console.WriteLine("Server is listening on:");
 foreach (var url in urls)
 {
     var uri = new Uri(url);
-    Console.WriteLine($"  • {uri.Scheme.ToUpper()}: {uri.Host}:{uri.Port}");
+    Console.WriteLine($"  • {uri.Scheme.ToUpper()}: {uri.Scheme}://{uri.Host}:{uri.Port}");
 }
 
 Console.WriteLine();
@@ -257,7 +257,7 @@ if (app.Environment.IsDevelopment())
     Console.WriteLine("Swagger UI: Available at /swagger");
 }
 Console.WriteLine("Health Check: Available at /health");
-Console.WriteLine("Universal Web-Application at: https://www.maerp.de/");
+Console.WriteLine("Free Web-Application: Available athttps://www.maerp.de/");
 Console.WriteLine("========================================");
 Console.WriteLine();
 

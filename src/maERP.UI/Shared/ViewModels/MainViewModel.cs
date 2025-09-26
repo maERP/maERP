@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using maERP.UI.Services;
@@ -42,6 +44,9 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool isSuperAdmin;
+
+    [ObservableProperty]
+    private bool isDarkTheme;
 
     public LoginViewModel LoginViewModel { get; }
     
@@ -96,6 +101,7 @@ public partial class MainViewModel : ViewModelBase
 
         LoginViewModel.OnLoginSuccessful += OnLoginSuccessful;
 
+        InitializeTheme();
         _ = InitializeAsync();
     }
 
@@ -1102,5 +1108,38 @@ public partial class MainViewModel : ViewModelBase
     {
         _debugService.ToggleDebugWindow();
         _debugService.LogInfo("Debug window toggled via F12 key");
+    }
+
+    [RelayCommand]
+    public void ToggleTheme()
+    {
+        IsDarkTheme = !IsDarkTheme;
+
+        if (Application.Current != null)
+        {
+            Application.Current.RequestedThemeVariant = IsDarkTheme
+                ? ThemeVariant.Dark
+                : ThemeVariant.Light;
+        }
+
+        _debugService.LogInfo($"Theme toggled to: {(IsDarkTheme ? "Dark" : "Light")}");
+    }
+
+    private void InitializeTheme()
+    {
+        // Detect current OS theme
+        if (Application.Current?.RequestedThemeVariant == ThemeVariant.Default)
+        {
+            // If using Default, check the actual resolved theme
+            var actualTheme = Application.Current?.ActualThemeVariant ?? ThemeVariant.Dark;
+            IsDarkTheme = actualTheme == ThemeVariant.Dark;
+        }
+        else
+        {
+            // If explicitly set, use that
+            IsDarkTheme = Application.Current?.RequestedThemeVariant == ThemeVariant.Dark;
+        }
+
+        _debugService.LogInfo($"Theme initialized to: {(IsDarkTheme ? "Dark" : "Light")}");
     }
 }

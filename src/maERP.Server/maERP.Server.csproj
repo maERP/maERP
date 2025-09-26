@@ -70,6 +70,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Remove="Properties\PublishProfiles\tipover.maerp.de.pubxml" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="../maERP.Analytics/maERP.Analytics.csproj" />
