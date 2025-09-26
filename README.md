@@ -1,41 +1,80 @@
+**Wichtiger Hinweis:** maERP ist keine schlüsselfertige ERP-Lösung für Endkund:innen und darf nicht ohne eigene Anpassungen im Livebetrieb eingesetzt werden. Das Projekt dient als technische Basis, auf der individuelle Unternehmenslösungen aufgebaut werden können.
+
 # maERP
 
-maERP ist ein Client-Server, Cross-Plattform, Open-Source ERP System entwickelt mit .NET 8, MAUI und Entity Framework.
+maERP ist ein kostenloses, Open-Source-ERP-System mit mandantenfähiger Architektur. Die Plattform richtet sich an Teams, die eine moderne Grundlage für eigene ERP-Erweiterungen, Integrationen und Benutzeroberflächen suchen.
 
-* :house: **GitHub:** [https://github.com/maERP/maERP](https://github.com/maERP/maERP)
-* :speech_balloon: **Docker:** [https://hub.docker.com/u/maerp](https://hub.docker.com/u/maerp)
+## Was maERP bietet
+- Mandantenisolierte REST-API für Kunden-, Produkt-, Lager- und Auftragsverwaltung
+- Module für Angebote, Bestellungen, Rechnungen und Warenzugänge inklusive Nachverfolgung
+- Cross-Plattform-Oberflächen auf Basis von Avalonia unterstützen Desktop- und Mobile-Clients
+- Anbindung externer Vertriebskanäle und Versanddienstleister über konfigurierbare Schnittstellen
+- Auswertungen zu Verkäufen, Produkten und Lagerbewegungen zur schnellen Entscheidungsfindung
+- KI-gestützte Funktionen (z. B. Prompt-Verwaltung) zur Automatisierung wiederkehrender Aufgaben
+- Kostenfrei, quelloffen und erweiterbar
 
-## In development
+## Für wen eignet sich maERP?
+maERP adressiert Unternehmen, Integrator:innen und IT-Dienstleister, die ein funktionsreiches Fundament benötigen, um eigene ERP-Prozesse zu digitalisieren. Durch die klare Trennung von Server, UI-Clients und Integrationen bleibt das System flexibel genug, um branchenspezifische Anforderungen abzubilden. Umfangreiche automatische Tests (rund 1.500 Szenarien) sorgen für eine hohe Abdeckung von Kernprozessen und erleichtern kontinuierliche Weiterentwicklungen.
 
-maERP is still in developmentand is not yet ready for production use.
+## Schnellstart: maERP.Server
+Der Server bildet das Herzstück von maERP und stellt alle Funktionen über eine gesicherte REST-API bereit.
 
-## Technologien
+**Standard-Zugangsdaten**
+- E-Mail: `admin@localhost.com`
+- Passwort: `P@ssword1`
 
-* Moderne Architektur mittels `ASP.NET Core 9`, `Entity Framework Core 9` und Dotnet MAUI
-* Cross-Platform: Windows, MacOS, Linux (Server), iOS, Android
-* Offene API zur Erweiterung und Anbindung von Anwendungen Dritter
-* Unterstützt `Docker` out of the box
-* OpenAI und Claude AI Integration
+**Lokal ohne Docker ausführen**
+1. .NET 9 SDK installieren.
+2. Im Projektverzeichnis die Abhängigkeiten laden: `dotnet restore`
+3. Datenbankkonfiguration in der Datei `src/maERP.Server/appsettings.json` vornehmen.
+4. Server starten: `dotnet run --project src/maERP.Server/maERP.Server.csproj`
+5. Die API ist anschließend unter `https://localhost:5001` erreichbar (Swagger: `/swagger`).
 
-## Projektübersicht
+### Docker-Beispiele
+Alle Beispiele veröffentlichen den Server auf Port `8080` und setzen die erforderlichen Datenbankvariablen. Ersetze Platzhalter wie Passwörter oder Hostnamen durch deine Werte.
 
-maERP besteht aus drei Teilprojekten:
-
-| Projekt  | Funktion |
-| ------------ | ------------ |
-| maERP.Server | Das CMS. Headless und ohne eigenes Frontend.                            |
-| maERP.Web    | Web-Frontend zur Anbindung an maERP.Server                              |
-| maERP.Client | Client-App (iOS, Android, Windows, MacOS) zur Anbindung an maERP.Server |
-
-## maERP Live-Demo
-
-Web: [https://www.maERP.de](https://www.maerp.de)
-
-
-## maERP installieren
-
-maERP.Server per Docker mit externem MySQL-Server starten:
-
+**SQLite - einfacher Einstieg ohne externen Server**
+```bash
+docker run -d \
+  --name maerp-server-sqlite \
+  -p 8080:80 \
+  -e DatabaseConfig__Provider=SQLite \
+  -e DatabaseConfig__ConnectionString="Data Source=/data/maerp.db" \
+  -v maerp-sqlite-data:/data \
+  maerp/server:latest
 ```
-docker run -d --name maerp-server -p 8082:80 maerp/server -e ConnectionStrings__DefaultConnection="Server=localhost;Port=3306;Database=maerp_01;Uid=maerp;Password=maerp;"
+
+**MySQL / MariaDB**
+```bash
+docker run -d \
+  --name maerp-server-mysql \
+  -p 8080:80 \
+  -e DatabaseConfig__Provider=MySQL \
+  -e DatabaseConfig__ConnectionString="Server=mysql-host;Port=3306;Database=maerp;Uid=maerp;Pwd=maerp;" \
+  maerp/server:latest
 ```
+
+**PostgreSQL**
+```bash
+docker run -d \
+  --name maerp-server-postgres \
+  -p 8080:80 \
+  -e DatabaseConfig__Provider=PostgreSQL \
+  -e DatabaseConfig__ConnectionString="Host=postgres-host;Port=5432;Database=maerp;Username=maerp;Password=maerp;" \
+  maerp/server:latest
+```
+
+**Microsoft SQL Server**
+```bash
+docker run -d \
+  --name maerp-server-sqlserver \
+  -p 8080:80 \
+  -e DatabaseConfig__Provider=MSSQL \
+  -e DatabaseConfig__ConnectionString="Server=sqlserver-host;Database=maerp;User Id=maerp;Password=maerp;TrustServerCertificate=True;" \
+  maerp/server:latest
+```
+
+## Nützliche Ressourcen
+- GitHub-Repository: https://github.com/maERP/maERP
+- Docker Hub: https://hub.docker.com/u/maerp
+- Live-Frontend zur Benutzung mit beliebigen maERP.Server-Instanzen: https://www.maerp.de
