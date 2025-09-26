@@ -23,18 +23,6 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
                 NormalizedUserName = "ADMIN@LOCALHOST.COM",
                 PasswordHash = hasher.HashPassword(new ApplicationUser(), "P@ssword1"),
                 EmailConfirmed = true
-            },
-            new ApplicationUser
-            {
-                Id = "9e224968-33e4-4652-b7b7-8574d048cdb9",
-                Email = "user@localhost.com",
-                NormalizedEmail = "USER@LOCALHOST.COM",
-                Firstname = "System",
-                Lastname = "User",
-                UserName = "user@localhost.com",
-                NormalizedUserName = "USER@LOCALHOST.COM",
-                PasswordHash = hasher.HashPassword(new ApplicationUser(), "P@ssword1"),
-                EmailConfirmed = true
             }
         );
     }

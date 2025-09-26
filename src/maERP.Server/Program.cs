@@ -235,7 +235,7 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 });
 
 // Display formatted startup message
-var urls = app.Urls.Any() ? app.Urls : new[] { "http://localhost:5000", "https://localhost:5001" };
+var urls = app.Urls.Any() ? app.Urls : new[] { "http://localhost:8080", "https://localhost:8443" };
 var environment = app.Environment.EnvironmentName;
 
 Console.WriteLine();
@@ -254,10 +254,10 @@ foreach (var url in urls)
 Console.WriteLine();
 if (app.Environment.IsDevelopment())
 {
-    Console.WriteLine("Swagger UI: Available at /swagger");
+    Console.WriteLine($"Swagger UI: /swagger");
 }
-Console.WriteLine("Health Check: Available at /health");
-Console.WriteLine("Free Web-Application: Available athttps://www.maerp.de/");
+Console.WriteLine("Health Check: /health");
+Console.WriteLine("Free Web-UI: https://www.maerp.de/");
 Console.WriteLine("========================================");
 Console.WriteLine();
 

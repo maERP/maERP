@@ -12,14 +12,8 @@ public class RoleConfiguration : IEntityTypeConfiguration<IdentityRole>
             new IdentityRole
             {
                 Id = "cac43a6e-f7bb-4448-baaf-1add431ccbbf",
-                Name = "Employee",
-                NormalizedName = "EMPLOYEE"
-            },
-            new IdentityRole
-            {
-                Id = "cbc43a8e-f7bb-4445-baaf-1add431ffbbf",
-                Name = "Administrator",
-                NormalizedName = "ADMINISTRATOR"
+                Name = "User",
+                NormalizedName = "USER"
             },
             new IdentityRole
             {

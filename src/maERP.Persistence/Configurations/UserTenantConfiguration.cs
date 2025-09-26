@@ -35,16 +35,6 @@ public class UserTenantConfiguration : IEntityTypeConfiguration<UserTenant>
                 RoleManageUser = true, // Admin can manage users
                 DateCreated = DateTime.UtcNow,
                 DateModified = DateTime.UtcNow
-            },
-            new UserTenant
-            {
-                Id = Guid.NewGuid(),
-                UserId = "9e224968-33e4-4652-b7b7-8574d048cdb9", // user@localhost.com
-                TenantId = TenantConstants.DefaultTenantId,
-                IsDefault = true,
-                RoleManageUser = false, // Regular user cannot manage users
-                DateCreated = DateTime.UtcNow,
-                DateModified = DateTime.UtcNow
             }
         );
     }
