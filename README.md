@@ -31,9 +31,9 @@ Der Server bildet das Herzstück von maERP und stellt alle Funktionen über eine
 5. Die API ist anschließend unter `https://localhost:5001` erreichbar (Swagger: `/swagger`).
 
 ### Docker-Beispiele
-Alle Beispiele veröffentlichen den Server auf Port `8080` und setzen die erforderlichen Datenbankvariablen. Ersetze Platzhalter wie Passwörter oder Hostnamen durch deine Werte.
+Alle Beispiele veröffentlichen den Server auf Port `8080` und setzen die erforderlichen Datenbankvariablen. Ersetze Platzhalter wie Pfade oder ConnectionStrings passend zu Deiner Umgebung.
 
-**SQLite - einfacher Einstieg ohne externen Server**
+**SQLite (built in)**
 ```bash
 docker run -d \
   --name maerp-server-sqlite \
@@ -44,7 +44,7 @@ docker run -d \
   maerp/server:latest
 ```
 
-**MySQL / MariaDB**
+**MySQL / MariaDB (extern)**
 ```bash
 docker run -d \
   --name maerp-server-mysql \
@@ -54,7 +54,7 @@ docker run -d \
   maerp/server:latest
 ```
 
-**PostgreSQL**
+**PostgreSQL (extern)**
 ```bash
 docker run -d \
   --name maerp-server-postgres \
@@ -64,7 +64,7 @@ docker run -d \
   maerp/server:latest
 ```
 
-**Microsoft SQL Server**
+**Microsoft SQL Server (extern)**
 ```bash
 docker run -d \
   --name maerp-server-sqlserver \
