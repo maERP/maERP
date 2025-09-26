@@ -234,6 +234,33 @@ app.MapHealthChecks("/health", new HealthCheckOptions
     }
 });
 
+// Display formatted startup message
+var urls = app.Urls.Any() ? app.Urls : new[] { "http://localhost:5000", "https://localhost:5001" };
+var environment = app.Environment.EnvironmentName;
+
+Console.WriteLine();
+Console.WriteLine("========================================");
+Console.WriteLine("          maERP Server Started         ");
+Console.WriteLine("========================================");
+Console.WriteLine($"Environment: {environment}");
+Console.WriteLine("Server is listening on:");
+
+foreach (var url in urls)
+{
+    var uri = new Uri(url);
+    Console.WriteLine($"  • {uri.Scheme.ToUpper()}: {uri.Host}:{uri.Port}");
+}
+
+Console.WriteLine();
+if (app.Environment.IsDevelopment())
+{
+    Console.WriteLine("Swagger UI: Available at /swagger");
+}
+Console.WriteLine("Health Check: Available at /health");
+Console.WriteLine("Universal Web-Application at: https://www.maerp.de/");
+Console.WriteLine("========================================");
+Console.WriteLine();
+
 app.Run();
 
 // Make the implicit Program class public so test projects can access it

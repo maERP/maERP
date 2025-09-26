@@ -1,0 +1,86 @@
+name: maERP.Browser SFTP Deploy
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/maERP.UI/**'
+      - 'src/maERP.UI.Browser/**'
+      - 'src/maERP.Domain/**'
+      - 'src/maERP.Application/**'
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy via SFTP
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.x
+
+      - name: Cache .NET packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore --verbosity minimal
+
+      - name: Build maERP.UI.Browser
+        run: dotnet build src/maERP.UI.Browser/maERP.UI.Browser.csproj --configuration Release --no-restore --verbosity minimal
+
+      - name: Publish maERP.UI.Browser
+        run: dotnet publish src/maERP.UI.Browser/maERP.UI.Browser.csproj --configuration Release --output ./publish --no-build --verbosity minimal
+
+      - name: List published files
+        run: ls -la ./publish/
+
+      - name: Clear remote directory
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.MAERPDE_SFTP_HOST }}
+          port: ${{ secrets.MAERPDE_SFTP_PORT }}
+          username: ${{ secrets.MAERPDE_SFTP_USERNAME }}
+          password: ${{ secrets.MAERPDE_SFTP_PASSWORD }}
+          script: |
+            cd /wwwroot/
+            find . -type f -not -name ".htaccess" -not -name "web.config" -delete
+            find . -type d -empty -delete
+
+      - name: Deploy to MonsterASP.NET via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          username: ${{ secrets.MAERPDE_SFTP_USERNAME }}
+          server: ${{ secrets.MAERPDE_SFTP_HOST }}
+          port: ${{ secrets.MAERPDE_SFTP_PORT }}
+          password: ${{ secrets.MAERPDE_SFTP_PASSWORD }}
+          local_path: './publish/*'
+          remote_path: '/wwwroot/'
+          sftp_only: true
+          delete_remote_files: false
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.MAERPDE_SFTP_HOST }}
+          port: ${{ secrets.MAERPDE_SFTP_PORT }}
+          username: ${{ secrets.MAERPDE_SFTP_USERNAME }}
+          password: ${{ secrets.MAERPDE_SFTP_PASSWORD }}
+          script: |
+            echo "Files in /wwwroot/:"
+            ls -la /wwwroot/ | head -20
