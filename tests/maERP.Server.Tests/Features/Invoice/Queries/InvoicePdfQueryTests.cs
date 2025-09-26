@@ -69,12 +69,13 @@ public class InvoicePdfQueryTests : IDisposable
             {
                 await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
 
-                var customer1Id = Guid.NewGuid();
-                var customer2Id = Guid.NewGuid();
+                var customer1Id = 1;
+                var customer2Id = 2;
 
                 var customer1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = customer1Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -84,7 +85,8 @@ public class InvoicePdfQueryTests : IDisposable
 
                 var customer2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = customer2Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",

@@ -35,6 +35,7 @@ public class CustomerDeleteCommandTests : TenantIsolatedTestBase
             var customer1Tenant1 = new maERP.Domain.Entities.Customer
             {
                 Id = Customer1Id,
+                CustomerId = 1,
                 Firstname = "John",
                 Lastname = "Doe",
                 CompanyName = "Test Company 1",
@@ -51,6 +52,7 @@ public class CustomerDeleteCommandTests : TenantIsolatedTestBase
             var customer2Tenant1 = new maERP.Domain.Entities.Customer
             {
                 Id = Customer2Id,
+                CustomerId = 2,
                 Firstname = "Jane",
                 Lastname = "Smith",
                 CompanyName = "Test Company 2",
@@ -67,6 +69,7 @@ public class CustomerDeleteCommandTests : TenantIsolatedTestBase
             var customer3Tenant2 = new maERP.Domain.Entities.Customer
             {
                 Id = Customer3Id,
+                CustomerId = 3,
                 Firstname = "Bob",
                 Lastname = "Wilson",
                 CompanyName = "Tenant 2 Company",
@@ -83,6 +86,7 @@ public class CustomerDeleteCommandTests : TenantIsolatedTestBase
             var customer4Inactive = new maERP.Domain.Entities.Customer
             {
                 Id = Customer4Id,
+                CustomerId = 4,
                 Firstname = "Alice",
                 Lastname = "Brown",
                 CompanyName = "Inactive Company",
@@ -100,6 +104,7 @@ public class CustomerDeleteCommandTests : TenantIsolatedTestBase
             var customer5WithAddresses = new maERP.Domain.Entities.Customer
             {
                 Id = Customer5Id,
+                CustomerId = 5,
                 Firstname = "Charlie",
                 Lastname = "Davis",
                 CompanyName = "Address Company",

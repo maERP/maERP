@@ -18,6 +18,7 @@ public class CustomerListQueryTests : TenantIsolatedTestBase
         var customer1Tenant1 = new maERP.Domain.Entities.Customer
         {
             Id = Guid.Parse("40000001-0001-0001-0001-000000000001"),
+            CustomerId = 1001,
             Firstname = "Alice",
             Lastname = "Johnson",
             CompanyName = "Alpha Company",
@@ -34,6 +35,7 @@ public class CustomerListQueryTests : TenantIsolatedTestBase
         var customer2Tenant1 = new maERP.Domain.Entities.Customer
         {
             Id = Guid.Parse("40000002-0002-0002-0002-000000000002"),
+            CustomerId = 1002,
             Firstname = "Bob",
             Lastname = "Smith",
             CompanyName = "Beta Corporation",
@@ -50,6 +52,7 @@ public class CustomerListQueryTests : TenantIsolatedTestBase
         var customer3Tenant1 = new maERP.Domain.Entities.Customer
         {
             Id = Guid.Parse("40000003-0003-0003-0003-000000000003"),
+            CustomerId = 1003,
             Firstname = "Charlie",
             Lastname = "Brown",
             CompanyName = "Gamma Enterprise",
@@ -66,6 +69,7 @@ public class CustomerListQueryTests : TenantIsolatedTestBase
         var customer4Tenant2 = new maERP.Domain.Entities.Customer
         {
             Id = Guid.Parse("40000004-0004-0004-0004-000000000004"),
+            CustomerId = 2001,
             Firstname = "David",
             Lastname = "Wilson",
             CompanyName = "Delta Company",
@@ -82,6 +86,7 @@ public class CustomerListQueryTests : TenantIsolatedTestBase
         var customer5Tenant2 = new maERP.Domain.Entities.Customer
         {
             Id = Guid.Parse("40000005-0005-0005-0005-000000000005"),
+            CustomerId = 2002,
             Firstname = "Eve",
             Lastname = "Davis",
             CompanyName = "Epsilon Ltd",

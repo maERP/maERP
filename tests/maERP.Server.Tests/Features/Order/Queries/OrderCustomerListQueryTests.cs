@@ -21,11 +21,11 @@ public class OrderCustomerListQueryTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
-    private static readonly Guid Customer1Id = Guid.NewGuid();
-    private static readonly Guid Customer2Id = Guid.NewGuid();
-    private static readonly Guid Customer3Id = Guid.NewGuid();
-    private static readonly Guid Customer4Id = Guid.NewGuid();
-    private static readonly Guid Customer5Id = Guid.NewGuid();
+    private static readonly int Customer1Id = 1;
+    private static readonly int Customer2Id = 2;
+    private static readonly int Customer3Id = 3;
+    private static readonly int Customer4Id = 4;
+    private static readonly int Customer5Id = 5;
     private static readonly Guid Order1Id = Guid.NewGuid();
     private static readonly Guid Order2Id = Guid.NewGuid();
     private static readonly Guid Order3Id = Guid.NewGuid();
@@ -86,7 +86,8 @@ public class OrderCustomerListQueryTests : IDisposable
                 // Create customers for both tenants
                 var customer1Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = Customer1Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -95,7 +96,8 @@ public class OrderCustomerListQueryTests : IDisposable
 
                 var customer2Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = Customer2Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
@@ -104,7 +106,8 @@ public class OrderCustomerListQueryTests : IDisposable
 
                 var customer3Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = Customer3Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer3Id,
                     Firstname = "Alice",
                     Lastname = "Johnson",
                     Email = "alice.johnson@test.com",
@@ -113,7 +116,8 @@ public class OrderCustomerListQueryTests : IDisposable
 
                 var customer1Tenant2 = new Domain.Entities.Customer
                 {
-                    Id = Customer4Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer4Id,
                     Firstname = "Bob",
                     Lastname = "Wilson",
                     Email = "bob.wilson@test.com",
@@ -122,7 +126,8 @@ public class OrderCustomerListQueryTests : IDisposable
 
                 var customer2Tenant2 = new Domain.Entities.Customer
                 {
-                    Id = Customer5Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer5Id,
                     Firstname = "Carol",
                     Lastname = "Brown",
                     Email = "carol.brown@test.com",
@@ -344,7 +349,7 @@ public class OrderCustomerListQueryTests : IDisposable
         await SeedOrderCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync($"/api/v1/Orders/customer/{Guid.NewGuid()}");
+        var response = await Client.GetAsync($"/api/v1/Orders/customer/99999");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<OrderListDto>>(response);
@@ -473,7 +478,7 @@ public class OrderCustomerListQueryTests : IDisposable
 
         var firstOrder = result.Data?.First();
         TestAssertions.AssertNotNull(firstOrder);
-        TestAssertions.AssertEqual<Guid>(Customer1Id, firstOrder!.CustomerId);
+        TestAssertions.AssertEqual(Customer1Id, firstOrder!.CustomerId);
         TestAssertions.AssertTrue(firstOrder.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.InvoiceAddressFirstName));
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.Status));
@@ -526,9 +531,9 @@ public class OrderCustomerListQueryTests : IDisposable
         var tenant1CustomerIds = resultTenant1Customer1?.Data?.Select(o => o.CustomerId).Distinct().ToList();
         var tenant2CustomerIds = resultTenant2Customer4?.Data?.Select(o => o.CustomerId).Distinct().ToList();
         TestAssertions.AssertEqual(1, tenant1CustomerIds?.Count ?? 0);
-        TestAssertions.AssertEqual<Guid>(Customer1Id, tenant1CustomerIds?[0] ?? Guid.Empty);
+        TestAssertions.AssertEqual(Customer1Id, tenant1CustomerIds?[0] ?? 0);
         TestAssertions.AssertEqual(1, tenant2CustomerIds?.Count ?? 0);
-        TestAssertions.AssertEqual<Guid>(Customer4Id, tenant2CustomerIds?[0] ?? Guid.Empty);
+        TestAssertions.AssertEqual(Customer4Id, tenant2CustomerIds?[0] ?? 0);
     }
 
     [Fact]
@@ -584,7 +589,7 @@ public class OrderCustomerListQueryTests : IDisposable
         await SeedOrderCustomerTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
 
-        var response = await Client.GetAsync($"/api/v1/Orders/customer/{Guid.Empty}");
+        var response = await Client.GetAsync($"/api/v1/Orders/customer/0");
 
         TestAssertions.AssertHttpSuccess(response);
         var result = await ReadResponseAsync<PaginatedResult<OrderListDto>>(response);

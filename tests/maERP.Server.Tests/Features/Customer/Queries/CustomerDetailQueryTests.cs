@@ -24,6 +24,7 @@ public class CustomerDetailQueryTests : TenantIsolatedTestBase
         var customer1Tenant1 = new maERP.Domain.Entities.Customer
         {
             Id = Customer1Id,
+            CustomerId = 1,
             Firstname = "John",
             Lastname = "Doe",
             CompanyName = "Test Company 1",
@@ -40,6 +41,7 @@ public class CustomerDetailQueryTests : TenantIsolatedTestBase
         var customer2Tenant1 = new maERP.Domain.Entities.Customer
         {
             Id = Customer2Id,
+            CustomerId = 2,
             Firstname = "Jane",
             Lastname = "Smith",
             CompanyName = "Test Company 2",
@@ -56,6 +58,7 @@ public class CustomerDetailQueryTests : TenantIsolatedTestBase
         var customer3Tenant2 = new maERP.Domain.Entities.Customer
         {
             Id = Customer3Id,
+            CustomerId = 3,
             Firstname = "Bob",
             Lastname = "Wilson",
             CompanyName = "Tenant 2 Company",

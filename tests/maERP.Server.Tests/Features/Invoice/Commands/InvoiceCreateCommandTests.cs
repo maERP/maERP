@@ -20,8 +20,8 @@ public class InvoiceCreateCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
-    private static readonly Guid Customer1Id = Guid.NewGuid();
-    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly int Customer1Id = 1;
+    private static readonly int Customer2Id = 2;
     private static readonly Guid Order1Id = Guid.NewGuid();
     private static readonly Guid Order2Id = Guid.NewGuid();
 
@@ -162,7 +162,8 @@ public class InvoiceCreateCommandTests : IDisposable
 
                 var customer1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = Customer1Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -171,7 +172,8 @@ public class InvoiceCreateCommandTests : IDisposable
 
                 var customer2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = Customer2Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
@@ -309,7 +311,7 @@ public class InvoiceCreateCommandTests : IDisposable
         await SeedTestDataAsync();
         SetTenantHeader(TenantConstants.TestTenant1Id);
         var invoiceDto = CreateValidInvoiceDto();
-        invoiceDto.CustomerId = Guid.NewGuid(); // Non-existent customer
+        invoiceDto.CustomerId = 99999; // Non-existent customer
 
         var response = await PostAsJsonAsync("/api/v1/Invoices", invoiceDto);
 

@@ -16,8 +16,8 @@ namespace maERP.Server.Tests.Features.Order.Queries;
 
 public class OrderDetailQueryTests : TenantIsolatedTestBase
 {
-    private static readonly Guid Customer1Id = Guid.NewGuid();
-    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly int Customer1Id = 1;
+    private static readonly int Customer2Id = 2;
     private static readonly Guid Order1Id = Guid.NewGuid();
     private static readonly Guid Order2Id = Guid.NewGuid();
     private static readonly Guid SalesChannel1Id = Guid.NewGuid();
@@ -38,7 +38,8 @@ public class OrderDetailQueryTests : TenantIsolatedTestBase
                 // Create customers for both tenants
                 var customer1Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = Customer1Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -47,7 +48,8 @@ public class OrderDetailQueryTests : TenantIsolatedTestBase
 
                 var customer1Tenant2 = new Domain.Entities.Customer
                 {
-                    Id = Customer2Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer2Id,
                     Firstname = "Bob",
                     Lastname = "Johnson",
                     Email = "bob.johnson@test.com",
@@ -211,7 +213,7 @@ public class OrderDetailQueryTests : TenantIsolatedTestBase
 
         var order = result.Data!;
         TestAssertions.AssertEqual<Guid>(Order1Id, order.Id);
-        TestAssertions.AssertEqual<Guid>(Customer1Id, order.CustomerId);
+        TestAssertions.AssertEqual(Customer1Id, order.CustomerId);
         TestAssertions.AssertEqual(OrderStatus.Processing, order.Status);
         TestAssertions.AssertEqual(PaymentStatus.CompletelyPaid, order.PaymentStatus);
         TestAssertions.AssertEqual("Credit Card", order.PaymentMethod);

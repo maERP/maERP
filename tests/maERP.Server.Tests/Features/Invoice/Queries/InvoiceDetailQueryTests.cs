@@ -19,8 +19,8 @@ public class InvoiceDetailQueryTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
-    private static readonly Guid Customer1Id = Guid.NewGuid();
-    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly int Customer1Id = 1;
+    private static readonly int Customer2Id = 2;
     private static readonly Guid Product1Id = Guid.NewGuid();
     private static readonly Guid Product2Id = Guid.NewGuid();
     private static readonly Guid Invoice1Id = Guid.NewGuid();
@@ -78,7 +78,8 @@ public class InvoiceDetailQueryTests : IDisposable
 
                 var customer1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = Customer1Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -87,7 +88,8 @@ public class InvoiceDetailQueryTests : IDisposable
 
                 var customer2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = Customer2Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
@@ -281,7 +283,7 @@ public class InvoiceDetailQueryTests : IDisposable
         TestAssertions.AssertEqual<Guid>(Invoice1Id, invoice.Id);
         TestAssertions.AssertEqual("INV-001", invoice.InvoiceNumber);
         TestAssertions.AssertTrue(invoice.InvoiceDate != default);
-        TestAssertions.AssertEqual<Guid>(Customer1Id, invoice.CustomerId);
+        TestAssertions.AssertEqual(Customer1Id, invoice.CustomerId);
         TestAssertions.AssertEqual("John Doe", invoice.CustomerName);
         TestAssertions.AssertEqual<Guid?>(Order1Id, invoice.OrderId);
         TestAssertions.AssertEqual(Order1Id.ToString(), invoice.OrderNumber);

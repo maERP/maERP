@@ -16,9 +16,9 @@ namespace maERP.Server.Tests.Features.Order.Commands;
 
 public class OrderDeleteCommandTests : TenantIsolatedTestBase
 {
-    private static readonly Guid Customer1Id = Guid.NewGuid();
-    private static readonly Guid Customer2Id = Guid.NewGuid();
-    private static readonly Guid Customer3Id = Guid.NewGuid();
+    private static readonly int Customer1Id = 1;
+    private static readonly int Customer2Id = 2;
+    private static readonly int Customer3Id = 3;
     private static readonly Guid Order1Id = Guid.NewGuid();
     private static readonly Guid Order2Id = Guid.NewGuid();
     private static readonly Guid Order3Id = Guid.NewGuid();
@@ -37,7 +37,8 @@ public class OrderDeleteCommandTests : TenantIsolatedTestBase
                 // Create customers for both tenants
                 var customer1Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = Customer1Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -46,7 +47,8 @@ public class OrderDeleteCommandTests : TenantIsolatedTestBase
 
                 var customer2Tenant1 = new Domain.Entities.Customer
                 {
-                    Id = Customer2Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
@@ -55,7 +57,8 @@ public class OrderDeleteCommandTests : TenantIsolatedTestBase
 
                 var customer1Tenant2 = new Domain.Entities.Customer
                 {
-                    Id = Customer3Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer3Id,
                     Firstname = "Bob",
                     Lastname = "Wilson",
                     Email = "bob.wilson@test.com",

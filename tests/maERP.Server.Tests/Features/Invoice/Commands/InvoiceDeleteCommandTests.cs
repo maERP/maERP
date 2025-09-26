@@ -18,8 +18,8 @@ public class InvoiceDeleteCommandTests : IDisposable
     protected readonly ApplicationDbContext DbContext;
     protected readonly ITenantContext TenantContext;
     protected readonly IServiceScope Scope;
-    private static readonly Guid Customer1Id = Guid.NewGuid();
-    private static readonly Guid Customer2Id = Guid.NewGuid();
+    private static readonly int Customer1Id = 1;
+    private static readonly int Customer2Id = 2;
     private static readonly Guid Invoice1Id = Guid.NewGuid();
     private static readonly Guid Invoice2Id = Guid.NewGuid();
     private static readonly Guid Invoice3Id = Guid.NewGuid();
@@ -79,7 +79,8 @@ public class InvoiceDeleteCommandTests : IDisposable
 
                 var customer1 = new maERP.Domain.Entities.Customer
                 {
-                    Id = Customer1Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer1Id,
                     Firstname = "John",
                     Lastname = "Doe",
                     Email = "john.doe@test.com",
@@ -88,7 +89,8 @@ public class InvoiceDeleteCommandTests : IDisposable
 
                 var customer2 = new maERP.Domain.Entities.Customer
                 {
-                    Id = Customer2Id,
+                    Id = Guid.NewGuid(),
+                    CustomerId = Customer2Id,
                     Firstname = "Jane",
                     Lastname = "Smith",
                     Email = "jane.smith@test.com",
