@@ -11,7 +11,7 @@
 		<PackageReference Include="CsvHelper" Version="33.1.0" />
 		<PackageReference Include="FluentValidation" Version="12.0.0" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
 		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.1" />
 		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.7" />
