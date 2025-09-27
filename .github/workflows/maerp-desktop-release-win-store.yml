@@ -74,10 +74,10 @@ jobs:
         }
         
         if (-not $fullMakeappxPath) {
-          # Fallback: search for any makeappx.exe in Windows Kits
-          $found = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "makeappx.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          # Fallback: search for x64 makeappx.exe in Windows Kits (avoid ARM64)
+          $found = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "makeappx.exe" -ErrorAction SilentlyContinue | Where-Object { $_.DirectoryName -like "*x64*" } | Select-Object -First 1
           if ($found) {
-            $fullMakeappxPath = "C:\Program Files (x86)\Windows Kits\10\bin\$found"
+            $fullMakeappxPath = $found.FullName
             Write-Host "Found makeappx.exe at: $fullMakeappxPath"
           } else {
             Write-Error "makeappx.exe not found. Windows SDK may not be installed."
@@ -158,10 +158,10 @@ jobs:
         }
         
         if (-not $fullSigntoolPath) {
-          # Fallback: search for any signtool.exe in Windows Kits
-          $found = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "signtool.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          # Fallback: search for x64 signtool.exe in Windows Kits (avoid ARM64)
+          $found = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "signtool.exe" -ErrorAction SilentlyContinue | Where-Object { $_.DirectoryName -like "*x64*" } | Select-Object -First 1
           if ($found) {
-            $fullSigntoolPath = "C:\Program Files (x86)\Windows Kits\10\bin\$found"
+            $fullSigntoolPath = $found.FullName
             Write-Host "Found signtool.exe at: $fullSigntoolPath"
           } else {
             Write-Error "signtool.exe not found. Windows SDK may not be installed."
