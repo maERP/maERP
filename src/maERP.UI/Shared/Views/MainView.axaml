@@ -53,7 +53,7 @@
       <Grid ColumnDefinitions="260,*">
         <!-- Logo section aligned with sidebar -->
         <Border Grid.Column="0"
-                Padding="20,0"
+                Padding="10,0"
                 BorderBrush="{DynamicResource AppHeaderBorderBrush}"
                 BorderThickness="0,0,1,0">
           <StackPanel Orientation="Horizontal" 

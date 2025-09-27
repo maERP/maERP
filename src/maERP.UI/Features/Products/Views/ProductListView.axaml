@@ -129,11 +129,6 @@
           
           <controls:DataGrid.Columns>
             
-            <controls:DataGridTextColumn Header="Produkt-Nr." 
-                                Binding="{Binding Id}" 
-                                Width="100"
-                                CanUserSort="True"/>
-            
             <controls:DataGridTextColumn Header="SKU" 
                                 Binding="{Binding Sku}" 
                                 Width="120"

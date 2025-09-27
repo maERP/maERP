@@ -13,3 +13,8 @@ services:
     ports:
       - "80"
       - "443"
+  mssql:
+    environment:
+      - SA_PASSWORD=DevPassword123!
+    ports:
+      - "1434:1433"  # Different port for development to avoid conflicts

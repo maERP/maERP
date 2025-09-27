@@ -1,4 +1,4 @@
-name: maerp
+name: maerp-mariadb
 
 services:
   maerp.server:
@@ -7,15 +7,16 @@ services:
       context: .
       dockerfile: src/maERP.Server/Dockerfile
     environment:
-      - DatabaseConfig__Provider=Sqlite
-      - DatabaseConfig__ConnectionString=Data Source=/app/data/maerp.db
+      - DatabaseConfig__Provider=MySQL
+      - DatabaseConfig__ConnectionString=Server=mariadb;Port=3306;Database=maerp_01;Uid=maerp;Pwd=maerp;
     ports:
       - 8443:443
       - 8080:80
-    volumes:
-      - maerp-data:/app/data
     depends_on:
-      - grafana-agent
+      mariadb:
+        condition: service_healthy
+      grafana-agent:
+        condition: service_started
     networks:
       - backend
 
@@ -34,6 +35,25 @@ services:
     networks:
       - backend
 
+  mariadb:
+    image: mariadb:11.4
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpassword
+      MARIADB_DATABASE: maerp_01
+      MARIADB_USER: maerp
+      MARIADB_PASSWORD: maerp
+    ports:
+      - "3306:3306"
+    volumes:
+      - maerp-mariadb-data:/var/lib/mysql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 40s
 
   grafana-agent:
     image: grafana/agent:latest
@@ -48,14 +68,14 @@ services:
     environment:
       HOSTNAME: grafana-agent
       REMOTE_WRITE_HOST: mimir:9009
-      POSTGRES_HOST: postgres:5432
+      MARIADB_HOST: mariadb:3306
     ports:
       - "12345:12345"
     networks:
       - backend
 
 volumes:
-  maerp-data:
+  maerp-mariadb-data:
 
 networks:
   backend:

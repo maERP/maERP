@@ -13,3 +13,8 @@ services:
     ports:
       - "80"
       - "443"
+  postgresql:
+    environment:
+      - POSTGRES_PASSWORD=dev_password
+    ports:
+      - "5433:5432"  # Different port for development to avoid conflicts

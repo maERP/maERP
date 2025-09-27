@@ -1,4 +1,4 @@
-name: maerp
+name: maerp-mssql
 
 services:
   maerp.server:
@@ -7,15 +7,16 @@ services:
       context: .
       dockerfile: src/maERP.Server/Dockerfile
     environment:
-      - DatabaseConfig__Provider=Sqlite
-      - DatabaseConfig__ConnectionString=Data Source=/app/data/maerp.db
+      - DatabaseConfig__Provider=MSSQL
+      - DatabaseConfig__ConnectionString=Server=mssql;Database=maerp_01;User Id=maerp;Password=maerp123!;TrustServerCertificate=True;
     ports:
       - 8443:443
       - 8080:80
-    volumes:
-      - maerp-data:/app/data
     depends_on:
-      - grafana-agent
+      mssql:
+        condition: service_healthy
+      grafana-agent:
+        condition: service_started
     networks:
       - backend
 
@@ -34,6 +35,25 @@ services:
     networks:
       - backend
 
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "SqlServer123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - maerp-mssql-data:/var/opt/mssql
+      - ./scripts/mssql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P SqlServer123! -Q 'SELECT 1' || exit 1"]
+      timeout: 20s
+      retries: 10
+      interval: 30s
+      start_period: 60s
 
   grafana-agent:
     image: grafana/agent:latest
@@ -48,14 +68,14 @@ services:
     environment:
       HOSTNAME: grafana-agent
       REMOTE_WRITE_HOST: mimir:9009
-      POSTGRES_HOST: postgres:5432
+      MSSQL_HOST: mssql:1433
     ports:
       - "12345:12345"
     networks:
       - backend
 
 volumes:
-  maerp-data:
+  maerp-mssql-data:
 
 networks:
   backend:

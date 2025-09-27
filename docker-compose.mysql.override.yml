@@ -13,3 +13,8 @@ services:
     ports:
       - "80"
       - "443"
+  mariadb:
+    environment:
+      - MARIADB_ROOT_PASSWORD=dev_root_password
+    ports:
+      - "3307:3306"  # Different port for development to avoid conflicts

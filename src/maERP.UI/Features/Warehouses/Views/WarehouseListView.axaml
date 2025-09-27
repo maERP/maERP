@@ -129,11 +129,6 @@
 
           <controls:DataGrid.Columns>
 
-            <controls:DataGridTextColumn Header="Lager-Nr."
-                                Binding="{Binding Id}"
-                                Width="100"
-                                CanUserSort="True"/>
-
             <controls:DataGridTextColumn Header="Name"
                                 Binding="{Binding Name}"
                                 Width="300"

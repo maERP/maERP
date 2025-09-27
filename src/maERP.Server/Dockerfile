@@ -5,7 +5,8 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-ENV ConnectionStrings__DefaultConnection Server=localhost;Port=3306;Database=maerp_01;Uid=maerp;Password=maerp;
+ENV DatabaseConfig__Provider=Sqlite
+ENV DatabaseConfig__ConnectionString=Data Source=maerp.db
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
