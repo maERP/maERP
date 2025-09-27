@@ -15,11 +15,11 @@
         <TextBlock Text="Rechnungen" 
                    FontSize="24" 
                    FontWeight="SemiBold"
-                   Foreground="#111827"
+                   Foreground="{DynamicResource ContentViewHeadingBrush}"
                    Margin="0,0,0,4"/>
         <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Rechnungen}" 
                    FontSize="14" 
-                   Foreground="#6B7280"/>
+                   Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
       </StackPanel>
       
       <!-- Action Buttons -->

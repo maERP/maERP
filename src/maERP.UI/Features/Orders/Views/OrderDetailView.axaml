@@ -16,7 +16,7 @@
           <TextBlock Text="{Binding Order.OrderId, StringFormat=Bestellung #{0}}"
                      FontSize="28"
                      FontWeight="SemiBold"
-                     Foreground="#111827"/>
+                     Foreground="{DynamicResource ContentViewHeadingBrush}"/>
           <Border Background="#E0F2FE" 
                   CornerRadius="6" 
                   Padding="8,4">
@@ -36,7 +36,7 @@
         </StackPanel>
         <TextBlock Text="{Binding Order.DateOrdered, StringFormat=Bestellt am: \{0:dd.MM.yyyy HH:mm\}}" 
                    FontSize="14" 
-                   Foreground="#6B7280"/>
+                   Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
       </StackPanel>
       
       <!-- Action buttons -->

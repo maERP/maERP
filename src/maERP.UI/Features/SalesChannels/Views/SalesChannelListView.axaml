@@ -15,11 +15,11 @@
         <TextBlock Text="Vertriebskanäle"
                    FontSize="24"
                    FontWeight="SemiBold"
-                   Foreground="#111827"
+                   Foreground="{DynamicResource ContentViewHeadingBrush}"
                    Margin="0,0,0,4"/>
         <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Vertriebskanäle}"
                    FontSize="14"
-                   Foreground="#6B7280"/>
+                   Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
       </StackPanel>
 
       <!-- Action Buttons -->
@@ -199,7 +199,7 @@
                     Spacing="6">
           <TextBlock Text="{Binding DisplayPageNumber, StringFormat=Seite \{0\}}"
                      FontSize="14"
-                     Foreground="#6B7280"
+                     Foreground="{DynamicResource ContentViewSubheadingBrush}"
                      VerticalAlignment="Center"/>
           <TextBlock Text="von"
                      FontSize="14"
@@ -207,7 +207,7 @@
                      VerticalAlignment="Center"/>
           <TextBlock Text="{Binding TotalPages}"
                      FontSize="14"
-                     Foreground="#6B7280"
+                     Foreground="{DynamicResource ContentViewSubheadingBrush}"
                      VerticalAlignment="Center"/>
         </StackPanel>
 

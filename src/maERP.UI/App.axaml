@@ -94,30 +94,90 @@
                 <SolidColorBrush x:Key="AppFlyoutHoverBrush" Color="#f9fafb"/>
                 <SolidColorBrush x:Key="AppFlyoutBorderBrush" Color="#e5e7eb"/>
                 <SolidColorBrush x:Key="AppFlyoutSeparatorBrush" Color="#f3f4f6"/>
+
+                <!-- Content Area Colors -->
+                <SolidColorBrush x:Key="AppContentBackgroundBrush" Color="#ffffff"/>
+
+                <!-- Navigation Elements -->
+                <SolidColorBrush x:Key="AppNavButtonBackgroundBrush" Color="Transparent"/>
+                <SolidColorBrush x:Key="AppNavButtonFocusBorderBrush" Color="#10a37f"/>
+
+                <!-- Separator Elements -->
+                <SolidColorBrush x:Key="AppSeparatorBrush" Color="#e5e7eb"/>
+                <x:Double x:Key="AppSeparatorOpacity">0.6</x:Double>
+
+                <!-- Interactive Elements -->
+                <SolidColorBrush x:Key="AppTransparentBrush" Color="Transparent"/>
+                <SolidColorBrush x:Key="AppUserMenuButtonBrush" Color="Transparent"/>
+
+                <!-- Dashboard/Content Colors -->
+                <SolidColorBrush x:Key="OnSurfaceBrush" Color="#1f2937"/>
+                <SolidColorBrush x:Key="OnSurfaceVariantBrush" Color="#6b7280"/>
+                <SolidColorBrush x:Key="SurfaceContainerBrush" Color="#ffffff"/>
+                <SolidColorBrush x:Key="OutlineVariantBrush" Color="#e5e7eb"/>
+                <SolidColorBrush x:Key="SecondaryContainerBrush" Color="#f3f4f6"/>
+                <SolidColorBrush x:Key="OnSecondaryContainerBrush" Color="#374151"/>
+                <SolidColorBrush x:Key="TertiaryContainerBrush" Color="#fef3c7"/>
+                <SolidColorBrush x:Key="OnTertiaryContainerBrush" Color="#92400e"/>
+                <SolidColorBrush x:Key="SurfaceVariantBrush" Color="#f9fafb"/>
+
+                <!-- ContentView Colors -->
+                <SolidColorBrush x:Key="ContentViewHeadingBrush" Color="#111827"/>
+                <SolidColorBrush x:Key="ContentViewSubheadingBrush" Color="#6b7280"/>
             </ResourceDictionary>
 
             <!-- Dark Theme Colors -->
             <ResourceDictionary x:Key="Dark">
-                <!-- Header Colors (Dark background) -->
-                <SolidColorBrush x:Key="AppHeaderBrush" Color="#191919"/>
-                <SolidColorBrush x:Key="AppHeaderTextBrush" Color="#dcdcdc"/>
-                <SolidColorBrush x:Key="AppHeaderSubtextBrush" Color="#a0a0a0"/>
-                <SolidColorBrush x:Key="AppHeaderBorderBrush" Color="#404040"/>
+                <!-- Header Colors (OpenAI Dark Style) -->
+                <SolidColorBrush x:Key="AppHeaderBrush" Color="#0D0E10"/>
+                <SolidColorBrush x:Key="AppHeaderTextBrush" Color="#FFFFFF"/>
+                <SolidColorBrush x:Key="AppHeaderSubtextBrush" Color="#9CA3AF"/>
+                <SolidColorBrush x:Key="AppHeaderBorderBrush" Color="#1F2024"/>
 
-                <!-- Sidebar Colors (Dark background) -->
-                <SolidColorBrush x:Key="AppSidebarBrush" Color="#191919"/>
-                <SolidColorBrush x:Key="AppSidebarTextBrush" Color="#dcdcdc"/>
-                <SolidColorBrush x:Key="AppSidebarLabelBrush" Color="#a0a0a0"/>
-                <SolidColorBrush x:Key="AppSidebarHoverBrush" Color="#404040"/>
-                <SolidColorBrush x:Key="AppSidebarActiveBrush" Color="#505050"/>
-                <SolidColorBrush x:Key="AppSidebarBorderBrush" Color="#404040"/>
+                <!-- Sidebar Colors (OpenAI Dark Style) -->
+                <SolidColorBrush x:Key="AppSidebarBrush" Color="#0D0E10"/>
+                <SolidColorBrush x:Key="AppSidebarTextBrush" Color="#FFFFFF"/>
+                <SolidColorBrush x:Key="AppSidebarLabelBrush" Color="#9CA3AF"/>
+                <SolidColorBrush x:Key="AppSidebarHoverBrush" Color="#1F2024"/>
+                <SolidColorBrush x:Key="AppSidebarActiveBrush" Color="#2A2D35"/>
+                <SolidColorBrush x:Key="AppSidebarBorderBrush" Color="#1F2024"/>
 
                 <!-- Flyout/Menu Colors -->
-                <SolidColorBrush x:Key="AppFlyoutBrush" Color="#212121"/>
-                <SolidColorBrush x:Key="AppFlyoutTextBrush" Color="#dcdcdc"/>
-                <SolidColorBrush x:Key="AppFlyoutHoverBrush" Color="#404040"/>
-                <SolidColorBrush x:Key="AppFlyoutBorderBrush" Color="#404040"/>
-                <SolidColorBrush x:Key="AppFlyoutSeparatorBrush" Color="#505050"/>
+                <SolidColorBrush x:Key="AppFlyoutBrush" Color="#0D0E10"/>
+                <SolidColorBrush x:Key="AppFlyoutTextBrush" Color="#FFFFFF"/>
+                <SolidColorBrush x:Key="AppFlyoutHoverBrush" Color="#1F2024"/>
+                <SolidColorBrush x:Key="AppFlyoutBorderBrush" Color="#1F2024"/>
+                <SolidColorBrush x:Key="AppFlyoutSeparatorBrush" Color="#2A2D35"/>
+
+                <!-- Content Area Colors (OpenAI Dark Style) -->
+                <SolidColorBrush x:Key="AppContentBackgroundBrush" Color="#0F1114"/>
+
+                <!-- Navigation Elements -->
+                <SolidColorBrush x:Key="AppNavButtonBackgroundBrush" Color="Transparent"/>
+                <SolidColorBrush x:Key="AppNavButtonFocusBorderBrush" Color="#10a37f"/>
+
+                <!-- Separator Elements -->
+                <SolidColorBrush x:Key="AppSeparatorBrush" Color="#1F2024"/>
+                <x:Double x:Key="AppSeparatorOpacity">0.6</x:Double>
+
+                <!-- Interactive Elements -->
+                <SolidColorBrush x:Key="AppTransparentBrush" Color="Transparent"/>
+                <SolidColorBrush x:Key="AppUserMenuButtonBrush" Color="Transparent"/>
+
+                <!-- Dashboard/Content Colors (Dark) -->
+                <SolidColorBrush x:Key="OnSurfaceBrush" Color="#FFFFFF"/>
+                <SolidColorBrush x:Key="OnSurfaceVariantBrush" Color="#9CA3AF"/>
+                <SolidColorBrush x:Key="SurfaceContainerBrush" Color="#1F2024"/>
+                <SolidColorBrush x:Key="OutlineVariantBrush" Color="#2A2D35"/>
+                <SolidColorBrush x:Key="SecondaryContainerBrush" Color="#2A2D35"/>
+                <SolidColorBrush x:Key="OnSecondaryContainerBrush" Color="#FFFFFF"/>
+                <SolidColorBrush x:Key="TertiaryContainerBrush" Color="#3A3B3F"/>
+                <SolidColorBrush x:Key="OnTertiaryContainerBrush" Color="#E5E7EB"/>
+                <SolidColorBrush x:Key="SurfaceVariantBrush" Color="#1F2024"/>
+
+                <!-- ContentView Colors (Dark) -->
+                <SolidColorBrush x:Key="ContentViewHeadingBrush" Color="#FFFFFF"/>
+                <SolidColorBrush x:Key="ContentViewSubheadingBrush" Color="#9CA3AF"/>
             </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 

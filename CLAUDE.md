@@ -202,6 +202,7 @@ dotnet format
 - IMPORTANT: all Entities are using System.Guid for Id, defined in BaseEntity.cs
 - IMPORTANT: never create db migrations before asking
 - EnsureSuperadminAccessAsync() is only for running Tests
+- Avalonia can't use dynamic resources in thickness attributes like padding, margin or spacing
 
 # Multi-Tenant Testing Guidelines
 - IMPORTANT: All multi-tenant tests MUST inherit from TenantIsolatedTestBase for proper isolation

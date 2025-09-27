@@ -5,74 +5,93 @@
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
              x:Class="maERP.UI.Features.Authentication.Views.LoginView">
 
-  <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
-          CornerRadius="{DynamicResource CornerRadiusMedium}"
-          Padding="24"
+  <Border Background="{DynamicResource SurfaceContainerBrush}"
+          CornerRadius="{DynamicResource CornerRadiusL}"
+          Padding="32"
           MaxWidth="400"
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
-          BoxShadow="{DynamicResource ElevationShadow3}">
+          BoxShadow="{DynamicResource ElevationLevel2}"
+          BorderBrush="{DynamicResource OutlineVariantBrush}"
+          BorderThickness="1">
     
     <StackPanel Spacing="24">
-      
+
       <!-- Logo und Titel -->
       <StackPanel Spacing="12" HorizontalAlignment="Center">
-        <TextBlock Text="maERP" 
-                   FontSize="32" 
+        <TextBlock Text="maERP"
+                   FontSize="{DynamicResource FontSizeDisplayS}"
                    FontWeight="SemiBold"
-                   Foreground="{DynamicResource AccentFillColorDefaultBrush}"
+                   Foreground="{DynamicResource PrimaryBrush}"
                    HorizontalAlignment="Center"/>
-        <TextBlock Text="Enterprise Resource Planning" 
-                   FontSize="14" 
-                   Opacity="0.7"
+        <TextBlock Text="Enterprise Resource Planning"
+                   FontSize="{DynamicResource FontSizeBodyM}"
+                   Foreground="{DynamicResource ContentViewSubheadingBrush}"
                    HorizontalAlignment="Center"/>
       </StackPanel>
       
       <!-- Anmeldeformular -->
       <StackPanel Spacing="16">
-        
+
         <!-- Server URL -->
         <StackPanel Spacing="4">
-          <TextBlock Text="Server-URL" FontWeight="SemiBold"/>
+          <TextBlock Text="Server-URL"
+                     FontWeight="SemiBold"
+                     FontSize="{DynamicResource FontSizeBodyM}"
+                     Foreground="{DynamicResource ContentViewHeadingBrush}"/>
           <TextBox Text="{Binding ServerUrl}"
                    Watermark="https://localhost:8443"
-                   CornerRadius="{DynamicResource CornerRadiusSmall}"
-                   Padding="12,8"/>
+                   CornerRadius="{DynamicResource CornerRadiusS}"
+                   Padding="12,8"
+                   FontSize="{DynamicResource FontSizeBodyM}"/>
         </StackPanel>
-        
+
         <!-- Email -->
         <StackPanel Spacing="4">
-          <TextBlock Text="E-Mail-Adresse" FontWeight="SemiBold"/>
+          <TextBlock Text="E-Mail-Adresse"
+                     FontWeight="SemiBold"
+                     FontSize="{DynamicResource FontSizeBodyM}"
+                     Foreground="{DynamicResource ContentViewHeadingBrush}"/>
           <TextBox Text="{Binding Email}"
                    Watermark="name@domain.com"
-                   CornerRadius="6"/>
+                   CornerRadius="{DynamicResource CornerRadiusS}"
+                   Padding="12,8"
+                   FontSize="{DynamicResource FontSizeBodyM}"/>
         </StackPanel>
-        
+
         <!-- Passwort -->
         <StackPanel Spacing="4">
-          <TextBlock Text="Passwort" FontWeight="SemiBold"/>
+          <TextBlock Text="Passwort"
+                     FontWeight="SemiBold"
+                     FontSize="{DynamicResource FontSizeBodyM}"
+                     Foreground="{DynamicResource ContentViewHeadingBrush}"/>
           <TextBox Text="{Binding Password}"
                    PasswordChar="●"
                    RevealPassword="False"
                    Watermark="Passwort eingeben"
-                   CornerRadius="6"/>
+                   CornerRadius="{DynamicResource CornerRadiusS}"
+                   Padding="12,8"
+                   FontSize="{DynamicResource FontSizeBodyM}"/>
         </StackPanel>
         
         <!-- Remember Me Checkbox -->
         <CheckBox IsChecked="{Binding RememberMe}"
                   Content="Anmeldedaten speichern"
+                  FontSize="{DynamicResource FontSizeBodyM}"
+                  Foreground="{DynamicResource ContentViewHeadingBrush}"
                   Margin="0,8,0,0"/>
-        
+
         <!-- Fehlermeldung -->
         <Border IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}"
-                Background="{DynamicResource SystemFillColorCriticalBrush}"
-                BorderBrush="{DynamicResource SystemFillColorCriticalBrush}"
+                Background="{DynamicResource ErrorBrush}"
+                BorderBrush="{DynamicResource ErrorBrush}"
                 BorderThickness="1"
-                CornerRadius="{DynamicResource CornerRadiusSmall}"
+                CornerRadius="{DynamicResource CornerRadiusS}"
                 Padding="12"
                 Opacity="0.1">
           <TextBlock Text="{Binding ErrorMessage}"
-                     Foreground="#C92A2A"
+                     Foreground="{DynamicResource OnErrorBrush}"
+                     FontSize="{DynamicResource FontSizeBodyM}"
                      TextWrapping="Wrap"/>
         </Border>
         
@@ -83,24 +102,27 @@
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Center"
                 Padding="0,12"
-                CornerRadius="6"
+                CornerRadius="{DynamicResource CornerRadiusS}"
                 FontWeight="SemiBold"
-                Background="{DynamicResource AccentFillColorDefaultBrush}"
-                Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}">
+                FontSize="{DynamicResource FontSizeBodyL}"
+                Background="{DynamicResource PrimaryBrush}"
+                Foreground="{DynamicResource OnPrimaryBrush}">
           <Button.Styles>
             <Style Selector="Button:pointerover">
-              <Setter Property="Background" Value="{DynamicResource SystemAccentColorLight1}"/>
+              <Setter Property="Background" Value="{DynamicResource PrimaryContainerBrush}"/>
             </Style>
           </Button.Styles>
         </Button>
-        
+
         <!-- Loading Indicator -->
-        <StackPanel IsVisible="{Binding IsLoading}" 
-                    Orientation="Horizontal" 
+        <StackPanel IsVisible="{Binding IsLoading}"
+                    Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Spacing="8">
           <ProgressBar IsIndeterminate="True" Width="20" Height="20"/>
-          <TextBlock Text="Anmeldung läuft..." Opacity="0.7"/>
+          <TextBlock Text="Anmeldung läuft..."
+                     FontSize="{DynamicResource FontSizeBodyM}"
+                     Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
         </StackPanel>
         
       </StackPanel>

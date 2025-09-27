@@ -12,14 +12,14 @@
     <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,24">
       <!-- Title -->
       <StackPanel Grid.Column="0" VerticalAlignment="Center">
-        <TextBlock Text="Kunden" 
-                   FontSize="24" 
+        <TextBlock Text="Kunden"
+                   FontSize="24"
                    FontWeight="SemiBold"
-                   Foreground="#111827"
+                   Foreground="{DynamicResource ContentViewHeadingBrush}"
                    Margin="0,0,0,4"/>
-        <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Kunden}" 
-                   FontSize="14" 
-                   Foreground="#6B7280"/>
+        <TextBlock Text="{Binding TotalCount, StringFormat=Gesamt: \{0\} Kunden}"
+                   FontSize="14"
+                   Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
       </StackPanel>
       
       <!-- Action Buttons -->

@@ -14,11 +14,11 @@
         <TextBlock Text="{Binding PageTitle}"
                    FontSize="28"
                    FontWeight="SemiBold"
-                   Foreground="#111827"
+                   Foreground="{DynamicResource ContentViewHeadingBrush}"
                    Margin="0,0,0,8"/>
         <TextBlock Text="Benutzerdaten bearbeiten oder erstellen"
                    FontSize="14"
-                   Foreground="#6B7280"/>
+                   Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
       </StackPanel>
 
       <!-- Action buttons -->

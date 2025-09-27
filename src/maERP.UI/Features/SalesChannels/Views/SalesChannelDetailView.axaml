@@ -15,11 +15,11 @@
           <TextBlock Text="{Binding SalesChannel.Name}" 
                      FontSize="28" 
                      FontWeight="SemiBold"
-                     Foreground="#111827"/>
+                     Foreground="{DynamicResource ContentViewHeadingBrush}"/>
           <TextBlock Text="{Binding SalesChannel.Id, StringFormat=ID #{0}}" 
                      FontSize="18" 
                      FontWeight="Medium"
-                     Foreground="#6B7280"
+                     Foreground="{DynamicResource ContentViewSubheadingBrush}"
                      VerticalAlignment="Bottom"/>
           <Border Background="#E0F2FE" 
                   CornerRadius="6" 
@@ -34,7 +34,7 @@
           <TextBlock Text="{Binding SalesChannelTypeIcon}" FontSize="14"/>
           <TextBlock Text="{Binding SalesChannelTypeDisplay}" 
                      FontSize="14" 
-                     Foreground="#6B7280"/>
+                     Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
         </StackPanel>
       </StackPanel>
       

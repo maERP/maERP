@@ -1,4 +1,4 @@
-**Wichtiger Hinweis:** maERP ist keine schlüsselfertige ERP-Lösung für Endkund:innen und darf nicht ohne eigene Anpassungen im Livebetrieb eingesetzt werden. Das Projekt dient als technische Basis, auf der individuelle Unternehmenslösungen aufgebaut werden können.
+**Wichtiger Hinweis:** maERP ist keine schlüsselfertige ERP-Lösung für Endkund:innen und darf nicht ohne eigene Anpassungen im Livebetrieb eingesetzt werden. Das Projekt dient als technische Basis, auf der eigene, individuelle Unternehmenslösungen aufgebaut werden können.
 
 # maERP
 

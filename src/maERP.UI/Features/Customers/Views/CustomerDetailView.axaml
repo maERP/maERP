@@ -16,11 +16,11 @@
           <TextBlock Text="{Binding Customer.FullName}" 
                      FontSize="28" 
                      FontWeight="SemiBold"
-                     Foreground="#111827"/>
+                     Foreground="{DynamicResource ContentViewHeadingBrush}"/>
           <TextBlock Text="{Binding Customer.CustomerId, StringFormat=Kunden-Nr. #{0}}" 
                      FontSize="18" 
                      FontWeight="Medium"
-                     Foreground="#6B7280"
+                     Foreground="{DynamicResource ContentViewSubheadingBrush}"
                      VerticalAlignment="Bottom"/>
           <Border Background="#E0F2FE" 
                   CornerRadius="6" 
@@ -33,7 +33,7 @@
         </StackPanel>
         <TextBlock Text="{Binding Customer.DateEnrollment, StringFormat=Kunde seit: \{0:dd.MM.yyyy\}}" 
                    FontSize="14" 
-                   Foreground="#6B7280"/>
+                   Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
       </StackPanel>
       
       <!-- Action buttons -->

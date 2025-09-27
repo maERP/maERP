@@ -79,10 +79,10 @@
             <!-- User Menu -->
             <Button x:Name="UserMenuButton"
                     Content="⚙️"
-                    Background="Transparent"
+                    Background="{DynamicResource AppUserMenuButtonBrush}"
                     BorderThickness="0"
                     Padding="8"
-                    CornerRadius="6"
+                    CornerRadius="{DynamicResource CornerRadiusS}"
                     ToolTip.Tip="Benutzermenü"
                     FontSize="16">
               <Button.Flyout>
@@ -137,9 +137,9 @@
             
             <!-- Separators and menu sections -->
             <Rectangle Height="1"
-                       Fill="{DynamicResource AppSidebarBorderBrush}"
+                       Fill="{DynamicResource AppSeparatorBrush}"
                        Margin="20,12"
-                       Opacity="0.6"/>
+                       Opacity="{DynamicResource AppSeparatorOpacity}"/>
 
             <TextBlock Text="VERKAUF"
                        FontSize="12"
@@ -173,11 +173,11 @@
                     HorizontalContentAlignment="Left"
                     Padding="20,12"
                     Margin="0,1"/>
-            
+
             <Rectangle Height="1"
-                       Fill="{DynamicResource AppSidebarBorderBrush}"
+                       Fill="{DynamicResource AppSeparatorBrush}"
                        Margin="20,12"
-                       Opacity="0.6"/>
+                       Opacity="{DynamicResource AppSeparatorOpacity}"/>
 
             <TextBlock Text="LAGER"
                        FontSize="12"
@@ -220,11 +220,11 @@
                     HorizontalContentAlignment="Left"
                     Padding="20,12"
                     Margin="0,1"/>
-            
+
             <Rectangle Height="1"
-                       Fill="{DynamicResource AppSidebarBorderBrush}"
+                       Fill="{DynamicResource AppSeparatorBrush}"
                        Margin="20,12"
-                       Opacity="0.6"/>
+                       Opacity="{DynamicResource AppSeparatorOpacity}"/>
 
             <TextBlock Text="VERTRIEB"
                        FontSize="12"
@@ -240,11 +240,11 @@
                     HorizontalContentAlignment="Left"
                     Padding="20,12"
                     Margin="0,1"/>
-            
+
             <Rectangle Height="1"
-                       Fill="{DynamicResource AppSidebarBorderBrush}"
+                       Fill="{DynamicResource AppSeparatorBrush}"
                        Margin="20,12"
-                       Opacity="0.6"/>
+                       Opacity="{DynamicResource AppSeparatorOpacity}"/>
 
             <TextBlock Text="SYSTEM"
                        FontSize="12"
@@ -316,7 +316,7 @@
     
     <!-- Main Content Area -->
     <Border Grid.Row="1" Grid.Column="1"
-            Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+            Background="{DynamicResource AppContentBackgroundBrush}">
       <ScrollViewer VerticalScrollBarVisibility="Auto" 
                     HorizontalScrollBarVisibility="Disabled"
                     Margin="32,24">
@@ -481,13 +481,13 @@
   <!-- Styles -->
   <UserControl.Styles>
     <Style Selector="Button.nav-button">
-      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Background" Value="{DynamicResource AppNavButtonBackgroundBrush}"/>
       <Setter Property="BorderThickness" Value="0"/>
       <Setter Property="Foreground" Value="{DynamicResource AppSidebarTextBrush}"/>
-      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="FontSize" Value="{DynamicResource FontSizeBodyM}"/>
       <Setter Property="FontWeight" Value="Normal"/>
       <Setter Property="Cursor" Value="Hand"/>
-      <Setter Property="CornerRadius" Value="6"/>
+      <Setter Property="CornerRadius" Value="{DynamicResource CornerRadiusS}"/>
     </Style>
     <Style Selector="Button.nav-button:pointerover">
       <Setter Property="Background" Value="{DynamicResource AppSidebarHoverBrush}"/>
@@ -498,7 +498,7 @@
       <Setter Property="Foreground" Value="{DynamicResource AppSidebarTextBrush}"/>
     </Style>
     <Style Selector="Button.nav-button:focus">
-      <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource AppNavButtonFocusBorderBrush}"/>
       <Setter Property="BorderThickness" Value="2"/>
     </Style>
 

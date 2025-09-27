@@ -15,11 +15,11 @@
           <TextBlock Text="{Binding DisplayName}" 
                      FontSize="28" 
                      FontWeight="SemiBold"
-                     Foreground="#111827"/>
+                     Foreground="{DynamicResource ContentViewHeadingBrush}"/>
           <TextBlock Text="{Binding Product.Id, StringFormat=ID #{0}}" 
                      FontSize="18" 
                      FontWeight="Medium"
-                     Foreground="#6B7280"
+                     Foreground="{DynamicResource ContentViewSubheadingBrush}"
                      VerticalAlignment="Bottom"/>
           <Border Background="#E0F2FE" 
                   CornerRadius="6" 
@@ -34,10 +34,10 @@
         <StackPanel Orientation="Horizontal" Spacing="16">
           <TextBlock Text="{Binding Product.Sku, StringFormat=SKU: \{0\}}" 
                      FontSize="14" 
-                     Foreground="#6B7280"/>
+                     Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
           <TextBlock Text="{Binding Product.Ean, StringFormat=EAN: \{0\}}" 
                      FontSize="14" 
-                     Foreground="#6B7280"
+                     Foreground="{DynamicResource ContentViewSubheadingBrush}"
                      IsVisible="{Binding HasEan}"/>
         </StackPanel>
       </StackPanel>
