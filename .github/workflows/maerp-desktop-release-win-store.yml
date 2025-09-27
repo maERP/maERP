@@ -56,33 +56,32 @@ jobs:
     - name: Create MSIX Package
       shell: pwsh
       run: |
-        # Windows runners should have Windows SDK pre-installed, but let's find the tools
-        $possiblePaths = @(
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\makeappx.exe",
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\makeappx.exe",
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.20348.0\x64\makeappx.exe",
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\makeappx.exe"
-        )
+        # Find the latest version of makeappx.exe in Windows SDK
+        $winKitsPath = "C:\Program Files (x86)\Windows Kits\10\bin"
+        if (-not (Test-Path $winKitsPath)) {
+          Write-Error "Windows SDK path not found: $winKitsPath"
+          exit 1
+        }
+        
+        # Get all available SDK versions and find the latest one with makeappx.exe
+        $sdkVersions = Get-ChildItem -Path $winKitsPath -Directory | 
+                      Where-Object { $_.Name -match "^10\.0\.\d+\.\d+$" } |
+                      Sort-Object { [version]($_.Name -replace "^10\.0\.","") } -Descending
         
         $fullMakeappxPath = $null
-        foreach ($path in $possiblePaths) {
-          if (Test-Path $path) {
-            $fullMakeappxPath = $path
-            Write-Host "Found makeappx.exe at: $fullMakeappxPath"
+        foreach ($version in $sdkVersions) {
+          $makeappxPath = Join-Path $version.FullName "x64\makeappx.exe"
+          if (Test-Path $makeappxPath) {
+            $fullMakeappxPath = $makeappxPath
+            Write-Host "Found makeappx.exe at: $fullMakeappxPath (SDK version: $($version.Name))"
             break
           }
         }
         
         if (-not $fullMakeappxPath) {
-          # Fallback: search for x64 makeappx.exe in Windows Kits (avoid ARM64)
-          $found = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "makeappx.exe" -ErrorAction SilentlyContinue | Where-Object { $_.DirectoryName -like "*x64*" } | Select-Object -First 1
-          if ($found) {
-            $fullMakeappxPath = $found.FullName
-            Write-Host "Found makeappx.exe at: $fullMakeappxPath"
-          } else {
-            Write-Error "makeappx.exe not found. Windows SDK may not be installed."
-            exit 1
-          }
+          Write-Error "makeappx.exe not found in any Windows SDK version. Available SDK versions:"
+          $sdkVersions | ForEach-Object { Write-Host "  - $($_.Name)" }
+          exit 1
         }
         
         # Create Assets directory and placeholder assets
@@ -140,33 +139,32 @@ jobs:
     - name: Sign MSIX Package
       shell: pwsh
       run: |
-        # Find signtool.exe location
-        $possiblePaths = @(
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe",
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe",
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.20348.0\x64\signtool.exe",
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe"
-        )
+        # Find the latest version of signtool.exe in Windows SDK
+        $winKitsPath = "C:\Program Files (x86)\Windows Kits\10\bin"
+        if (-not (Test-Path $winKitsPath)) {
+          Write-Error "Windows SDK path not found: $winKitsPath"
+          exit 1
+        }
+        
+        # Get all available SDK versions and find the latest one with signtool.exe
+        $sdkVersions = Get-ChildItem -Path $winKitsPath -Directory | 
+                      Where-Object { $_.Name -match "^10\.0\.\d+\.\d+$" } |
+                      Sort-Object { [version]($_.Name -replace "^10\.0\.","") } -Descending
         
         $fullSigntoolPath = $null
-        foreach ($path in $possiblePaths) {
-          if (Test-Path $path) {
-            $fullSigntoolPath = $path
-            Write-Host "Found signtool.exe at: $fullSigntoolPath"
+        foreach ($version in $sdkVersions) {
+          $signtoolPath = Join-Path $version.FullName "x64\signtool.exe"
+          if (Test-Path $signtoolPath) {
+            $fullSigntoolPath = $signtoolPath
+            Write-Host "Found signtool.exe at: $fullSigntoolPath (SDK version: $($version.Name))"
             break
           }
         }
         
         if (-not $fullSigntoolPath) {
-          # Fallback: search for x64 signtool.exe in Windows Kits (avoid ARM64)
-          $found = Get-ChildItem -Path "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Name "signtool.exe" -ErrorAction SilentlyContinue | Where-Object { $_.DirectoryName -like "*x64*" } | Select-Object -First 1
-          if ($found) {
-            $fullSigntoolPath = $found.FullName
-            Write-Host "Found signtool.exe at: $fullSigntoolPath"
-          } else {
-            Write-Error "signtool.exe not found. Windows SDK may not be installed."
-            exit 1
-          }
+          Write-Error "signtool.exe not found in any Windows SDK version. Available SDK versions:"
+          $sdkVersions | ForEach-Object { Write-Host "  - $($_.Name)" }
+          exit 1
         }
         
         # Sign the package
