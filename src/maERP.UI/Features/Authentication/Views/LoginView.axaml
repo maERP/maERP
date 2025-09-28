@@ -124,7 +124,23 @@
                      FontSize="{DynamicResource FontSizeBodyM}"
                      Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
         </StackPanel>
-        
+
+        <!-- Register Link -->
+        <Button Content="Noch kein Konto? Hier registrieren"
+                Command="{Binding ShowRegistrationCommand}"
+                HorizontalAlignment="Center"
+                Background="Transparent"
+                BorderThickness="0"
+                Foreground="{DynamicResource PrimaryBrush}"
+                FontSize="{DynamicResource FontSizeBodyM}"
+                Padding="8,4">
+          <Button.Styles>
+            <Style Selector="Button:pointerover">
+              <Setter Property="Foreground" Value="{DynamicResource PrimaryContainerBrush}"/>
+            </Style>
+          </Button.Styles>
+        </Button>
+
       </StackPanel>
       
     </StackPanel>

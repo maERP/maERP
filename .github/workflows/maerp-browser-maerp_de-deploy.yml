@@ -74,14 +74,3 @@ jobs:
           remote_path: '/wwwroot/'
           sftp_only: true
           delete_remote_files: false
-
-      - name: Verify deployment
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.MAERPDE_SFTP_HOST }}
-          port: ${{ secrets.MAERPDE_SFTP_PORT }}
-          username: ${{ secrets.MAERPDE_SFTP_USERNAME }}
-          password: ${{ secrets.MAERPDE_SFTP_PASSWORD }}
-          script: |
-            echo "Files in /wwwroot/:"
-            ls -la /wwwroot/ | head -20

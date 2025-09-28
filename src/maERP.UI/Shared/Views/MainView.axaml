@@ -37,9 +37,18 @@
              Focusable="True">
 
   <Grid>
-    <!-- Login View wenn nicht authentifiziert -->
+    <!-- Authentication Views wenn nicht authentifiziert -->
     <Panel IsVisible="{Binding !IsAuthenticated}">
-      <authViews:LoginView DataContext="{Binding LoginViewModel}"/>
+      <ContentControl Content="{Binding CurrentView}">
+        <ContentControl.DataTemplates>
+          <DataTemplate DataType="{x:Type authVm:LoginViewModel}">
+            <authViews:LoginView/>
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type authVm:RegistrationViewModel}">
+            <authViews:RegistrationView/>
+          </DataTemplate>
+        </ContentControl.DataTemplates>
+      </ContentControl>
     </Panel>
 
     <!-- Hauptanwendung mit Header und Sidebar wenn authentifiziert -->
@@ -326,6 +335,10 @@
             <!-- Authentication -->
             <DataTemplate DataType="{x:Type authVm:LoginViewModel}">
               <authViews:LoginView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type authVm:RegistrationViewModel}">
+              <authViews:RegistrationView/>
             </DataTemplate>
             
             <!-- Dashboard -->

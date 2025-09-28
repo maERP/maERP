@@ -49,6 +49,7 @@ public partial class MainViewModel : ViewModelBase
     private bool isDarkTheme;
 
     public LoginViewModel LoginViewModel { get; }
+    public RegistrationViewModel RegistrationViewModel { get; }
     
     private DashboardViewModel? _dashboardViewModel;
     private OrderListViewModel? _orderListViewModel;
@@ -91,6 +92,7 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel(IAuthenticationService authenticationService,
                         LoginViewModel loginViewModel,
+                        RegistrationViewModel registrationViewModel,
                         IServiceProvider serviceProvider,
                         IDebugService debugService)
     {
@@ -98,8 +100,12 @@ public partial class MainViewModel : ViewModelBase
         _serviceProvider = serviceProvider;
         _debugService = debugService;
         LoginViewModel = loginViewModel;
+        RegistrationViewModel = registrationViewModel;
 
         LoginViewModel.OnLoginSuccessful += OnLoginSuccessful;
+        LoginViewModel.OnShowRegistration += OnShowRegistration;
+        RegistrationViewModel.OnRegistrationSuccessful += OnRegistrationSuccessful;
+        RegistrationViewModel.OnBackToLogin += OnBackToLogin;
 
         InitializeTheme();
         _ = InitializeAsync();
@@ -240,6 +246,21 @@ public partial class MainViewModel : ViewModelBase
         UpdateRoleFlags();
         CurrentView = await GetDashboardViewModelAsync();
         SelectedMenuItem = "Dashboard";
+    }
+
+    private void OnShowRegistration()
+    {
+        CurrentView = RegistrationViewModel;
+    }
+
+    private void OnRegistrationSuccessful()
+    {
+        CurrentView = LoginViewModel;
+    }
+
+    private void OnBackToLogin()
+    {
+        CurrentView = LoginViewModel;
     }
 
     [RelayCommand]

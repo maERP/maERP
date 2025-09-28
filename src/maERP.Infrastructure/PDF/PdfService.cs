@@ -18,6 +18,9 @@ namespace maERP.Infrastructure.PDF;
 public class PdfService : IPdfService
 {
     private readonly ISettingRepository _settingRepository;
+    private readonly object _settingsLock = new();
+    private bool _companySettingsLoaded;
+    private Guid? _settingsLoadedForTenantId;
     private string _companyName = string.Empty;
     private string _companyAddress = string.Empty;
     private string _companyZipCity = string.Empty;
@@ -34,7 +37,9 @@ public class PdfService : IPdfService
 
     public PdfService(ISettingRepository settingRepository)
     {
-        // Den PDFsharp FontResolver initialisieren, falls er noch nicht gesetzt ist
+        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+
+        // Ensure a font resolver is registered so MigraDoc can render text with embedded fonts.
         try
         {
             if (GlobalFontSettings.FontResolver == null)
@@ -44,32 +49,53 @@ public class PdfService : IPdfService
         }
         catch
         {
-            // Ignore font resolver issues - wird zur Laufzeit behandelt
+            // Ignore font resolver issues; handled later when rendering if necessary.
         }
-
-        _settingRepository = settingRepository;
-        LoadCompanySettings();
     }
 
-    private void LoadCompanySettings()
+    private void EnsureCompanySettingsLoaded(Guid? tenantId)
     {
-        var settings = _settingRepository.GetAllAsync().Result;
-
-        if (settings != null)
+        if (_companySettingsLoaded && Nullable.Equals(_settingsLoadedForTenantId, tenantId))
         {
-            _companyName = GetSettingValue(settings, "Company.Name");
-            _companyAddress = GetSettingValue(settings, "Company.Address");
-            _companyZipCity = GetSettingValue(settings, "Company.ZipCity");
-            _companyCountry = GetSettingValue(settings, "Company.Country");
-            _companyPhone = GetSettingValue(settings, "Company.Phone");
-            _companyEmail = GetSettingValue(settings, "Company.Email");
-            _companyWebsite = GetSettingValue(settings, "Company.Website");
-            _companyTaxId = GetSettingValue(settings, "Company.TaxId");
-            _companyVatId = GetSettingValue(settings, "Company.VatId");
-            _companyBankName = GetSettingValue(settings, "Company.BankName");
-            _companyIban = GetSettingValue(settings, "Company.Iban");
-            _companyBic = GetSettingValue(settings, "Company.Bic");
-            _logoPath = GetSettingValue(settings, "Company.LogoPath");
+            return;
+        }
+
+        lock (_settingsLock)
+        {
+            if (_companySettingsLoaded && Nullable.Equals(_settingsLoadedForTenantId, tenantId))
+            {
+                return;
+            }
+
+            ICollection<Setting>? settings;
+
+            try
+            {
+                settings = _settingRepository.GetAllAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            }
+            catch
+            {
+                settings = Array.Empty<Setting>();
+            }
+
+            var effectiveSettings = settings ?? Array.Empty<Setting>();
+
+            _companyName = GetSettingValue(effectiveSettings, "Company.Name");
+            _companyAddress = GetSettingValue(effectiveSettings, "Company.Address");
+            _companyZipCity = GetSettingValue(effectiveSettings, "Company.ZipCity");
+            _companyCountry = GetSettingValue(effectiveSettings, "Company.Country");
+            _companyPhone = GetSettingValue(effectiveSettings, "Company.Phone");
+            _companyEmail = GetSettingValue(effectiveSettings, "Company.Email");
+            _companyWebsite = GetSettingValue(effectiveSettings, "Company.Website");
+            _companyTaxId = GetSettingValue(effectiveSettings, "Company.TaxId");
+            _companyVatId = GetSettingValue(effectiveSettings, "Company.VatId");
+            _companyBankName = GetSettingValue(effectiveSettings, "Company.BankName");
+            _companyIban = GetSettingValue(effectiveSettings, "Company.Iban");
+            _companyBic = GetSettingValue(effectiveSettings, "Company.Bic");
+            _logoPath = GetSettingValue(effectiveSettings, "Company.LogoPath");
+
+            _companySettingsLoaded = true;
+            _settingsLoadedForTenantId = tenantId;
         }
     }
 
@@ -86,50 +112,50 @@ public class PdfService : IPdfService
     /// <returns>Byte array containing the PDF if outputPath is null, otherwise returns null after saving to file</returns>
     public byte[]? GenerateInvoice(Invoice invoice, string? outputPath = null)
     {
-        if (invoice == null)
-            throw new ArgumentNullException(nameof(invoice));
+        ArgumentNullException.ThrowIfNull(invoice);
 
         try
         {
-            // Überprüfen, ob der FontResolver ordnungsgemäß initialisiert ist
+            EnsureCompanySettingsLoaded(invoice.TenantId);
+
             if (GlobalFontSettings.FontResolver == null)
             {
                 GlobalFontSettings.FontResolver = new StandardFontResolver();
             }
 
-            // MigraDoc Dokumentobjekt erstellen
             var document = CreateInvoiceDocument(invoice);
 
-            // PdfDocument vor der Übergabe explizit initialisieren
-            var pdfDoc = new PdfDocument();
-
-            // Rendern des Dokuments zu PDF
             var pdfRenderer = new PdfDocumentRenderer
             {
                 Document = document,
-                PdfDocument = pdfDoc
+                PdfDocument = new PdfDocument()
             };
 
-            // Dokument rendern
             pdfRenderer.RenderDocument();
 
-            // PDF speichern oder als Byte-Array zurückgeben
-            if (string.IsNullOrEmpty(outputPath))
+            using var stream = new MemoryStream();
+            pdfRenderer.PdfDocument.Save(stream, false);
+            var pdfBytes = stream.ToArray();
+
+            if (!string.IsNullOrWhiteSpace(outputPath))
             {
-                using var stream = new MemoryStream();
-                pdfRenderer.PdfDocument.Save(stream, false);
-                return stream.ToArray();
+                var fullPath = Path.GetFullPath(outputPath);
+                var directory = Path.GetDirectoryName(fullPath);
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                File.WriteAllBytes(fullPath, pdfBytes);
             }
 
-            pdfRenderer.PdfDocument.Save(outputPath);
-            return null;
+            return pdfBytes;
         }
         catch (Exception ex)
         {
-            // Im Fehlerfall detaillierte Informationen loggen
-            System.Diagnostics.Debug.WriteLine($"PDF-Generierung fehlgeschlagen: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"PDF generation failed: {ex.Message}");
             System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
-            throw; // Weitergeben der Exception für höhere Handler
+            throw;
         }
     }
 
@@ -372,21 +398,21 @@ public class PdfService : IPdfService
         headerRow.Cells[5].AddParagraph("Gesamt");
 
         // Artikel-Zeilen
-        foreach (var item in invoice.InvoiceItems)
+        foreach (var item in invoice.InvoiceItems ?? Enumerable.Empty<InvoiceItem>())
         {
             var row = table.AddRow();
 
             // Artikel-Beschreibung
             var cell = row.Cells[0];
-            var paragraph = cell.AddParagraph(item.Name);
+            var paragraph = cell.AddParagraph(string.IsNullOrWhiteSpace(item.Name) ? "Item" : item.Name);
             paragraph.Format.Font.Bold = true;
 
-            if (!string.IsNullOrEmpty(item.Description))
+            if (!string.IsNullOrWhiteSpace(item.Description))
             {
                 cell.AddParagraph(item.Description);
             }
 
-            if (!string.IsNullOrEmpty(item.SKU))
+            if (!string.IsNullOrWhiteSpace(item.SKU))
             {
                 cell.AddParagraph($"Art.-Nr.: {item.SKU}");
             }
@@ -395,7 +421,7 @@ public class PdfService : IPdfService
             row.Cells[1].AddParagraph(item.Quantity.ToString("0.##", CultureInfo.InvariantCulture));
 
             // Einheit
-            row.Cells[2].AddParagraph(item.Unit);
+            row.Cells[2].AddParagraph(string.IsNullOrWhiteSpace(item.Unit) ? "-" : item.Unit);
 
             // Einzelpreis
             row.Cells[3].AddParagraph($"{item.UnitPrice:0.00} €");
@@ -438,7 +464,7 @@ public class PdfService : IPdfService
         var paragraph = cell.AddParagraph($"Zwischensumme (netto): {invoice.Subtotal:0.00} €");
 
         // MwSt. nach Sätzen gruppieren
-        var taxGroups = invoice.InvoiceItems
+        var taxGroups = (invoice.InvoiceItems ?? Enumerable.Empty<InvoiceItem>())
             .GroupBy(item => item.TaxRate)
             .Select(group => new
             {

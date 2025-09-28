@@ -30,14 +30,24 @@ jobs:
       id: version
       shell: pwsh
       run: |
-        # Generate version in format: YYYY.MM.DD.BUILD (e.g., 2024.01.15.123)
+        # Generate version in format: MAJOR.MINOR.BUILD.0 (Windows Store compliant)
+        # Each part must be between 0-65535, last part reserved for Store (0)
         $year = Get-Date -Format "yyyy"
         $month = Get-Date -Format "MM"
         $day = Get-Date -Format "dd"
         $build = if ($env:GITHUB_RUN_NUMBER) { $env:GITHUB_RUN_NUMBER } else { "1" }
-        $version = "$year.$month.$day.$build"
+        
+        # Calculate a Windows Store compliant version
+        # Use year offset from 2020 to keep numbers small
+        $yearOffset = [int]$year - 2020
+        $majorVersion = $yearOffset
+        $minorVersion = [int]$month * 100 + [int]$day  # MMDD format (e.g., 927 for Sept 27)
+        $buildVersion = [int]$build
+        $revisionVersion = 0  # Reserved for Store
+        
+        $version = "$majorVersion.$minorVersion.$buildVersion.$revisionVersion"
         echo "VERSION=$version" >> $env:GITHUB_OUTPUT
-        echo "Generated version: $version"
+        echo "Generated version: $version (Year offset: $yearOffset, Month-Day: $minorVersion, Build: $buildVersion)"
 
     - name: Restore dependencies
       run: dotnet restore src/maERP.UI.Desktop/maERP.UI.Desktop.csproj

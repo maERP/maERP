@@ -25,6 +25,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\maERP.Application\maERP.Application.csproj" />
 		<ProjectReference Include="..\..\src\maERP.Persistence\maERP.Persistence.csproj" />
+		<ProjectReference Include="..\..\src\maERP.Infrastructure\maERP.Infrastructure.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Using Include="Xunit" />

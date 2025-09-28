@@ -28,12 +28,15 @@ The codebase implements:
 - No Automapper, using manual mapping instead
 - No MediatR, using manual Mediator instead
 - Avalonia with CommunityToolkit.MVVM for cross-platform UI
-- UI projects not using direct database acces, using REST-API instead
+- UI projects not using direct database access, using REST-API instead
 
 ## Role Management
-- IMPORTANT: only Superadmin-Role can add, edit or delete users in any tenant
-- IMPORTANT: all users can see their own user profile
-- IMPORTANT: all users only see data from their own tenant
+- IMPORTANT: only Superadmin-Role can use SuperadminController to add, edit or delete users in any tenant
+- IMPORTANT: all users can see their own user profile, even when they have no UserTenant
+- IMPORTANT: all users only see data from their own tenants
+- IMPORTANT: With RoleManageUser-Role, a user can manage add or delete users in their own tenant via SuperadminController
+- IMPORTANT: With RoleManageTenant-Role, a user edit or delete tenants their own tenant via TenantsController
+- Login is possible without having a tenant. Every User can create Tenants. Every user can only see their own tenants.
 
 ## Development Commands
 

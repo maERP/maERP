@@ -124,7 +124,14 @@ public partial class LoginViewModel : ViewModelBase
         }
     }
 
+    [RelayCommand]
+    private void ShowRegistration()
+    {
+        OnShowRegistration?.Invoke();
+    }
+
     public event Action? OnLoginSuccessful;
+    public event Action? OnShowRegistration;
 
     public async Task<bool> TryAutoLoginAsync()
     {

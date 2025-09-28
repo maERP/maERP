@@ -49,7 +49,8 @@ public partial class App : Application
         services.AddSingleton<IDebugService, DebugService>();
 
         services.AddSingleton<MainViewModel>();
-        services.AddTransient<LoginViewModel>();
+        services.AddSingleton<LoginViewModel>();
+        services.AddSingleton<RegistrationViewModel>();
         services.AddSingleton<TenantSelectorViewModel>();
 
         services.AddTransient<AiModelListViewModel>();

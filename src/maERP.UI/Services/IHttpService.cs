@@ -12,6 +12,7 @@ public interface IHttpService
     bool IsAuthenticated { get; }
 
     Task<LoginResponseDto> LoginAsync(string email, string password, string serverUrl);
+    Task<RegistrationResponseDto> RegisterAsync(string firstName, string lastName, string email, string password, string serverUrl);
     Task LogoutAsync();
     void SetCurrentTenant(Guid? tenantId);
 
@@ -28,4 +29,11 @@ public class FileDownloadResult
     public bool Success { get; set; }
     public string? FilePath { get; set; }
     public string? ErrorMessage { get; set; }
+}
+
+public class RegistrationResponseDto
+{
+    public bool Succeeded { get; set; }
+    public string? Message { get; set; }
+    public string? UserId { get; set; }
 }

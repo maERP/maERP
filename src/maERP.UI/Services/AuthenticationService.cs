@@ -41,6 +41,18 @@ public class AuthenticationService : IAuthenticationService
         return result;
     }
 
+    public async Task<RegistrationResult> RegisterAsync(string firstName, string lastName, string email, string password, string serverUrl)
+    {
+        var result = await _httpService.RegisterAsync(firstName, lastName, email, password, serverUrl);
+
+        return new RegistrationResult
+        {
+            Succeeded = result.Succeeded,
+            Message = result.Message,
+            UserId = result.UserId
+        };
+    }
+
     public async Task LogoutAsync()
     {
         await _httpService.LogoutAsync();

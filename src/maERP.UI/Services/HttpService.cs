@@ -144,6 +144,82 @@ public class HttpService : IHttpService
         }
     }
 
+    public async Task<RegistrationResponseDto> RegisterAsync(string firstName, string lastName, string email, string password, string serverUrl)
+    {
+        try
+        {
+            _serverUrl = serverUrl.TrimEnd('/');
+
+            var registrationRequest = new
+            {
+                Firstname = firstName,
+                Lastname = lastName,
+                Email = email,
+                Username = email,
+                Password = password
+            };
+
+            var json = JsonSerializer.Serialize(registrationRequest, _jsonOptions);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var registerUrl = $"{_serverUrl}/api/v1/auth/register";
+            var response = await _httpClient.PostAsync(registerUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var resultContent = await response.Content.ReadAsStringAsync();
+
+                try
+                {
+                    var jsonDoc = JsonDocument.Parse(resultContent);
+                    var root = jsonDoc.RootElement;
+
+                    var succeeded = root.TryGetProperty("succeeded", out var succeededProp) && succeededProp.GetBoolean();
+                    var message = root.TryGetProperty("message", out var messageProp) ? messageProp.GetString() : null;
+                    var userId = "";
+
+                    if (root.TryGetProperty("data", out var dataProp) && dataProp.TryGetProperty("userId", out var userIdProp))
+                    {
+                        userId = userIdProp.GetString();
+                    }
+
+                    return new RegistrationResponseDto
+                    {
+                        Succeeded = succeeded,
+                        Message = message ?? "Registrierung erfolgreich",
+                        UserId = userId
+                    };
+                }
+                catch
+                {
+                    return new RegistrationResponseDto
+                    {
+                        Succeeded = true,
+                        Message = "Registrierung erfolgreich",
+                        UserId = null
+                    };
+                }
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                return new RegistrationResponseDto
+                {
+                    Succeeded = false,
+                    Message = $"Registrierung fehlgeschlagen: {response.StatusCode}"
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new RegistrationResponseDto
+            {
+                Succeeded = false,
+                Message = $"Registrierungsfehler: {ex.Message}"
+            };
+        }
+    }
+
     public Task LogoutAsync()
     {
         _token = null;
