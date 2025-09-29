@@ -73,13 +73,76 @@ docker-compose -f docker-compose.mssql.yml -f docker-compose.mssql.override.yml 
 ```
 
 ### Zugriff auf die Services
-- **maERP Server API**: `https://localhost:8443` (Swagger: `/swagger`)
-- **maERP Web UI**: `https://localhost:8444`
+- **maERP Server API**: `https://localhost:443` (Swagger: `/swagger`)
+- **maERP Web UI**: `https://localhost:443`
 - **Grafana Agent**: `http://localhost:12345`
 - **Datenbank-Ports** (Development):
   - MariaDB: `localhost:3307`
   - PostgreSQL: `localhost:5433`
   - MSSQL: `localhost:1434`
+
+### SSL-Zertifikate konfigurieren
+
+maERP läuft standardmäßig hinter einem nginx Reverse Proxy mit SSL-Verschlüsselung. Beim ersten Start wird automatisch ein selbstsigniertes Zertifikat für die Entwicklung generiert.
+
+#### Eigene SSL-Zertifikate verwenden
+
+Für Produktionsumgebungen sollten Sie Ihre eigenen SSL-Zertifikate verwenden:
+
+1. **Zertifikat und privaten Schlüssel bereitstellen:**
+   ```bash
+   # Ihre Zertifikatsdateien in den nginx/certs Ordner kopieren
+   cp your-certificate.crt nginx/certs/server.crt
+   cp your-private-key.key nginx/certs/server.key
+   ```
+
+2. **Berechtigungen setzen:**
+   ```bash
+   chmod 600 nginx/certs/server.key
+   chmod 644 nginx/certs/server.crt
+   ```
+
+3. **Container neu starten:**
+   ```bash
+   docker-compose restart nginx
+   ```
+
+#### Neue Standard-Zertifikate generieren
+
+Falls Sie die Standard-Zertifikate neu generieren möchten:
+
+```bash
+# Alte Zertifikate löschen
+rm nginx/certs/server.crt nginx/certs/server.key
+
+# Neue Zertifikate generieren
+./nginx/generate-certs.sh
+```
+
+#### Let's Encrypt Zertifikate verwenden
+
+Für automatische SSL-Zertifikate mit Let's Encrypt können Sie Certbot verwenden:
+
+```bash
+# Certbot installieren (Ubuntu/Debian)
+sudo apt-get install certbot
+
+# Zertifikat anfordern
+sudo certbot certonly --standalone -d yourdomain.com
+
+# Zertifikat nach nginx/certs kopieren
+sudo cp /etc/letsencrypt/live/yourdomain.com/fullchain.pem nginx/certs/server.crt
+sudo cp /etc/letsencrypt/live/yourdomain.com/privkey.pem nginx/certs/server.key
+
+# Berechtigungen anpassen
+sudo chmod 644 nginx/certs/server.crt
+sudo chmod 600 nginx/certs/server.key
+
+# Container neu starten
+docker-compose restart nginx
+```
+
+**Hinweis:** Die Zertifikatsdateien werden aus Sicherheitsgründen nicht in die Versionskontrolle eingecheckt.
 
 ## 2. Installation mit externem Datenbank-Server
 

@@ -1,0 +1,8 @@
+# SSL certificates (these should not be committed)
+certs/*.crt
+certs/*.key
+certs/*.pem
+certs/*.p12
+
+# Keep the directory structure
+!certs/.gitkeep

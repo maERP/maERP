@@ -22,7 +22,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace maERP.Server.Controllers.Api.V1;
 
 [ApiController]
-[Authorize]
+[Authorize(Roles = "Superadmin")]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/superadmin")]
 public class SuperadminController(IMediator mediator) : ControllerBase
@@ -36,7 +36,6 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="orderBy">Order by clause</param>
     /// <returns>Paginated list of tenants</returns>
     [HttpGet("tenants")]
-    [Authorize(Roles = "Superadmin")]
     public async Task<ActionResult<PaginatedResult<TenantListDto>>> GetTenants(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         if (string.IsNullOrEmpty(orderBy))
@@ -54,7 +53,6 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="id">Tenant ID</param>
     /// <returns>Tenant details</returns>
     [HttpGet("tenants/{id:guid}")]
-    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TenantDetailDto>> GetTenantDetails(Guid id)
@@ -69,7 +67,6 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="tenantCreateCommand">Tenant creation data</param>
     /// <returns>Created tenant ID</returns>
     [HttpPost("tenants")]
-    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Result<int>>> CreateTenant(SuperadminCreateCommand tenantCreateCommand)
@@ -85,7 +82,6 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="tenantUpdateCommand">Tenant update data</param>
     /// <returns>Updated tenant ID</returns>
     [HttpPut("tenants/{id:guid}")]
-    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -103,7 +99,6 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="id">Tenant ID</param>
     /// <returns>No content if successful</returns>
     [HttpDelete("tenants/{id:guid}")]
-    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -229,7 +224,6 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="id">User ID</param>
     /// <returns>List of tenant assignments for the user</returns>
     [HttpGet("users/{id}/tenants")]
-    [Authorize(Roles = "Superadmin,Admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -251,7 +245,6 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="command">Assignment command</param>
     /// <returns>Assignment ID</returns>
     [HttpPost("users/{id}/tenants")]
-    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -269,7 +262,6 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="tenantId">Tenant ID</param>
     /// <returns>No content if successful</returns>
     [HttpDelete("users/{id}/tenants/{tenantId}")]
-    [Authorize(Roles = "Superadmin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

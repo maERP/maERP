@@ -1,6 +1,20 @@
 name: maerp-mssql
 
 services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - maerp.server
+      - maerp.browser
+    networks:
+      - backend
+
   maerp.server:
     image: ${DOCKER_REGISTRY-}maerpserver
     build:
@@ -9,9 +23,9 @@ services:
     environment:
       - DatabaseConfig__Provider=MSSQL
       - DatabaseConfig__ConnectionString=Server=mssql;Database=maerp_01;User Id=maerp;Password=maerp123!;TrustServerCertificate=True;
-    ports:
-      - 8443:443
-      - 8080:80
+      - ASPNETCORE_URLS=http://+:80
+    expose:
+      - "80"
     depends_on:
       mssql:
         condition: service_healthy
@@ -26,10 +40,10 @@ services:
       context: .
       dockerfile: src/maERP.UI.Browser/Dockerfile
     environment:
-      - SERVER_URL=https://maerp.server:443
-    ports:
-      - 8444:443
-      - 8081:80
+      - SERVER_URL=http://maerp.server:80
+      - ASPNETCORE_URLS=http://+:80
+    expose:
+      - "80"
     depends_on:
       - maerp.server
     networks:
