@@ -104,9 +104,15 @@ public class TenantMiddleware
             }
             else
             {
-                context.Response.StatusCode = 401;
-                await context.Response.WriteAsync("X-Tenant-Id header is required for this request");
-                return;
+                // Check if this is a superadmin endpoint - they don't require tenant headers
+                var isSuperadminEndpoint = path != null && path.Contains("/superadmin");
+                if (!isSuperadminEndpoint)
+                {
+                    context.Response.StatusCode = 401;
+                    await context.Response.WriteAsync("X-Tenant-Id header is required for this request");
+                    return;
+                }
+                // For superadmin endpoints, skip tenant validation but continue to authorization
             }
         }
 

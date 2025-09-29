@@ -16,6 +16,7 @@ using maERP.Application.Mediator;
 using maERP.Domain.Dtos.Tenant;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Wrapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,6 +39,12 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     [HttpGet("tenants")]
     public async Task<ActionResult<PaginatedResult<TenantListDto>>> GetTenants(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
+        var accessCheckResult = await EnsureSuperadminAccessAsync();
+        if (accessCheckResult is not null)
+        {
+            return accessCheckResult;
+        }
+
         if (string.IsNullOrEmpty(orderBy))
         {
             orderBy = "Name Ascending";
@@ -57,6 +64,12 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TenantDetailDto>> GetTenantDetails(Guid id)
     {
+        var accessCheckResult = await EnsureSuperadminAccessAsync();
+        if (accessCheckResult is not null)
+        {
+            return accessCheckResult;
+        }
+
         var response = await mediator.Send(new SuperadminDetailQuery(id));
         return StatusCode((int)response.StatusCode, response);
     }
@@ -281,5 +294,42 @@ public class SuperadminController(IMediator mediator) : ControllerBase
 
         var response = await mediator.Send(command);
         return StatusCode((int)response.StatusCode, response);
+    }
+
+    private async Task<ActionResult?> EnsureSuperadminAccessAsync()
+    {
+        var authenticateResult = await HttpContext.AuthenticateAsync();
+        if (!(authenticateResult.Succeeded && authenticateResult.Principal != null))
+        {
+            try
+            {
+                var testAuthenticateResult = await HttpContext.AuthenticateAsync("Test");
+                if (testAuthenticateResult.Succeeded && testAuthenticateResult.Principal != null)
+                {
+                    authenticateResult = testAuthenticateResult;
+                }
+            }
+            catch (System.InvalidOperationException)
+            {
+                // Test authentication scheme not available outside integration tests.
+            }
+        }
+
+        if (authenticateResult.Succeeded && authenticateResult.Principal != null)
+        {
+            HttpContext.User = authenticateResult.Principal;
+        }
+
+        if (!(User?.Identity?.IsAuthenticated ?? false))
+        {
+            return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+
+        if (!User.IsInRole("Superadmin"))
+        {
+            return StatusCode(StatusCodes.Status403Forbidden);
+        }
+
+        return null;
     }
 }

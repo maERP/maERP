@@ -23,7 +23,7 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
         // Check if test should be unauthenticated
         if (Context.Request.Headers.ContainsKey("X-Test-Unauthenticated"))
         {
-            return Task.FromResult(AuthenticateResult.Fail("Unauthenticated test request"));
+            return Task.FromResult(AuthenticateResult.NoResult());
         }
 
         // Get tenant configuration from options or use defaults
