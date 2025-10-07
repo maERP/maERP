@@ -4,10 +4,13 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-ENV MAERP_SERVER_BASE_URL "https://localhost:8080"
+ENV MAERP_SERVER_BASE_URL "https://www.maerp.de/"
 ENV MAERP_REMOTE_LOG_URL true
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+# Install Python and wasm-tools workload for WebAssembly support with native build
+RUN apt-get update && apt-get install -y python3 && ln -s /usr/bin/python3 /usr/bin/python
+RUN dotnet workload install wasm-tools
 WORKDIR /src
 COPY ["src/maERP.Domain/maERP.Domain.csproj", "maERP.Domain/"]
 COPY ["src/maERP.UI/maERP.UI.csproj", "maERP.UI/"]
@@ -19,7 +22,7 @@ RUN dotnet build "maERP.UI.Browser.csproj" -c Release -o /app/build
 
 FROM build AS publish
 # Setze Umgebungsvariable für die Server-URL während des Builds
-ARG MAERP_SERVER_BASE_URL="https://api.maerp.de"
+ARG MAERP_SERVER_BASE_URL="https://www.maerp.de/"
 ENV MAERP_SERVER_BASE_URL=${MAERP_SERVER_BASE_URL}
 RUN dotnet publish "maERP.UI.Browser.csproj" -c Release -o /app/publish /p:UseAppHost=false
 

@@ -38,7 +38,10 @@ services:
     build:
       context: .
       dockerfile: src/maERP.UI.Browser/Dockerfile
+      args:
+        - MAERP_SERVER_BASE_URL=https://localhost:8443
     environment:
+      - MAERP_SERVER_BASE_URL=https://localhost:8443
       - SERVER_URL=http://maerp.server:80
       - ASPNETCORE_URLS=http://+:80
     expose:
@@ -65,11 +68,15 @@ services:
       POSTGRES_HOST: postgres:5432
     ports:
       - "12345:12345"
+    volumes:
+      - ./grafana-agent/agent.yaml:/etc/agent-config/agent.yaml:ro
+      - grafana-agent-wal:/tmp/agent/wal
     networks:
       - backend
 
 volumes:
   maerp-data:
+  grafana-agent-wal:
 
 networks:
   backend:
