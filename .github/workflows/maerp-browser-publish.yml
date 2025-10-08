@@ -20,6 +20,9 @@ jobs:
         with:
           dotnet-version: 9.x
 
+      - name: Install WASM workload
+        run: dotnet workload install wasm-tools
+
       - name: Restore dependencies
         run: dotnet restore src/maERP.UI.Browser
 
