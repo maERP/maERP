@@ -73,4 +73,4 @@ jobs:
           local_path: './publish/*'
           remote_path: '/wwwroot/'
           sftp_only: true
-          delete_remote_files: false
+          delete_remote_files: true

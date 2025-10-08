@@ -3,10 +3,12 @@
     <TargetFramework>net9.0-browser</TargetFramework>
     <OutputType>Exe</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WasmBuildNative>true</WasmBuildNative>
+    <RunAOTCompilation>false</RunAOTCompilation>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Browser" Version="11.3.6" />
+    <PackageReference Include="Avalonia.Browser" Version="11.3.7" />
     <PackageReference Include="System.Private.Uri" Version="4.3.2" />
   </ItemGroup>
 

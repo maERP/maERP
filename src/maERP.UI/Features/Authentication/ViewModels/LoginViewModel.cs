@@ -30,7 +30,7 @@ public partial class LoginViewModel : ViewModelBase
     [ObservableProperty]
     [Required(ErrorMessage = "Server-URL ist erforderlich")]
     [Url(ErrorMessage = "Ungültige Server-URL")]
-    private string serverUrl = "https://localhost:8443";
+    private string serverUrl = string.Empty;
 
     [ObservableProperty]
     private bool isLoading;
@@ -48,6 +48,9 @@ public partial class LoginViewModel : ViewModelBase
     {
         _authenticationService = authenticationService;
         _settingsService = settingsService;
+
+        // Set default server URL based on environment
+        ServerUrl = Debugger.IsAttached ? "https://localhost:8443" : "https://www.maerp.de/";
 
         if (Debugger.IsAttached)
         {

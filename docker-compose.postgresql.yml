@@ -4,8 +4,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "443:443"
-      - "80:80"
+      - "8443:443"
+      - "8444:444"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/certs:/etc/nginx/certs:ro
@@ -16,7 +16,7 @@ services:
       - backend
 
   maerp.server:
-    image: ${DOCKER_REGISTRY-}maerpserver
+    image: ${DOCKER_REGISTRY-}maerp/server
     build:
       context: .
       dockerfile: src/maERP.Server/Dockerfile
@@ -35,7 +35,7 @@ services:
       - backend
 
   maerp.browser:
-    image: ${DOCKER_REGISTRY-}maerpbrowser
+    image: ${DOCKER_REGISTRY-}maerp/web
     build:
       context: .
       dockerfile: src/maERP.UI.Browser/Dockerfile
