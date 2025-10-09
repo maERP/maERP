@@ -5,6 +5,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <WasmBuildNative>true</WasmBuildNative>
     <RunAOTCompilation>false</RunAOTCompilation>
+    <WasmNativeStrip>false</WasmNativeStrip>
+    <ShouldIncludeNativeSkiaSharp>false</ShouldIncludeNativeSkiaSharp>
+    <ShouldIncludeNativeHarfBuzzSharp>false</ShouldIncludeNativeHarfBuzzSharp>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,5 +17,25 @@
 
   <ItemGroup>
     <ProjectReference Include="..\maERP.UI\maERP.UI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <NativeFileReference Include="$(SkiaSharpStaticLibraryPath)\3.1.34\st\*.a"
+                         Condition="'$(WasmEnableThreads)' != 'True' and '$(WasmEnableSIMD)' != 'True'" />
+    <NativeFileReference Include="$(SkiaSharpStaticLibraryPath)\3.1.34\simd,st\*.a"
+                         Condition="'$(WasmEnableThreads)' != 'True' and '$(WasmEnableSIMD)' == 'True'" />
+    <NativeFileReference Include="$(SkiaSharpStaticLibraryPath)\3.1.34\mt\*.a"
+                         Condition="'$(WasmEnableThreads)' == 'True' and '$(WasmEnableSIMD)' != 'True'" />
+    <NativeFileReference Include="$(SkiaSharpStaticLibraryPath)\3.1.34\simd,mt\*.a"
+                         Condition="'$(WasmEnableThreads)' == 'True' and '$(WasmEnableSIMD)' == 'True'" />
+
+    <NativeFileReference Include="$(HarfBuzzSharpStaticLibraryPath)\3.1.34\st\*.a"
+                         Condition="'$(WasmEnableThreads)' != 'True' and '$(WasmEnableSIMD)' != 'True'" />
+    <NativeFileReference Include="$(HarfBuzzSharpStaticLibraryPath)\3.1.34\st,simd\*.a"
+                         Condition="'$(WasmEnableThreads)' != 'True' and '$(WasmEnableSIMD)' == 'True'" />
+    <NativeFileReference Include="$(HarfBuzzSharpStaticLibraryPath)\3.1.34\mt\*.a"
+                         Condition="'$(WasmEnableThreads)' == 'True' and '$(WasmEnableSIMD)' != 'True'" />
+    <NativeFileReference Include="$(HarfBuzzSharpStaticLibraryPath)\3.1.34\mt,simd\*.a"
+                         Condition="'$(WasmEnableThreads)' == 'True' and '$(WasmEnableSIMD)' == 'True'" />
   </ItemGroup>
 </Project>

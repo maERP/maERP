@@ -10,7 +10,12 @@ internal sealed partial class Program
 {
     private static Task Main(string[] args) => BuildAvaloniaApp()
             .WithInterFont()
-            .StartBrowserAppAsync("out");
+            .StartBrowserAppAsync(
+                "out",
+                new BrowserPlatformOptions
+                {
+                    RenderingMode = new[] { BrowserRenderingMode.WebGL1 }
+                });
 
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>();
