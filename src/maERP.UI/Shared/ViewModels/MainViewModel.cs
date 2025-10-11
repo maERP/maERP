@@ -102,6 +102,10 @@ public partial class MainViewModel : ViewModelBase
         LoginViewModel = loginViewModel;
         RegistrationViewModel = registrationViewModel;
 
+        // Set initial view to prevent null reference when UI renders before InitializeAsync completes
+        // This ensures the login view is displayed immediately, especially important for Release builds
+        CurrentView = LoginViewModel;
+
         LoginViewModel.OnLoginSuccessful += OnLoginSuccessful;
         LoginViewModel.OnShowRegistration += OnShowRegistration;
         RegistrationViewModel.OnRegistrationSuccessful += OnRegistrationSuccessful;

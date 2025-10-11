@@ -8,6 +8,8 @@
     <WasmNativeStrip>false</WasmNativeStrip>
     <ShouldIncludeNativeSkiaSharp>false</ShouldIncludeNativeSkiaSharp>
     <ShouldIncludeNativeHarfBuzzSharp>false</ShouldIncludeNativeHarfBuzzSharp>
+    <!-- Disable trimming to prevent issues with Avalonia DataTemplates and Reflection -->
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>
