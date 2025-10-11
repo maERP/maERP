@@ -1,11 +1,6 @@
 name: Release maERP to Windows Store
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'src/maERP.UI.Desktop/**'
-      - 'src/maERP.UI/**'
   workflow_dispatch:
 
 jobs:

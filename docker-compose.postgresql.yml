@@ -28,12 +28,10 @@ services:
       context: .
       dockerfile: src/maERP.UI.Browser/Dockerfile
     environment:
-      - SERVER_URL=http://maerp.server:8443
-      - MAERP_SERVER_BASE_URL=http://localhost:8443
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8444
+      - MAERP_SERVER_BASE_URL=http://localhost:8443
     ports:
-      - "8444:8444"
+      - "8444:80"
     depends_on:
       - maerp.server
     networks:

@@ -1,14 +1,6 @@
 name: maERP.Browser SFTP Deploy
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'src/maERP.Application/**'
-      - 'src/maERP.Domain/**'
-      - 'src/maERP.UI/**'
-      - 'src/maERP.UI.Browser/**'
-
   workflow_dispatch:
 
 env:

@@ -73,76 +73,13 @@ docker-compose -f docker-compose.mssql.yml -f docker-compose.mssql.override.yml 
 ```
 
 ### Zugriff auf die Services
-- **maERP Server API**: `https://localhost:443` (Swagger: `/swagger`)
-- **maERP Web UI**: `https://localhost:443`
+- **maERP Server API**: `http://localhost:8443` (Swagger: `/swagger`)
+- **maERP Web UI**: `http://localhost:8444`
 - **Grafana Agent**: `http://localhost:12345`
-- **Datenbank-Ports** (Development):
-  - MariaDB: `localhost:3307`
-  - PostgreSQL: `localhost:5433`
-  - MSSQL: `localhost:1434`
-
-### SSL-Zertifikate konfigurieren
-
-maERP läuft standardmäßig hinter einem nginx Reverse Proxy mit SSL-Verschlüsselung. Beim ersten Start wird automatisch ein selbstsigniertes Zertifikat für die Entwicklung generiert.
-
-#### Eigene SSL-Zertifikate verwenden
-
-Für Produktionsumgebungen sollten Sie Ihre eigenen SSL-Zertifikate verwenden:
-
-1. **Zertifikat und privaten Schlüssel bereitstellen:**
-   ```bash
-   # Ihre Zertifikatsdateien in den nginx/certs Ordner kopieren
-   cp your-certificate.crt nginx/certs/server.crt
-   cp your-private-key.key nginx/certs/server.key
-   ```
-
-2. **Berechtigungen setzen:**
-   ```bash
-   chmod 600 nginx/certs/server.key
-   chmod 644 nginx/certs/server.crt
-   ```
-
-3. **Container neu starten:**
-   ```bash
-   docker-compose restart nginx
-   ```
-
-#### Neue Standard-Zertifikate generieren
-
-Falls Sie die Standard-Zertifikate neu generieren möchten:
-
-```bash
-# Alte Zertifikate löschen
-rm nginx/certs/server.crt nginx/certs/server.key
-
-# Neue Zertifikate generieren
-./nginx/generate-certs.sh
-```
-
-#### Let's Encrypt Zertifikate verwenden
-
-Für automatische SSL-Zertifikate mit Let's Encrypt können Sie Certbot verwenden:
-
-```bash
-# Certbot installieren (Ubuntu/Debian)
-sudo apt-get install certbot
-
-# Zertifikat anfordern
-sudo certbot certonly --standalone -d yourdomain.com
-
-# Zertifikat nach nginx/certs kopieren
-sudo cp /etc/letsencrypt/live/yourdomain.com/fullchain.pem nginx/certs/server.crt
-sudo cp /etc/letsencrypt/live/yourdomain.com/privkey.pem nginx/certs/server.key
-
-# Berechtigungen anpassen
-sudo chmod 644 nginx/certs/server.crt
-sudo chmod 600 nginx/certs/server.key
-
-# Container neu starten
-docker-compose restart nginx
-```
-
-**Hinweis:** Die Zertifikatsdateien werden aus Sicherheitsgründen nicht in die Versionskontrolle eingecheckt.
+- **Datenbank-Ports** (wenn in docker-compose aktiviert):
+  - MariaDB: `localhost:3306`
+  - PostgreSQL: `localhost:5432`
+  - MSSQL: `localhost:1433`
 
 ## 2. Installation mit externem Datenbank-Server
 
@@ -230,9 +167,9 @@ services:
     environment:
       - DatabaseConfig__Provider=Sqlite
       - DatabaseConfig__ConnectionString=Data Source=/app/data/maerp.db
+      - HTTP_PORTS=8443
     ports:
-      - "8080:80"
-      - "8443:443"
+      - "8443:8443"
     volumes:
       - ./data:/app/data
     restart: unless-stopped
@@ -241,10 +178,9 @@ services:
     image: maerp/browser:latest
     container_name: maerp-browser
     environment:
-      - SERVER_URL=https://maerp.server:443
+      - MAERP_SERVER_BASE_URL=http://localhost:8443
     ports:
-      - "8081:80"
-      - "8444:443"
+      - "8444:80"
     depends_on:
       - maerp.server
     restart: unless-stopped
@@ -261,9 +197,9 @@ services:
     environment:
       - DatabaseConfig__Provider=PostgreSQL
       - DatabaseConfig__ConnectionString=Host=postgresql;Port=5432;Database=maerp_01;Username=maerp;Password=maerp;
+      - HTTP_PORTS=8443
     ports:
-      - "8080:80"
-      - "8443:443"
+      - "8443:8443"
     depends_on:
       postgresql:
         condition: service_healthy
@@ -273,10 +209,9 @@ services:
     image: maerp/browser:latest
     container_name: maerp-browser
     environment:
-      - SERVER_URL=https://maerp.server:443
+      - MAERP_SERVER_BASE_URL=http://localhost:8443
     ports:
-      - "8081:80"
-      - "8444:443"
+      - "8444:80"
     depends_on:
       - maerp.server
     restart: unless-stopped
@@ -307,13 +242,13 @@ services:
 #### Schritt 4: Zugriff konfigurieren
 
 **Lokaler Zugriff:**
-- Server-API: `http://[NAS-IP]:8080` oder `https://[NAS-IP]:8443`
-- Web-UI: `http://[NAS-IP]:8081` oder `https://[NAS-IP]:8444`
+- Server-API: `http://[NAS-IP]:8443`
+- Web-UI: `http://[NAS-IP]:8444`
 
 **Externe Zugriffe (optional):**
 1. DSM Systemsteuerung → **Externe Zugriffe** → **Router-Konfiguration**
-2. Ports weiterleiten: 8080, 8443 (Server), 8081, 8444 (Web-UI)
-3. Oder Reverse Proxy in DSM konfigurieren
+2. Ports weiterleiten: 8443 (Server), 8444 (Web-UI)
+3. Oder Reverse Proxy in DSM konfigurieren für SSL/HTTPS-Zugriff
 
 ### Installation über SSH (Fortgeschrittene)
 
@@ -338,9 +273,9 @@ services:
     environment:
       - DatabaseConfig__Provider=Sqlite
       - DatabaseConfig__ConnectionString=Data Source=/app/data/maerp.db
+      - HTTP_PORTS=8443
     ports:
-      - "8080:80"
-      - "8443:443"
+      - "8443:8443"
     volumes:
       - ./data:/app/data
     restart: unless-stopped
@@ -349,10 +284,9 @@ services:
     image: maerp/browser:latest
     container_name: maerp-browser
     environment:
-      - SERVER_URL=https://maerp.server:443
+      - MAERP_SERVER_BASE_URL=http://localhost:8443
     ports:
-      - "8081:80"
-      - "8444:443"
+      - "8444:80"
     depends_on:
       - maerp.server
     restart: unless-stopped
@@ -373,7 +307,7 @@ sudo docker-compose ps
 - **Ressourcen**: Bei mehreren Containern CPU/RAM-Limits setzen
 
 ### Troubleshooting
-- **Port-Konflikte**: Andere Ports verwenden (z.B. 9080 statt 8080)
+- **Port-Konflikte**: Andere Ports verwenden (z.B. 9443 statt 8443, 9444 statt 8444)
 - **Berechtigungen**: Ordner-Berechtigungen für Docker-Volumes prüfen
 - **Logs**: Container Manager → Container → **Details** → **Terminal** → **Logs**
 
