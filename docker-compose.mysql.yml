@@ -1,20 +1,6 @@
 name: maerp-mariadb
 
 services:
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "8443:443"
-      - "8444:444"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
-    depends_on:
-      - maerp.server
-      - maerp.browser
-    networks:
-      - backend
-
   maerp.server:
     image: ${DOCKER_REGISTRY-}maerp/server
     build:
@@ -23,9 +9,11 @@ services:
     environment:
       - DatabaseConfig__Provider=MySQL
       - DatabaseConfig__ConnectionString=Server=mariadb;Port=3306;Database=maerp_01;Uid=maerp;Pwd=maerp;
-      - ASPNETCORE_URLS=http://+:80
-    expose:
-      - "80"
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8443
+      - Logging__LogLevel__Default=Warning
+    ports:
+      - "8443:8443"
     depends_on:
       mariadb:
         condition: service_healthy
@@ -40,10 +28,12 @@ services:
       context: .
       dockerfile: src/maERP.UI.Browser/Dockerfile
     environment:
-      - SERVER_URL=http://maerp.server:80
-      - ASPNETCORE_URLS=http://+:80
-    expose:
-      - "80"
+      - SERVER_URL=http://maerp.server:8443
+      - MAERP_SERVER_BASE_URL=http://localhost:8443
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8444
+    ports:
+      - "8444:8444"
     depends_on:
       - maerp.server
     networks:
@@ -60,6 +50,7 @@ services:
       - "3306:3306"
     volumes:
       - maerp-mariadb-data:/var/lib/mysql
+      - ./backups/mariadb:/backups
     networks:
       - backend
     healthcheck:

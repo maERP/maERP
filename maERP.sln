@@ -32,15 +32,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projektmappenelemente", "Pr
 		AGENTS.md = AGENTS.md
 		.github\workflows\maerp-browser-maerp_de-deploy.yml = .github\workflows\maerp-browser-maerp_de-deploy.yml
 		docker-compose.dcproj = docker-compose.dcproj
-		docker-compose.override.yml = docker-compose.override.yml
 		docker-compose.yml = docker-compose.yml
 		create-migrations.ps1 = create-migrations.ps1
 		create-migrations.sh = create-migrations.sh
-		docker-compose.mssql.override.yml = docker-compose.mssql.override.yml
 		docker-compose.mssql.yml = docker-compose.mssql.yml
-		docker-compose.mysql.override.yml = docker-compose.mysql.override.yml
 		docker-compose.mysql.yml = docker-compose.mysql.yml
-		docker-compose.postgresql.override.yml = docker-compose.postgresql.override.yml
 		docker-compose.postgresql.yml = docker-compose.postgresql.yml
 		nginx\nginx.conf = nginx\nginx.conf
 	EndProjectSection

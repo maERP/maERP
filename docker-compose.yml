@@ -1,31 +1,19 @@
 name: maerp
 
 services:
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "8443:443"
-      - "8444:444"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
-    depends_on:
-      - maerp.server
-      - maerp.browser
-    networks:
-      - backend
-
   maerp.server:
     image: ${DOCKER_REGISTRY-}maerp/server
     build:
       context: .
       dockerfile: src/maERP.Server/Dockerfile
     environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8443
       - DatabaseConfig__Provider=Sqlite
       - DatabaseConfig__ConnectionString=Data Source=/app/data/maerp.db
-      - ASPNETCORE_URLS=http://+:80
-    expose:
-      - "80"
+      - Logging__LogLevel__Default=Warning
+    ports:
+      - "8443:8443"
     volumes:
       - maerp-data:/app/data
     depends_on:
@@ -38,14 +26,12 @@ services:
     build:
       context: .
       dockerfile: src/maERP.UI.Browser/Dockerfile
-      args:
-        - MAERP_SERVER_BASE_URL=https://localhost:8443
     environment:
-      - MAERP_SERVER_BASE_URL=https://localhost:8443
-      - SERVER_URL=http://maerp.server:80
-      - ASPNETCORE_URLS=http://+:80
-    expose:
-      - "80"
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8444
+      - MAERP_SERVER_BASE_URL=http://localhost:8443
+    ports:
+      - "8444:8444"
     depends_on:
       - maerp.server
     networks:

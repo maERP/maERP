@@ -45,11 +45,8 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore src/maERP.UI.Browser/maERP.UI.Browser.csproj --verbosity minimal
 
-      - name: Build maERP.UI.Browser
-        run: dotnet build src/maERP.UI.Browser/maERP.UI.Browser.csproj --configuration Release --no-restore --verbosity minimal
-
       - name: Publish maERP.UI.Browser
-        run: dotnet publish src/maERP.UI.Browser/maERP.UI.Browser.csproj --configuration Release --output ./publish --no-build --verbosity minimal
+        run: dotnet publish src/maERP.UI.Browser/maERP.UI.Browser.csproj --configuration Release --output ./publish --no-restore --verbosity minimal
 
       - name: List published files
         run: ls -la ./publish/
