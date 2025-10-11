@@ -235,7 +235,7 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 });
 
 // Display formatted startup message
-var urls = app.Urls.Any() ? app.Urls : new[] { "http://localhost:8080", "https://localhost:8443" };
+var urls = app.Urls.Any() ? app.Urls : new[] { "http://localhost:8080" };
 var environment = app.Environment.EnvironmentName;
 
 Console.WriteLine();
@@ -248,7 +248,8 @@ Console.WriteLine("Server is listening on:");
 foreach (var url in urls)
 {
     var uri = new Uri(url);
-    Console.WriteLine($"  • {uri.Scheme.ToUpper()}: {uri.Scheme}://{uri.Host}:{uri.Port}");
+    var protocol = uri.Scheme.ToUpper();
+    Console.WriteLine($"  • {protocol}: {url}");
 }
 
 Console.WriteLine();

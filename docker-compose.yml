@@ -8,7 +8,7 @@ services:
       dockerfile: src/maERP.Server/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8443
+      - HTTP_PORTS=8443
       - DatabaseConfig__Provider=Sqlite
       - DatabaseConfig__ConnectionString=Data Source=/app/data/maerp.db
       - Logging__LogLevel__Default=Warning
@@ -28,10 +28,9 @@ services:
       dockerfile: src/maERP.UI.Browser/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8444
       - MAERP_SERVER_BASE_URL=http://localhost:8443
     ports:
-      - "8444:8444"
+      - "8444:80"
     depends_on:
       - maerp.server
     networks:

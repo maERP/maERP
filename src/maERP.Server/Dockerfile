@@ -2,8 +2,7 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 8443
 
 ENV DatabaseConfig__Provider=Sqlite
 ENV DatabaseConfig__ConnectionString=Data Source=maerp.db
@@ -34,6 +33,6 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 HEALTHCHECK --interval=30s --timeout=3s \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8443/health || exit 1
 
 ENTRYPOINT ["dotnet", "maERP.Server.dll"]

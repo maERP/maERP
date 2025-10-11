@@ -10,7 +10,7 @@ services:
       - DatabaseConfig__Provider=MSSQL
       - DatabaseConfig__ConnectionString=Server=mssql;Database=maerp_01;User Id=maerp;Password=maerp123!;TrustServerCertificate=True;
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8443
+      - HTTP_PORTS=8443
       - Logging__LogLevel__Default=Warning
     ports:
       - "8443:8443"

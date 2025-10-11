@@ -10,7 +10,7 @@ services:
       - DatabaseConfig__Provider=MySQL
       - DatabaseConfig__ConnectionString=Server=mariadb;Port=3306;Database=maerp_01;Uid=maerp;Pwd=maerp;
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8443
+      - HTTP_PORTS=8443
       - Logging__LogLevel__Default=Warning
     ports:
       - "8443:8443"
