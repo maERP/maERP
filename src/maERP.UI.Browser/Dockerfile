@@ -27,6 +27,8 @@ ENV MAERP_SERVER_BASE_URL=${MAERP_SERVER_BASE_URL}
 RUN dotnet publish "maERP.UI.Browser.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM nginx:alpine AS final
+# Install nginx-module-headers-more to allow removing Server header
+RUN apk add --no-cache nginx-mod-http-headers-more
 WORKDIR /usr/share/nginx/html
 COPY --from=publish /app/publish/wwwroot .
 # Kopiere eine angepasste nginx.conf, die die Umgebungsvariable ins Frontend übergibt

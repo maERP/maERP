@@ -39,5 +39,7 @@
                          Condition="'$(WasmEnableThreads)' == 'True' and '$(WasmEnableSIMD)' != 'True'" />
     <NativeFileReference Include="$(HarfBuzzSharpStaticLibraryPath)\3.1.34\mt,simd\*.a"
                          Condition="'$(WasmEnableThreads)' == 'True' and '$(WasmEnableSIMD)' == 'True'" />
+    <NativeFileReference Remove="..\..\..\..\..\.nuget\packages\skiasharp.nativeassets.webassembly\2.88.9\build\netstandard1.0\libSkiaSharp.a\3.1.34\simd,st\**" />
+    <NativeFileReference Remove="..\..\..\..\..\.nuget\packages\harfbuzzsharp.nativeassets.webassembly\8.3.1.1\buildTransitive\netstandard1.0\libHarfBuzzSharp.a\3.1.34\st,simd\**" />
   </ItemGroup>
 </Project>
