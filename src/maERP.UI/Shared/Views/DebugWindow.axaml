@@ -45,52 +45,25 @@
     </Border>
 
     <!-- Debug Log Content -->
-    <Border Grid.Row="1" 
+    <Border Grid.Row="1"
             Background="{DynamicResource LayerFillColorDefaultBrush}"
             BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
             BorderThickness="1,0,1,0">
-      <ScrollViewer x:Name="LogScrollViewer"
-                    VerticalScrollBarVisibility="Auto"
-                    HorizontalScrollBarVisibility="Auto"
-                    Padding="8">
-        <ItemsControl ItemsSource="{Binding DebugLogs}">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <Border Background="{Binding LevelBrush}"
-                      BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-                      BorderThickness="1"
-                      CornerRadius="4"
-                      Margin="0,2"
-                      Padding="8,4">
-                <Grid ColumnDefinitions="Auto,Auto,*">
-                  <SelectableTextBlock Grid.Column="0"
-                                       Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss.fff}'}"
-                                       FontFamily="Consolas,Monaco,monospace"
-                                       FontSize="11"
-                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                       Margin="0,0,8,0"/>
-
-                  <SelectableTextBlock Grid.Column="1"
-                                       Text="{Binding Level}"
-                                       FontFamily="Consolas,Monaco,monospace"
-                                       FontSize="11"
-                                       FontWeight="SemiBold"
-                                       Foreground="{Binding LevelForeground}"
-                                       MinWidth="50"
-                                       Margin="0,0,8,0"/>
-
-                  <SelectableTextBlock Grid.Column="2"
-                                       Text="{Binding Message}"
-                                       FontFamily="Consolas,Monaco,monospace"
-                                       FontSize="11"
-                                       TextWrapping="Wrap"
-                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
-                </Grid>
-              </Border>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-      </ScrollViewer>
+      <TextBox x:Name="LogTextBox"
+               Text="{Binding FormattedLogs}"
+               IsReadOnly="True"
+               AcceptsReturn="True"
+               TextWrapping="Wrap"
+               FontFamily="Consolas,Monaco,monospace"
+               FontSize="11"
+               Background="{DynamicResource LayerFillColorDefaultBrush}"
+               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+               BorderThickness="0"
+               Padding="8"
+               VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch"
+               ScrollViewer.VerticalScrollBarVisibility="Auto"
+               ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
     </Border>
 
     <!-- Footer -->

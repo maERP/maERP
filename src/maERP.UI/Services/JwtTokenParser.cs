@@ -64,6 +64,54 @@ public static class JwtTokenParser
         return null;
     }
 
+    public static void DebugTokenClaims(string token, Action<string> logAction)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            logAction("========================================");
+            logAction("🔍 JWT TOKEN DEBUG - ALL CLAIMS:");
+            logAction("========================================");
+
+            foreach (var claim in jwtToken.Claims)
+            {
+                // Truncate long values for readability
+                var value = claim.Value.Length > 100 ? claim.Value.Substring(0, 100) + "..." : claim.Value;
+                logAction($"  {claim.Type}: {value}");
+            }
+
+            logAction("========================================");
+            logAction("🎭 ROLES EXTRACTED:");
+            logAction("========================================");
+
+            var roles = jwtToken.Claims.Where(c =>
+                c.Type == System.Security.Claims.ClaimTypes.Role ||
+                c.Type == "role" ||
+                c.Type == "roles"
+            ).Select(c => c.Value).ToList();
+
+            if (roles.Any())
+            {
+                foreach (var role in roles)
+                {
+                    logAction($"  ✅ Role: {role}");
+                }
+            }
+            else
+            {
+                logAction("  ❌ NO ROLES FOUND IN TOKEN!");
+            }
+
+            logAction("========================================");
+        }
+        catch (Exception ex)
+        {
+            logAction($"❌ Error parsing JWT token: {ex.Message}");
+        }
+    }
+
     private class TenantInfo
     {
         public Guid Id { get; set; }

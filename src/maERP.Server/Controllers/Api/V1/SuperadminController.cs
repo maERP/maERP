@@ -298,7 +298,14 @@ public class SuperadminController(IMediator mediator) : ControllerBase
 
     private async Task<ActionResult?> EnsureSuperadminAccessAsync()
     {
+        var logger = HttpContext.RequestServices.GetRequiredService<ILogger<SuperadminController>>();
+
+        logger.LogInformation("🔍 EnsureSuperadminAccessAsync - Starting authentication check");
+        logger.LogInformation($"📋 Authorization header present: {HttpContext.Request.Headers.ContainsKey("Authorization")}");
+
         var authenticateResult = await HttpContext.AuthenticateAsync();
+        logger.LogInformation($"🔐 AuthenticateAsync result - Succeeded: {authenticateResult.Succeeded}, Principal: {authenticateResult.Principal != null}");
+
         if (!(authenticateResult.Succeeded && authenticateResult.Principal != null))
         {
             try
@@ -306,30 +313,38 @@ public class SuperadminController(IMediator mediator) : ControllerBase
                 var testAuthenticateResult = await HttpContext.AuthenticateAsync("Test");
                 if (testAuthenticateResult.Succeeded && testAuthenticateResult.Principal != null)
                 {
+                    logger.LogInformation("✅ Test authentication scheme succeeded");
                     authenticateResult = testAuthenticateResult;
                 }
             }
             catch (System.InvalidOperationException)
             {
-                // Test authentication scheme not available outside integration tests.
+                logger.LogInformation("ℹ️ Test authentication scheme not available (normal in production)");
             }
         }
 
         if (authenticateResult.Succeeded && authenticateResult.Principal != null)
         {
             HttpContext.User = authenticateResult.Principal;
+            logger.LogInformation($"👤 User set - Identity: {HttpContext.User.Identity?.Name}, IsAuthenticated: {HttpContext.User.Identity?.IsAuthenticated}");
         }
 
         if (!(User?.Identity?.IsAuthenticated ?? false))
         {
+            logger.LogWarning("❌ User is not authenticated - returning 401");
             return StatusCode(StatusCodes.Status401Unauthorized);
         }
 
+        var roles = User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(c => c.Value).ToList();
+        logger.LogInformation($"🎭 User roles: {string.Join(", ", roles)}");
+
         if (!User.IsInRole("Superadmin"))
         {
+            logger.LogWarning($"❌ User does not have Superadmin role - returning 403. Available roles: {string.Join(", ", roles)}");
             return StatusCode(StatusCodes.Status403Forbidden);
         }
 
+        logger.LogInformation("✅ Superadmin access granted");
         return null;
     }
 }

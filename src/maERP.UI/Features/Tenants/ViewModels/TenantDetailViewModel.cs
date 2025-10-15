@@ -61,7 +61,7 @@ public partial class TenantDetailViewModel : ViewModelBase
 
         try
         {
-            var result = await _httpService.GetAsync<TenantDetailDto>($"tenants/{TenantId}");
+            var result = await _httpService.GetAsync<TenantDetailDto>($"superadmin/tenants/{TenantId}");
 
             if (result == null)
             {
@@ -139,7 +139,7 @@ public partial class TenantDetailViewModel : ViewModelBase
             ErrorMessage = string.Empty;
 
             var payload = new TenantStatusUpdateDto { IsActive = isActive };
-            var result = await _httpService.PutAsync<TenantStatusUpdateDto, TenantDetailDto>($"tenants/{TenantId}/status", payload);
+            var result = await _httpService.PutAsync<TenantStatusUpdateDto, TenantDetailDto>($"superadmin/tenants/{TenantId}/status", payload);
 
             if (result == null)
             {

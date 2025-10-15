@@ -27,13 +27,13 @@ public class WooCommerceProductImportTask : IHostedService
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation("WooCommerceProductImportTask MainLoop start");
+                _logger.LogDebug("WooCommerceProductImportTask MainLoop start");
 
                 await MainLoop();
 
                 await Task.Delay(new TimeSpan(0, 0, 60)); // 5 second delay
 
-                _logger.LogInformation("WooCommerceProductImportTask MainLoop finished");
+                _logger.LogDebug("WooCommerceProductImportTask MainLoop finished");
             }
         });
 
@@ -61,7 +61,7 @@ public class WooCommerceProductImportTask : IHostedService
                 continue;
             }
 
-            _logger.LogInformation($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
+            _logger.LogDebug($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             salesChannel.Url += "/wp-json/wc/v3/";
 
@@ -78,7 +78,7 @@ public class WooCommerceProductImportTask : IHostedService
                     {
                         if (remoteProduct.sku == null || remoteProduct.sku.Length == 0)
                         {
-                            _logger.LogInformation($"Product {remoteProduct.name} has no SKU, skipping...");
+                            _logger.LogDebug($"Product {remoteProduct.name} has no SKU, skipping...");
                             continue;
                         }
 

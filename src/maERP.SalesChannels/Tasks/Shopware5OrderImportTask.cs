@@ -32,13 +32,13 @@ public class Shopware5OrderImportTask : IHostedService
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Shopware5OrderImportTask MainLoop start");
+                _logger.LogDebug("Shopware5OrderImportTask MainLoop start");
 
                 await MainLoop();
 
                 await Task.Delay(new TimeSpan(0, 0, 60)); // 60 second delay
 
-                _logger.LogInformation("Shopware5OrderImportTask MainLoop finished");
+                _logger.LogDebug("Shopware5OrderImportTask MainLoop finished");
             }
         }, cancellationToken);
 
@@ -68,11 +68,11 @@ public class Shopware5OrderImportTask : IHostedService
 
             if (salesChannel.ImportProducts && !salesChannel.InitialProductImportCompleted)
             {
-                _logger.LogInformation($"Initial Product Import not completed for {salesChannel.Name} (ID: {salesChannel.Id})");
+                _logger.LogDebug($"Initial Product Import not completed for {salesChannel.Name} (ID: {salesChannel.Id})");
                 continue;
             }
 
-            _logger.LogInformation($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
+            _logger.LogDebug($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             int requestStart = 0;
             int requestLimit = 100;
@@ -99,7 +99,7 @@ public class Shopware5OrderImportTask : IHostedService
                     {
                         string result = response.Content.ReadAsStringAsync().Result;
 
-                        _logger.LogInformation("Import Orders from {0} to {1}", requestStart, requestStart + requestLimit);
+                        _logger.LogDebug("Import Orders from {0} to {1}", requestStart, requestStart + requestLimit);
 
                         BaseListResponse<OrderResponse> remoteOrders = new();
 
@@ -121,11 +121,11 @@ public class Shopware5OrderImportTask : IHostedService
 
                         foreach (var remoteOrder in remoteOrders.data)
                         {
-                            _logger.LogInformation("Import Order {0}", remoteOrder.id.ToString());
+                            _logger.LogDebug("Import Order {0}", remoteOrder.id.ToString());
 
                             if (remoteOrder.orderStatusId == -1)
                             {
-                                _logger.LogInformation("Import Order {0} skip order because cancelled in sales channel", remoteOrder.id.ToString());
+                                _logger.LogDebug("Import Order {0} skip order because cancelled in sales channel", remoteOrder.id.ToString());
                                 continue;
                             }
 
@@ -224,7 +224,7 @@ public class Shopware5OrderImportTask : IHostedService
                                 _logger.LogError($"Import Order error: {response.StatusCode}");
                             }
 
-                            _logger.LogInformation("Import Order {0} finished", remoteOrder.id.ToString());
+                            _logger.LogDebug("Import Order {0} finished", remoteOrder.id.ToString());
                         }
 
                         response.Dispose();

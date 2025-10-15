@@ -175,24 +175,44 @@ app.UseCors();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Web}/{action=Index}/{id?}");
-
-if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
+// DEBUG: Check BEFORE UseAuthentication
+app.Use(async (context, next) =>
 {
-    if (app.Environment.IsDevelopment())
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    logger.LogDebug($"🔍 DEBUG BEFORE UseAuthentication:");
+    logger.LogDebug($"   Path: {context.Request.Path}");
+    logger.LogDebug($"   Authorization header: {context.Request.Headers.ContainsKey("Authorization")}");
+    if (context.Request.Headers.ContainsKey("Authorization"))
     {
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
-        });
+        var authHeader = context.Request.Headers["Authorization"].ToString();
+        logger.LogDebug($"   Auth header value: {authHeader.Substring(0, Math.Min(30, authHeader.Length))}...");
     }
+    await next();
+});
 
-    app.MapControllers().AllowAnonymous();
-}
-else
+app.UseAuthentication(); // who are you?
+
+// DEBUG: Check AFTER UseAuthentication
+app.Use(async (context, next) =>
+{
+    var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+    logger.LogDebug($"🔍 DEBUG After UseAuthentication:");
+    logger.LogDebug($"   Path: {context.Request.Path}");
+    logger.LogDebug($"   User: {context.User?.Identity?.Name ?? "null"}");
+    logger.LogDebug($"   IsAuthenticated: {context.User?.Identity?.IsAuthenticated}");
+    logger.LogDebug($"   Claims count: {context.User?.Claims?.Count() ?? 0}");
+    if (context.User?.Identity?.IsAuthenticated == true)
+    {
+        var roles = context.User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(c => c.Value);
+        logger.LogDebug($"   Roles: {string.Join(", ", roles)}");
+    }
+    await next();
+});
+
+app.UseMiddleware<maERP.Server.Middleware.TenantMiddleware>(); // set tenant context
+app.UseAuthorization(); // what are you allowed to do?
+
+if (!app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing"))
 {
     app.UseResponseCaching();
 
@@ -212,12 +232,31 @@ else
     });
 
     app.UseSerilogRequestLogging();
-    app.MapControllers();
 }
 
-app.UseAuthentication(); // who are you?
-app.UseMiddleware<maERP.Server.Middleware.TenantMiddleware>(); // set tenant context
-app.UseAuthorization(); // what are you allowed to do?
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "maERP.Server v1");
+    });
+}
+
+// Map all endpoints after all middleware
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Web}/{action=Index}/{id?}");
+
+// In Testing environment, allow anonymous access for test infrastructure
+if (app.Environment.IsEnvironment("Testing"))
+{
+    app.MapControllers().AllowAnonymous();
+}
+else
+{
+    app.MapControllers();
+}
 
 // Add health check endpoint
 app.MapHealthChecks("/health", new HealthCheckOptions

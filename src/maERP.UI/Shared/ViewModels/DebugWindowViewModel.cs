@@ -24,6 +24,18 @@ public partial class DebugWindowViewModel : ViewModelBase
 
     public string AutoScrollText => AutoScroll ? "📌 Auto-Scroll" : "📌 Manual";
 
+    public string FormattedLogs
+    {
+        get
+        {
+            if (DebugLogs.Count == 0)
+                return "No logs yet...";
+
+            return string.Join(Environment.NewLine, DebugLogs.Select(log =>
+                $"[{log.Timestamp:HH:mm:ss.fff}] {log.Level,-7} {log.Message}"));
+        }
+    }
+
     public event Action? ScrollToBottomRequested;
 
     public DebugWindowViewModel()
@@ -32,6 +44,7 @@ public partial class DebugWindowViewModel : ViewModelBase
         {
             LogCount = DebugLogs.Count;
             StatusText = $"Last update: {DateTime.Now:HH:mm:ss}";
+            OnPropertyChanged(nameof(FormattedLogs));
 
             if (AutoScroll)
             {
@@ -45,6 +58,7 @@ public partial class DebugWindowViewModel : ViewModelBase
     {
         DebugLogs.Clear();
         StatusText = "Logs cleared";
+        OnPropertyChanged(nameof(FormattedLogs));
     }
 
     partial void OnAutoScrollChanged(bool value)

@@ -87,6 +87,10 @@ public class HttpService : IHttpService
                     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
 
                 _debugService.LogInfo($"🔐 Login successful! Processing tenant data...");
+
+                // Debug: Parse and display all JWT claims and roles
+                JwtTokenParser.DebugTokenClaims(_token, msg => _debugService.LogInfo(msg));
+
                 _debugService.LogInfo($"📊 Login Response - AvailableTenants Count: {authResponse.AvailableTenants?.Count ?? 0}");
                 _debugService.LogInfo($"🏢 Login Response - CurrentTenantId: {authResponse.CurrentTenantId}");
                 
@@ -242,11 +246,16 @@ public class HttpService : IHttpService
             var queryParams = $"?pageNumber={pageNumber}&pageSize={pageSize}&searchString={searchString}&orderBy={orderBy}";
             var url = $"{_serverUrl}/api/v1/{endpoint.TrimStart('/')}{queryParams}";
 
-            // Debug: Log current tenant header before request
-            var hasHeader = _httpClient.DefaultRequestHeaders.Contains("X-Tenant-Id");
-            var headerValue = hasHeader ? string.Join(",", _httpClient.DefaultRequestHeaders.GetValues("X-Tenant-Id")) : "MISSING";
+            // Debug: Log current headers before request
+            var hasTenantHeader = _httpClient.DefaultRequestHeaders.Contains("X-Tenant-Id");
+            var tenantHeaderValue = hasTenantHeader ? string.Join(",", _httpClient.DefaultRequestHeaders.GetValues("X-Tenant-Id")) : "MISSING";
+            var hasAuthHeader = _httpClient.DefaultRequestHeaders.Authorization != null;
+            var authHeaderValue = hasAuthHeader ? $"Bearer {_httpClient.DefaultRequestHeaders.Authorization!.Parameter?.Substring(0, Math.Min(20, _httpClient.DefaultRequestHeaders.Authorization.Parameter?.Length ?? 0))}..." : "MISSING";
+
             _debugService.LogInfo($"🚀 Making GET request to: {url}");
-            _debugService.LogInfo($"📋 Current X-Tenant-Id header: {(hasHeader ? headerValue : "MISSING")}");
+            _debugService.LogInfo($"📋 Current X-Tenant-Id header: {(hasTenantHeader ? tenantHeaderValue : "MISSING")}");
+            _debugService.LogInfo($"🔐 Current Authorization header: {authHeaderValue}");
+            _debugService.LogInfo($"✅ IsAuthenticated: {IsAuthenticated}, Token exists: {!string.IsNullOrEmpty(_token)}");
 
             var response = await _httpClient.GetAsync(url);
 

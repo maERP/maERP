@@ -31,13 +31,13 @@ public class EbayOrderImportTask : IHostedService
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation("EbayOrderImportTask MainLoop start");
+                _logger.LogDebug("EbayOrderImportTask MainLoop start");
 
                 await MainLoop();
 
                 await Task.Delay(new TimeSpan(0, 0, 60)); // 60 Sekunden Verzögerung
 
-                _logger.LogInformation("EbayOrderImportTask MainLoop finished");
+                _logger.LogDebug("EbayOrderImportTask MainLoop finished");
             }
         });
 
@@ -69,11 +69,11 @@ public class EbayOrderImportTask : IHostedService
             // Prüfen, ob Produkt-Import abgeschlossen ist
             if (salesChannel.ImportProducts && !salesChannel.InitialProductImportCompleted)
             {
-                _logger.LogInformation($"Initial Product Import not completed for {salesChannel.Name} (ID: {salesChannel.Id})");
+                _logger.LogDebug($"Initial Product Import not completed for {salesChannel.Name} (ID: {salesChannel.Id})");
                 continue;
             }
 
-            _logger.LogInformation($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
+            _logger.LogDebug($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             int offset = 0;
             int limit = 50;
@@ -210,12 +210,12 @@ public class EbayOrderImportTask : IHostedService
 
                             // Bestellung importieren oder aktualisieren
                             await orderImportRepository.ImportOrUpdateFromSalesChannel(salesChannel, importOrder);
-                            _logger.LogInformation($"Order {importOrder.RemoteOrderId} imported or updated");
+                            _logger.LogDebug($"Order {importOrder.RemoteOrderId} imported or updated");
                         }
 
                         offset += limit;
 
-                        _logger.LogInformation($"Import Orders: {requestUrl} (offset {offset})");
+                        _logger.LogDebug($"Import Orders: {requestUrl} (offset {offset})");
 
                         // API-Ratenbegrenzung beachten
                         await Task.Delay(new TimeSpan(0, 0, 1));

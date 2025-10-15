@@ -65,7 +65,7 @@ public partial class TenantListViewModel : ViewModelBase
 
         try
         {
-            var result = await _httpService.GetPaginatedAsync<TenantListDto>("tenants", CurrentPage, PageSize, SearchText, "Name Ascending");
+            var result = await _httpService.GetPaginatedAsync<TenantListDto>("superadmin/tenants", CurrentPage, PageSize, SearchText, "Name Ascending");
 
             if (result == null)
             {

@@ -104,7 +104,7 @@ public partial class TenantInputViewModel : ViewModelBase
 
         try
         {
-            var result = await _httpService.GetAsync<TenantDetailDto>($"tenants/{TenantId}");
+            var result = await _httpService.GetAsync<TenantDetailDto>($"superadmin/tenants/{TenantId}");
 
             if (result == null)
             {
@@ -152,7 +152,7 @@ public partial class TenantInputViewModel : ViewModelBase
 
             if (IsEditMode)
             {
-            var result = await _httpService.PutAsync<TenantUpsertDto, TenantDetailDto>($"tenants/{TenantId}", payload);
+            var result = await _httpService.PutAsync<TenantUpsertDto, TenantDetailDto>($"superadmin/tenants/{TenantId}", payload);
 
                 if (result == null)
                 {
@@ -179,7 +179,7 @@ public partial class TenantInputViewModel : ViewModelBase
             }
             else
             {
-                var result = await _httpService.PostAsync<TenantUpsertDto, TenantDetailDto>("tenants", payload);
+                var result = await _httpService.PostAsync<TenantUpsertDto, TenantDetailDto>("superadmin/tenants", payload);
 
                 if (result == null)
                 {

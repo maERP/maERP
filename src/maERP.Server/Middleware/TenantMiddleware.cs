@@ -16,16 +16,31 @@ public class TenantMiddleware
 
     public async Task InvokeAsync(HttpContext context, ITenantContext tenantContext)
     {
+        var logger = context.RequestServices.GetRequiredService<ILogger<TenantMiddleware>>();
+        var path = context.Request.Path.Value;
+
+        logger.LogDebug($"🏢 TenantMiddleware - Processing request: {context.Request.Method} {path}");
+
         var user = context.User;
         var isTestEnvironment = context.RequestServices.GetService<IWebHostEnvironment>()?.EnvironmentName == "Testing";
         var isAuthenticated = user?.Identity?.IsAuthenticated == true;
 
-        // Skip tenant validation for auth endpoints (login, register) and demo data endpoints (superadmin only)
-        var path = context.Request.Path.Value?.ToLower();
-        var isAuthEndpoint = path != null && (path.EndsWith("/auth/login") || path.EndsWith("/auth/register"));
-        var isDemoDataEndpoint = path != null && path.Contains("/demodata");
-        if (isAuthEndpoint || isDemoDataEndpoint)
+        logger.LogDebug($"🔐 TenantMiddleware - IsAuthenticated: {isAuthenticated}, User: {user?.Identity?.Name ?? "null"}");
+        logger.LogDebug($"📋 TenantMiddleware - Authorization header: {context.Request.Headers.ContainsKey("Authorization")}");
+
+        // Skip tenant validation for auth endpoints (login, register), superadmin endpoints, swagger, and demo data endpoints
+        var pathLower = path?.ToLower();
+        var isAuthEndpoint = pathLower != null && (pathLower.EndsWith("/auth/login") || pathLower.EndsWith("/auth/register"));
+        var isSuperadminEndpoint = pathLower != null && pathLower.Contains("/superadmin");
+        var isSwaggerEndpoint = pathLower != null && (pathLower.StartsWith("/swagger") || pathLower.StartsWith("/_framework") || pathLower.StartsWith("/_content"));
+        var isDemoDataEndpoint = pathLower != null && pathLower.Contains("/demodata");
+        var isHealthEndpoint = pathLower != null && pathLower == "/health";
+
+        logger.LogDebug($"🔍 TenantMiddleware - isAuthEndpoint: {isAuthEndpoint}, isSuperadminEndpoint: {isSuperadminEndpoint}, isSwaggerEndpoint: {isSwaggerEndpoint}");
+
+        if (isAuthEndpoint || isSuperadminEndpoint || isSwaggerEndpoint || isDemoDataEndpoint || isHealthEndpoint)
         {
+            logger.LogDebug($"✅ TenantMiddleware - Skipping tenant validation for: {path}");
             await _next(context);
             return;
         }
@@ -104,15 +119,9 @@ public class TenantMiddleware
             }
             else
             {
-                // Check if this is a superadmin endpoint - they don't require tenant headers
-                var isSuperadminEndpoint = path != null && path.Contains("/superadmin");
-                if (!isSuperadminEndpoint)
-                {
-                    context.Response.StatusCode = 401;
-                    await context.Response.WriteAsync("X-Tenant-Id header is required for this request");
-                    return;
-                }
-                // For superadmin endpoints, skip tenant validation but continue to authorization
+                context.Response.StatusCode = 401;
+                await context.Response.WriteAsync("X-Tenant-Id header is required for this request");
+                return;
             }
         }
 

@@ -31,13 +31,13 @@ public class Shopware5ProductImportTask : IHostedService
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Shopware5ProductImportTask MainLoop start");
+                _logger.LogDebug("Shopware5ProductImportTask MainLoop start");
 
                 await MainLoop();
 
                 await Task.Delay(new TimeSpan(0, 0, 60)); // 5 second delay
 
-                _logger.LogInformation("Shopware5ProductImportTask MainLoop finished");
+                _logger.LogDebug("Shopware5ProductImportTask MainLoop finished");
             }
         });
 
@@ -65,7 +65,7 @@ public class Shopware5ProductImportTask : IHostedService
                 continue;
             }
 
-            _logger.LogInformation($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
+            _logger.LogDebug($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             int requestStart = 0;
             int requestLimit = 100;
@@ -132,7 +132,7 @@ public class Shopware5ProductImportTask : IHostedService
 
                         requestStart += requestLimit;
 
-                        _logger.LogInformation($"Import Products: {requestUrl} (max {requestMax} Products)");
+                        _logger.LogDebug($"Import Products: {requestUrl} (max {requestMax} Products)");
 
                         await Task.Delay(new TimeSpan(0, 0, 1)); // 5 second delay
                     }

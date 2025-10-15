@@ -31,13 +31,13 @@ public class EbayCustomerImportTask : IHostedService
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation("EbayCustomerImportTask MainLoop start");
+                _logger.LogDebug("EbayCustomerImportTask MainLoop start");
 
                 await MainLoop();
 
                 await Task.Delay(new TimeSpan(0, 0, 300)); // 5 Minuten Verzögerung
 
-                _logger.LogInformation("EbayCustomerImportTask MainLoop finished");
+                _logger.LogDebug("EbayCustomerImportTask MainLoop finished");
             }
         });
 
@@ -66,7 +66,7 @@ public class EbayCustomerImportTask : IHostedService
                 continue;
             }
 
-            _logger.LogInformation($"Start CustomerDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
+            _logger.LogDebug($"Start CustomerDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             try
             {
@@ -171,7 +171,7 @@ public class EbayCustomerImportTask : IHostedService
 
                 offset += limit;
 
-                _logger.LogInformation($"Processed {limit} orders for customer import (offset {offset})");
+                _logger.LogDebug($"Processed {limit} orders for customer import (offset {offset})");
 
                 // API-Ratenbegrenzung beachten
                 await Task.Delay(new TimeSpan(0, 0, 1));

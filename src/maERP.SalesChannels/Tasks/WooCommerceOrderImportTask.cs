@@ -29,13 +29,13 @@ public class WooCommerceOrderImportTask : IHostedService
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation("WooCommerceOrderImportTask MainLoop start");
+                _logger.LogDebug("WooCommerceOrderImportTask MainLoop start");
 
                 await MainLoop();
 
                 await Task.Delay(new TimeSpan(0, 0, 60)); // 60 second delay
 
-                _logger.LogInformation("WooCommerceOrderImportTask MainLoop finished");
+                _logger.LogDebug("WooCommerceOrderImportTask MainLoop finished");
             }
         }, cancellationToken);
 
@@ -63,7 +63,7 @@ public class WooCommerceOrderImportTask : IHostedService
                 continue;
             }
 
-            _logger.LogInformation($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
+            _logger.LogDebug($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             salesChannel.Url += "/wp-json/wc/v3/";
 

@@ -31,13 +31,13 @@ public class EbayProductImportTask : IHostedService
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation("EbayProductImportTask MainLoop start");
+                _logger.LogDebug("EbayProductImportTask MainLoop start");
 
                 await MainLoop();
 
                 await Task.Delay(new TimeSpan(0, 0, 60)); // 60 second delay
 
-                _logger.LogInformation("EbayProductImportTask MainLoop finished");
+                _logger.LogDebug("EbayProductImportTask MainLoop finished");
             }
         });
 
@@ -66,7 +66,7 @@ public class EbayProductImportTask : IHostedService
                 continue;
             }
 
-            _logger.LogInformation($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
+            _logger.LogDebug($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             int offset = 0;
             int limit = 100;
@@ -134,7 +134,7 @@ public class EbayProductImportTask : IHostedService
 
                         offset += limit;
 
-                        _logger.LogInformation($"Import Products: {requestUrl} (max {total} Products)");
+                        _logger.LogDebug($"Import Products: {requestUrl} (max {total} Products)");
 
                         await Task.Delay(new TimeSpan(0, 0, 1));
                     }

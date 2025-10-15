@@ -7,7 +7,7 @@ namespace maERP.UI.Shared.Views;
 
 public partial class DebugWindow : Window
 {
-    private ScrollViewer? _logScrollViewer;
+    private TextBox? _logTextBox;
 
     public DebugWindow()
     {
@@ -20,7 +20,7 @@ public partial class DebugWindow : Window
 
     private void OnLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        _logScrollViewer = this.FindControl<ScrollViewer>("LogScrollViewer");
+        _logTextBox = this.FindControl<TextBox>("LogTextBox");
 
         if (DataContext is DebugWindowViewModel viewModel)
         {
@@ -30,7 +30,10 @@ public partial class DebugWindow : Window
 
     private void OnScrollToBottomRequested()
     {
-        _logScrollViewer?.ScrollToEnd();
+        if (_logTextBox != null)
+        {
+            _logTextBox.CaretIndex = _logTextBox.Text?.Length ?? 0;
+        }
     }
 
     private void OnKeyDown(object? sender, KeyEventArgs e)
