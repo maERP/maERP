@@ -11,7 +11,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
-public class AuthController(IAuthService authenticationService) : ControllerBase
+public class AuthController(IAuthService authenticationService, ILogger<AuthController> logger) : ControllerBase
 {
     [HttpPost("login")]
     [AllowAnonymous]
@@ -30,7 +30,81 @@ public class AuthController(IAuthService authenticationService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
     {
+        logger.LogDebug("🔷 Register endpoint called");
+        logger.LogDebug("📧 Email: {Email}", request.Email);
+        logger.LogDebug("👤 Firstname: {Firstname}, Lastname: {Lastname}", request.Firstname, request.Lastname);
+        logger.LogDebug("🔑 Password provided: {HasPassword}", !string.IsNullOrEmpty(request.Password));
+
         var result = await authenticationService.Register(request);
+
+        logger.LogDebug("📊 Registration result - StatusCode: {StatusCode}, Succeeded: {Succeeded}",
+            result.StatusCode, result.Succeeded);
+
+        if (!result.Succeeded)
+        {
+            logger.LogDebug("❌ Registration failed - Messages: {Messages}", string.Join(", ", result.Messages));
+        }
+        else
+        {
+            logger.LogDebug("✅ Registration succeeded - UserId: {UserId}", result.Data?.UserId);
+        }
+
         return StatusCode((int)result.StatusCode, result);
+    }
+
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ForgotPasswordResponseDto>> ForgotPassword(ForgotPasswordRequestDto request)
+    {
+        logger.LogDebug("🔑 ForgotPassword endpoint called for email: {Email}", request.Email);
+
+        var serviceRequest = new Application.Models.Identity.ForgotPasswordRequest
+        {
+            Email = request.Email
+        };
+
+        var result = await authenticationService.ForgotPassword(serviceRequest);
+
+        var response = new ForgotPasswordResponseDto
+        {
+            Succeeded = result.Data?.Succeeded ?? false,
+            Message = result.Data?.Message ?? result.Messages.FirstOrDefault() ?? "Ein Fehler ist aufgetreten."
+        };
+
+        logger.LogDebug("📊 ForgotPassword result - StatusCode: {StatusCode}, Succeeded: {Succeeded}",
+            result.StatusCode, response.Succeeded);
+
+        return StatusCode((int)result.StatusCode, response);
+    }
+
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ResetPasswordResponseDto>> ResetPassword(ResetPasswordRequestDto request)
+    {
+        logger.LogDebug("🔄 ResetPassword endpoint called for email: {Email}", request.Email);
+
+        var serviceRequest = new Application.Models.Identity.ResetPasswordRequest
+        {
+            Email = request.Email,
+            Token = request.Token,
+            NewPassword = request.NewPassword
+        };
+
+        var result = await authenticationService.ResetPassword(serviceRequest);
+
+        var response = new ResetPasswordResponseDto
+        {
+            Succeeded = result.Data?.Succeeded ?? false,
+            Message = result.Data?.Message ?? result.Messages.FirstOrDefault() ?? "Ein Fehler ist aufgetreten."
+        };
+
+        logger.LogDebug("📊 ResetPassword result - StatusCode: {StatusCode}, Succeeded: {Succeeded}",
+            result.StatusCode, response.Succeeded);
+
+        return StatusCode((int)result.StatusCode, response);
     }
 }

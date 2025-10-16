@@ -21,9 +21,12 @@ using maERP.UI.Features.Administration.ViewModels;
 using maERP.UI.Features.ImportExport.ViewModels;
 using maERP.UI.Features.GoodsReceipts.ViewModels;
 using maERP.UI.Features.Manufacturer.ViewModels;
-using TenantListViewModel = maERP.UI.Features.Tenants.ViewModels.TenantListViewModel;
-using TenantDetailViewModel = maERP.UI.Features.Tenants.ViewModels.TenantDetailViewModel;
-using TenantInputViewModel = maERP.UI.Features.Tenants.ViewModels.TenantInputViewModel;
+using SuperadminTenantsListViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminTenantsListViewModel;
+using SuperadminTenantsDetailViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminTenantsDetailViewModel;
+using SuperadminTenantsInputViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminTenantsInputViewModel;
+using SuperadminUserListViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminUserListViewModel;
+using SuperadminUserDetailViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminUserDetailViewModel;
+using SuperadminUserInputViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminUserInputViewModel;
 
 namespace maERP.UI.Shared.ViewModels;
 
@@ -50,6 +53,8 @@ public partial class MainViewModel : ViewModelBase
 
     public LoginViewModel LoginViewModel { get; }
     public RegistrationViewModel RegistrationViewModel { get; }
+    public ForgotPasswordViewModel ForgotPasswordViewModel { get; }
+    public ResetPasswordViewModel ResetPasswordViewModel { get; }
     
     private DashboardViewModel? _dashboardViewModel;
     private OrderListViewModel? _orderListViewModel;
@@ -77,22 +82,24 @@ public partial class MainViewModel : ViewModelBase
     private TaxClassListViewModel? _taxClassListViewModel;
     private TaxClassDetailViewModel? _taxClassDetailViewModel;
     private TaxClassInputViewModel? _taxClassInputViewModel;
-    private UserListViewModel? _userListViewModel;
-    private UserDetailViewModel? _userDetailViewModel;
-    private UserInputViewModel? _userInputViewModel;
+    private SuperadminUserListViewModel? _superadminUserListViewModel;
+    private SuperadminUserDetailViewModel? _superadminUserDetailViewModel;
+    private SuperadminUserInputViewModel? _superadminUserInputViewModel;
     private ImportExportOverviewViewModel? _importExportOverviewViewModel;
     private GoodsReceiptListViewModel? _goodsReceiptListViewModel;
     private GoodsReceiptInputViewModel? _goodsReceiptInputViewModel;
     private ManufacturerListViewModel? _manufacturerListViewModel;
     private ManufacturerDetailViewModel? _manufacturerDetailViewModel;
     private ManufacturerInputViewModel? _manufacturerInputViewModel;
-    private TenantListViewModel? _tenantListViewModel;
-    private TenantDetailViewModel? _tenantDetailViewModel;
-    private TenantInputViewModel? _tenantInputViewModel;
+    private SuperadminTenantsListViewModel? _superadminTenantsListViewModel;
+    private SuperadminTenantsDetailViewModel? _superadminTenantsDetailViewModel;
+    private SuperadminTenantsInputViewModel? _superadminTenantsInputViewModel;
 
     public MainViewModel(IAuthenticationService authenticationService,
                         LoginViewModel loginViewModel,
                         RegistrationViewModel registrationViewModel,
+                        ForgotPasswordViewModel forgotPasswordViewModel,
+                        ResetPasswordViewModel resetPasswordViewModel,
                         IServiceProvider serviceProvider,
                         IDebugService debugService)
     {
@@ -101,6 +108,8 @@ public partial class MainViewModel : ViewModelBase
         _debugService = debugService;
         LoginViewModel = loginViewModel;
         RegistrationViewModel = registrationViewModel;
+        ForgotPasswordViewModel = forgotPasswordViewModel;
+        ResetPasswordViewModel = resetPasswordViewModel;
 
         // Set initial view to prevent null reference when UI renders before InitializeAsync completes
         // This ensures the login view is displayed immediately, especially important for Release builds
@@ -108,8 +117,12 @@ public partial class MainViewModel : ViewModelBase
 
         LoginViewModel.OnLoginSuccessful += OnLoginSuccessful;
         LoginViewModel.OnShowRegistration += OnShowRegistration;
+        LoginViewModel.OnShowForgotPassword += OnShowForgotPassword;
         RegistrationViewModel.OnRegistrationSuccessful += OnRegistrationSuccessful;
         RegistrationViewModel.OnBackToLogin += OnBackToLogin;
+        ForgotPasswordViewModel.OnBackToLogin += OnBackToLogin;
+        ResetPasswordViewModel.OnBackToLogin += OnBackToLogin;
+        ResetPasswordViewModel.OnPasswordResetSuccess += OnPasswordResetSuccess;
 
         InitializeTheme();
         _ = InitializeAsync();
@@ -267,6 +280,18 @@ public partial class MainViewModel : ViewModelBase
         CurrentView = LoginViewModel;
     }
 
+    private void OnShowForgotPassword()
+    {
+        // Pass the ServerUrl from LoginViewModel to ForgotPasswordViewModel
+        ForgotPasswordViewModel.SetServerUrl(LoginViewModel.ServerUrl);
+        CurrentView = ForgotPasswordViewModel;
+    }
+
+    private void OnPasswordResetSuccess()
+    {
+        CurrentView = LoginViewModel;
+    }
+
     [RelayCommand]
     private async Task LogoutAsync()
     {
@@ -306,7 +331,7 @@ public partial class MainViewModel : ViewModelBase
             "ImportExport" => await GetImportExportOverviewViewModelAsync(),
             "GoodsReceipts" => await GetGoodsReceiptListWithRefreshAsync(),
             "Manufacturers" => await GetManufacturerListWithRefreshAsync(),
-            "Tenants" => await GetTenantListWithRefreshAsync(),
+            "Tenants" => await GetSuperadminTenantsListWithRefreshAsync(),
             _ => await GetDashboardViewModelAsync()
         };
     }
@@ -416,57 +441,57 @@ public partial class MainViewModel : ViewModelBase
         return listViewModel;
     }
 
-    private async Task<TenantListViewModel> GetTenantListViewModelAsync()
+    private async Task<SuperadminTenantsListViewModel> GetSuperadminTenantsListViewModelAsync()
     {
-        if (_tenantListViewModel == null)
+        if (_superadminTenantsListViewModel == null)
         {
-            _tenantListViewModel = _serviceProvider.GetRequiredService<TenantListViewModel>();
-            _tenantListViewModel.NavigateToTenantDetail = NavigateToTenantDetail;
-            _tenantListViewModel.NavigateToTenantInput = NavigateToCreateTenant;
-            await _tenantListViewModel.InitializeAsync();
+            _superadminTenantsListViewModel = _serviceProvider.GetRequiredService<SuperadminTenantsListViewModel>();
+            _superadminTenantsListViewModel.NavigateToTenantDetail = NavigateToTenantDetail;
+            _superadminTenantsListViewModel.NavigateToTenantInput = NavigateToCreateTenant;
+            await _superadminTenantsListViewModel.InitializeAsync();
         }
-        return _tenantListViewModel;
+        return _superadminTenantsListViewModel;
     }
 
-    private async Task<TenantListViewModel> GetTenantListWithRefreshAsync()
+    private async Task<SuperadminTenantsListViewModel> GetSuperadminTenantsListWithRefreshAsync()
     {
-        var listViewModel = await GetTenantListViewModelAsync();
+        var listViewModel = await GetSuperadminTenantsListViewModelAsync();
         await listViewModel.RefreshAsync();
         return listViewModel;
     }
 
-    private async Task<TenantDetailViewModel> GetTenantDetailViewModelAsync(Guid tenantId)
+    private async Task<SuperadminTenantsDetailViewModel> GetSuperadminTenantsDetailViewModelAsync(Guid tenantId)
     {
-        _tenantDetailViewModel = _serviceProvider.GetRequiredService<TenantDetailViewModel>();
-        _tenantDetailViewModel.GoBackAction = async () => await NavigateToTenantList();
-        _tenantDetailViewModel.NavigateToTenantEdit = NavigateToEditTenant;
-        await _tenantDetailViewModel.InitializeAsync(tenantId);
-        return _tenantDetailViewModel;
+        _superadminTenantsDetailViewModel = _serviceProvider.GetRequiredService<SuperadminTenantsDetailViewModel>();
+        _superadminTenantsDetailViewModel.GoBackAction = async () => await NavigateToTenantList();
+        _superadminTenantsDetailViewModel.NavigateToTenantEdit = NavigateToEditTenant;
+        await _superadminTenantsDetailViewModel.InitializeAsync(tenantId);
+        return _superadminTenantsDetailViewModel;
     }
 
-    private async Task<TenantInputViewModel> GetTenantInputViewModelAsync(Guid? tenantId = null)
+    private async Task<SuperadminTenantsInputViewModel> GetSuperadminTenantsInputViewModelAsync(Guid? tenantId = null)
     {
-        _tenantInputViewModel = _serviceProvider.GetRequiredService<TenantInputViewModel>();
+        _superadminTenantsInputViewModel = _serviceProvider.GetRequiredService<SuperadminTenantsInputViewModel>();
         if (tenantId == null || tenantId == Guid.Empty)
         {
-            _tenantInputViewModel.GoBackAction = async () => await NavigateToTenantList();
+            _superadminTenantsInputViewModel.GoBackAction = async () => await NavigateToTenantList();
         }
         else
         {
             var capturedId = tenantId;
-            _tenantInputViewModel.GoBackAction = async () => await NavigateToTenantDetail(capturedId.Value);
+            _superadminTenantsInputViewModel.GoBackAction = async () => await NavigateToTenantDetail(capturedId.Value);
         }
 
-        _tenantInputViewModel.NavigateToTenantDetail = NavigateToTenantDetail;
-        await _tenantInputViewModel.InitializeAsync(tenantId ?? Guid.Empty);
-        return _tenantInputViewModel;
+        _superadminTenantsInputViewModel.NavigateToTenantDetail = NavigateToTenantDetail;
+        await _superadminTenantsInputViewModel.InitializeAsync(tenantId ?? Guid.Empty);
+        return _superadminTenantsInputViewModel;
     }
 
     public async Task NavigateToTenantDetail(Guid tenantId)
     {
         if (!IsAuthenticated || tenantId == Guid.Empty) return;
 
-        var detailViewModel = await GetTenantDetailViewModelAsync(tenantId);
+        var detailViewModel = await GetSuperadminTenantsDetailViewModelAsync(tenantId);
         CurrentView = detailViewModel;
         SelectedMenuItem = "TenantDetail";
     }
@@ -475,7 +500,7 @@ public partial class MainViewModel : ViewModelBase
     {
         if (!IsAuthenticated) return;
 
-        var inputViewModel = await GetTenantInputViewModelAsync();
+        var inputViewModel = await GetSuperadminTenantsInputViewModelAsync();
         CurrentView = inputViewModel;
         SelectedMenuItem = "TenantInput";
     }
@@ -484,7 +509,7 @@ public partial class MainViewModel : ViewModelBase
     {
         if (!IsAuthenticated || tenantId == Guid.Empty) return;
 
-        var inputViewModel = await GetTenantInputViewModelAsync(tenantId);
+        var inputViewModel = await GetSuperadminTenantsInputViewModelAsync(tenantId);
         CurrentView = inputViewModel;
         SelectedMenuItem = "TenantInput";
     }
@@ -492,7 +517,7 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task NavigateToTenantList()
     {
-        var listViewModel = await GetTenantListViewModelAsync();
+        var listViewModel = await GetSuperadminTenantsListViewModelAsync();
         await listViewModel.RefreshAsync();
         CurrentView = listViewModel;
         SelectedMenuItem = "Tenants";
@@ -624,19 +649,19 @@ public partial class MainViewModel : ViewModelBase
         return listViewModel;
     }
 
-    private async Task<UserListViewModel> GetUserListViewModelAsync()
+    private async Task<SuperadminUserListViewModel> GetUserListViewModelAsync()
     {
-        if (_userListViewModel == null)
+        if (_superadminUserListViewModel == null)
         {
-            _userListViewModel = _serviceProvider.GetRequiredService<UserListViewModel>();
-            _userListViewModel.NavigateToUserDetail = NavigateToUserDetail;
-            _userListViewModel.NavigateToCreateUser = NavigateToCreateUser;
-            await _userListViewModel.InitializeAsync();
+            _superadminUserListViewModel = _serviceProvider.GetRequiredService<SuperadminUserListViewModel>();
+            _superadminUserListViewModel.NavigateToUserDetail = NavigateToUserDetail;
+            _superadminUserListViewModel.NavigateToCreateUser = NavigateToCreateUser;
+            await _superadminUserListViewModel.InitializeAsync();
         }
-        return _userListViewModel;
+        return _superadminUserListViewModel;
     }
 
-    private async Task<UserListViewModel> GetUserListWithRefreshAsync()
+    private async Task<SuperadminUserListViewModel> GetUserListWithRefreshAsync()
     {
         var listViewModel = await GetUserListViewModelAsync();
         await listViewModel.RefreshAsync();
@@ -968,12 +993,12 @@ public partial class MainViewModel : ViewModelBase
     {
         if (!IsAuthenticated) return;
 
-        _userDetailViewModel = _serviceProvider.GetRequiredService<UserDetailViewModel>();
-        _userDetailViewModel.GoBackAction = async () => await NavigateToUserList();
-        _userDetailViewModel.NavigateToEditUser = NavigateToEditUser;
-        await _userDetailViewModel.InitializeAsync(userId);
-        
-        CurrentView = _userDetailViewModel;
+        _superadminUserDetailViewModel = _serviceProvider.GetRequiredService<SuperadminUserDetailViewModel>();
+        _superadminUserDetailViewModel.GoBackAction = async () => await NavigateToUserList();
+        _superadminUserDetailViewModel.NavigateToEditUser = NavigateToEditUser;
+        await _superadminUserDetailViewModel.InitializeAsync(userId);
+
+        CurrentView = _superadminUserDetailViewModel;
         SelectedMenuItem = "UserDetail";
     }
 
@@ -991,12 +1016,12 @@ public partial class MainViewModel : ViewModelBase
     {
         if (!IsAuthenticated) return;
 
-        _userInputViewModel = _serviceProvider.GetRequiredService<UserInputViewModel>();
-        _userInputViewModel.GoBackAction = async () => await NavigateToUserList();
-        _userInputViewModel.NavigateToUserDetail = NavigateToUserDetail;
-        await _userInputViewModel.InitializeAsync(""); // Empty string for new user
-        
-        CurrentView = _userInputViewModel;
+        _superadminUserInputViewModel = _serviceProvider.GetRequiredService<SuperadminUserInputViewModel>();
+        _superadminUserInputViewModel.GoBackAction = async () => await NavigateToUserList();
+        _superadminUserInputViewModel.NavigateToUserDetail = NavigateToUserDetail;
+        await _superadminUserInputViewModel.InitializeAsync(""); // Empty string for new user
+
+        CurrentView = _superadminUserInputViewModel;
         SelectedMenuItem = "UserInput";
     }
 
@@ -1004,12 +1029,12 @@ public partial class MainViewModel : ViewModelBase
     {
         if (!IsAuthenticated) return;
 
-        _userInputViewModel = _serviceProvider.GetRequiredService<UserInputViewModel>();
-        _userInputViewModel.GoBackAction = async () => await NavigateToUserDetail(userId);
-        _userInputViewModel.NavigateToUserDetail = NavigateToUserDetail;
-        await _userInputViewModel.InitializeAsync(userId); // Load existing user
-        
-        CurrentView = _userInputViewModel;
+        _superadminUserInputViewModel = _serviceProvider.GetRequiredService<SuperadminUserInputViewModel>();
+        _superadminUserInputViewModel.GoBackAction = async () => await NavigateToUserDetail(userId);
+        _superadminUserInputViewModel.NavigateToUserDetail = NavigateToUserDetail;
+        await _superadminUserInputViewModel.InitializeAsync(userId); // Load existing user
+
+        CurrentView = _superadminUserInputViewModel;
         SelectedMenuItem = "UserInput";
     }
 

@@ -8,7 +8,7 @@
   <Border Background="{DynamicResource SurfaceContainerBrush}"
           CornerRadius="{DynamicResource CornerRadiusL}"
           Padding="32"
-          MaxWidth="400"
+          Width="400"
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
           BoxShadow="{DynamicResource ElevationLevel2}"
@@ -83,14 +83,13 @@
 
         <!-- Fehlermeldung -->
         <Border IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}"
-                Background="{DynamicResource ErrorBrush}"
+                Background="#fee2e2"
                 BorderBrush="{DynamicResource ErrorBrush}"
                 BorderThickness="1"
                 CornerRadius="{DynamicResource CornerRadiusS}"
-                Padding="12"
-                Opacity="0.1">
+                Padding="12">
           <TextBlock Text="{Binding ErrorMessage}"
-                     Foreground="{DynamicResource OnErrorBrush}"
+                     Foreground="#991b1b"
                      FontSize="{DynamicResource FontSizeBodyM}"
                      TextWrapping="Wrap"/>
         </Border>
@@ -124,6 +123,22 @@
                      FontSize="{DynamicResource FontSizeBodyM}"
                      Foreground="{DynamicResource ContentViewSubheadingBrush}"/>
         </StackPanel>
+
+        <!-- Forgot Password Link -->
+        <Button Content="Passwort vergessen?"
+                Command="{Binding ShowForgotPasswordCommand}"
+                HorizontalAlignment="Center"
+                Background="Transparent"
+                BorderThickness="0"
+                Foreground="{DynamicResource PrimaryBrush}"
+                FontSize="{DynamicResource FontSizeBodyM}"
+                Padding="8,4">
+          <Button.Styles>
+            <Style Selector="Button:pointerover">
+              <Setter Property="Foreground" Value="{DynamicResource PrimaryContainerBrush}"/>
+            </Style>
+          </Button.Styles>
+        </Button>
 
         <!-- Register Link -->
         <Button Content="Noch kein Konto? Hier registrieren"

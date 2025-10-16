@@ -10,9 +10,9 @@ using maERP.Domain.Dtos.Tenant;
 using maERP.UI.Services;
 using maERP.UI.Shared.ViewModels;
 
-namespace maERP.UI.Features.Administration.ViewModels;
+namespace maERP.UI.Features.Superadmin.ViewModels;
 
-public partial class UserDetailViewModel : ViewModelBase
+public partial class SuperadminUserDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
@@ -56,7 +56,7 @@ public partial class UserDetailViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<string, Task>? NavigateToEditUser { get; set; }
 
-    public UserDetailViewModel(IHttpService httpService, IDebugService debugService, IAuthenticationService authenticationService)
+    public SuperadminUserDetailViewModel(IHttpService httpService, IDebugService debugService, IAuthenticationService authenticationService)
     {
         _httpService = httpService;
         _debugService = debugService;

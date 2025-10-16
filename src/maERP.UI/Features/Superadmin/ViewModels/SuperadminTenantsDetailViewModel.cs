@@ -7,9 +7,9 @@ using maERP.Domain.Dtos.Tenant;
 using maERP.UI.Services;
 using maERP.UI.Shared.ViewModels;
 
-namespace maERP.UI.Features.Tenants.ViewModels;
+namespace maERP.UI.Features.Superadmin.ViewModels;
 
-public partial class TenantDetailViewModel : ViewModelBase
+public partial class SuperadminTenantsDetailViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
@@ -39,7 +39,7 @@ public partial class TenantDetailViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<Guid, Task>? NavigateToTenantEdit { get; set; }
 
-    public TenantDetailViewModel(IHttpService httpService, IDebugService debugService)
+    public SuperadminTenantsDetailViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
         _debugService = debugService;

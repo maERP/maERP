@@ -59,6 +59,27 @@ public class SettingsService : ISettingsService
         {
             switch (setting.Key)
             {
+                case "Email.ProviderType":
+                    if (Enum.TryParse<Domain.Enums.EmailProviderType>(setting.Value, out var providerType))
+                        emailSettings.ProviderType = providerType;
+                    break;
+                case "Email.SmtpHost":
+                    emailSettings.SmtpHost = setting.Value;
+                    break;
+                case "Email.SmtpPort":
+                    if (int.TryParse(setting.Value, out var port))
+                        emailSettings.SmtpPort = port;
+                    break;
+                case "Email.SmtpUsername":
+                    emailSettings.SmtpUsername = setting.Value;
+                    break;
+                case "Email.SmtpPassword":
+                    emailSettings.SmtpPassword = setting.Value;
+                    break;
+                case "Email.SmtpEnableSsl":
+                    if (bool.TryParse(setting.Value, out var enableSsl))
+                        emailSettings.SmtpEnableSsl = enableSsl;
+                    break;
                 case "Email.ApiKey":
                     emailSettings.ApiKey = setting.Value;
                     break;
@@ -67,6 +88,12 @@ public class SettingsService : ISettingsService
                     break;
                 case "Email.FromName":
                     emailSettings.FromName = setting.Value;
+                    break;
+                case "Email.ReplyToAddress":
+                    emailSettings.ReplyToAddress = setting.Value;
+                    break;
+                case "Email.ReplyToName":
+                    emailSettings.ReplyToName = setting.Value;
                     break;
             }
         }

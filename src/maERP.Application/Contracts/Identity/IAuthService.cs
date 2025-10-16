@@ -8,4 +8,6 @@ public interface IAuthService
 {
     Task<Result<LoginResponseDto>> Login(AuthRequest request);
     Task<Result<RegistrationResponse>> Register(RegistrationRequest request);
+    Task<Result<ForgotPasswordResponse>> ForgotPassword(ForgotPasswordRequest request);
+    Task<Result<ResetPasswordResponse>> ResetPassword(ResetPasswordRequest request);
 }

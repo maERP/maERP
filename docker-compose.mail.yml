@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: maerp-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    environment:
+      - MP_SMTP_AUTH_ACCEPT_ANY=true
+      - MP_SMTP_AUTH_ALLOW_INSECURE=true
+    volumes:
+      - mailpit-data:/data
+    networks:
+      - maerp-network
+
+volumes:
+  mailpit-data:
+
+networks:
+  maerp-network:
+    driver: bridge

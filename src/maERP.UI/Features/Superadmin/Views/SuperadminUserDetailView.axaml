@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:maERP.UI.Features.Administration.ViewModels"
+             xmlns:vm="clr-namespace:maERP.UI.Features.Superadmin.ViewModels"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
-             x:Class="maERP.UI.Features.Administration.Views.UserDetailView">
+             x:Class="maERP.UI.Features.Superadmin.Views.SuperadminUserDetailView">
 
 	<Grid RowDefinitions="Auto,*">
 
@@ -346,7 +346,7 @@
 																	
 																	<!-- Set as Default Button -->
 																	<Button Content="⭐"
-																			Command="{Binding $parent[UserControl].((vm:UserDetailViewModel)DataContext).SetDefaultTenantCommand}"
+																			Command="{Binding $parent[UserControl].((vm:SuperadminUserDetailViewModel)DataContext).SetDefaultTenantCommand}"
 																			CommandParameter="{Binding}"
 																			IsVisible="{Binding !IsDefault}"
 																			Width="28"
@@ -360,7 +360,7 @@
 																	
 																	<!-- Remove Button -->
 																	<Button Content="✕"
-																			Command="{Binding $parent[UserControl].((vm:UserDetailViewModel)DataContext).RemoveTenantCommand}"
+																			Command="{Binding $parent[UserControl].((vm:SuperadminUserDetailViewModel)DataContext).RemoveTenantCommand}"
 																			CommandParameter="{Binding}"
 																			Width="28"
 																			Height="28"
@@ -480,7 +480,7 @@
 																<!-- Add Button -->
 																<Button Grid.Column="2"
 																		Content="+"
-																		Command="{Binding $parent[UserControl].((vm:UserDetailViewModel)DataContext).AssignTenantCommand}"
+																		Command="{Binding $parent[UserControl].((vm:SuperadminUserDetailViewModel)DataContext).AssignTenantCommand}"
 																		CommandParameter="{Binding}"
 																		Width="28"
 																		Height="28"

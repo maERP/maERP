@@ -29,8 +29,9 @@
              xmlns:goodsReceiptViews="clr-namespace:maERP.UI.Features.GoodsReceipts.Views"
              xmlns:manufacturerVm="clr-namespace:maERP.UI.Features.Manufacturer.ViewModels"
              xmlns:manufacturerViews="clr-namespace:maERP.UI.Features.Manufacturer.Views"
-             xmlns:tenantVm="clr-namespace:maERP.UI.Features.Tenants.ViewModels"
-             xmlns:tenantViews="clr-namespace:maERP.UI.Features.Tenants.Views"
+             xmlns:superadminTenantsVm="clr-namespace:maERP.UI.Features.SuperadminTenants.ViewModels"
+             xmlns:viewModels="clr-namespace:maERP.UI.Features.Superadmin.ViewModels"
+             xmlns:views="clr-namespace:maERP.UI.Features.Superadmin.Views"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="maERP.UI.Shared.Views.MainView"
              x:DataType="vm:MainViewModel"
@@ -46,6 +47,12 @@
           </DataTemplate>
           <DataTemplate DataType="{x:Type authVm:RegistrationViewModel}">
             <authViews:RegistrationView/>
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type authVm:ForgotPasswordViewModel}">
+            <authViews:ForgotPasswordView/>
+          </DataTemplate>
+          <DataTemplate DataType="{x:Type authVm:ResetPasswordViewModel}">
+            <authViews:ResetPasswordView/>
           </DataTemplate>
         </ContentControl.DataTemplates>
       </ContentControl>
@@ -100,6 +107,26 @@
                             Command="{Binding ToggleThemeCommand}">
                     <MenuItem.Icon>
                       <TextBlock Text="🌓"
+                                 FontSize="16"
+                                 VerticalAlignment="Center"/>
+                    </MenuItem.Icon>
+                  </MenuItem>
+                  <MenuItem Header="Superadmin - Tenants"
+                            Command="{Binding NavigateToMenuItemCommand}"
+                            CommandParameter="Tenants"
+                            IsVisible="{Binding IsSuperAdmin}">
+                    <MenuItem.Icon>
+                      <TextBlock Text="🔐"
+                                 FontSize="16"
+                                 VerticalAlignment="Center"/>
+                    </MenuItem.Icon>
+                  </MenuItem>
+                  <MenuItem Header="Superadmin - Benutzer"
+                            Command="{Binding NavigateToMenuItemCommand}"
+                            CommandParameter="Users"
+                            IsVisible="{Binding IsSuperAdmin}">
+                    <MenuItem.Icon>
+                      <TextBlock Text="👤"
                                  FontSize="16"
                                  VerticalAlignment="Center"/>
                     </MenuItem.Icon>
@@ -287,26 +314,7 @@
                     HorizontalContentAlignment="Left"
                     Padding="20,12"
                     Margin="0,1"/>
-            
-            <Button Content="🏢 Tenants"
-                    Command="{Binding NavigateToMenuItemCommand}"
-                    CommandParameter="Tenants"
-                    Classes="nav-button"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Left"
-                    Padding="20,12"
-                    Margin="0,1"
-                    IsVisible="{Binding IsSuperAdmin}"/>
-            
-            <Button Content="👤 Benutzer"
-                    Command="{Binding NavigateToMenuItemCommand}"
-                    CommandParameter="Users"
-                    Classes="nav-button"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Left"
-                    Padding="20,12"
-                    Margin="0,1"/>
-            
+
             <Button Content="📥📤 Import/Export"
                     Command="{Binding NavigateToMenuItemCommand}"
                     CommandParameter="ImportExport"
@@ -456,23 +464,23 @@
 			<DataTemplate DataType="{x:Type adminVm:TaxClassInputViewModel}">
 			  <adminViews:TaxClassInputView/>
 			</DataTemplate>
-            <DataTemplate DataType="{x:Type adminVm:UserListViewModel}">
-              <adminViews:UserListView/>
+            <DataTemplate DataType="{x:Type viewModels:SuperadminUserListViewModel}">
+              <views:SuperadminUserListView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type adminVm:UserDetailViewModel}">
-              <adminViews:UserDetailView/>
+            <DataTemplate DataType="{x:Type viewModels:SuperadminUserDetailViewModel}">
+              <views:SuperadminUserDetailView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type adminVm:UserInputViewModel}">
-              <adminViews:UserInputView/>
+            <DataTemplate DataType="{x:Type viewModels:SuperadminUserInputViewModel}">
+              <views:SuperadminUserInputView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type tenantVm:TenantListViewModel}">
-              <tenantViews:TenantListView/>
+            <DataTemplate DataType="{x:Type viewModels:SuperadminTenantsListViewModel}">
+              <views:SuperadminTenantsListView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type tenantVm:TenantDetailViewModel}">
-              <tenantViews:TenantDetailView/>
+            <DataTemplate DataType="{x:Type viewModels:SuperadminTenantsDetailViewModel}">
+              <views:SuperadminTenantsDetailView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type tenantVm:TenantInputViewModel}">
-              <tenantViews:TenantInputView/>
+            <DataTemplate DataType="{x:Type viewModels:SuperadminTenantsInputViewModel}">
+              <views:SuperadminTenantsInputView/>
             </DataTemplate>
             
             <!-- GoodsReceipts -->

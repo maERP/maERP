@@ -143,6 +143,7 @@ builder.Services.AddScoped<IGoodsReceiptRepository, GoodsReceiptRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<IUserTenantRepository, UserTenantRepository>();
 builder.Services.AddScoped<ITenantPermissionService, TenantPermissionService>();
+builder.Services.AddScoped<ITenantEmailSettingsRepository, TenantEmailSettingsRepository>();
 
 // Register SettingsInitializer service
 builder.Services.AddTransient<SettingsInitializer>();

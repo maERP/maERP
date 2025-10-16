@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
-             x:Class="maERP.UI.Features.Administration.Views.UserListView">
+             x:Class="maERP.UI.Features.Superadmin.Views.SuperadminUserListView">
 
   <Grid RowDefinitions="Auto,Auto,*,Auto">
 
@@ -12,7 +12,7 @@
     <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,24">
       <!-- Title -->
       <StackPanel Grid.Column="0" VerticalAlignment="Center">
-        <TextBlock Text="Benutzer"
+        <TextBlock Text="Superadmin - Benutzer"
                    FontSize="24"
                    FontWeight="SemiBold"
                    Foreground="{DynamicResource ContentViewHeadingBrush}"

@@ -178,8 +178,31 @@ public class HttpService : IHttpService
                     var jsonDoc = JsonDocument.Parse(resultContent);
                     var root = jsonDoc.RootElement;
 
-                    var succeeded = root.TryGetProperty("succeeded", out var succeededProp) && succeededProp.GetBoolean();
-                    var message = root.TryGetProperty("message", out var messageProp) ? messageProp.GetString() : null;
+                    var succeeded = (root.TryGetProperty("succeeded", out var succeededProp) || root.TryGetProperty("Succeeded", out succeededProp))
+                                    && succeededProp.GetBoolean();
+
+                    // Try to read messages array first (try both PascalCase and camelCase), then fall back to message
+                    string? message = null;
+                    JsonElement messagesProp;
+                    bool hasMessages = root.TryGetProperty("messages", out messagesProp) || root.TryGetProperty("Messages", out messagesProp);
+
+                    if (hasMessages && messagesProp.ValueKind == JsonValueKind.Array)
+                    {
+                        var messages = new List<string>();
+                        foreach (var msg in messagesProp.EnumerateArray())
+                        {
+                            if (msg.ValueKind == JsonValueKind.String)
+                            {
+                                messages.Add(msg.GetString() ?? "");
+                            }
+                        }
+                        message = string.Join("\n", messages);
+                    }
+                    else if (root.TryGetProperty("message", out var messageProp) || root.TryGetProperty("Message", out messageProp))
+                    {
+                        message = messageProp.GetString();
+                    }
+
                     var userId = "";
 
                     if (root.TryGetProperty("data", out var dataProp) && dataProp.TryGetProperty("userId", out var userIdProp))
@@ -207,11 +230,61 @@ public class HttpService : IHttpService
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                return new RegistrationResponseDto
+
+                _debugService.LogInfo($"❌ Registration failed with status: {response.StatusCode}");
+                _debugService.LogInfo($"📄 Response content: {errorContent}");
+
+                try
                 {
-                    Succeeded = false,
-                    Message = $"Registrierung fehlgeschlagen: {response.StatusCode}"
-                };
+                    var jsonDoc = JsonDocument.Parse(errorContent);
+                    var root = jsonDoc.RootElement;
+
+                    // Try to read messages array first (try both PascalCase and camelCase), then fall back to message
+                    string? message = null;
+                    JsonElement messagesProp;
+                    bool hasMessages = root.TryGetProperty("messages", out messagesProp) || root.TryGetProperty("Messages", out messagesProp);
+
+                    if (hasMessages && messagesProp.ValueKind == JsonValueKind.Array)
+                    {
+                        var messages = new List<string>();
+                        foreach (var msg in messagesProp.EnumerateArray())
+                        {
+                            if (msg.ValueKind == JsonValueKind.String)
+                            {
+                                messages.Add(msg.GetString() ?? "");
+                            }
+                        }
+                        message = string.Join("\n", messages);
+                        _debugService.LogInfo($"✅ Extracted messages from array: {message}");
+                    }
+                    else if (root.TryGetProperty("message", out var messageProp) || root.TryGetProperty("Message", out messageProp))
+                    {
+                        message = messageProp.GetString();
+                        _debugService.LogInfo($"✅ Extracted message: {message}");
+                    }
+                    else
+                    {
+                        _debugService.LogInfo($"⚠️ No messages or message property found in response");
+                    }
+
+                    var finalMessage = message ?? $"Registrierung fehlgeschlagen: {response.StatusCode}";
+                    _debugService.LogInfo($"🔔 Final message to display: {finalMessage}");
+
+                    return new RegistrationResponseDto
+                    {
+                        Succeeded = false,
+                        Message = finalMessage
+                    };
+                }
+                catch (Exception ex)
+                {
+                    _debugService.LogInfo($"⚠️ Error parsing error response: {ex.Message}");
+                    return new RegistrationResponseDto
+                    {
+                        Succeeded = false,
+                        Message = $"Registrierung fehlgeschlagen: {response.StatusCode}"
+                    };
+                }
             }
         }
         catch (Exception ex)

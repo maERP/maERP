@@ -19,9 +19,12 @@ using maERP.UI.Features.Warehouses.ViewModels;
 using maERP.UI.Services;
 using maERP.UI.Shared.ViewModels;
 using maERP.UI.Shared.Views;
-using TenantListViewModel = maERP.UI.Features.Tenants.ViewModels.TenantListViewModel;
-using TenantDetailViewModel = maERP.UI.Features.Tenants.ViewModels.TenantDetailViewModel;
-using TenantInputViewModel = maERP.UI.Features.Tenants.ViewModels.TenantInputViewModel;
+using SuperadminTenantsListViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminTenantsListViewModel;
+using SuperadminTenantsDetailViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminTenantsDetailViewModel;
+using SuperadminTenantsInputViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminTenantsInputViewModel;
+using SuperadminUserListViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminUserListViewModel;
+using SuperadminUserDetailViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminUserDetailViewModel;
+using SuperadminUserInputViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminUserInputViewModel;
 
 namespace maERP.UI;
 
@@ -51,6 +54,8 @@ public partial class App : Application
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<LoginViewModel>();
         services.AddSingleton<RegistrationViewModel>();
+        services.AddSingleton<ForgotPasswordViewModel>();
+        services.AddSingleton<ResetPasswordViewModel>();
         services.AddSingleton<TenantSelectorViewModel>();
 
         services.AddTransient<AiModelListViewModel>();
@@ -71,18 +76,18 @@ public partial class App : Application
         services.AddTransient<ProductListViewModel>();
         services.AddTransient<ProductDetailViewModel>();
         services.AddTransient<ProductInputViewModel>();
-        services.AddTransient<TenantListViewModel>();
-        services.AddTransient<TenantDetailViewModel>();
-        services.AddTransient<TenantInputViewModel>();
+        services.AddTransient<SuperadminTenantsListViewModel>();
+        services.AddTransient<SuperadminTenantsDetailViewModel>();
+        services.AddTransient<SuperadminTenantsInputViewModel>();
         services.AddTransient<SalesChannelListViewModel>();
         services.AddTransient<SalesChannelDetailViewModel>();
         services.AddTransient<SalesChannelInputViewModel>();
         services.AddTransient<TaxClassListViewModel>();
         services.AddTransient<TaxClassInputViewModel>();
         services.AddTransient<TaxClassDetailViewModel>();
-        services.AddTransient<UserListViewModel>();
-        services.AddTransient<UserDetailViewModel>();
-        services.AddTransient<UserInputViewModel>();
+        services.AddTransient<SuperadminUserListViewModel>();
+        services.AddTransient<SuperadminUserDetailViewModel>();
+        services.AddTransient<SuperadminUserInputViewModel>();
         services.AddTransient<WarehouseListViewModel>();
         services.AddTransient<WarehouseDetailViewModel>();
         services.AddTransient<WarehouseInputViewModel>();

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:StringConverters="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
              mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
-             x:Class="maERP.UI.Features.Tenants.Views.TenantDetailView">
+             x:Class="maERP.UI.Features.Superadmin.Views.SuperadminTenantsDetailView">
 
   <Grid RowDefinitions="Auto,*">
 

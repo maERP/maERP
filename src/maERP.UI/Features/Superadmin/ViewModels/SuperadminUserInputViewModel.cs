@@ -8,9 +8,9 @@ using maERP.Domain.Dtos.User;
 using maERP.UI.Services;
 using maERP.UI.Shared.ViewModels;
 
-namespace maERP.UI.Features.Administration.ViewModels;
+namespace maERP.UI.Features.Superadmin.ViewModels;
 
-public partial class UserInputViewModel : ViewModelBase
+public partial class SuperadminUserInputViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
@@ -68,7 +68,7 @@ public partial class UserInputViewModel : ViewModelBase
     public Action? GoBackAction { get; set; }
     public Func<string, Task>? NavigateToUserDetail { get; set; }
 
-    public UserInputViewModel(IHttpService httpService, IDebugService debugService)
+    public SuperadminUserInputViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
         _debugService = debugService;

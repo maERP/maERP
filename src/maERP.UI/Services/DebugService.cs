@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using maERP.UI.Shared.ViewModels;
 using maERP.UI.Shared.Views;
+using Trace = System.Diagnostics.Trace;
 
 namespace maERP.UI.Services;
 
@@ -19,25 +20,25 @@ public class DebugService : IDebugService
     public void LogDebug(string message)
     {
         LogMessage(DebugLevel.Debug, message);
-        Debug.WriteLine($"[DEBUG] {message}");
+        WriteLog("DEBUG", message);
     }
 
     public void LogInfo(string message)
     {
         LogMessage(DebugLevel.Info, message);
-        Debug.WriteLine($"[INFO] {message}");
+        WriteLog("INFO", message);
     }
 
     public void LogWarning(string message)
     {
         LogMessage(DebugLevel.Warning, message);
-        Debug.WriteLine($"[WARNING] {message}");
+        WriteLog("WARNING", message);
     }
 
     public void LogError(string message)
     {
         LogMessage(DebugLevel.Error, message);
-        Debug.WriteLine($"[ERROR] {message}");
+        WriteLog("ERROR", message);
     }
 
     public void LogError(Exception exception, string? message = null)
@@ -47,8 +48,24 @@ public class DebugService : IDebugService
             : exception.Message;
 
         LogMessage(DebugLevel.Error, errorMessage);
-        Debug.WriteLine($"[ERROR] {errorMessage}");
-        Debug.WriteLine($"Stack trace: {exception.StackTrace}");
+        WriteLog("ERROR", errorMessage);
+        WriteLog("ERROR", $"Stack trace: {exception.StackTrace}");
+    }
+
+    private void WriteLog(string level, string message)
+    {
+        var logMessage = $"[{level}] {message}";
+
+        // Write to Debug output (visible in IDE when debugger is attached)
+        Debug.WriteLine(logMessage);
+
+        // Write to Console output (visible in terminal/console)
+        Console.WriteLine(logMessage);
+
+        #if DEBUG
+        // In Debug builds, also write to System.Diagnostics.Trace
+        Trace.WriteLine(logMessage);
+        #endif
     }
 
     private void LogMessage(DebugLevel level, string message)

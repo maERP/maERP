@@ -4,19 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Dtos.User;
 using maERP.UI.Services;
 using maERP.UI.Shared.ViewModels;
+namespace maERP.UI.Features.Superadmin.ViewModels;
 
-namespace maERP.UI.Features.Tenants.ViewModels;
-
-public partial class TenantListViewModel : ViewModelBase
+public partial class SuperadminUserListViewModel : ViewModelBase
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
 
     [ObservableProperty]
-    private ObservableCollection<TenantListDto> tenants = new();
+    private ObservableCollection<UserListDto> users = new();
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShouldShowDataGrid))]
@@ -39,14 +38,14 @@ public partial class TenantListViewModel : ViewModelBase
     private int pageSize = 50;
 
     [ObservableProperty]
-    private TenantListDto? selectedTenant;
+    private UserListDto? selectedUser;
 
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
 
-    public Func<Guid, Task>? NavigateToTenantDetail { get; set; }
-    public Func<Task>? NavigateToTenantInput { get; set; }
+    public Func<string, Task>? NavigateToUserDetail { get; set; }
+    public Func<Task>? NavigateToCreateUser { get; set; }
 
-    public TenantListViewModel(IHttpService httpService, IDebugService debugService)
+    public SuperadminUserListViewModel(IHttpService httpService, IDebugService debugService)
     {
         _httpService = httpService;
         _debugService = debugService;
@@ -54,65 +53,66 @@ public partial class TenantListViewModel : ViewModelBase
 
     public async Task InitializeAsync()
     {
-        await LoadTenantsAsync();
+        await LoadUsersAsync();
     }
 
     [RelayCommand]
-    private async Task LoadTenantsAsync()
+    private async Task LoadUsersAsync()
     {
         IsLoading = true;
         ErrorMessage = string.Empty;
 
         try
         {
-            var result = await _httpService.GetPaginatedAsync<TenantListDto>("superadmin/tenants", CurrentPage, PageSize, SearchText, "Name Ascending");
+            var result = await _httpService.GetPaginatedAsync<UserListDto>("users", CurrentPage, PageSize, SearchText, "Lastname Ascending");
 
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
-                Tenants.Clear();
-                _debugService.LogWarning("GetPaginatedAsync returned null for tenants - not authenticated or missing server URL");
+                Users.Clear();
+                _debugService.LogWarning("GetPaginatedAsync returned null - not authenticated or no server URL");
             }
             else if (result.Succeeded && result.Data != null)
             {
-                Tenants.Clear();
-                foreach (var tenant in result.Data)
+                Users.Clear();
+                foreach (var user in result.Data)
                 {
-                    Tenants.Add(tenant);
+                    Users.Add(user);
                 }
                 TotalCount = result.TotalCount;
-                _debugService.LogInfo($"Loaded {Tenants.Count} tenants successfully");
+                _debugService.LogInfo($"Loaded {Users.Count} users successfully");
             }
             else
             {
-                ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Tenants";
-                Tenants.Clear();
-                _debugService.LogError($"Failed to load tenants: {ErrorMessage}");
+                ErrorMessage = result.Messages?.FirstOrDefault() ?? "Fehler beim Laden der Benutzer";
+                Users.Clear();
+                _debugService.LogError($"Failed to load users: {ErrorMessage}");
             }
         }
         catch (Exception ex)
         {
-            ErrorMessage = $"Fehler beim Laden der Tenants: {ex.Message}";
-            Tenants.Clear();
-            _debugService.LogError(ex, "Exception loading tenants");
+            ErrorMessage = $"Fehler beim Laden der Benutzer: {ex.Message}";
+            Users.Clear();
+            _debugService.LogError($"Exception loading users: {ex}");
         }
         finally
         {
             IsLoading = false;
+            _debugService.LogDebug("LoadUsersAsync completed");
         }
     }
 
     [RelayCommand]
-    private async Task SearchTenantsAsync()
+    private async Task SearchUsersAsync()
     {
         CurrentPage = 0;
-        await LoadTenantsAsync();
+        await LoadUsersAsync();
     }
 
     [RelayCommand]
     public async Task RefreshAsync()
     {
-        await LoadTenantsAsync();
+        await LoadUsersAsync();
     }
 
     [RelayCommand]
@@ -121,7 +121,7 @@ public partial class TenantListViewModel : ViewModelBase
         if ((CurrentPage + 1) * PageSize < TotalCount)
         {
             CurrentPage++;
-            await LoadTenantsAsync();
+            await LoadUsersAsync();
         }
     }
 
@@ -131,35 +131,31 @@ public partial class TenantListViewModel : ViewModelBase
         if (CurrentPage > 0)
         {
             CurrentPage--;
-            await LoadTenantsAsync();
+            await LoadUsersAsync();
         }
     }
 
     [RelayCommand]
-    private void SelectTenant(TenantListDto? tenant)
+    private void SelectUser(UserListDto? user)
     {
-        SelectedTenant = tenant;
+        SelectedUser = user;
     }
 
     [RelayCommand]
-    private async Task ViewTenantDetails(TenantListDto? tenant)
+    private async Task ViewUserDetails(UserListDto? user)
     {
-        if (tenant == null || NavigateToTenantDetail == null)
-        {
-            return;
-        }
+        if (user == null || NavigateToUserDetail == null) return;
 
-        SelectedTenant = tenant;
-        await NavigateToTenantDetail(tenant.Id);
+        SelectedUser = user;
+        await NavigateToUserDetail(user.Id);
     }
 
     [RelayCommand]
-    private async Task CreateTenantAsync()
+    private async Task CreateNewUser()
     {
-        if (NavigateToTenantInput != null)
-        {
-            await NavigateToTenantInput();
-        }
+        if (NavigateToCreateUser == null) return;
+
+        await NavigateToCreateUser();
     }
 
     public bool CanGoNext => (CurrentPage + 1) * PageSize < TotalCount;

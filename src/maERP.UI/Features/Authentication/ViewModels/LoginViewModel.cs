@@ -133,8 +133,15 @@ public partial class LoginViewModel : ViewModelBase
         OnShowRegistration?.Invoke();
     }
 
+    [RelayCommand]
+    private void ShowForgotPassword()
+    {
+        OnShowForgotPassword?.Invoke();
+    }
+
     public event Action? OnLoginSuccessful;
     public event Action? OnShowRegistration;
+    public event Action? OnShowForgotPassword;
 
     public async Task<bool> TryAutoLoginAsync()
     {
