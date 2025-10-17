@@ -9,10 +9,6 @@ public class TenantInputDto : ITenantInputModel
     [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
 
-    [Required]
-    [MaxLength(50)]
-    public string TenantCode { get; set; } = string.Empty;
-
     [MaxLength(500)]
     public string Description { get; set; } = string.Empty;
 

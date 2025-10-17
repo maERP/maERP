@@ -157,7 +157,6 @@ public class UserDetailHandler : IRequestHandler<UserDetailQuery, Result<UserDet
                         {
                             TenantId = assignment.TenantId,
                             TenantName = assignment.Tenant.Name,
-                            TenantCode = assignment.Tenant.TenantCode,
                             IsDefault = assignment.IsDefault,
                             RoleManageUser = assignment.RoleManageUser
                         });

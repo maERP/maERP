@@ -11,9 +11,6 @@ public class TenantUpsertDto
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
 
-    [JsonPropertyName("tenantCode")]
-    public string TenantCode { get; set; } = string.Empty;
-
     [JsonPropertyName("description")]
     public string? Description { get; set; }
 

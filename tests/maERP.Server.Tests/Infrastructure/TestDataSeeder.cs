@@ -75,7 +75,6 @@ public static class TestDataSeeder
         {
             Id = TenantConstants.TestTenant1Id,
             Name = "Test Tenant 1",
-            TenantCode = "TEST1",
             IsActive = true,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
@@ -85,7 +84,6 @@ public static class TestDataSeeder
         {
             Id = TenantConstants.TestTenant2Id,
             Name = "Test Tenant 2",
-            TenantCode = "TEST2",
             IsActive = true,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow
@@ -95,7 +93,6 @@ public static class TestDataSeeder
         {
             Id = TenantConstants.TestTenant3Id,
             Name = "Test Tenant 3",
-            TenantCode = "TEST3",
             IsActive = true,
             DateCreated = DateTime.UtcNow,
             DateModified = DateTime.UtcNow

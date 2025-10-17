@@ -333,9 +333,6 @@
 																					   Foreground="#2E7D32"/>
 																		</Border>
 																	</StackPanel>
-																	<TextBlock Text="{Binding TenantCode}"
-																			   FontSize="10"
-																			   Opacity="0.6"/>
 																</StackPanel>
 
 																<!-- Management Buttons -->
@@ -472,9 +469,6 @@
 																	<TextBlock Text="{Binding Name}"
 																			   FontWeight="SemiBold"
 																			   FontSize="12"/>
-																	<TextBlock Text="{Binding TenantCode}"
-																			   FontSize="10"
-																			   Opacity="0.6"/>
 																</StackPanel>
 
 																<!-- Add Button -->
@@ -585,9 +579,6 @@
 																		   Foreground="#2E7D32"/>
 															</Border>
 														</StackPanel>
-														<TextBlock Text="{Binding TenantCode, StringFormat=Code: {0}}"
-																   FontSize="12"
-																   Opacity="0.7"/>
 													</StackPanel>
 
 													<!-- Status Icon -->

@@ -40,6 +40,9 @@ public partial class MainViewModel : ViewModelBase
     private bool isAuthenticated;
 
     [ObservableProperty]
+    private bool showMainApplication;
+
+    [ObservableProperty]
     private ViewModelBase? currentView;
 
     [ObservableProperty]
@@ -55,6 +58,7 @@ public partial class MainViewModel : ViewModelBase
     public RegistrationViewModel RegistrationViewModel { get; }
     public ForgotPasswordViewModel ForgotPasswordViewModel { get; }
     public ResetPasswordViewModel ResetPasswordViewModel { get; }
+    public TenantSetupViewModel TenantSetupViewModel { get; }
     
     private DashboardViewModel? _dashboardViewModel;
     private OrderListViewModel? _orderListViewModel;
@@ -100,6 +104,7 @@ public partial class MainViewModel : ViewModelBase
                         RegistrationViewModel registrationViewModel,
                         ForgotPasswordViewModel forgotPasswordViewModel,
                         ResetPasswordViewModel resetPasswordViewModel,
+                        TenantSetupViewModel tenantSetupViewModel,
                         IServiceProvider serviceProvider,
                         IDebugService debugService)
     {
@@ -110,6 +115,7 @@ public partial class MainViewModel : ViewModelBase
         RegistrationViewModel = registrationViewModel;
         ForgotPasswordViewModel = forgotPasswordViewModel;
         ResetPasswordViewModel = resetPasswordViewModel;
+        TenantSetupViewModel = tenantSetupViewModel;
 
         // Set initial view to prevent null reference when UI renders before InitializeAsync completes
         // This ensures the login view is displayed immediately, especially important for Release builds
@@ -123,6 +129,8 @@ public partial class MainViewModel : ViewModelBase
         ForgotPasswordViewModel.OnBackToLogin += OnBackToLogin;
         ResetPasswordViewModel.OnBackToLogin += OnBackToLogin;
         ResetPasswordViewModel.OnPasswordResetSuccess += OnPasswordResetSuccess;
+        TenantSetupViewModel.OnTenantCreated += OnTenantCreated;
+        TenantSetupViewModel.OnLogout += OnTenantSetupLogout;
 
         InitializeTheme();
         _ = InitializeAsync();
@@ -137,14 +145,46 @@ public partial class MainViewModel : ViewModelBase
         {
             IsAuthenticated = true;
             UpdateRoleFlags();
-            CurrentView = await GetDashboardViewModelAsync();
-            SelectedMenuItem = "Dashboard";
+
+            // Check for tenants
+            var availableTenants = _authenticationService.AvailableTenants;
+            if (availableTenants != null && availableTenants.Count > 0)
+            {
+                ShowMainApplication = true;
+                CurrentView = await GetDashboardViewModelAsync();
+                SelectedMenuItem = "Dashboard";
+            }
+            else
+            {
+                ShowMainApplication = false;
+                CurrentView = TenantSetupViewModel;
+                SelectedMenuItem = "TenantSetup";
+            }
         }
         else
         {
             IsAuthenticated = _authenticationService.IsAuthenticated;
             UpdateRoleFlags();
-            CurrentView = IsAuthenticated ? await GetDashboardViewModelAsync() : LoginViewModel;
+
+            if (IsAuthenticated)
+            {
+                var availableTenants = _authenticationService.AvailableTenants;
+                if (availableTenants != null && availableTenants.Count > 0)
+                {
+                    ShowMainApplication = true;
+                    CurrentView = await GetDashboardViewModelAsync();
+                }
+                else
+                {
+                    ShowMainApplication = false;
+                    CurrentView = TenantSetupViewModel;
+                }
+            }
+            else
+            {
+                ShowMainApplication = false;
+                CurrentView = LoginViewModel;
+            }
         }
     }
 
@@ -261,8 +301,25 @@ public partial class MainViewModel : ViewModelBase
     {
         IsAuthenticated = true;
         UpdateRoleFlags();
-        CurrentView = await GetDashboardViewModelAsync();
-        SelectedMenuItem = "Dashboard";
+
+        // Check if user has any tenants
+        var availableTenants = _authenticationService.AvailableTenants;
+        if (availableTenants == null || availableTenants.Count == 0)
+        {
+            // No tenants available - show tenant setup view without main application UI
+            _debugService.LogInfo("User has no tenants - navigating to tenant setup");
+            ShowMainApplication = false;
+            CurrentView = TenantSetupViewModel;
+            SelectedMenuItem = "TenantSetup";
+        }
+        else
+        {
+            // User has tenants - navigate to dashboard with main application UI
+            _debugService.LogInfo($"User has {availableTenants.Count} tenant(s) - navigating to dashboard");
+            ShowMainApplication = true;
+            CurrentView = await GetDashboardViewModelAsync();
+            SelectedMenuItem = "Dashboard";
+        }
     }
 
     private void OnShowRegistration()
@@ -297,6 +354,7 @@ public partial class MainViewModel : ViewModelBase
     {
         await _authenticationService.LogoutAsync();
         IsAuthenticated = false;
+        ShowMainApplication = false;
         IsSuperAdmin = false;
         CurrentView = LoginViewModel;
         SelectedMenuItem = "";
@@ -1151,6 +1209,23 @@ public partial class MainViewModel : ViewModelBase
         
         CurrentView = _manufacturerInputViewModel;
         SelectedMenuItem = "ManufacturerInput";
+    }
+
+    private async void OnTenantCreated()
+    {
+        _debugService.LogInfo("Tenant created successfully - reloading user session");
+
+        // Logout and navigate back to login to refresh tenant list
+        await LogoutAsync();
+
+        // Optionally, show a success message or automatically re-login
+        CurrentView = LoginViewModel;
+    }
+
+    private async void OnTenantSetupLogout()
+    {
+        _debugService.LogInfo("User logged out from tenant setup");
+        await LogoutAsync();
     }
 
     [RelayCommand]

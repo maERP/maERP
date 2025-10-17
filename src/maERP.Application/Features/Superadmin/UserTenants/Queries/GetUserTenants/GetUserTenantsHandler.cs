@@ -79,7 +79,6 @@ public class GetUserTenantsHandler : IRequestHandler<GetUserTenantsQuery, Result
             {
                 TenantId = ut.TenantId,
                 TenantName = ut.Tenant!.Name,
-                TenantCode = ut.Tenant.TenantCode,
                 IsDefault = ut.IsDefault,
                 RoleManageUser = ut.RoleManageUser
             })

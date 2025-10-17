@@ -11,9 +11,6 @@ public abstract class TenantDtoBase
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
 
-    [JsonPropertyName("tenantCode")]
-    public string TenantCode { get; set; } = string.Empty;
-
     [JsonPropertyName("description")]
     public string? Description { get; set; }
 
@@ -45,7 +42,7 @@ public abstract class TenantDtoBase
     public string DisplayName => Name;
 
     [JsonIgnore]
-    public string Identifier => string.IsNullOrWhiteSpace(TenantCode) ? Name : TenantCode;
+    public string Identifier => Name;
 
     [JsonIgnore]
     public DateTime CreatedAt => DateCreated;

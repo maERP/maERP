@@ -232,7 +232,6 @@ public partial class SuperadminUserDetailViewModel : ViewModelBase
                 {
                     TenantId = tenant.Id,
                     TenantName = tenant.Name,
-                    TenantCode = tenant.TenantCode,
                     IsDefault = false,
                     RoleManageUser = false
                 };

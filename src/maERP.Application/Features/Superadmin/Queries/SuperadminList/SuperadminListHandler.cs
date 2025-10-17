@@ -31,7 +31,6 @@ public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, Pagina
         if (!string.IsNullOrEmpty(request.SearchString))
         {
             query = query.Where(t => t.Name.Contains(request.SearchString) ||
-                                   t.TenantCode.Contains(request.SearchString) ||
                                    t.Description.Contains(request.SearchString) ||
                                    t.ContactEmail.Contains(request.SearchString));
         }
@@ -52,7 +51,6 @@ public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, Pagina
             {
                 Id = t.Id,
                 Name = t.Name,
-                TenantCode = t.TenantCode,
                 Description = t.Description,
                 IsActive = t.IsActive,
                 ContactEmail = t.ContactEmail,

@@ -22,20 +22,12 @@ public class SuperadminUpdateCommandTests : TenantIsolatedTestBase
 
     private SuperadminUpdateCommand CreateValidUpdateCommand(Guid? id = null)
     {
-        var uniqueSuffix = Guid.NewGuid().ToString("N")[..6].ToUpper();
         var tenantId = id ?? TenantConstants.TestTenant1Id;
-
-        // Use the same codes as seeded tenants to avoid conflicts
-        var tenantCode = tenantId == TenantConstants.TestTenant1Id ? "TEST1" :
-                        tenantId == TenantConstants.TestTenant2Id ? "TEST2" :
-                        tenantId == TenantConstants.TestTenant3Id ? "TEST3" :
-                        $"UPD{uniqueSuffix}";
 
         return new SuperadminUpdateCommand
         {
             Id = tenantId,
             Name = "Updated Tenant",
-            TenantCode = tenantCode,
             Description = "Updated description",
             IsActive = true,
             ContactEmail = "updated@tenant.com"
@@ -114,21 +106,6 @@ public class SuperadminUpdateCommandTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task UpdateTenant_WithEmptyTenantCode_ShouldReturnBadRequest()
-    {
-        await SeedTestDataAsync();
-        SetSuperadminAuthentication();
-        var command = CreateValidUpdateCommand();
-        command.TenantCode = "";
-
-        var response = await PutAsJsonAsync($"/api/v1/superadmin/tenants/{TenantConstants.TestTenant1Id}", command);
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var responseContent = await ReadResponseStringAsync(response);
-        TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("TenantCode"));
-    }
-
-    [Fact]
     public async Task UpdateTenant_WithInvalidEmail_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -156,21 +133,6 @@ public class SuperadminUpdateCommandTests : TenantIsolatedTestBase
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var responseContent = await ReadResponseStringAsync(response);
         TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("Name"));
-    }
-
-    [Fact]
-    public async Task UpdateTenant_WithTooLongTenantCode_ShouldReturnBadRequest()
-    {
-        await SeedTestDataAsync();
-        SetSuperadminAuthentication();
-        var command = CreateValidUpdateCommand();
-        command.TenantCode = new string('A', 51); // Exceeds 50 character limit
-
-        var response = await PutAsJsonAsync($"/api/v1/superadmin/tenants/{TenantConstants.TestTenant1Id}", command);
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var responseContent = await ReadResponseStringAsync(response);
-        TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("TenantCode"));
     }
 
     [Fact]
@@ -221,23 +183,6 @@ public class SuperadminUpdateCommandTests : TenantIsolatedTestBase
         var response = await Client.PostAsync($"/api/v1/superadmin/tenants/{TenantConstants.TestTenant1Id}", new StringContent(""));
 
         TestAssertions.AssertEqual(HttpStatusCode.MethodNotAllowed, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task UpdateTenant_WithMismatchedTenantCode_ShouldReturnBadRequest()
-    {
-        await SeedTestDataAsync();
-        SetSuperadminAuthentication();
-        var command = CreateValidUpdateCommand(TenantConstants.TestTenant1Id);
-
-        // URL ID is TestTenant2Id, but command has tenant code for TestTenant1Id
-        // This creates a conflict because TEST1 already exists for another tenant
-        var response = await PutAsJsonAsync($"/api/v1/superadmin/tenants/{TenantConstants.TestTenant2Id}", command);
-
-        // Should return BadRequest due to tenant code conflict
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var responseContent = await ReadResponseStringAsync(response);
-        TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("same code already exists"));
     }
 
     [Fact]
@@ -394,24 +339,6 @@ public class SuperadminUpdateCommandTests : TenantIsolatedTestBase
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var responseContent = await ReadResponseStringAsync(response);
         TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("Name"));
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("  ")]
-    public async Task UpdateTenant_WithWhitespaceOnlyTenantCode_ShouldReturnBadRequest(string tenantCode)
-    {
-        await SeedTestDataAsync();
-        SetSuperadminAuthentication();
-        var command = CreateValidUpdateCommand();
-        command.TenantCode = tenantCode;
-
-        var response = await PutAsJsonAsync($"/api/v1/superadmin/tenants/{TenantConstants.TestTenant1Id}", command);
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var responseContent = await ReadResponseStringAsync(response);
-        TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("TenantCode"));
     }
 
     [Fact]

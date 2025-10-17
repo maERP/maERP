@@ -18,19 +18,11 @@ public class SuperadminUpdateValidator : TenantBaseValidator<SuperadminUpdateCom
 
         RuleFor(q => q)
             .MustAsync(TenantExistsAsync).WithMessage("Tenant not found.");
-
-        RuleFor(q => q)
-            .MustAsync(IsUniqueCodeAsync).WithMessage("Tenant with the same code already exists.");
     }
 
     private async Task<bool> TenantExistsAsync(SuperadminUpdateCommand command, CancellationToken cancellationToken)
     {
         var tenant = await _tenantRepository.GetByIdAsync(command.Id);
         return tenant != null;
-    }
-
-    private async Task<bool> IsUniqueCodeAsync(SuperadminUpdateCommand command, CancellationToken cancellationToken)
-    {
-        return !await _tenantRepository.TenantCodeExistsAsync(command.TenantCode, command.Id);
     }
 }

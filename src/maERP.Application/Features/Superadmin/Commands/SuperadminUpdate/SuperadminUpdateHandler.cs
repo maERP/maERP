@@ -55,7 +55,6 @@ public class SuperadminUpdateHandler : IRequestHandler<SuperadminUpdateCommand, 
             }
 
             tenantToUpdate.Name = request.Name;
-            tenantToUpdate.TenantCode = request.TenantCode;
             tenantToUpdate.Description = request.Description;
             tenantToUpdate.IsActive = request.IsActive;
             tenantToUpdate.ContactEmail = request.ContactEmail;

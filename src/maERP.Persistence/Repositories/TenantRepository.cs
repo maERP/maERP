@@ -70,6 +70,7 @@ public class TenantRepository : ITenantRepository
 
     public async Task<bool> IsUniqueAsync(Tenant entity, Guid? id = null)
     {
+        // Tenants are unique by Name
         var query = _context.Tenant.AsQueryable();
 
         if (id.HasValue)
@@ -77,24 +78,7 @@ public class TenantRepository : ITenantRepository
             query = query.Where(t => t.Id != id.Value);
         }
 
-        return !await query.AnyAsync(t => t.TenantCode == entity.TenantCode);
-    }
-
-    public async Task<Tenant?> GetByTenantCodeAsync(string tenantCode)
-    {
-        return await _context.Tenant
-            .Include(t => t.UserTenants)
-            .FirstOrDefaultAsync(t => t.TenantCode == tenantCode);
-    }
-
-    public async Task<bool> TenantCodeExistsAsync(string tenantCode)
-    {
-        return await _context.Tenant.AnyAsync(t => t.TenantCode == tenantCode);
-    }
-
-    public async Task<bool> TenantCodeExistsAsync(string tenantCode, Guid excludeId)
-    {
-        return await _context.Tenant.AnyAsync(t => t.TenantCode == tenantCode && t.Id != excludeId);
+        return !await query.AnyAsync(t => t.Name == entity.Name);
     }
 
     public async Task<IEnumerable<Tenant>> GetActivTenantsAsync()

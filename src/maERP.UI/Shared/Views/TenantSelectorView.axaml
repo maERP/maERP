@@ -32,7 +32,7 @@
               <StackPanel>
                 <TextBlock Text="{Binding Name}" 
                            FontWeight="SemiBold"/>
-                <TextBlock Text="{Binding TenantCode}" 
+                <TextBlock Text="{Binding Name}" 
                            FontSize="11" 
                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
               </StackPanel>

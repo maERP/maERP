@@ -35,7 +35,6 @@ public class SuperadminDetailHandler : IRequestHandler<SuperadminDetailQuery, Re
         {
             Id = tenant.Id,
             Name = tenant.Name,
-            TenantCode = tenant.TenantCode,
             Description = tenant.Description,
             IsActive = tenant.IsActive,
             ContactEmail = tenant.ContactEmail,

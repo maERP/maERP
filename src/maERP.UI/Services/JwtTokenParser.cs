@@ -26,7 +26,7 @@ public static class JwtTokenParser
                 {
                     Id = t.Id,
                     Name = t.Name,
-                    TenantCode = t.TenantCode
+                    // TenantCode removed
                 }).ToList() ?? new List<TenantListDto>();
             }
             else
@@ -116,6 +116,6 @@ public static class JwtTokenParser
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string TenantCode { get; set; } = string.Empty;
+        // TenantCode removed
     }
 }

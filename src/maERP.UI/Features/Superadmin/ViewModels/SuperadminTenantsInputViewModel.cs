@@ -245,7 +245,6 @@ public partial class SuperadminTenantsInputViewModel : ViewModelBase
         return new TenantUpsertDto
         {
             Id = IsEditMode ? TenantId : null,
-            TenantCode = Identifier.Trim(),
             Name = DisplayName.Trim(),
             Domain = normalizedDomain,
             AdminEmail = normalizedAdminEmail,

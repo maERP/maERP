@@ -26,8 +26,7 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         var uniqueSuffix = suffix ?? Guid.NewGuid().ToString("N")[..6].ToUpper();
         return new SuperadminCreateCommand
         {
-            Name = "Test Tenant",
-            TenantCode = $"TEST{uniqueSuffix}",
+            Name = $"Test Tenant {uniqueSuffix}",
             Description = "A test tenant for unit testing",
             IsActive = true,
             ContactEmail = "test@tenant.com"
@@ -40,7 +39,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         await SeedTestDataAsync();
         SetSuperadminAuthentication(); // Test environment requires explicit role setting
         var command = CreateValidSuperadminCommand();
-        command.TenantCode = "TEST_UNAUTH"; // Unique code to avoid conflicts
 
         var response = await PostAsJsonAsync("/api/v1/superadmin/tenants", command);
 
@@ -56,7 +54,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         SimulateAuthenticatedRequest();
         SetTestUserRoles("User"); // Regular user role instead of Superadmin
         var command = CreateValidSuperadminCommand();
-        command.TenantCode = "TEST_ROLE"; // Unique code
 
         var response = await PostAsJsonAsync("/api/v1/superadmin/tenants", command);
 
@@ -95,21 +92,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task CreateTenant_WithEmptyTenantCode_ShouldReturnBadRequest()
-    {
-        await SeedTestDataAsync();
-        SetSuperadminAuthentication();
-        var command = CreateValidSuperadminCommand();
-        command.TenantCode = "";
-
-        var response = await PostAsJsonAsync("/api/v1/superadmin/tenants", command);
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var responseContent = await ReadResponseStringAsync(response);
-        TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("TenantCode"));
-    }
-
-    [Fact]
     public async Task CreateTenant_WithInvalidEmail_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();
@@ -137,21 +119,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
         var responseContent = await ReadResponseStringAsync(response);
         TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("Name"));
-    }
-
-    [Fact]
-    public async Task CreateTenant_WithTooLongTenantCode_ShouldReturnBadRequest()
-    {
-        await SeedTestDataAsync();
-        SetSuperadminAuthentication();
-        var command = CreateValidSuperadminCommand();
-        command.TenantCode = new string('A', 51); // Exceeds 50 character limit
-
-        var response = await PostAsJsonAsync("/api/v1/superadmin/tenants", command);
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var responseContent = await ReadResponseStringAsync(response);
-        TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("TenantCode"));
     }
 
     [Fact]
@@ -224,21 +191,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task CreateTenant_WithNullTenantCode_ShouldReturnBadRequest()
-    {
-        await SeedTestDataAsync();
-        SetSuperadminAuthentication();
-        var command = CreateValidSuperadminCommand();
-        command.TenantCode = null!;
-
-        var response = await PostAsJsonAsync("/api/v1/superadmin/tenants", command);
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var responseContent = await ReadResponseStringAsync(response);
-        TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("TenantCode"));
-    }
-
-    [Fact]
     public async Task CreateTenant_WithInactiveStatus_ShouldBeValid()
     {
         await SeedTestDataAsync();
@@ -278,7 +230,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         var command = new SuperadminCreateCommand
         {
             Name = "Test Tenant",
-            TenantCode = "TEST_NOMAIL", // Unique code
             Description = "A test tenant for unit testing",
             IsActive = true,
             ContactEmail = "valid@email.com" // Valid email is required
@@ -323,7 +274,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         await SeedTestDataAsync();
         SetSuperadminAuthentication();
         var command = CreateValidSuperadminCommand();
-        command.TenantCode = "TEST_SEC"; // Unique code
 
         var response = await PostAsJsonAsync("/api/v1/superadmin/tenants", command);
 
@@ -374,24 +324,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("Name"));
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("  ")]
-    public async Task CreateTenant_WithWhitespaceOnlyTenantCode_ShouldReturnBadRequest(string tenantCode)
-    {
-        await SeedTestDataAsync();
-        SetSuperadminAuthentication();
-        var command = CreateValidSuperadminCommand();
-        command.TenantCode = tenantCode;
-
-        var response = await PostAsJsonAsync("/api/v1/superadmin/tenants", command);
-
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var responseContent = await ReadResponseStringAsync(response);
-        TestAssertions.AssertTrue(responseContent.Contains("\"Succeeded\":false") || responseContent.Contains("validation") || responseContent.Contains("TenantCode"));
-    }
-
     [Fact]
     public async Task CreateTenant_WithValidMinimalData_ShouldSucceedWhenAuthenticated()
     {
@@ -400,7 +332,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         var command = new SuperadminCreateCommand
         {
             Name = "Test Minimal",
-            TenantCode = "TESTMIN", // Longer code that definitely meets requirements
             IsActive = true,
             ContactEmail = "test@minimal.com" // Valid email is required due to data annotations
         };

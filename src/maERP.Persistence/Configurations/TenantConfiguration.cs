@@ -15,7 +15,7 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
                 Id = TenantConstants.DefaultTenantId,
                 Name = "Default Tenant",
                 Description = "Default tenant for initial setup",
-                TenantCode = "DEFAULT",
+                // TenantCode removed
                 IsActive = true,
                 ContactEmail = "admin@example.com"
             }
@@ -25,12 +25,7 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(q => q.TenantCode)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        builder.HasIndex(q => q.TenantCode)
-            .IsUnique();
+        // TenantCode configuration removed
 
         builder.Property(q => q.Description)
             .HasMaxLength(500);

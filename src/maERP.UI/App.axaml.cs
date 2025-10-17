@@ -56,6 +56,7 @@ public partial class App : Application
         services.AddSingleton<RegistrationViewModel>();
         services.AddSingleton<ForgotPasswordViewModel>();
         services.AddSingleton<ResetPasswordViewModel>();
+        services.AddSingleton<TenantSetupViewModel>();
         services.AddSingleton<TenantSelectorViewModel>();
 
         services.AddTransient<AiModelListViewModel>();

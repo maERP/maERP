@@ -94,7 +94,6 @@ public class UserTenantRepository : IUserTenantRepository
             {
                 Id = ut.Tenant!.Id,
                 Name = ut.Tenant.Name,
-                TenantCode = ut.Tenant.TenantCode,
                 Description = ut.Tenant.Description,
                 IsActive = ut.Tenant.IsActive,
                 ContactEmail = ut.Tenant.ContactEmail,

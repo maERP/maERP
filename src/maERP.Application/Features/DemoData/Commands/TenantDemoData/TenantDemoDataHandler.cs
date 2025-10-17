@@ -34,20 +34,19 @@ public class TenantDemoDataHandler : IRequestHandler<TenantDemoDataCommand, Resu
         {
             // Check if demo tenants already exist
             var existingTenant1 = await _tenantRepository.Entities
-                .FirstOrDefaultAsync(t => t.TenantCode == "DEMO1", cancellationToken);
+                .FirstOrDefaultAsync(t => t.Name == "Demo Tenant 1", cancellationToken);
             var existingTenant2 = await _tenantRepository.Entities
-                .FirstOrDefaultAsync(t => t.TenantCode == "DEMO2", cancellationToken);
+                .FirstOrDefaultAsync(t => t.Name == "Demo Tenant 2", cancellationToken);
 
             if (existingTenant1 != null || existingTenant2 != null)
             {
-                return Result<string>.Fail("Demo tenants with codes DEMO1 or DEMO2 already exist.");
+                return Result<string>.Fail("Demo tenants 'Demo Tenant 1' or 'Demo Tenant 2' already exist.");
             }
 
             // Create first tenant
             var tenant1 = new TenantEntity
             {
                 Name = "Demo Tenant 1",
-                TenantCode = "DEMO1",
                 Description = "First demo tenant for testing multi-tenancy",
                 IsActive = true,
                 ContactEmail = "demo1@example.com"
@@ -59,7 +58,6 @@ public class TenantDemoDataHandler : IRequestHandler<TenantDemoDataCommand, Resu
             var tenant2 = new TenantEntity
             {
                 Name = "Demo Tenant 2",
-                TenantCode = "DEMO2",
                 Description = "Second demo tenant for testing multi-tenancy",
                 IsActive = true,
                 ContactEmail = "demo2@example.com"

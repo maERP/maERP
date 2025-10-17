@@ -179,8 +179,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         var tenantsClaim = JsonSerializer.Serialize(availableTenants.Select(t => new
         {
             Id = t.Id,
-            Name = t.Name,
-            TenantCode = t.TenantCode
+            Name = t.Name
         }));
 
 #nullable disable

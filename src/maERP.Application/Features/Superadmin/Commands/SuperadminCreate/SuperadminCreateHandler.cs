@@ -20,8 +20,8 @@ public class SuperadminCreateHandler : IRequestHandler<SuperadminCreateCommand, 
 
     public async Task<Result<Guid>> Handle(SuperadminCreateCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Creating new tenant with name: {Name}, code: {TenantCode}",
-            request.Name, request.TenantCode);
+        _logger.LogInformation("Creating new tenant with name: {Name}",
+            request.Name);
 
         var result = new Result<Guid>();
 
@@ -46,7 +46,6 @@ public class SuperadminCreateHandler : IRequestHandler<SuperadminCreateCommand, 
             var tenantToCreate = new Domain.Entities.Tenant
             {
                 Name = request.Name,
-                TenantCode = request.TenantCode,
                 Description = request.Description,
                 IsActive = request.IsActive,
                 ContactEmail = request.ContactEmail

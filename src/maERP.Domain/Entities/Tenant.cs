@@ -13,10 +13,6 @@ public class Tenant : BaseEntityWithoutTenant, IBaseEntityWithoutTenant
     public string Description { get; set; } = string.Empty;
 
     [Required]
-    [MaxLength(50)]
-    public string TenantCode { get; set; } = string.Empty;
-
-    [Required]
     public bool IsActive { get; set; } = true;
 
     [MaxLength(200)]

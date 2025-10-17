@@ -1,0 +1,132 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:maERP.UI.Features.Authentication.ViewModels"
+             xmlns:StringConverters="clr-namespace:Avalonia.Data.Converters;assembly=Avalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="maERP.UI.Features.Authentication.Views.TenantSetupView"
+             x:DataType="vm:TenantSetupViewModel">
+
+  <Grid RowDefinitions="*,Auto,*" ColumnDefinitions="*,Auto,*">
+
+    <!-- Centered Content -->
+    <Border Grid.Row="1" Grid.Column="1"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="12"
+            Padding="48"
+            MinWidth="600"
+            MaxWidth="700">
+
+      <StackPanel Spacing="24">
+
+        <!-- Header -->
+        <StackPanel Spacing="12" HorizontalAlignment="Center">
+          <TextBlock Text="Willkommen bei maERP!"
+                     FontSize="32"
+                     FontWeight="SemiBold"
+                     Foreground="{DynamicResource ContentViewHeadingBrush}"
+                     HorizontalAlignment="Center"/>
+          <TextBlock Text="Um loszulegen, erstelle bitte deinen ersten Mandanten"
+                     FontSize="16"
+                     Foreground="{DynamicResource ContentViewSubheadingBrush}"
+                     HorizontalAlignment="Center"
+                     TextAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Info Box -->
+        <Border Background="{DynamicResource SystemFillColorAttentionBackgroundBrush}"
+                BorderBrush="{DynamicResource SystemFillColorAttentionBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="20">
+          <StackPanel Spacing="8">
+            <TextBlock Text="Was ist ein Mandant?"
+                       FontWeight="SemiBold"
+                       FontSize="14"
+                       Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
+            <TextBlock Text="Ein Mandant ist eine eigenständige Organisationseinheit in maERP. Jeder Mandant hat seine eigenen Daten, Kunden, Produkte und Einstellungen. Du kannst mehrere Mandanten verwalten, z.B. für verschiedene Firmen oder Geschäftsbereiche."
+                       FontSize="13"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource OnSurfaceBrush}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Error Message -->
+        <Border Background="#FFF3CD"
+                BorderBrush="#D6B656"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="20"
+                IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+          <TextBlock Text="{Binding ErrorMessage}"
+                     Foreground="#856404"
+                     TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- Loading Indicator -->
+        <StackPanel IsVisible="{Binding IsSaving}"
+                    HorizontalAlignment="Center"
+                    Spacing="16">
+          <ProgressBar IsIndeterminate="True" Width="300"/>
+          <TextBlock Text="Mandant wird erstellt..."
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                     HorizontalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Form -->
+        <StackPanel Spacing="20" IsVisible="{Binding ShouldShowContent}">
+
+          <!-- Tenant Name -->
+          <StackPanel Spacing="8">
+            <TextBlock Text="Mandantenname *"
+                       FontWeight="SemiBold"
+                       FontSize="14"/>
+            <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Watermark="z.B. Meine Firma GmbH"
+                     CornerRadius="6"
+                     Padding="12,10"
+                     FontSize="14"/>
+            <TextBlock Text="Name, der in der Anwendung angezeigt wird"
+                       FontSize="12"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+          </StackPanel>
+
+        </StackPanel>
+
+        <!-- Action Buttons -->
+        <StackPanel Orientation="Horizontal"
+                    Spacing="12"
+                    HorizontalAlignment="Center"
+                    IsVisible="{Binding ShouldShowContent}">
+          <Button Content="Abmelden"
+                  Command="{Binding LogoutCommand}"
+                  Padding="20,12"
+                  MinWidth="120"
+                  CornerRadius="6"
+                  FontSize="14"
+                  FontWeight="Medium"
+                  Background="{DynamicResource SurfaceContainerBrush}"
+                  Foreground="{DynamicResource OnSurfaceBrush}"
+                  BorderThickness="0"/>
+          <Button Content="Mandanten erstellen"
+                  Command="{Binding CreateTenantCommand}"
+                  Padding="20,12"
+                  MinWidth="180"
+                  CornerRadius="6"
+                  FontSize="14"
+                  FontWeight="Medium"
+                  Background="{DynamicResource PrimaryBrush}"
+                  Foreground="{DynamicResource OnPrimaryBrush}"
+                  BorderThickness="0"/>
+        </StackPanel>
+
+      </StackPanel>
+
+    </Border>
+
+  </Grid>
+
+</UserControl>
