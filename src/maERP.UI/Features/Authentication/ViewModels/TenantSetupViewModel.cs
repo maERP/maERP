@@ -57,29 +57,24 @@ public partial class TenantSetupViewModel : ViewModelBase
 
         try
         {
-            var payload = new TenantUpsertDto
+            var payload = new TenantInputDto
             {
-                Id = null,
                 Name = Name.Trim(),
-                Domain = null,
-                AdminEmail = null,
+                Description = string.Empty,
                 ContactEmail = null,
-                ConnectionString = null,
-                Description = null,
-                ValidUntil = null,
                 IsActive = true
             };
 
-            var result = await _httpService.PostAsync<TenantUpsertDto, TenantDetailDto>("superadmin/tenants", payload);
+            var result = await _httpService.PostAsync<TenantInputDto, Guid>("tenants", payload);
 
             if (result == null)
             {
                 ErrorMessage = "Nicht authentifiziert oder Server-URL fehlt";
                 _debugService.LogWarning("PostAsync tenants returned null - not authenticated or missing server URL");
             }
-            else if (result.Succeeded && result.Data != null)
+            else if (result.Succeeded && result.Data != Guid.Empty)
             {
-                _debugService.LogInfo($"Successfully created tenant {result.Data.Id}");
+                _debugService.LogInfo($"Successfully created tenant {result.Data}");
 
                 // Trigger re-login to refresh available tenants
                 OnTenantCreated?.Invoke();

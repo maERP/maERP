@@ -16,7 +16,7 @@ public class Tenant : BaseEntityWithoutTenant, IBaseEntityWithoutTenant
     public bool IsActive { get; set; } = true;
 
     [MaxLength(200)]
-    public string ContactEmail { get; set; } = string.Empty;
+    public string? ContactEmail { get; set; }
 
     // Users with this tenant as their default tenant
     public ICollection<ApplicationUser>? DefaultForUsers { get; set; }

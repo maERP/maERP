@@ -32,7 +32,7 @@ public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, Pagina
         {
             query = query.Where(t => t.Name.Contains(request.SearchString) ||
                                    t.Description.Contains(request.SearchString) ||
-                                   t.ContactEmail.Contains(request.SearchString));
+                                   (t.ContactEmail != null && t.ContactEmail.Contains(request.SearchString)));
         }
 
         // Apply ordering

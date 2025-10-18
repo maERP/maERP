@@ -16,5 +16,5 @@ public class TenantInputDto : ITenantInputModel
 
     [EmailAddress]
     [MaxLength(200)]
-    public string ContactEmail { get; set; } = string.Empty;
+    public string? ContactEmail { get; set; }
 }
