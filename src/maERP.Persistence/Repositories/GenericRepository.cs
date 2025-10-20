@@ -4,6 +4,7 @@ using maERP.Application.Contracts.Services;
 using maERP.Domain.Entities.Common;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace maERP.Persistence.Repositories;
 
@@ -263,5 +264,21 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         }
 
         return true;
+    }
+
+    // Transaction support methods
+    public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return await Context.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        await Context.SaveChangesAsync(cancellationToken);
+    }
+
+    public void Add(T entity)
+    {
+        Context.Set<T>().Add(entity);
     }
 }

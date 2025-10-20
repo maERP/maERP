@@ -2,6 +2,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace maERP.Persistence.Repositories;
 
@@ -101,4 +102,20 @@ public class TenantRepository : ITenantRepository
     }
 
     public IQueryable<TCt> GetContext<TCt>() where TCt : class => _context.Set<TCt>();
+
+    // Transaction support methods
+    public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public void Add(Tenant entity)
+    {
+        _context.Set<Tenant>().Add(entity);
+    }
 }

@@ -15,6 +15,7 @@ using maERP.UI.Features.Manufacturer.ViewModels;
 using maERP.UI.Features.Orders.ViewModels;
 using maERP.UI.Features.Products.ViewModels;
 using maERP.UI.Features.SalesChannels.ViewModels;
+using maERP.UI.Features.Tenant.ViewModels;
 using maERP.UI.Features.Warehouses.ViewModels;
 using maERP.UI.Services;
 using maERP.UI.Shared.ViewModels;
@@ -98,6 +99,8 @@ public partial class App : Application
         services.AddTransient<ManufacturerListViewModel>();
         services.AddTransient<ManufacturerDetailViewModel>();
         services.AddTransient<ManufacturerInputViewModel>();
+        services.AddTransient<TenantListViewModel>();
+        services.AddTransient<TenantInputViewModel>();
         services.AddTransient<ConfirmationDialogViewModel>();
         services.AddTransient<DebugWindowViewModel>();
 

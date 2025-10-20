@@ -32,7 +32,11 @@ public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, Pagina
         {
             query = query.Where(t => t.Name.Contains(request.SearchString) ||
                                    t.Description.Contains(request.SearchString) ||
-                                   (t.ContactEmail != null && t.ContactEmail.Contains(request.SearchString)));
+                                   (t.CompanyName != null && t.CompanyName.Contains(request.SearchString)) ||
+                                   (t.ContactEmail != null && t.ContactEmail.Contains(request.SearchString)) ||
+                                   (t.Phone != null && t.Phone.Contains(request.SearchString)) ||
+                                   (t.City != null && t.City.Contains(request.SearchString)) ||
+                                   (t.Country != null && t.Country.Contains(request.SearchString)));
         }
 
         // Apply ordering
@@ -53,7 +57,17 @@ public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, Pagina
                 Name = t.Name,
                 Description = t.Description,
                 IsActive = t.IsActive,
+                CompanyName = t.CompanyName,
                 ContactEmail = t.ContactEmail,
+                Phone = t.Phone,
+                Website = t.Website,
+                Street = t.Street,
+                Street2 = t.Street2,
+                PostalCode = t.PostalCode,
+                City = t.City,
+                State = t.State,
+                Country = t.Country,
+                Iban = t.Iban,
                 DateCreated = t.DateCreated,
                 DateModified = t.DateModified
             })

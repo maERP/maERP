@@ -15,8 +15,42 @@ public class Tenant : BaseEntityWithoutTenant, IBaseEntityWithoutTenant
     [Required]
     public bool IsActive { get; set; } = true;
 
+    // Company Information
+    [MaxLength(200)]
+    public string? CompanyName { get; set; }
+
+    // Contact Information
     [MaxLength(200)]
     public string? ContactEmail { get; set; }
+
+    [MaxLength(50)]
+    public string? Phone { get; set; }
+
+    [MaxLength(200)]
+    public string? Website { get; set; }
+
+    // Address Information
+    [MaxLength(200)]
+    public string? Street { get; set; }
+
+    [MaxLength(200)]
+    public string? Street2 { get; set; }
+
+    [MaxLength(20)]
+    public string? PostalCode { get; set; }
+
+    [MaxLength(100)]
+    public string? City { get; set; }
+
+    [MaxLength(100)]
+    public string? State { get; set; }
+
+    [MaxLength(100)]
+    public string? Country { get; set; }
+
+    // Banking Information
+    [MaxLength(34)]
+    public string? Iban { get; set; }
 
     // Users with this tenant as their default tenant
     public ICollection<ApplicationUser>? DefaultForUsers { get; set; }

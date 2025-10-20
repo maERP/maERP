@@ -48,7 +48,17 @@ public class SuperadminCreateHandler : IRequestHandler<SuperadminCreateCommand, 
                 Name = request.Name,
                 Description = request.Description,
                 IsActive = request.IsActive,
-                ContactEmail = request.ContactEmail
+                CompanyName = request.CompanyName,
+                ContactEmail = request.ContactEmail,
+                Phone = request.Phone,
+                Website = request.Website,
+                Street = request.Street,
+                Street2 = request.Street2,
+                PostalCode = request.PostalCode,
+                City = request.City,
+                State = request.State,
+                Country = request.Country,
+                Iban = request.Iban
             };
 
             await _tenantRepository.CreateAsync(tenantToCreate);

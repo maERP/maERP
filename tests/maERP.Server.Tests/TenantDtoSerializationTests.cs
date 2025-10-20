@@ -15,7 +15,17 @@ public class TenantDtoSerializationTests
             "name": "Main Tenant",
             "description": "Demomandant",
             "isActive": true,
+            "companyName": "ACME Corporation",
             "contactEmail": "admin@example.com",
+            "phone": "+49 123 456789",
+            "website": "https://www.example.com",
+            "street": "Main Street 123",
+            "street2": "Building A",
+            "postalCode": "12345",
+            "city": "Berlin",
+            "state": "Berlin",
+            "country": "Germany",
+            "iban": "DE89370400440532013000",
             "dateCreated": "2024-01-01T08:00:00Z",
             "dateModified": "2024-04-01T12:30:00Z",
             "domain": "main.maerp.local",
@@ -30,7 +40,17 @@ public class TenantDtoSerializationTests
         Assert.Equal("Main Tenant", dto.Name);
         Assert.Equal("Demomandant", dto.Description);
         Assert.True(dto.IsActive);
+        Assert.Equal("ACME Corporation", dto.CompanyName);
         Assert.Equal("admin@example.com", dto.ContactEmail);
+        Assert.Equal("+49 123 456789", dto.Phone);
+        Assert.Equal("https://www.example.com", dto.Website);
+        Assert.Equal("Main Street 123", dto.Street);
+        Assert.Equal("Building A", dto.Street2);
+        Assert.Equal("12345", dto.PostalCode);
+        Assert.Equal("Berlin", dto.City);
+        Assert.Equal("Berlin", dto.State);
+        Assert.Equal("Germany", dto.Country);
+        Assert.Equal("DE89370400440532013000", dto.Iban);
         Assert.Equal(DateTime.Parse("2024-01-01T08:00:00Z").ToUniversalTime(), dto.DateCreated.ToUniversalTime());
         Assert.Equal(DateTime.Parse("2024-04-01T12:30:00Z").ToUniversalTime(), dto.DateModified.ToUniversalTime());
         Assert.Equal("main.maerp.local", dto.Domain);
@@ -48,7 +68,17 @@ public class TenantDtoSerializationTests
             "name": "Secondary Tenant",
             "description": "VIP Tenant",
             "isActive": false,
+            "companyName": "Secondary Ltd.",
             "contactEmail": "owner@secondary.com",
+            "phone": "+44 20 1234 5678",
+            "website": "https://www.secondary.com",
+            "street": "Oxford Street 456",
+            "street2": null,
+            "postalCode": "W1D 1BS",
+            "city": "London",
+            "state": "England",
+            "country": "United Kingdom",
+            "iban": "GB82WEST12345698765432",
             "dateCreated": "2023-02-10T09:45:00Z",
             "dateModified": "2024-03-11T21:10:00Z",
             "userCount": 12,
@@ -65,7 +95,17 @@ public class TenantDtoSerializationTests
         Assert.Equal("Secondary Tenant", dto.Name);
         Assert.Equal("VIP Tenant", dto.Description);
         Assert.False(dto.IsActive);
+        Assert.Equal("Secondary Ltd.", dto.CompanyName);
         Assert.Equal("owner@secondary.com", dto.ContactEmail);
+        Assert.Equal("+44 20 1234 5678", dto.Phone);
+        Assert.Equal("https://www.secondary.com", dto.Website);
+        Assert.Equal("Oxford Street 456", dto.Street);
+        Assert.Null(dto.Street2);
+        Assert.Equal("W1D 1BS", dto.PostalCode);
+        Assert.Equal("London", dto.City);
+        Assert.Equal("England", dto.State);
+        Assert.Equal("United Kingdom", dto.Country);
+        Assert.Equal("GB82WEST12345698765432", dto.Iban);
         Assert.Equal("owner@secondary.com", dto.AdminEmail);
         Assert.Equal("Server=.;Database=Secondary;", dto.ConnectionString);
         Assert.Equal("secondary.maerp.local", dto.Domain);

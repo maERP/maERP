@@ -45,6 +45,9 @@ public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<G
             return result;
         }
 
+        // Use a database transaction to ensure atomicity
+        await using var transaction = await _tenantRepository.BeginTransactionAsync(cancellationToken);
+
         try
         {
             // Create the tenant
@@ -53,10 +56,21 @@ public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<G
                 Name = request.Name,
                 Description = request.Description,
                 IsActive = request.IsActive,
-                ContactEmail = request.ContactEmail
+                CompanyName = request.CompanyName,
+                ContactEmail = request.ContactEmail,
+                Phone = request.Phone,
+                Website = request.Website,
+                Street = request.Street,
+                Street2 = request.Street2,
+                PostalCode = request.PostalCode,
+                City = request.City,
+                State = request.State,
+                Country = request.Country,
+                Iban = request.Iban
             };
 
-            await _tenantRepository.CreateAsync(tenantToCreate);
+            // Add tenant to context without saving
+            _tenantRepository.Add(tenantToCreate);
 
             // Assign the user to the tenant with management permissions
             var userTenant = new UserTenant
@@ -67,7 +81,14 @@ public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<G
                 RoleManageUser = true // Give user management permission for their own tenant
             };
 
-            await _userTenantRepository.CreateAsync(userTenant);
+            // Add user-tenant association to context without saving
+            _userTenantRepository.Add(userTenant);
+
+            // Save all changes within the transaction
+            await _tenantRepository.SaveChangesAsync(cancellationToken);
+
+            // Commit the transaction
+            await transaction.CommitAsync(cancellationToken);
 
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Created;
@@ -78,6 +99,9 @@ public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<G
         }
         catch (Exception ex)
         {
+            // Transaction will automatically rollback on dispose if not committed
+            await transaction.RollbackAsync(cancellationToken);
+
             result.Succeeded = false;
             result.StatusCode = ResultStatusCode.InternalServerError;
             result.Messages.Add($"An error occurred while creating the tenant: {ex.Message}");

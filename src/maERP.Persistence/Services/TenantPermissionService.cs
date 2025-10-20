@@ -31,4 +31,20 @@ public class TenantPermissionService : ITenantPermissionService
                 ut.RoleManageUser,
                 cancellationToken);
     }
+
+    public async Task<bool> CanManageTenantAsync(string userId, Guid tenantId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(userId) || tenantId == Guid.Empty)
+        {
+            return false;
+        }
+
+        return await _userTenantRepository.Entities
+            .AsNoTracking()
+            .AnyAsync(ut =>
+                ut.UserId == userId &&
+                ut.TenantId == tenantId &&
+                ut.RoleManageTenant,
+                cancellationToken);
+    }
 }

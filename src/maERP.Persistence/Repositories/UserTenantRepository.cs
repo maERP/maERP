@@ -3,6 +3,7 @@ using maERP.Domain.Dtos.Tenant;
 using maERP.Domain.Entities;
 using maERP.Persistence.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace maERP.Persistence.Repositories;
 
@@ -96,7 +97,17 @@ public class UserTenantRepository : IUserTenantRepository
                 Name = ut.Tenant.Name,
                 Description = ut.Tenant.Description,
                 IsActive = ut.Tenant.IsActive,
+                CompanyName = ut.Tenant.CompanyName,
                 ContactEmail = ut.Tenant.ContactEmail,
+                Phone = ut.Tenant.Phone,
+                Website = ut.Tenant.Website,
+                Street = ut.Tenant.Street,
+                Street2 = ut.Tenant.Street2,
+                PostalCode = ut.Tenant.PostalCode,
+                City = ut.Tenant.City,
+                State = ut.Tenant.State,
+                Country = ut.Tenant.Country,
+                Iban = ut.Tenant.Iban,
                 DateCreated = ut.Tenant.DateCreated,
                 DateModified = ut.Tenant.DateModified
             })
@@ -116,4 +127,20 @@ public class UserTenantRepository : IUserTenantRepository
     }
 
     public IQueryable<TCt> GetContext<TCt>() where TCt : class => _context.Set<TCt>();
+
+    // Transaction support methods
+    public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public void Add(UserTenant entity)
+    {
+        _context.Set<UserTenant>().Add(entity);
+    }
 }

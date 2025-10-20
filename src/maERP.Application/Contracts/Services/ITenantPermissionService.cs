@@ -7,4 +7,5 @@ namespace maERP.Application.Contracts.Services;
 public interface ITenantPermissionService
 {
     Task<bool> CanManageUsersAsync(string userId, Guid tenantId, CancellationToken cancellationToken = default);
+    Task<bool> CanManageTenantAsync(string userId, Guid tenantId, CancellationToken cancellationToken = default);
 }

@@ -14,8 +14,38 @@ public class TenantUpsertDto
     [JsonPropertyName("description")]
     public string? Description { get; set; }
 
+    [JsonPropertyName("companyName")]
+    public string? CompanyName { get; set; }
+
     [JsonPropertyName("contactEmail")]
     public string? ContactEmail { get; set; }
+
+    [JsonPropertyName("phone")]
+    public string? Phone { get; set; }
+
+    [JsonPropertyName("website")]
+    public string? Website { get; set; }
+
+    [JsonPropertyName("street")]
+    public string? Street { get; set; }
+
+    [JsonPropertyName("street2")]
+    public string? Street2 { get; set; }
+
+    [JsonPropertyName("postalCode")]
+    public string? PostalCode { get; set; }
+
+    [JsonPropertyName("city")]
+    public string? City { get; set; }
+
+    [JsonPropertyName("state")]
+    public string? State { get; set; }
+
+    [JsonPropertyName("country")]
+    public string? Country { get; set; }
+
+    [JsonPropertyName("iban")]
+    public string? Iban { get; set; }
 
     [JsonPropertyName("domain")]
     public string? Domain { get; set; }

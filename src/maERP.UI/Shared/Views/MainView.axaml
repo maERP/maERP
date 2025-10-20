@@ -29,6 +29,8 @@
              xmlns:goodsReceiptViews="clr-namespace:maERP.UI.Features.GoodsReceipts.Views"
              xmlns:manufacturerVm="clr-namespace:maERP.UI.Features.Manufacturer.ViewModels"
              xmlns:manufacturerViews="clr-namespace:maERP.UI.Features.Manufacturer.Views"
+             xmlns:tenantVm="clr-namespace:maERP.UI.Features.Tenant.ViewModels"
+             xmlns:tenantViews="clr-namespace:maERP.UI.Features.Tenant.Views"
              xmlns:superadminTenantsVm="clr-namespace:maERP.UI.Features.SuperadminTenants.ViewModels"
              xmlns:viewModels="clr-namespace:maERP.UI.Features.Superadmin.ViewModels"
              xmlns:views="clr-namespace:maERP.UI.Features.Superadmin.Views"
@@ -415,7 +417,15 @@
             <DataTemplate DataType="{x:Type manufacturerVm:ManufacturerInputViewModel}">
               <manufacturerViews:ManufacturerInputView/>
             </DataTemplate>
-            
+
+            <!-- Tenants -->
+            <DataTemplate DataType="{x:Type tenantVm:TenantListViewModel}">
+              <tenantViews:TenantsListView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type tenantVm:TenantInputViewModel}">
+              <tenantViews:TenantInputView/>
+            </DataTemplate>
+
             <!-- Warehouses -->
             <DataTemplate DataType="{x:Type warehouseVm:WarehouseDetailViewModel}">
               <warehouseViews:WarehouseDetailView/>

@@ -1,4 +1,6 @@
-﻿namespace maERP.Application.Contracts.Persistence;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace maERP.Application.Contracts.Persistence;
 
 public interface IGenericRepository<T> where T : class
 {
@@ -14,4 +16,9 @@ public interface IGenericRepository<T> where T : class
     Task<bool> ExistsAsync(Guid id);
     Task<bool> ExistsGloballyAsync(Guid id);
     Task<bool> IsUniqueAsync(T entity, Guid? id = null);
+
+    // Transaction support
+    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
+    void Add(T entity);
 }
