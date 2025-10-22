@@ -3,6 +3,16 @@ using maERP.Domain.Interfaces;
 
 namespace maERP.Domain.Validators;
 
+/// <summary>
+/// Basis-Validator für Customer - enthält feldbasierte Validierungsregeln.
+/// WICHTIG: Dieser Validator wird von Client (maERP.UI) und Server (maERP.Application) verwendet.
+///
+/// Client: CustomerClientValidator erbt von dieser Klasse und fügt UI-spezifische Regeln hinzu.
+/// Server: CustomerCreateValidator/CustomerUpdateValidator erben von dieser Klasse und fügen DB-Validierungen hinzu.
+///
+/// Änderungen an diesem Validator wirken sich auf Client UND Server aus!
+/// Enthält nur feldbasierte Validierungen ohne externe Dependencies (keine DB-Zugriffe, keine Repositories).
+/// </summary>
 public class CustomerBaseValidator<T> : AbstractValidator<T> where T : ICustomerInputModel
 {
     public CustomerBaseValidator()

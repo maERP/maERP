@@ -44,7 +44,7 @@ public partial class MainViewModel : ViewModelBase
     private bool showMainApplication;
 
     [ObservableProperty]
-    private ViewModelBase? currentView;
+    private ObservableObject? currentView;
 
     [ObservableProperty]
     private string selectedMenuItem = "Dashboard";

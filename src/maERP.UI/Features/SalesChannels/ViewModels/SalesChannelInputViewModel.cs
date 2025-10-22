@@ -1,23 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentValidation;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Enums;
+using maERP.Domain.Interfaces;
+using maERP.UI.Features.SalesChannels.Validators;
 using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Validation;
 
 namespace maERP.UI.Features.SalesChannels.ViewModels;
 
-public partial class SalesChannelInputViewModel : ViewModelBase
+public partial class SalesChannelInputViewModel : FluentValidationViewModelBase, ISalesChannelInputModel
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
+    private readonly SalesChannelClientValidator _validator;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -25,8 +28,6 @@ public partial class SalesChannelInputViewModel : ViewModelBase
     private Guid salesChannelId;
 
     [ObservableProperty]
-    [Required(ErrorMessage = "Name ist erforderlich")]
-    [NotifyDataErrorInfo]
     private string name = string.Empty;
 
     [ObservableProperty]
@@ -84,6 +85,12 @@ public partial class SalesChannelInputViewModel : ViewModelBase
     public string PageTitle => IsEditMode ? $"Vertriebskanal #{SalesChannelId} bearbeiten" : "Neuen Vertriebskanal erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
+    // Validation Error Properties for XAML Binding
+    public string? NameError => GetFirstErrorMessage(nameof(Name));
+
+    // Interface implementation - WarehouseIds as computed property from SelectedWarehouses
+    public List<Guid> WarehouseIds => SelectedWarehouses.Select(w => w.Id).ToList();
+
     // Available options for dropdowns
     public List<SalesChannelType> AvailableSalesChannelTypes { get; } = Enum.GetValues<SalesChannelType>().ToList();
 
@@ -94,7 +101,16 @@ public partial class SalesChannelInputViewModel : ViewModelBase
     {
         _httpService = httpService;
         _debugService = debugService;
+        _validator = new SalesChannelClientValidator();
     }
+
+    /// <summary>
+    /// Gibt den FluentValidator für dieses ViewModel zurück.
+    /// </summary>
+    protected override IValidator GetValidator() => _validator;
+
+    // Property-Change Validierung für Echtzeit-Feedback
+    partial void OnNameChanged(string value) => ValidateProperty(nameof(Name));
 
     public async Task InitializeAsync(Guid salesChannelId = default)
     {

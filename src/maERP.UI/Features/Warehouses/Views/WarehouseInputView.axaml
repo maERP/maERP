@@ -5,6 +5,17 @@
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="maERP.UI.Features.Warehouses.Views.WarehouseInputView">
 
+  <UserControl.Styles>
+    <!-- Style for TextBox with validation errors -->
+    <Style Selector="TextBox.hasError">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+      <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+    <Style Selector="TextBox.hasError:focus">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+    </Style>
+  </UserControl.Styles>
+
   <Grid RowDefinitions="Auto,*,Auto">
     
     <!-- Simple Header -->
@@ -109,32 +120,17 @@
                 <!-- Warehouse Name -->
                 <StackPanel Spacing="4">
                   <TextBlock Text="Name *" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding Name}" 
+                  <TextBox Text="{Binding Name}"
                            Watermark="Lagername eingeben..."
-                           Classes="required"/>
+                           Classes.hasError="{Binding NameError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding NameError}"
+                             IsVisible="{Binding NameError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
-                
+
               </StackPanel>
-              
-              <!-- Validation Message -->
-              <Border Background="#FFF3CD" 
-                      BorderBrush="#D6B656" 
-                      BorderThickness="1"
-                      CornerRadius="8"
-                      Padding="20"
-                      IsVisible="{Binding HasValidationErrors}">
-                <StackPanel Spacing="4">
-                  <TextBlock Text="⚠️ Eingabefehler" FontWeight="SemiBold" Foreground="#856404"/>
-                  <TextBlock Text="Bitte überprüfen Sie Ihre Eingaben:" FontWeight="SemiBold" Foreground="#856404"/>
-                  <ItemsControl ItemsSource="{Binding ValidationErrors}">
-                    <ItemsControl.ItemTemplate>
-                      <DataTemplate>
-                        <TextBlock Text="{Binding}" Foreground="#856404" Margin="16,2,0,2"/>
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                  </ItemsControl>
-                </StackPanel>
-              </Border>
               
             </StackPanel>
           </Border>

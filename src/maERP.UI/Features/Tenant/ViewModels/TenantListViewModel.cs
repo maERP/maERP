@@ -34,7 +34,7 @@ public partial class TenantListViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayPageNumber))]
-    private int currentPage = 1;
+    private int currentPage;
 
     [ObservableProperty]
     private int pageSize = 50;
@@ -56,7 +56,7 @@ public partial class TenantListViewModel : ViewModelBase
     public bool ShouldShowDataGrid => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
     public bool CanGoPrevious => HasPreviousPage && !IsLoading;
     public bool CanGoNext => HasNextPage && !IsLoading;
-    public int DisplayPageNumber => CurrentPage;
+    public int DisplayPageNumber => CurrentPage + 1;
 
     public Func<Guid, Task>? NavigateToEditTenant { get; set; }
     public Func<Task>? NavigateToCreateTenant { get; set; }
@@ -130,7 +130,7 @@ public partial class TenantListViewModel : ViewModelBase
     [RelayCommand]
     private async Task SearchTenantsAsync()
     {
-        CurrentPage = 1;
+        CurrentPage = 0;
         await LoadTenantsAsync();
     }
 

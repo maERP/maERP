@@ -5,6 +5,17 @@
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="maERP.UI.Features.Manufacturer.Views.ManufacturerInputView">
 
+  <UserControl.Styles>
+    <!-- Style for TextBox with validation errors -->
+    <Style Selector="TextBox.hasError">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+      <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+    <Style Selector="TextBox.hasError:focus">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+    </Style>
+  </UserControl.Styles>
+
   <Grid RowDefinitions="Auto,*,Auto">
     
     <!-- Simple Header -->
@@ -101,8 +112,14 @@
                 <!-- Name Field -->
                 <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
                   <TextBlock Text="Herstellername *" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding Name}" 
-                           Watermark="Herstellername eingeben..."/>
+                  <TextBox Text="{Binding Name}"
+                           Watermark="Herstellername eingeben..."
+                           Classes.hasError="{Binding NameError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding NameError}"
+                             IsVisible="{Binding NameError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
                 
               </Grid>
@@ -191,8 +208,14 @@
                 
                 <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
                   <TextBlock Text="E-Mail" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding Email}" 
-                           Watermark="E-Mail-Adresse eingeben..."/>
+                  <TextBox Text="{Binding Email}"
+                           Watermark="E-Mail-Adresse eingeben..."
+                           Classes.hasError="{Binding EmailError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding EmailError}"
+                             IsVisible="{Binding EmailError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
                 
                 <!-- Second Row: Website -->

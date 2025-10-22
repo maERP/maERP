@@ -4,6 +4,19 @@ using maERP.Domain.Validators;
 
 namespace maERP.Application.Features.Customer.Commands.CustomerUpdate;
 
+/// <summary>
+/// Server-seitiger Validator für Customer Update Commands.
+///
+/// Erweitert CustomerBaseValidator (aus maERP.Domain) um Server-spezifische Validierungen:
+/// - ID-Validierung (nicht Guid.Empty)
+/// - Existenz-Prüfung (Customer muss vorhanden sein)
+/// - Eindeutigkeitsprüfung (keine Duplikate außer dem aktuellen Customer)
+///
+/// WICHTIG:
+/// - Basis-Regeln (Feldvalidierungen) sind in CustomerBaseValidator definiert
+/// - Client verwendet CustomerClientValidator (nur synchrone Regeln)
+/// - Server verwendet diesen Validator (mit DB-Zugriff)
+/// </summary>
 public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateCommand>
 {
     private readonly ICustomerRepository _customerRepository;

@@ -6,6 +6,17 @@
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="maERP.UI.Features.Customers.Views.CustomerInputView">
 
+  <UserControl.Styles>
+    <!-- Style for TextBox with validation errors -->
+    <Style Selector="TextBox.hasError">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+      <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+    <Style Selector="TextBox.hasError:focus">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+    </Style>
+  </UserControl.Styles>
+
   <Grid RowDefinitions="Auto,*,Auto">
     
     <!-- Simple Header -->
@@ -102,14 +113,26 @@
                 <!-- First Row: Firstname, Lastname -->
                 <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
                   <TextBlock Text="Vorname *" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding Firstname}" 
-                           Watermark="Vorname eingeben..."/>
+                  <TextBox Text="{Binding Firstname}"
+                           Watermark="Vorname eingeben..."
+                           Classes.hasError="{Binding FirstnameError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding FirstnameError}"
+                             IsVisible="{Binding FirstnameError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
-                
+
                 <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
                   <TextBlock Text="Nachname *" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding Lastname}" 
-                           Watermark="Nachname eingeben..."/>
+                  <TextBox Text="{Binding Lastname}"
+                           Watermark="Nachname eingeben..."
+                           Classes.hasError="{Binding LastnameError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding LastnameError}"
+                             IsVisible="{Binding LastnameError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
                 
                 <!-- Second Row: Company, Email -->
@@ -121,21 +144,39 @@
                 
                 <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
                   <TextBlock Text="E-Mail" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding Email}" 
-                           Watermark="E-Mail eingeben..."/>
+                  <TextBox Text="{Binding Email}"
+                           Watermark="E-Mail eingeben..."
+                           Classes.hasError="{Binding EmailError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding EmailError}"
+                             IsVisible="{Binding EmailError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
                 
                 <!-- Third Row: Phone, Website -->
                 <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
                   <TextBlock Text="Telefon" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding Phone}" 
-                           Watermark="Telefonnummer eingeben..."/>
+                  <TextBox Text="{Binding Phone}"
+                           Watermark="Telefonnummer eingeben..."
+                           Classes.hasError="{Binding PhoneError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding PhoneError}"
+                             IsVisible="{Binding PhoneError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
-                
+
                 <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4">
                   <TextBlock Text="Website" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding Website}" 
-                           Watermark="Website eingeben..."/>
+                  <TextBox Text="{Binding Website}"
+                           Watermark="Website eingeben..."
+                           Classes.hasError="{Binding WebsiteError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding WebsiteError}"
+                             IsVisible="{Binding WebsiteError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
                 
                 <!-- Fourth Row: VAT Number, Status -->

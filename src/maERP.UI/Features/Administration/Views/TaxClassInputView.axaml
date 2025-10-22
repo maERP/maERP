@@ -5,6 +5,17 @@
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
              x:Class="maERP.UI.Features.Administration.Views.TaxClassInputView">
 
+  <UserControl.Styles>
+    <!-- Style for NumericUpDown with validation errors -->
+    <Style Selector="NumericUpDown.hasError">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+      <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+    <Style Selector="NumericUpDown.hasError:focus">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+    </Style>
+  </UserControl.Styles>
+
   <Grid RowDefinitions="Auto,*,Auto">
     
     <!-- Simple Header -->
@@ -108,13 +119,13 @@
               
               <!-- Tax Rate Field -->
               <StackPanel Spacing="8">
-                <TextBlock Text="Steuersatz *" 
+                <TextBlock Text="Steuersatz *"
                            FontWeight="SemiBold"
                            FontSize="14"
                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                 <Grid ColumnDefinitions="*,Auto">
                   <NumericUpDown Grid.Column="0"
-                                 Value="{Binding TaxRate}" 
+                                 Value="{Binding TaxRate}"
                                  Minimum="0"
                                  Maximum="100"
                                  Increment="0.01"
@@ -122,7 +133,8 @@
                                  ShowButtonSpinner="True"
                                  IsEnabled="{Binding !IsSaving}"
                                  FontSize="16"
-                                 Padding="12"/>
+                                 Padding="12"
+                                 Classes.hasError="{Binding TaxRateError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
                   <TextBlock Grid.Column="1"
                              Text="%"
                              FontSize="16"
@@ -130,8 +142,13 @@
                              VerticalAlignment="Center"
                              Margin="8,0,0,0"/>
                 </Grid>
-                <TextBlock Text="Geben Sie den Steuersatz in Prozent ein (z.B. 19.00 für 19%)" 
-                           FontSize="12" 
+                <TextBlock Text="{Binding TaxRateError}"
+                           IsVisible="{Binding TaxRateError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                           Foreground="#D32F2F"
+                           FontSize="12"
+                           TextWrapping="Wrap"/>
+                <TextBlock Text="Geben Sie den Steuersatz in Prozent ein (z.B. 19.00 für 19%)"
+                           FontSize="12"
                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
               </StackPanel>
               

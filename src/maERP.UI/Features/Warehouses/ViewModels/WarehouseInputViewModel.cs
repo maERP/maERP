@@ -1,20 +1,22 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentValidation;
 using maERP.Domain.Dtos.Warehouse;
+using maERP.Domain.Interfaces;
+using maERP.UI.Features.Warehouses.Validators;
 using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Validation;
 
 namespace maERP.UI.Features.Warehouses.ViewModels;
 
-public partial class WarehouseInputViewModel : ViewModelBase
+public partial class WarehouseInputViewModel : FluentValidationViewModelBase, IWarehouseInputModel
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
+    private readonly WarehouseClientValidator _validator;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShouldShowContent))]
@@ -31,17 +33,14 @@ public partial class WarehouseInputViewModel : ViewModelBase
     private Guid id;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasValidationErrors))]
     private string name = string.Empty;
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasValidationErrors))]
-    private List<string> validationErrors = new();
-
     public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
-    public bool HasValidationErrors => ValidationErrors.Count > 0;
     public bool IsEditMode => Id != Guid.Empty;
     public string PageTitle => IsEditMode ? $"🏭 Lager #{Id} bearbeiten" : "🏭 Neues Lager erstellen";
+
+    // Validation Error Properties for XAML Binding
+    public string? NameError => GetFirstErrorMessage(nameof(Name));
 
     public Action? GoBackAction { get; set; }
     public Action? OnSaveSuccessAction { get; set; }
@@ -50,7 +49,16 @@ public partial class WarehouseInputViewModel : ViewModelBase
     {
         _httpService = httpService;
         _debugService = debugService;
+        _validator = new WarehouseClientValidator();
     }
+
+    /// <summary>
+    /// Gibt den FluentValidator für dieses ViewModel zurück.
+    /// </summary>
+    protected override IValidator GetValidator() => _validator;
+
+    // Property-Change Validierung für Echtzeit-Feedback
+    partial void OnNameChanged(string value) => ValidateProperty(nameof(Name));
 
     public async Task InitializeAsync(Guid? warehouseId = null)
     {
@@ -64,7 +72,7 @@ public partial class WarehouseInputViewModel : ViewModelBase
             // New warehouse
             Id = Guid.Empty;
             Name = string.Empty;
-            ValidationErrors.Clear();
+            ClearErrors();
             OnPropertyChanged(nameof(IsEditMode));
             OnPropertyChanged(nameof(PageTitle));
         }
@@ -91,7 +99,7 @@ public partial class WarehouseInputViewModel : ViewModelBase
             {
                 var warehouse = result.Data;
                 Name = warehouse.Name;
-                ValidationErrors.Clear();
+                ClearErrors();
                 _debugService.LogInfo($"Loaded warehouse {Id} for editing");
             }
             else
@@ -209,23 +217,7 @@ public partial class WarehouseInputViewModel : ViewModelBase
 
     private bool ValidateInput()
     {
-        ValidationErrors.Clear();
-
-        // Validate Name
-        if (string.IsNullOrWhiteSpace(Name))
-        {
-            ValidationErrors.Add("• Name ist erforderlich");
-        }
-        else if (Name.Trim().Length < 2)
-        {
-            ValidationErrors.Add("• Name muss mindestens 2 Zeichen lang sein");
-        }
-        else if (Name.Trim().Length > 100)
-        {
-            ValidationErrors.Add("• Name darf maximal 100 Zeichen lang sein");
-        }
-
-        OnPropertyChanged(nameof(HasValidationErrors));
-        return ValidationErrors.Count == 0;
+        // Use FluentValidation
+        return ValidateAllProperties();
     }
 }

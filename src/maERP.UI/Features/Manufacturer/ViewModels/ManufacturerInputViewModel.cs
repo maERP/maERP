@@ -1,19 +1,22 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentValidation;
 using maERP.Domain.Dtos.Manufacturer;
+using maERP.Domain.Interfaces;
+using maERP.UI.Features.Manufacturer.Validators;
 using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Validation;
 
 namespace maERP.UI.Features.Manufacturer.ViewModels;
 
-public partial class ManufacturerInputViewModel : ViewModelBase
+public partial class ManufacturerInputViewModel : FluentValidationViewModelBase, IManufacturerInputModel
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
+    private readonly ManufacturerClientValidator _validator;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -21,47 +24,33 @@ public partial class ManufacturerInputViewModel : ViewModelBase
     private Guid manufacturerId;
 
     [ObservableProperty]
-    [Required(ErrorMessage = "Herstellername ist erforderlich")]
-    [StringLength(255, ErrorMessage = "Herstellername darf maximal 255 Zeichen haben")]
-    [NotifyDataErrorInfo]
     private string name = string.Empty;
 
     [ObservableProperty]
-    [StringLength(255, ErrorMessage = "Straße darf maximal 255 Zeichen haben")]
     private string street = string.Empty;
 
     [ObservableProperty]
-    [StringLength(255, ErrorMessage = "Stadt darf maximal 255 Zeichen haben")]
     private string city = string.Empty;
 
     [ObservableProperty]
-    [StringLength(255, ErrorMessage = "Bundesland darf maximal 255 Zeichen haben")]
     private string state = string.Empty;
 
     [ObservableProperty]
-    [StringLength(255, ErrorMessage = "Land darf maximal 255 Zeichen haben")]
     private string country = string.Empty;
 
     [ObservableProperty]
-    [StringLength(20, ErrorMessage = "PLZ darf maximal 20 Zeichen haben")]
     private string zipCode = string.Empty;
 
     [ObservableProperty]
-    [StringLength(50, ErrorMessage = "Telefon darf maximal 50 Zeichen haben")]
     private string phone = string.Empty;
 
     [ObservableProperty]
-    [EmailAddress(ErrorMessage = "Ungültige E-Mail-Adresse")]
-    [StringLength(255, ErrorMessage = "E-Mail darf maximal 255 Zeichen haben")]
-    [NotifyDataErrorInfo]
     private string email = string.Empty;
 
     [ObservableProperty]
-    [StringLength(500, ErrorMessage = "Website darf maximal 500 Zeichen haben")]
     private string website = string.Empty;
 
     [ObservableProperty]
-    [StringLength(500, ErrorMessage = "Logo URL darf maximal 500 Zeichen haben")]
     private string logo = string.Empty;
 
     [ObservableProperty]
@@ -80,6 +69,10 @@ public partial class ManufacturerInputViewModel : ViewModelBase
     public string PageTitle => IsEditMode ? $"🏭 Hersteller #{ManufacturerId} bearbeiten" : "🏭 Neuen Hersteller erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
+    // Validation Error Properties for XAML Binding
+    public string? NameError => GetFirstErrorMessage(nameof(Name));
+    public string? EmailError => GetFirstErrorMessage(nameof(Email));
+
     public Action? GoBackAction { get; set; }
     public Func<Guid, Task>? NavigateToManufacturerDetail { get; set; }
 
@@ -87,7 +80,17 @@ public partial class ManufacturerInputViewModel : ViewModelBase
     {
         _httpService = httpService;
         _debugService = debugService;
+        _validator = new ManufacturerClientValidator();
     }
+
+    /// <summary>
+    /// Gibt den FluentValidator für dieses ViewModel zurück.
+    /// </summary>
+    protected override IValidator GetValidator() => _validator;
+
+    // Property-Change Validierung für Echtzeit-Feedback
+    partial void OnNameChanged(string value) => ValidateProperty(nameof(Name));
+    partial void OnEmailChanged(string value) => ValidateProperty(nameof(Email));
 
     public async Task InitializeAsync(Guid manufacturerId = default)
     {

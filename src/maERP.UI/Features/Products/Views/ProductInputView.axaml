@@ -5,6 +5,25 @@
              mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
              x:Class="maERP.UI.Features.Products.Views.ProductInputView">
 
+  <UserControl.Styles>
+    <!-- Style for TextBox with validation errors -->
+    <Style Selector="TextBox.hasError">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+      <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+    <Style Selector="TextBox.hasError:focus">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+    </Style>
+    <!-- Style for NumericUpDown with validation errors -->
+    <Style Selector="NumericUpDown.hasError">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+      <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+    <Style Selector="NumericUpDown.hasError:focus">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+    </Style>
+  </UserControl.Styles>
+
   <Grid RowDefinitions="Auto,*,Auto">
     
     <!-- Simple Header -->
@@ -101,14 +120,26 @@
                 <!-- Row 1: SKU, Name, UseOptimized -->
                 <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
                   <TextBlock Text="SKU *" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding Sku}" 
-                           Watermark="SKU eingeben..."/>
+                  <TextBox Text="{Binding Sku}"
+                           Watermark="SKU eingeben..."
+                           Classes.hasError="{Binding SkuError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding SkuError}"
+                             IsVisible="{Binding SkuError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
-                
+
                 <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
                   <TextBlock Text="Produktname *" FontWeight="SemiBold"/>
-                  <TextBox Text="{Binding Name}" 
-                           Watermark="Produktname eingeben..."/>
+                  <TextBox Text="{Binding Name}"
+                           Watermark="Produktname eingeben..."
+                           Classes.hasError="{Binding NameError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding NameError}"
+                             IsVisible="{Binding NameError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
                 
                 <StackPanel Grid.Row="0" Grid.Column="2" Spacing="4" VerticalAlignment="Bottom">
@@ -205,11 +236,17 @@
                 
                 <StackPanel Grid.Column="0" Spacing="4">
                   <TextBlock Text="Verkaufspreis *" FontWeight="SemiBold"/>
-                  <NumericUpDown Value="{Binding Price}" 
+                  <NumericUpDown Value="{Binding Price}"
                                  Minimum="0"
                                  Increment="0.01"
                                  FormatString="C"
-                                 Watermark="Preis eingeben..."/>
+                                 Watermark="Preis eingeben..."
+                                 Classes.hasError="{Binding PriceError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                  <TextBlock Text="{Binding PriceError}"
+                             IsVisible="{Binding PriceError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
                 </StackPanel>
                 
                 <StackPanel Grid.Column="1" Spacing="4">

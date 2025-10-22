@@ -1,23 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentValidation;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Dtos.CustomerAddress;
 using maERP.Domain.Enums;
+using maERP.Domain.Interfaces;
+using maERP.UI.Features.Customers.Validators;
 using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Validation;
 
 namespace maERP.UI.Features.Customers.ViewModels;
 
-public partial class CustomerInputViewModel : ViewModelBase
+public partial class CustomerInputViewModel : FluentValidationViewModelBase, ICustomerInputModel
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
+    private readonly CustomerClientValidator _validator;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -25,21 +28,15 @@ public partial class CustomerInputViewModel : ViewModelBase
     private Guid customerId;
 
     [ObservableProperty]
-    [Required(ErrorMessage = "Vorname ist erforderlich")]
-    [NotifyDataErrorInfo]
     private string firstname = string.Empty;
 
     [ObservableProperty]
-    [Required(ErrorMessage = "Nachname ist erforderlich")]
-    [NotifyDataErrorInfo]
     private string lastname = string.Empty;
 
     [ObservableProperty]
     private string companyName = string.Empty;
 
     [ObservableProperty]
-    [EmailAddress(ErrorMessage = "Ungültige E-Mail-Adresse")]
-    [NotifyDataErrorInfo]
     private string email = string.Empty;
 
     [ObservableProperty]
@@ -119,6 +116,13 @@ public partial class CustomerInputViewModel : ViewModelBase
     public string PageTitle => IsEditMode ? $"Kunde #{CustomerId} bearbeiten" : "Neuen Kunden erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
+    // Validation Error Properties for XAML Binding
+    public string? FirstnameError => GetFirstErrorMessage(nameof(Firstname));
+    public string? LastnameError => GetFirstErrorMessage(nameof(Lastname));
+    public string? EmailError => GetFirstErrorMessage(nameof(Email));
+    public string? PhoneError => GetFirstErrorMessage(nameof(Phone));
+    public string? WebsiteError => GetFirstErrorMessage(nameof(Website));
+
     // Available options for dropdowns
     public List<CustomerStatus> AvailableStatuses { get; } = Enum.GetValues<CustomerStatus>().ToList();
 
@@ -129,7 +133,21 @@ public partial class CustomerInputViewModel : ViewModelBase
     {
         _httpService = httpService;
         _debugService = debugService;
+        _validator = new CustomerClientValidator();
     }
+
+    /// <summary>
+    /// Gibt den FluentValidator für dieses ViewModel zurück.
+    /// Erforderlich von FluentValidationViewModelBase.
+    /// </summary>
+    protected override IValidator GetValidator() => _validator;
+
+    // Property-Change Validierung für Echtzeit-Feedback
+    partial void OnFirstnameChanged(string value) => ValidateProperty(nameof(Firstname));
+    partial void OnLastnameChanged(string value) => ValidateProperty(nameof(Lastname));
+    partial void OnEmailChanged(string value) => ValidateProperty(nameof(Email));
+    partial void OnPhoneChanged(string value) => ValidateProperty(nameof(Phone));
+    partial void OnWebsiteChanged(string value) => ValidateProperty(nameof(Website));
 
     public async Task InitializeAsync(Guid customerId = default)
     {

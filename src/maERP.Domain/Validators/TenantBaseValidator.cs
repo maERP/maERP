@@ -3,6 +3,16 @@ using maERP.Domain.Interfaces;
 
 namespace maERP.Domain.Validators;
 
+/// <summary>
+/// Basis-Validator für Tenant - enthält feldbasierte Validierungsregeln.
+/// WICHTIG: Dieser Validator wird von Client (maERP.UI) und Server (maERP.Application) verwendet.
+///
+/// Client: TenantClientValidator erbt von dieser Klasse und fügt UI-spezifische Regeln hinzu.
+/// Server: TenantCreateValidator/TenantUpdateValidator erben von dieser Klasse und fügen DB-Validierungen hinzu.
+///
+/// Änderungen an diesem Validator wirken sich auf Client UND Server aus!
+/// Enthält nur feldbasierte Validierungen ohne externe Dependencies (keine DB-Zugriffe, keine Repositories).
+/// </summary>
 public class TenantBaseValidator<T> : AbstractValidator<T> where T : ITenantInputModel
 {
     public TenantBaseValidator()

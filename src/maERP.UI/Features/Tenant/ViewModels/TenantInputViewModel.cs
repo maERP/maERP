@@ -1,19 +1,22 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentValidation;
 using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Interfaces;
+using maERP.UI.Features.Tenant.Validators;
 using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Validation;
 
 namespace maERP.UI.Features.Tenant.ViewModels;
 
-public partial class TenantInputViewModel : ViewModelBase
+public partial class TenantInputViewModel : FluentValidationViewModelBase, ITenantInputModel
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
+    private readonly TenantClientValidator _validator;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -22,8 +25,6 @@ public partial class TenantInputViewModel : ViewModelBase
 
     // Basic Information
     [ObservableProperty]
-    [Required(ErrorMessage = "Mandantenname ist erforderlich")]
-    [NotifyDataErrorInfo]
     private string name = string.Empty;
 
     [ObservableProperty]
@@ -38,16 +39,12 @@ public partial class TenantInputViewModel : ViewModelBase
 
     // Contact Information
     [ObservableProperty]
-    [EmailAddress(ErrorMessage = "Ungültige E-Mail-Adresse")]
-    [NotifyDataErrorInfo]
     private string contactEmail = string.Empty;
 
     [ObservableProperty]
     private string phone = string.Empty;
 
     [ObservableProperty]
-    [Url(ErrorMessage = "Ungültige URL")]
-    [NotifyDataErrorInfo]
     private string website = string.Empty;
 
     // Address Information
@@ -90,6 +87,11 @@ public partial class TenantInputViewModel : ViewModelBase
     public string PageTitle => IsEditMode ? $"Mandant bearbeiten" : "Neuen Mandanten erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
+    // Validation Error Properties for XAML Binding
+    public string? NameError => GetFirstErrorMessage(nameof(Name));
+    public string? ContactEmailError => GetFirstErrorMessage(nameof(ContactEmail));
+    public string? DescriptionError => GetFirstErrorMessage(nameof(Description));
+
     public Action? GoBackAction { get; set; }
     public Func<Guid, Task>? NavigateToTenantDetail { get; set; }
 
@@ -97,7 +99,17 @@ public partial class TenantInputViewModel : ViewModelBase
     {
         _httpService = httpService;
         _debugService = debugService;
+        _validator = new TenantClientValidator();
     }
+
+    /// <summary>
+    /// Gibt den FluentValidator für dieses ViewModel zurück.
+    /// </summary>
+    protected override IValidator GetValidator() => _validator;
+
+    // Property-Change Validierung für Echtzeit-Feedback
+    partial void OnNameChanged(string value) => ValidateProperty(nameof(Name));
+    partial void OnContactEmailChanged(string value) => ValidateProperty(nameof(ContactEmail));
 
     public async Task InitializeAsync(Guid tenantId = default)
     {

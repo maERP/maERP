@@ -1,24 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentValidation;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Dtos.Manufacturer;
+using maERP.Domain.Interfaces;
+using maERP.UI.Features.Products.Validators;
 using maERP.UI.Services;
+using maERP.UI.Shared.Validation;
 using maERP.UI.Shared.ViewModels;
 
 namespace maERP.UI.Features.Products.ViewModels;
 
-public partial class ProductInputViewModel : ViewModelBase
+public partial class ProductInputViewModel : FluentValidationViewModelBase, IProductInputModel
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
+    private readonly ProductClientValidator _validator;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -26,64 +30,45 @@ public partial class ProductInputViewModel : ViewModelBase
     private Guid productId;
 
     [ObservableProperty]
-    [Required(ErrorMessage = "SKU ist erforderlich")]
-    [StringLength(255, ErrorMessage = "SKU darf maximal 255 Zeichen haben")]
-    [NotifyDataErrorInfo]
     private string sku = string.Empty;
 
     [ObservableProperty]
-    [Required(ErrorMessage = "Produktname ist erforderlich")]
-    [StringLength(255, ErrorMessage = "Produktname darf maximal 255 Zeichen haben")]
-    [NotifyDataErrorInfo]
     private string name = string.Empty;
 
     [ObservableProperty]
-    [StringLength(255, ErrorMessage = "Optimierter Name darf maximal 255 Zeichen haben")]
     private string nameOptimized = string.Empty;
 
     [ObservableProperty]
-    [StringLength(32, ErrorMessage = "EAN darf maximal 32 Zeichen haben")]
     private string ean = string.Empty;
 
     [ObservableProperty]
-    [StringLength(32, ErrorMessage = "ASIN darf maximal 32 Zeichen haben")]
     private string asin = string.Empty;
 
     [ObservableProperty]
-    [StringLength(64000, ErrorMessage = "Beschreibung darf maximal 64000 Zeichen haben")]
     private string description = string.Empty;
 
     [ObservableProperty]
-    [StringLength(64000, ErrorMessage = "Optimierte Beschreibung darf maximal 64000 Zeichen haben")]
     private string descriptionOptimized = string.Empty;
 
     [ObservableProperty]
     private bool useOptimized;
 
     [ObservableProperty]
-    [Required(ErrorMessage = "Preis ist erforderlich")]
-    [Range(0, double.MaxValue, ErrorMessage = "Preis muss größer oder gleich 0 sein")]
-    [NotifyDataErrorInfo]
     private decimal price;
 
     [ObservableProperty]
-    [Range(0, double.MaxValue, ErrorMessage = "UVP muss größer oder gleich 0 sein")]
     private decimal msrp;
 
     [ObservableProperty]
-    [Range(0, double.MaxValue, ErrorMessage = "Gewicht muss größer oder gleich 0 sein")]
     private decimal weight;
 
     [ObservableProperty]
-    [Range(0, double.MaxValue, ErrorMessage = "Breite muss größer oder gleich 0 sein")]
     private decimal width;
 
     [ObservableProperty]
-    [Range(0, double.MaxValue, ErrorMessage = "Höhe muss größer oder gleich 0 sein")]
     private decimal height;
 
     [ObservableProperty]
-    [Range(0, double.MaxValue, ErrorMessage = "Tiefe muss größer oder gleich 0 sein")]
     private decimal depth;
 
     [ObservableProperty]
@@ -129,6 +114,11 @@ public partial class ProductInputViewModel : ViewModelBase
     public string PageTitle => IsEditMode ? $"Produkt #{ProductId} bearbeiten" : "Neues Produkt erstellen";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
+    // Validation Error Properties for XAML Binding
+    public string? SkuError => GetFirstErrorMessage(nameof(Sku));
+    public string? NameError => GetFirstErrorMessage(nameof(Name));
+    public string? PriceError => GetFirstErrorMessage(nameof(Price));
+
     public Action? GoBackAction { get; set; }
     public Func<Guid, Task>? NavigateToProductDetail { get; set; }
 
@@ -136,7 +126,18 @@ public partial class ProductInputViewModel : ViewModelBase
     {
         _httpService = httpService;
         _debugService = debugService;
+        _validator = new ProductClientValidator();
     }
+
+    /// <summary>
+    /// Gibt den FluentValidator für dieses ViewModel zurück.
+    /// </summary>
+    protected override IValidator GetValidator() => _validator;
+
+    // Property-Change Validierung für Echtzeit-Feedback
+    partial void OnSkuChanged(string value) => ValidateProperty(nameof(Sku));
+    partial void OnNameChanged(string value) => ValidateProperty(nameof(Name));
+    partial void OnPriceChanged(decimal value) => ValidateProperty(nameof(Price));
 
     public async Task InitializeAsync(Guid productId = default)
     {

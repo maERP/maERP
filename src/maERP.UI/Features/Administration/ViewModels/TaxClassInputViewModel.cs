@@ -1,19 +1,22 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentValidation;
 using maERP.Domain.Dtos.TaxClass;
+using maERP.Domain.Interfaces;
+using maERP.UI.Features.Administration.Validators;
 using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Validation;
 
 namespace maERP.UI.Features.Administration.ViewModels;
 
-public partial class TaxClassInputViewModel : ViewModelBase
+public partial class TaxClassInputViewModel : FluentValidationViewModelBase, ITaxClassInputModel
 {
     private readonly IHttpService _httpService;
     private readonly IDebugService _debugService;
+    private readonly TaxClassClientValidator _validator;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditMode))]
@@ -21,8 +24,6 @@ public partial class TaxClassInputViewModel : ViewModelBase
     private Guid taxClassId;
 
     [ObservableProperty]
-    [Range(0.0, 100.0, ErrorMessage = "Steuersatz muss zwischen 0% und 100% liegen")]
-    [NotifyDataErrorInfo]
     private double taxRate = 0.0;
 
     [ObservableProperty]
@@ -41,6 +42,9 @@ public partial class TaxClassInputViewModel : ViewModelBase
     public string PageTitle => IsEditMode ? "Steuerklasse bearbeiten" : "Neue Steuerklasse";
     public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
 
+    // Validation Error Properties for XAML Binding
+    public string? TaxRateError => GetFirstErrorMessage(nameof(TaxRate));
+
     public Action? GoBackAction { get; set; }
     public Func<Guid, Task>? NavigateToTaxClassDetail { get; set; }
 
@@ -48,7 +52,16 @@ public partial class TaxClassInputViewModel : ViewModelBase
     {
         _httpService = httpService;
         _debugService = debugService;
+        _validator = new TaxClassClientValidator();
     }
+
+    /// <summary>
+    /// Gibt den FluentValidator für dieses ViewModel zurück.
+    /// </summary>
+    protected override IValidator GetValidator() => _validator;
+
+    // Property-Change Validierung für Echtzeit-Feedback
+    partial void OnTaxRateChanged(double value) => ValidateProperty(nameof(TaxRate));
 
     public async Task InitializeAsync(Guid taxClassId = default)
     {

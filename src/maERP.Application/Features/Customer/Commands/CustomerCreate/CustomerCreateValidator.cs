@@ -5,9 +5,16 @@ using maERP.Domain.Validators;
 namespace maERP.Application.Features.Customer.Commands.CustomerCreate;
 
 /// <summary>
-/// Validator for customer creation commands.
-/// Extends CustomerBaseValidator to inherit common validation rules for customer data
-/// and adds specific validation for customer creation operations.
+/// Server-seitiger Validator für Customer Create Commands.
+///
+/// Erweitert CustomerBaseValidator (aus maERP.Domain) um Server-spezifische Validierungen:
+/// - Datenbankbasierte Eindeutigkeitsprüfungen (Async mit Repository-Zugriff)
+/// - Foreign Key Validierungen
+///
+/// WICHTIG:
+/// - Basis-Regeln (Feldvalidierungen) sind in CustomerBaseValidator definiert
+/// - Client verwendet CustomerClientValidator (nur synchrone Regeln)
+/// - Server verwendet diesen Validator (mit DB-Zugriff)
 /// </summary>
 public class CustomerCreateValidator : CustomerBaseValidator<CustomerCreateCommand>
 {
