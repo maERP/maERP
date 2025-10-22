@@ -116,6 +116,16 @@
                                  VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                   </MenuItem>
+                  <MenuItem Header="Meine Mandanten"
+                            Command="{Binding NavigateToMenuItemCommand}"
+                            CommandParameter="MyTenants">
+                    <MenuItem.Icon>
+                      <TextBlock Text="🏢"
+                                 FontSize="16"
+                                 VerticalAlignment="Center"/>
+                    </MenuItem.Icon>
+                  </MenuItem>
+                  <Separator />
                   <MenuItem Header="Superadmin - Tenants"
                             Command="{Binding NavigateToMenuItemCommand}"
                             CommandParameter="Tenants"

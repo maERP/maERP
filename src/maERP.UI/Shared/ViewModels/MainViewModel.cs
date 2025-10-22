@@ -21,6 +21,7 @@ using maERP.UI.Features.Administration.ViewModels;
 using maERP.UI.Features.ImportExport.ViewModels;
 using maERP.UI.Features.GoodsReceipts.ViewModels;
 using maERP.UI.Features.Manufacturer.ViewModels;
+using maERP.UI.Features.Tenant.ViewModels;
 using SuperadminTenantsListViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminTenantsListViewModel;
 using SuperadminTenantsDetailViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminTenantsDetailViewModel;
 using SuperadminTenantsInputViewModel = maERP.UI.Features.Superadmin.ViewModels.SuperadminTenantsInputViewModel;
@@ -98,6 +99,8 @@ public partial class MainViewModel : ViewModelBase
     private SuperadminTenantsListViewModel? _superadminTenantsListViewModel;
     private SuperadminTenantsDetailViewModel? _superadminTenantsDetailViewModel;
     private SuperadminTenantsInputViewModel? _superadminTenantsInputViewModel;
+    private TenantListViewModel? _tenantListViewModel;
+    private TenantInputViewModel? _tenantInputViewModel;
 
     public MainViewModel(IAuthenticationService authenticationService,
                         LoginViewModel loginViewModel,
@@ -390,6 +393,7 @@ public partial class MainViewModel : ViewModelBase
             "GoodsReceipts" => await GetGoodsReceiptListWithRefreshAsync(),
             "Manufacturers" => await GetManufacturerListWithRefreshAsync(),
             "Tenants" => await GetSuperadminTenantsListWithRefreshAsync(),
+            "MyTenants" => await GetTenantListWithRefreshAsync(),
             _ => await GetDashboardViewModelAsync()
         };
     }
@@ -1161,6 +1165,58 @@ public partial class MainViewModel : ViewModelBase
         var listViewModel = await GetManufacturerListViewModelAsync();
         await listViewModel.RefreshAsync();
         return listViewModel;
+    }
+
+    private async Task<TenantListViewModel> GetTenantListViewModelAsync()
+    {
+        if (_tenantListViewModel == null)
+        {
+            _tenantListViewModel = _serviceProvider.GetRequiredService<TenantListViewModel>();
+            _tenantListViewModel.NavigateToEditTenant = NavigateToEditUserTenant;
+            _tenantListViewModel.NavigateToCreateTenant = NavigateToCreateUserTenant;
+            await _tenantListViewModel.InitializeAsync();
+        }
+        return _tenantListViewModel;
+    }
+
+    private async Task<TenantListViewModel> GetTenantListWithRefreshAsync()
+    {
+        var listViewModel = await GetTenantListViewModelAsync();
+        await listViewModel.RefreshAsync();
+        return listViewModel;
+    }
+
+    public async Task NavigateToEditUserTenant(Guid tenantId)
+    {
+        if (!IsAuthenticated || tenantId == Guid.Empty) return;
+
+        _tenantInputViewModel = _serviceProvider.GetRequiredService<TenantInputViewModel>();
+        _tenantInputViewModel.GoBackAction = async () => await NavigateToUserTenantList();
+        await _tenantInputViewModel.InitializeAsync(tenantId);
+
+        CurrentView = _tenantInputViewModel;
+        SelectedMenuItem = "MyTenantInput";
+    }
+
+    public async Task NavigateToCreateUserTenant()
+    {
+        if (!IsAuthenticated) return;
+
+        _tenantInputViewModel = _serviceProvider.GetRequiredService<TenantInputViewModel>();
+        _tenantInputViewModel.GoBackAction = async () => await NavigateToUserTenantList();
+        await _tenantInputViewModel.InitializeAsync(Guid.Empty);
+
+        CurrentView = _tenantInputViewModel;
+        SelectedMenuItem = "MyTenantInput";
+    }
+
+    [RelayCommand]
+    private async Task NavigateToUserTenantList()
+    {
+        var listViewModel = await GetTenantListViewModelAsync();
+        await listViewModel.RefreshAsync();
+        CurrentView = listViewModel;
+        SelectedMenuItem = "MyTenants";
     }
 
     public async Task NavigateToManufacturerDetail(Guid manufacturerId)
