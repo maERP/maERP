@@ -114,7 +114,7 @@ public partial class CustomerInputViewModel : FluentValidationViewModelBase, ICu
 
     public bool IsEditMode => CustomerId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"Kunde #{CustomerId} bearbeiten" : "Neuen Kunden erstellen";
-    public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
+    public bool ShouldShowContent => !IsLoading && !IsSaving;
 
     // Validation Error Properties for XAML Binding
     public string? FirstnameError => GetFirstErrorMessage(nameof(Firstname));
@@ -338,9 +338,12 @@ public partial class CustomerInputViewModel : FluentValidationViewModelBase, ICu
 
         if (HasErrors)
         {
-            ErrorMessage = "Bitte korrigieren Sie die Eingabefehler";
+            ErrorMessage = "⚠️ Bitte korrigieren Sie die markierten Fehler im Formular.";
             return false;
         }
+
+        // Clear error message if validation passes
+        ErrorMessage = string.Empty;
         return true;
     }
 

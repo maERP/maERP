@@ -58,6 +58,7 @@ public partial class TenantListViewModel : ViewModelBase
     public bool CanGoNext => HasNextPage && !IsLoading;
     public int DisplayPageNumber => CurrentPage + 1;
 
+    public Func<Guid, Task>? NavigateToTenantDetail { get; set; }
     public Func<Guid, Task>? NavigateToEditTenant { get; set; }
     public Func<Task>? NavigateToCreateTenant { get; set; }
 
@@ -186,6 +187,9 @@ public partial class TenantListViewModel : ViewModelBase
 
     public async Task OnTenantDoubleClickedAsync(TenantListDto? tenant)
     {
-        await EditTenantAsync(tenant);
+        if (tenant == null || NavigateToTenantDetail == null) return;
+
+        SelectedTenant = tenant;
+        await NavigateToTenantDetail(tenant.Id);
     }
 }

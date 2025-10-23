@@ -67,7 +67,7 @@ public partial class ManufacturerInputViewModel : FluentValidationViewModelBase,
 
     public bool IsEditMode => ManufacturerId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"🏭 Hersteller #{ManufacturerId} bearbeiten" : "🏭 Neuen Hersteller erstellen";
-    public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
+    public bool ShouldShowContent => !IsLoading && !IsSaving;
 
     // Validation Error Properties for XAML Binding
     public string? NameError => GetFirstErrorMessage(nameof(Name));

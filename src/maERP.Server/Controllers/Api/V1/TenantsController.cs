@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using maERP.Application.Features.Tenant.Commands.TenantCreate;
 using maERP.Application.Features.Tenant.Commands.TenantUpdate;
+using maERP.Application.Features.Tenant.Queries.TenantDetail;
 using maERP.Application.Features.Tenant.Queries.TenantList;
 using maERP.Application.Mediator;
 using maERP.Domain.Dtos.Tenant;
@@ -49,6 +50,37 @@ public class TenantsController(IMediator mediator) : ControllerBase
         }
 
         var query = new TenantListQuery(userId, pageNumber, pageSize, searchString, orderBy);
+        var response = await mediator.Send(query);
+
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    /// <summary>
+    /// Get detailed information about a specific tenant
+    /// </summary>
+    /// <param name="id">Tenant ID</param>
+    /// <returns>Detailed tenant information</returns>
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Result<TenantDetailDto>>> GetTenant(Guid id)
+    {
+        // Get the current user's ID from the authenticated claims
+        var userId = User.FindFirst("uid")?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized(new Result<TenantDetailDto>
+            {
+                Succeeded = false,
+                StatusCode = ResultStatusCode.Unauthorized,
+                Messages = new List<string> { "User ID not found in token" }
+            });
+        }
+
+        var query = new TenantDetailQuery { Id = id, UserId = userId };
         var response = await mediator.Send(query);
 
         return StatusCode((int)response.StatusCode, response);

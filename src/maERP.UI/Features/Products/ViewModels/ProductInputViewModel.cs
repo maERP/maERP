@@ -112,7 +112,7 @@ public partial class ProductInputViewModel : FluentValidationViewModelBase, IPro
 
     public bool IsEditMode => ProductId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"Produkt #{ProductId} bearbeiten" : "Neues Produkt erstellen";
-    public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
+    public bool ShouldShowContent => !IsLoading && !IsSaving;
 
     // Validation Error Properties for XAML Binding
     public string? SkuError => GetFirstErrorMessage(nameof(Sku));
@@ -417,9 +417,12 @@ public partial class ProductInputViewModel : FluentValidationViewModelBase, IPro
 
         if (HasErrors)
         {
-            ErrorMessage = "Bitte korrigieren Sie die Eingabefehler";
+            ErrorMessage = "⚠️ Bitte korrigieren Sie die markierten Fehler im Formular.";
             return false;
         }
+
+        // Clear error message if validation passes
+        ErrorMessage = string.Empty;
         return true;
     }
 

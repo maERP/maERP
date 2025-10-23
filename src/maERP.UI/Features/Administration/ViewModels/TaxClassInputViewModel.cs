@@ -40,7 +40,7 @@ public partial class TaxClassInputViewModel : FluentValidationViewModelBase, ITa
 
     public bool IsEditMode => TaxClassId != Guid.Empty;
     public string PageTitle => IsEditMode ? "Steuerklasse bearbeiten" : "Neue Steuerklasse";
-    public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
+    public bool ShouldShowContent => !IsLoading && !IsSaving;
 
     // Validation Error Properties for XAML Binding
     public string? TaxRateError => GetFirstErrorMessage(nameof(TaxRate));
@@ -188,11 +188,16 @@ public partial class TaxClassInputViewModel : FluentValidationViewModelBase, ITa
 
     private bool ValidateForm()
     {
+        ValidateAllProperties();
+
         if (HasErrors)
         {
-            ErrorMessage = "Bitte korrigieren Sie die Validierungsfehler.";
+            ErrorMessage = "⚠️ Bitte korrigieren Sie die markierten Fehler im Formular.";
             return false;
         }
+
+        // Clear error message if validation passes
+        ErrorMessage = string.Empty;
         return true;
     }
 }

@@ -23,6 +23,7 @@ public class UserTenantConfiguration : IEntityTypeConfiguration<UserTenant>
 
         builder.Property(ut => ut.IsDefault).HasDefaultValue(false);
         builder.Property(ut => ut.RoleManageUser).HasDefaultValue(false);
+        builder.Property(ut => ut.RoleManageTenant).HasDefaultValue(false);
 
         // Seed data: Link default users to default tenant
         builder.HasData(
@@ -33,6 +34,7 @@ public class UserTenantConfiguration : IEntityTypeConfiguration<UserTenant>
                 TenantId = TenantConstants.DefaultTenantId,
                 IsDefault = true,
                 RoleManageUser = true, // Admin can manage users
+                RoleManageTenant = true, // Admin can manage tenant
                 DateCreated = DateTime.UtcNow,
                 DateModified = DateTime.UtcNow
             }

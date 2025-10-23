@@ -85,7 +85,7 @@ public partial class TenantInputViewModel : FluentValidationViewModelBase, ITena
 
     public bool IsEditMode => TenantId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"Mandant bearbeiten" : "Neuen Mandanten erstellen";
-    public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
+    public bool ShouldShowContent => !IsLoading && !IsSaving;
 
     // Validation Error Properties for XAML Binding
     public string? NameError => GetFirstErrorMessage(nameof(Name));
@@ -273,16 +273,12 @@ public partial class TenantInputViewModel : FluentValidationViewModelBase, ITena
 
         if (HasErrors)
         {
-            ErrorMessage = "Bitte korrigieren Sie die Fehler im Formular.";
+            ErrorMessage = "⚠️ Bitte korrigieren Sie die markierten Fehler im Formular.";
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(Name))
-        {
-            ErrorMessage = "Mandantenname ist erforderlich.";
-            return false;
-        }
-
+        // Clear error message if validation passes
+        ErrorMessage = string.Empty;
         return true;
     }
 

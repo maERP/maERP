@@ -83,7 +83,7 @@ public partial class SalesChannelInputViewModel : FluentValidationViewModelBase,
 
     public bool IsEditMode => SalesChannelId != Guid.Empty;
     public string PageTitle => IsEditMode ? $"Vertriebskanal #{SalesChannelId} bearbeiten" : "Neuen Vertriebskanal erstellen";
-    public bool ShouldShowContent => !IsLoading && !IsSaving && string.IsNullOrEmpty(ErrorMessage);
+    public bool ShouldShowContent => !IsLoading && !IsSaving;
 
     // Validation Error Properties for XAML Binding
     public string? NameError => GetFirstErrorMessage(nameof(Name));
@@ -346,16 +346,18 @@ public partial class SalesChannelInputViewModel : FluentValidationViewModelBase,
 
         if (HasErrors)
         {
-            ErrorMessage = "Bitte korrigieren Sie die Eingabefehler";
+            ErrorMessage = "⚠️ Bitte korrigieren Sie die markierten Fehler im Formular.";
             return false;
         }
 
         if (!SelectedWarehouses.Any())
         {
-            ErrorMessage = "Bitte wählen Sie mindestens ein Lager aus";
+            ErrorMessage = "⚠️ Bitte wählen Sie mindestens ein Lager aus.";
             return false;
         }
 
+        // Clear error message if validation passes
+        ErrorMessage = string.Empty;
         return true;
     }
 }

@@ -6,6 +6,7 @@ using maERP.Domain.Constants;
 using maERP.Application.Mediator;
 using maERP.Application.Contracts.Services;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Application.Features.DemoData.Commands.AllDemoData;
 
@@ -56,6 +57,9 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
         {
             // Set the tenant ID to 1 for creating demo data
             _tenantContext.SetCurrentTenantId(TenantConstants.DefaultTenantId);
+
+            // Delete existing demo data first to avoid conflicts
+            await DeleteExistingDemoDataAsync();
 
             // Create Tax Classes (19%, 7%, 0%)
             var taxClasses = GetDemoTaxClasses();
@@ -331,6 +335,7 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
 
             orders.Add(new Domain.Entities.Order
             {
+                OrderId = i,
                 CustomerId = customer.CustomerId,
                 RemoteOrderId = $"DEMO-{i:D4}",
                 SalesChannelId = TenantConstants.DefaultTenantId, // Using default tenant ID as placeholder
@@ -482,5 +487,55 @@ public class AllDemoDataHandler : IRequestHandler<AllDemoDataCommand, Result<str
                 Website = "www.knowledge-publishers.de"
             }
         };
+    }
+
+    private async Task DeleteExistingDemoDataAsync()
+    {
+        _logger.LogInformation("Deleting existing demo data for tenant {TenantId}", TenantConstants.DefaultTenantId);
+
+        // Delete in reverse order to respect foreign key constraints
+        // 1. Delete orders (which includes order items via cascade)
+        var existingOrders = await _orderRepository.GetAllAsync();
+        foreach (var order in existingOrders)
+        {
+            await _orderRepository.DeleteAsync(order);
+        }
+
+        // 2. Delete customers
+        var existingCustomers = await _customerRepository.GetAllAsync();
+        foreach (var customer in existingCustomers)
+        {
+            await _customerRepository.DeleteAsync(customer);
+        }
+
+        // 3. Delete products
+        var existingProducts = await _productRepository.GetAllAsync();
+        foreach (var product in existingProducts)
+        {
+            await _productRepository.DeleteAsync(product);
+        }
+
+        // 4. Delete manufacturers
+        var existingManufacturers = await _manufacturerRepository.GetAllAsync();
+        foreach (var manufacturer in existingManufacturers)
+        {
+            await _manufacturerRepository.DeleteAsync(manufacturer);
+        }
+
+        // 5. Delete tax classes
+        var existingTaxClasses = await _taxClassRepository.GetAllAsync();
+        foreach (var taxClass in existingTaxClasses)
+        {
+            await _taxClassRepository.DeleteAsync(taxClass);
+        }
+
+        // 6. Delete warehouses
+        var existingWarehouses = await _warehouseRepository.GetAllAsync();
+        foreach (var warehouse in existingWarehouses)
+        {
+            await _warehouseRepository.DeleteAsync(warehouse);
+        }
+
+        _logger.LogInformation("Successfully deleted existing demo data");
     }
 }

@@ -35,7 +35,7 @@ public partial class WarehouseInputViewModel : FluentValidationViewModelBase, IW
     [ObservableProperty]
     private string name = string.Empty;
 
-    public bool ShouldShowContent => !IsLoading && string.IsNullOrEmpty(ErrorMessage);
+    public bool ShouldShowContent => !IsLoading && !IsSaving;
     public bool IsEditMode => Id != Guid.Empty;
     public string PageTitle => IsEditMode ? $"🏭 Lager #{Id} bearbeiten" : "🏭 Neues Lager erstellen";
 
@@ -218,6 +218,16 @@ public partial class WarehouseInputViewModel : FluentValidationViewModelBase, IW
     private bool ValidateInput()
     {
         // Use FluentValidation
-        return ValidateAllProperties();
+        ValidateAllProperties();
+
+        if (HasErrors)
+        {
+            ErrorMessage = "⚠️ Bitte korrigieren Sie die markierten Fehler im Formular.";
+            return false;
+        }
+
+        // Clear error message if validation passes
+        ErrorMessage = string.Empty;
+        return true;
     }
 }

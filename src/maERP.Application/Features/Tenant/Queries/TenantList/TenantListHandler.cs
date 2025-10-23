@@ -49,7 +49,8 @@ public class TenantListHandler : IRequestHandler<TenantListQuery, PaginatedResul
                 Country = ut.Tenant.Country,
                 Iban = ut.Tenant.Iban,
                 DateCreated = ut.Tenant.DateCreated,
-                DateModified = ut.Tenant.DateModified
+                DateModified = ut.Tenant.DateModified,
+                CanManageTenant = ut.RoleManageTenant
             });
 
         // Apply search filter

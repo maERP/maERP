@@ -31,7 +31,6 @@
              xmlns:manufacturerViews="clr-namespace:maERP.UI.Features.Manufacturer.Views"
              xmlns:tenantVm="clr-namespace:maERP.UI.Features.Tenant.ViewModels"
              xmlns:tenantViews="clr-namespace:maERP.UI.Features.Tenant.Views"
-             xmlns:superadminTenantsVm="clr-namespace:maERP.UI.Features.SuperadminTenants.ViewModels"
              xmlns:viewModels="clr-namespace:maERP.UI.Features.Superadmin.ViewModels"
              xmlns:views="clr-namespace:maERP.UI.Features.Superadmin.Views"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
@@ -431,6 +430,9 @@
             <!-- Tenants -->
             <DataTemplate DataType="{x:Type tenantVm:TenantListViewModel}">
               <tenantViews:TenantsListView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type tenantVm:TenantDetailViewModel}">
+              <tenantViews:TenantDetailView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type tenantVm:TenantInputViewModel}">
               <tenantViews:TenantInputView/>

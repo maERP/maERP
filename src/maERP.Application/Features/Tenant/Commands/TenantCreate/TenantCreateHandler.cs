@@ -78,7 +78,8 @@ public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<G
                 UserId = request.UserId,
                 TenantId = tenantToCreate.Id,
                 IsDefault = true, // Make it the default tenant
-                RoleManageUser = true // Give user management permission for their own tenant
+                RoleManageUser = true, // Give user management permission for their own tenant
+                RoleManageTenant = true // Give tenant management permission to the creator
             };
 
             // Add user-tenant association to context without saving

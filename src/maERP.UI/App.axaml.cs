@@ -100,6 +100,7 @@ public partial class App : Application
         services.AddTransient<ManufacturerDetailViewModel>();
         services.AddTransient<ManufacturerInputViewModel>();
         services.AddTransient<TenantListViewModel>();
+        services.AddTransient<maERP.UI.Features.Tenant.ViewModels.TenantDetailViewModel>();
         services.AddTransient<TenantInputViewModel>();
         services.AddTransient<ConfirmationDialogViewModel>();
         services.AddTransient<DebugWindowViewModel>();

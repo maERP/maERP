@@ -81,25 +81,22 @@
                    Opacity="0.7"/>
       </StackPanel>
 
-      <!-- Error Message -->
-      <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-              Background="#FFF3CD"
-              BorderBrush="#D6B656"
-              BorderThickness="1"
-              CornerRadius="8"
-              Padding="20"
-              Margin="20"
-              VerticalAlignment="Top">
-        <StackPanel Spacing="8">
-          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
-          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
-        </StackPanel>
-      </Border>
-
-      <!-- Form Content -->
+      <!-- Form Content with validation message -->
       <ScrollViewer IsVisible="{Binding ShouldShowContent}" Margin="24,24,24,48">
-        <StackPanel Spacing="24">
+        <StackPanel Spacing="16">
 
+          <!-- Validation Error Message Banner -->
+          <Border IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                  Background="#FEF2F2"
+                  BorderBrush="#FCA5A5"
+                  BorderThickness="2"
+                  CornerRadius="8"
+                  Padding="16">
+            <TextBlock Text="{Binding ErrorMessage}"
+                       Foreground="#991B1B"
+                       FontWeight="Medium"
+                       TextWrapping="Wrap"/>
+          </Border>
           <!-- Basic Information Section -->
           <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
                   BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
