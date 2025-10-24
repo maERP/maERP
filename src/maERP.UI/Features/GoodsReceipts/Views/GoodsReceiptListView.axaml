@@ -114,70 +114,67 @@
       </Border>
 
       <!-- Data Grid -->
-      <ScrollViewer IsVisible="{Binding ShouldShowDataGrid}"
-                    VerticalScrollBarVisibility="Auto"
-                    HorizontalScrollBarVisibility="Auto">
-        <controls:DataGrid ItemsSource="{Binding GoodsReceipts}"
-                          SelectedItem="{Binding SelectedGoodsReceipt}"
-                          AutoGenerateColumns="False"
-                          CanUserReorderColumns="True"
-                          CanUserResizeColumns="True"
-                          CanUserSortColumns="True"
-                          IsReadOnly="True"
-                          GridLinesVisibility="Horizontal"
-                          HeadersVisibility="Column"
-                          SelectionMode="Single"
-                          DoubleTapped="DataGrid_DoubleTapped">
+      <controls:DataGrid ItemsSource="{Binding GoodsReceipts}"
+                        SelectedItem="{Binding SelectedGoodsReceipt}"
+                        AutoGenerateColumns="False"
+                        CanUserReorderColumns="True"
+                        CanUserResizeColumns="True"
+                        CanUserSortColumns="True"
+                        IsReadOnly="True"
+                        GridLinesVisibility="Horizontal"
+                        HeadersVisibility="Column"
+                        SelectionMode="Single"
+                        DoubleTapped="DataGrid_DoubleTapped"
+                        IsVisible="{Binding ShouldShowDataGrid}">
 
-          <controls:DataGrid.Columns>
+        <controls:DataGrid.Columns>
 
-            <controls:DataGridTextColumn Header="ID"
-                                        Binding="{Binding Id}"
-                                        Width="80"
-                                        CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="ID"
+                                      Binding="{Binding Id}"
+                                      Width="80"
+                                      CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="Datum"
-                                        Binding="{Binding ReceiptDate, StringFormat=dd.MM.yyyy}"
-                                        Width="120"
-                                        CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Datum"
+                                      Binding="{Binding ReceiptDate, StringFormat=dd.MM.yyyy}"
+                                      Width="120"
+                                      CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="Produkt"
-                                        Binding="{Binding ProductName}"
-                                        Width="*"
-                                        CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Produkt"
+                                      Binding="{Binding ProductName}"
+                                      Width="*"
+                                      CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="Menge"
-                                        Binding="{Binding Quantity}"
-                                        Width="100"
-                                        CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Menge"
+                                      Binding="{Binding Quantity}"
+                                      Width="100"
+                                      CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="Lager"
-                                        Binding="{Binding WarehouseName}"
-                                        Width="150"
-                                        CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Lager"
+                                      Binding="{Binding WarehouseName}"
+                                      Width="150"
+                                      CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="Lieferant"
-                                        Binding="{Binding Supplier}"
-                                        Width="200"
-                                        CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Lieferant"
+                                      Binding="{Binding Supplier}"
+                                      Width="200"
+                                      CanUserSort="True"/>
 
-          </controls:DataGrid.Columns>
+        </controls:DataGrid.Columns>
 
-          <controls:DataGrid.Styles>
-            <Style Selector="DataGridRow">
-              <Setter Property="Cursor" Value="Hand"/>
-            </Style>
-            <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
-            </Style>
-            <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
-              <Setter Property="Opacity" Value="0.1"/>
-            </Style>
-          </controls:DataGrid.Styles>
+        <controls:DataGrid.Styles>
+          <Style Selector="DataGridRow">
+            <Setter Property="Cursor" Value="Hand"/>
+          </Style>
+          <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
+          </Style>
+          <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="Opacity" Value="0.1"/>
+          </Style>
+        </controls:DataGrid.Styles>
 
-        </controls:DataGrid>
-      </ScrollViewer>
+      </controls:DataGrid>
 
     </Grid>
 

@@ -114,64 +114,63 @@
       </Border>
       
       <!-- Customers DataGrid -->
-      <ScrollViewer IsVisible="{Binding ShouldShowDataGrid}">
-        <controls:DataGrid ItemsSource="{Binding Customers}"
-                  SelectedItem="{Binding SelectedCustomer}"
-                  AutoGenerateColumns="False"
-                  CanUserReorderColumns="True"
-                  CanUserResizeColumns="True"
-                  CanUserSortColumns="True"
-                  GridLinesVisibility="Horizontal"
-                  HeadersVisibility="Column"
-                  IsReadOnly="True"
-                  SelectionMode="Single"
-                  DoubleTapped="DataGrid_DoubleTapped">
-          
-          <controls:DataGrid.Columns>
-            
-            <controls:DataGridTextColumn Header="Kunden-Nr." 
-                                Binding="{Binding CustomerId}" 
-                                Width="100"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Vorname" 
-                                Binding="{Binding Firstname}" 
-                                Width="200"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Nachname" 
-                                Binding="{Binding Lastname}" 
-                                Width="200"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Vollständiger Name" 
-                                Binding="{Binding FullName}" 
-                                Width="250"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Anmeldedatum" 
-                                Binding="{Binding DateEnrollment, StringFormat=\{0:dd.MM.yyyy\}}" 
-                                Width="150"
-                                CanUserSort="True"/>
-            
-            
-          </controls:DataGrid.Columns>
-          
-          <controls:DataGrid.Styles>
-            <Style Selector="DataGridRow">
-              <Setter Property="Cursor" Value="Hand"/>
-            </Style>
-            <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
-            </Style>
-            <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
-              <Setter Property="Opacity" Value="0.1"/>
-            </Style>
-          </controls:DataGrid.Styles>
-          
-        </controls:DataGrid>
-      </ScrollViewer>
+      <controls:DataGrid ItemsSource="{Binding Customers}"
+                SelectedItem="{Binding SelectedCustomer}"
+                AutoGenerateColumns="False"
+                CanUserReorderColumns="True"
+                CanUserResizeColumns="True"
+                CanUserSortColumns="True"
+                GridLinesVisibility="Horizontal"
+                HeadersVisibility="Column"
+                IsReadOnly="True"
+                SelectionMode="Single"
+                DoubleTapped="DataGrid_DoubleTapped"
+                IsVisible="{Binding ShouldShowDataGrid}">
+
+        <controls:DataGrid.Columns>
+
+          <controls:DataGridTextColumn Header="Kunden-Nr."
+                              Binding="{Binding CustomerId}"
+                              Width="100"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Vorname"
+                              Binding="{Binding Firstname}"
+                              Width="200"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Nachname"
+                              Binding="{Binding Lastname}"
+                              Width="200"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Vollständiger Name"
+                              Binding="{Binding FullName}"
+                              Width="250"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Anmeldedatum"
+                              Binding="{Binding DateEnrollment, StringFormat=\{0:dd.MM.yyyy\}}"
+                              Width="150"
+                              CanUserSort="True"/>
+
+
+        </controls:DataGrid.Columns>
+
+        <controls:DataGrid.Styles>
+          <Style Selector="DataGridRow">
+            <Setter Property="Cursor" Value="Hand"/>
+          </Style>
+          <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
+          </Style>
+          <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="Opacity" Value="0.1"/>
+          </Style>
+        </controls:DataGrid.Styles>
+
+      </controls:DataGrid>
       
     </Grid>
     

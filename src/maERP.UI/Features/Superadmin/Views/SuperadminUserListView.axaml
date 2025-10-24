@@ -114,63 +114,62 @@
       </Border>
 
       <!-- Users DataGrid -->
-      <ScrollViewer IsVisible="{Binding ShouldShowDataGrid}">
-        <controls:DataGrid ItemsSource="{Binding Users}"
-                  SelectedItem="{Binding SelectedUser}"
-                  AutoGenerateColumns="False"
-                  CanUserReorderColumns="True"
-                  CanUserResizeColumns="True"
-                  CanUserSortColumns="True"
-                  GridLinesVisibility="Horizontal"
-                  HeadersVisibility="Column"
-                  IsReadOnly="True"
-                  SelectionMode="Single"
-                  DoubleTapped="DataGrid_DoubleTapped">
+      <controls:DataGrid ItemsSource="{Binding Users}"
+                SelectedItem="{Binding SelectedUser}"
+                AutoGenerateColumns="False"
+                CanUserReorderColumns="True"
+                CanUserResizeColumns="True"
+                CanUserSortColumns="True"
+                GridLinesVisibility="Horizontal"
+                HeadersVisibility="Column"
+                IsReadOnly="True"
+                SelectionMode="Single"
+                DoubleTapped="DataGrid_DoubleTapped"
+                IsVisible="{Binding ShouldShowDataGrid}">
 
-          <controls:DataGrid.Columns>
+        <controls:DataGrid.Columns>
 
-            <controls:DataGridTextColumn Header="Benutzer-ID"
-                                Binding="{Binding Id}"
-                                Width="200"
-                                CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Benutzer-ID"
+                              Binding="{Binding Id}"
+                              Width="200"
+                              CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="E-Mail"
-                                Binding="{Binding Email}"
-                                Width="250"
-                                CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="E-Mail"
+                              Binding="{Binding Email}"
+                              Width="250"
+                              CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="Vorname"
-                                Binding="{Binding Firstname}"
-                                Width="150"
-                                CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Vorname"
+                              Binding="{Binding Firstname}"
+                              Width="150"
+                              CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="Nachname"
-                                Binding="{Binding Lastname}"
-                                Width="150"
-                                CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Nachname"
+                              Binding="{Binding Lastname}"
+                              Width="150"
+                              CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="Erstellt"
-                                Binding="{Binding DateCreated, StringFormat=\{0:dd.MM.yyyy HH:mm\}}"
-                                Width="150"
-                                CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Erstellt"
+                              Binding="{Binding DateCreated, StringFormat=\{0:dd.MM.yyyy HH:mm\}}"
+                              Width="150"
+                              CanUserSort="True"/>
 
-          </controls:DataGrid.Columns>
+        </controls:DataGrid.Columns>
 
-          <controls:DataGrid.Styles>
-            <Style Selector="DataGridRow">
-              <Setter Property="Cursor" Value="Hand"/>
-            </Style>
-            <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
-            </Style>
-            <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}" />
-              <Setter Property="Opacity" Value="0.1"/>
-            </Style>
-          </controls:DataGrid.Styles>
+        <controls:DataGrid.Styles>
+          <Style Selector="DataGridRow">
+            <Setter Property="Cursor" Value="Hand"/>
+          </Style>
+          <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
+          </Style>
+          <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+            <Setter Property="Opacity" Value="0.1"/>
+          </Style>
+        </controls:DataGrid.Styles>
 
-        </controls:DataGrid>
-      </ScrollViewer>
+      </controls:DataGrid>
 
     </Grid>
 

@@ -114,53 +114,52 @@
       </Border>
 
       <!-- Manufacturers DataGrid -->
-      <ScrollViewer IsVisible="{Binding ShouldShowDataGrid}">
-        <controls:DataGrid ItemsSource="{Binding Manufacturers}"
-                  SelectedItem="{Binding SelectedManufacturer}"
-                  AutoGenerateColumns="False"
-                  CanUserReorderColumns="True"
-                  CanUserResizeColumns="True"
-                  CanUserSortColumns="True"
-                  GridLinesVisibility="Horizontal"
-                  HeadersVisibility="Column"
-                  IsReadOnly="True"
-                  SelectionMode="Single"
-                  DoubleTapped="DataGrid_DoubleTapped">
+      <controls:DataGrid ItemsSource="{Binding Manufacturers}"
+                SelectedItem="{Binding SelectedManufacturer}"
+                AutoGenerateColumns="False"
+                CanUserReorderColumns="True"
+                CanUserResizeColumns="True"
+                CanUserSortColumns="True"
+                GridLinesVisibility="Horizontal"
+                HeadersVisibility="Column"
+                IsReadOnly="True"
+                SelectionMode="Single"
+                DoubleTapped="DataGrid_DoubleTapped"
+                IsVisible="{Binding ShouldShowDataGrid}">
 
-          <controls:DataGrid.Columns>
+        <controls:DataGrid.Columns>
 
-            <controls:DataGridTextColumn Header="Name"
-                                Binding="{Binding Name}"
-                                Width="250"
-                                CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Name"
+                              Binding="{Binding Name}"
+                              Width="250"
+                              CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="Stadt"
-                                Binding="{Binding City}"
-                                Width="200"
-                                CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Stadt"
+                              Binding="{Binding City}"
+                              Width="200"
+                              CanUserSort="True"/>
 
-            <controls:DataGridTextColumn Header="Land"
-                                Binding="{Binding Country}"
-                                Width="150"
-                                CanUserSort="True"/>
+          <controls:DataGridTextColumn Header="Land"
+                              Binding="{Binding Country}"
+                              Width="150"
+                              CanUserSort="True"/>
 
-          </controls:DataGrid.Columns>
+        </controls:DataGrid.Columns>
 
-          <controls:DataGrid.Styles>
-            <Style Selector="DataGridRow">
-              <Setter Property="Cursor" Value="Hand"/>
-            </Style>
-            <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
-            </Style>
-            <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
-              <Setter Property="Opacity" Value="0.1"/>
-            </Style>
-          </controls:DataGrid.Styles>
+        <controls:DataGrid.Styles>
+          <Style Selector="DataGridRow">
+            <Setter Property="Cursor" Value="Hand"/>
+          </Style>
+          <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
+          </Style>
+          <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="Opacity" Value="0.1"/>
+          </Style>
+        </controls:DataGrid.Styles>
 
-        </controls:DataGrid>
-      </ScrollViewer>
+      </controls:DataGrid>
 
     </Grid>
 

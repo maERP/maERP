@@ -62,8 +62,8 @@
                 Padding="12,8"
                 CornerRadius="6"
                 FontSize="16"                FontWeight="Medium"                MinWidth="36"                HorizontalContentAlignment="Center"                VerticalContentAlignment="Center"
-                Background="{DynamicResource PrimaryBrush}"
-                Foreground="{DynamicResource OnPrimaryBrush}"
+                Background="#1C1C1E"
+                Foreground="White"
                 BorderThickness="0"
                 ToolTip.Tip="Speichern"/>
       </StackPanel>

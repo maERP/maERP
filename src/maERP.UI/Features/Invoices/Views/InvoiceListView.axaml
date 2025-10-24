@@ -101,79 +101,78 @@
       </Border>
       
       <!-- Invoices DataGrid -->
-      <ScrollViewer IsVisible="{Binding ShouldShowDataGrid}">
-        <controls:DataGrid ItemsSource="{Binding Invoices}"
-                  SelectedItem="{Binding SelectedInvoice}"
-                  AutoGenerateColumns="False"
-                  CanUserReorderColumns="True"
-                  CanUserResizeColumns="True"
-                  CanUserSortColumns="True"
-                  GridLinesVisibility="Horizontal"
-                  HeadersVisibility="Column"
-                  IsReadOnly="True"
-                  SelectionMode="Single">
-          
-          <controls:DataGrid.Columns>
-            
-            <controls:DataGridTextColumn Header="Rechng-Nr." 
-                                Binding="{Binding Id}" 
-                                Width="100"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Rechnungsnummer" 
-                                Binding="{Binding InvoiceNumber}" 
-                                Width="150"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Kunde" 
-                                Binding="{Binding CustomerName}" 
-                                Width="200"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Rechnungsdatum" 
-                                Binding="{Binding InvoiceDate, StringFormat=\{0:dd.MM.yyyy\}}" 
-                                Width="120"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Bestellung" 
-                                Binding="{Binding OrderNumber}" 
-                                Width="120"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Status" 
-                                Binding="{Binding InvoiceStatus}" 
-                                Width="120"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Zahlungsstatus" 
-                                Binding="{Binding PaymentStatus}" 
-                                Width="150"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Zahlungsart" 
-                                Binding="{Binding PaymentMethod}" 
-                                Width="120"
-                                CanUserSort="True"/>
-            
-            <controls:DataGridTextColumn Header="Gesamtsumme" 
-                                Binding="{Binding Total, StringFormat=\{0:C2\}}" 
-                                Width="120"
-                                CanUserSort="True"/>
-            
-          </controls:DataGrid.Columns>
-          
-          <controls:DataGrid.Styles>
-            <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
-            </Style>
-            <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-              <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
-              <Setter Property="Opacity" Value="0.1"/>
-            </Style>
-          </controls:DataGrid.Styles>
-          
-        </controls:DataGrid>
-      </ScrollViewer>
+      <controls:DataGrid ItemsSource="{Binding Invoices}"
+                SelectedItem="{Binding SelectedInvoice}"
+                AutoGenerateColumns="False"
+                CanUserReorderColumns="True"
+                CanUserResizeColumns="True"
+                CanUserSortColumns="True"
+                GridLinesVisibility="Horizontal"
+                HeadersVisibility="Column"
+                IsReadOnly="True"
+                SelectionMode="Single"
+                IsVisible="{Binding ShouldShowDataGrid}">
+
+        <controls:DataGrid.Columns>
+
+          <controls:DataGridTextColumn Header="Rechng-Nr."
+                              Binding="{Binding Id}"
+                              Width="100"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Rechnungsnummer"
+                              Binding="{Binding InvoiceNumber}"
+                              Width="150"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Kunde"
+                              Binding="{Binding CustomerName}"
+                              Width="200"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Rechnungsdatum"
+                              Binding="{Binding InvoiceDate, StringFormat=\{0:dd.MM.yyyy\}}"
+                              Width="120"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Bestellung"
+                              Binding="{Binding OrderNumber}"
+                              Width="120"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Status"
+                              Binding="{Binding InvoiceStatus}"
+                              Width="120"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Zahlungsstatus"
+                              Binding="{Binding PaymentStatus}"
+                              Width="150"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Zahlungsart"
+                              Binding="{Binding PaymentMethod}"
+                              Width="120"
+                              CanUserSort="True"/>
+
+          <controls:DataGridTextColumn Header="Gesamtsumme"
+                              Binding="{Binding Total, StringFormat=\{0:C2\}}"
+                              Width="120"
+                              CanUserSort="True"/>
+
+        </controls:DataGrid.Columns>
+
+        <controls:DataGrid.Styles>
+          <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
+          </Style>
+          <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="Opacity" Value="0.1"/>
+          </Style>
+        </controls:DataGrid.Styles>
+
+      </controls:DataGrid>
       
     </Grid>
     

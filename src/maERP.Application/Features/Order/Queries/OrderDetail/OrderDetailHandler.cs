@@ -116,7 +116,7 @@ public class OrderDetailHandler : IRequestHandler<OrderDetailQuery, Result<Order
             // Set successful result with the order details
             result.Succeeded = true;
             result.StatusCode = ResultStatusCode.Ok;
-            result.Data = data;
+            result.Data = data; 
 
             _logger.LogInformation("Order with ID {Id} retrieved successfully", request.Id);
         }

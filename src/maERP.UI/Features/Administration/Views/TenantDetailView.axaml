@@ -53,30 +53,40 @@
 				<!-- Action buttons -->
 				<StackPanel Grid.Column="1"
 							Orientation="Horizontal"
-							Spacing="8"
+							Spacing="12"
 							VerticalAlignment="Center"
 							IsVisible="{Binding CanManageTenants}">
 					<Button Content="✏️ Bearbeiten"
 							Command="{Binding EditTenantCommand}"
 							Padding="16,10"
 							CornerRadius="6"
+							FontWeight="Medium"
 							Background="{DynamicResource AccentFillColorDefaultBrush}"
-							Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+							Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+							BorderThickness="0"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"/>
 					<Button Content="🔄 Aktualisieren"
 							Command="{Binding RefreshCommand}"
 							Padding="12,10"
 							CornerRadius="6"
+							FontWeight="Medium"
 							Background="{DynamicResource ControlFillColorDefaultBrush}"
 							BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
 							BorderThickness="1"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"
 							ToolTip.Tip="Aktualisieren"/>
 					<Button Content="← Zurück"
 							Command="{Binding GoBackCommand}"
 							Padding="12,10"
 							CornerRadius="6"
+							FontWeight="Medium"
 							Background="{DynamicResource ControlFillColorDefaultBrush}"
 							BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-							BorderThickness="1"/>
+							BorderThickness="1"
+							HorizontalContentAlignment="Center"
+							VerticalContentAlignment="Center"/>
 				</StackPanel>
 
 				<!-- Back button only for non-superadmins -->
@@ -85,9 +95,12 @@
 						Command="{Binding GoBackCommand}"
 						Padding="12,10"
 						CornerRadius="6"
+						FontWeight="Medium"
 						Background="{DynamicResource ControlFillColorDefaultBrush}"
 						BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
 						BorderThickness="1"
+						HorizontalContentAlignment="Center"
+						VerticalContentAlignment="Center"
 						IsVisible="{Binding !CanManageTenants}"/>
 
 			</Grid>
