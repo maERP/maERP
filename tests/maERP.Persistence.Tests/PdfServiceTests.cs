@@ -2,6 +2,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
 using maERP.Infrastructure.PDF;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace maERP.Persistence.Tests;
 
@@ -41,6 +42,14 @@ public class PdfServiceTests
 
         public Task<bool> IsUniqueAsync(Setting entity, Guid? id = null) =>
             Task.FromResult(!_settings.Any(s => s.Key == entity.Key && (!id.HasValue || s.Id != id.Value)));
+
+        public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
+
+        public Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
+
+        public void Add(Setting entity) => throw new NotSupportedException();
     }
 
     [Fact]
