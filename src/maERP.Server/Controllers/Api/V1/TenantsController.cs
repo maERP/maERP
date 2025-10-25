@@ -21,7 +21,7 @@ public class TenantsController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Get list of tenants assigned to the current user
     /// </summary>
-    /// <param name="pageNumber">Page number (default: 1)</param>
+    /// <param name="pageNumber">Page number (default: 0, zero-based)</param>
     /// <param name="pageSize">Page size (default: 10, max: 100)</param>
     /// <param name="searchString">Search string to filter tenants</param>
     /// <param name="orderBy">Order by fields (comma-separated)</param>
@@ -31,13 +31,14 @@ public class TenantsController(IMediator mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<PaginatedResult<TenantListDto>>> GetTenants(
-        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageNumber = 0,
         [FromQuery] int pageSize = 10,
         [FromQuery] string searchString = "",
         [FromQuery] string orderBy = "")
     {
         // Get the current user's ID from the authenticated claims
-        var userId = User.FindFirst("uid")?.Value;
+        // Try "uid" claim first (JWT), then fall back to NameIdentifier (Test/Standard)
+        var userId = User.FindFirst("uid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))
         {
@@ -68,7 +69,8 @@ public class TenantsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<Result<TenantDetailDto>>> GetTenant(Guid id)
     {
         // Get the current user's ID from the authenticated claims
-        var userId = User.FindFirst("uid")?.Value;
+        // Try "uid" claim first (JWT), then fall back to NameIdentifier (Test/Standard)
+        var userId = User.FindFirst("uid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))
         {
@@ -98,7 +100,8 @@ public class TenantsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<Result<Guid>>> CreateTenant([FromBody] TenantCreateCommand command)
     {
         // Get the current user's ID from the authenticated claims
-        var userId = User.FindFirst("uid")?.Value;
+        // Try "uid" claim first (JWT), then fall back to NameIdentifier (Test/Standard)
+        var userId = User.FindFirst("uid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))
         {
@@ -132,7 +135,8 @@ public class TenantsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<Result<Guid>>> UpdateTenant(Guid id, [FromBody] TenantUpdateCommand command)
     {
         // Get the current user's ID from the authenticated claims
-        var userId = User.FindFirst("uid")?.Value;
+        // Try "uid" claim first (JWT), then fall back to NameIdentifier (Test/Standard)
+        var userId = User.FindFirst("uid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))
         {

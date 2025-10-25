@@ -90,14 +90,6 @@ public class TenantUpdateCommandTests : TenantIsolatedTestBase
         };
     }
 
-    private void SimulateAuthenticatedRequest(string userId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Test-UserId");
-        Client.DefaultRequestHeaders.Remove("X-Test-Unauthenticated");
-        Client.DefaultRequestHeaders.Add("X-Test-UserId", userId);
-        Client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Test");
-    }
-
     [Fact]
     public async Task UpdateTenant_WithValidDataAndPermission_ShouldReturnOk()
     {

@@ -74,8 +74,6 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
             userId = Guid.NewGuid().ToString();
         }
 
-        System.Console.WriteLine($"TestAuth userId={userId}");
-
         var username = Options.Username;
         if (Context.Request.Headers.TryGetValue("X-Test-Username", out var usernameHeader) && !string.IsNullOrWhiteSpace(usernameHeader))
         {

@@ -116,7 +116,15 @@ if (!builder.Environment.IsEnvironment("Testing"))
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddIdentityServices(builder.Configuration);
+
+// Skip Identity Services (including JWT Authentication) in test environment
+// Tests use their own TestAuthenticationHandler instead
+if (builder.Environment.EnvironmentName != "Testing")
+{
+    builder.Services.AddIdentityServices(builder.Configuration);
+}
+// Note: In Testing environment, TestWebApplicationFactory configures TestAuthenticationHandler
+// and ITenantContext is replaced by TestTenantContext
 
 // Add health checks
 builder.Services.AddHealthChecks()

@@ -14,14 +14,6 @@ public class TenantListQueryTests : TenantIsolatedTestBase
     private const string User2Id = "22222222-2222-2222-2222-222222222222";
     private const string UserWithoutTenantsId = "33333333-3333-3333-3333-333333333333";
 
-    private void SimulateAuthenticatedRequest(string userId)
-    {
-        Client.DefaultRequestHeaders.Remove("X-Test-UserId");
-        Client.DefaultRequestHeaders.Remove("X-Test-Unauthenticated");
-        Client.DefaultRequestHeaders.Add("X-Test-UserId", userId);
-        Client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Test");
-    }
-
     private async Task SeedUserTenantsAsync()
     {
         var currentTenant = TenantContext.GetCurrentTenantId();
@@ -79,7 +71,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         await SeedUserTenantsAsync();
         SimulateAuthenticatedRequest(AdminUserId);
 
-        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=1&pageSize=10");
+        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=10");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
@@ -95,7 +87,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         await SeedUserTenantsAsync();
         SimulateAuthenticatedRequest(User2Id);
 
-        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=1&pageSize=10");
+        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=10");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
@@ -112,7 +104,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         await SeedUserTenantsAsync();
         SimulateAuthenticatedRequest(UserWithoutTenantsId);
 
-        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=1&pageSize=10");
+        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=10");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
@@ -128,7 +120,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         await SeedUserTenantsAsync();
         SimulateAuthenticatedRequest(AdminUserId);
 
-        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=1&pageSize=10&searchString=Tenant 1");
+        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=10&searchString=Tenant 1");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
@@ -144,7 +136,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         await SeedUserTenantsAsync();
         SimulateAuthenticatedRequest(AdminUserId);
 
-        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=1&pageSize=1");
+        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=1");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
@@ -152,7 +144,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertTrue(result.Succeeded);
         TestAssertions.AssertEqual(2, result.TotalCount); // Total 2 tenants
         TestAssertions.AssertEqual(1, result.Data.Count); // But only 1 on this page
-        TestAssertions.AssertEqual(1, result.CurrentPage);
+        TestAssertions.AssertEqual(0, result.CurrentPage); // 0-based pagination
         TestAssertions.AssertEqual(2, result.TotalPages);
     }
 
@@ -162,7 +154,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         await SeedUserTenantsAsync();
         SimulateAuthenticatedRequest(AdminUserId);
 
-        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=1&pageSize=10&orderBy=Name desc");
+        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=10&orderBy=Name desc");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
@@ -179,7 +171,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         await SeedUserTenantsAsync();
         SimulateUnauthenticatedRequest();
 
-        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=1&pageSize=10");
+        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=10");
 
         TestAssertions.AssertEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -207,7 +199,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         await SeedUserTenantsAsync();
         SimulateAuthenticatedRequest(AdminUserId);
 
-        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=1&pageSize=100");
+        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=100");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
@@ -223,7 +215,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         await SeedUserTenantsAsync();
         SimulateAuthenticatedRequest(AdminUserId);
 
-        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=1&pageSize=10");
+        var response = await Client.GetAsync("/api/v1/tenants?pageNumber=0&pageSize=10");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
         var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
@@ -233,7 +225,7 @@ public class TenantListQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertNotNull(result.Messages);
 
         // Check pagination properties
-        TestAssertions.AssertTrue(result.CurrentPage > 0);
+        TestAssertions.AssertTrue(result.CurrentPage >= 0); // 0-based pagination
         TestAssertions.AssertTrue(result.TotalPages > 0);
         TestAssertions.AssertTrue(result.TotalCount >= 0);
         TestAssertions.AssertTrue(result.PageSize > 0);

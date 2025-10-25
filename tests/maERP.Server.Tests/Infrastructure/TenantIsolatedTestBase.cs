@@ -74,6 +74,13 @@ public abstract class TenantIsolatedTestBase : IDisposable
         Client.DefaultRequestHeaders.Remove("X-Test-Unauthenticated");
     }
 
+    protected void SimulateAuthenticatedRequest(string userId)
+    {
+        Client.DefaultRequestHeaders.Remove("X-Test-UserId");
+        Client.DefaultRequestHeaders.Remove("X-Test-Unauthenticated");
+        Client.DefaultRequestHeaders.Add("X-Test-UserId", userId);
+    }
+
     protected void SetTestUserRoles(params string[] roles)
     {
         Client.DefaultRequestHeaders.Remove("X-Test-Roles");
