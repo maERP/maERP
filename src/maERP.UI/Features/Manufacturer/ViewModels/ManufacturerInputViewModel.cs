@@ -243,15 +243,15 @@ public partial class ManufacturerInputViewModel : FluentValidationViewModelBase,
     private void PopulateFormFromDto(ManufacturerDetailDto dto)
     {
         Name = dto.Name;
-        Street = dto.Street;
+        Street = dto.Street ?? string.Empty;
         City = dto.City;
-        State = dto.State;
+        State = dto.State ?? string.Empty;
         Country = dto.Country;
-        ZipCode = dto.ZipCode;
-        Phone = dto.Phone;
-        Email = dto.Email;
-        Website = dto.Website;
-        Logo = dto.Logo;
+        ZipCode = dto.ZipCode ?? string.Empty;
+        Phone = dto.Phone ?? string.Empty;
+        Email = dto.Email ?? string.Empty;
+        Website = dto.Website ?? string.Empty;
+        Logo = dto.Logo ?? string.Empty;
     }
 
     private ManufacturerInputDto CreateDtoFromForm()

@@ -179,11 +179,11 @@ public partial class ProductInputViewModel : FluentValidationViewModelBase, IPro
                 // Map product data to form fields
                 Sku = product.Sku;
                 Name = product.Name;
-                NameOptimized = product.NameOptimized;
-                Ean = product.Ean;
-                Asin = product.Asin;
-                Description = product.Description;
-                DescriptionOptimized = product.DescriptionOptimized;
+                NameOptimized = product.NameOptimized ?? string.Empty;
+                Ean = product.Ean ?? string.Empty;
+                Asin = product.Asin ?? string.Empty;
+                Description = product.Description ?? string.Empty;
+                DescriptionOptimized = product.DescriptionOptimized ?? string.Empty;
                 UseOptimized = product.UseOptimized;
                 Price = product.Price;
                 Msrp = product.Msrp;

@@ -148,7 +148,7 @@ public partial class TenantInputViewModel : FluentValidationViewModelBase, ITena
 
                 // Map tenant data to form fields
                 Name = tenant.Name;
-                Description = tenant.Description;
+                Description = tenant.Description ?? string.Empty;
                 IsActive = tenant.IsActive;
                 CompanyName = tenant.CompanyName ?? string.Empty;
                 ContactEmail = tenant.ContactEmail ?? string.Empty;
