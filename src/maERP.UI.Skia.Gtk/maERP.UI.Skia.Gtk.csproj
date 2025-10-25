@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Uno.WinUI.Skia.Gtk" Version="6.4.0-dev.252" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\maERP.UI.Shared\maERP.UI.Shared.csproj" />
+  </ItemGroup>
+</Project>

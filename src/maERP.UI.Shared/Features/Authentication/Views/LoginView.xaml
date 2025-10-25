@@ -1,0 +1,141 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
+    x:Class="maERP.UI.Features.Authentication.Views.LoginView">
+
+  <Border Background="{ThemeResource SurfaceContainerBrush}"
+          CornerRadius="{ThemeResource CornerRadiusL}"
+          Padding="32"
+          Width="400"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          BorderBrush="{ThemeResource OutlineVariantBrush}"
+          BorderThickness="1">
+
+    <StackPanel Spacing="24">
+
+      <!-- Logo und Titel -->
+      <StackPanel Spacing="12" HorizontalAlignment="Center">
+        <TextBlock Text="maERP"
+                   FontSize="{ThemeResource FontSizeDisplayS}"
+                   FontWeight="SemiBold"
+                   Foreground="{ThemeResource PrimaryBrush}"
+                   HorizontalAlignment="Center"/>
+        <TextBlock Text="Enterprise Resource Planning"
+                   FontSize="{ThemeResource FontSizeBodyM}"
+                   Foreground="{ThemeResource ContentViewSubheadingBrush}"
+                   HorizontalAlignment="Center"/>
+      </StackPanel>
+
+      <!-- Anmeldeformular -->
+      <StackPanel Spacing="16">
+
+        <!-- Server URL -->
+        <StackPanel Spacing="4">
+          <TextBlock Text="Server-URL"
+                     FontWeight="SemiBold"
+                     FontSize="{ThemeResource FontSizeBodyM}"
+                     Foreground="{ThemeResource ContentViewHeadingBrush}"/>
+          <TextBox Text="{Binding ServerUrl, Mode=TwoWay}"
+                   PlaceholderText="https://localhost:8443"
+                   CornerRadius="{ThemeResource CornerRadiusS}"
+                   Padding="12,8"
+                   FontSize="{ThemeResource FontSizeBodyM}"/>
+        </StackPanel>
+
+        <!-- Email -->
+        <StackPanel Spacing="4">
+          <TextBlock Text="E-Mail-Adresse"
+                     FontWeight="SemiBold"
+                     FontSize="{ThemeResource FontSizeBodyM}"
+                     Foreground="{ThemeResource ContentViewHeadingBrush}"/>
+          <TextBox Text="{Binding Email, Mode=TwoWay}"
+                   PlaceholderText="name@domain.com"
+                   CornerRadius="{ThemeResource CornerRadiusS}"
+                   Padding="12,8"
+                   FontSize="{ThemeResource FontSizeBodyM}"/>
+        </StackPanel>
+
+        <!-- Passwort -->
+        <StackPanel Spacing="4">
+          <TextBlock Text="Passwort"
+                     FontWeight="SemiBold"
+                     FontSize="{ThemeResource FontSizeBodyM}"
+                     Foreground="{ThemeResource ContentViewHeadingBrush}"/>
+          <PasswordBox Password="{Binding Password, Mode=TwoWay}"
+                       PlaceholderText="Passwort eingeben"
+                       CornerRadius="{ThemeResource CornerRadiusS}"
+                       Padding="12,8"
+                       FontSize="{ThemeResource FontSizeBodyM}"/>
+        </StackPanel>
+
+        <!-- Remember Me Checkbox -->
+        <CheckBox IsChecked="{Binding RememberMe, Mode=TwoWay}"
+                  Content="Anmeldedaten speichern"
+                  FontSize="{ThemeResource FontSizeBodyM}"
+                  Foreground="{ThemeResource ContentViewHeadingBrush}"
+                  Margin="0,8,0,0"/>
+
+        <!-- Fehlermeldung -->
+        <Border Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"
+                Background="#fee2e2"
+                BorderBrush="{ThemeResource ErrorBrush}"
+                BorderThickness="1"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                Padding="12">
+          <TextBlock Text="{Binding ErrorMessage}"
+                     Foreground="#991b1b"
+                     FontSize="{ThemeResource FontSizeBodyM}"
+                     TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- Login Button -->
+        <Button Content="Anmelden"
+                Command="{Binding LoginCommand}"
+                IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Padding="0,12"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontWeight="SemiBold"
+                FontSize="{ThemeResource FontSizeBodyL}"
+                Background="{ThemeResource PrimaryBrush}"
+                Foreground="{ThemeResource OnPrimaryBrush}"/>
+
+        <!-- Loading Indicator -->
+        <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Spacing="8">
+          <ProgressRing IsActive="True" Width="20" Height="20"/>
+          <TextBlock Text="Anmeldung läuft..."
+                     FontSize="{ThemeResource FontSizeBodyM}"
+                     Foreground="{ThemeResource ContentViewSubheadingBrush}"/>
+        </StackPanel>
+
+        <!-- Forgot Password Link -->
+        <HyperlinkButton Content="Passwort vergessen?"
+                        Command="{Binding ShowForgotPasswordCommand}"
+                        HorizontalAlignment="Center"
+                        Foreground="{ThemeResource PrimaryBrush}"
+                        FontSize="{ThemeResource FontSizeBodyM}"
+                        Padding="8,4"/>
+
+        <!-- Register Link -->
+        <HyperlinkButton Content="Noch kein Konto? Hier registrieren"
+                        Command="{Binding ShowRegistrationCommand}"
+                        HorizontalAlignment="Center"
+                        Foreground="{ThemeResource PrimaryBrush}"
+                        FontSize="{ThemeResource FontSizeBodyM}"
+                        Padding="8,4"/>
+
+      </StackPanel>
+
+    </StackPanel>
+
+  </Border>
+
+</UserControl>

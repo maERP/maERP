@@ -1,0 +1,291 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+    x:Class="maERP.UI.Features.Superadmin.Views.SuperadminTenantsDetailView">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" Margin="0,0,0,32">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Title and info -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,8">
+          <TextBlock Text="{Binding Tenant.DisplayName}"
+                     FontSize="28"
+                     FontWeight="SemiBold"
+                     Foreground="{ThemeResource ContentViewHeadingBrush}"/>
+          <TextBlock Text="{Binding Tenant.Id, Converter={StaticResource StringFormatConverter}, ConverterParameter='ID #{0}'}"
+                     FontSize="18"
+                     FontWeight="Medium"
+                     Foreground="{ThemeResource ContentViewSubheadingBrush}"
+                     VerticalAlignment="Bottom"/>
+          <Border Background="#E0F2FE"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Padding="8,4">
+            <TextBlock Text="{Binding StatusText}"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="#0369A1"/>
+          </Border>
+        </StackPanel>
+        <TextBlock Text="{Binding Tenant.Identifier, Converter={StaticResource StringFormatConverter}, ConverterParameter='Kennung: {0}'}"
+                   FontSize="14"
+                   Foreground="{ThemeResource ContentViewSubheadingBrush}"/>
+      </StackPanel>
+
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="12"
+                  VerticalAlignment="Center">
+        <Button Content="✅"
+                Command="{Binding ActivateTenantCommand}"
+                Visibility="{Binding CanActivate, Converter={StaticResource BoolToVisibilityConverter}}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                Background="#10B981"
+                Foreground="{ThemeResource OnPrimaryBrush}"
+                BorderThickness="0"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Tenant aktivieren"/>
+        <Button Content="⏸️"
+                Command="{Binding DeactivateTenantCommand}"
+                Visibility="{Binding CanDeactivate, Converter={StaticResource BoolToVisibilityConverter}}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                Background="#EF4444"
+                Foreground="{ThemeResource OnPrimaryBrush}"
+                BorderThickness="0"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Tenant deaktivieren"/>
+        <Button Content="✏️"
+                Command="{Binding EditTenantCommand}"
+                IsEnabled="{Binding Tenant, Converter={StaticResource NullToBoolConverter}}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                Background="{ThemeResource PrimaryBrush}"
+                Foreground="{ThemeResource OnPrimaryBrush}"
+                BorderThickness="0"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Tenant bearbeiten"/>
+        <Button Content="🔄"
+                Command="{Binding RefreshCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="14"
+                FontWeight="Medium"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="1"
+                BorderBrush="{ThemeResource OutlineVariantBrush}"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Aktualisieren"/>
+        <Button Content="←"
+                Command="{Binding GoBackCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="14"
+                FontWeight="Medium"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="1"
+                BorderBrush="{ThemeResource OutlineVariantBrush}"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Zurück zur Liste"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Content -->
+    <Grid Grid.Row="1" Margin="0,12">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+
+      <!-- Loading -->
+      <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Spacing="16">
+        <ProgressRing IsActive="True" Width="44" Height="44"/>
+        <TextBlock Text="Tenant wird geladen..."
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+      </StackPanel>
+
+      <!-- Error -->
+      <Border Grid.Row="0"
+              Margin="16"
+              Background="#FFF3CD"
+              BorderBrush="#D6B656"
+              BorderThickness="1"
+              CornerRadius="{ThemeResource CornerRadiusM}"
+              Padding="20"
+              Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler"
+                     FontWeight="SemiBold"
+                     Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}"
+                     Foreground="#856404"/>
+          <Button Content="Erneut versuchen"
+                  Command="{Binding RefreshCommand}"
+                  HorizontalAlignment="Left"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Details -->
+      <ScrollViewer Grid.Row="1"
+                    Margin="16"
+                    Visibility="{Binding ShouldShowContent, Converter={StaticResource BoolToVisibilityConverter}}">
+        <StackPanel Spacing="20" MaxWidth="800" HorizontalAlignment="Center">
+
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="24">
+            <Grid RowSpacing="12">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+              </Grid.RowDefinitions>
+
+              <TextBlock Text="Name"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+              <TextBlock Grid.Column="1"
+                         Text="{Binding Tenant.DisplayName}"/>
+
+              <TextBlock Grid.Row="1"
+                         Text="Kennung"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+              <TextBlock Grid.Row="1" Grid.Column="1"
+                         Text="{Binding Tenant.Identifier}"/>
+
+              <TextBlock Grid.Row="2"
+                         Text="Domain"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+              <TextBlock Grid.Row="2" Grid.Column="1"
+                         Text="{Binding Tenant.Domain, FallbackValue=-}"/>
+
+              <TextBlock Grid.Row="3"
+                         Text="Admin-E-Mail"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+              <TextBlock Grid.Row="3" Grid.Column="1"
+                         Text="{Binding Tenant.AdminEmail, FallbackValue=-}"/>
+
+              <TextBlock Grid.Row="4"
+                         Text="Verbindungszeichenfolge"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+              <TextBlock Grid.Row="4" Grid.Column="1"
+                         Text="{Binding Tenant.ConnectionString, FallbackValue=-}"/>
+
+              <TextBlock Grid.Row="5"
+                         Text="Status"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+              <TextBlock Grid.Row="5" Grid.Column="1"
+                         Text="{Binding StatusText}"/>
+
+              <TextBlock Grid.Row="6"
+                         Text="Valid bis"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+              <TextBlock Grid.Row="6" Grid.Column="1"
+                         Text="{Binding Tenant.ValidUntil, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:dd.MM.yyyy}', FallbackValue=unbegrenzt}"/>
+
+            </Grid>
+          </Border>
+
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="24">
+            <StackPanel Spacing="12">
+              <TextBlock Text="Beschreibung"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+              <TextBlock Text="{Binding Tenant.Description, FallbackValue=Keine Beschreibung hinterlegt}"/>
+            </StackPanel>
+          </Border>
+
+          <Border Background="{ThemeResource ControlFillColorSubtleBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="24">
+            <Grid RowSpacing="12">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+              </Grid.RowDefinitions>
+
+              <TextBlock Text="Erstellt am"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+              <TextBlock Grid.Column="1"
+                         Text="{Binding Tenant.CreatedAt, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:dd.MM.yyyy HH:mm}'}"/>
+
+              <TextBlock Grid.Row="1"
+                         Text="Aktualisiert am"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+              <TextBlock Grid.Row="1" Grid.Column="1"
+                         Text="{Binding Tenant.LastUpdatedAt, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:dd.MM.yyyy HH:mm}', FallbackValue=--}"/>
+            </Grid>
+          </Border>
+
+        </StackPanel>
+      </ScrollViewer>
+
+    </Grid>
+
+  </Grid>
+
+</UserControl>

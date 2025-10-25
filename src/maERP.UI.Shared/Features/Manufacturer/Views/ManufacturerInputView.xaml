@@ -1,0 +1,399 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+    x:Class="maERP.UI.Features.Manufacturer.Views.ManufacturerInputView">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" Margin="0,0,0,32">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Title -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <TextBlock Text="{Binding PageTitle}"
+                   FontSize="28"
+                   FontWeight="SemiBold"
+                   Foreground="{ThemeResource ContentViewHeadingBrush}"
+                   Margin="0,0,0,8"/>
+        <TextBlock Text="Hersteller bearbeiten oder erstellen"
+                   FontSize="14"
+                   Foreground="{ThemeResource ContentViewSubheadingBrush}"/>
+      </StackPanel>
+
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="8"
+                  VerticalAlignment="Center">
+        <Button Content="❌"
+                Command="{Binding CancelCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Abbrechen"/>
+        <Button Content="💾"
+                Command="{Binding SaveCommand}"
+                IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="#1C1C1E"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Speichern"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+
+      <!-- Loading Indicator -->
+      <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressRing IsActive="True" Width="40" Height="40"/>
+        <TextBlock Text="Hersteller wird geladen..."
+                   HorizontalAlignment="Center"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+      </StackPanel>
+
+      <!-- Error Message -->
+      <Border Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"
+              Background="#FFF3CD"
+              BorderBrush="#D6B656"
+              BorderThickness="1"
+              CornerRadius="{ThemeResource CornerRadiusM}"
+              Padding="20"
+              Margin="20"
+              VerticalAlignment="Top">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Form Content -->
+      <ScrollViewer Visibility="{Binding ShouldShowContent, Converter={StaticResource BoolToVisibilityConverter}}" Padding="24,24,24,48">
+        <StackPanel Spacing="24">
+
+          <!-- Basic Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="🏭 Grundinformationen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- Form Fields Grid -->
+              <Grid ColumnSpacing="20" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Name Field -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Herstellername *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Name, Mode=TwoWay}"
+                           PlaceholderText="Herstellername eingeben..."
+                           BorderBrush="{Binding NameError, Converter={StaticResource NullToBoolConverter}, ConverterParameter=Inverse}"/>
+                  <TextBlock Text="{Binding NameError}"
+                             Visibility="{Binding NameError, Converter={StaticResource NullToVisibilityConverter}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
+                </StackPanel>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Address Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="📍 Adressinformationen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- Address Fields Grid -->
+              <Grid ColumnSpacing="20" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- First Row: Street -->
+                <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Spacing="4">
+                  <TextBlock Text="Straße" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Street, Mode=TwoWay}"
+                           PlaceholderText="Straße eingeben..."/>
+                </StackPanel>
+
+                <!-- Second Row: City, ZipCode -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Stadt" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding City, Mode=TwoWay}"
+                           PlaceholderText="Stadt eingeben..."/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="PLZ" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding ZipCode, Mode=TwoWay}"
+                           PlaceholderText="PLZ eingeben..."/>
+                </StackPanel>
+
+                <!-- Third Row: State, Country -->
+                <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Bundesland" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding State, Mode=TwoWay}"
+                           PlaceholderText="Bundesland eingeben..."/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="Land" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Country, Mode=TwoWay}"
+                           PlaceholderText="Land eingeben..."/>
+                </StackPanel>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Contact Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="📞 Kontaktinformationen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- Contact Fields Grid -->
+              <Grid ColumnSpacing="20" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- First Row: Phone, Email -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Telefon" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Phone, Mode=TwoWay}"
+                           PlaceholderText="Telefonnummer eingeben..."/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="E-Mail" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Email, Mode=TwoWay}"
+                           PlaceholderText="E-Mail-Adresse eingeben..."/>
+                  <TextBlock Text="{Binding EmailError}"
+                             Visibility="{Binding EmailError, Converter={StaticResource NullToVisibilityConverter}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <!-- Second Row: Website -->
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="4">
+                  <TextBlock Text="Website" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Website, Mode=TwoWay}"
+                           PlaceholderText="Website URL eingeben..."/>
+                </StackPanel>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Branding Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="🎨 Branding"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- Logo Fields -->
+              <Grid ColumnSpacing="20">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo URL Field -->
+                <StackPanel Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Logo URL" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Logo, Mode=TwoWay}"
+                           PlaceholderText="URL zum Hersteller-Logo eingeben..."/>
+                </StackPanel>
+
+                <!-- Logo Preview -->
+                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Bottom">
+                  <TextBlock Text="Vorschau" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                  <Border CornerRadius="{ThemeResource CornerRadiusS}"
+                          Background="White"
+                          BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"
+                          Width="100"
+                          Height="60"
+                          HorizontalAlignment="Center">
+                    <Grid>
+                      <!-- Logo Image -->
+                      <Image Source="{Binding Logo}"
+                             Stretch="Uniform"
+                             Margin="4"
+                             Visibility="{Binding Logo, Converter={StaticResource NullToVisibilityConverter}}"/>
+
+                      <!-- Placeholder when no logo -->
+                      <StackPanel Visibility="{Binding Logo, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Inverse}"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center">
+                        <TextBlock Text="🏭"
+                                   FontSize="24"
+                                   HorizontalAlignment="Center"
+                                   Opacity="0.3"/>
+                        <TextBlock Text="Kein Logo"
+                                   FontSize="8"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   HorizontalAlignment="Center"
+                                   Opacity="0.5"/>
+                      </StackPanel>
+                    </Grid>
+                  </Border>
+                </StackPanel>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+        </StackPanel>
+      </ScrollViewer>
+
+    </Grid>
+
+    <!-- Footer with action buttons -->
+    <Border Grid.Row="2"
+            Background="{ThemeResource ControlFillColorDefaultBrush}"
+            Padding="20,16"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0">
+
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Save Status -->
+        <StackPanel Grid.Column="0"
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    VerticalAlignment="Center">
+          <ProgressRing IsActive="{Binding IsSaving}"
+                       Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}"
+                       Width="20" Height="20"/>
+          <TextBlock Text="Status: Bereit"
+                     VerticalAlignment="Center"
+                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                     Visibility="{Binding IsSaving, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+          <TextBlock Text="Status: Wird gespeichert..."
+                     VerticalAlignment="Center"
+                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                     Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        </StackPanel>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="8">
+
+          <Button Content="❌ Abbrechen"
+                  Command="{Binding CancelCommand}"
+                  Padding="12,8"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
+
+          <Button Content="💾 Speichern"
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                  Padding="12,8"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="#1C1C1E"
+                  Foreground="White"/>
+
+        </StackPanel>
+
+      </Grid>
+
+    </Border>
+
+  </Grid>
+
+</UserControl>

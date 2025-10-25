@@ -1,0 +1,478 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+    x:Class="maERP.UI.Features.SalesChannels.Views.SalesChannelInputView"
+    x:Name="RootUserControl">
+
+  <UserControl.Resources>
+    <!-- Style for TextBox with validation errors -->
+    <Style TargetType="TextBox" x:Key="ErrorTextBoxStyle">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+      <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" Margin="0,0,0,32">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Title -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <TextBlock Text="{Binding PageTitle}"
+                   FontSize="28"
+                   FontWeight="SemiBold"
+                   Foreground="{ThemeResource ContentViewHeadingBrush}"
+                   Margin="0,0,0,8"/>
+        <TextBlock Text="Vertriebskanal bearbeiten oder erstellen"
+                   FontSize="14"
+                   Foreground="{ThemeResource ContentViewSubheadingBrush}"/>
+      </StackPanel>
+
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="8"
+                  VerticalAlignment="Center">
+        <Button Content="❌"
+                Command="{Binding CancelCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Abbrechen"/>
+        <Button Content="💾"
+                Command="{Binding SaveCommand}"
+                IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="#1C1C1E"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Speichern"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+
+      <!-- Loading Indicator -->
+      <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressRing IsActive="True" Width="40" Height="40"/>
+        <TextBlock Text="Vertriebskanal wird geladen..."
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+
+      <!-- Error Message -->
+      <Border Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"
+              Background="#FFF3CD"
+              BorderBrush="#D6B656"
+              BorderThickness="1"
+              CornerRadius="{ThemeResource CornerRadiusM}"
+              Padding="20"
+              Margin="20"
+              VerticalAlignment="Top">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Form Content -->
+      <ScrollViewer Visibility="{Binding ShouldShowContent, Converter={StaticResource BoolToVisibilityConverter}}" Padding="24">
+        <StackPanel Spacing="24" MaxWidth="800" HorizontalAlignment="Center">
+
+          <!-- Basic Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="32">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="🔗 Grundinformationen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- Form Fields Grid -->
+              <Grid ColumnSpacing="20" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- First Row: Name, Type -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Name *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Name, Mode=TwoWay}"
+                           PlaceholderText="Name des Vertriebskanals eingeben..."
+                           Style="{StaticResource ErrorTextBoxStyle}"
+                           Visibility="{Binding NameError, Converter={StaticResource NullToVisibilityConverter}}"/>
+                  <TextBox Text="{Binding Name, Mode=TwoWay}"
+                           PlaceholderText="Name des Vertriebskanals eingeben..."
+                           Visibility="{Binding NameError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Inverse}"/>
+                  <TextBlock Text="{Binding NameError}"
+                             Visibility="{Binding NameError, Converter={StaticResource NullToVisibilityConverter}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="Typ *" FontWeight="SemiBold"/>
+                  <ComboBox ItemsSource="{Binding AvailableSalesChannelTypes}"
+                            SelectedItem="{Binding SalesChannelType, Mode=TwoWay}"
+                            HorizontalAlignment="Stretch"/>
+                </StackPanel>
+
+                <!-- Second Row: Warehouses -->
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="4">
+                  <TextBlock Text="Lager" FontWeight="SemiBold"/>
+
+                  <!-- Selected Warehouses Display -->
+                  <Border BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1"
+                          CornerRadius="{ThemeResource CornerRadiusS}"
+                          Padding="8"
+                          MinHeight="40">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="100">
+                      <ItemsControl ItemsSource="{Binding SelectedWarehouses}">
+                        <ItemsControl.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                          </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate>
+                            <Border Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                    CornerRadius="12"
+                                    Padding="8,4"
+                                    Margin="4,2">
+                              <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="{Binding Name}"
+                                           Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                           FontSize="12"/>
+                                <Button Content="×"
+                                        Command="{Binding DataContext.RemoveWarehouseCommand, ElementName=RootUserControl}"
+                                        CommandParameter="{Binding}"
+                                        Background="Transparent"
+                                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                        FontSize="14"
+                                        FontWeight="Bold"
+                                        Padding="4,0"
+                                        Width="20"
+                                        Height="20"/>
+                              </StackPanel>
+                            </Border>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+                    </ScrollViewer>
+                  </Border>
+
+                  <!-- Warehouse Selection ComboBox -->
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*"/>
+                      <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Column="0"
+                              ItemsSource="{Binding AvailableWarehouses}"
+                              SelectedItem="{Binding SelectedWarehouse, Mode=TwoWay}"
+                              DisplayMemberPath="Name"
+                              HorizontalAlignment="Stretch"/>
+                    <Button Grid.Column="1"
+                            Content="+"
+                            Command="{Binding OnWarehouseSelectionChangedCommand}"
+                            CommandParameter="{Binding SelectedWarehouse}"
+                            Margin="8,0,0,0"
+                            Width="32"
+                            Height="32"
+                            VerticalAlignment="Stretch"/>
+                  </Grid>
+                </StackPanel>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Connection Settings Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="32">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="🌐 Verbindungseinstellungen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <TextBlock Text="Diese Einstellungen werden für die Verbindung mit externen Systemen benötigt."
+                         FontSize="14"
+                         Opacity="0.7"/>
+
+              <!-- Connection Fields Grid -->
+              <Grid RowSpacing="16">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- URL -->
+                <StackPanel Grid.Row="0" Spacing="4">
+                  <TextBlock Text="🔗 URL" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Url, Mode=TwoWay}"
+                           PlaceholderText="https://example.com/api"
+                           AcceptsReturn="False"/>
+                </StackPanel>
+
+                <!-- Username and Password -->
+                <Grid Grid.Row="1" ColumnSpacing="20">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                  </Grid.ColumnDefinitions>
+                  <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock Text="👤 Benutzername" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding Username, Mode=TwoWay}"
+                             PlaceholderText="Benutzername eingeben..."/>
+                  </StackPanel>
+
+                  <StackPanel Grid.Column="1" Spacing="4">
+                    <TextBlock Text="🔐 Passwort" FontWeight="SemiBold"/>
+                    <PasswordBox Password="{Binding Password, Mode=TwoWay}"
+                                 PlaceholderText="Passwort eingeben..."/>
+                  </StackPanel>
+                </Grid>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Import/Export Capabilities Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="32">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="⚡ Import/Export-Funktionen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <TextBlock Text="Wählen Sie aus, welche Daten zwischen dem ERP-System und dem Vertriebskanal synchronisiert werden sollen."
+                         FontSize="14"
+                         Opacity="0.7"/>
+
+              <!-- Capabilities Grid -->
+              <Grid ColumnSpacing="40">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Import Capabilities -->
+                <StackPanel Grid.Column="0" Spacing="16">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="📥 Import-Funktionen"
+                               FontSize="16"
+                               FontWeight="SemiBold"/>
+                    <Border Background="#E8F5E8"
+                            CornerRadius="{ThemeResource CornerRadiusM}"
+                            Padding="4,2">
+                      <TextBlock Text="Von extern ins ERP"
+                                 FontSize="10"
+                                 FontWeight="SemiBold"
+                                 Foreground="#2E7D32"/>
+                    </Border>
+                  </StackPanel>
+
+                  <StackPanel Spacing="12">
+                    <CheckBox Content="📦 Produkte importieren"
+                              IsChecked="{Binding ImportProducts, Mode=TwoWay}"/>
+                    <CheckBox Content="👥 Kunden importieren"
+                              IsChecked="{Binding ImportCustomers, Mode=TwoWay}"/>
+                    <CheckBox Content="🛒 Bestellungen importieren"
+                              IsChecked="{Binding ImportOrders, Mode=TwoWay}"/>
+                  </StackPanel>
+                </StackPanel>
+
+                <!-- Export Capabilities -->
+                <StackPanel Grid.Column="1" Spacing="16">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="📤 Export-Funktionen"
+                               FontSize="16"
+                               FontWeight="SemiBold"/>
+                    <Border Background="#FFF3E0"
+                            CornerRadius="{ThemeResource CornerRadiusM}"
+                            Padding="4,2">
+                      <TextBlock Text="Vom ERP nach extern"
+                                 FontSize="10"
+                                 FontWeight="SemiBold"
+                                 Foreground="#F57C00"/>
+                    </Border>
+                  </StackPanel>
+
+                  <StackPanel Spacing="12">
+                    <CheckBox Content="📦 Produkte exportieren"
+                              IsChecked="{Binding ExportProducts, Mode=TwoWay}"/>
+                    <CheckBox Content="👥 Kunden exportieren"
+                              IsChecked="{Binding ExportCustomers, Mode=TwoWay}"/>
+                    <CheckBox Content="🛒 Bestellungen exportieren"
+                              IsChecked="{Binding ExportOrders, Mode=TwoWay}"/>
+                  </StackPanel>
+                </StackPanel>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Help Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="32">
+            <StackPanel Spacing="12">
+
+              <!-- Section Title -->
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="💡 Hinweise"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+              </StackPanel>
+
+              <StackPanel Spacing="8">
+                <TextBlock Text="• Name: Eindeutiger Name zur Identifizierung des Vertriebskanals"
+                           FontSize="12"
+                           Opacity="0.7"/>
+                <TextBlock Text="• Typ: Bestimmt die verfügbaren Integrationsmöglichkeiten"
+                           FontSize="12"
+                           Opacity="0.7"/>
+                <TextBlock Text="• Lager: Die Lager, die für Bestandsabfragen und -updates verwendet werden"
+                           FontSize="12"
+                           Opacity="0.7"/>
+                <TextBlock Text="• Verbindungseinstellungen: Werden nur bei externen Systemen benötigt (nicht bei Point of Sale)"
+                           FontSize="12"
+                           Opacity="0.7"/>
+                <TextBlock Text="• Import/Export: Bestimmt, welche Daten automatisch synchronisiert werden"
+                           FontSize="12"
+                           Opacity="0.7"/>
+              </StackPanel>
+
+            </StackPanel>
+          </Border>
+
+        </StackPanel>
+      </ScrollViewer>
+
+    </Grid>
+
+    <!-- Footer with action buttons -->
+    <Border Grid.Row="2"
+            Background="{ThemeResource ControlFillColorDefaultBrush}"
+            Padding="20,16"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0">
+
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Save Status -->
+        <StackPanel Grid.Column="0"
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    VerticalAlignment="Center">
+          <ProgressRing IsActive="{Binding IsSaving}"
+                       Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}"
+                       Width="20" Height="20"/>
+          <TextBlock Text="Status: Bereit"
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     Visibility="{Binding IsSaving, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+          <TextBlock Text="Status: Wird gespeichert..."
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        </StackPanel>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="8">
+
+          <Button Content="❌ Abbrechen"
+                  Command="{Binding CancelCommand}"
+                  Padding="12,8"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
+
+          <Button Content="💾 Speichern"
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                  Padding="12,8"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="#1C1C1E"
+                  Foreground="White"/>
+
+        </StackPanel>
+
+      </Grid>
+
+    </Border>
+
+  </Grid>
+
+</UserControl>

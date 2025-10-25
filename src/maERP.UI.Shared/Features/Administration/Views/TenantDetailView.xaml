@@ -1,0 +1,401 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:maERP.UI.Features.Administration.ViewModels"
+    mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+    x:Class="maERP.UI.Features.Administration.Views.TenantDetailView">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- Header with tenant info and actions -->
+    <Border Grid.Row="0"
+            Background="{ThemeResource ControlFillColorDefaultBrush}"
+            Padding="32,20"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="8,8,0,0"
+            Margin="0,0,0,8">
+
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Title and basic info -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,8">
+            <TextBlock Text="{Binding Tenant.Name, Converter={StaticResource StringFormatConverter}, ConverterParameter='🏢 {0}'}"
+                       FontSize="28"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+            <Border Background="#E8F5E8"
+                    CornerRadius="12"
+                    Padding="8,4"
+                    Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibilityConverter}}">
+              <TextBlock Text="Aktiv"
+                         FontSize="12"
+                         FontWeight="SemiBold"
+                         Foreground="#2E7D32"/>
+            </Border>
+            <Border Background="#FFEBEE"
+                    CornerRadius="12"
+                    Padding="8,4"
+                    Visibility="{Binding IsActive, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+              <TextBlock Text="Inaktiv"
+                         FontSize="12"
+                         FontWeight="SemiBold"
+                         Foreground="#D32F2F"/>
+            </Border>
+          </StackPanel>
+          <TextBlock Text="{Binding Tenant.Name, Converter={StaticResource StringFormatConverter}, ConverterParameter='Name: {0}'}"
+                     FontSize="14"
+                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+        </StackPanel>
+
+        <!-- Action buttons -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="12"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding CanManageTenants, Converter={StaticResource BoolToVisibilityConverter}}">
+          <Button Content="✏️ Bearbeiten"
+                  Command="{Binding EditTenantCommand}"
+                  Padding="16,10"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  FontWeight="Medium"
+                  Background="{ThemeResource AccentFillColorDefaultBrush}"
+                  Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                  BorderThickness="0"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"/>
+          <Button Content="🔄 Aktualisieren"
+                  Command="{Binding RefreshCommand}"
+                  Padding="12,10"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  FontWeight="Medium"
+                  Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  ToolTipService.ToolTip="Aktualisieren"/>
+          <Button Content="← Zurück"
+                  Command="{Binding GoBackCommand}"
+                  Padding="12,10"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  FontWeight="Medium"
+                  Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Back button only for non-superadmins -->
+        <Button Grid.Column="1"
+                Content="← Zurück"
+                Command="{Binding GoBackCommand}"
+                Padding="12,10"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontWeight="Medium"
+                Background="{ThemeResource ControlFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Visibility="{Binding CanManageTenants, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+
+      </Grid>
+
+    </Border>
+
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+
+      <!-- Loading Indicator -->
+      <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressRing IsActive="True" Width="40" Height="40"/>
+        <TextBlock Text="Tenant wird geladen..."
+                   HorizontalAlignment="Center"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+      </StackPanel>
+
+      <!-- Error Message -->
+      <Border Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"
+              Background="#FFF3CD"
+              BorderBrush="#D6B656"
+              BorderThickness="1"
+              CornerRadius="{ThemeResource CornerRadiusM}"
+              Padding="20"
+              Margin="20"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+          <Button Content="Erneut versuchen"
+                  Command="{Binding RefreshCommand}"
+                  HorizontalAlignment="Left"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Tenant Details Content -->
+      <ScrollViewer Visibility="{Binding ShouldShowContent, Converter={StaticResource BoolToVisibilityConverter}}" Padding="24,24,24,48">
+        <StackPanel Spacing="24" MaxWidth="800" HorizontalAlignment="Center">
+
+          <!-- Basic Tenant Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="32">
+            <StackPanel Spacing="24">
+
+              <!-- Tenant Icon and Core Info -->
+              <StackPanel HorizontalAlignment="Center" Spacing="16">
+
+                <!-- Tenant Icon -->
+                <Border Width="80" Height="80"
+                        CornerRadius="40"
+                        HorizontalAlignment="Center">
+                  <Border.Background>
+                    <SolidColorBrush Color="{ThemeResource SystemAccentColor}"/>
+                  </Border.Background>
+                  <TextBlock Text="🏢"
+                             FontSize="40"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"/>
+                </Border>
+
+                <!-- Name and Code -->
+                <StackPanel HorizontalAlignment="Center" Spacing="4">
+                  <TextBlock Text="{Binding Tenant.Name}"
+                             FontSize="20"
+                             FontWeight="SemiBold"
+                             HorizontalAlignment="Center"/>
+                  <TextBlock Text="{Binding Tenant.Name, Converter={StaticResource StringFormatConverter}, ConverterParameter='Name: {0}'}"
+                             FontSize="14"
+                             Opacity="0.7"
+                             HorizontalAlignment="Center"/>
+                  <TextBlock Text="{Binding Tenant.Id, Converter={StaticResource StringFormatConverter}, ConverterParameter='ID: {0}'}"
+                             FontSize="14"
+                             Opacity="0.7"
+                             HorizontalAlignment="Center"/>
+                </StackPanel>
+
+              </StackPanel>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Tenant Details Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="24">
+            <StackPanel Spacing="24">
+
+              <!-- Section Title -->
+              <TextBlock Text="📋 Tenant-Details"
+                         FontSize="16"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- Details Grid -->
+              <Grid ColumnSpacing="40" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Description -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="8">
+                  <TextBlock Text="📝 Beschreibung" FontWeight="SemiBold" FontSize="14"/>
+                  <Border Background="{ThemeResource SystemControlBackgroundAltMediumBrush}"
+                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                          BorderThickness="1"
+                          CornerRadius="4"
+                          Padding="12"
+                          MinHeight="60">
+                    <Grid>
+                      <TextBlock Text="{Binding Tenant.Description}"
+                                 TextWrapping="Wrap"
+                                 Visibility="{Binding Tenant.Description, Converter={StaticResource NullToVisibilityConverter}}"/>
+                      <TextBlock Text="Keine Beschreibung verfügbar"
+                                 Opacity="0.5"
+                                 FontStyle="Italic"
+                                 Visibility="{Binding Tenant.Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Inverse}"/>
+                    </Grid>
+                  </Border>
+                </StackPanel>
+
+                <!-- Status and User Count -->
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="8">
+                  <TextBlock Text="📊 Status &amp; Statistiken" FontWeight="SemiBold" FontSize="14"/>
+                  <StackPanel Spacing="12">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="Status:" FontWeight="SemiBold" Width="80"/>
+                      <Border Background="#E8F5E8"
+                              BorderBrush="#4CAF50"
+                              BorderThickness="1"
+                              CornerRadius="12"
+                              Padding="8,4"
+                              Visibility="{Binding IsActive, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Text="Aktiv"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="#2E7D32"/>
+                      </Border>
+                      <Border Background="#FFEBEE"
+                              BorderBrush="#F44336"
+                              BorderThickness="1"
+                              CornerRadius="12"
+                              Padding="8,4"
+                              Visibility="{Binding IsActive, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                        <TextBlock Text="Inaktiv"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="#D32F2F"/>
+                      </Border>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="Benutzer:" FontWeight="SemiBold" Width="80"/>
+                      <Border Background="#E3F2FD"
+                              BorderBrush="#2196F3"
+                              BorderThickness="1"
+                              CornerRadius="12"
+                              Padding="8,4">
+                        <TextBlock Text="{Binding Tenant.UserCount}"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="#1976D2"/>
+                      </Border>
+                    </StackPanel>
+                  </StackPanel>
+                </StackPanel>
+
+                <!-- Contact Information -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="12">
+                  <TextBlock Text="📧 Kontaktinformationen" FontWeight="SemiBold" FontSize="14"/>
+                  <StackPanel Spacing="8">
+                    <StackPanel Orientation="Horizontal" Spacing="8" Visibility="{Binding HasContactEmail, Converter={StaticResource BoolToVisibilityConverter}}">
+                      <TextBlock Text="E-Mail:" FontWeight="SemiBold" Width="100"/>
+                      <TextBlock Text="{Binding Tenant.ContactEmail}"/>
+                      <Button Content="📧"
+                              Command="{Binding SendEmailCommand}"
+                              Width="28"
+                              Height="28"
+                              Padding="0"
+                              CornerRadius="14"
+                              Background="#E3F2FD"
+                              BorderBrush="#2196F3"
+                              BorderThickness="1"
+                              Foreground="#1976D2"
+                              ToolTipService.ToolTip="E-Mail senden"/>
+                    </StackPanel>
+                    <TextBlock Text="Keine Kontakt-E-Mail hinterlegt"
+                               FontStyle="Italic"
+                               Opacity="0.6"
+                               Visibility="{Binding HasContactEmail, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                  </StackPanel>
+                </StackPanel>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+          <!-- System Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="24">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="🔧 System-Informationen"
+                         FontSize="16"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- System Info -->
+              <Grid ColumnSpacing="40" RowSpacing="12">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Creation Date -->
+                <StackPanel Grid.Column="0" Spacing="4">
+                  <TextBlock Text="📅 Erstellt am" FontWeight="SemiBold" FontSize="12"/>
+                  <Border Background="{ThemeResource SystemControlBackgroundAltMediumBrush}"
+                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                          BorderThickness="1"
+                          CornerRadius="4"
+                          Padding="8">
+                    <TextBlock Text="{Binding FormattedCreationDate}"
+                               FontSize="12"/>
+                  </Border>
+                </StackPanel>
+
+                <!-- Modification Date -->
+                <StackPanel Grid.Column="1" Spacing="4">
+                  <TextBlock Text="🔄 Zuletzt geändert" FontWeight="SemiBold" FontSize="12"/>
+                  <Border Background="{ThemeResource SystemControlBackgroundAltMediumBrush}"
+                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                          BorderThickness="1"
+                          CornerRadius="4"
+                          Padding="8">
+                    <TextBlock Text="{Binding FormattedModificationDate}"
+                               FontSize="12"/>
+                  </Border>
+                </StackPanel>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Permission Warning for Non-Superadmins -->
+          <Border Background="#FFF3E0"
+                  BorderBrush="#FFB74D"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="24"
+                  Visibility="{Binding CanManageTenants, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+            <StackPanel Spacing="12">
+              <TextBlock Text="ℹ️ Eingeschränkte Berechtigung"
+                         FontSize="16"
+                         FontWeight="SemiBold"
+                         Foreground="#E65100"/>
+              <TextBlock Text="Sie haben nur Lesezugriff auf diese Tenant-Informationen. Für Bearbeitungen wenden Sie sich an einen Superadmin."
+                         TextWrapping="Wrap"
+                         FontSize="14"
+                         Foreground="#E65100"
+                         Opacity="0.8"/>
+            </StackPanel>
+          </Border>
+
+        </StackPanel>
+      </ScrollViewer>
+
+    </Grid>
+
+  </Grid>
+
+</UserControl>

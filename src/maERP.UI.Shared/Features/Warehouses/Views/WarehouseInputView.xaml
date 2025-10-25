@@ -1,0 +1,308 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+    x:Class="maERP.UI.Features.Warehouses.Views.WarehouseInputView">
+
+  <UserControl.Resources>
+    <!-- Style for TextBox with validation errors -->
+    <Style TargetType="TextBox" x:Key="ErrorTextBoxStyle">
+      <Setter Property="BorderBrush" Value="#D32F2F"/>
+      <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" Margin="0,0,0,32">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Title -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <TextBlock Text="{Binding PageTitle}"
+                   FontSize="28"
+                   FontWeight="SemiBold"
+                   Foreground="{ThemeResource ContentViewHeadingBrush}"
+                   Margin="0,0,0,8"/>
+        <TextBlock Text="Lager bearbeiten oder erstellen"
+                   FontSize="14"
+                   Foreground="{ThemeResource ContentViewSubheadingBrush}"/>
+      </StackPanel>
+
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="8"
+                  VerticalAlignment="Center">
+        <Button Content="❌"
+                Command="{Binding CancelCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Abbrechen"/>
+        <Button Content="💾"
+                Command="{Binding SaveCommand}"
+                IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="{ThemeResource PrimaryBrush}"
+                Foreground="{ThemeResource OnPrimaryBrush}"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Speichern"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+
+      <!-- Loading Indicator -->
+      <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressRing IsActive="True" Width="40" Height="40"/>
+        <TextBlock Text="Lager wird geladen..."
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+
+      <!-- Error Message -->
+      <Border Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"
+              Background="#FFF3CD"
+              BorderBrush="#D6B656"
+              BorderThickness="1"
+              CornerRadius="{ThemeResource CornerRadiusM}"
+              Padding="20"
+              Margin="20"
+              VerticalAlignment="Top">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Form Content -->
+      <ScrollViewer Visibility="{Binding ShouldShowContent, Converter={StaticResource BoolToVisibilityConverter}}" Padding="24">
+        <StackPanel Spacing="24" MaxWidth="800" HorizontalAlignment="Center">
+
+          <!-- Basic Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="🏭 Lager-Informationen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- Form Fields -->
+              <StackPanel Spacing="16">
+
+                <!-- Warehouse ID (read-only for editing) -->
+                <StackPanel Spacing="4" Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                  <TextBlock Text="Lager-ID" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Id, Mode=TwoWay}"
+                           IsReadOnly="True"
+                           Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
+                </StackPanel>
+
+                <!-- Warehouse Name -->
+                <StackPanel Spacing="4">
+                  <TextBlock Text="Name *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Name, Mode=TwoWay}"
+                           PlaceholderText="Lagername eingeben..."
+                           Style="{StaticResource ErrorTextBoxStyle}"
+                           Visibility="{Binding NameError, Converter={StaticResource NullToVisibilityConverter}}"/>
+                  <TextBox Text="{Binding Name, Mode=TwoWay}"
+                           PlaceholderText="Lagername eingeben..."
+                           Visibility="{Binding NameError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Inverse}"/>
+                  <TextBlock Text="{Binding NameError}"
+                             Visibility="{Binding NameError, Converter={StaticResource NullToVisibilityConverter}}"
+                             Foreground="#D32F2F"
+                             FontSize="12"
+                             TextWrapping="Wrap"/>
+                </StackPanel>
+
+              </StackPanel>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Additional Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="ℹ️ Zusätzliche Informationen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- Information Text -->
+              <Border Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                      CornerRadius="4"
+                      Padding="12">
+                <StackPanel Spacing="8">
+                  <TextBlock Text="Weitere Lager-Eigenschaften"
+                             FontWeight="SemiBold"/>
+                  <TextBlock Text="Erweiterte Konfigurationsoptionen wie Standort, Kapazität und Zuordnungen zu Vertriebskanälen werden in zukünftigen Versionen verfügbar sein."
+                             TextWrapping="Wrap"
+                             Opacity="0.7"/>
+                  <TextBlock Text="Nach dem Speichern können Sie das Lager über die Detail-Ansicht verwalten."
+                             TextWrapping="Wrap"
+                             FontSize="12"
+                             Opacity="0.6"/>
+                </StackPanel>
+              </Border>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Quick Actions Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20"
+                  Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="⚡ Schnellaktionen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- Action Buttons -->
+              <Grid ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Stock Management -->
+                <StackPanel Grid.Column="0" Spacing="8">
+                  <TextBlock Text="📦 Bestandsverwaltung"
+                             FontWeight="SemiBold"/>
+                  <Button Content="Bestände verwalten"
+                          Command="{Binding ManageStockCommand}"
+                          HorizontalAlignment="Stretch"
+                          Padding="12,8"
+                          ToolTipService.ToolTip="Lagerbestände nach dem Speichern verwalten"/>
+                </StackPanel>
+
+                <!-- Sales Channel Management -->
+                <StackPanel Grid.Column="1" Spacing="8">
+                  <TextBlock Text="🌐 Vertriebskanäle"
+                             FontWeight="SemiBold"/>
+                  <Button Content="Kanäle zuordnen"
+                          Command="{Binding ManageSalesChannelsCommand}"
+                          HorizontalAlignment="Stretch"
+                          Padding="12,8"
+                          ToolTipService.ToolTip="Vertriebskanäle nach dem Speichern zuordnen"/>
+                </StackPanel>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+        </StackPanel>
+      </ScrollViewer>
+
+    </Grid>
+
+    <!-- Footer with action buttons -->
+    <Border Grid.Row="2"
+            Background="{ThemeResource ControlFillColorDefaultBrush}"
+            Padding="20,16"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0">
+
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Save Status -->
+        <StackPanel Grid.Column="0"
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    VerticalAlignment="Center">
+          <ProgressRing IsActive="{Binding IsSaving}"
+                       Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}"
+                       Width="20" Height="20"/>
+          <TextBlock Text="Status: Bereit"
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     Visibility="{Binding IsSaving, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+          <TextBlock Text="Status: Wird gespeichert..."
+                     VerticalAlignment="Center"
+                     Opacity="0.7"
+                     Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        </StackPanel>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="8">
+
+          <Button Content="❌ Abbrechen"
+                  Command="{Binding CancelCommand}"
+                  Padding="12,8"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
+
+          <Button Content="💾 Speichern"
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                  Padding="12,8"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource AccentFillColorDefaultBrush}"
+                  Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"/>
+
+        </StackPanel>
+
+      </Grid>
+
+    </Border>
+
+  </Grid>
+
+</UserControl>

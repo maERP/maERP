@@ -1,0 +1,259 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+    x:Class="maERP.UI.Features.Tenant.Views.TenantsListView">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" Margin="0,0,0,24">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Title -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <TextBlock Text="Mandanten"
+                   FontSize="24"
+                   FontWeight="SemiBold"
+                   Foreground="{ThemeResource ContentViewHeadingBrush}"
+                   Margin="0,0,0,4"/>
+        <TextBlock Text="{Binding TotalCount, Converter={StaticResource StringFormatConverter}, ConverterParameter=Gesamt: {{0}} Mandanten}"
+                   FontSize="14"
+                   Foreground="{ThemeResource ContentViewSubheadingBrush}"/>
+      </StackPanel>
+
+      <!-- Action Buttons -->
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="12"
+                  VerticalAlignment="Center">
+        <Button Content="+"
+                Command="{Binding CreateNewTenantCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                Background="#1C1C1E"
+                Foreground="White"
+                BorderThickness="0"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Neuen Mandanten erstellen"/>
+        <Button Content="↻"
+                Command="{Binding RefreshCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="14"
+                FontWeight="Medium"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="1"
+                BorderBrush="{ThemeResource OutlineVariantBrush}"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Aktualisieren"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Search Bar -->
+    <Grid Grid.Row="1" Margin="0,0,0,16">
+      <StackPanel Orientation="Horizontal"
+                  Spacing="8"
+                  HorizontalAlignment="Left">
+        <TextBox Text="{Binding SearchText, Mode=TwoWay}"
+                 PlaceholderText="Nach Mandanten suchen..."
+                 Width="300"
+                 CornerRadius="{ThemeResource CornerRadiusS}"
+                 Padding="12,8"
+                 FontSize="14"
+                 BorderBrush="#D1D5DB"
+                 BorderThickness="1"/>
+        <Button Content="🔍"
+                Command="{Binding SearchTenantsCommand}"
+                Padding="8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="0"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Loading/Error/Content -->
+    <Grid Grid.Row="2">
+
+      <!-- Loading Indicator -->
+      <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressRing IsActive="True" Width="40" Height="40"/>
+        <TextBlock Text="Mandanten werden geladen..."
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"/>
+      </StackPanel>
+
+      <!-- Error Message -->
+      <Border Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"
+              Background="#FFF3CD"
+              BorderBrush="#D6B656"
+              BorderThickness="1"
+              CornerRadius="{ThemeResource CornerRadiusM}"
+              Padding="20"
+              Margin="20"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+          <Button Content="Erneut versuchen"
+                  Command="{Binding RefreshCommand}"
+                  HorizontalAlignment="Left"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Tenants DataGrid -->
+      <toolkit:DataGrid ItemsSource="{Binding Tenants}"
+                SelectedItem="{Binding SelectedTenant, Mode=TwoWay}"
+                AutoGenerateColumns="False"
+                CanUserReorderColumns="True"
+                CanUserResizeColumns="True"
+                GridLinesVisibility="Horizontal"
+                HeadersVisibility="Column"
+                IsReadOnly="True"
+                SelectionMode="Single"
+                DoubleTapped="DataGrid_DoubleTapped"
+                Visibility="{Binding ShouldShowDataGrid, Converter={StaticResource BoolToVisibilityConverter}}">
+
+        <toolkit:DataGrid.Columns>
+
+          <toolkit:DataGridTextColumn Header="Mandantenname"
+                              Binding="{Binding Name}"
+                              Width="250"/>
+
+          <toolkit:DataGridTextColumn Header="Firmenname"
+                              Binding="{Binding CompanyName}"
+                              Width="200"/>
+
+          <toolkit:DataGridTextColumn Header="E-Mail"
+                              Binding="{Binding ContactEmail}"
+                              Width="220"/>
+
+          <toolkit:DataGridTextColumn Header="Telefon"
+                              Binding="{Binding Phone}"
+                              Width="150"/>
+
+          <toolkit:DataGridTextColumn Header="Stadt"
+                              Binding="{Binding City}"
+                              Width="150"/>
+
+          <toolkit:DataGridTextColumn Header="Land"
+                              Binding="{Binding Country}"
+                              Width="120"/>
+
+          <toolkit:DataGridCheckBoxColumn Header="Aktiv"
+                                           Binding="{Binding IsActive}"
+                                           Width="80"/>
+
+        </toolkit:DataGrid.Columns>
+
+      </toolkit:DataGrid>
+
+    </Grid>
+
+    <!-- Pagination Footer -->
+    <Border Grid.Row="3"
+            Background="Transparent"
+            Padding="0,16,0,0"
+            Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Page Info -->
+        <StackPanel Grid.Column="0"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    Spacing="6">
+          <TextBlock Text="{Binding DisplayPageNumber, Converter={StaticResource StringFormatConverter}, ConverterParameter=Seite {{0}}}"
+                     FontSize="14"
+                     Foreground="#6B7280"
+                     VerticalAlignment="Center"/>
+          <TextBlock Text="von"
+                     FontSize="14"
+                     Foreground="#9CA3AF"
+                     VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding TotalPages}"
+                     FontSize="14"
+                     Foreground="#6B7280"
+                     VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Navigation Buttons -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="8">
+
+          <Button Content="◀ Zurück"
+                  Command="{Binding PreviousPageCommand}"
+                  IsEnabled="{Binding CanGoPrevious}"
+                  Padding="12,8"
+                  FontSize="14"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource SurfaceContainerBrush}"
+                  Foreground="{ThemeResource OnSurfaceBrush}"
+                  BorderThickness="0"/>
+
+          <Button Content="Weiter ▶"
+                  Command="{Binding NextPageCommand}"
+                  IsEnabled="{Binding CanGoNext}"
+                  Padding="12,8"
+                  FontSize="14"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource SurfaceContainerBrush}"
+                  Foreground="{ThemeResource OnSurfaceBrush}"
+                  BorderThickness="0"/>
+
+        </StackPanel>
+
+        <!-- Items Info -->
+        <StackPanel Grid.Column="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Spacing="4">
+          <TextBlock Text="{Binding Tenants.Count, Converter={StaticResource StringFormatConverter}, ConverterParameter={{0}} Einträge}"
+                     FontSize="14"
+                     Foreground="#9CA3AF"/>
+          <TextBlock Text="von"
+                     FontSize="14"
+                     Foreground="#9CA3AF"/>
+          <TextBlock Text="{Binding TotalCount}"
+                     FontSize="14"
+                     Foreground="#9CA3AF"/>
+        </StackPanel>
+
+      </Grid>
+
+    </Border>
+
+  </Grid>
+
+</UserControl>

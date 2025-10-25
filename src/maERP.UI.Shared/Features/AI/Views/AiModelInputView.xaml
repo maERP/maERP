@@ -1,0 +1,266 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:enums="using:maERP.Domain.Enums"
+    mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+    x:Class="maERP.UI.Features.AI.Views.AiModelInputView">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" Margin="0,0,0,32">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Title -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <TextBlock Text="{Binding PageTitle}"
+                   FontSize="28"
+                   FontWeight="SemiBold"
+                   Foreground="{ThemeResource ContentViewHeadingBrush}"
+                   Margin="0,0,0,8"/>
+        <TextBlock Text="AI-Modell bearbeiten oder erstellen"
+                   FontSize="14"
+                   Foreground="{ThemeResource ContentViewSubheadingBrush}"/>
+      </StackPanel>
+
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="8"
+                  VerticalAlignment="Center">
+        <Button Content="🔄"
+                Command="{Binding ClearFormCommand}"
+                Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Formular leeren"/>
+        <Button Content="←"
+                Command="{Binding CancelCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Zurück"/>
+        <Button Content="💾"
+                Command="{Binding SaveCommand}"
+                IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="#1C1C1E"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Speichern"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+
+      <!-- Loading Indicator -->
+      <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressRing IsActive="True" Width="40" Height="40"/>
+        <TextBlock Text="AI-Modell wird geladen..."
+                   HorizontalAlignment="Center"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+      </StackPanel>
+
+      <!-- Error Message -->
+      <Border Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"
+              Background="#FFF3CD"
+              BorderBrush="#D6B656"
+              BorderThickness="1"
+              CornerRadius="{ThemeResource CornerRadiusM}"
+              Padding="20"
+              Margin="20"
+              VerticalAlignment="Top">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Form Content -->
+      <ScrollViewer Visibility="{Binding ShouldShowContent, Converter={StaticResource BoolToVisibilityConverter}}" Padding="24">
+        <StackPanel Spacing="24" MaxWidth="800">
+
+          <!-- Basic Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              <TextBlock Text="🤖 Grundinformationen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <Grid ColumnSpacing="20" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Name Field -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Name *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Name, Mode=TwoWay}"
+                           PlaceholderText="Name des AI-Modells eingeben..."
+                           IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"/>
+                </StackPanel>
+
+                <!-- AI Model Type Field -->
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="Modell-Typ *" FontWeight="SemiBold"/>
+                  <ComboBox SelectedItem="{Binding AiModelType, Mode=TwoWay}"
+                            IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                            HorizontalAlignment="Stretch">
+                    <ComboBox.Items>
+                      <enums:AiModelType>None</enums:AiModelType>
+                      <enums:AiModelType>Ollama</enums:AiModelType>
+                      <enums:AiModelType>VLlm</enums:AiModelType>
+                      <enums:AiModelType>LmStudio</enums:AiModelType>
+                      <enums:AiModelType>ChatGpt4O</enums:AiModelType>
+                      <enums:AiModelType>Claude35</enums:AiModelType>
+                    </ComboBox.Items>
+                  </ComboBox>
+                </StackPanel>
+
+                <!-- Context Length Field -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="Context Länge" FontWeight="SemiBold"/>
+                  <NumberBox Value="{Binding NCtx, Mode=TwoWay}"
+                            Minimum="0"
+                            Maximum="4294967295"
+                            PlaceholderText="0"
+                            IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"/>
+                </StackPanel>
+
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <!-- API Configuration Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+              <TextBlock Text="🔐 API-Konfiguration"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <Grid ColumnSpacing="20" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- API Username Field -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="API-Benutzername" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding ApiUsername, Mode=TwoWay}"
+                           PlaceholderText="Optional: API-Benutzername"
+                           IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"/>
+                </StackPanel>
+
+                <!-- API Password Field -->
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="API-Passwort" FontWeight="SemiBold"/>
+                  <PasswordBox Password="{Binding ApiPassword, Mode=TwoWay}"
+                              PlaceholderText="Optional: API-Passwort"
+                              IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"/>
+                </StackPanel>
+
+                <!-- API Key Field -->
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="4">
+                  <TextBlock Text="API-Schlüssel" FontWeight="SemiBold"/>
+                  <PasswordBox Password="{Binding ApiKey, Mode=TwoWay}"
+                              PlaceholderText="Optional: API-Schlüssel für externe Services"
+                              IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"/>
+                </StackPanel>
+
+              </Grid>
+
+              <!-- Security Notice -->
+              <Border Background="#FFF3E0"
+                      BorderBrush="#FF9800"
+                      BorderThickness="1"
+                      CornerRadius="{ThemeResource CornerRadiusM}"
+                      Padding="20">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <TextBlock Text="⚠️" VerticalAlignment="Center"/>
+                  <TextBlock Text="API-Credentials werden sicher gespeichert und verschlüsselt übertragen."
+                             FontSize="11"
+                             TextWrapping="Wrap"
+                             VerticalAlignment="Center"/>
+                </StackPanel>
+              </Border>
+
+            </StackPanel>
+          </Border>
+
+        </StackPanel>
+      </ScrollViewer>
+
+    </Grid>
+
+    <!-- Status Footer -->
+    <Border Grid.Row="2"
+            Background="{ThemeResource ControlFillColorDefaultBrush}"
+            Padding="20,16"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0"
+            Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}">
+
+      <StackPanel Orientation="Horizontal"
+                  Spacing="12"
+                  HorizontalAlignment="Center">
+        <ProgressRing IsActive="True" Width="20" Height="20"/>
+        <TextBlock Text="AI-Modell wird gespeichert..."
+                   VerticalAlignment="Center"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+      </StackPanel>
+
+    </Border>
+
+  </Grid>
+
+</UserControl>

@@ -1,0 +1,540 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:enums="using:maERP.Domain.Enums"
+    mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+    x:Class="maERP.UI.Features.Customers.Views.CustomerInputView"
+    x:Name="RootUserControl">
+
+    <UserControl.Resources>
+        <!-- Style for TextBox with validation errors -->
+        <Style TargetType="TextBox" x:Key="ErrorTextBoxStyle">
+            <Setter Property="BorderBrush" Value="#D32F2F" />
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Simple Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,32">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Title -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding PageTitle}"
+                           FontSize="28"
+                           FontWeight="SemiBold"
+                           Foreground="{ThemeResource ContentViewHeadingBrush}"
+                           Margin="0,0,0,8" />
+                <TextBlock Text="Kunde bearbeiten oder erstellen"
+                           FontSize="14"
+                           Foreground="{ThemeResource ContentViewSubheadingBrush}" />
+            </StackPanel>
+
+            <!-- Action buttons -->
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="8"
+                        VerticalAlignment="Center">
+                <Button Content="❌"
+                        Command="{Binding CancelCommand}"
+                        Padding="12,8"
+                        CornerRadius="{ThemeResource CornerRadiusS}"
+                        FontSize="16" FontWeight="Medium" MinWidth="36" HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Background="{ThemeResource SurfaceContainerBrush}"
+                        Foreground="{ThemeResource OnSurfaceBrush}"
+                        BorderThickness="0"
+                        ToolTipService.ToolTip="Abbrechen" />
+                <Button Content="💾"
+                        Command="{Binding SaveCommand}"
+                        IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                        Padding="12,8"
+                        CornerRadius="{ThemeResource CornerRadiusS}"
+                        FontSize="16" FontWeight="Medium" MinWidth="36" HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Background="#1C1C1E"
+                        Foreground="White"
+                        BorderThickness="0"
+                        ToolTipService.ToolTip="Speichern" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Main content -->
+        <Grid Grid.Row="1">
+
+            <!-- Loading Indicator -->
+            <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Spacing="16">
+                <ProgressRing IsActive="True" Width="40" Height="40"/>
+                <TextBlock Text="Kunde wird geladen..."
+                           HorizontalAlignment="Center"
+                           Opacity="0.7" />
+            </StackPanel>
+
+            <!-- Error Message -->
+            <Border Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"
+                    Background="#FFF3CD"
+                    BorderBrush="#D6B656"
+                    BorderThickness="1"
+                    CornerRadius="{ThemeResource CornerRadiusM}"
+                    Padding="20"
+                    Margin="20"
+                    VerticalAlignment="Top">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404" />
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404" />
+                </StackPanel>
+            </Border>
+
+            <!-- Form Content -->
+            <ScrollViewer Visibility="{Binding ShouldShowContent, Converter={StaticResource BoolToVisibilityConverter}}">
+                <StackPanel Margin="24,24,24,48" Spacing="24">
+
+                    <!-- Basic Information Section -->
+                    <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{ThemeResource CornerRadiusM}"
+                            Padding="20">
+                        <StackPanel Spacing="16">
+
+                            <!-- Section Title -->
+                            <TextBlock Text="👤 Grundinformationen"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+
+                            <!-- Form Fields Grid -->
+                            <Grid ColumnSpacing="20" RowSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- First Row: Firstname, Lastname -->
+                                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                                    <TextBlock Text="Vorname *" FontWeight="SemiBold" />
+                                    <TextBox Text="{Binding Firstname, Mode=TwoWay}"
+                                             PlaceholderText="Vorname eingeben..." />
+                                    <TextBlock Text="{Binding FirstnameError}"
+                                               Visibility="{Binding FirstnameError, Converter={StaticResource NullToVisibilityConverter}}"
+                                               Foreground="#D32F2F"
+                                               FontSize="12"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="Nachname *" FontWeight="SemiBold" />
+                                    <TextBox Text="{Binding Lastname, Mode=TwoWay}"
+                                             PlaceholderText="Nachname eingeben..." />
+                                    <TextBlock Text="{Binding LastnameError}"
+                                               Visibility="{Binding LastnameError, Converter={StaticResource NullToVisibilityConverter}}"
+                                               Foreground="#D32F2F"
+                                               FontSize="12"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!-- Second Row: Company, Email -->
+                                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                                    <TextBlock Text="Firmenname" FontWeight="SemiBold" />
+                                    <TextBox Text="{Binding CompanyName, Mode=TwoWay}"
+                                             PlaceholderText="Firmenname eingeben..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="E-Mail" FontWeight="SemiBold" />
+                                    <TextBox Text="{Binding Email, Mode=TwoWay}"
+                                             PlaceholderText="E-Mail eingeben..." />
+                                    <TextBlock Text="{Binding EmailError}"
+                                               Visibility="{Binding EmailError, Converter={StaticResource NullToVisibilityConverter}}"
+                                               Foreground="#D32F2F"
+                                               FontSize="12"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!-- Third Row: Phone, Website -->
+                                <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
+                                    <TextBlock Text="Telefon" FontWeight="SemiBold" />
+                                    <TextBox Text="{Binding Phone, Mode=TwoWay}"
+                                             PlaceholderText="Telefonnummer eingeben..." />
+                                    <TextBlock Text="{Binding PhoneError}"
+                                               Visibility="{Binding PhoneError, Converter={StaticResource NullToVisibilityConverter}}"
+                                               Foreground="#D32F2F"
+                                               FontSize="12"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="Website" FontWeight="SemiBold" />
+                                    <TextBox Text="{Binding Website, Mode=TwoWay}"
+                                             PlaceholderText="Website eingeben..." />
+                                    <TextBlock Text="{Binding WebsiteError}"
+                                               Visibility="{Binding WebsiteError, Converter={StaticResource NullToVisibilityConverter}}"
+                                               Foreground="#D32F2F"
+                                               FontSize="12"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!-- Fourth Row: VAT Number, Status -->
+                                <StackPanel Grid.Row="3" Grid.Column="0" Spacing="4">
+                                    <TextBlock Text="USt-ID" FontWeight="SemiBold" />
+                                    <TextBox Text="{Binding VatNumber, Mode=TwoWay}"
+                                             PlaceholderText="USt-ID eingeben..." />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="3" Grid.Column="1" Spacing="4">
+                                    <TextBlock Text="Status" FontWeight="SemiBold" />
+                                    <ComboBox ItemsSource="{Binding AvailableStatuses}"
+                                              SelectedItem="{Binding CustomerStatus, Mode=TwoWay}"
+                                              HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                                <!-- Fifth Row: Enrollment Date -->
+                                <StackPanel Grid.Row="4" Grid.Column="0" Spacing="4">
+                                    <TextBlock Text="Anmeldedatum" FontWeight="SemiBold" />
+                                    <DatePicker SelectedDate="{Binding DateEnrollment, Mode=TwoWay}"
+                                                HorizontalAlignment="Stretch" />
+                                </StackPanel>
+
+                            </Grid>
+
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Notes Section -->
+                    <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{ThemeResource CornerRadiusM}"
+                            Padding="20">
+                        <StackPanel Spacing="16">
+
+                            <!-- Section Title -->
+                            <TextBlock Text="📝 Notizen"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+
+                            <!-- Notes Field -->
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Interne Notizen" FontWeight="SemiBold" />
+                                <TextBox Text="{Binding Note, Mode=TwoWay}"
+                                         PlaceholderText="Notizen zum Kunden..."
+                                         TextWrapping="Wrap"
+                                         AcceptsReturn="True"
+                                         MinHeight="100" />
+                            </StackPanel>
+
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Address Management Section -->
+                    <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{ThemeResource CornerRadiusM}"
+                            Padding="20">
+                        <StackPanel Spacing="16">
+
+                            <!-- Section Title -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="🏠 Adressen"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                           VerticalAlignment="Center" />
+                                <Button Grid.Column="1"
+                                        Content="➕ Neue Adresse"
+                                        Command="{Binding StartAddingAddressCommand}"
+                                        Visibility="{Binding IsAddingAddress, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                        Padding="12,8"
+                                        CornerRadius="{ThemeResource CornerRadiusS}"
+                                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                            </Grid>
+
+                            <!-- Existing Addresses List -->
+                            <StackPanel>
+                                <TextBlock Text="{Binding CustomerAddresses.Count, Converter={StaticResource StringFormatConverter}, ConverterParameter='Anzahl Adressen: {0}'}"
+                                    FontWeight="SemiBold"
+                                    Margin="0,0,0,8" />
+
+                                <ScrollViewer MaxHeight="300" VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding CustomerAddresses}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                                                    CornerRadius="{ThemeResource CornerRadiusS}"
+                                                    Padding="12"
+                                                    Margin="0,0,0,8">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <!-- Address Info -->
+                                                        <StackPanel Grid.Column="0" Spacing="4">
+                                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                                <TextBlock FontWeight="SemiBold"
+                                                                    Text="{Binding Firstname, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0} {1}'}"/>
+                                                                <TextBlock Text="{Binding CompanyName}"
+                                                                           Visibility="{Binding CompanyName, Converter={StaticResource NullToVisibilityConverter}}"
+                                                                           Opacity="0.7" />
+                                                            </StackPanel>
+                                                            <TextBlock Text="{Binding Street, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0} {1}'}"/>
+                                                            <TextBlock Text="{Binding Zip, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0} {1}'}"/>
+                                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                                <Border Background="#E8F5E8"
+                                                                        CornerRadius="4"
+                                                                        Padding="4,2"
+                                                                        Visibility="{Binding DefaultDeliveryAddress, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                                    <TextBlock Text="📦 Standard Lieferung"
+                                                                               FontSize="10"
+                                                                               FontWeight="SemiBold"
+                                                                               Foreground="#2E7D32" />
+                                                                </Border>
+                                                                <Border Background="#F3E5F5"
+                                                                        CornerRadius="4"
+                                                                        Padding="4,2"
+                                                                        Visibility="{Binding DefaultInvoiceAddress, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                                    <TextBlock Text="🧾 Standard Rechnung"
+                                                                               FontSize="10"
+                                                                               FontWeight="SemiBold"
+                                                                               Foreground="#7B1FA2" />
+                                                                </Border>
+                                                            </StackPanel>
+                                                        </StackPanel>
+
+                                                        <!-- Action Buttons -->
+                                                        <Button Grid.Column="1"
+                                                                Content="✏️"
+                                                                Command="{Binding DataContext.StartEditingAddressCommand, ElementName=RootUserControl}"
+                                                                CommandParameter="{Binding}"
+                                                                ToolTipService.ToolTip="Bearbeiten"
+                                                                Padding="8"
+                                                                Margin="8,0,0,0" />
+                                                        <Button Grid.Column="2"
+                                                                Content="🗑️"
+                                                                Command="{Binding DataContext.DeleteAddressCommand, ElementName=RootUserControl}"
+                                                                CommandParameter="{Binding}"
+                                                                ToolTipService.ToolTip="Löschen"
+                                                                Padding="8"
+                                                                Margin="4,0,0,0" />
+
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </StackPanel>
+
+                            <!-- Address Form (for adding/editing) -->
+                            <Border Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                                    CornerRadius="{ThemeResource CornerRadiusS}"
+                                    Padding="16"
+                                    Visibility="{Binding IsAddingAddress, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <StackPanel Spacing="16">
+
+                                    <!-- Form Title -->
+                                    <TextBlock Text="Neue Adresse hinzufügen"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Visibility="{Binding IsEditingAddress, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                                    <TextBlock Text="Adresse bearbeiten"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Visibility="{Binding IsEditingAddress, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                                    <!-- Address Form Fields -->
+                                    <Grid ColumnSpacing="12" RowSpacing="12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Row 1: Name -->
+                                        <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                                            <TextBlock Text="Vorname" FontWeight="SemiBold" />
+                                            <TextBox Text="{Binding NewAddressFirstname, Mode=TwoWay}"
+                                                     PlaceholderText="Vorname..." />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                                            <TextBlock Text="Nachname" FontWeight="SemiBold" />
+                                            <TextBox Text="{Binding NewAddressLastname, Mode=TwoWay}"
+                                                     PlaceholderText="Nachname..." />
+                                        </StackPanel>
+
+                                        <!-- Row 2: Company -->
+                                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="4">
+                                            <TextBlock Text="Firmenname" FontWeight="SemiBold" />
+                                            <TextBox Text="{Binding NewAddressCompanyName, Mode=TwoWay}"
+                                                     PlaceholderText="Firmenname..." />
+                                        </StackPanel>
+
+                                        <!-- Row 3: Street -->
+                                        <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
+                                            <TextBlock Text="Straße" FontWeight="SemiBold" />
+                                            <TextBox Text="{Binding NewAddressStreet, Mode=TwoWay}"
+                                                     PlaceholderText="Straße..." />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4">
+                                            <TextBlock Text="Hausnummer" FontWeight="SemiBold" />
+                                            <TextBox Text="{Binding NewAddressHouseNr, Mode=TwoWay}"
+                                                     PlaceholderText="Hausnummer..." />
+                                        </StackPanel>
+
+                                        <!-- Row 4: Location -->
+                                        <StackPanel Grid.Row="3" Grid.Column="0" Spacing="4">
+                                            <TextBlock Text="PLZ" FontWeight="SemiBold" />
+                                            <TextBox Text="{Binding NewAddressZip, Mode=TwoWay}"
+                                                     PlaceholderText="PLZ..." />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" Grid.Column="1" Spacing="4">
+                                            <TextBlock Text="Ort" FontWeight="SemiBold" />
+                                            <TextBox Text="{Binding NewAddressCity, Mode=TwoWay}"
+                                                     PlaceholderText="Ort..." />
+                                        </StackPanel>
+
+                                        <!-- Row 5: Defaults -->
+                                        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Spacing="8">
+                                            <CheckBox Content="Standard Lieferadresse"
+                                                      IsChecked="{Binding NewAddressDefaultDelivery, Mode=TwoWay}" />
+                                            <CheckBox Content="Standard Rechnungsadresse"
+                                                      IsChecked="{Binding NewAddressDefaultInvoice, Mode=TwoWay}" />
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                    <!-- Form Buttons -->
+                                    <StackPanel Orientation="Horizontal"
+                                                Spacing="8"
+                                                HorizontalAlignment="Right">
+                                        <Button Content="❌ Abbrechen"
+                                                Command="{Binding CancelAddressEditCommand}"
+                                                Padding="12,8"
+                                                CornerRadius="{ThemeResource CornerRadiusS}"
+                                                Background="{ThemeResource ControlFillColorDefaultBrush}"
+                                                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                                BorderThickness="1" />
+                                        <Button Content="💾 Speichern"
+                                                Command="{Binding SaveAddressCommand}"
+                                                Padding="12,8"
+                                                CornerRadius="{ThemeResource CornerRadiusS}"
+                                                Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                                Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                                    </StackPanel>
+
+                                </StackPanel>
+                            </Border>
+
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+        </Grid>
+
+        <!-- Footer with action buttons -->
+        <Border Grid.Row="2"
+                Background="{ThemeResource ControlFillColorDefaultBrush}"
+                Padding="20,16"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="0,1,0,0"
+                CornerRadius="0,0,8,8"
+                Margin="0,8,0,0">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Save Status -->
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            VerticalAlignment="Center">
+                    <ProgressRing IsActive="{Binding IsSaving}"
+                                 Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}"
+                                 Width="20" Height="20" />
+                    <TextBlock Text="Status: Bereit"
+                               VerticalAlignment="Center"
+                               Opacity="0.7"
+                               Visibility="{Binding IsSaving, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                    <TextBlock Text="Status: Wird gespeichert..."
+                               VerticalAlignment="Center"
+                               Opacity="0.7"
+                               Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}" />
+                </StackPanel>
+
+                <!-- Action Buttons -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="8">
+
+                    <Button Content="❌ Abbrechen"
+                            Command="{Binding CancelCommand}"
+                            Padding="12,8"
+                            CornerRadius="{ThemeResource CornerRadiusS}"
+                            Background="{ThemeResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="1" />
+
+                    <Button Content="💾 Speichern"
+                            Command="{Binding SaveCommand}"
+                            IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                            Padding="12,8"
+                            CornerRadius="{ThemeResource CornerRadiusS}"
+                            Background="#1C1C1E"
+                            Foreground="White" />
+
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,95 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:maERP.UI.Shared.ViewModels"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+    x:Class="maERP.UI.Shared.Views.DebugWindow">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Header -->
+    <Border Grid.Row="0"
+            Background="{ThemeResource AccentFillColorDefaultBrush}"
+            Padding="16,8">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+          <TextBlock Text="🐛" FontSize="16" VerticalAlignment="Center"/>
+          <TextBlock Text="Debug Console"
+                     FontSize="14"
+                     FontWeight="SemiBold"
+                     Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                     VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <Button Content="🗑️ Clear"
+                  Command="{Binding ClearLogsCommand}"
+                  Padding="8,4"/>
+          <ToggleButton Content="{Binding AutoScrollText}"
+                        IsChecked="{Binding AutoScroll, Mode=TwoWay}"
+                        Padding="8,4"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Debug Log Content -->
+    <Border Grid.Row="1"
+            Background="{ThemeResource LayerFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1,0,1,0">
+      <TextBox x:Name="LogTextBox"
+               Text="{Binding FormattedLogs, Mode=TwoWay}"
+               IsReadOnly="True"
+               AcceptsReturn="True"
+               TextWrapping="Wrap"
+               FontFamily="Consolas,Monaco,monospace"
+               FontSize="11"
+               Background="{ThemeResource LayerFillColorDefaultBrush}"
+               Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+               BorderThickness="0"
+               Padding="8"
+               VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch"
+               ScrollViewer.VerticalScrollBarVisibility="Auto"
+               ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+    </Border>
+
+    <!-- Footer -->
+    <Border Grid.Row="2"
+            Background="{ThemeResource LayerFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            Padding="16,8">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0"
+                   Text="{Binding StatusText}"
+                   FontSize="12"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                   VerticalAlignment="Center"/>
+
+        <TextBlock Grid.Column="1"
+                   Text="{Binding LogCount, Converter={StaticResource StringFormatConverter}, ConverterParameter='Logs: {0}'}"
+                   FontSize="12"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                   VerticalAlignment="Center"/>
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>

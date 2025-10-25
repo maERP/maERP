@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Uno.Sdk" Version="6.4.0-dev.252" />
+    <PackageReference Include="Uno.WinUI.WebAssembly" Version="6.4.0-dev.252" />
+    <PackageReference Include="Uno.WinUI.RemoteControl" Version="5.6.99" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="6.3.62" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\maERP.UI.Shared\maERP.UI.Shared.csproj" />
+  </ItemGroup>
+</Project>

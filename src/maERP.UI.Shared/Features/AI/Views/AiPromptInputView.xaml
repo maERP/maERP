@@ -1,0 +1,352 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+    x:Class="maERP.UI.Features.AI.Views.AiPromptInputView">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" Margin="0,0,0,32">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Title -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <TextBlock Text="{Binding PageTitle}"
+                   FontSize="28"
+                   FontWeight="SemiBold"
+                   Foreground="{ThemeResource ContentViewHeadingBrush}"
+                   Margin="0,0,0,8"/>
+        <TextBlock Text="AI-Prompt bearbeiten oder erstellen"
+                   FontSize="14"
+                   Foreground="{ThemeResource ContentViewSubheadingBrush}"/>
+      </StackPanel>
+
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="8"
+                  VerticalAlignment="Center">
+        <Button Content="❌"
+                Command="{Binding GoBackAction}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Abbrechen"/>
+        <Button Content="💾"
+                Command="{Binding SaveCommand}"
+                IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="#1C1C1E"
+                Foreground="White"
+                BorderThickness="0"
+                ToolTipService.ToolTip="Speichern"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+
+      <!-- Loading Indicator -->
+      <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressRing IsActive="True" Width="40" Height="40"/>
+        <TextBlock Text="AI-Prompt wird geladen..."
+                   HorizontalAlignment="Center"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+      </StackPanel>
+
+      <!-- Error Message -->
+      <Border Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"
+              Background="#FFF3CD"
+              BorderBrush="#D6B656"
+              BorderThickness="1"
+              CornerRadius="{ThemeResource CornerRadiusM}"
+              Padding="20"
+              Margin="20"
+              VerticalAlignment="Top">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Form Content -->
+      <ScrollViewer Visibility="{Binding ShouldShowContent, Converter={StaticResource BoolToVisibilityConverter}}" Padding="24,24,24,48">
+        <StackPanel Spacing="24">
+
+          <!-- Basic Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="🤖 Grundinformationen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <!-- Form Fields Grid -->
+              <Grid ColumnSpacing="20" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- First Row: AI Model, Identifier -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                  <TextBlock Text="AI-Modell *" FontWeight="SemiBold"/>
+                  <ComboBox ItemsSource="{Binding AvailableAiModels}"
+                            SelectedItem="{Binding SelectedAiModel, Mode=TwoWay}"
+                            HorizontalAlignment="Stretch"
+                            PlaceholderText="AI-Modell auswählen...">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                  <TextBlock Text="Identifier *" FontWeight="SemiBold"/>
+                  <TextBox Text="{Binding Identifier, Mode=TwoWay}"
+                           PlaceholderText="Eindeutiger Bezeichner eingeben..."/>
+                </StackPanel>
+
+              </Grid>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Prompt Text Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="📝 Prompt-Text"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                <TextBlock Text="*"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="Red"/>
+                <TextBlock Text="{Binding PromptText.Length, Converter={StaticResource StringFormatConverter}, ConverterParameter='({0} Zeichen)'}"
+                           FontSize="14"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           VerticalAlignment="Bottom"/>
+              </StackPanel>
+
+              <!-- Prompt Text Field -->
+              <StackPanel Spacing="4">
+                <TextBlock Text="Hier können Sie den vollständigen Prompt-Text eingeben. Verwenden Sie Platzhalter und Anweisungen für das AI-Modell."
+                           FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                <Border Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+                        CornerRadius="{ThemeResource CornerRadiusS}"
+                        Padding="12"
+                        MinHeight="300">
+                  <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                VerticalScrollBarVisibility="Auto">
+                    <TextBox Text="{Binding PromptText, Mode=TwoWay}"
+                             PlaceholderText="Geben Sie hier Ihren Prompt-Text ein...&#x0a;&#x0a;Beispiel:&#x0a;Analysiere den folgenden Text und extrahiere die wichtigsten Informationen:&#x0a;&#x0a;{input_text}&#x0a;&#x0a;Gib eine strukturierte Antwort zurück."
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             FontFamily="Consolas,Monaco,Courier New,monospace"
+                             FontSize="13"
+                             LineHeight="20"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="0"/>
+                  </ScrollViewer>
+                </Border>
+
+                <!-- Help Text -->
+                <StackPanel Spacing="4" Margin="0,8,0,0">
+                  <TextBlock Text="💡 Tipps für effektive Prompts:"
+                             FontSize="14"
+                             FontWeight="SemiBold"/>
+                  <TextBlock Text="• Verwenden Sie klare und spezifische Anweisungen"
+                             FontSize="12"
+                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                  <TextBlock Text="• Nutzen Sie Platzhalter wie {input_text} für dynamische Inhalte"
+                             FontSize="12"
+                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                  <TextBlock Text="• Geben Sie das gewünschte Ausgabeformat an"
+                             FontSize="12"
+                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                  <TextBlock Text="• Testen Sie den Prompt mit verschiedenen Eingaben"
+                             FontSize="12"
+                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                </StackPanel>
+              </StackPanel>
+
+            </StackPanel>
+          </Border>
+
+          <!-- Quick Actions Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <StackPanel Spacing="16">
+
+              <!-- Section Title -->
+              <TextBlock Text="⚡ Schnellaktionen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button Content="🧪 Prompt testen"
+                        HorizontalAlignment="Left"
+                        Padding="12,8"
+                        CornerRadius="{ThemeResource CornerRadiusS}"
+                        Background="{ThemeResource AccentFillColorDefaultBrush}"
+                        Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                        IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                        ToolTipService.ToolTip="Testen Sie den Prompt mit dem ausgewählten AI-Modell">
+                  <Button.Command>
+                    <Binding Path="TestPromptCommand"/>
+                  </Button.Command>
+                </Button>
+
+                <Button Content="📋 Vorlage laden"
+                        HorizontalAlignment="Left"
+                        Padding="12,8"
+                        CornerRadius="{ThemeResource CornerRadiusS}"
+                        Background="{ThemeResource ControlFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                        ToolTipService.ToolTip="Laden Sie eine vorgefertigte Prompt-Vorlage">
+                  <Button.Command>
+                    <Binding Path="LoadTemplateCommand"/>
+                  </Button.Command>
+                </Button>
+
+                <Button Content="🔄 Text formatieren"
+                        HorizontalAlignment="Left"
+                        Padding="12,8"
+                        CornerRadius="{ThemeResource CornerRadiusS}"
+                        Background="{ThemeResource ControlFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                        ToolTipService.ToolTip="Automatische Formatierung des Prompt-Texts">
+                  <Button.Command>
+                    <Binding Path="FormatTextCommand"/>
+                  </Button.Command>
+                </Button>
+              </StackPanel>
+
+            </StackPanel>
+          </Border>
+
+        </StackPanel>
+      </ScrollViewer>
+
+    </Grid>
+
+    <!-- Footer with action buttons -->
+    <Border Grid.Row="2"
+            Background="{ThemeResource ControlFillColorDefaultBrush}"
+            Padding="20,16"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0,0,8,8"
+            Margin="0,8,0,0">
+
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Save Status -->
+        <StackPanel Grid.Column="0"
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    VerticalAlignment="Center">
+          <ProgressRing IsActive="{Binding IsSaving}"
+                       Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}"
+                       Width="20" Height="20"/>
+          <TextBlock Text="Status: Bereit zum Speichern"
+                     VerticalAlignment="Center"
+                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                     Visibility="{Binding IsSaving, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+          <TextBlock Text="Status: Wird gespeichert..."
+                     VerticalAlignment="Center"
+                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                     Visibility="{Binding IsSaving, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        </StackPanel>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="8">
+
+          <Button Content="❌ Abbrechen"
+                  Command="{Binding CancelCommand}"
+                  Padding="12,8"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                  BorderThickness="1"/>
+
+          <Button Content="💾 Speichern"
+                  Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBoolConverter}}"
+                  Padding="12,8"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="#1C1C1E"
+                  Foreground="White"/>
+
+        </StackPanel>
+
+      </Grid>
+
+    </Border>
+
+  </Grid>
+
+</UserControl>

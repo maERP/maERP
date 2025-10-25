@@ -1,0 +1,163 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    x:Class="maERP.UI.Features.Dashboard.Views.DashboardView">
+
+  <UserControl.Resources>
+    <Style TargetType="Border" x:Key="CardStyle">
+      <Setter Property="Background" Value="{ThemeResource SurfaceContainerBrush}"/>
+      <Setter Property="CornerRadius" Value="{ThemeResource CornerRadiusM}"/>
+      <Setter Property="Padding" Value="16"/>
+      <Setter Property="Margin" Value="6"/>
+      <Setter Property="BorderBrush" Value="{ThemeResource OutlineVariantBrush}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <Style TargetType="TextBlock" x:Key="CardTitleStyle">
+      <Setter Property="FontSize" Value="{ThemeResource FontSizeBodyS}"/>
+      <Setter Property="FontWeight" Value="Medium"/>
+      <Setter Property="Foreground" Value="{ThemeResource OnSurfaceVariantBrush}"/>
+      <Setter Property="Margin" Value="0,0,0,6"/>
+    </Style>
+    <Style TargetType="TextBlock" x:Key="CardValueStyle">
+      <Setter Property="FontSize" Value="{ThemeResource FontSizeHeadlineM}"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Foreground" Value="{ThemeResource PrimaryBrush}"/>
+    </Style>
+  </UserControl.Resources>
+
+  <ScrollViewer>
+    <StackPanel Margin="24" Spacing="24">
+
+      <!-- Header -->
+      <StackPanel Spacing="6">
+        <TextBlock Text="{Binding WelcomeMessage}"
+                   FontSize="{ThemeResource FontSizeHeadlineL}"
+                   FontWeight="SemiBold"
+                   Foreground="{ThemeResource OnSurfaceBrush}"/>
+        <TextBlock Text="{Binding CurrentDate}"
+                   FontSize="{ThemeResource FontSizeBodyM}"
+                   Foreground="{ThemeResource OnSurfaceVariantBrush}"/>
+      </StackPanel>
+
+      <!-- Dashboard Cards Grid -->
+      <Grid Margin="0,12,0,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Kunden Card -->
+        <Border Style="{StaticResource CardStyle}" Grid.Column="0" Grid.Row="0">
+          <StackPanel>
+            <TextBlock Style="{StaticResource CardTitleStyle}" Text="Kunden"/>
+            <TextBlock Style="{StaticResource CardValueStyle}" Text="1,234"/>
+            <TextBlock Text="+12% diesen Monat" FontSize="{ThemeResource FontSizeLabelS}" Foreground="{ThemeResource SuccessBrush}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Bestellungen Card -->
+        <Border Style="{StaticResource CardStyle}" Grid.Column="1" Grid.Row="0">
+          <StackPanel>
+            <TextBlock Style="{StaticResource CardTitleStyle}" Text="Bestellungen"/>
+            <TextBlock Style="{StaticResource CardValueStyle}" Text="456"/>
+            <TextBlock Text="+8% diesen Monat" FontSize="{ThemeResource FontSizeLabelS}" Foreground="{ThemeResource SuccessBrush}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Umsatz Card -->
+        <Border Style="{StaticResource CardStyle}" Grid.Column="2" Grid.Row="0">
+          <StackPanel>
+            <TextBlock Style="{StaticResource CardTitleStyle}" Text="Umsatz"/>
+            <TextBlock Style="{StaticResource CardValueStyle}" Text="€89,432"/>
+            <TextBlock Text="+15% diesen Monat" FontSize="{ThemeResource FontSizeLabelS}" Foreground="{ThemeResource SuccessBrush}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Produkte Card -->
+        <Border Style="{StaticResource CardStyle}" Grid.Column="0" Grid.Row="1">
+          <StackPanel>
+            <TextBlock Style="{StaticResource CardTitleStyle}" Text="Produkte"/>
+            <TextBlock Style="{StaticResource CardValueStyle}" Text="2,789"/>
+            <TextBlock Text="687 auf Lager" FontSize="{ThemeResource FontSizeLabelS}" Foreground="{ThemeResource OnSurfaceVariantBrush}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Rechnungen Card -->
+        <Border Style="{StaticResource CardStyle}" Grid.Column="1" Grid.Row="1">
+          <StackPanel>
+            <TextBlock Style="{StaticResource CardTitleStyle}" Text="Offene Rechnungen"/>
+            <TextBlock Style="{StaticResource CardValueStyle}" Text="23"/>
+            <TextBlock Text="€12,456 Gesamtwert" FontSize="{ThemeResource FontSizeLabelS}" Foreground="{ThemeResource OnSurfaceVariantBrush}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Lager Card -->
+        <Border Style="{StaticResource CardStyle}" Grid.Column="2" Grid.Row="1">
+          <StackPanel>
+            <TextBlock Style="{StaticResource CardTitleStyle}" Text="Lagerbestände"/>
+            <TextBlock Style="{StaticResource CardValueStyle}" Text="95%"/>
+            <TextBlock Text="Ausreichend" FontSize="{ThemeResource FontSizeLabelS}" Foreground="{ThemeResource SuccessBrush}"/>
+          </StackPanel>
+        </Border>
+
+      </Grid>
+
+      <!-- Quick Actions -->
+      <StackPanel Spacing="12">
+        <TextBlock Text="Schnellaktionen"
+                   FontSize="{ThemeResource FontSizeHeadlineS}"
+                   FontWeight="SemiBold"
+                   Foreground="{ThemeResource OnSurfaceBrush}"/>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+
+          <Button Content="Neue Bestellung"
+                  Padding="14,10"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource PrimaryBrush}"
+                  Foreground="{ThemeResource OnPrimaryBrush}"
+                  FontSize="{ThemeResource FontSizeBodyS}"
+                  FontWeight="Medium"
+                  Command="{Binding CreateOrderCommand}"/>
+
+          <Button Content="Kunde hinzufügen"
+                  Padding="14,10"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource SecondaryContainerBrush}"
+                  Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                  FontSize="{ThemeResource FontSizeBodyS}"
+                  FontWeight="Medium"
+                  Command="{Binding CreateCustomerCommand}"/>
+
+          <Button Content="Rechnung erstellen"
+                  Padding="14,10"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource TertiaryContainerBrush}"
+                  Foreground="{ThemeResource OnTertiaryContainerBrush}"
+                  FontSize="{ThemeResource FontSizeBodyS}"
+                  FontWeight="Medium"
+                  Command="{Binding ManageInvoicesCommand}"/>
+
+          <Button Content="Lager verwalten"
+                  Padding="14,10"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Background="{ThemeResource SurfaceVariantBrush}"
+                  Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                  FontSize="{ThemeResource FontSizeBodyS}"
+                  FontWeight="Medium"
+                  Command="{Binding ManageWarehousesCommand}"/>
+
+        </StackPanel>
+      </StackPanel>
+
+    </StackPanel>
+  </ScrollViewer>
+
+</UserControl>

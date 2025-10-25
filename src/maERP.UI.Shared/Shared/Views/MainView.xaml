@@ -1,0 +1,344 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:maERP.UI.Shared.ViewModels"
+    xmlns:authVm="using:maERP.UI.Features.Authentication.ViewModels"
+    xmlns:authViews="using:maERP.UI.Features.Authentication.Views"
+    xmlns:dashboardVm="using:maERP.UI.Features.Dashboard.ViewModels"
+    xmlns:dashboardViews="using:maERP.UI.Features.Dashboard.Views"
+    xmlns:importExportVm="using:maERP.UI.Features.ImportExport.ViewModels"
+    xmlns:importExportViews="using:maERP.UI.Features.ImportExport.Views"
+    xmlns:customerVm="using:maERP.UI.Features.Customers.ViewModels"
+    xmlns:customerViews="using:maERP.UI.Features.Customers.Views"
+    xmlns:orderVm="using:maERP.UI.Features.Orders.ViewModels"
+    xmlns:orderViews="using:maERP.UI.Features.Orders.Views"
+    xmlns:invoiceVm="using:maERP.UI.Features.Invoices.ViewModels"
+    xmlns:invoiceViews="using:maERP.UI.Features.Invoices.Views"
+    xmlns:productVm="using:maERP.UI.Features.Products.ViewModels"
+    xmlns:productViews="using:maERP.UI.Features.Products.Views"
+    xmlns:warehouseVm="using:maERP.UI.Features.Warehouses.ViewModels"
+    xmlns:warehouseViews="using:maERP.UI.Features.Warehouses.Views"
+    xmlns:salesChannelVm="using:maERP.UI.Features.SalesChannels.ViewModels"
+    xmlns:salesChannelViews="using:maERP.UI.Features.SalesChannels.Views"
+    xmlns:aiVm="using:maERP.UI.Features.AI.ViewModels"
+    xmlns:aiViews="using:maERP.UI.Features.AI.Views"
+    xmlns:adminVm="using:maERP.UI.Features.Administration.ViewModels"
+    xmlns:adminViews="using:maERP.UI.Features.Administration.Views"
+    xmlns:goodsReceiptVm="using:maERP.UI.Features.GoodsReceipts.ViewModels"
+    xmlns:goodsReceiptViews="using:maERP.UI.Features.GoodsReceipts.Views"
+    xmlns:manufacturerVm="using:maERP.UI.Features.Manufacturer.ViewModels"
+    xmlns:manufacturerViews="using:maERP.UI.Features.Manufacturer.Views"
+    xmlns:tenantVm="using:maERP.UI.Features.Tenant.ViewModels"
+    xmlns:tenantViews="using:maERP.UI.Features.Tenant.Views"
+    xmlns:viewModels="using:maERP.UI.Features.Superadmin.ViewModels"
+    xmlns:views="using:maERP.UI.Features.Superadmin.Views"
+    mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+    x:Class="maERP.UI.Shared.Views.MainView">
+
+  <UserControl.Resources>
+    <!-- Navigation Button Style -->
+    <Style TargetType="Button" x:Key="NavButtonStyle">
+      <Setter Property="Background" Value="{ThemeResource AppNavButtonBackgroundBrush}"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Foreground" Value="{ThemeResource AppSidebarTextBrush}"/>
+      <Setter Property="FontSize" Value="{ThemeResource FontSizeBodyM}"/>
+      <Setter Property="FontWeight" Value="Normal"/>
+      <Setter Property="CornerRadius" Value="{ThemeResource CornerRadiusS}"/>
+      <Setter Property="HorizontalAlignment" Value="Stretch"/>
+      <Setter Property="HorizontalContentAlignment" Value="Left"/>
+      <Setter Property="Padding" Value="20,12"/>
+      <Setter Property="Margin" Value="0,1"/>
+    </Style>
+  </UserControl.Resources>
+
+  <Grid>
+    <!-- Authentication Views und Tenant Setup (ohne Hauptanwendungs-UI) -->
+    <Grid Visibility="{Binding ShowMainApplication, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+      <ContentControl Content="{Binding CurrentView}">
+        <ContentControl.ContentTemplate>
+          <DataTemplate>
+            <ContentControl Content="{Binding}">
+              <ContentControl.ContentTemplateSelector>
+                <local:ViewModelTemplateSelector>
+                  <local:ViewModelTemplateSelector.LoginTemplate>
+                    <DataTemplate x:DataType="authVm:LoginViewModel">
+                      <authViews:LoginView/>
+                    </DataTemplate>
+                  </local:ViewModelTemplateSelector.LoginTemplate>
+                  <local:ViewModelTemplateSelector.RegistrationTemplate>
+                    <DataTemplate x:DataType="authVm:RegistrationViewModel">
+                      <authViews:RegistrationView/>
+                    </DataTemplate>
+                  </local:ViewModelTemplateSelector.RegistrationTemplate>
+                  <local:ViewModelTemplateSelector.ForgotPasswordTemplate>
+                    <DataTemplate x:DataType="authVm:ForgotPasswordViewModel">
+                      <authViews:ForgotPasswordView/>
+                    </DataTemplate>
+                  </local:ViewModelTemplateSelector.ForgotPasswordTemplate>
+                  <local:ViewModelTemplateSelector.ResetPasswordTemplate>
+                    <DataTemplate x:DataType="authVm:ResetPasswordViewModel">
+                      <authViews:ResetPasswordView/>
+                    </DataTemplate>
+                  </local:ViewModelTemplateSelector.ResetPasswordTemplate>
+                  <local:ViewModelTemplateSelector.TenantSetupTemplate>
+                    <DataTemplate x:DataType="authVm:TenantSetupViewModel">
+                      <authViews:TenantSetupView/>
+                    </DataTemplate>
+                  </local:ViewModelTemplateSelector.TenantSetupTemplate>
+                </local:ViewModelTemplateSelector>
+              </ContentControl.ContentTemplateSelector>
+            </ContentControl>
+          </DataTemplate>
+        </ContentControl.ContentTemplate>
+      </ContentControl>
+    </Grid>
+
+    <!-- Hauptanwendung mit Header und Sidebar wenn authentifiziert UND Tenant vorhanden -->
+    <Grid Visibility="{Binding ShowMainApplication, Converter={StaticResource BoolToVisibilityConverter}}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="60"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="260"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Top Header -->
+      <Border Grid.Row="0" Grid.ColumnSpan="2"
+              Background="{ThemeResource AppHeaderBrush}"
+              BorderBrush="{ThemeResource AppHeaderBorderBrush}"
+              BorderThickness="0,0,0,1">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+
+          <!-- Logo section aligned with sidebar -->
+          <Border Grid.Column="0"
+                  Padding="10,0"
+                  BorderBrush="{ThemeResource AppHeaderBorderBrush}"
+                  BorderThickness="0,0,1,0">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Spacing="8">
+              <TextBlock Text="maERP"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource AppHeaderTextBrush}"/>
+              <TextBlock Text="Enterprise Resource Planning"
+                         FontSize="12"
+                         Foreground="{ThemeResource AppHeaderSubtextBrush}"
+                         VerticalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+
+          <!-- Right header content -->
+          <Grid Grid.Column="1" Margin="20,0">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Spacing="12">
+              <!-- User Menu -->
+              <Button x:Name="UserMenuButton"
+                      Content="⚙️"
+                      Background="{ThemeResource AppUserMenuButtonBrush}"
+                      BorderThickness="0"
+                      Padding="8"
+                      CornerRadius="{ThemeResource CornerRadiusS}"
+                      ToolTipService.ToolTip="Benutzermenü"
+                      FontSize="16">
+                <Button.Flyout>
+                  <MenuFlyout>
+                    <MenuFlyoutItem Text="Theme wechseln"
+                                  Command="{Binding ToggleThemeCommand}">
+                      <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="🌓"/>
+                      </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Meine Mandanten"
+                                  Command="{Binding NavigateToMenuItemCommand}"
+                                  CommandParameter="MyTenants">
+                      <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="🏢"/>
+                      </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem Text="Superadmin - Tenants"
+                                  Command="{Binding NavigateToMenuItemCommand}"
+                                  CommandParameter="Tenants"
+                                  Visibility="{Binding IsSuperAdmin, Converter={StaticResource BoolToVisibilityConverter}}">
+                      <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="🔐"/>
+                      </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutItem Text="Superadmin - Benutzer"
+                                  Command="{Binding NavigateToMenuItemCommand}"
+                                  CommandParameter="Users"
+                                  Visibility="{Binding IsSuperAdmin, Converter={StaticResource BoolToVisibilityConverter}}">
+                      <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="👤"/>
+                      </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem Text="Abmelden"
+                                  Command="{Binding LogoutCommand}">
+                      <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="🚪"/>
+                      </MenuFlyoutItem.Icon>
+                    </MenuFlyoutItem>
+                  </MenuFlyout>
+                </Button.Flyout>
+              </Button>
+            </StackPanel>
+          </Grid>
+        </Grid>
+      </Border>
+
+      <!-- Sidebar -->
+      <Border Grid.Row="1" Grid.Column="0"
+              Background="{ThemeResource AppSidebarBrush}"
+              BorderBrush="{ThemeResource AppSidebarBorderBrush}"
+              BorderThickness="0,0,1,0">
+
+        <!-- Navigation Menu - scrollable area -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+          <StackPanel Margin="0,16">
+
+            <!-- Dashboard -->
+            <Button Content="📊 Dashboard"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="Dashboard"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <!-- Separators and menu sections -->
+            <Rectangle Height="1"
+                       Fill="{ThemeResource AppSeparatorBrush}"
+                       Margin="20,12"
+                       Opacity="{ThemeResource AppSeparatorOpacity}"/>
+
+            <TextBlock Text="VERKAUF"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource AppSidebarLabelBrush}"
+                       Margin="20,12,20,8"/>
+
+            <Button Content="👥 Kunden"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="Customers"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Button Content="🛒 Bestellungen"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="Orders"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Button Content="🧾 Rechnungen"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="Invoices"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Rectangle Height="1"
+                       Fill="{ThemeResource AppSeparatorBrush}"
+                       Margin="20,12"
+                       Opacity="{ThemeResource AppSeparatorOpacity}"/>
+
+            <TextBlock Text="LAGER"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource AppSidebarLabelBrush}"
+                       Margin="20,12,20,8"/>
+
+            <Button Content="📦 Produkte"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="Products"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Button Content="🏭 Hersteller"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="Manufacturers"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Button Content="🏪 Lager"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="Warehouses"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Button Content="📦📥 Wareneingänge"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="GoodsReceipts"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Rectangle Height="1"
+                       Fill="{ThemeResource AppSeparatorBrush}"
+                       Margin="20,12"
+                       Opacity="{ThemeResource AppSeparatorOpacity}"/>
+
+            <TextBlock Text="VERTRIEB"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource AppSidebarLabelBrush}"
+                       Margin="20,12,20,8"/>
+
+            <Button Content="🌐 Vertriebskanäle"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="SalesChannels"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Rectangle Height="1"
+                       Fill="{ThemeResource AppSeparatorBrush}"
+                       Margin="20,12"
+                       Opacity="{ThemeResource AppSeparatorOpacity}"/>
+
+            <TextBlock Text="SYSTEM"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource AppSidebarLabelBrush}"
+                       Margin="20,12,20,8"/>
+
+            <Button Content="🤖 AI-Modelle"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="AiModels"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Button Content="💬 AI-Prompts"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="AiPrompts"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Button Content="💰 Steuerklassen"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="TaxClasses"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+            <Button Content="📥📤 Import/Export"
+                    Command="{Binding NavigateToMenuItemCommand}"
+                    CommandParameter="ImportExport"
+                    Style="{StaticResource NavButtonStyle}"/>
+
+          </StackPanel>
+        </ScrollViewer>
+
+      </Border>
+
+      <!-- Main Content Area -->
+      <Border Grid.Row="1" Grid.Column="1"
+              Background="{ThemeResource AppContentBackgroundBrush}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Margin="32,24">
+          <ContentControl Content="{Binding CurrentView}">
+            <!-- TODO: Implement proper DataTemplate mapping -->
+            <!-- DataTemplates will need a custom DataTemplateSelector or individual views -->
+          </ContentControl>
+        </ScrollViewer>
+      </Border>
+
+    </Grid>
+  </Grid>
+
+</UserControl>

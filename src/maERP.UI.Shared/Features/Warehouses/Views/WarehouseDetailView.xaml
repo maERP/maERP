@@ -1,0 +1,325 @@
+<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+    x:Class="maERP.UI.Features.Warehouses.Views.WarehouseDetailView">
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- Simple Header -->
+    <Grid Grid.Row="0" Margin="0,0,0,32">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- Title and info -->
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,8">
+          <TextBlock Text="{Binding Warehouse.Name}"
+                     FontSize="28"
+                     FontWeight="SemiBold"
+                     Foreground="{ThemeResource ContentViewHeadingBrush}"/>
+          <Border Background="#E0F2FE"
+                  CornerRadius="{ThemeResource CornerRadiusS}"
+                  Padding="8,4"
+                  Visibility="{Binding HasProductStocks, Converter={StaticResource BoolToVisibilityConverter}}">
+            <TextBlock Text="Aktiv"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="#0369A1"/>
+          </Border>
+        </StackPanel>
+        <TextBlock Text="{Binding TotalProducts, Converter={StaticResource StringFormatConverter}, ConverterParameter='Produkte im Lager: {0}'}"
+                   FontSize="14"
+                   Foreground="{ThemeResource ContentViewSubheadingBrush}"/>
+      </StackPanel>
+
+      <!-- Action buttons -->
+      <StackPanel Grid.Column="1"
+                  Orientation="Horizontal"
+                  Spacing="12"
+                  VerticalAlignment="Center">
+        <Button Content="✏️"
+                Command="{Binding EditWarehouseCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                Background="#1C1C1E"
+                Foreground="White"
+                BorderThickness="0"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Lager bearbeiten"/>
+        <Button Content="🗑️"
+                Command="{Binding DeleteWarehouseCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="16"
+                FontWeight="Medium"
+                Background="#EF4444"
+                Foreground="White"
+                BorderThickness="0"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Lager löschen"/>
+        <Button Content="↻"
+                Command="{Binding RefreshCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="14"
+                FontWeight="Medium"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="1"
+                BorderBrush="{ThemeResource OutlineVariantBrush}"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Aktualisieren"/>
+        <Button Content="←"
+                Command="{Binding GoBackCommand}"
+                Padding="12,8"
+                CornerRadius="{ThemeResource CornerRadiusS}"
+                FontSize="14"
+                FontWeight="Medium"
+                Background="{ThemeResource SurfaceContainerBrush}"
+                Foreground="{ThemeResource OnSurfaceBrush}"
+                BorderThickness="1"
+                BorderBrush="{ThemeResource OutlineVariantBrush}"
+                MinWidth="36"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                ToolTipService.ToolTip="Zurück zur Liste"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Main content -->
+    <Grid Grid.Row="1">
+
+      <!-- Loading Indicator -->
+      <StackPanel Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Spacing="16">
+        <ProgressRing IsActive="True" Width="40" Height="40"/>
+        <TextBlock Text="Lager wird geladen..."
+                   HorizontalAlignment="Center"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+      </StackPanel>
+
+      <!-- Error Message -->
+      <Border Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}}"
+              Background="#FFF3CD"
+              BorderBrush="#D6B656"
+              BorderThickness="1"
+              CornerRadius="{ThemeResource CornerRadiusM}"
+              Padding="20"
+              Margin="16"
+              VerticalAlignment="Center">
+        <StackPanel Spacing="8">
+          <TextBlock Text="⚠️ Fehler" FontWeight="SemiBold" Foreground="#856404"/>
+          <TextBlock Text="{Binding ErrorMessage}" Foreground="#856404"/>
+          <Button Content="Erneut versuchen"
+                  Command="{Binding RefreshCommand}"
+                  HorizontalAlignment="Left"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Warehouse Details Content -->
+      <ScrollViewer Visibility="{Binding ShouldShowContent, Converter={StaticResource BoolToVisibilityConverter}}" Padding="24">
+        <StackPanel Spacing="24">
+
+          <!-- Basic Warehouse Information Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <Grid ColumnSpacing="40" RowSpacing="12">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+              </Grid.RowDefinitions>
+
+              <!-- Section Title -->
+              <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                         Text="🏭 Lagerinformationen"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                         Margin="0,0,0,16"/>
+
+              <!-- Left Column -->
+              <StackPanel Grid.Row="1" Grid.Column="0" Spacing="8">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Name:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="{Binding Warehouse.Name}" TextWrapping="Wrap"/>
+                </StackPanel>
+              </StackPanel>
+
+              <!-- Right Column -->
+              <StackPanel Grid.Row="1" Grid.Column="1" Spacing="8">
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Status:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="Aktiv" Visibility="{Binding HasProductStocks, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                  <TextBlock Text="Leer" Visibility="{Binding HasProductStocks, Converter={StaticResource InverseBoolToVisibilityConverter}}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Erstellt am:" FontWeight="SemiBold" Width="140"/>
+                  <TextBlock Text="Nicht verfügbar" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                </StackPanel>
+              </StackPanel>
+
+            </Grid>
+          </Border>
+
+          <!-- Quick Actions Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <Grid ColumnSpacing="40">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+
+              <!-- Stock Management -->
+              <StackPanel Grid.Column="0" Spacing="12">
+                <TextBlock Text="📦 Lagerverwaltung"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                <StackPanel Spacing="6">
+                  <Button Command="{Binding ManageStockCommand}"
+                          HorizontalAlignment="Left"
+                          Padding="12,6"
+                          CornerRadius="{ThemeResource CornerRadiusS}"
+                          Background="{ThemeResource AccentFillColorDefaultBrush}"
+                          Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="📦" VerticalAlignment="Center"/>
+                      <TextBlock Text="Lagerbestände verwalten" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                  <Button Command="{Binding ViewReportsCommand}"
+                          HorizontalAlignment="Left"
+                          Padding="12,6"
+                          CornerRadius="{ThemeResource CornerRadiusS}"
+                          Background="{ThemeResource ControlFillColorDefaultBrush}"
+                          BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                          BorderThickness="1">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="📊" VerticalAlignment="Center"/>
+                      <TextBlock Text="Lagerberichte anzeigen" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                </StackPanel>
+              </StackPanel>
+
+              <!-- Channel Management -->
+              <StackPanel Grid.Column="1" Spacing="12">
+                <TextBlock Text="🌐 Kanalverwaltung"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                <StackPanel Spacing="6">
+                  <Button Command="{Binding ManageSalesChannelsCommand}"
+                          HorizontalAlignment="Left"
+                          Padding="12,6"
+                          CornerRadius="{ThemeResource CornerRadiusS}"
+                          Background="{ThemeResource AccentFillColorDefaultBrush}"
+                          Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <TextBlock Text="🌐" VerticalAlignment="Center"/>
+                      <TextBlock Text="Vertriebskanäle verwalten" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </Button>
+                </StackPanel>
+              </StackPanel>
+
+            </Grid>
+          </Border>
+
+          <!-- Statistics Section -->
+          <Border Background="{ThemeResource ControlFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{ThemeResource CornerRadiusM}"
+                  Padding="20">
+            <Grid ColumnSpacing="40">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+
+              <!-- Product Statistics -->
+              <StackPanel Grid.Column="0" Spacing="12">
+                <TextBlock Text="📈 Produktstatistiken"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                <Border Background="{ThemeResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="{ThemeResource CornerRadiusS}"
+                        Padding="12">
+                  <StackPanel Spacing="8">
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="Gesamt Produkte:" FontWeight="SemiBold" Width="140"/>
+                      <TextBlock Text="{Binding TotalProducts}" FontSize="16" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="Lagerwert gesamt:" FontWeight="SemiBold" Width="140"/>
+                      <TextBlock Text="{Binding TotalStockValue, Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:C2}'}" FontSize="16" FontWeight="SemiBold"/>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+
+              <!-- Availability Info -->
+              <StackPanel Grid.Column="1" Spacing="12">
+                <TextBlock Text="ℹ️ Verfügbarkeit"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="{ThemeResource TextFillColorPrimaryBrush}"/>
+                <Border Background="{ThemeResource SubtleFillColorTransparentBrush}"
+                        CornerRadius="{ThemeResource CornerRadiusS}"
+                        Padding="12">
+                  <StackPanel Spacing="6">
+                    <TextBlock Text="Die detaillierte Lagerstatistik wird in einer zukünftigen Version verfügbar sein."
+                               TextWrapping="Wrap"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                    <TextBlock Text="Hier können Sie dann Lagerbestände, Bewegungen und weitere Kennzahlen einsehen."
+                               TextWrapping="Wrap"
+                               FontSize="12"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+
+            </Grid>
+          </Border>
+
+        </StackPanel>
+      </ScrollViewer>
+
+    </Grid>
+
+  </Grid>
+
+</UserControl>
