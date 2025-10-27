@@ -5,7 +5,7 @@ namespace maERP.Domain.Validators;
 
 /// <summary>
 /// Basis-Validator für Product - enthält feldbasierte Validierungsregeln.
-/// WICHTIG: Dieser Validator wird von Client (maERP.UI) und Server (maERP.Application) verwendet.
+/// WICHTIG: Dieser Validator wird von Client (maERP.Client) und Server (maERP.Application) verwendet.
 ///
 /// Client: ProductClientValidator erbt von dieser Klasse und fügt UI-spezifische Regeln hinzu.
 /// Server: ProductCreateValidator/ProductUpdateValidator erben von dieser Klasse und fügen DB-Validierungen hinzu.

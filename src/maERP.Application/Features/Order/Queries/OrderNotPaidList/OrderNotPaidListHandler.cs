@@ -14,6 +14,31 @@ public class OrderNotPaidListHandler : IRequestHandler<OrderNotPaidListQuery, Pa
     private readonly IAppLogger<OrderNotPaidListHandler> _logger;
     private readonly IOrderRepository _orderRepository;
 
+    // Statische Listen für Entity Framework Expression Trees
+    private static readonly List<PaymentStatus> NotPaidStatuses = new()
+    {
+        PaymentStatus.Unknown,
+        PaymentStatus.Invoiced,
+        PaymentStatus.PartiallyPaid,
+        PaymentStatus.FirstReminder,
+        PaymentStatus.SecondReminder,
+        PaymentStatus.ThirdReminder,
+        PaymentStatus.Encashment,
+        PaymentStatus.Reserved,
+        PaymentStatus.Delayed,
+        PaymentStatus.ReviewNecessary,
+        PaymentStatus.NoCreditApproved,
+        PaymentStatus.CreditPreliminarilyAccepted
+    };
+
+    private static readonly List<OrderStatus> ShippableStatuses = new()
+    {
+        OrderStatus.Pending,
+        OrderStatus.Processing,
+        OrderStatus.ReadyForDelivery,
+        OrderStatus.OnHold
+    };
+
     public OrderNotPaidListHandler(
         IAppLogger<OrderNotPaidListHandler> logger,
         IOrderRepository orderRepository)
@@ -26,35 +51,10 @@ public class OrderNotPaidListHandler : IRequestHandler<OrderNotPaidListQuery, Pa
     {
         _logger.LogInformation("Handle OrderNotPaidListQuery: {0}", request);
 
-        // Filtern der Bestellungen, die nicht bezahlt und nicht versendet sind
-        // Nicht bezahlt: PaymentStatus ist nicht CompletelyPaid
-        // Nicht versendet: Status ist nicht PartiallyDelivered, Completed, Returned oder Refunded
-        var notPaidStatuses = new[] {
-            PaymentStatus.Unknown,
-            PaymentStatus.Invoiced,
-            PaymentStatus.PartiallyPaid,
-            PaymentStatus.FirstReminder,
-            PaymentStatus.SecondReminder,
-            PaymentStatus.ThirdReminder,
-            PaymentStatus.Encashment,
-            PaymentStatus.Reserved,
-            PaymentStatus.Delayed,
-            PaymentStatus.ReviewNecessary,
-            PaymentStatus.NoCreditApproved,
-            PaymentStatus.CreditPreliminarilyAccepted
-        };
-
-        var shippableStatuses = new[] {
-            OrderStatus.Pending,
-            OrderStatus.Processing,
-            OrderStatus.ReadyForDelivery,
-            OrderStatus.OnHold
-        };
-
         if (request.OrderBy.Any() != true)
         {
             return await _orderRepository.Entities
-               .Where(o => notPaidStatuses.Contains(o.PaymentStatus) && shippableStatuses.Contains(o.Status))
+               .Where(o => NotPaidStatuses.Contains(o.PaymentStatus) && ShippableStatuses.Contains(o.Status))
                .Select(o => new OrderListDto
                {
                    Id = o.Id,
@@ -73,7 +73,7 @@ public class OrderNotPaidListHandler : IRequestHandler<OrderNotPaidListQuery, Pa
         var ordering = string.Join(",", request.OrderBy);
 
         return await _orderRepository.Entities
-            .Where(o => notPaidStatuses.Contains(o.PaymentStatus) && shippableStatuses.Contains(o.Status))
+            .Where(o => NotPaidStatuses.Contains(o.PaymentStatus) && ShippableStatuses.Contains(o.Status))
             .OrderBy(ordering)
             .Select(o => new OrderListDto
             {

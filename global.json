@@ -1,7 +1,10 @@
 {
-  "projects": [ "maERP.Domain", "maERP.Application", "maERP.Ai", "maERP.Analytics", "maERP.Identity", "maERP.Infrastructure", "maERP.Persistence", "maERP.SalesChannels", "maERP.Server", "maERP.Client", "maERP.SharedUI", "maERP.Web", "maERP.Persistence.Tests", "maERP.Server.Tests"],
   "sdk": {
-    "version": "9.0.100",
-    "rollForward": "latestMinor"
+    "version": "10.0.100-rc.2",
+    "rollForward": "latestMajor",
+    "allowPrerelease": true
+  },
+  "msbuild-sdks": {
+    "Uno.Sdk": "6.3.28"
   }
 }

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<OutputType>Library</OutputType>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -11,16 +11,15 @@
 		<ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" >
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
-		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.1" />
+		<PackageReference Include="Serilog.Sinks.Grafana.Loki" />
 	</ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<OutputType>Library</OutputType>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -8,16 +8,15 @@
 		<WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904;NU1608</WarningsNotAsErrors>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" >
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.10" />
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.10" />
-		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+		<PackageReference Include="Serilog.Sinks.Grafana.Loki" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />

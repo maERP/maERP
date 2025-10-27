@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "maERP",
+  "display": "standalone",
+  "name": "maERP",
+  "short_name": "maERP",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}

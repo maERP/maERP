@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-maERP is a C# client-server, cross-platform, open-source ERP system developed with .NET 9, Avalonia and Entity Framework. It follows the Clean Architecture with a clear separation of concerns. It consists of the projects:
+maERP is a C# client-server, cross-platform, open-source ERP system developed with .NET 9, Uno Platform and Entity Framework. It follows the Clean Architecture with a clear separation of concerns. It consists of the projects:
 
 1. **maERP.Domain** - Core domain entities and interfaces
 2. **maERP.Application** - Application logic, CQRS handlers
@@ -13,11 +13,7 @@ maERP is a C# client-server, cross-platform, open-source ERP system developed wi
 5. **maERP.Identity** - Authentication and authorization
 6. **maERP.SalesChannels** - Integrations with e-commerce platforms
 7. **maERP.Server** - Backend API server (headless, no frontend)
-8. **maERP.UI** - Shared UI components for use in Avalonia applications
-9. **maERP.UI.Desktop** - Avalonia Desktop Client
-10. **maERP.UI.Browser** - Avalonia WebAssembly Client
-11. **maERP.UI.iOS** - Aavalonia iOS App
-12. **maERP.UI.Android** - Avalonia Android App
+8. **maERP.Client** - Client using Uno Platform for Desktop, WASM, iOS, Android, Wdinwos
 
 ## Architecture
 
@@ -27,7 +23,7 @@ The codebase implements:
 - JWT authentication
 - No Automapper, using manual mapping instead
 - No MediatR, using manual Mediator instead
-- Avalonia with CommunityToolkit.MVVM for cross-platform UI
+- Uno Platform Client Application for Desktop, iOS, Android and WASM
 - UI projects not using direct database access, using REST-API instead
 
 ## Role Management
@@ -178,13 +174,13 @@ dotnet format
 - The project uses Serilog for logging
 - The project uses GitHub Actions for CI/CD
 - maERP.UI is not executable. It is a shared library for maERP.Browser, maERP.Desktop, maERP.iOS and maERP.Android
-- Avalonia is used for cross-platform UI development
-- Avalonia is using CommunityToolkit.MVVM and CompiledBindings
+- Uno Platform is used for cross-platform UI development
+- Uno Platform is using MVUX Pattern and Fluent Theme
 - ViewModels are registered in maERP.UI/app.xaml.cs
 - DTOs are defined in maERP.Domain an available as ListDto, DetailDto and InputDto
 - Repositories are defined in maERP.Persistence
 - Services are defined in maERP.Application
-- on layout changes, always consider the Avalonia platform limitations and capabilities
+- on layout changes, always consider the Uno Platform limitations and capabilities
 - when implementing new features, always consider the cross-platform nature of the project
 - when implementing new features, always consider the performance and scalability of the solution
 - when implementing new features, always consider the security implications of the solution
@@ -205,7 +201,6 @@ dotnet format
 - IMPORTANT: all Entities are using System.Guid for Id, defined in BaseEntity.cs
 - IMPORTANT: never create db migrations before asking
 - EnsureSuperadminAccessAsync() is only for running Tests
-- Avalonia can't use dynamic resources in thickness attributes like padding, margin or spacing
 
 # Multi-Tenant Testing Guidelines
 - IMPORTANT: All multi-tenant tests MUST inherit from TenantIsolatedTestBase for proper isolation

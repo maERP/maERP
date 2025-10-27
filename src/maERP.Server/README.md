@@ -69,10 +69,7 @@ Once running, access the Swagger UI at `https://localhost:5001/swagger` for inte
 ## Multi-Platform Clients
 
 This server works with the following maERP clients:
-- **maERP.UI.Desktop** - Cross-platform Avalonia desktop app
-- **maERP.UI.Browser** - WebAssembly browser client
-- **maERP.UI.iOS** - iOS mobile app
-- **maERP.UI.Android** - Android mobile app
+- **maERP.Client** - Cross-platform Uno Platform app
 
 ## License
 

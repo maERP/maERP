@@ -1,8 +1,50 @@
 {
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:8080",
+      "sslPort": 0
+    }
+  },
   "profiles": {
-    "Windows Machine": {
+    // This profile is first in order for dotnet run to pick it up by default
+    "maERP (WebAssembly)": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5000",
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "maERP (WebAssembly IIS Express)": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    // Note: In order to select this profile, you'll need to comment the `Packaged` profile below until this is fixed: https://aka.platform.uno/wasdk-maui-debug-profile-issue
+    "maERP (WinAppSDK Unpackaged)": {
+      "commandName": "Project",
+      "compatibleTargetFramework": "windows"
+    },
+    "maERP (WinAppSDK Packaged)": {
       "commandName": "MsixPackage",
-      "nativeDebugging": false
+      "compatibleTargetFramework": "windows"
+    },
+    "maERP (Desktop)": {
+      "commandName": "Project",
+      "compatibleTargetFramework": "desktop"
+    },
+    "maERP (Desktop WSL2)": {
+      "commandName": "WSL2",
+      "commandLineArgs": "{ProjectDir}/bin/Debug/net10.0-desktop/maERP.dll",
+      "distributionName": "",
+      "compatibleTargetFramework": "desktop"
     }
   }
 }

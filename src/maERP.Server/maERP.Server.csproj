@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<RootNamespace>maERP.Server</RootNamespace>
@@ -39,34 +39,33 @@
 		<Folder Include="wwwroot\lib\" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.OData" Version="9.4.0" />
-		<PackageReference Include="Microsoft.OData.Core" Version="8.4.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
+		<PackageReference Include="Microsoft.AspNetCore.OData" />
+		<PackageReference Include="Microsoft.OData.Core" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" >
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" >
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
-		<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.13.1" />
-		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.13.1" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.13.1" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.12.0" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.12.0" />
-		<PackageReference Include="Serilog.Sinks.Console" Version="6.0" />
-		<PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
-		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-		<PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+		<PackageReference Include="OpenTelemetry.Exporter.Console" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+		<PackageReference Include="Serilog.Sinks.Console" />
+		<PackageReference Include="Serilog.Sinks.Grafana.Loki" />
+		<PackageReference Include="Swashbuckle.AspNetCore" />
+		<PackageReference Include="Serilog.AspNetCore" />
+		<PackageReference Include="Serilog.Sinks.Async" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="\" />

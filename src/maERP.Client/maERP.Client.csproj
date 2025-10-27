@@ -1,97 +1,65 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-	<PropertyGroup>
-		<TargetFrameworks>net9.0-maccatalyst;net9.0-ios;net9.0-android</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.22621.0</TargetFrameworks>
-		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
-		<OutputType>Exe</OutputType>
-		<RootNamespace>maERP.Client</RootNamespace>
-		<UseMaui>true</UseMaui>
-		<SingleProject>true</SingleProject>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<EnableDefaultCssItems>false</EnableDefaultCssItems>
-		<SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
-		<!-- Display name -->
-		<ApplicationTitle>maERP.Client</ApplicationTitle>
-		<!-- App Identifier -->
-		<ApplicationId>de.martin-andrich.maerp.client</ApplicationId>
-		<ApplicationIdGuid>C158D123-56C2-4B03-B913-ACE44FB433F2</ApplicationIdGuid>
-		<!-- Versions -->
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">31.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.22621.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.22621.0</TargetPlatformMinVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-		<Product>$(AssemblyName)</Product>
-		<AssemblyName>maERP</AssemblyName>
-		<DefaultLanguage>de</DefaultLanguage>
-		<NeutralLanguage>de-DE</NeutralLanguage>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<WarningsNotAsErrors>NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
-		<CreatePackage>false</CreatePackage>
-		<MtouchProfiling>True</MtouchProfiling>
-		<ApplicationTitle>maERP</ApplicationTitle>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-maccatalyst|AnyCPU'">
-		<CreatePackage>false</CreatePackage>
-		<ApplicationTitle>maERP</ApplicationTitle>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
-		<CodesignKey>Apple Development: Created via API (L5KKCWMJ3W)</CodesignKey>
-		<CodesignProvision>VS: de.martin-andrich.maerp.client Development</CodesignProvision>
-		<ProvisioningType>automatic</ProvisioningType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
-		<MtouchProfiling>False</MtouchProfiling>
-		<MtouchUseLlvm>False</MtouchUseLlvm>
-		<ApplicationTitle>maERP</ApplicationTitle>
-		<CreatePackage>false</CreatePackage>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
-		<ApplicationTitle>maERP</ApplicationTitle>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-windows10.0.22621.0|AnyCPU'">
-		<ApplicationTitle>maERP</ApplicationTitle>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-maccatalyst|AnyCPU'">
-		<ApplicationTitle>maERP</ApplicationTitle>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
-		<ApplicationTitle>maERP</ApplicationTitle>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-windows10.0.22621.0|AnyCPU'">
-		<ApplicationTitle>maERP</ApplicationTitle>
-	</PropertyGroup>
-	<ItemGroup>
-		<!-- App Icon -->
-		<MauiIcon Include="MauiResources\AppIcon\appicon.svg" ForegroundFile="MauiResources\AppIcon\appiconfg.svg" Color="#512BD4" />
-		<!-- Splash Screen -->
-		<MauiSplashScreen Include="MauiResources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-		<!-- Images -->
-		<MauiFont Include="Resources\Fonts\*" />
-		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-		<MauiAsset Include="MauiResources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-	<ItemGroup>
-		<MauiImage Remove="MauiResources\Images\dotnet_bot.svg" />
-	</ItemGroup>
-	<ItemGroup>
-		<BundleResource Include="MauiResources\Images\dotnet_bot.svg" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Blazored.LocalStorage" Version="4.5" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
-		<PackageReference Include="Microsoft.Maui.Core" Version="9.0.60" />
-		<PackageReference Include="MudBlazor" Version="8.6.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.60" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.60" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="9.0.60" />
-		<ProjectReference Include="..\maERP.SharedUI\maERP.SharedUI.csproj" />
-	</ItemGroup>
+<Project Sdk="Uno.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop;net10.0</TargetFrameworks>
+
+        <OutputType>Exe</OutputType>
+        <UnoSingleProject>true</UnoSingleProject>
+
+        <!-- Display name -->
+        <ApplicationTitle>maERP</ApplicationTitle>
+        <!-- App Identifier -->
+        <ApplicationId>de.martin-andrich.maERP</ApplicationId>
+        <!-- Versions -->
+        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+        <ApplicationVersion>1</ApplicationVersion>
+        <!-- Package Publisher -->
+        <ApplicationPublisher>O=maERP</ApplicationPublisher>
+        <!-- Package Description -->
+        <Description>maERP powered by Uno Platform.</Description>
+        <!--
+          If you encounter this error message:
+
+            error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
+            Please update to a newer .NET SDK in order to reference this assembly.
+
+          This means that the two packages below must be aligned with the "build" version number of
+          the "Microsoft.Windows.SDK.BuildTools" package above, and the "revision" version number
+          must be the highest found in https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
+        -->
+        <!-- <WindowsSdkPackageVersion>10.0.22621.28</WindowsSdkPackageVersion> -->
+
+        <!--
+          UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
+          https://aka.platform.uno/singleproject-features
+        -->
+        <UnoFeatures>
+            Lottie;
+            Hosting;
+            Toolkit;
+            Logging;
+            LoggingSerilog;
+            MVUX;
+            Configuration;
+            Http;
+            Serialization;
+            Localization;
+            Authentication;
+            Navigation;
+            ThemeService;
+            SkiaRenderer;
+        </UnoFeatures>
+        <RootNamespace>maERP.Client</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(IsUiAutomationMappingEnabled)'=='True'">
+        <IsUiAutomationMappingEnabled>True</IsUiAutomationMappingEnabled>
+        <DefineConstants>$(DefineConstants);USE_UITESTS</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
+      <PackageReference Include="Xamarin.AndroidX.Activity" />
+      <PackageReference Include="Xamarin.AndroidX.AppCompat" />
+      <PackageReference Include="Xamarin.AndroidX.Browser" />
+    </ItemGroup>
+
 </Project>
