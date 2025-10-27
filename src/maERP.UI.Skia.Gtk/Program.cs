@@ -1,5 +1,7 @@
+using System;
 using GLib;
 using Uno.UI.Runtime.Skia.Gtk;
+using maERP.UI;
 
 namespace maERP.UI.Skia.Gtk;
 

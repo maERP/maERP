@@ -1,7 +1,7 @@
 using System;
 using Microsoft.UI.Xaml.Data;
 
-namespace maERP.UI.Converters;
+namespace maERP.UI.Shared.Converters;
 
 /// <summary>
 /// Formats a value using a format string provided in ConverterParameter.

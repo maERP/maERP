@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace maERP.UI.Features.Superadmin.Views;
+namespace maERP.UI.Shared.Features.Superadmin.Views;
 
 public sealed partial class SuperadminTenantsInputView : UserControl
 {

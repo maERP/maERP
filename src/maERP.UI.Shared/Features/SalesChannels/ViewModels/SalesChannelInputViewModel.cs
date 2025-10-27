@@ -10,11 +10,11 @@ using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Enums;
 using maERP.Domain.Interfaces;
-using maERP.UI.Features.SalesChannels.Validators;
-using maERP.UI.Services;
-using maERP.UI.Shared.Validation;
+using maERP.UI.Shared.Features.SalesChannels.Validators;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.Validation;
 
-namespace maERP.UI.Features.SalesChannels.ViewModels;
+namespace maERP.UI.Shared.Features.SalesChannels.ViewModels;
 
 public partial class SalesChannelInputViewModel : FluentValidationViewModelBase, ISalesChannelInputModel
 {

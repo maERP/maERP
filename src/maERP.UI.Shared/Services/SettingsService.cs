@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace maERP.UI.Services;
+namespace maERP.UI.Shared.Services;
 
 public class SettingsService : ISettingsService
 {

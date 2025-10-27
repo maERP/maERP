@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace maERP.UI.Features.Customers.Views;
+namespace maERP.UI.Shared.Features.Customers.Views;
 
 public sealed partial class CustomerDetailView : UserControl
 {

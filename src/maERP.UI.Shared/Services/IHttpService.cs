@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using maERP.Domain.Dtos.Auth;
 using maERP.Domain.Wrapper;
 
-namespace maERP.UI.Services;
+namespace maERP.UI.Shared.Services;
 
 public interface IHttpService
 {

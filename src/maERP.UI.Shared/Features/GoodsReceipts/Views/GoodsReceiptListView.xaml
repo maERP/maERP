@@ -3,9 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
-    x:Class="maERP.UI.Features.GoodsReceipts.Views.GoodsReceiptListView">
+    x:Class="maERP.UI.Shared.Features.GoodsReceipts.Views.GoodsReceiptListView">
 
   <Grid>
     <Grid.RowDefinitions>
@@ -29,7 +29,7 @@
                    FontWeight="SemiBold"
                    Foreground="{ThemeResource ContentViewHeadingBrush}"
                    Margin="0,0,0,4"/>
-        <TextBlock Text="{Binding TotalCount, Converter={StaticResource StringFormatConverter}, ConverterParameter=Gesamt: {{0}} Wareneingänge}"
+        <TextBlock Text="{Binding TotalCount, Converter={StaticResource StringFormatConverter}, ConverterParameter={}Gesamt: {0} Wareneingänge}"
                    FontSize="14"
                    Foreground="{ThemeResource ContentViewSubheadingBrush}"/>
       </StackPanel>
@@ -188,7 +188,7 @@
                     Orientation="Horizontal"
                     VerticalAlignment="Center"
                     Spacing="6">
-          <TextBlock Text="{Binding DisplayPageNumber, Converter={StaticResource StringFormatConverter}, ConverterParameter=Seite {{0}}}"
+          <TextBlock Text="{Binding DisplayPageNumber, Converter={StaticResource StringFormatConverter}, ConverterParameter={}Seite {0}}"
                      FontSize="14"
                      Foreground="{ThemeResource ContentViewSubheadingBrush}"
                      VerticalAlignment="Center"/>
@@ -235,7 +235,7 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Spacing="4">
-          <TextBlock Text="{Binding GoodsReceipts.Count, Converter={StaticResource StringFormatConverter}, ConverterParameter={{0}} Einträge}"
+          <TextBlock Text="{Binding GoodsReceipts.Count, Converter={StaticResource StringFormatConverter}, ConverterParameter={}{0} Einträge}"
                      FontSize="14"
                      Foreground="#9CA3AF"/>
           <TextBlock Text="von"

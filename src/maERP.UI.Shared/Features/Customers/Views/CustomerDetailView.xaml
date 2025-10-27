@@ -3,9 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
-    x:Class="maERP.UI.Features.Customers.Views.CustomerDetailView">
+    x:Class="maERP.UI.Shared.Features.Customers.Views.CustomerDetailView">
 
   <Grid>
     <Grid.RowDefinitions>
@@ -373,11 +373,7 @@
                                       Width="150"
                                       CanUserSort="True">
                     <toolkit:DataGridTextColumn.Binding>
-                      <Binding Path="Firstname" Converter="{StaticResource StringFormatConverter}" ConverterParameter="{}{0} {1}">
-                        <Binding.ConverterParameter>
-                          <x:String>{0} {1}</x:String>
-                        </Binding.ConverterParameter>
-                      </Binding>
+                      <Binding Path="Firstname" Converter="{StaticResource StringFormatConverter}" ConverterParameter="{}{0}"/>
                     </toolkit:DataGridTextColumn.Binding>
                   </toolkit:DataGridTextColumn>
                   <toolkit:DataGridTextColumn Header="Firma"

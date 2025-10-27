@@ -5,7 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
     x:Name="RootUserControl"
-    x:Class="maERP.UI.Features.ImportExport.Views.ImportExportOverviewView">
+    x:Class="maERP.UI.Shared.Features.ImportExport.Views.ImportExportOverviewView">
 
   <Grid>
     <Grid.RowDefinitions>

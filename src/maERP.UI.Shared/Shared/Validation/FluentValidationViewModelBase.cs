@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using FluentValidation;
 using FluentValidation.Results;
 
-namespace maERP.UI.Shared.Validation;
+namespace maERP.UI.Shared.Shared.Validation;
 
 /// <summary>
 /// Basis-ViewModel für FluentValidation-Integration mit Avalonia.

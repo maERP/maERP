@@ -7,10 +7,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Dtos.Tenant;
-using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Features.Superadmin.ViewModels;
+namespace maERP.UI.Shared.Features.Superadmin.ViewModels;
 
 public partial class SuperadminUserDetailViewModel : ViewModelBase
 {

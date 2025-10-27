@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using maERP.Domain.Dtos.Warehouse;
 
-namespace maERP.UI.Services;
+namespace maERP.UI.Shared.Services;
 
 public interface IDialogService
 {

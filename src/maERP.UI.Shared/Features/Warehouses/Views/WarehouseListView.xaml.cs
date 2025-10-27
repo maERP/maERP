@@ -1,8 +1,8 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using maERP.UI.Features.Warehouses.ViewModels;
+using maERP.UI.Shared.Features.Warehouses.ViewModels;
 
-namespace maERP.UI.Features.Warehouses.Views;
+namespace maERP.UI.Shared.Features.Warehouses.Views;
 
 public sealed partial class WarehouseListView : UserControl
 {

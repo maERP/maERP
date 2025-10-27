@@ -3,9 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:maERP.UI.Features.Authentication.ViewModels"
+    xmlns:vm="using:maERP.UI.Shared.Features.Authentication.ViewModels"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
-    x:Class="maERP.UI.Features.Authentication.Views.TenantSetupView">
+    x:Class="maERP.UI.Shared.Features.Authentication.Views.TenantSetupView">
 
   <Grid>
     <Grid.RowDefinitions>

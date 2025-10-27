@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using maERP.Domain.Dtos.Invoice;
-using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
-namespace maERP.UI.Features.Invoices.ViewModels;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.ViewModels;
+namespace maERP.UI.Shared.Features.Invoices.ViewModels;
 
 public partial class InvoiceListViewModel : ViewModelBase
 {

@@ -1,8 +1,8 @@
 using FluentValidation;
 using maERP.Domain.Validators;
-using maERP.UI.Features.Products.ViewModels;
+using maERP.UI.Shared.Features.Products.ViewModels;
 
-namespace maERP.UI.Features.Products.Validators;
+namespace maERP.UI.Shared.Features.Products.Validators;
 
 /// <summary>
 /// Client-seitiger Validator für Product-Eingaben in der UI.

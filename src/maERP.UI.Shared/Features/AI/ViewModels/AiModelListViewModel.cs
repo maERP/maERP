@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using maERP.Domain.Dtos.AiModel;
-using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
-namespace maERP.UI.Features.AI.ViewModels;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.ViewModels;
+namespace maERP.UI.Shared.Features.AI.ViewModels;
 
 public partial class AiModelListViewModel : ViewModelBase
 {

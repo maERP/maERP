@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using maERP.UI;
 
 namespace maERP.UI.WebAssembly;
 

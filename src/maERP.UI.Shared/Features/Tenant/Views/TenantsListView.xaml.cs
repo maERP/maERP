@@ -1,8 +1,8 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using maERP.UI.Features.Tenant.ViewModels;
+using maERP.UI.Shared.Features.Tenant.ViewModels;
 
-namespace maERP.UI.Features.Tenant.Views;
+namespace maERP.UI.Shared.Features.Tenant.Views;
 
 public sealed partial class TenantsListView : UserControl
 {

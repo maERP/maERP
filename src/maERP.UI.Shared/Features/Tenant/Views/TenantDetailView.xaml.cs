@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace maERP.UI.Features.Tenant.Views;
+namespace maERP.UI.Shared.Features.Tenant.Views;
 
 public sealed partial class TenantDetailView : UserControl
 {

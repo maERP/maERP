@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace maERP.UI.Features.Manufacturer.Views;
+namespace maERP.UI.Shared.Features.Manufacturer.Views;
 
 public sealed partial class ManufacturerInputView : UserControl
 {

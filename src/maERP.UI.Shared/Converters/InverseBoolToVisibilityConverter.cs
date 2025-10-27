@@ -2,7 +2,7 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
-namespace maERP.UI.Converters;
+namespace maERP.UI.Shared.Converters;
 
 /// <summary>
 /// Converts a boolean value to a Visibility value (inverted).

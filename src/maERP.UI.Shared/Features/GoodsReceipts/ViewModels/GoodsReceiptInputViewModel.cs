@@ -8,10 +8,10 @@ using CommunityToolkit.Mvvm.Input;
 using maERP.Domain.Dtos.GoodsReceipt;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Dtos.Warehouse;
-using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Features.GoodsReceipts.ViewModels;
+namespace maERP.UI.Shared.Features.GoodsReceipts.ViewModels;
 
 public partial class GoodsReceiptInputViewModel : ViewModelBase
 {

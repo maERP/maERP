@@ -6,11 +6,11 @@ using CommunityToolkit.Mvvm.Input;
 using FluentValidation;
 using maERP.Domain.Dtos.Warehouse;
 using maERP.Domain.Interfaces;
-using maERP.UI.Features.Warehouses.Validators;
-using maERP.UI.Services;
-using maERP.UI.Shared.Validation;
+using maERP.UI.Shared.Features.Warehouses.Validators;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.Validation;
 
-namespace maERP.UI.Features.Warehouses.ViewModels;
+namespace maERP.UI.Shared.Features.Warehouses.ViewModels;
 
 public partial class WarehouseInputViewModel : FluentValidationViewModelBase, IWarehouseInputModel
 {

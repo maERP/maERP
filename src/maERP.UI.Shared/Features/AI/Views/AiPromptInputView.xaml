@@ -4,7 +4,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
-    x:Class="maERP.UI.Features.AI.Views.AiPromptInputView">
+    x:Class="maERP.UI.Shared.Features.AI.Views.AiPromptInputView">
 
   <Grid>
     <Grid.RowDefinitions>
@@ -192,7 +192,6 @@
                              AcceptsReturn="True"
                              FontFamily="Consolas,Monaco,Courier New,monospace"
                              FontSize="13"
-                             LineHeight="20"
                              Background="Transparent"
                              BorderThickness="0"
                              Padding="0"/>

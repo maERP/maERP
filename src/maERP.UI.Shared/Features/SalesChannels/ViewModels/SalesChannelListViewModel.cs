@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using maERP.Domain.Dtos.SalesChannel;
-using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
-namespace maERP.UI.Features.SalesChannels.ViewModels;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.ViewModels;
+namespace maERP.UI.Shared.Features.SalesChannels.ViewModels;
 
 public partial class SalesChannelListViewModel : ViewModelBase
 {

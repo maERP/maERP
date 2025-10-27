@@ -1,8 +1,8 @@
 using FluentValidation;
 using maERP.Domain.Validators;
-using maERP.UI.Features.SalesChannels.ViewModels;
+using maERP.UI.Shared.Features.SalesChannels.ViewModels;
 
-namespace maERP.UI.Features.SalesChannels.Validators;
+namespace maERP.UI.Shared.Features.SalesChannels.Validators;
 
 /// <summary>
 /// Client-seitiger Validator für SalesChannel-Eingaben in der UI.

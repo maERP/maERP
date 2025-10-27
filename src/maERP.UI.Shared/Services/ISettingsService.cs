@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace maERP.UI.Services;
+namespace maERP.UI.Shared.Services;
 
 public interface ISettingsService
 {

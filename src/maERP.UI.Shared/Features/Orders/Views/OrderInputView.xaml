@@ -3,9 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
-    x:Class="maERP.UI.Features.Orders.Views.OrderInputView"
+    x:Class="maERP.UI.Shared.Features.Orders.Views.OrderInputView"
     x:Name="RootUserControl">
 
   <Grid>
@@ -729,7 +729,7 @@
                   <NumberBox Value="{Binding Total, Mode=TwoWay}"
                              Minimum="0"
                              SmallChange="0.01"
-                             IsReadOnly="True"
+                             IsEnabled="False"
                              Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"/>
                 </StackPanel>
 

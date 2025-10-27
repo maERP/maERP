@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using maERP.Domain.Dtos.Tenant;
 
-namespace maERP.UI.Services;
+namespace maERP.UI.Shared.Services;
 
 public interface ITenantService
 {

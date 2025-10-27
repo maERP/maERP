@@ -1,8 +1,8 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using maERP.UI.Features.SalesChannels.ViewModels;
+using maERP.UI.Shared.Features.SalesChannels.ViewModels;
 
-namespace maERP.UI.Features.SalesChannels.Views;
+namespace maERP.UI.Shared.Features.SalesChannels.Views;
 
 public sealed partial class SalesChannelListView : UserControl
 {

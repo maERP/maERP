@@ -6,11 +6,11 @@ using CommunityToolkit.Mvvm.Input;
 using FluentValidation;
 using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Interfaces;
-using maERP.UI.Features.Administration.Validators;
-using maERP.UI.Services;
-using maERP.UI.Shared.Validation;
+using maERP.UI.Shared.Features.Administration.Validators;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.Validation;
 
-namespace maERP.UI.Features.Administration.ViewModels;
+namespace maERP.UI.Shared.Features.Administration.ViewModels;
 
 public partial class TaxClassInputViewModel : FluentValidationViewModelBase, ITaxClassInputModel
 {

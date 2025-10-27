@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using maERP.Domain.Dtos.Tenant;
 
-namespace maERP.UI.Services;
+namespace maERP.UI.Shared.Services;
 
 public static class JwtTokenParser
 {

@@ -1,7 +1,7 @@
 using System;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Services;
+namespace maERP.UI.Shared.Services;
 
 public interface IDebugService
 {

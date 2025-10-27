@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using maERP.Domain.Dtos.Warehouse;
-using maERP.UI.Features.Warehouses.ViewModels;
-using maERP.UI.Features.Warehouses.Views;
-using maERP.UI.Shared.ViewModels;
-using maERP.UI.Shared.Views;
+using maERP.UI.Shared.Features.Warehouses.ViewModels;
+using maERP.UI.Shared.Features.Warehouses.Views;
+using maERP.UI.Shared.Shared.ViewModels;
+using maERP.UI.Shared.Shared.Views;
 
-namespace maERP.UI.Services;
+namespace maERP.UI.Shared.Services;
 
 public class DialogService : IDialogService
 {

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Uno.Sdk">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -6,8 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Uno.Sdk" Version="6.4.0-dev.252" />
-    <PackageReference Include="Uno.WinUI" Version="6.4.0-dev.252" />
+    <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.204" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
@@ -15,16 +14,9 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.10" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\maERP.Domain\maERP.Domain.csproj" />
-  </ItemGroup>
-
-  <!-- Uno Platform XAML Configuration -->
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml" />
-    <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;App.xaml" />
   </ItemGroup>
 </Project>

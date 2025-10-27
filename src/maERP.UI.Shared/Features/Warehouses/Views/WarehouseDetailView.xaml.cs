@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace maERP.UI.Features.Warehouses.Views;
+namespace maERP.UI.Shared.Features.Warehouses.Views;
 
 public sealed partial class WarehouseDetailView : UserControl
 {

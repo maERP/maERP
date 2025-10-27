@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace maERP.UI.Shared.ViewModels;
+namespace maERP.UI.Shared.Shared.ViewModels;
 
 public partial class ConfirmationDialogViewModel : ViewModelBase
 {

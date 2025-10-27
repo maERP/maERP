@@ -1,8 +1,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Shared.Views;
+namespace maERP.UI.Shared.Shared.Views;
 
 public sealed partial class DebugWindow : UserControl
 {

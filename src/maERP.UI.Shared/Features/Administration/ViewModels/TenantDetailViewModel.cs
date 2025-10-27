@@ -7,10 +7,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using maERP.Domain.Dtos.Tenant;
 using maERP.Domain.Dtos.User;
-using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Features.Administration.ViewModels;
+namespace maERP.UI.Shared.Features.Administration.ViewModels;
 
 public partial class TenantDetailViewModel : ViewModelBase
 {

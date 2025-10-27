@@ -1,8 +1,8 @@
 using FluentValidation;
 using maERP.Domain.Validators;
-using maERP.UI.Features.Tenant.ViewModels;
+using maERP.UI.Shared.Features.Tenant.ViewModels;
 
-namespace maERP.UI.Features.Tenant.Validators;
+namespace maERP.UI.Shared.Features.Tenant.Validators;
 
 /// <summary>
 /// Client-seitiger Validator für Tenant-Eingaben in der UI.

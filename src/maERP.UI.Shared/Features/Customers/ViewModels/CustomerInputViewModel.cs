@@ -10,11 +10,11 @@ using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Dtos.CustomerAddress;
 using maERP.Domain.Enums;
 using maERP.Domain.Interfaces;
-using maERP.UI.Features.Customers.Validators;
-using maERP.UI.Services;
-using maERP.UI.Shared.Validation;
+using maERP.UI.Shared.Features.Customers.Validators;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.Validation;
 
-namespace maERP.UI.Features.Customers.ViewModels;
+namespace maERP.UI.Shared.Features.Customers.ViewModels;
 
 public partial class CustomerInputViewModel : FluentValidationViewModelBase, ICustomerInputModel
 {

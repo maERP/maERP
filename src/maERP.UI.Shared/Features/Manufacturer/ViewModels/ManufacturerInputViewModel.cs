@@ -6,11 +6,11 @@ using CommunityToolkit.Mvvm.Input;
 using FluentValidation;
 using maERP.Domain.Dtos.Manufacturer;
 using maERP.Domain.Interfaces;
-using maERP.UI.Features.Manufacturer.Validators;
-using maERP.UI.Services;
-using maERP.UI.Shared.Validation;
+using maERP.UI.Shared.Features.Manufacturer.Validators;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.Validation;
 
-namespace maERP.UI.Features.Manufacturer.ViewModels;
+namespace maERP.UI.Shared.Features.Manufacturer.ViewModels;
 
 public partial class ManufacturerInputViewModel : FluentValidationViewModelBase, IManufacturerInputModel
 {

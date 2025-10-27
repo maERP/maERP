@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using maERP.Domain.Dtos.Customer;
-using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Features.Customers.ViewModels;
+namespace maERP.UI.Shared.Features.Customers.ViewModels;
 
 public partial class CustomerListViewModel : ViewModelBase
 {

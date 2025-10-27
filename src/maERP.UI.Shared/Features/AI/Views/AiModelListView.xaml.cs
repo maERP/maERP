@@ -1,8 +1,8 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using maERP.UI.Features.AI.ViewModels;
+using maERP.UI.Shared.Features.AI.ViewModels;
 
-namespace maERP.UI.Features.AI.Views;
+namespace maERP.UI.Shared.Features.AI.Views;
 
 public sealed partial class AiModelListView : UserControl
 {

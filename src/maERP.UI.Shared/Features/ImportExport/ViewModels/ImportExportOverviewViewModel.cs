@@ -3,10 +3,10 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Features.ImportExport.ViewModels;
+namespace maERP.UI.Shared.Features.ImportExport.ViewModels;
 
 public partial class ImportExportOverviewViewModel : ViewModelBase
 {

@@ -4,9 +4,9 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using maERP.Domain.Dtos.Warehouse;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Features.Warehouses.ViewModels;
+namespace maERP.UI.Shared.Features.Warehouses.ViewModels;
 
 public partial class WarehouseSelectionDialogViewModel : ViewModelBase
 {

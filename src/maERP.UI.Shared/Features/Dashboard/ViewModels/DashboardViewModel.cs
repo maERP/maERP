@@ -2,9 +2,9 @@ using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Features.Dashboard.ViewModels;
+namespace maERP.UI.Shared.Features.Dashboard.ViewModels;
 
 public partial class DashboardViewModel : ViewModelBase
 {

@@ -1,8 +1,8 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using maERP.UI.Features.Customers.ViewModels;
+using maERP.UI.Shared.Features.Customers.ViewModels;
 
-namespace maERP.UI.Features.Customers.Views;
+namespace maERP.UI.Shared.Features.Customers.Views;
 
 public sealed partial class CustomerListView : UserControl
 {

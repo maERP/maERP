@@ -11,12 +11,12 @@ using maERP.Domain.Dtos.TaxClass;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Dtos.Manufacturer;
 using maERP.Domain.Interfaces;
-using maERP.UI.Features.Products.Validators;
-using maERP.UI.Services;
-using maERP.UI.Shared.Validation;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Features.Products.Validators;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.Validation;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Features.Products.ViewModels;
+namespace maERP.UI.Shared.Features.Products.ViewModels;
 
 public partial class ProductInputViewModel : FluentValidationViewModelBase, IProductInputModel
 {

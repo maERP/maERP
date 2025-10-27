@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace maERP.UI.Features.GoodsReceipts.Views;
+namespace maERP.UI.Shared.Features.GoodsReceipts.Views;
 
 public sealed partial class GoodsReceiptInputView : UserControl
 {

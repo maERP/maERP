@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace maERP.UI.Features.Orders.Views;
+namespace maERP.UI.Shared.Features.Orders.Views;
 
 public sealed partial class OrderInputView : UserControl
 {

@@ -5,7 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:enums="using:maERP.Domain.Enums"
     mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
-    x:Class="maERP.UI.Features.Customers.Views.CustomerInputView"
+    x:Class="maERP.UI.Shared.Features.Customers.Views.CustomerInputView"
     x:Name="RootUserControl">
 
     <UserControl.Resources>

@@ -1,9 +1,9 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Shared.Views;
+namespace maERP.UI.Shared.Shared.Views;
 
 public sealed partial class MainView : UserControl
 {

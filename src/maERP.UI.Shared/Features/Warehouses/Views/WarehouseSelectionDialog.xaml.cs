@@ -1,9 +1,9 @@
 using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using maERP.UI.Features.Warehouses.ViewModels;
+using maERP.UI.Shared.Features.Warehouses.ViewModels;
 
-namespace maERP.UI.Features.Warehouses.Views;
+namespace maERP.UI.Shared.Features.Warehouses.Views;
 
 // Note: This UserControl is designed to be hosted in a ContentDialog
 // The DialogService will need to create and manage the ContentDialog wrapper

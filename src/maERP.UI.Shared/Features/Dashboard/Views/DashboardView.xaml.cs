@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace maERP.UI.Features.Dashboard.Views;
+namespace maERP.UI.Shared.Features.Dashboard.Views;
 
 public sealed partial class DashboardView : UserControl
 {

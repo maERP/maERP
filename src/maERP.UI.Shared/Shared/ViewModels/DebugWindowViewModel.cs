@@ -7,7 +7,7 @@ using Microsoft.UI;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace maERP.UI.Shared.ViewModels;
+namespace maERP.UI.Shared.Shared.ViewModels;
 
 public partial class DebugWindowViewModel : ViewModelBase
 {

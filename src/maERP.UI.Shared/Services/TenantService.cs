@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using maERP.Domain.Dtos.Tenant;
 
-namespace maERP.UI.Services;
+namespace maERP.UI.Shared.Services;
 
 public class TenantService : ITenantService
 {

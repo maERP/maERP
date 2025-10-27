@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace maERP.UI.Features.AI.Views;
+namespace maERP.UI.Shared.Features.AI.Views;
 
 public sealed partial class AiModelInputView : UserControl
 {

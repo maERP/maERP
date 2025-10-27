@@ -4,7 +4,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
-    x:Class="maERP.UI.Features.SalesChannels.Views.SalesChannelDetailView">
+    x:Class="maERP.UI.Shared.Features.SalesChannels.Views.SalesChannelDetailView">
 
   <Grid>
     <Grid.RowDefinitions>
@@ -15,7 +15,7 @@
     <!-- Simple Header -->
     <Grid Grid.Row="0" Margin="0,0,0,32">
       <Grid.ColumnDefinitions>
-        <ColumnDefination Width="*"/>
+        <ColumnDefinition Width="*"/>
         <ColumnDefinition Width="Auto"/>
       </Grid.ColumnDefinitions>
 

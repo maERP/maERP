@@ -1,8 +1,8 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using maERP.UI.Features.Administration.ViewModels;
+using maERP.UI.Shared.Features.Administration.ViewModels;
 
-namespace maERP.UI.Features.Administration.Views;
+namespace maERP.UI.Shared.Features.Administration.Views;
 
 public sealed partial class TaxClassListView : UserControl
 {

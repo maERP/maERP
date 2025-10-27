@@ -1,8 +1,8 @@
 using FluentValidation;
 using maERP.Domain.Validators;
-using maERP.UI.Features.Administration.ViewModels;
+using maERP.UI.Shared.Features.Administration.ViewModels;
 
-namespace maERP.UI.Features.Administration.Validators;
+namespace maERP.UI.Shared.Features.Administration.Validators;
 
 /// <summary>
 /// Client-seitiger Validator für TaxClass-Eingaben in der UI.

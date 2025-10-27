@@ -9,10 +9,10 @@ using CommunityToolkit.Mvvm.Input;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Entities;
 using maERP.Domain.Enums;
-using maERP.UI.Services;
-using maERP.UI.Shared.ViewModels;
+using maERP.UI.Shared.Services;
+using maERP.UI.Shared.Shared.ViewModels;
 
-namespace maERP.UI.Features.Orders.ViewModels;
+namespace maERP.UI.Shared.Features.Orders.ViewModels;
 
 public partial class OrderInputViewModel : ViewModelBase
 {
