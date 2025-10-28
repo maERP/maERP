@@ -20,11 +20,44 @@
     <StackPanel Grid.Row="1"
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
-          Width="200"
-          Spacing="16">
-      <Button Content="Login"
-          Command="{Binding Login}"
-          HorizontalAlignment="Stretch" />
+          Width="400"
+          MaxWidth="400"
+          Spacing="16"
+          Padding="20">
+
+      <!-- Server URL Input -->
+      <TextBlock Text="Server URL"
+                 FontWeight="SemiBold"
+                 Margin="0,0,0,4" />
+      <TextBox Text="{Binding ServerUrl, Mode=TwoWay}"
+               PlaceholderText="https://api.maerp.com or http://localhost:5000"
+               HorizontalAlignment="Stretch" />
+
+      <!-- Email Input -->
+      <TextBlock Text="Email"
+                 FontWeight="SemiBold"
+                 Margin="0,8,0,4" />
+      <TextBox Text="{Binding Email, Mode=TwoWay}"
+               PlaceholderText="email@example.com"
+               HorizontalAlignment="Stretch"
+               InputScope="EmailSmtpAddress" />
+
+      <!-- Password Input -->
+      <TextBlock Text="Password"
+                 FontWeight="SemiBold"
+                 Margin="0,8,0,4" />
+      <PasswordBox Password="{Binding Password, Mode=TwoWay}"
+                   PlaceholderText="Enter your password"
+                   HorizontalAlignment="Stretch" />
+
+      <!-- Login Button -->
+      <Button Command="{Binding Login}"
+              HorizontalAlignment="Stretch"
+              Margin="0,16,0,0">
+        <Button.Content>
+          <TextBlock Text="Login" />
+        </Button.Content>
+      </Button>
     </StackPanel>
   </Grid>
 </Page>

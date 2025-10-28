@@ -39,4 +39,14 @@ public interface IAuthenticationStateService
     /// Gets the user ID from the token
     /// </summary>
     Task<string?> GetUserIdAsync();
+
+    /// <summary>
+    /// Gets the stored server URL
+    /// </summary>
+    Task<string?> GetServerUrlAsync();
+
+    /// <summary>
+    /// Sets the server URL
+    /// </summary>
+    Task SetServerUrlAsync(string serverUrl);
 }

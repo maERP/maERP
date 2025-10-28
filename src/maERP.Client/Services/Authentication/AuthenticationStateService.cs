@@ -9,6 +9,7 @@ public class AuthenticationStateService : IAuthenticationStateService
     private readonly ILogger<AuthenticationStateService> _logger;
     private string? _cachedAccessToken;
     private string? _cachedRefreshToken;
+    private string? _cachedServerUrl;
 
     public AuthenticationStateService(ILogger<AuthenticationStateService> logger)
     {
@@ -43,6 +44,7 @@ public class AuthenticationStateService : IAuthenticationStateService
     {
         _cachedAccessToken = null;
         _cachedRefreshToken = null;
+        // Note: We intentionally keep _cachedServerUrl so user doesn't have to re-enter it on next login
         _logger.LogDebug("Authentication tokens cleared");
         return Task.CompletedTask;
     }
@@ -63,5 +65,17 @@ public class AuthenticationStateService : IAuthenticationStateService
         // The server knows the user ID from the token
         await Task.CompletedTask;
         return null;
+    }
+
+    public Task<string?> GetServerUrlAsync()
+    {
+        return Task.FromResult(_cachedServerUrl);
+    }
+
+    public Task SetServerUrlAsync(string serverUrl)
+    {
+        _cachedServerUrl = serverUrl;
+        _logger.LogDebug("Server URL stored successfully");
+        return Task.CompletedTask;
     }
 }

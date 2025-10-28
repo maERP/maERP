@@ -68,27 +68,37 @@ public partial class App : Microsoft.UI.Xaml.Application
                     var apiClientOptions = context.Configuration.GetSection(nameof(ApiClientOptions)).Get<Core.Models.ApiClientOptions>()
                         ?? new Core.Models.ApiClientOptions();
 
-                    // Register HTTP handlers in the correct order (innermost to outermost)
-                    // Order: Debug (innermost) -> Error -> Tenant -> Auth (outermost)
-#if DEBUG
-                    services.AddTransient<Services.Api.Handlers.DebugHttpHandler>();
-#endif
-                    services.AddTransient<Services.Api.Handlers.ErrorHandler>();
-                    services.AddTransient<Services.Api.Handlers.TenantHandler>();
-                    services.AddTransient<Services.Api.Handlers.AuthenticationHandler>();
-
                     // Configure named HttpClient for API with handler pipeline
+                    // Note: BaseUrl is now set dynamically via DynamicBaseUrlHandler
+                    // Handlers are added in outer-to-inner order (execution order)
+                    // Execution order: DynamicBaseUrl (outermost) -> Auth -> Tenant -> Error -> Debug (innermost)
                     services.AddHttpClient("maERPApi", client =>
                     {
-                        client.BaseAddress = new Uri(apiClientOptions.BaseUrl);
+                        // Set a temporary BaseUrl as placeholder
+                        // This will be overridden by DynamicBaseUrlHandler with the actual server URL
+                        // We need to set something here because HttpClient requires a BaseAddress for relative URIs
+                        client.BaseAddress = !string.IsNullOrEmpty(apiClientOptions.BaseUrl)
+                            ? new Uri(apiClientOptions.BaseUrl)
+                            : new Uri("http://localhost:5000"); // Fallback placeholder
                         client.Timeout = TimeSpan.FromSeconds(apiClientOptions.TimeoutSeconds);
                     })
+                    // DynamicBaseUrlHandler must be first (outermost) to set the correct URL before other handlers run
+                    .AddHttpMessageHandler(sp => new Services.Api.Handlers.DynamicBaseUrlHandler(
+                        sp.GetRequiredService<Services.Authentication.IAuthenticationStateService>(),
+                        sp.GetRequiredService<ILogger<Services.Api.Handlers.DynamicBaseUrlHandler>>()))
+                    .AddHttpMessageHandler(sp => new Services.Api.Handlers.AuthenticationHandler(
+                        sp.GetRequiredService<Services.Authentication.IAuthenticationStateService>(),
+                        sp.GetRequiredService<ILogger<Services.Api.Handlers.AuthenticationHandler>>()))
+                    .AddHttpMessageHandler(sp => new Services.Api.Handlers.TenantHandler(
+                        sp.GetRequiredService<Services.Tenant.ITenantService>(),
+                        sp.GetRequiredService<ILogger<Services.Api.Handlers.TenantHandler>>()))
+                    .AddHttpMessageHandler(sp => new Services.Api.Handlers.ErrorHandler(
+                        sp.GetRequiredService<ILogger<Services.Api.Handlers.ErrorHandler>>()))
 #if DEBUG
-                    .AddHttpMessageHandler<Services.Api.Handlers.DebugHttpHandler>()
+                    .AddHttpMessageHandler(sp => new Services.Api.Handlers.DebugHttpHandler(
+                        sp.GetRequiredService<ILogger<Services.Api.Handlers.DebugHttpHandler>>()))
 #endif
-                    .AddHttpMessageHandler<Services.Api.Handlers.ErrorHandler>()
-                    .AddHttpMessageHandler<Services.Api.Handlers.TenantHandler>()
-                    .AddHttpMessageHandler<Services.Api.Handlers.AuthenticationHandler>();
+                    ;
 
                     // Register all API clients as typed clients using the named HttpClient
                     services.AddTransient<Services.Api.Clients.IAuthApiClient>(sp =>
@@ -245,14 +255,18 @@ public partial class App : Microsoft.UI.Xaml.Application
         Host = await builder.NavigateAsync<Shell.Shell>
         (initialNavigate: async (services, navigator) =>
         {
-            var auth = services.GetRequiredService<IAuthenticationService>();
-            var authenticated = await auth.RefreshAsync();
-            if (authenticated)
+            // Check if user has an active session
+            var authStateService = services.GetService<Services.Authentication.IAuthenticationStateService>();
+            var isAuthenticated = authStateService != null && await authStateService.IsAuthenticatedAsync();
+
+            if (isAuthenticated)
             {
+                // User is authenticated, navigate to Dashboard
                 await navigator.NavigateViewModelAsync<Features.Dashboard.Models.DashboardModel>(this, qualifier: Qualifiers.Nested);
             }
             else
             {
+                // User is not authenticated, navigate to LoginPage
                 await navigator.NavigateViewModelAsync<Features.Authentication.Models.LoginModel>(this, qualifier: Qualifiers.Nested);
             }
         });

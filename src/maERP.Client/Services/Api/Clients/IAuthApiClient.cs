@@ -9,9 +9,9 @@ namespace maERP.Client.Services.Api.Clients;
 public interface IAuthApiClient
 {
     /// <summary>
-    /// Login with email and password
+    /// Login with credentials
     /// </summary>
-    Task<LoginResponseDto?> LoginAsync(string email, string password, CancellationToken cancellationToken = default);
+    Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Register a new user account

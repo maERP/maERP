@@ -16,17 +16,10 @@ public class AuthApiClient : ApiClientBase, IAuthApiClient
     }
 
     public async Task<LoginResponseDto?> LoginAsync(
-        string email,
-        string password,
+        LoginRequestDto request,
         CancellationToken cancellationToken = default)
     {
-        var request = new AuthRequest
-        {
-            Email = email,
-            Password = password
-        };
-
-        return await PostAsync<AuthRequest, LoginResponseDto>(
+        return await PostAsync<LoginRequestDto, LoginResponseDto>(
             $"{BaseEndpoint}/login",
             request,
             cancellationToken);
