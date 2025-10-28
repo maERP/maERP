@@ -2,7 +2,7 @@ using Uno.Resizetizer;
 
 namespace maERP.Client;
 
-public partial class App : Application
+public partial class App : Microsoft.UI.Xaml.Application
 {
     /// <summary>
     /// Initializes the singleton application object. This is the first line of authored code
@@ -57,24 +57,181 @@ public partial class App : Application
                 .UseConfiguration(configure: configBuilder =>
                     configBuilder
                         .EmbeddedSource<App>()
-                        .Section<AppConfig>()
+                        .Section<Core.Models.AppConfig>()
+                        .Section<Core.Models.ApiClientOptions>()
                 )
                 // Enable localization (see appsettings.json for supported languages)
                 .UseLocalization()
                 .UseHttp((context, services) =>
                 {
+                    // Configure ApiClientOptions from configuration
+                    var apiClientOptions = context.Configuration.GetSection(nameof(ApiClientOptions)).Get<Core.Models.ApiClientOptions>()
+                        ?? new Core.Models.ApiClientOptions();
+
+                    // Register HTTP handlers in the correct order (innermost to outermost)
+                    // Order: Debug (innermost) -> Error -> Tenant -> Auth (outermost)
 #if DEBUG
-                    // DelegatingHandler will be automatically injected
-                    services.AddTransient<DelegatingHandler, DebugHttpHandler>();
+                    services.AddTransient<Services.Api.Handlers.DebugHttpHandler>();
 #endif
+                    services.AddTransient<Services.Api.Handlers.ErrorHandler>();
+                    services.AddTransient<Services.Api.Handlers.TenantHandler>();
+                    services.AddTransient<Services.Api.Handlers.AuthenticationHandler>();
+
+                    // Configure named HttpClient for API with handler pipeline
+                    services.AddHttpClient("maERPApi", client =>
+                    {
+                        client.BaseAddress = new Uri(apiClientOptions.BaseUrl);
+                        client.Timeout = TimeSpan.FromSeconds(apiClientOptions.TimeoutSeconds);
+                    })
+#if DEBUG
+                    .AddHttpMessageHandler<Services.Api.Handlers.DebugHttpHandler>()
+#endif
+                    .AddHttpMessageHandler<Services.Api.Handlers.ErrorHandler>()
+                    .AddHttpMessageHandler<Services.Api.Handlers.TenantHandler>()
+                    .AddHttpMessageHandler<Services.Api.Handlers.AuthenticationHandler>();
+
+                    // Register all API clients as typed clients using the named HttpClient
+                    services.AddTransient<Services.Api.Clients.IAuthApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.AuthApiClient>>();
+                        return new Services.Api.Clients.AuthApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.ICustomersApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.CustomersApiClient>>();
+                        return new Services.Api.Clients.CustomersApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IProductsApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.ProductsApiClient>>();
+                        return new Services.Api.Clients.ProductsApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.ITenantsApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.TenantsApiClient>>();
+                        return new Services.Api.Clients.TenantsApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IOrdersApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.OrdersApiClient>>();
+                        return new Services.Api.Clients.OrdersApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IUsersApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.UsersApiClient>>();
+                        return new Services.Api.Clients.UsersApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IInvoicesApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.InvoicesApiClient>>();
+                        return new Services.Api.Clients.InvoicesApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IManufacturersApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.ManufacturersApiClient>>();
+                        return new Services.Api.Clients.ManufacturersApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IGoodsReceiptsApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.GoodsReceiptsApiClient>>();
+                        return new Services.Api.Clients.GoodsReceiptsApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IWarehousesApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.WarehousesApiClient>>();
+                        return new Services.Api.Clients.WarehousesApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.ITaxClassesApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.TaxClassesApiClient>>();
+                        return new Services.Api.Clients.TaxClassesApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.ISalesChannelsApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.SalesChannelsApiClient>>();
+                        return new Services.Api.Clients.SalesChannelsApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.ISettingsApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.SettingsApiClient>>();
+                        return new Services.Api.Clients.SettingsApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IStatisticsApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.StatisticsApiClient>>();
+                        return new Services.Api.Clients.StatisticsApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IAIModelsApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.AIModelsApiClient>>();
+                        return new Services.Api.Clients.AIModelsApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IAIPromptsApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.AIPromptsApiClient>>();
+                        return new Services.Api.Clients.AIPromptsApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.ISuperadminApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.SuperadminApiClient>>();
+                        return new Services.Api.Clients.SuperadminApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IDemoDataApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.DemoDataApiClient>>();
+                        return new Services.Api.Clients.DemoDataApiClient(httpClient, logger);
+                    });
+
+                    services.AddTransient<Services.Api.Clients.IImportExportApiClient>(sp =>
+                    {
+                        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient("maERPApi");
+                        var logger = sp.GetRequiredService<ILogger<Services.Api.Clients.ImportExportApiClient>>();
+                        return new Services.Api.Clients.ImportExportApiClient(httpClient, logger);
+                    });
                 })
                 .UseAuthentication(auth =>
                     auth.AddWeb(name: "WebAuthentication")
                 )
                 .ConfigureServices((context, services) =>
                 {
-                    // TODO: Register your services
-                    //services.AddSingleton<IMyService, MyService>();
+                    // Register authentication and tenant services
+                    services.AddSingleton<Services.Authentication.IAuthenticationStateService, Services.Authentication.AuthenticationStateService>();
+                    services.AddSingleton<Services.Tenant.ITenantService, Services.Tenant.TenantService>();
                 })
                 .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
             );
@@ -85,18 +242,18 @@ public partial class App : Application
 #endif
         MainWindow.SetWindowIcon();
 
-        Host = await builder.NavigateAsync<Shell>
+        Host = await builder.NavigateAsync<Shell.Shell>
         (initialNavigate: async (services, navigator) =>
         {
             var auth = services.GetRequiredService<IAuthenticationService>();
             var authenticated = await auth.RefreshAsync();
             if (authenticated)
             {
-                await navigator.NavigateViewModelAsync<MainModel>(this, qualifier: Qualifiers.Nested);
+                await navigator.NavigateViewModelAsync<Features.Dashboard.Models.DashboardModel>(this, qualifier: Qualifiers.Nested);
             }
             else
             {
-                await navigator.NavigateViewModelAsync<LoginModel>(this, qualifier: Qualifiers.Nested);
+                await navigator.NavigateViewModelAsync<Features.Authentication.Models.LoginModel>(this, qualifier: Qualifiers.Nested);
             }
         });
     }
@@ -104,19 +261,19 @@ public partial class App : Application
     private static void RegisterRoutes(IViewRegistry views, IRouteRegistry routes)
     {
         views.Register(
-            new ViewMap(ViewModel: typeof(ShellModel)),
-            new ViewMap<LoginPage, LoginModel>(),
-            new ViewMap<MainPage, MainModel>(),
-            new DataViewMap<SecondPage, SecondModel, Entity>()
+            new ViewMap(ViewModel: typeof(Shell.ShellModel)),
+            new ViewMap<Features.Authentication.Views.LoginPage, Features.Authentication.Models.LoginModel>(),
+            new ViewMap<Features.Dashboard.Views.DashboardPage, Features.Dashboard.Models.DashboardModel>(),
+            new DataViewMap<Features.Dashboard.Views.SecondPage, Features.Dashboard.Models.SecondModel, Core.Models.Entity>()
         );
 
         routes.Register(
-            new RouteMap("", View: views.FindByViewModel<ShellModel>(),
+            new RouteMap("", View: views.FindByViewModel<Shell.ShellModel>(),
                 Nested:
                 [
-                    new("Login", View: views.FindByViewModel<LoginModel>()),
-                    new("Main", View: views.FindByViewModel<MainModel>(), IsDefault: true),
-                    new("Second", View: views.FindByViewModel<SecondModel>()),
+                    new("Login", View: views.FindByViewModel<Features.Authentication.Models.LoginModel>()),
+                    new("Main", View: views.FindByViewModel<Features.Dashboard.Models.DashboardModel>(), IsDefault: true),
+                    new("Second", View: views.FindByViewModel<Features.Dashboard.Models.SecondModel>()),
                 ]
             )
         );

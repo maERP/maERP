@@ -62,4 +62,9 @@
       <PackageReference Include="Xamarin.AndroidX.Browser" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\maERP.Domain\maERP.Domain.csproj" />
+      <ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
+    </ItemGroup>
+
 </Project>
