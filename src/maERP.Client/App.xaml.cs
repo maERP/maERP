@@ -278,7 +278,15 @@ public partial class App : Microsoft.UI.Xaml.Application
             new ViewMap(ViewModel: typeof(Shell.ShellModel)),
             new ViewMap<Features.Authentication.Views.LoginPage, Features.Authentication.Models.LoginModel>(),
             new ViewMap<Features.Dashboard.Views.DashboardPage, Features.Dashboard.Models.DashboardModel>(),
-            new DataViewMap<Features.Dashboard.Views.SecondPage, Features.Dashboard.Models.SecondModel, Core.Models.Entity>()
+            new DataViewMap<Features.Dashboard.Views.SecondPage, Features.Dashboard.Models.SecondModel, Core.Models.Entity>(),
+            new ViewMap<Features.Customers.Views.CustomerListPage, Features.Customers.Models.CustomerListModel>(),
+            new ViewMap<Features.Products.Views.ProductListPage, Features.Products.Models.ProductListModel>(),
+            new ViewMap<Features.Orders.Views.OrderListPage, Features.Orders.Models.OrderListModel>(),
+            new ViewMap<Features.Invoices.Views.InvoiceListPage, Features.Invoices.Models.InvoiceListModel>(),
+            new ViewMap<Features.Warehouses.Views.WarehouseListPage, Features.Warehouses.Models.WarehouseListModel>(),
+            new ViewMap<Features.Manufacturers.Views.ManufacturerListPage, Features.Manufacturers.Models.ManufacturerListModel>(),
+            new ViewMap<Features.SalesChannels.Views.SalesChannelListPage, Features.SalesChannels.Models.SalesChannelListModel>(),
+            new ViewMap<Features.Statistics.Views.StatisticsPage, Features.Statistics.Models.StatisticsModel>()
         );
 
         routes.Register(
@@ -288,6 +296,14 @@ public partial class App : Microsoft.UI.Xaml.Application
                     new("Login", View: views.FindByViewModel<Features.Authentication.Models.LoginModel>()),
                     new("Main", View: views.FindByViewModel<Features.Dashboard.Models.DashboardModel>(), IsDefault: true),
                     new("Second", View: views.FindByViewModel<Features.Dashboard.Models.SecondModel>()),
+                    new("Customers", View: views.FindByViewModel<Features.Customers.Models.CustomerListModel>()),
+                    new("Products", View: views.FindByViewModel<Features.Products.Models.ProductListModel>()),
+                    new("Orders", View: views.FindByViewModel<Features.Orders.Models.OrderListModel>()),
+                    new("Invoices", View: views.FindByViewModel<Features.Invoices.Models.InvoiceListModel>()),
+                    new("Warehouses", View: views.FindByViewModel<Features.Warehouses.Models.WarehouseListModel>()),
+                    new("Manufacturers", View: views.FindByViewModel<Features.Manufacturers.Models.ManufacturerListModel>()),
+                    new("SalesChannels", View: views.FindByViewModel<Features.SalesChannels.Models.SalesChannelListModel>()),
+                    new("Statistics", View: views.FindByViewModel<Features.Statistics.Models.StatisticsModel>()),
                 ]
             )
         );

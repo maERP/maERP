@@ -95,15 +95,15 @@ public partial record LoginModel
                 Server = serverUrl
             };
 
-            // Perform login
-            var response = await _authApiClient.LoginAsync(loginRequest, cancellationToken);
+            // Perform login - returns Result<LoginResponseDto> with full error information
+            var result = await _authApiClient.LoginAsync(loginRequest, cancellationToken);
 
-            if (response?.Token != null && response.Succeeded)
+            if (result.Succeeded && result.Data != null && !string.IsNullOrEmpty(result.Data.Token))
             {
                 // Store authentication token
-                await _authStateService.SetAccessTokenAsync(response.Token);
+                await _authStateService.SetAccessTokenAsync(result.Data.Token);
 
-                _logger.LogInformation("Login successful for user {UserId}", response.UserId);
+                _logger.LogInformation("Login successful for user {UserId}", result.Data.UserId);
 
                 // Navigate to main application
                 await _navigator.NavigateViewModelAsync<Features.Dashboard.Models.DashboardModel>(
@@ -112,7 +112,15 @@ public partial record LoginModel
             }
             else
             {
-                _logger.LogWarning("Login failed: {Message}", response?.Message ?? "Invalid credentials");
+                // Handle login failure with detailed error information
+                var errorMessage = result.Messages.Count > 0
+                    ? string.Join(", ", result.Messages)
+                    : result.Data?.Message ?? "Invalid credentials";
+
+                _logger.LogWarning("Login failed: StatusCode={StatusCode}, Message={Message}",
+                    result.StatusCode, errorMessage);
+
+                // TODO: Show error message to user in UI
             }
         }
         catch (HttpRequestException ex)

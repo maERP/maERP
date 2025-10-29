@@ -3,6 +3,7 @@ namespace maERP.Client.Shell;
 public class ShellModel
 {
     private readonly INavigator _navigator;
+    private readonly IAuthenticationService _authentication;
 
     public ShellModel(
         IAuthenticationService authentication,
@@ -18,5 +19,5 @@ public class ShellModel
         await _navigator.NavigateViewModelAsync<Features.Authentication.Models.LoginModel>(this, qualifier: Qualifiers.ClearBackStack);
     }
 
-    private readonly IAuthenticationService _authentication;
+    public INavigator GetNavigator() => _navigator;
 }

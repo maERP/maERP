@@ -1,5 +1,6 @@
 using maERP.Application.Models.Identity;
 using maERP.Domain.Dtos.Auth;
+using maERP.Domain.Wrapper;
 
 namespace maERP.Client.Services.Api.Clients;
 
@@ -11,7 +12,7 @@ public interface IAuthApiClient
     /// <summary>
     /// Login with credentials
     /// </summary>
-    Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, CancellationToken cancellationToken = default);
+    Task<Result<LoginResponseDto>> LoginAsync(LoginRequestDto request, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Register a new user account

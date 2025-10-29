@@ -7,15 +7,9 @@
       NavigationCacheMode="Required"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
   <ScrollViewer IsTabStop="True">
-    <Grid utu:SafeArea.Insets="VisibleBounds">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition />
-      </Grid.RowDefinitions>
-      <utu:NavigationBar Content="{Binding Title}" />
-
-      <StackPanel Grid.Row="1"
-            HorizontalAlignment="Center"
+    <Grid utu:SafeArea.Insets="VisibleBounds"
+          Padding="24">
+      <StackPanel HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Spacing="16">
         <TextBox Text="{Binding Name, Mode=TwoWay}"

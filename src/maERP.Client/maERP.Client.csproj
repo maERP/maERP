@@ -67,4 +67,8 @@
       <ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Uno.Extensions.Navigation" />
+    </ItemGroup>
+
 </Project>

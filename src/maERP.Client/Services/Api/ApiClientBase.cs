@@ -163,6 +163,151 @@ public abstract class ApiClientBase
         }
     }
 
+    // ========== Result<T> Wrapper Methods ==========
+    // These methods handle Result<T> responses from the server
+    // They preserve StatusCode, Messages, and Succeeded flags
+
+    /// <summary>
+    /// Sends a GET request and returns the full Result wrapper with StatusCode and Messages
+    /// </summary>
+    protected async Task<Result<T>> GetResultAsync<T>(string endpoint, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            Logger.LogDebug("GET {Endpoint}", endpoint);
+            var result = await HttpClient.GetFromJsonAsync<Result<T>>(endpoint, JsonOptions, cancellationToken);
+
+            if (result != null)
+            {
+                if (!result.Succeeded && result.Messages.Count > 0)
+                {
+                    Logger.LogWarning("GET {Endpoint} failed: {StatusCode} - {Messages}",
+                        endpoint, result.StatusCode, string.Join(", ", result.Messages));
+                }
+                return result;
+            }
+
+            // Return a failed result if deserialization failed
+            Logger.LogError("GET {Endpoint} returned null result", endpoint);
+            return Result<T>.Fail(ResultStatusCode.InternalServerError, "Failed to deserialize response");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "GET request failed: {Endpoint}", endpoint);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Sends a POST request and returns the full Result wrapper with StatusCode and Messages
+    /// </summary>
+    protected async Task<Result<TResponse>> PostResultAsync<TRequest, TResponse>(
+        string endpoint,
+        TRequest data,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            Logger.LogDebug("POST {Endpoint}", endpoint);
+            var response = await HttpClient.PostAsJsonAsync(endpoint, data, JsonOptions, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<Result<TResponse>>(JsonOptions, cancellationToken);
+
+            if (result != null)
+            {
+                if (!result.Succeeded && result.Messages.Count > 0)
+                {
+                    Logger.LogWarning("POST {Endpoint} failed: {StatusCode} - {Messages}",
+                        endpoint, result.StatusCode, string.Join(", ", result.Messages));
+                }
+                return result;
+            }
+
+            // Return a failed result if deserialization failed
+            Logger.LogError("POST {Endpoint} returned null result", endpoint);
+            return Result<TResponse>.Fail(ResultStatusCode.InternalServerError, "Failed to deserialize response");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "POST request failed: {Endpoint}", endpoint);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Sends a PUT request and returns the full Result wrapper with StatusCode and Messages
+    /// </summary>
+    protected async Task<Result<TResponse>> PutResultAsync<TRequest, TResponse>(
+        string endpoint,
+        TRequest data,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            Logger.LogDebug("PUT {Endpoint}", endpoint);
+            var response = await HttpClient.PutAsJsonAsync(endpoint, data, JsonOptions, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<Result<TResponse>>(JsonOptions, cancellationToken);
+
+            if (result != null)
+            {
+                if (!result.Succeeded && result.Messages.Count > 0)
+                {
+                    Logger.LogWarning("PUT {Endpoint} failed: {StatusCode} - {Messages}",
+                        endpoint, result.StatusCode, string.Join(", ", result.Messages));
+                }
+                return result;
+            }
+
+            // Return a failed result if deserialization failed
+            Logger.LogError("PUT {Endpoint} returned null result", endpoint);
+            return Result<TResponse>.Fail(ResultStatusCode.InternalServerError, "Failed to deserialize response");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "PUT request failed: {Endpoint}", endpoint);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Sends a DELETE request and returns the full Result wrapper with StatusCode and Messages
+    /// </summary>
+    protected async Task<Result<T>> DeleteResultAsync<T>(
+        string endpoint,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            Logger.LogDebug("DELETE {Endpoint}", endpoint);
+            var response = await HttpClient.DeleteAsync(endpoint, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<Result<T>>(JsonOptions, cancellationToken);
+
+            if (result != null)
+            {
+                if (!result.Succeeded && result.Messages.Count > 0)
+                {
+                    Logger.LogWarning("DELETE {Endpoint} failed: {StatusCode} - {Messages}",
+                        endpoint, result.StatusCode, string.Join(", ", result.Messages));
+                }
+                return result;
+            }
+
+            // Return a failed result if deserialization failed
+            Logger.LogError("DELETE {Endpoint} returned null result", endpoint);
+            return Result<T>.Fail(ResultStatusCode.InternalServerError, "Failed to deserialize response");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "DELETE request failed: {Endpoint}", endpoint);
+            throw;
+        }
+    }
+
     /// <summary>
     /// Builds a URL with query parameters
     /// </summary>

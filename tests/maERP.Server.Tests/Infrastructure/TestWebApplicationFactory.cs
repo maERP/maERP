@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Routing;
 using maERP.Application.Contracts.Services;
 using maERP.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using IAuthenticationService = Microsoft.AspNetCore.Authentication.IAuthenticationService;
 
 namespace maERP.Server.Tests.Infrastructure;
 
