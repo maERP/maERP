@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{64D6DC3D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client", "src\maERP.Client\maERP.Client.csproj", "{B3D9AC2D-7807-4AED-B827-6954BF48B2EE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client.Tests", "tests/maERP.Client.Tests\maERP.Client.Tests.csproj", "{0EEF14D8-6B5E-41E0-A728-CB8A26375A4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client.Tests", "tests\maERP.Client.Tests\maERP.Client.Tests.csproj", "{0EEF14D8-6B5E-41E0-A728-CB8A26375A4C}"
 EndProject
 
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BADA71DC-7FFD-4EDC-9F28-FB74AEADC713}"
