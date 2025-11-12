@@ -1,0 +1,18 @@
+{
+  "Version": 3,
+  "ListAllProjects": true,
+  "MultiProjectConfigurations": {
+    "maERP.Server + maERP.Client": {
+      "Projects": {
+        "maERP.Server": {
+          "SolutionConfiguration": "Debug",
+          "SolutionPlatform": "x64s"
+        },
+        "maERP.Client": {
+          "SolutionConfiguration": "Debug",
+          "SolutionPlatform": "x64s"
+        }
+      }
+    }
+  }
+}
