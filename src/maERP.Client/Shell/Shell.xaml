@@ -123,35 +123,32 @@
         </NavigationViewItem>
       </NavigationView.MenuItems>
 
-      <!-- Content Area with ExtendedSplashScreen for page navigation -->
+      <!-- Main Content Area -->
       <NavigationView.Content>
-        <Grid>
-          <Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-            <utu:ExtendedSplashScreen x:Name="Splash"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch">
-              <utu:ExtendedSplashScreen.LoadingContentTemplate>
-                <DataTemplate>
-                  <Grid>
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="2*" />
-                      <RowDefinition />
-                    </Grid.RowDefinitions>
+        <utu:ExtendedSplashScreen x:Name="Splash"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch"
+                      VerticalContentAlignment="Stretch"
+                      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+          <utu:ExtendedSplashScreen.LoadingContentTemplate>
+            <DataTemplate>
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="2*" />
+                  <RowDefinition />
+                </Grid.RowDefinitions>
 
-                    <ProgressRing IsActive="True"
-                          Grid.Row="1"
-                          VerticalAlignment="Center"
-                          HorizontalAlignment="Center"
-                          Height="100"
-                          Width="100" />
-                  </Grid>
-                </DataTemplate>
-              </utu:ExtendedSplashScreen.LoadingContentTemplate>
-            </utu:ExtendedSplashScreen>
-          </Border>
-        </Grid>
+                <ProgressRing IsActive="True"
+                      Grid.Row="1"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center"
+                      Height="100"
+                      Width="100" />
+              </Grid>
+            </DataTemplate>
+          </utu:ExtendedSplashScreen.LoadingContentTemplate>
+        </utu:ExtendedSplashScreen>
       </NavigationView.Content>
     </NavigationView>
   </Grid>
