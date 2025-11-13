@@ -1,31 +1,31 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.2.32210.308
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 15.0.26124.0
-
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{9763EA40-6A05-47E7-A7D9-EECDA9C1CD65}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{64D6DC3D-980F-4AE0-8C83-5D9746386E14}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client", "src\maERP.Client\maERP.Client.csproj", "{B3D9AC2D-7807-4AED-B827-6954BF48B2EE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client.Tests", "tests/maERP.Client.Tests\maERP.Client.Tests.csproj", "{0EEF14D8-6B5E-41E0-A728-CB8A26375A4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maERP.Client.Tests", "tests\maERP.Client.Tests\maERP.Client.Tests.csproj", "{0EEF14D8-6B5E-41E0-A728-CB8A26375A4C}"
 EndProject
-
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BADA71DC-7FFD-4EDC-9F28-FB74AEADC713}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		.vsconfig = .vsconfig
-		Directory.Build.props = Directory.Build.props
-		Directory.Build.targets = Directory.Build.targets
-		Directory.Packages.props = Directory.Packages.props
-		global.json = global.json
+		.github\workflows\ci.yml = .github\workflows\ci.yml
 		CLAUDE.md = CLAUDE.md
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		CONTRIBUTING.md = CONTRIBUTING.md
 		create-migrations.ps1 = create-migrations.ps1
 		create-migrations.sh = create-migrations.sh
+		.github\workflows\defender-for-devops.yml = .github\workflows\defender-for-devops.yml
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		Directory.Packages.props = Directory.Packages.props
 		docker-compose.dcproj = docker-compose.dcproj
 		docker-compose.mail.yml = docker-compose.mail.yml
 		docker-compose.mssql.yml = docker-compose.mssql.yml
@@ -33,12 +33,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.postgresql.yml = docker-compose.postgresql.yml
 		docker-compose.yml = docker-compose.yml
 		EMAIL-TESTING.md = EMAIL-TESTING.md
+		global.json = global.json
 		LICENSE.txt = LICENSE.txt
-		README.md = README.md
-		SECURITY.md = SECURITY.md
-		.github\workflows\ci.yml = .github\workflows\ci.yml
-		.github\workflows\codeql.yml = .github\workflows\codeql.yml
-		.github\workflows\defender-for-devops.yml = .github\workflows\defender-for-devops.yml
 		.github\workflows\maerp-browser-maerp_de-deploy.yml = .github\workflows\maerp-browser-maerp_de-deploy.yml
 		.github\workflows\maerp-browser-publish.yml = .github\workflows\maerp-browser-publish.yml
 		.github\workflows\maerp-browser-test.yml = .github\workflows\maerp-browser-test.yml
@@ -46,6 +42,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\maerp-desktop-release.yml = .github\workflows\maerp-desktop-release.yml
 		.github\workflows\maerp-server-publish.yml = .github\workflows\maerp-server-publish.yml
 		.github\workflows\maerp-server-test.yml = .github\workflows\maerp-server-test.yml
+		maERP.sln.DotSettings.user = maERP.sln.DotSettings.user
+		README.md = README.md
+		SECURITY.md = SECURITY.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maERP.Analytics", "src\maERP.Analytics\maERP.Analytics.csproj", "{828D8D50-6862-449B-A546-CB4096618BFA}"
@@ -567,14 +566,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B3D9AC2D-7807-4AED-B827-6954BF48B2EE} = {9763EA40-6A05-47E7-A7D9-EECDA9C1CD65}
 		{0EEF14D8-6B5E-41E0-A728-CB8A26375A4C} = {64D6DC3D-980F-4AE0-8C83-5D9746386E14}
-		{3D98C040-D339-4414-80AD-114933CA2D55} = {9763EA40-6A05-47E7-A7D9-EECDA9C1CD65}
-		{1F4F2AAD-8478-4A3D-A0CA-ED81F6F724AF} = {64D6DC3D-980F-4AE0-8C83-5D9746386E14}
-		{0BDDCC43-485A-45B6-8E8A-E1E3115F0B45} = {64D6DC3D-980F-4AE0-8C83-5D9746386E14}
-		{5E6F08F8-FEB9-4598-A61A-B4AFFE96126B} = {9763EA40-6A05-47E7-A7D9-EECDA9C1CD65}
+		{828D8D50-6862-449B-A546-CB4096618BFA} = {A6B87991-F62D-4961-8B89-C879DD6CFA4B}
 		{A164B39B-E0BC-4FE6-8707-DD2BCA9892F9} = {5E6F08F8-FEB9-4598-A61A-B4AFFE96126B}
 		{CAC4E59B-57C3-4A47-BAB2-802BAFF3690D} = {5E6F08F8-FEB9-4598-A61A-B4AFFE96126B}
-		{A6B87991-F62D-4961-8B89-C879DD6CFA4B} = {9763EA40-6A05-47E7-A7D9-EECDA9C1CD65}
-		{828D8D50-6862-449B-A546-CB4096618BFA} = {A6B87991-F62D-4961-8B89-C879DD6CFA4B}
 		{7C8024DF-0302-455E-8DC1-D138A7D06426} = {A6B87991-F62D-4961-8B89-C879DD6CFA4B}
 		{777A4ABC-B4E7-4316-BC41-2DB18F08CC01} = {A6B87991-F62D-4961-8B89-C879DD6CFA4B}
 		{B4499D27-1E17-4FC3-9159-BF07AF346855} = {A6B87991-F62D-4961-8B89-C879DD6CFA4B}
@@ -583,6 +577,11 @@ Global
 		{8552BC80-7681-4F52-9707-E5537F6C46E7} = {A6B87991-F62D-4961-8B89-C879DD6CFA4B}
 		{A686AA48-40E2-42C7-8AFE-60DFD5F94D99} = {A6B87991-F62D-4961-8B89-C879DD6CFA4B}
 		{AA59FD23-EEF6-4FD5-BF29-7E7979673486} = {A6B87991-F62D-4961-8B89-C879DD6CFA4B}
+		{3D98C040-D339-4414-80AD-114933CA2D55} = {9763EA40-6A05-47E7-A7D9-EECDA9C1CD65}
+		{1F4F2AAD-8478-4A3D-A0CA-ED81F6F724AF} = {64D6DC3D-980F-4AE0-8C83-5D9746386E14}
+		{0BDDCC43-485A-45B6-8E8A-E1E3115F0B45} = {64D6DC3D-980F-4AE0-8C83-5D9746386E14}
+		{5E6F08F8-FEB9-4598-A61A-B4AFFE96126B} = {9763EA40-6A05-47E7-A7D9-EECDA9C1CD65}
+		{A6B87991-F62D-4961-8B89-C879DD6CFA4B} = {9763EA40-6A05-47E7-A7D9-EECDA9C1CD65}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {17AB04C6-B194-48A3-A767-BF77F7934376}
