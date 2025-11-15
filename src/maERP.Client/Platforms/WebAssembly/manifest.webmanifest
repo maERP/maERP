@@ -1,9 +1,9 @@
 {
   "background_color": "#ffffff",
-  "description": "maERP",
+  "description": "maERP.Client",
   "display": "standalone",
-  "name": "maERP",
-  "short_name": "maERP",
+  "name": "maERP.Client",
+  "short_name": "maERP.Client",
   "start_url": "/index.html",
   "theme_color": "#ffffff",
   "scope": "/"

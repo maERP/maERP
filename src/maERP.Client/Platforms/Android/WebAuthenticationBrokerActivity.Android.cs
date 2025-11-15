@@ -1,8 +1,8 @@
 using Android.App;
-using Android.Widget;
-using Android.OS;
 using Android.Content.PM;
+using Android.OS;
 using Android.Views;
+using Android.Widget;
 
 namespace maERP.Client.Droid;
 

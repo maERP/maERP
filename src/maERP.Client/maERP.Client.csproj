@@ -1,74 +1,48 @@
 <Project Sdk="Uno.Sdk">
-    <PropertyGroup>
-        <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop;net10.0</TargetFrameworks>
+  <PropertyGroup>
+    <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-browserwasm;net10.0-desktop;net10.0</TargetFrameworks>
 
-        <OutputType>Exe</OutputType>
-        <UnoSingleProject>true</UnoSingleProject>
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
 
-        <!-- Display name -->
-        <ApplicationTitle>maERP</ApplicationTitle>
-        <!-- App Identifier -->
-        <ApplicationId>de.martin-andrich.maERP</ApplicationId>
-        <!-- Versions -->
-        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-        <ApplicationVersion>1</ApplicationVersion>
-        <!-- Package Publisher -->
-        <ApplicationPublisher>O=maERP</ApplicationPublisher>
-        <!-- Package Description -->
-        <Description>maERP powered by Uno Platform.</Description>
-        <!--
-          If you encounter this error message:
+    <!-- Display name -->
+    <ApplicationTitle>maERP.Client</ApplicationTitle>
+    <!-- App Identifier -->
+    <ApplicationId>de.martinandrich.maERP.Client</ApplicationId>
+    <!-- Versions -->
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <!-- Package Publisher -->
+    <ApplicationPublisher>martin</ApplicationPublisher>
+    <!-- Package Description -->
+    <Description>maERP.Client powered by Uno Platform.</Description>
 
-            error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll.
-            Please update to a newer .NET SDK in order to reference this assembly.
+    <!--
+      UnoFeatures are used to quickly add and manage features enabled for your app.
+      https://aka.platform.uno/singleproject-features
+    -->
+    <UnoFeatures>
+      Material;
+      Dsp;
+      Hosting;
+      Toolkit;
+      Logging;
+      LoggingSerilog;
+      MVUX;
+      Configuration;
+      HttpKiota;
+      Serialization;
+      Localization;
+      Authentication;
+      Navigation;
+      ThemeService;
+      SkiaRenderer;
+    </UnoFeatures>
+  </PropertyGroup>
 
-          This means that the two packages below must be aligned with the "build" version number of
-          the "Microsoft.Windows.SDK.BuildTools" package above, and the "revision" version number
-          must be the highest found in https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
-        -->
-        <!-- <WindowsSdkPackageVersion>10.0.22621.28</WindowsSdkPackageVersion> -->
-
-        <!--
-          UnoFeatures let's you quickly add and manage implicit package references based on the features you want to use.
-          https://aka.platform.uno/singleproject-features
-        -->
-        <UnoFeatures>
-            Lottie;
-            Hosting;
-            Toolkit;
-            Logging;
-            LoggingSerilog;
-            MVUX;
-            Configuration;
-            Http;
-            Serialization;
-            Localization;
-            Authentication;
-            Navigation;
-            ThemeService;
-            SkiaRenderer;
-        </UnoFeatures>
-        <RootNamespace>maERP.Client</RootNamespace>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(IsUiAutomationMappingEnabled)'=='True'">
-        <IsUiAutomationMappingEnabled>True</IsUiAutomationMappingEnabled>
-        <DefineConstants>$(DefineConstants);USE_UITESTS</DefineConstants>
-    </PropertyGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
-      <PackageReference Include="Xamarin.AndroidX.Activity" />
-      <PackageReference Include="Xamarin.AndroidX.AppCompat" />
-      <PackageReference Include="Xamarin.AndroidX.Browser" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\maERP.Domain\maERP.Domain.csproj" />
-      <ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Uno.Extensions.Navigation" />
-    </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug' or '$(IsUiAutomationMappingEnabled)'=='True'">
+    <IsUiAutomationMappingEnabled>True</IsUiAutomationMappingEnabled>
+    <DefineConstants>$(DefineConstants);USE_UITESTS</DefineConstants>
+  </PropertyGroup>
 
 </Project>

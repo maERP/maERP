@@ -25,4 +25,6 @@ public class Application : Microsoft.UI.Xaml.NativeApplication
         : base(() => new App(), javaReference, transfer)
     {
     }
+
 }
+

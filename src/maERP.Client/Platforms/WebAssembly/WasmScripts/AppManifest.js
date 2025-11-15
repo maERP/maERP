@@ -1,3 +1,3 @@
 var UnoAppManifest = {
-    displayName: "maERP"
+    displayName: "maERP.Client"
 }
