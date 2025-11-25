@@ -1,5 +1,6 @@
+using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
@@ -29,7 +30,7 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         foreach (var responseType in responseTypes)
         {
             var statusCode = responseType.StatusCode.ToString();
-            if (IsErrorStatusCode(responseType.StatusCode) && !operation.Responses.ContainsKey(statusCode))
+            if (IsErrorStatusCode(responseType.StatusCode) && operation.Responses?.ContainsKey(statusCode) == false)
             {
                 AddProblemDetailsResponse(operation, statusCode, GetStatusCodeDescription(responseType.StatusCode));
             }
@@ -38,16 +39,22 @@ public class ProblemDetailsOperationFilter : IOperationFilter
 
     private static void AddProblemDetailsResponse(OpenApiOperation operation, string statusCode, string description)
     {
+        operation.Responses ??= new OpenApiResponses();
+
         if (operation.Responses.ContainsKey(statusCode))
         {
             // If response already exists, ensure it includes Problem Details content type
             var existingResponse = operation.Responses[statusCode];
-            if (!existingResponse.Content.ContainsKey("application/problem+json"))
+            if (existingResponse is OpenApiResponse concreteResponse)
             {
-                existingResponse.Content.Add("application/problem+json", new OpenApiMediaType
+                concreteResponse.Content ??= new Dictionary<string, OpenApiMediaType>();
+                if (!concreteResponse.Content.ContainsKey("application/problem+json"))
                 {
-                    Schema = CreateProblemDetailsSchema()
-                });
+                    concreteResponse.Content.Add("application/problem+json", new OpenApiMediaType
+                    {
+                        Schema = CreateProblemDetailsSchema()
+                    });
+                }
             }
         }
         else
@@ -72,76 +79,76 @@ public class ProblemDetailsOperationFilter : IOperationFilter
     {
         return new OpenApiSchema
         {
-            Type = "object",
-            Properties = new Dictionary<string, OpenApiSchema>
+            Type = JsonSchemaType.Object,
+            Properties = new Dictionary<string, IOpenApiSchema>
             {
                 ["type"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Format = "uri",
                     Description = "A URI reference that identifies the problem type"
                 },
                 ["title"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "A short, human-readable summary of the problem type"
                 },
                 ["status"] = new OpenApiSchema
                 {
-                    Type = "integer",
+                    Type = JsonSchemaType.Integer,
                     Format = "int32",
                     Description = "The HTTP status code"
                 },
                 ["detail"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "A human-readable explanation specific to this occurrence"
                 },
                 ["instance"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Format = "uri",
                     Description = "A URI reference that identifies the specific occurrence"
                 },
                 ["traceId"] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Description = "The correlation ID for tracing this request"
                 }
             },
             AdditionalProperties = new OpenApiSchema
             {
-                Type = "object",
+                Type = JsonSchemaType.Object,
                 Description = "Additional problem-specific extension data"
             },
-            Example = new Microsoft.OpenApi.Any.OpenApiObject
+            Example = new JsonObject
             {
-                ["type"] = new Microsoft.OpenApi.Any.OpenApiString("https://tools.ietf.org/html/rfc9110#section-15.5.1"),
-                ["title"] = new Microsoft.OpenApi.Any.OpenApiString("Bad Request"),
-                ["status"] = new Microsoft.OpenApi.Any.OpenApiInteger(400),
-                ["detail"] = new Microsoft.OpenApi.Any.OpenApiString("The request could not be processed due to invalid input"),
-                ["instance"] = new Microsoft.OpenApi.Any.OpenApiString("/api/v1/products/123"),
-                ["traceId"] = new Microsoft.OpenApi.Any.OpenApiString("0HN7KBGV5C3QD:00000001")
+                ["type"] = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                ["title"] = "Bad Request",
+                ["status"] = 400,
+                ["detail"] = "The request could not be processed due to invalid input",
+                ["instance"] = "/api/v1/products/123",
+                ["traceId"] = "0HN7KBGV5C3QD:00000001"
             }
         };
     }
 
-    private static Dictionary<string, OpenApiExample> CreateProblemDetailsExamples(string statusCode, string description)
+    private static IDictionary<string, IOpenApiExample> CreateProblemDetailsExamples(string statusCode, string description)
     {
-        return new Dictionary<string, OpenApiExample>
+        return new Dictionary<string, IOpenApiExample>
         {
             ["default"] = new OpenApiExample
             {
                 Summary = $"{description} example",
                 Description = $"Example of RFC 7807 Problem Details response for {statusCode} {description}",
-                Value = new Microsoft.OpenApi.Any.OpenApiObject
+                Value = new JsonObject
                 {
-                    ["type"] = new Microsoft.OpenApi.Any.OpenApiString(GetTypeForStatusCode(statusCode)),
-                    ["title"] = new Microsoft.OpenApi.Any.OpenApiString(description),
-                    ["status"] = new Microsoft.OpenApi.Any.OpenApiInteger(int.Parse(statusCode)),
-                    ["detail"] = new Microsoft.OpenApi.Any.OpenApiString(GetDetailForStatusCode(statusCode)),
-                    ["instance"] = new Microsoft.OpenApi.Any.OpenApiString("/api/v1/endpoint"),
-                    ["traceId"] = new Microsoft.OpenApi.Any.OpenApiString("0HN7KBGV5C3QD:00000001")
+                    ["type"] = GetTypeForStatusCode(statusCode),
+                    ["title"] = description,
+                    ["status"] = int.Parse(statusCode),
+                    ["detail"] = GetDetailForStatusCode(statusCode),
+                    ["instance"] = "/api/v1/endpoint",
+                    ["traceId"] = "0HN7KBGV5C3QD:00000001"
                 }
             }
         };
@@ -152,7 +159,7 @@ public class ProblemDetailsOperationFilter : IOperationFilter
         return statusCode switch
         {
             "400" => "https://tools.ietf.org/html/rfc9110#section-15.5.1",
-            "401" => "https://tools.ietf.org/html/rfc9110#section-15.5.2", 
+            "401" => "https://tools.ietf.org/html/rfc9110#section-15.5.2",
             "403" => "https://tools.ietf.org/html/rfc9110#section-15.5.4",
             "404" => "https://tools.ietf.org/html/rfc9110#section-15.5.5",
             "500" => "https://tools.ietf.org/html/rfc9110#section-15.6.1",

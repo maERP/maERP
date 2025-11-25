@@ -1,6 +1,8 @@
 <Project Sdk="Uno.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-browserwasm;net10.0-desktop;net10.0</TargetFrameworks>
+    <!-- iOS temporarily disabled due to Xcode xcrun issues -->
+    <TargetFrameworks>net10.0-android;net10.0-browserwasm;net10.0-desktop;net10.0</TargetFrameworks>
+    <!-- <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-browserwasm;net10.0-desktop;net10.0</TargetFrameworks> -->
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
@@ -47,6 +49,27 @@
 
   <ItemGroup>
     <ProjectReference Include="../maERP.Domain/maERP.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.Android" />
+    <PackageReference Include="Xamarin.AndroidX.Activity" />
+    <PackageReference Include="Xamarin.AndroidX.Browser" />
+    <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
+    <PackageReference Include="Xamarin.AndroidX.Legacy.Support.V4" />
+    <PackageReference Include="Xamarin.Google.Android.Material" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-browserwasm'">
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-desktop'">
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" />
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.MacOS" />
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.Win32" />
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.Wpf" />
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.X11" />
   </ItemGroup>
 
 </Project>

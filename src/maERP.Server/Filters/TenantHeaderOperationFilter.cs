@@ -1,4 +1,5 @@
-using Microsoft.OpenApi.Models;
+using System.Text.Json.Nodes;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace maERP.Server.Filters;
@@ -7,7 +8,7 @@ public class TenantHeaderOperationFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        operation.Parameters ??= new List<OpenApiParameter>();
+        operation.Parameters ??= [];
 
         operation.Parameters.Add(new OpenApiParameter
         {
@@ -17,9 +18,9 @@ public class TenantHeaderOperationFilter : IOperationFilter
             Description = "The tenant identifier for multi-tenant operations",
             Schema = new OpenApiSchema
             {
-                Type = "string",
+                Type = JsonSchemaType.String,
                 Format = "uuid",
-                Default = new Microsoft.OpenApi.Any.OpenApiString("11111111-1111-1111-1111-111111111111")
+                Default = JsonValue.Create("11111111-1111-1111-1111-111111111111")
             }
         });
     }

@@ -81,47 +81,47 @@
       <!-- Navigation Menu Items -->
       <NavigationView.MenuItems>
         <!-- Login Menu Item (only visible when NOT authenticated) -->
-        <NavigationViewItem Content="Login"
-                            Tag="Login"
-                            Visibility="{Binding DataContext.NotAuthenticatedVisibility, ElementName=NavView}">
+        <NavigationViewItem x:Name="NavItemLogin"
+                            Content="Login"
+                            Tag="Login">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE77B;" />
           </NavigationViewItem.Icon>
         </NavigationViewItem>
 
         <!-- Authenticated Menu Items -->
-        <NavigationViewItem Content="Dashboard"
-                            Tag="Main"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+        <NavigationViewItem x:Name="NavItemDashboard"
+                            Content="Dashboard"
+                            Tag="Main">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE80F;" />
           </NavigationViewItem.Icon>
         </NavigationViewItem>
 
-        <NavigationViewItemSeparator Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}" />
+        <NavigationViewItemSeparator x:Name="NavSeparator1" />
 
-        <NavigationViewItemHeader Content="Modules"
-                                  Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}" />
+        <NavigationViewItemHeader x:Name="NavHeaderModules"
+                                  Content="Modules" />
 
-        <NavigationViewItem Content="Inventory"
-                            Tag="Inventory"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+        <NavigationViewItem x:Name="NavItemInventory"
+                            Content="Inventory"
+                            Tag="Inventory">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE8F1;" />
           </NavigationViewItem.Icon>
         </NavigationViewItem>
 
-        <NavigationViewItem Content="Reports"
-                            Tag="Reports"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+        <NavigationViewItem x:Name="NavItemReports"
+                            Content="Reports"
+                            Tag="Reports">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE9F9;" />
           </NavigationViewItem.Icon>
         </NavigationViewItem>
 
-        <NavigationViewItem Content="Second Page"
-                            Tag="Second"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+        <NavigationViewItem x:Name="NavItemSecond"
+                            Content="Second Page"
+                            Tag="Second">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE7C3;" />
           </NavigationViewItem.Icon>
@@ -130,17 +130,17 @@
 
       <!-- Footer Menu Items -->
       <NavigationView.FooterMenuItems>
-        <NavigationViewItem Content="Settings"
-                            Tag="Settings"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+        <NavigationViewItem x:Name="NavItemSettings"
+                            Content="Settings"
+                            Tag="Settings">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE713;" />
           </NavigationViewItem.Icon>
         </NavigationViewItem>
 
-        <NavigationViewItem Content="Logout"
-                            Tag="Logout"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+        <NavigationViewItem x:Name="NavItemLogout"
+                            Content="Logout"
+                            Tag="Logout">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE7E8;" />
           </NavigationViewItem.Icon>
@@ -189,56 +189,56 @@
                     Style="{StaticResource MaterialBottomTabBarStyle}">
           <utu:TabBar.Items>
             <!-- Login Tab (only visible when NOT authenticated) -->
-            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+            <utu:TabBarItem x:Name="TabItemLogin"
+                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
                             Content="Login"
-                            Tag="Login"
-                            Visibility="{Binding DataContext.NotAuthenticatedVisibility, ElementName=TabBarNav}">
+                            Tag="Login">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE77B;" />
               </utu:TabBarItem.Icon>
             </utu:TabBarItem>
 
             <!-- Authenticated Tabs -->
-            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+            <utu:TabBarItem x:Name="TabItemDashboard"
+                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
                             Content="Dashboard"
-                            Tag="Main"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=TabBarNav}">
+                            Tag="Main">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE80F;" />
               </utu:TabBarItem.Icon>
             </utu:TabBarItem>
 
-            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+            <utu:TabBarItem x:Name="TabItemInventory"
+                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
                             Content="Inventory"
-                            Tag="Inventory"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=TabBarNav}">
+                            Tag="Inventory">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE8F1;" />
               </utu:TabBarItem.Icon>
             </utu:TabBarItem>
 
-            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+            <utu:TabBarItem x:Name="TabItemReports"
+                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
                             Content="Reports"
-                            Tag="Reports"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=TabBarNav}">
+                            Tag="Reports">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE9F9;" />
               </utu:TabBarItem.Icon>
             </utu:TabBarItem>
 
-            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+            <utu:TabBarItem x:Name="TabItemSettings"
+                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
                             Content="Settings"
-                            Tag="Settings"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=TabBarNav}">
+                            Tag="Settings">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE713;" />
               </utu:TabBarItem.Icon>
             </utu:TabBarItem>
 
-            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+            <utu:TabBarItem x:Name="TabItemLogout"
+                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
                             Content="Logout"
-                            Tag="Logout"
-                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=TabBarNav}">
+                            Tag="Logout">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE7E8;" />
               </utu:TabBarItem.Icon>

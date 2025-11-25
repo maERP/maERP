@@ -1,4 +1,4 @@
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using maERP.Server.Filters;
 using System.Reflection;
 
@@ -11,9 +11,9 @@ public static class SwaggerRegistrationService
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new OpenApiInfo 
-            { 
-                Title = "maERP.Server API", 
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "maERP.Server API",
                 Version = "v1",
                 Description = "RESTful API for maERP - Enterprise Resource Planning System",
                 Contact = new OpenApiContact
@@ -48,35 +48,28 @@ public static class SwaggerRegistrationService
                 Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token."
             });
 
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement 
+            options.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
             {
                 {
-                    new OpenApiSecurityScheme 
-                    {
-                        Reference = new OpenApiReference 
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
+                    new OpenApiSecuritySchemeReference("Bearer"),
+                    new List<string>()
                 }
             });
 
             // Add RFC 7807 Problem Details schema support
             options.MapType<Microsoft.AspNetCore.Mvc.ProblemDetails>(() => new OpenApiSchema
             {
-                Type = "object",
-                Properties = new Dictionary<string, OpenApiSchema>
+                Type = JsonSchemaType.Object,
+                Properties = new Dictionary<string, IOpenApiSchema>
                 {
-                    ["type"] = new OpenApiSchema { Type = "string", Format = "uri" },
-                    ["title"] = new OpenApiSchema { Type = "string" },
-                    ["status"] = new OpenApiSchema { Type = "integer", Format = "int32" },
-                    ["detail"] = new OpenApiSchema { Type = "string" },
-                    ["instance"] = new OpenApiSchema { Type = "string", Format = "uri" },
-                    ["traceId"] = new OpenApiSchema { Type = "string" }
+                    ["type"] = new OpenApiSchema { Type = JsonSchemaType.String, Format = "uri" },
+                    ["title"] = new OpenApiSchema { Type = JsonSchemaType.String },
+                    ["status"] = new OpenApiSchema { Type = JsonSchemaType.Integer, Format = "int32" },
+                    ["detail"] = new OpenApiSchema { Type = JsonSchemaType.String },
+                    ["instance"] = new OpenApiSchema { Type = JsonSchemaType.String, Format = "uri" },
+                    ["traceId"] = new OpenApiSchema { Type = JsonSchemaType.String }
                 },
-                AdditionalProperties = new OpenApiSchema { Type = "object" }
+                AdditionalProperties = new OpenApiSchema { Type = JsonSchemaType.Object }
             });
 
             // Add custom filters for Problem Details
