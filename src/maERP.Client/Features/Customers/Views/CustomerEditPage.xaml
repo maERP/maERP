@@ -1,0 +1,74 @@
+<Page x:Class="maERP.Client.Features.Customers.Views.CustomerEditPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.Customers.Views"
+      xmlns:models="using:maERP.Client.Features.Customers.Models"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Header -->
+    <utu:NavigationBar Grid.Row="0" Content="{Binding Title}">
+      <utu:NavigationBar.MainCommand>
+        <AppBarButton Icon="Cancel"
+                      Label="Cancel"
+                      Command="{Binding CancelAsync}" />
+      </utu:NavigationBar.MainCommand>
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton Icon="Save"
+                      Label="Save"
+                      Command="{Binding SaveAsync}"
+                      IsEnabled="{Binding CanSave}" />
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Form -->
+    <ScrollViewer Grid.Row="1" Padding="16">
+      <StackPanel Spacing="16" MaxWidth="500">
+        <!-- Error Message -->
+        <TextBlock Text="{Binding ErrorMessage}"
+                   Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                   TextWrapping="Wrap"
+                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" />
+
+        <!-- First Name -->
+        <TextBox Header="First Name"
+                 PlaceholderText="Enter first name"
+                 Text="{Binding Firstname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 IsEnabled="{Binding IsLoading, Converter={StaticResource BoolNegationConverter}}" />
+
+        <!-- Last Name -->
+        <TextBox Header="Last Name"
+                 PlaceholderText="Enter last name"
+                 Text="{Binding Lastname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 IsEnabled="{Binding IsLoading, Converter={StaticResource BoolNegationConverter}}" />
+
+        <!-- Email -->
+        <TextBox Header="Email"
+                 PlaceholderText="Enter email address"
+                 Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 InputScope="EmailSmtpAddress"
+                 IsEnabled="{Binding IsLoading, Converter={StaticResource BoolNegationConverter}}" />
+
+        <!-- Phone -->
+        <TextBox Header="Phone"
+                 PlaceholderText="Enter phone number"
+                 Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 InputScope="TelephoneNumber"
+                 IsEnabled="{Binding IsLoading, Converter={StaticResource BoolNegationConverter}}" />
+
+        <!-- Loading Indicator -->
+        <ProgressRing IsActive="{Binding IsLoading}"
+                      Width="32"
+                      Height="32"
+                      HorizontalAlignment="Center"
+                      Margin="0,16,0,0" />
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</Page>

@@ -1,5 +1,15 @@
 using Uno.Resizetizer;
-using maERP.Client.Services.Authentication;
+using maERP.Client.Core.Constants;
+using maERP.Client.Features.Auth;
+using maERP.Client.Features.Auth.Models;
+using maERP.Client.Features.Customers;
+using maERP.Client.Features.Dashboard;
+using maERP.Client.Features.Dashboard.Models;
+using maERP.Client.Features.Legacy;
+using maERP.Client.Features.Shell;
+using maERP.Client.Features.Shell.Models;
+using maERP.Client.Features.Shell.Views;
+using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Auth;
 
 namespace maERP.Client;
@@ -129,23 +139,7 @@ public partial class App : Application
                             })
                     )
                 )
-                .ConfigureServices((context, services) =>
-                {
-                    // Register HttpClientFactory for services that need IHttpClientFactory
-                    services.AddHttpClient();
-
-                    // Register authentication services
-                    services.AddSingleton<ITokenStorageService, TokenStorageService>();
-                    services.AddSingleton<IMaErpAuthenticationService, MaErpAuthenticationService>();
-
-                    // Register ShellModel as singleton to share authentication state
-                    services.AddSingleton<ShellModel>();
-
-                    // Register page models
-                    services.AddTransient<LoginModel>();
-                    services.AddTransient<MainModel>();
-                    services.AddTransient<SecondModel>();
-                })
+                .ConfigureServices(RegisterAllServices)
                 .UseNavigation(RegisterRoutes)
             );
         MainWindow = builder.Window;
@@ -162,7 +156,7 @@ public partial class App : Application
                 var authenticated = await auth.RefreshAsync();
                 if (authenticated)
                 {
-                    await navigator.NavigateViewModelAsync<MainModel>(this, qualifier: Qualifiers.Nested);
+                    await navigator.NavigateViewModelAsync<DashboardModel>(this, qualifier: Qualifiers.Nested);
                 }
                 else
                 {
@@ -171,24 +165,57 @@ public partial class App : Application
             });
     }
 
+    /// <summary>
+    /// Registers all services from feature modules.
+    /// </summary>
+    private static void RegisterAllServices(HostBuilderContext context, IServiceCollection services)
+    {
+        // Register HttpClientFactory for services that need IHttpClientFactory
+        services.AddHttpClient();
+
+        // Register feature modules
+        ShellModule.RegisterServices(services);
+        AuthModule.RegisterServices(services);
+        DashboardModule.RegisterServices(services);
+        CustomersModule.RegisterServices(services);
+        LegacyModule.RegisterServices(services);
+
+        // Future modules will be registered here:
+        // OrdersModule.RegisterServices(services);
+        // ProductsModule.RegisterServices(services);
+        // etc.
+    }
+
+    /// <summary>
+    /// Registers all views and routes from feature modules.
+    /// </summary>
     private static void RegisterRoutes(IViewRegistry views, IRouteRegistry routes)
     {
-        views.Register(
-            new ViewMap(ViewModel: typeof(ShellModel)),
-            new ViewMap<LoginPage, LoginModel>(),
-            new ViewMap<MainPage, MainModel>(),
-            new DataViewMap<SecondPage, SecondModel, Entity>()
-        );
+        // Register views from all feature modules
+        ShellModule.RegisterViews(views);
+        AuthModule.RegisterViews(views);
+        DashboardModule.RegisterViews(views);
+        CustomersModule.RegisterViews(views);
+        LegacyModule.RegisterViews(views);
 
-        routes.Register(
-            new RouteMap("", View: views.FindByViewModel<ShellModel>(),
-                Nested:
-                [
-                    new ("Login", View: views.FindByViewModel<LoginModel>()),
-                    new ("Main", View: views.FindByViewModel<MainModel>(), IsDefault:true),
-                    new ("Second", View: views.FindByViewModel<SecondModel>()),
-                ]
-            )
-        );
+        // Future modules will register views here:
+        // OrdersModule.RegisterViews(views);
+        // ProductsModule.RegisterViews(views);
+        // etc.
+
+        // Collect routes from all feature modules
+        var nestedRoutes = new List<RouteMap>();
+        nestedRoutes.AddRange(AuthModule.GetRoutes(views));
+        nestedRoutes.AddRange(DashboardModule.GetRoutes(views));
+        nestedRoutes.AddRange(CustomersModule.GetRoutes(views));
+        nestedRoutes.AddRange(LegacyModule.GetRoutes(views));
+
+        // Future modules will add routes here:
+        // nestedRoutes.AddRange(OrdersModule.GetRoutes(views));
+        // nestedRoutes.AddRange(ProductsModule.GetRoutes(views));
+        // etc.
+
+        // Register the root route with all nested routes
+        routes.Register(ShellModule.GetRootRoute(views, nestedRoutes));
     }
 }

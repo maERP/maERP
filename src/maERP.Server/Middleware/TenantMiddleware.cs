@@ -40,7 +40,7 @@ public class TenantMiddleware
 
         if (isAuthEndpoint || isSuperadminEndpoint || isSwaggerEndpoint || isDemoDataEndpoint || isHealthEndpoint)
         {
-            logger.LogDebug($"✅ TenantMiddleware - Skipping tenant validation for: {path}");
+            logger.LogDebug($"✅  TenantMiddleware - Skipping tenant validation for: {path}");
             await _next(context);
             return;
         }
