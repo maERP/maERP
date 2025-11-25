@@ -33,6 +33,9 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
 
     public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, CancellationToken cancellationToken = default)
     {
+        _logger.LogInformation("Attempting login for user: {Email} to server: {Server}",
+            request.Email, request.Server);
+
         try
         {
             var httpClient = _httpClientFactory.CreateClient();
@@ -87,13 +90,18 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
 
     public async Task<bool> ValidateTokenAsync(string token, CancellationToken cancellationToken = default)
     {
+        _logger.LogDebug("Validating authentication token");
+
         try
         {
             var serverUrl = await _tokenStorage.GetServerUrlAsync();
             if (string.IsNullOrEmpty(serverUrl))
             {
+                _logger.LogWarning("Token validation failed: No server URL configured");
                 return false;
             }
+
+            _logger.LogDebug("Validating token against server: {ServerUrl}", serverUrl);
 
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(serverUrl);
@@ -103,11 +111,28 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
             // Try to call a protected endpoint to validate the token
             var response = await httpClient.GetAsync("/api/v1/auth/validate", cancellationToken);
 
-            return response.IsSuccessStatusCode;
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Token validation successful");
+                return true;
+            }
+
+            _logger.LogWarning("Token validation failed with status code: {StatusCode}", response.StatusCode);
+            return false;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogWarning(ex, "Token validation failed: Server connection error");
+            return false;
+        }
+        catch (TaskCanceledException ex)
+        {
+            _logger.LogWarning(ex, "Token validation failed: Request timeout or cancellation");
+            return false;
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Error validating token");
+            _logger.LogError(ex, "Token validation failed: Unexpected error");
             return false;
         }
     }

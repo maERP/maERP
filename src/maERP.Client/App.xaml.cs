@@ -44,11 +44,21 @@ public partial class App : Application
                     logBuilder
                         .SetMinimumLevel(
                             context.HostingEnvironment.IsDevelopment() ?
-                                LogLevel.Information :
-                                LogLevel.Warning)
+                                LogLevel.Debug :
+                                LogLevel.Information)
 
                         // Default filters for core Uno Platform namespaces
                         .CoreLogLevel(LogLevel.Warning);
+
+                    // Configure maERP-specific log levels
+                    logBuilder.AddFilter("maERP.Client",
+                        context.HostingEnvironment.IsDevelopment() ? LogLevel.Debug : LogLevel.Information);
+                    logBuilder.AddFilter("maERP.Client.Features.Auth", LogLevel.Debug);
+                    logBuilder.AddFilter("maERP.Client.Services", LogLevel.Debug);
+
+                    // HTTP logging - useful for debugging API calls
+                    logBuilder.AddFilter("System.Net.Http",
+                        context.HostingEnvironment.IsDevelopment() ? LogLevel.Information : LogLevel.Warning);
 
                     // Uno Platform namespace filter groups
                     // Uncomment individual methods to see more detailed logging
