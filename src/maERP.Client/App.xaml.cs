@@ -131,6 +131,9 @@ public partial class App : Application
                 )
                 .ConfigureServices((context, services) =>
                 {
+                    // Register HttpClientFactory for services that need IHttpClientFactory
+                    services.AddHttpClient();
+
                     // Register authentication services
                     services.AddSingleton<ITokenStorageService, TokenStorageService>();
                     services.AddSingleton<IMaErpAuthenticationService, MaErpAuthenticationService>();
