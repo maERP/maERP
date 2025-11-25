@@ -4,6 +4,17 @@ using maERP.Domain.Dtos.Auth;
 
 namespace maERP.Client.Services.Authentication;
 
+/// <summary>
+/// Wrapper for API responses that contain data in a nested "Data" property
+/// </summary>
+internal class ApiResponse<T>
+{
+    public T? Data { get; set; }
+    public int StatusCode { get; set; }
+    public List<string> Messages { get; set; } = new();
+    public bool Succeeded { get; set; }
+}
+
 public class MaErpAuthenticationService : IMaErpAuthenticationService
 {
     private readonly IHttpClientFactory _httpClientFactory;
@@ -37,9 +48,22 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
                 return null;
             }
 
-            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponseDto>(cancellationToken);
+            var rawJson = await response.Content.ReadAsStringAsync(cancellationToken);
+            _logger.LogDebug("Login response JSON: {Json}", rawJson);
 
-            if (loginResponse?.Succeeded == true && !string.IsNullOrEmpty(loginResponse.Token))
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            // Parse the wrapper response first
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<LoginResponseDto>>(rawJson, jsonOptions);
+            var loginResponse = apiResponse?.Data;
+
+            _logger.LogInformation("Parsed response - ApiSucceeded: {ApiSucceeded}, DataSucceeded: {DataSucceeded}, Token: {HasToken}, UserId: {UserId}",
+                apiResponse?.Succeeded, loginResponse?.Succeeded, !string.IsNullOrEmpty(loginResponse?.Token), loginResponse?.UserId);
+
+            if (apiResponse?.Succeeded == true && loginResponse?.Succeeded == true && !string.IsNullOrEmpty(loginResponse.Token))
             {
                 await _tokenStorage.SetTokenAsync(loginResponse.Token);
                 await _tokenStorage.SetServerUrlAsync(request.Server);

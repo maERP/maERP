@@ -1,9 +1,11 @@
-using maERP.Domain.Dtos.Auth;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using maERP.Client.Services.Authentication;
 
 namespace maERP.Client.Presentation;
 
-public partial record LoginModel
+public class LoginModel : INotifyPropertyChanged
 {
     private readonly IDispatcher _dispatcher;
     private readonly INavigator _navigator;
@@ -12,10 +14,11 @@ public partial record LoginModel
     private readonly ShellModel _shell;
     private readonly IHostEnvironment _hostEnvironment;
 
-    // IState backing fields - MVUX pattern requires these to be stored, not computed
-    private readonly IState<string> _email;
-    private readonly IState<string> _password;
-    private readonly IState<string> _serverUrl;
+    private string _email = string.Empty;
+    private string _password = string.Empty;
+    private string _serverUrl = "https://";
+    private string _errorMessage = string.Empty;
+    private bool _isLoading;
 
     public LoginModel(
         IDispatcher dispatcher,
@@ -33,54 +36,116 @@ public partial record LoginModel
         _shell = shell;
         _hostEnvironment = hostEnvironment;
 
-        // Initialize State values based on environment
+        // Initialize values based on environment
         var isDevelopment = _hostEnvironment.IsDevelopment();
         Console.WriteLine($"====== IsDevelopment: {isDevelopment} ======");
 
-        _email = State<string>.Value(this, () => isDevelopment ? "admin@localhost.com" : string.Empty);
-        _password = State<string>.Value(this, () => isDevelopment ? "P@ssword1" : string.Empty);
-        _serverUrl = State<string>.Value(this, () => isDevelopment ? "https://localhost:8443" : "https://");
+        if (isDevelopment)
+        {
+            _email = "admin@localhost.com";
+            _password = "P@ssword1";
+            _serverUrl = "https://localhost:8443";
+        }
 
-        Console.WriteLine("====== LoginModel States initialized ======");
+        LoginCommand = new RelayCommand(async () => await LoginAsync(), () => CanLogin);
+
+        Console.WriteLine("====== LoginModel initialized ======");
     }
 
     public string Title { get; } = "Login";
 
-    // Public IState properties for XAML binding
-    public IState<string> Email => _email;
-    public IState<string> Password => _password;
-    public IState<string> ServerUrl => _serverUrl;
-    public IState<string> ErrorMessage => State<string>.Value(this, () => string.Empty);
-    public IState<bool> IsLoading => State<bool>.Value(this, () => false);
-    public IState<bool> HasError => State<bool>.Async(this, async ct => !string.IsNullOrEmpty(await ErrorMessage));
-    public IState<bool> CanLogin => State<bool>.Async(this, async ct =>
+    public string Email
     {
-        var email = await Email;
-        var password = await Password;
-        var serverUrl = await ServerUrl;
-        var isLoading = await IsLoading;
+        get => _email;
+        set
+        {
+            if (_email != value)
+            {
+                _email = value;
+                OnPropertyChanged();
+                ((RelayCommand)LoginCommand).RaiseCanExecuteChanged();
+            }
+        }
+    }
 
-        return !string.IsNullOrWhiteSpace(email) &&
-               !string.IsNullOrWhiteSpace(password) &&
-               !string.IsNullOrWhiteSpace(serverUrl) &&
-               !isLoading;
-    });
-
-    public async ValueTask Login(CancellationToken token)
+    public string Password
     {
-        await IsLoading.UpdateAsync(_ => true, token);
-        await ErrorMessage.UpdateAsync(_ => string.Empty, token);
+        get => _password;
+        set
+        {
+            if (_password != value)
+            {
+                _password = value;
+                OnPropertyChanged();
+                ((RelayCommand)LoginCommand).RaiseCanExecuteChanged();
+            }
+        }
+    }
+
+    public string ServerUrl
+    {
+        get => _serverUrl;
+        set
+        {
+            if (_serverUrl != value)
+            {
+                _serverUrl = value;
+                OnPropertyChanged();
+                ((RelayCommand)LoginCommand).RaiseCanExecuteChanged();
+            }
+        }
+    }
+
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            if (_errorMessage != value)
+            {
+                _errorMessage = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public bool IsLoading
+    {
+        get => _isLoading;
+        set
+        {
+            if (_isLoading != value)
+            {
+                _isLoading = value;
+                OnPropertyChanged();
+                ((RelayCommand)LoginCommand).RaiseCanExecuteChanged();
+            }
+        }
+    }
+
+    public bool CanLogin =>
+        !string.IsNullOrWhiteSpace(Email) &&
+        !string.IsNullOrWhiteSpace(Password) &&
+        !string.IsNullOrWhiteSpace(ServerUrl) &&
+        !IsLoading;
+
+    public ICommand LoginCommand { get; }
+
+    private async Task LoginAsync()
+    {
+        IsLoading = true;
+        ErrorMessage = string.Empty;
 
         try
         {
-            var email = await Email;
-            var password = await Password;
-            var serverUrl = await ServerUrl;
+            var email = Email;
+            var password = Password;
+            var serverUrl = ServerUrl;
 
             // Validate inputs
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(serverUrl))
             {
-                await ErrorMessage.UpdateAsync(_ => "Please fill in all fields", token);
+                ErrorMessage = "Please fill in all fields";
                 return;
             }
 
@@ -101,7 +166,7 @@ public partial record LoginModel
                 ["ServerUrl"] = serverUrl
             };
 
-            var success = await _authentication.LoginAsync(_dispatcher, credentials, cancellationToken: token);
+            var success = await _authentication.LoginAsync(_dispatcher, credentials);
 
             if (success)
             {
@@ -110,16 +175,49 @@ public partial record LoginModel
             }
             else
             {
-                await ErrorMessage.UpdateAsync(_ => "Login failed. Please check your credentials and server URL.", token);
+                ErrorMessage = "Login failed. Please check your credentials and server URL.";
             }
         }
         catch (Exception ex)
         {
-            await ErrorMessage.UpdateAsync(_ => $"An error occurred: {ex.Message}", token);
+            ErrorMessage = $"An error occurred: {ex.Message}";
         }
         finally
         {
-            await IsLoading.UpdateAsync(_ => false, token);
+            IsLoading = false;
         }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+public class RelayCommand : ICommand
+{
+    private readonly Func<Task> _execute;
+    private readonly Func<bool>? _canExecute;
+
+    public RelayCommand(Func<Task> execute, Func<bool>? canExecute = null)
+    {
+        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        _canExecute = canExecute;
+    }
+
+    public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
+
+    public async void Execute(object? parameter)
+    {
+        await _execute();
+    }
+
+    public event EventHandler? CanExecuteChanged;
+
+    public void RaiseCanExecuteChanged()
+    {
+        CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }
