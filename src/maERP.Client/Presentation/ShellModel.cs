@@ -11,6 +11,9 @@ public partial class ShellModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    // Static event for authentication state changes - allows Shell to subscribe without DI
+    public static event EventHandler<bool>? AuthenticationStateChanged;
+
     public ShellModel(
         IAuthenticationService authentication,
         INavigator navigator)
@@ -27,19 +30,22 @@ public partial class ShellModel : INotifyPropertyChanged
     {
         get
         {
-            System.Diagnostics.Debug.WriteLine($"[ShellModel] IsAuthenticated GET returning: {_isAuthenticated}");
             return _isAuthenticated;
         }
         private set
         {
             if (_isAuthenticated != value)
             {
-                System.Diagnostics.Debug.WriteLine($"[ShellModel] IsAuthenticated changing from {_isAuthenticated} to {value}");
+                Console.WriteLine($"[ShellModel] IsAuthenticated changing from {_isAuthenticated} to {value}");
                 _isAuthenticated = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAuthenticated)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsNotAuthenticated)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AuthenticatedVisibility)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NotAuthenticatedVisibility)));
+
+                // Raise static event for Shell to update navigation
+                Console.WriteLine($"[ShellModel] Raising AuthenticationStateChanged event with value: {value}");
+                AuthenticationStateChanged?.Invoke(this, value);
             }
         }
     }

@@ -10,9 +10,53 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         // This ensures correct state before authentication is checked
         SetUnauthenticatedVisibility();
 
+        // Subscribe to static authentication state changed event
+        ShellModel.AuthenticationStateChanged += OnAuthenticationStateChanged;
+
         NavView.SelectionChanged += OnNavigationViewSelectionChanged;
         TabBarNav.SelectionChanged += OnTabBarSelectionChanged;
         this.Loaded += OnShellLoaded;
+    }
+
+    private void OnAuthenticationStateChanged(object? sender, bool isAuthenticated)
+    {
+        Console.WriteLine($"[Shell] OnAuthenticationStateChanged received: {isAuthenticated}");
+
+        // Update visibility based on authentication state
+        if (isAuthenticated)
+        {
+            SetAuthenticatedVisibility();
+        }
+        else
+        {
+            SetUnauthenticatedVisibility();
+        }
+    }
+
+    private void SetAuthenticatedVisibility()
+    {
+        Console.WriteLine("[Shell] SetAuthenticatedVisibility called");
+
+        // NavigationView menu items - Login hidden, all others visible
+        NavItemLogin.Visibility = Visibility.Collapsed;
+        NavItemDashboard.Visibility = Visibility.Visible;
+        NavSeparator1.Visibility = Visibility.Visible;
+        NavHeaderModules.Visibility = Visibility.Visible;
+        NavItemInventory.Visibility = Visibility.Visible;
+        NavItemReports.Visibility = Visibility.Visible;
+        NavItemSecond.Visibility = Visibility.Visible;
+
+        // Footer items - visible
+        NavItemSettings.Visibility = Visibility.Visible;
+        NavItemLogout.Visibility = Visibility.Visible;
+
+        // TabBar items - Login hidden, all others visible
+        TabItemLogin.Visibility = Visibility.Collapsed;
+        TabItemDashboard.Visibility = Visibility.Visible;
+        TabItemInventory.Visibility = Visibility.Visible;
+        TabItemReports.Visibility = Visibility.Visible;
+        TabItemSettings.Visibility = Visibility.Visible;
+        TabItemLogout.Visibility = Visibility.Visible;
     }
 
     private void SetUnauthenticatedVisibility()
