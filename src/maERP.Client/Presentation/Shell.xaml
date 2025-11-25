@@ -1,36 +1,251 @@
-﻿<UserControl x:Class="maERP.Client.Presentation.Shell"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:maERP.Client.Presentation"
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:utu="using:Uno.Toolkit.UI"
-      mc:Ignorable="d"
-      d:DesignHeight="300"
-      d:DesignWidth="400">
-  <Border Background="{ThemeResource BackgroundBrush}">
-    <utu:ExtendedSplashScreen x:Name="Splash"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch">
-      <utu:ExtendedSplashScreen.LoadingContentTemplate>
-        <DataTemplate>
-          <Grid>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="2*" />
-              <RowDefinition />
-            </Grid.RowDefinitions>
+<UserControl x:Class="maERP.Client.Presentation.Shell"
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+     xmlns:local="using:maERP.Client.Presentation"
+     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+     xmlns:utu="using:Uno.Toolkit.UI"
+     xmlns:uen="using:Uno.Extensions.Navigation.UI"
+     mc:Ignorable="d"
+     d:DesignHeight="768"
+     d:DesignWidth="1024">
 
-            <ProgressRing IsActive="True"
-                  Grid.Row="1"
-                  VerticalAlignment="Center"
-                  HorizontalAlignment="Center"
-                  Height="100"
-                  Width="100" />
-          </Grid>
-        </DataTemplate>
-      </utu:ExtendedSplashScreen.LoadingContentTemplate>
-    </utu:ExtendedSplashScreen>
-  </Border>
+  <UserControl.Resources>
+  </UserControl.Resources>
+
+  <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <!-- VisualStateManager for responsive breakpoints -->
+    <VisualStateManager.VisualStateGroups>
+      <VisualStateGroup>
+        <!-- Narrow: Mobile phones (< 700px) -->
+        <VisualState x:Name="Narrow">
+          <VisualState.Setters>
+            <Setter Target="TabBarNav.Visibility" Value="Visible" />
+            <Setter Target="NavView.IsPaneToggleButtonVisible" Value="False" />
+            <Setter Target="NavView.PaneDisplayMode" Value="LeftMinimal" />
+            <Setter Target="NavView.IsPaneOpen" Value="False" />
+            <Setter Target="NavView.IsPaneVisible" Value="False" />
+          </VisualState.Setters>
+        </VisualState>
+
+        <!-- Normal: Tablets (700px - 999px) -->
+        <VisualState x:Name="Normal">
+          <VisualState.StateTriggers>
+            <AdaptiveTrigger MinWindowWidth="700" />
+          </VisualState.StateTriggers>
+          <VisualState.Setters>
+            <Setter Target="TabBarNav.Visibility" Value="Collapsed" />
+            <Setter Target="NavView.IsPaneToggleButtonVisible" Value="True" />
+            <Setter Target="NavView.IsPaneVisible" Value="True" />
+            <Setter Target="NavView.PaneDisplayMode" Value="Left" />
+          </VisualState.Setters>
+        </VisualState>
+
+        <!-- Wide: Desktop (>= 1000px) -->
+        <VisualState x:Name="Wide">
+          <VisualState.StateTriggers>
+            <AdaptiveTrigger MinWindowWidth="1000" />
+          </VisualState.StateTriggers>
+          <VisualState.Setters>
+            <Setter Target="TabBarNav.Visibility" Value="Collapsed" />
+            <Setter Target="NavView.IsPaneToggleButtonVisible" Value="True" />
+            <Setter Target="NavView.IsPaneVisible" Value="True" />
+            <Setter Target="NavView.PaneDisplayMode" Value="Left" />
+            <Setter Target="NavView.IsPaneOpen" Value="True" />
+          </VisualState.Setters>
+        </VisualState>
+      </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
+
+    <NavigationView x:Name="NavView"
+                    PaneDisplayMode="Left"
+                    IsBackButtonVisible="Collapsed"
+                    IsSettingsVisible="False"
+                    IsPaneToggleButtonVisible="True"
+                    OpenPaneLength="280"
+                    CompactModeThresholdWidth="640"
+                    ExpandedModeThresholdWidth="1000"
+                    DataContext="{Binding}">
+
+      <!-- Header -->
+      <NavigationView.Header>
+        <Grid Height="48"
+              Padding="16,0">
+          <TextBlock Text="maERP"
+                     Style="{StaticResource TitleTextBlockStyle}"
+                     VerticalAlignment="Center" />
+        </Grid>
+      </NavigationView.Header>
+
+      <!-- Navigation Menu Items -->
+      <NavigationView.MenuItems>
+        <!-- Login Menu Item (only visible when NOT authenticated) -->
+        <NavigationViewItem Content="Login"
+                            Tag="Login"
+                            Visibility="{Binding DataContext.NotAuthenticatedVisibility, ElementName=NavView}">
+          <NavigationViewItem.Icon>
+            <FontIcon Glyph="&#xE77B;" />
+          </NavigationViewItem.Icon>
+        </NavigationViewItem>
+
+        <!-- Authenticated Menu Items -->
+        <NavigationViewItem Content="Dashboard"
+                            Tag="Main"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+          <NavigationViewItem.Icon>
+            <FontIcon Glyph="&#xE80F;" />
+          </NavigationViewItem.Icon>
+        </NavigationViewItem>
+
+        <NavigationViewItemSeparator Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}" />
+
+        <NavigationViewItemHeader Content="Modules"
+                                  Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}" />
+
+        <NavigationViewItem Content="Inventory"
+                            Tag="Inventory"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+          <NavigationViewItem.Icon>
+            <FontIcon Glyph="&#xE8F1;" />
+          </NavigationViewItem.Icon>
+        </NavigationViewItem>
+
+        <NavigationViewItem Content="Reports"
+                            Tag="Reports"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+          <NavigationViewItem.Icon>
+            <FontIcon Glyph="&#xE9F9;" />
+          </NavigationViewItem.Icon>
+        </NavigationViewItem>
+
+        <NavigationViewItem Content="Second Page"
+                            Tag="Second"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+          <NavigationViewItem.Icon>
+            <FontIcon Glyph="&#xE7C3;" />
+          </NavigationViewItem.Icon>
+        </NavigationViewItem>
+      </NavigationView.MenuItems>
+
+      <!-- Footer Menu Items -->
+      <NavigationView.FooterMenuItems>
+        <NavigationViewItem Content="Settings"
+                            Tag="Settings"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+          <NavigationViewItem.Icon>
+            <FontIcon Glyph="&#xE713;" />
+          </NavigationViewItem.Icon>
+        </NavigationViewItem>
+
+        <NavigationViewItem Content="Logout"
+                            Tag="Logout"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=NavView}">
+          <NavigationViewItem.Icon>
+            <FontIcon Glyph="&#xE7E8;" />
+          </NavigationViewItem.Icon>
+        </NavigationViewItem>
+      </NavigationView.FooterMenuItems>
+
+      <!-- Content Area with ExtendedSplashScreen and TabBar -->
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Row="0">
+          <utu:ExtendedSplashScreen x:Name="Splash"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch">
+            <utu:ExtendedSplashScreen.LoadingContentTemplate>
+              <DataTemplate>
+                <Grid>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition />
+                  </Grid.RowDefinitions>
+
+                  <ProgressRing IsActive="True"
+                                Grid.Row="1"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Height="100"
+                                Width="100" />
+                </Grid>
+              </DataTemplate>
+            </utu:ExtendedSplashScreen.LoadingContentTemplate>
+          </utu:ExtendedSplashScreen>
+        </Grid>
+
+        <!-- TabBar for Mobile (Bottom Navigation) -->
+        <utu:TabBar x:Name="TabBarNav"
+                    Grid.Row="1"
+                    Visibility="Collapsed"
+                    VerticalAlignment="Bottom"
+                    Style="{StaticResource MaterialBottomTabBarStyle}">
+          <utu:TabBar.Items>
+            <!-- Login Tab (only visible when NOT authenticated) -->
+            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                            Content="Login"
+                            Tag="Login"
+                            Visibility="{Binding DataContext.NotAuthenticatedVisibility, ElementName=TabBarNav}">
+              <utu:TabBarItem.Icon>
+                <FontIcon Glyph="&#xE77B;" />
+              </utu:TabBarItem.Icon>
+            </utu:TabBarItem>
+
+            <!-- Authenticated Tabs -->
+            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                            Content="Dashboard"
+                            Tag="Main"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=TabBarNav}">
+              <utu:TabBarItem.Icon>
+                <FontIcon Glyph="&#xE80F;" />
+              </utu:TabBarItem.Icon>
+            </utu:TabBarItem>
+
+            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                            Content="Inventory"
+                            Tag="Inventory"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=TabBarNav}">
+              <utu:TabBarItem.Icon>
+                <FontIcon Glyph="&#xE8F1;" />
+              </utu:TabBarItem.Icon>
+            </utu:TabBarItem>
+
+            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                            Content="Reports"
+                            Tag="Reports"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=TabBarNav}">
+              <utu:TabBarItem.Icon>
+                <FontIcon Glyph="&#xE9F9;" />
+              </utu:TabBarItem.Icon>
+            </utu:TabBarItem>
+
+            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                            Content="Settings"
+                            Tag="Settings"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=TabBarNav}">
+              <utu:TabBarItem.Icon>
+                <FontIcon Glyph="&#xE713;" />
+              </utu:TabBarItem.Icon>
+            </utu:TabBarItem>
+
+            <utu:TabBarItem Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                            Content="Logout"
+                            Tag="Logout"
+                            Visibility="{Binding DataContext.AuthenticatedVisibility, ElementName=TabBarNav}">
+              <utu:TabBarItem.Icon>
+                <FontIcon Glyph="&#xE7E8;" />
+              </utu:TabBarItem.Icon>
+            </utu:TabBarItem>
+          </utu:TabBar.Items>
+        </utu:TabBar>
+      </Grid>
+    </NavigationView>
+  </Grid>
 </UserControl>

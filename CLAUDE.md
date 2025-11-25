@@ -13,7 +13,7 @@ maERP is a C# client-server, cross-platform, open-source ERP system developed wi
 5. **maERP.Identity** - Authentication and authorization
 6. **maERP.SalesChannels** - Integrations with e-commerce platforms
 7. **maERP.Server** - Backend API server (headless, no frontend)
-8. **maERP.Client** - Client using Uno Platform for Desktop, WASM, iOS, Android, Windows
+8. **maERP.Client** - Client using Uno Platform for Desktop, WASM, iOS, Android
 
 ## Architecture
 
@@ -23,81 +23,21 @@ The codebase implements:
 - JWT authentication
 - No Automapper, using manual mapping instead
 - No MediatR, using manual Mediator instead
-- Uno Platform Client Application for Desktop, iOS, Android and WASM
-- UI projects not using direct database access, using REST-API instead
+- maERP.Client does not have database access, using REST-API with Kiota instead
 
-### maERP.Client Project Structure
-
-The client follows a **feature-based architecture** optimized for large-scale ERP applications:
-
-**Directory Structure:**
-- `Core/` - Cross-cutting concerns and shared models
-  - `Models/` - Shared models (AppConfig, Entity, etc.)
-  - `Constants/` - Application-wide constants
-  - `Converters/` - XAML value converters
-  - `Helpers/` - Helper classes
-  - `Extensions/` - Extension methods
-
-- `Services/` - Application services layer
-  - `Api/Clients/` - API client classes per resource
-  - `Api/Handlers/` - HTTP message handlers (Auth, Logging, DebugHttpHandler)
-  - `Api/Models/` - API DTOs if not from maERP.Domain
-  - `Authentication/` - Auth service & token management
-  - `Navigation/` - Navigation service
-  - `Storage/` - Local storage (settings, cache)
-  - `Dialogs/` - Dialog service
-
-- `Features/` - Business feature modules (main development area)
-  - Each feature has its own folder (e.g., `Authentication/`, `Customers/`, `Products/`, `Orders/`, `Inventory/`, etc.)
-  - Each feature contains:
-    - `Views/` - XAML pages for the feature (e.g., `CustomerListPage.xaml`, `CustomerDetailPage.xaml`)
-    - `Models/` - MVUX models for the feature (e.g., `CustomerListModel.cs`, `CustomerDetailModel.cs`)
-
-- `Shared/` - Reusable UI components
-  - `Components/Controls/` - Custom controls
-  - `Components/Dialogs/` - Dialog components
-  - `Components/Forms/` - Form components
-  - `Components/DataTemplates/` - DataTemplates for lists
-  - `Behaviors/` - Attached behaviors
-  - `Styles/` - XAML styles and themes
-
-- `Shell/` - Application shell and navigation container
-  - `Shell.xaml` - Main navigation container
-  - `ShellModel.cs` - Shell view model
-
-**Conventions for New Features:**
-- IMPORTANT: Always create new features in `Features/` directory
-- IMPORTANT: Each feature MUST have separate `Views/` and `Models/` subdirectories
-- IMPORTANT: Use namespace pattern: `maERP.Client.Features.{FeatureName}.{Views|Models}`
-- IMPORTANT: Register views in `App.xaml.cs` using `ViewMap<TView, TViewModel>`
-- IMPORTANT: Register routes in `App.xaml.cs` RegisterRoutes method
-- IMPORTANT: Add commonly used namespaces to `GlobalUsings.cs`
-- IMPORTANT: Follow MVUX pattern - Models are records with partial keyword
-- IMPORTANT: Page names should be descriptive: `{Feature}ListPage`, `{Feature}DetailPage`, `{Feature}EditPage`
-- IMPORTANT: Model names should match pages: `{Feature}ListModel`, `{Feature}DetailModel`, `{Feature}EditModel`
-
-**Example: Adding a new "Customers" feature:**
-```
-Features/Customers/
-  Views/
-    CustomerListPage.xaml         (namespace: maERP.Client.Features.Customers.Views)
-    CustomerListPage.xaml.cs
-    CustomerDetailPage.xaml
-    CustomerDetailPage.xaml.cs
-    CustomerEditPage.xaml
-    CustomerEditPage.xaml.cs
-  Models/
-    CustomerListModel.cs          (namespace: maERP.Client.Features.Customers.Models)
-    CustomerDetailModel.cs
-    CustomerEditModel.cs
-
-Then register in App.xaml.cs:
-  views.Register(
-    new ViewMap<Features.Customers.Views.CustomerListPage, Features.Customers.Models.CustomerListModel>(),
-    new ViewMap<Features.Customers.Views.CustomerDetailPage, Features.Customers.Models.CustomerDetailModel>(),
-    ...
-  );
-```
+### maERP.Client Uno Platform Project Settings
+- Framework .NET 10.0
+- Platforms Android, iOS, WebAssembly, Desktop
+- Presentation MVUX
+- Markup XAML
+- Theme Material with Theme Service, Import Uno DSP
+- Extensions: Dependency Injection, Configuration, Localization
+- HTTP: Kiota support
+- Navigation: Regions
+- Loggin: Serilog
+- Features: Uno.Toolkit
+- Renderer: Skia
+- Authentication: Web
 
 ## Role Management
 - IMPORTANT: only Superadmin-Role can use SuperadminController to add, edit or delete users in any tenant
@@ -111,7 +51,8 @@ Then register in App.xaml.cs:
 
 ### Available MCP Server
 - jetbrains for general, debugging, error, files, formatting, text and version control operations
-- ref for getting official documentations
+- uno for getting uno platform documentations
+- ref for getting other documentations
 - postgres for database operations
 
 Use MCP Server if needed. Do not use jetbrains for shell commands.

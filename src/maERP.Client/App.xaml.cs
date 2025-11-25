@@ -1,4 +1,6 @@
 using Uno.Resizetizer;
+using maERP.Client.Services.Authentication;
+using maERP.Domain.Dtos.Auth;
 
 namespace maERP.Client;
 
@@ -14,7 +16,7 @@ public partial class App : Application
     }
 
     protected Window? MainWindow { get; private set; }
-    protected IHost? Host { get; private set; }
+    public IHost? Host { get; private set; }
 
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
@@ -70,17 +72,78 @@ public partial class App : Application
                 // DelegatingHandler will be automatically injected
                 services.AddTransient<DelegatingHandler, DebugHttpHandler>();
 #endif
-
+                    // Add authentication handler for all HTTP requests
+                    services.AddTransient<AuthenticationHandler>();
                 })
                 .UseAuthentication(auth =>
-    auth.AddWeb(name: "WebAuthentication")
+                    auth.AddCustom<IMaErpAuthenticationService>(custom =>
+                        custom
+                            .Login(async (authService, dispatcher, tokenCache, credentials, cancellationToken) =>
+                            {
+                                if (!credentials.TryGetValue("Email", out var email) ||
+                                    !credentials.TryGetValue("Password", out var password) ||
+                                    !credentials.TryGetValue("ServerUrl", out var serverUrl))
+                                {
+                                    return default;
+                                }
+
+                                var loginRequest = new LoginRequestDto
+                                {
+                                    Email = email,
+                                    Password = password,
+                                    Server = serverUrl
+                                };
+
+                                var response = await authService.LoginAsync(loginRequest, cancellationToken);
+
+                                if (response?.Succeeded == true && !string.IsNullOrEmpty(response.Token))
+                                {
+                                    var tokens = new Dictionary<string, string>
+                                    {
+                                        ["AccessToken"] = response.Token,
+                                        ["UserId"] = response.UserId,
+                                        ["ServerUrl"] = serverUrl
+                                    };
+
+                                    if (response.CurrentTenantId.HasValue)
+                                    {
+                                        tokens["TenantId"] = response.CurrentTenantId.Value.ToString();
+                                    }
+
+                                    return tokens;
+                                }
+
+                                return default;
+                            })
+                            .Refresh(async (authService, tokenCache, cancellationToken) =>
+                            {
+                                var tokenStorage = tokenCache.TryGetValue("AccessToken", out var token) ? token : null;
+
+                                if (!string.IsNullOrEmpty(tokenStorage) &&
+                                    await authService.ValidateTokenAsync(tokenStorage, cancellationToken))
+                                {
+                                    return tokenCache;
+                                }
+
+                                return default;
+                            })
+                    )
                 )
                 .ConfigureServices((context, services) =>
                 {
-                    // TODO: Register your services
-                    //services.AddSingleton<IMyService, MyService>();
+                    // Register authentication services
+                    services.AddSingleton<ITokenStorageService, TokenStorageService>();
+                    services.AddSingleton<IMaErpAuthenticationService, MaErpAuthenticationService>();
+
+                    // Register ShellModel as singleton to share authentication state
+                    services.AddSingleton<ShellModel>();
+
+                    // Register page models
+                    services.AddTransient<LoginModel>();
+                    services.AddTransient<MainModel>();
+                    services.AddTransient<SecondModel>();
                 })
-                .UseNavigation(ReactiveViewModelMappings.ViewModelMappings, RegisterRoutes)
+                .UseNavigation(RegisterRoutes)
             );
         MainWindow = builder.Window;
 

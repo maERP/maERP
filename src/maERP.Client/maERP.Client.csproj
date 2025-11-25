@@ -45,4 +45,8 @@
     <DefineConstants>$(DefineConstants);USE_UITESTS</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../maERP.Domain/maERP.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
