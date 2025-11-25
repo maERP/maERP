@@ -14,7 +14,6 @@
         <RowDefinition Height="Auto" />
         <RowDefinition />
       </Grid.RowDefinitions>
-      <utu:NavigationBar Content="{Binding Title}" />
 
       <StackPanel Grid.Row="1"
             HorizontalAlignment="Center"

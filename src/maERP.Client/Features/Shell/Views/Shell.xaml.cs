@@ -1,4 +1,7 @@
 using maERP.Client.Features.Shell.Models;
+using maERP.Client.Features.Auth.Models;
+using maERP.Client.Features.Dashboard.Models;
+using maERP.Client.Features.Customers.Models;
 
 namespace maERP.Client.Features.Shell.Views;
 
@@ -15,7 +18,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         // Subscribe to static authentication state changed event
         ShellModel.AuthenticationStateChanged += OnAuthenticationStateChanged;
 
-        NavView.SelectionChanged += OnNavigationViewSelectionChanged;
+        // Note: NavView.SelectionChanged is now wired in XAML
         TabBarNav.SelectionChanged += OnTabBarSelectionChanged;
         this.Loaded += OnShellLoaded;
     }
@@ -96,37 +99,49 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         Console.WriteLine("[Shell] Loaded event fired");
 
         // Get ShellModel from the service provider and set as DataContext
-        try
+        // Retry mechanism because Host may not be available immediately
+        const int maxRetries = 10;
+        const int retryDelayMs = 100;
+
+        for (int retry = 0; retry < maxRetries; retry++)
         {
-            var app = Application.Current as App;
-            if (app?.Host?.Services != null)
+            try
             {
-                var shellModel = app.Host.Services.GetRequiredService<ShellModel>();
-                Console.WriteLine($"[Shell] Got ShellModel from DI. IsAuthenticated: {shellModel.IsAuthenticated}");
+                var app = Application.Current as App;
+                if (app?.Host?.Services != null)
+                {
+                    var shellModel = app.Host.Services.GetRequiredService<ShellModel>();
+                    Console.WriteLine($"[Shell] Got ShellModel from DI (attempt {retry + 1}). IsAuthenticated: {shellModel.IsAuthenticated}");
 
-                // IMPORTANT: Set DataContext ONLY on NavView and TabBarNav, NOT on the Shell itself
-                // This allows child pages to have their own DataContext set by navigation
-                NavView.DataContext = shellModel;
-                TabBarNav.DataContext = shellModel;
+                    // IMPORTANT: Set DataContext ONLY on NavView and TabBarNav, NOT on the Shell itself
+                    // This allows child pages to have their own DataContext set by navigation
+                    NavView.DataContext = shellModel;
+                    TabBarNav.DataContext = shellModel;
 
-                // Subscribe to property changes
-                shellModel.PropertyChanged += OnShellModelPropertyChanged;
+                    // Subscribe to property changes
+                    shellModel.PropertyChanged += OnShellModelPropertyChanged;
 
-                // Now check authentication state and update visibility
-                await shellModel.InitializeAuthenticationState();
-                UpdateNavigationVisibility(shellModel);
+                    // Now check authentication state and update visibility
+                    await shellModel.InitializeAuthenticationState();
+                    UpdateNavigationVisibility(shellModel);
 
-                Console.WriteLine($"[Shell] After InitializeAuthenticationState. IsAuthenticated: {shellModel.IsAuthenticated}");
+                    Console.WriteLine($"[Shell] After InitializeAuthenticationState. IsAuthenticated: {shellModel.IsAuthenticated}");
+                    return; // Success, exit the retry loop
+                }
+                else
+                {
+                    Console.WriteLine($"[Shell] Host or Services not available yet (attempt {retry + 1}/{maxRetries})");
+                    await Task.Delay(retryDelayMs);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("[Shell] FAILED to get Host or Services");
+                Console.WriteLine($"[Shell] Exception getting ShellModel (attempt {retry + 1}): {ex.Message}");
+                await Task.Delay(retryDelayMs);
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Shell] Exception getting ShellModel: {ex.Message}");
-        }
+
+        Console.WriteLine("[Shell] FAILED to get Host or Services after all retries");
     }
 
     private void OnShellModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -186,13 +201,93 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
     private async void OnNavigationViewSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
-        if (args.SelectedItem is NavigationViewItem item && item.Tag is string tag)
+        Console.WriteLine($"[Shell] OnNavigationViewSelectionChanged fired");
+        Console.WriteLine($"[Shell] SelectedItem type: {args.SelectedItem?.GetType().Name ?? "null"}");
+
+        if (args.SelectedItem is NavigationViewItem item)
         {
-            if (NavView.DataContext is ShellModel model)
+            Console.WriteLine($"[Shell] NavigationViewItem found, Tag: {item.Tag}, Tag type: {item.Tag?.GetType().Name ?? "null"}");
+
+            if (item.Tag is string tag)
             {
-                await model.NavigateToPage(tag);
-                await RefreshAuthenticationState(model);
+                Console.WriteLine($"[Shell] Tag is string: '{tag}'");
+
+                // Get navigator from Splash (the ContentControl where navigation content is rendered)
+                var navigator = Splash.Navigator();
+                if (navigator != null)
+                {
+                    Console.WriteLine($"[Shell] Got navigator from Splash, calling NavigateToPageFromShell with tag: '{tag}'");
+                    await NavigateToPageFromShell(navigator, tag);
+                }
+                else
+                {
+                    Console.WriteLine($"[Shell] Failed to get navigator from Splash, trying service provider...");
+                    // Fallback: try getting navigator from service provider
+                    var app = Application.Current as App;
+                    if (app?.Host?.Services != null)
+                    {
+                        navigator = app.Host.Services.GetService<INavigator>();
+                        if (navigator != null)
+                        {
+                            Console.WriteLine($"[Shell] Got navigator from service provider");
+                            await NavigateToPageFromShell(navigator, tag);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[Shell] Failed to get navigator from service provider");
+                        }
+                    }
+                }
             }
+            else
+            {
+                Console.WriteLine($"[Shell] Tag is NOT a string");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"[Shell] SelectedItem is NOT NavigationViewItem");
+        }
+    }
+
+    private async Task NavigateToPageFromShell(INavigator navigator, string tag)
+    {
+        Console.WriteLine($"[Shell] NavigateToPageFromShell called with tag: '{tag}'");
+
+        try
+        {
+            switch (tag)
+            {
+                case "Login":
+                    Console.WriteLine("[Shell] Navigating to Login");
+                    await navigator.NavigateViewModelAsync<LoginModel>(this);
+                    break;
+                case "Main":
+                case "Dashboard":
+                    Console.WriteLine("[Shell] Navigating to Dashboard");
+                    await navigator.NavigateViewModelAsync<DashboardModel>(this);
+                    break;
+                case "Customers":
+                    Console.WriteLine("[Shell] Navigating to CustomerList");
+                    await navigator.NavigateViewModelAsync<CustomerListModel>(this);
+                    break;
+                case "Logout":
+                    Console.WriteLine("[Shell] Logging out");
+                    var app = Application.Current as App;
+                    if (app?.Host?.Services != null)
+                    {
+                        var auth = app.Host.Services.GetRequiredService<IAuthenticationService>();
+                        await auth.LogoutAsync(CancellationToken.None);
+                    }
+                    break;
+                default:
+                    Console.WriteLine($"[Shell] Tag '{tag}' not handled yet");
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] Navigation failed: {ex.Message}");
         }
     }
 
@@ -200,10 +295,21 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     {
         if (args.NewItem is TabBarItem item && item.Tag is string tag)
         {
-            if (NavView.DataContext is ShellModel model)
+            Console.WriteLine($"[Shell] TabBar selection changed to: '{tag}'");
+            var navigator = Splash.Navigator();
+            if (navigator != null)
             {
-                await model.NavigateToPage(tag);
-                await RefreshAuthenticationState(model);
+                await NavigateToPageFromShell(navigator, tag);
+            }
+            else
+            {
+                // Fallback: try getting navigator from service provider
+                var app = Application.Current as App;
+                navigator = app?.Host?.Services?.GetService<INavigator>();
+                if (navigator != null)
+                {
+                    await NavigateToPageFromShell(navigator, tag);
+                }
             }
         }
     }

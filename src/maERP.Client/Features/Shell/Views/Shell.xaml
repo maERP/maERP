@@ -67,17 +67,8 @@
                     OpenPaneLength="280"
                     CompactModeThresholdWidth="640"
                     ExpandedModeThresholdWidth="1000"
+                    SelectionChanged="OnNavigationViewSelectionChanged"
                     DataContext="{Binding}">
-
-      <!-- Header -->
-      <NavigationView.Header>
-        <Grid Height="48"
-              Padding="16,0">
-          <TextBlock Text="maERP"
-                     Style="{StaticResource TitleTextBlockStyle}"
-                     VerticalAlignment="Center" />
-        </Grid>
-      </NavigationView.Header>
 
       <!-- Navigation Menu Items -->
       <NavigationView.MenuItems>

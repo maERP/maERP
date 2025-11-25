@@ -1,19 +1,9 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using maERP.Client.Core.Models;
 using maERP.Domain.Dtos.Auth;
 
 namespace maERP.Client.Features.Auth.Services;
-
-/// <summary>
-/// Wrapper for API responses that contain data in a nested "Data" property
-/// </summary>
-internal class ApiResponse<T>
-{
-    public T? Data { get; set; }
-    public int StatusCode { get; set; }
-    public List<string> Messages { get; set; } = new();
-    public bool Succeeded { get; set; }
-}
 
 public class MaErpAuthenticationService : IMaErpAuthenticationService
 {
@@ -74,6 +64,19 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
                 if (loginResponse.CurrentTenantId.HasValue)
                 {
                     await _tokenStorage.SetCurrentTenantIdAsync(loginResponse.CurrentTenantId.Value);
+                    _logger.LogInformation("Using current tenant ID from login response: {TenantId}", loginResponse.CurrentTenantId.Value);
+                }
+                else if (loginResponse.AvailableTenants?.Count > 0)
+                {
+                    // Auto-select the first available tenant if no current tenant is set
+                    var firstTenant = loginResponse.AvailableTenants.First();
+                    await _tokenStorage.SetCurrentTenantIdAsync(firstTenant.Id);
+                    _logger.LogInformation("Auto-selected first available tenant: {TenantId} ({TenantName})",
+                        firstTenant.Id, firstTenant.Name);
+                }
+                else
+                {
+                    _logger.LogWarning("No tenant available for user after login");
                 }
 
                 _logger.LogInformation("Login successful for user: {UserId}", loginResponse.UserId);

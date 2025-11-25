@@ -101,20 +101,34 @@ public partial class ShellModel : INotifyPropertyChanged
 
     public async ValueTask NavigateToPage(string tag)
     {
+        Console.WriteLine($"[ShellModel] NavigateToPage called with tag: '{tag}'");
+
         switch (tag)
         {
             case "Login":
+                Console.WriteLine("[ShellModel] Navigating to LoginModel");
                 await _navigator.NavigateViewModelAsync<LoginModel>(this);
                 break;
             case "Main":
             case "Dashboard":
+                Console.WriteLine("[ShellModel] Navigating to DashboardModel");
                 await _navigator.NavigateViewModelAsync<DashboardModel>(this);
                 break;
             case "Second":
+                Console.WriteLine("[ShellModel] Navigating to SecondModel");
                 await _navigator.NavigateViewModelAsync<SecondModel>(this);
                 break;
             case "Customers":
-                await _navigator.NavigateViewModelAsync<CustomerListModel>(this);
+                Console.WriteLine("[ShellModel] Navigating to CustomerListModel");
+                try
+                {
+                    var result = await _navigator.NavigateViewModelAsync<CustomerListModel>(this);
+                    Console.WriteLine($"[ShellModel] Navigation to CustomerListModel result: {result?.Success}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[ShellModel] Navigation to CustomerListModel FAILED: {ex.Message}");
+                }
                 break;
             case "Orders":
                 // TODO: Add Orders page when created

@@ -41,7 +41,7 @@ public partial record CustomerDetailModel
         await _navigator.NavigateRouteAsync(
             this,
             Routes.CustomerEdit,
-            data: new Dictionary<string, object> { ["Id"] = _customerId });
+            data: new Dictionary<string, object> { ["customerId"] = _customerId });
     }
 
     /// <summary>

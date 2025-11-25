@@ -1,7 +1,11 @@
 using System.Collections.Immutable;
 using System.Net.Http.Json;
+using System.Text.Json;
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Models;
+using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Customer;
+using Microsoft.Extensions.Logging;
 
 namespace maERP.Client.Features.Customers.Services;
 
@@ -11,10 +15,31 @@ namespace maERP.Client.Features.Customers.Services;
 public class CustomerService : ICustomerService
 {
     private readonly HttpClient _httpClient;
+    private readonly ITokenStorageService _tokenStorage;
+    private readonly ILogger<CustomerService> _logger;
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
-    public CustomerService(IHttpClientFactory httpClientFactory)
+    public CustomerService(
+        IHttpClientFactory httpClientFactory,
+        ITokenStorageService tokenStorage,
+        ILogger<CustomerService> logger)
     {
         _httpClient = httpClientFactory.CreateClient("MaErpApi");
+        _tokenStorage = tokenStorage;
+        _logger = logger;
+    }
+
+    private async Task<string> GetBaseUrlAsync()
+    {
+        var serverUrl = await _tokenStorage.GetServerUrlAsync();
+        if (string.IsNullOrEmpty(serverUrl))
+        {
+            throw new InvalidOperationException("Server URL is not configured. Please login first.");
+        }
+        return serverUrl.TrimEnd('/');
     }
 
     public async Task<IImmutableList<CustomerListDto>> GetCustomersAsync(
@@ -23,42 +48,70 @@ public class CustomerService : ICustomerService
         string? searchQuery = null,
         CancellationToken ct = default)
     {
-        var url = $"{ApiEndpoints.Customers.Base}?page={page}&pageSize={pageSize}";
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Customers.Base}?page={page}&pageSize={pageSize}";
         if (!string.IsNullOrWhiteSpace(searchQuery))
         {
             url += $"&search={Uri.EscapeDataString(searchQuery)}";
         }
 
-        var response = await _httpClient.GetFromJsonAsync<List<CustomerListDto>>(url, ct);
-        return response?.ToImmutableList() ?? ImmutableList<CustomerListDto>.Empty;
+        _logger.LogInformation("Fetching customers from URL: {Url}", url);
+
+        try
+        {
+            var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<List<CustomerListDto>>>(url, _jsonOptions, ct);
+
+            if (apiResponse?.Succeeded != true)
+            {
+                _logger.LogWarning("API returned unsuccessful response: {Messages}",
+                    string.Join(", ", apiResponse?.Messages ?? new List<string>()));
+                return ImmutableList<CustomerListDto>.Empty;
+            }
+
+            _logger.LogInformation("Fetched {Count} customers", apiResponse.Data?.Count ?? 0);
+            return apiResponse.Data?.ToImmutableList() ?? ImmutableList<CustomerListDto>.Empty;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching customers from {Url}", url);
+            throw;
+        }
     }
 
     public async Task<CustomerDetailDto?> GetCustomerAsync(Guid id, CancellationToken ct = default)
     {
-        var url = ApiEndpoints.Customers.ById(id);
-        return await _httpClient.GetFromJsonAsync<CustomerDetailDto>(url, ct);
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Customers.ById(id)}";
+        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<CustomerDetailDto>>(url, _jsonOptions, ct);
+        return apiResponse?.Data;
     }
 
     public async Task<CustomerDetailDto> CreateCustomerAsync(CustomerInputDto input, CancellationToken ct = default)
     {
-        var response = await _httpClient.PostAsJsonAsync(ApiEndpoints.Customers.Base, input, ct);
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Customers.Base}";
+        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<CustomerDetailDto>(ct)
+        var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<CustomerDetailDto>>(_jsonOptions, ct);
+        return apiResponse?.Data
             ?? throw new InvalidOperationException("Failed to create customer");
     }
 
     public async Task<CustomerDetailDto> UpdateCustomerAsync(Guid id, CustomerInputDto input, CancellationToken ct = default)
     {
-        var url = ApiEndpoints.Customers.ById(id);
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Customers.ById(id)}";
         var response = await _httpClient.PutAsJsonAsync(url, input, ct);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<CustomerDetailDto>(ct)
+        var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<CustomerDetailDto>>(_jsonOptions, ct);
+        return apiResponse?.Data
             ?? throw new InvalidOperationException("Failed to update customer");
     }
 
     public async Task DeleteCustomerAsync(Guid id, CancellationToken ct = default)
     {
-        var url = ApiEndpoints.Customers.ById(id);
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Customers.ById(id)}";
         var response = await _httpClient.DeleteAsync(url, ct);
         response.EnsureSuccessStatusCode();
     }

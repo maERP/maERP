@@ -51,6 +51,10 @@
     <ProjectReference Include="../maERP.Domain/maERP.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
     <PackageReference Include="Uno.WinUI.Runtime.Skia.Android" />
     <PackageReference Include="Xamarin.AndroidX.Activity" />

@@ -6,6 +6,7 @@
       xmlns:mvux="using:Uno.Extensions.Reactive.UI"
       xmlns:utu="using:Uno.Toolkit.UI"
       xmlns:uen="using:Uno.Extensions.Navigation.UI"
+      xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
       Background="{ThemeResource BackgroundBrush}">
 
   <Grid utu:SafeArea.Insets="VisibleBounds">
@@ -30,55 +31,37 @@
              PlaceholderText="Search customers..."
              Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-    <!-- Customer List -->
+    <!-- Customer DataGrid -->
     <mvux:FeedView Grid.Row="2"
                    Source="{Binding Customers}">
       <mvux:FeedView.ValueTemplate>
         <DataTemplate>
-          <ListView ItemsSource="{Binding Data}"
-                    SelectionMode="None">
-            <ListView.ItemTemplate>
-              <DataTemplate>
-                <Grid Padding="16,12"
-                      Background="Transparent"
-                      utu:CommandExtensions.Command="{Binding DataContext.ViewCustomer, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                      utu:CommandExtensions.CommandParameter="{Binding}">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                  </Grid.ColumnDefinitions>
-
-                  <!-- Avatar -->
-                  <PersonPicture Grid.Column="0"
-                                 Width="48"
-                                 Height="48"
-                                 DisplayName="{Binding Firstname}" />
-
-                  <!-- Name and Email -->
-                  <StackPanel Grid.Column="1"
-                              Margin="16,0,0,0"
-                              VerticalAlignment="Center">
-                    <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}">
-                      <Run Text="{Binding Firstname}" />
-                      <Run Text=" " />
-                      <Run Text="{Binding Lastname}" />
-                    </TextBlock>
-                    <TextBlock Text="{Binding Email}"
-                               Style="{StaticResource CaptionTextBlockStyle}"
-                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                  </StackPanel>
-
-                  <!-- Chevron -->
-                  <FontIcon Grid.Column="2"
-                            Glyph="&#xE76C;"
-                            FontSize="12"
-                            VerticalAlignment="Center"
-                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                </Grid>
-              </DataTemplate>
-            </ListView.ItemTemplate>
-          </ListView>
+          <controls:DataGrid x:Name="CustomerDataGrid"
+                             ItemsSource="{Binding Data}"
+                             AutoGenerateColumns="False"
+                             IsReadOnly="True"
+                             SelectionMode="Single"
+                             GridLinesVisibility="Horizontal"
+                             HeadersVisibility="Column"
+                             CanUserReorderColumns="True"
+                             CanUserResizeColumns="True"
+                             CanUserSortColumns="True"
+                             SelectionChanged="CustomerDataGrid_SelectionChanged">
+            <controls:DataGrid.Columns>
+              <controls:DataGridTextColumn Header="Customer #"
+                                           Binding="{Binding CustomerId}"
+                                           Width="100" />
+              <controls:DataGridTextColumn Header="First Name"
+                                           Binding="{Binding Firstname}"
+                                           Width="*" />
+              <controls:DataGridTextColumn Header="Last Name"
+                                           Binding="{Binding Lastname}"
+                                           Width="*" />
+              <controls:DataGridTextColumn Header="Enrollment Date"
+                                           Binding="{Binding DateEnrollment}"
+                                           Width="150" />
+            </controls:DataGrid.Columns>
+          </controls:DataGrid>
         </DataTemplate>
       </mvux:FeedView.ValueTemplate>
 

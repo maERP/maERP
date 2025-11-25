@@ -2,6 +2,7 @@ using Uno.Resizetizer;
 using maERP.Client.Core.Constants;
 using maERP.Client.Features.Auth;
 using maERP.Client.Features.Auth.Models;
+using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Customers;
 using maERP.Client.Features.Dashboard;
 using maERP.Client.Features.Dashboard.Models;
@@ -9,7 +10,7 @@ using maERP.Client.Features.Legacy;
 using maERP.Client.Features.Shell;
 using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Shell.Views;
-using maERP.Client.Features.Auth.Services;
+using maERP.Client.Services.Endpoints;
 using maERP.Domain.Dtos.Auth;
 
 namespace maERP.Client;
@@ -180,7 +181,27 @@ public partial class App : Application
     /// </summary>
     private static void RegisterAllServices(HostBuilderContext context, IServiceCollection services)
     {
-        // Register HttpClientFactory for services that need IHttpClientFactory
+        // Register handlers for HTTP client pipeline
+        services.AddTransient<ServerUrlHandler>();
+        services.AddTransient<AuthenticationHandler>();
+#if DEBUG
+        services.AddTransient<DebugHttpHandler>();
+#endif
+
+        // Register Named HttpClient "MaErpApi" with handlers for API requests
+        // Handler order: ServerUrlHandler (sets base URL) -> AuthenticationHandler (adds token/tenant) -> DebugHttpHandler (logging)
+#if DEBUG
+        services.AddHttpClient("MaErpApi")
+            .AddHttpMessageHandler<ServerUrlHandler>()
+            .AddHttpMessageHandler<AuthenticationHandler>()
+            .AddHttpMessageHandler<DebugHttpHandler>();
+#else
+        services.AddHttpClient("MaErpApi")
+            .AddHttpMessageHandler<ServerUrlHandler>()
+            .AddHttpMessageHandler<AuthenticationHandler>();
+#endif
+
+        // Also register default HttpClient factory for other uses
         services.AddHttpClient();
 
         // Register feature modules
