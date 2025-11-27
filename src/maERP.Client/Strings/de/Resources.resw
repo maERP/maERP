@@ -91,20 +91,75 @@
   </data>
 
   <!-- Dashboard Page -->
-  <data name="DashboardPage.Title.Text" xml:space="preserve">
-    <value>Willkommen bei maERP Dashboard</value>
+  <data name="DashboardPage.Header.Welcome.Text" xml:space="preserve">
+    <value>Dashboard</value>
   </data>
-  <data name="DashboardPage.TextBox.Name.Header" xml:space="preserve">
-    <value>Name</value>
+  <data name="DashboardPage.Header.Subtitle.Text" xml:space="preserve">
+    <value>So läuft Ihr Geschäft heute</value>
   </data>
-  <data name="DashboardPage.TextBox.Name.PlaceholderText" xml:space="preserve">
-    <value>Ihren Namen eingeben</value>
+
+  <!-- Dashboard KPI Cards -->
+  <data name="DashboardPage.KPI.Revenue.Text" xml:space="preserve">
+    <value>Umsatz heute</value>
   </data>
-  <data name="DashboardPage.Button.SecondPage.Content" xml:space="preserve">
-    <value>Zur zweiten Seite</value>
+  <data name="DashboardPage.KPI.Orders.Text" xml:space="preserve">
+    <value>Bestellungen heute</value>
   </data>
-  <data name="DashboardPage.Button.Logout.Content" xml:space="preserve">
-    <value>Abmelden</value>
+  <data name="DashboardPage.KPI.Customers.Text" xml:space="preserve">
+    <value>Kunden gesamt</value>
+  </data>
+  <data name="DashboardPage.KPI.Inventory.Text" xml:space="preserve">
+    <value>Produkte auf Lager</value>
+  </data>
+  <data name="DashboardPage.KPI.VsLastWeek.Text" xml:space="preserve">
+    <value>gg. Vorwoche</value>
+  </data>
+  <data name="DashboardPage.KPI.VsLastMonth.Text" xml:space="preserve">
+    <value>gg. Vormonat</value>
+  </data>
+  <data name="DashboardPage.KPI.ThisWeek.Text" xml:space="preserve">
+    <value>Diese Woche: </value>
+  </data>
+  <data name="DashboardPage.KPI.Pending.Text" xml:space="preserve">
+    <value> ausstehend</value>
+  </data>
+  <data name="DashboardPage.KPI.NewThisMonth.Text" xml:space="preserve">
+    <value> neu diesen Monat</value>
+  </data>
+  <data name="DashboardPage.KPI.LowStockItems.Text" xml:space="preserve">
+    <value> Artikel mit niedrigem Bestand</value>
+  </data>
+
+  <!-- Dashboard Section Headers -->
+  <data name="DashboardPage.Section.Activity.Text" xml:space="preserve">
+    <value>Aktuelle Aktivitäten</value>
+  </data>
+
+  <!-- Dashboard Cards -->
+  <data name="DashboardPage.Card.RecentOrders.Text" xml:space="preserve">
+    <value>Aktuelle Bestellungen</value>
+  </data>
+  <data name="DashboardPage.Card.TopProducts.Text" xml:space="preserve">
+    <value>Meistverkaufte Produkte</value>
+  </data>
+  <data name="DashboardPage.Card.LowStockAlerts.Text" xml:space="preserve">
+    <value>Bestandswarnungen</value>
+  </data>
+
+  <!-- Dashboard Buttons -->
+  <data name="DashboardPage.Button.ViewAll.Content" xml:space="preserve">
+    <value>Alle anzeigen</value>
+  </data>
+  <data name="DashboardPage.Button.ManageInventory.Content" xml:space="preserve">
+    <value>Lager verwalten</value>
+  </data>
+
+  <!-- Dashboard Labels -->
+  <data name="DashboardPage.Label.Sold.Text" xml:space="preserve">
+    <value> verkauft</value>
+  </data>
+  <data name="DashboardPage.NoLowStockAlerts.Text" xml:space="preserve">
+    <value>Alle Produkte sind ausreichend auf Lager!</value>
   </data>
 
   <!-- Shell Navigation -->

@@ -25,6 +25,7 @@ The codebase implements:
 - No MediatR, using manual Mediator instead
 - maERP.Client does not have database access, using REST-API with Kiota instead
 - Texts are created in multiple languages in the resource-files
+- Styles are defined in maERP.Client/Styles/
 
 ### maERP.Client Uno Platform Project Settings
 - Framework .NET 10.0

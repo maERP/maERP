@@ -20,6 +20,9 @@
             </ResourceDictionary>
           </utum:MaterialToolkitTheme.FontOverrideDictionary> -->
         </utum:MaterialToolkitTheme>
+
+        <!-- Compact Input Controls Styling -->
+        <ResourceDictionary Source="ms-appx:///Styles/InputControls.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <!-- Converters -->

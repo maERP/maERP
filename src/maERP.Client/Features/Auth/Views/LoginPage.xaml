@@ -30,7 +30,7 @@
                  HorizontalAlignment="Center"
                  Margin="0,0,0,24" />
 
-      <TextBox x:Name="ServerUrlTextBox"
+      <TextBox Header="Server-URL" x:Name="ServerUrlTextBox"
                x:Uid="LoginPage.TextBox.ServerUrl"
                Text="{Binding ServerUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                AutomationProperties.Name="Server URL" />
