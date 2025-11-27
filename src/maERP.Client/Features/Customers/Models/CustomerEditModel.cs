@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using maERP.Client.Core.Constants;
 using maERP.Client.Features.Customers.Services;
 using maERP.Domain.Dtos.Customer;
+using maERP.Domain.Enums;
 
 namespace maERP.Client.Features.Customers.Models;
 
@@ -14,22 +14,39 @@ public class CustomerEditModel : INotifyPropertyChanged
 {
     private readonly ICustomerService _customerService;
     private readonly INavigator _navigator;
+    private readonly IStringLocalizer _localizer;
     private readonly Guid? _customerId;
 
+    // Personal Information
     private string _firstname = string.Empty;
     private string _lastname = string.Empty;
+
+    // Contact Information
     private string _email = string.Empty;
     private string _phone = string.Empty;
+    private string _website = string.Empty;
+
+    // Business Information
+    private string _companyName = string.Empty;
+    private string _vatNumber = string.Empty;
+
+    // Status and Notes
+    private CustomerStatus _customerStatus = CustomerStatus.Active;
+    private string _note = string.Empty;
+
+    // UI State
     private bool _isLoading;
     private string _errorMessage = string.Empty;
 
     public CustomerEditModel(
         ICustomerService customerService,
         INavigator navigator,
+        IStringLocalizer localizer,
         CustomerEditData? data = null)
     {
         _customerService = customerService;
         _navigator = navigator;
+        _localizer = localizer;
         _customerId = data?.customerId;
 
         if (_customerId.HasValue)
@@ -39,7 +56,22 @@ public class CustomerEditModel : INotifyPropertyChanged
     }
 
     public bool IsEditMode => _customerId.HasValue;
-    public string Title => IsEditMode ? "Edit Customer" : "New Customer";
+
+    public string Title => IsEditMode
+        ? _localizer["CustomerEditPage.Title.Edit"]
+        : _localizer["CustomerEditPage.Title.New"];
+
+    /// <summary>
+    /// Available customer status options for the ComboBox.
+    /// </summary>
+    public IReadOnlyList<CustomerStatusOption> CustomerStatusOptions { get; } = new List<CustomerStatusOption>
+    {
+        new(CustomerStatus.Active, "CustomerStatus.Active"),
+        new(CustomerStatus.Inactive, "CustomerStatus.Inactive"),
+        new(CustomerStatus.NoDoi, "CustomerStatus.NoDoi")
+    };
+
+    #region Personal Information
 
     public string Firstname
     {
@@ -53,6 +85,10 @@ public class CustomerEditModel : INotifyPropertyChanged
         set => SetProperty(ref _lastname, value);
     }
 
+    #endregion
+
+    #region Contact Information
+
     public string Email
     {
         get => _email;
@@ -64,6 +100,48 @@ public class CustomerEditModel : INotifyPropertyChanged
         get => _phone;
         set => SetProperty(ref _phone, value);
     }
+
+    public string Website
+    {
+        get => _website;
+        set => SetProperty(ref _website, value);
+    }
+
+    #endregion
+
+    #region Business Information
+
+    public string CompanyName
+    {
+        get => _companyName;
+        set => SetProperty(ref _companyName, value);
+    }
+
+    public string VatNumber
+    {
+        get => _vatNumber;
+        set => SetProperty(ref _vatNumber, value);
+    }
+
+    #endregion
+
+    #region Status and Notes
+
+    public CustomerStatus CustomerStatus
+    {
+        get => _customerStatus;
+        set => SetProperty(ref _customerStatus, value);
+    }
+
+    public string Note
+    {
+        get => _note;
+        set => SetProperty(ref _note, value);
+    }
+
+    #endregion
+
+    #region UI State
 
     public bool IsLoading
     {
@@ -82,6 +160,10 @@ public class CustomerEditModel : INotifyPropertyChanged
         !string.IsNullOrWhiteSpace(Lastname) &&
         !IsLoading;
 
+    public bool IsNotLoading => !IsLoading;
+
+    #endregion
+
     private async Task LoadCustomerAsync()
     {
         if (!_customerId.HasValue) return;
@@ -92,15 +174,27 @@ public class CustomerEditModel : INotifyPropertyChanged
             var customer = await _customerService.GetCustomerAsync(_customerId.Value);
             if (customer != null)
             {
+                // Personal Information
                 Firstname = customer.Firstname;
                 Lastname = customer.Lastname;
+
+                // Contact Information
                 Email = customer.Email ?? string.Empty;
-                // Phone = customer.Phone ?? string.Empty; // Add if available in DTO
+                Phone = customer.Phone ?? string.Empty;
+                Website = customer.Website ?? string.Empty;
+
+                // Business Information
+                CompanyName = customer.CompanyName ?? string.Empty;
+                VatNumber = customer.VatNumber ?? string.Empty;
+
+                // Status and Notes
+                CustomerStatus = customer.CustomerStatus;
+                Note = customer.Note ?? string.Empty;
             }
         }
         catch (Exception ex)
         {
-            ErrorMessage = $"Failed to load customer: {ex.Message}";
+            ErrorMessage = string.Format(_localizer["CustomerEditPage.Error.LoadFailed"], ex.Message);
         }
         finally
         {
@@ -122,11 +216,18 @@ public class CustomerEditModel : INotifyPropertyChanged
                 Firstname = Firstname,
                 Lastname = Lastname,
                 Email = Email,
-                // Add other fields as needed
+                Phone = Phone,
+                Website = Website,
+                CompanyName = CompanyName,
+                VatNumber = VatNumber,
+                CustomerStatus = CustomerStatus,
+                Note = Note,
+                DateEnrollment = IsEditMode ? DateTimeOffset.MinValue : DateTimeOffset.UtcNow
             };
 
             if (_customerId.HasValue)
             {
+                input.Id = _customerId.Value;
                 await _customerService.UpdateCustomerAsync(_customerId.Value, input, ct);
             }
             else
@@ -138,7 +239,7 @@ public class CustomerEditModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            ErrorMessage = $"Failed to save customer: {ex.Message}";
+            ErrorMessage = string.Format(_localizer["CustomerEditPage.Error.SaveFailed"], ex.Message);
         }
         finally
         {
@@ -156,9 +257,16 @@ public class CustomerEditModel : INotifyPropertyChanged
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        // Update dependent properties
         if (propertyName is nameof(Firstname) or nameof(Lastname) or nameof(IsLoading))
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanSave)));
+        }
+
+        if (propertyName is nameof(IsLoading))
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsNotLoading)));
         }
     }
 
@@ -170,3 +278,8 @@ public class CustomerEditModel : INotifyPropertyChanged
         return true;
     }
 }
+
+/// <summary>
+/// Represents a customer status option for the ComboBox.
+/// </summary>
+public record CustomerStatusOption(CustomerStatus Value, string ResourceKey);

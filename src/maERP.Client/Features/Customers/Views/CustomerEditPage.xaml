@@ -12,64 +12,357 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
-    <!-- Header -->
-    <utu:NavigationBar Grid.Row="0" Content="{Binding Title}">
+    <!-- Header with NavigationBar -->
+    <utu:NavigationBar Grid.Row="0"
+                       Content="{Binding Title}">
       <utu:NavigationBar.MainCommand>
-        <AppBarButton Icon="Cancel"
-                      Label="Cancel"
-                      Command="{Binding CancelAsync}" />
+        <AppBarButton x:Uid="CustomerEditPage.AppBarButton.Cancel"
+                      Command="{Binding CancelAsync}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE711;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
       </utu:NavigationBar.MainCommand>
       <utu:NavigationBar.PrimaryCommands>
-        <AppBarButton Icon="Save"
-                      Label="Save"
+        <AppBarButton x:Uid="CustomerEditPage.AppBarButton.Save"
                       Command="{Binding SaveAsync}"
-                      IsEnabled="{Binding CanSave}" />
+                      IsEnabled="{Binding CanSave}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE74E;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
       </utu:NavigationBar.PrimaryCommands>
     </utu:NavigationBar>
 
-    <!-- Form -->
-    <ScrollViewer Grid.Row="1" Padding="16">
-      <StackPanel Spacing="16" MaxWidth="500">
-        <!-- Error Message -->
-        <TextBlock Text="{Binding ErrorMessage}"
-                   Style="{StaticResource BodyMedium}"
-                   Foreground="{ThemeResource ErrorBrush}"
-                   TextWrapping="Wrap"
-                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" />
+    <!-- Form Content -->
+    <ScrollViewer Grid.Row="1"
+                  VerticalScrollBarVisibility="Auto">
+      <Grid Padding="24">
+        <!-- VisualStateManager for responsive layout -->
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup>
+            <VisualState x:Name="Narrow">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="0" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="600" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="0" />
+                <Setter Target="PersonalCard.(Grid.Column)" Value="0" />
+                <Setter Target="PersonalCard.(Grid.Row)" Value="0" />
+                <Setter Target="PersonalCard.Margin" Value="0,0,0,16" />
+                <Setter Target="ContactCard.(Grid.Column)" Value="0" />
+                <Setter Target="ContactCard.(Grid.Row)" Value="1" />
+                <Setter Target="ContactCard.Margin" Value="0,0,0,16" />
+                <Setter Target="BusinessCard.(Grid.Column)" Value="0" />
+                <Setter Target="BusinessCard.(Grid.Row)" Value="2" />
+                <Setter Target="BusinessCard.Margin" Value="0" />
+              </VisualState.Setters>
+            </VisualState>
 
-        <!-- First Name -->
-        <TextBox Header="First Name"
-                 PlaceholderText="Enter first name"
-                 Text="{Binding Firstname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 IsEnabled="{Binding IsLoading, Converter={StaticResource BoolNegationConverter}}" />
+            <VisualState x:Name="Medium">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="800" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="1200" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="*" />
+                <Setter Target="PersonalCard.(Grid.Column)" Value="0" />
+                <Setter Target="PersonalCard.(Grid.Row)" Value="0" />
+                <Setter Target="PersonalCard.Margin" Value="0,0,8,16" />
+                <Setter Target="ContactCard.(Grid.Column)" Value="1" />
+                <Setter Target="ContactCard.(Grid.Row)" Value="0" />
+                <Setter Target="ContactCard.Margin" Value="8,0,0,16" />
+                <Setter Target="BusinessCard.(Grid.Column)" Value="0" />
+                <Setter Target="BusinessCard.(Grid.Row)" Value="1" />
+                <Setter Target="BusinessCard.Margin" Value="0,0,8,0" />
+              </VisualState.Setters>
+            </VisualState>
 
-        <!-- Last Name -->
-        <TextBox Header="Last Name"
-                 PlaceholderText="Enter last name"
-                 Text="{Binding Lastname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 IsEnabled="{Binding IsLoading, Converter={StaticResource BoolNegationConverter}}" />
+            <VisualState x:Name="Wide">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="1200" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="10000" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="*" />
+                <Setter Target="PersonalCard.(Grid.Column)" Value="0" />
+                <Setter Target="PersonalCard.(Grid.Row)" Value="0" />
+                <Setter Target="PersonalCard.Margin" Value="0,0,8,16" />
+                <Setter Target="ContactCard.(Grid.Column)" Value="1" />
+                <Setter Target="ContactCard.(Grid.Row)" Value="0" />
+                <Setter Target="ContactCard.Margin" Value="8,0,0,16" />
+                <Setter Target="BusinessCard.(Grid.Column)" Value="0" />
+                <Setter Target="BusinessCard.(Grid.Row)" Value="1" />
+                <Setter Target="BusinessCard.Margin" Value="0,0,8,0" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
 
-        <!-- Email -->
-        <TextBox Header="Email"
-                 PlaceholderText="Enter email address"
-                 Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 InputScope="EmailSmtpAddress"
-                 IsEnabled="{Binding IsLoading, Converter={StaticResource BoolNegationConverter}}" />
+        <StackPanel Spacing="24"
+                    MaxWidth="1400"
+                    HorizontalAlignment="Stretch">
 
-        <!-- Phone -->
-        <TextBox Header="Phone"
-                 PlaceholderText="Enter phone number"
-                 Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 InputScope="TelephoneNumber"
-                 IsEnabled="{Binding IsLoading, Converter={StaticResource BoolNegationConverter}}" />
+          <!-- Error Message Banner -->
+          <Border Background="{ThemeResource ErrorContainerBrush}"
+                  CornerRadius="8"
+                  Padding="16"
+                  Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <FontIcon Grid.Column="0"
+                        Glyph="&#xE783;"
+                        FontSize="20"
+                        Foreground="{ThemeResource OnErrorContainerBrush}"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Text="{Binding ErrorMessage}"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnErrorContainerBrush}"
+                         TextWrapping="Wrap"
+                         VerticalAlignment="Center" />
+            </Grid>
+          </Border>
 
-        <!-- Loading Indicator -->
-        <ProgressRing IsActive="{Binding IsLoading}"
-                      Width="32"
-                      Height="32"
-                      HorizontalAlignment="Center"
-                      Margin="0,16,0,0" />
-      </StackPanel>
+          <!-- Loading Overlay -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Padding="24"
+                  Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center"
+                        Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+
+          <!-- Form Cards Grid -->
+          <Grid x:Name="FormCardsGrid"
+                Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition x:Name="FormColumn1" Width="*" />
+              <ColumnDefinition x:Name="FormColumn2" Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Personal Information Card -->
+            <Border x:Name="PersonalCard"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="0,0,8,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE77B;"
+                              FontSize="20"
+                              Foreground="{ThemeResource PrimaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="CustomerEditPage.Section.PersonalInformation"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Personal Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- First Name (Required) -->
+                  <TextBox x:Uid="CustomerEditPage.Field.Firstname"
+                           Text="{Binding Firstname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Last Name (Required) -->
+                  <TextBox x:Uid="CustomerEditPage.Field.Lastname"
+                           Text="{Binding Lastname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Required Fields Note -->
+                  <TextBlock x:Uid="CustomerEditPage.RequiredFieldsNote"
+                             Style="{StaticResource LabelSmall}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Contact Information Card -->
+            <Border x:Name="ContactCard"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Margin="8,0,0,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE779;"
+                              FontSize="20"
+                              Foreground="{ThemeResource PrimaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="CustomerEditPage.Section.ContactInformation"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Contact Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- Email -->
+                  <TextBox x:Uid="CustomerEditPage.Field.Email"
+                           Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           InputScope="EmailSmtpAddress"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Phone -->
+                  <TextBox x:Uid="CustomerEditPage.Field.Phone"
+                           Text="{Binding Phone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           InputScope="TelephoneNumber"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Website -->
+                  <TextBox x:Uid="CustomerEditPage.Field.Website"
+                           Text="{Binding Website, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           InputScope="Url"
+                           IsEnabled="{Binding IsNotLoading}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Business Information Card -->
+            <Border x:Name="BusinessCard"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    Margin="0,0,8,0"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE8F1;"
+                              FontSize="20"
+                              Foreground="{ThemeResource TertiaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="CustomerEditPage.Section.BusinessData"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Business Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- Company Name -->
+                  <TextBox x:Uid="CustomerEditPage.Field.CompanyName"
+                           Text="{Binding CompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- VAT Number -->
+                  <TextBox x:Uid="CustomerEditPage.Field.VatNumber"
+                           Text="{Binding VatNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Customer Status -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="CustomerEditPage.Field.Status.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <ComboBox x:Name="StatusComboBox"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding CustomerStatusOptions}"
+                              SelectedValue="{Binding CustomerStatus, Mode=TwoWay}"
+                              SelectedValuePath="Value"
+                              IsEnabled="{Binding IsNotLoading}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <TextBlock Text="{Binding Value, Converter={StaticResource CustomerStatusToTextConverter}}" />
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <!-- Notes Section -->
+          <StackPanel Spacing="12"
+                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="12">
+              <FontIcon Glyph="&#xE70B;"
+                        FontSize="20"
+                        Foreground="{ThemeResource SecondaryBrush}" />
+              <TextBlock x:Uid="CustomerEditPage.Section.Notes"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+            </StackPanel>
+
+            <Border Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16">
+              <TextBox x:Uid="CustomerEditPage.Field.Note"
+                       Text="{Binding Note, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       AcceptsReturn="True"
+                       TextWrapping="Wrap"
+                       MinHeight="120"
+                       MaxHeight="300"
+                       IsEnabled="{Binding IsNotLoading}" />
+            </Border>
+          </StackPanel>
+
+          <!-- Action Buttons (Mobile-friendly) -->
+          <Grid Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="16" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    x:Uid="CustomerEditPage.Button.Cancel"
+                    Style="{StaticResource OutlinedButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Command="{Binding CancelAsync}" />
+
+            <Button Grid.Column="2"
+                    x:Uid="CustomerEditPage.Button.Save"
+                    Style="{StaticResource FilledButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Command="{Binding SaveAsync}"
+                    IsEnabled="{Binding CanSave}" />
+          </Grid>
+        </StackPanel>
+      </Grid>
     </ScrollViewer>
   </Grid>
 </Page>

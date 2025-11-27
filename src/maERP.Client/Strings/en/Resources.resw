@@ -372,6 +372,106 @@
     <value>No DOI</value>
   </data>
 
+  <!-- Customer Edit Page -->
+  <data name="CustomerEditPage.Title.New" xml:space="preserve">
+    <value>New Customer</value>
+  </data>
+  <data name="CustomerEditPage.Title.Edit" xml:space="preserve">
+    <value>Edit Customer</value>
+  </data>
+  <data name="CustomerEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CustomerEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+
+  <!-- Customer Edit Page - Section Headers -->
+  <data name="CustomerEditPage.Section.PersonalInformation.Text" xml:space="preserve">
+    <value>Personal Information</value>
+  </data>
+  <data name="CustomerEditPage.Section.ContactInformation.Text" xml:space="preserve">
+    <value>Contact Information</value>
+  </data>
+  <data name="CustomerEditPage.Section.BusinessData.Text" xml:space="preserve">
+    <value>Business Data</value>
+  </data>
+  <data name="CustomerEditPage.Section.Notes.Text" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+
+  <!-- Customer Edit Page - Field Labels and Placeholders -->
+  <data name="CustomerEditPage.Field.Firstname.Header" xml:space="preserve">
+    <value>First Name *</value>
+  </data>
+  <data name="CustomerEditPage.Field.Firstname.PlaceholderText" xml:space="preserve">
+    <value>Enter first name</value>
+  </data>
+  <data name="CustomerEditPage.Field.Lastname.Header" xml:space="preserve">
+    <value>Last Name *</value>
+  </data>
+  <data name="CustomerEditPage.Field.Lastname.PlaceholderText" xml:space="preserve">
+    <value>Enter last name</value>
+  </data>
+  <data name="CustomerEditPage.Field.Email.Header" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="CustomerEditPage.Field.Email.PlaceholderText" xml:space="preserve">
+    <value>email@example.com</value>
+  </data>
+  <data name="CustomerEditPage.Field.Phone.Header" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="CustomerEditPage.Field.Phone.PlaceholderText" xml:space="preserve">
+    <value>+1 234 567890</value>
+  </data>
+  <data name="CustomerEditPage.Field.Website.Header" xml:space="preserve">
+    <value>Website</value>
+  </data>
+  <data name="CustomerEditPage.Field.Website.PlaceholderText" xml:space="preserve">
+    <value>https://www.example.com</value>
+  </data>
+  <data name="CustomerEditPage.Field.CompanyName.Header" xml:space="preserve">
+    <value>Company Name</value>
+  </data>
+  <data name="CustomerEditPage.Field.CompanyName.PlaceholderText" xml:space="preserve">
+    <value>Enter company name</value>
+  </data>
+  <data name="CustomerEditPage.Field.VatNumber.Header" xml:space="preserve">
+    <value>VAT Number</value>
+  </data>
+  <data name="CustomerEditPage.Field.VatNumber.PlaceholderText" xml:space="preserve">
+    <value>e.g. DE123456789</value>
+  </data>
+  <data name="CustomerEditPage.Field.Status.Label.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="CustomerEditPage.Field.Note.Header" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="CustomerEditPage.Field.Note.PlaceholderText" xml:space="preserve">
+    <value>Enter notes about this customer...</value>
+  </data>
+  <data name="CustomerEditPage.RequiredFieldsNote.Text" xml:space="preserve">
+    <value>* Required fields</value>
+  </data>
+
+  <!-- Customer Edit Page - Buttons -->
+  <data name="CustomerEditPage.Button.Cancel.Content" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CustomerEditPage.Button.Save.Content" xml:space="preserve">
+    <value>Save</value>
+  </data>
+
+  <!-- Customer Edit Page - Error Messages -->
+  <data name="CustomerEditPage.Error.LoadFailed" xml:space="preserve">
+    <value>Failed to load customer: {0}</value>
+  </data>
+  <data name="CustomerEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Failed to save customer: {0}</value>
+  </data>
+
   <!-- Second Page (Legacy) -->
   <data name="SecondPage.NavigationBar.Content" xml:space="preserve">
     <value>Second Page</value>
