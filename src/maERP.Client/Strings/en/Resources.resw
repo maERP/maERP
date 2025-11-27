@@ -166,6 +166,9 @@
   <data name="Shell.UserMenu.Text.Text" xml:space="preserve">
     <value>Menu</value>
   </data>
+  <data name="Shell.UserMenu.DarkMode.Text" xml:space="preserve">
+    <value>Dark Mode</value>
+  </data>
   <data name="Shell.UserMenu.Settings.Text" xml:space="preserve">
     <value>Settings</value>
   </data>

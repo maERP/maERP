@@ -127,6 +127,14 @@
           </StackPanel>
           <DropDownButton.Flyout>
             <MenuFlyout Placement="BottomEdgeAlignedRight">
+              <ToggleMenuFlyoutItem x:Name="MenuItemDarkMode"
+                                    x:Uid="Shell.UserMenu.DarkMode"
+                                    Click="OnDarkModeToggle">
+                <ToggleMenuFlyoutItem.Icon>
+                  <FontIcon Glyph="&#xE793;" />
+                </ToggleMenuFlyoutItem.Icon>
+              </ToggleMenuFlyoutItem>
+              <MenuFlyoutSeparator />
               <MenuFlyoutItem x:Name="MenuItemSettings"
                               x:Uid="Shell.UserMenu.Settings"
                               Click="OnSettingsClick">

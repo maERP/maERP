@@ -2,6 +2,7 @@ using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Auth.Models;
 using maERP.Client.Features.Dashboard.Models;
 using maERP.Client.Features.Customers.Models;
+using Uno.Toolkit.UI;
 
 namespace maERP.Client.Features.Shell.Views;
 
@@ -120,6 +121,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     // Now check authentication state and update visibility
                     await shellModel.InitializeAuthenticationState();
                     UpdateNavigationVisibility(shellModel);
+
+                    // Initialize dark mode toggle state
+                    InitializeDarkModeToggle();
 
                     Console.WriteLine($"[Shell] After InitializeAuthenticationState. IsAuthenticated: {shellModel.IsAuthenticated}");
                     return; // Success, exit the retry loop
@@ -349,5 +353,64 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     private void OnPaneToggleClick(object sender, RoutedEventArgs e)
     {
         NavView.IsPaneOpen = !NavView.IsPaneOpen;
+    }
+
+    private void OnDarkModeToggle(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] Dark mode toggle clicked");
+
+        try
+        {
+            // ToggleMenuFlyoutItem already toggled IsChecked before this event fires
+            // Use the new IsChecked state to determine the theme
+            var isDarkMode = MenuItemDarkMode.IsChecked;
+            Console.WriteLine($"[Shell] IsChecked (isDarkMode): {isDarkMode}");
+
+            var xamlRoot = this.XamlRoot;
+            if (xamlRoot != null)
+            {
+                var newTheme = isDarkMode ? ElementTheme.Dark : ElementTheme.Light;
+                Console.WriteLine($"[Shell] Switching theme to: {newTheme}");
+
+                SystemThemeHelper.SetApplicationTheme(xamlRoot, newTheme);
+                Console.WriteLine("[Shell] Theme switched successfully");
+            }
+            else
+            {
+                Console.WriteLine("[Shell] XamlRoot not available");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] Failed to toggle theme: {ex.Message}");
+            Console.WriteLine($"[Shell] Stack trace: {ex.StackTrace}");
+        }
+    }
+
+    private void InitializeDarkModeToggle()
+    {
+        try
+        {
+            // Get the OS theme setting
+            var osTheme = SystemThemeHelper.GetCurrentOsTheme();
+            var isDarkMode = osTheme == Microsoft.UI.Xaml.ApplicationTheme.Dark;
+            Console.WriteLine($"[Shell] InitializeDarkModeToggle: OS Theme={osTheme}, isDarkMode={isDarkMode}");
+
+            // Set the toggle state to match OS theme
+            MenuItemDarkMode.IsChecked = isDarkMode;
+
+            // Apply the OS theme to the app
+            var xamlRoot = this.XamlRoot;
+            if (xamlRoot != null)
+            {
+                var appTheme = isDarkMode ? ElementTheme.Dark : ElementTheme.Light;
+                SystemThemeHelper.SetApplicationTheme(xamlRoot, appTheme);
+                Console.WriteLine($"[Shell] Applied OS theme to app: {appTheme}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] Failed to initialize dark mode toggle: {ex.Message}");
+        }
     }
 }
