@@ -31,31 +31,32 @@
                  Margin="0,0,0,24" />
 
       <TextBox x:Name="ServerUrlTextBox"
-               PlaceholderText="Server URL (e.g., https://api.maerp.com)"
+               Header="Server URL"
+               PlaceholderText="https://api.maerp.com"
                Text="{Binding ServerUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                x:Uid="LoginPage.TextBox.ServerUrl"
-               AutomationProperties.Name="Server URL"
-               Margin="0,0,0,8" />
+               AutomationProperties.Name="Server URL" />
 
       <TextBox x:Name="EmailTextBox"
-               PlaceholderText="Email"
+               Header="Email"
+               PlaceholderText="Enter your email"
                Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                x:Uid="LoginPage.TextBox.Email"
                AutomationProperties.Name="Email"
-               InputScope="EmailSmtpAddress"
-               Margin="0,0,0,8" />
+               InputScope="EmailSmtpAddress" />
 
       <PasswordBox x:Name="PasswordBox"
-                   PlaceholderText="Password"
+                   Header="Password"
+                   PlaceholderText="Enter your password"
                    Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                    x:Uid="LoginPage.PasswordBox.Password"
-                   AutomationProperties.Name="Password"
-                   Margin="0,0,0,8" />
+                   AutomationProperties.Name="Password" />
 
       <TextBlock Text="{Binding ErrorMessage}"
-                 Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                 Style="{StaticResource BodyMedium}"
+                 Foreground="{ThemeResource ErrorBrush}"
                  TextWrapping="Wrap"
-                 Margin="0,0,0,8" />
+                 Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" />
 
       <Button Content="Login"
               Command="{Binding LoginCommand}"

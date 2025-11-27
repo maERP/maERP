@@ -42,7 +42,7 @@
                 <PersonPicture Width="96"
                                Height="96"
                                DisplayName="{Binding Data.Firstname}" />
-                <TextBlock Style="{StaticResource TitleTextBlockStyle}"
+                <TextBlock Style="{StaticResource TitleLarge}"
                            HorizontalAlignment="Center">
                   <Run Text="{Binding Data.Firstname}" />
                   <Run Text=" " />
@@ -53,7 +53,7 @@
               <!-- Contact Information -->
               <StackPanel Spacing="8">
                 <TextBlock Text="Contact Information"
-                           Style="{StaticResource SubtitleTextBlockStyle}" />
+                           Style="{StaticResource TitleMedium}" />
 
                 <Grid>
                   <Grid.ColumnDefinitions>
@@ -70,24 +70,24 @@
                             Margin="0,0,12,8" />
                   <TextBlock Grid.Row="0" Grid.Column="1"
                              Text="{Binding Data.Email}"
-                             Style="{StaticResource BodyTextBlockStyle}" />
+                             Style="{StaticResource BodyMedium}" />
 
                   <FontIcon Grid.Row="1" Grid.Column="0"
                             Glyph="&#xE717;"
                             Margin="0,0,12,0" />
                   <TextBlock Grid.Row="1" Grid.Column="1"
                              Text="Not available"
-                             Style="{StaticResource BodyTextBlockStyle}"
-                             Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                             Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
                 </Grid>
               </StackPanel>
 
               <!-- Customer Number -->
               <StackPanel Spacing="8">
                 <TextBlock Text="Customer Number"
-                           Style="{StaticResource SubtitleTextBlockStyle}" />
+                           Style="{StaticResource TitleMedium}" />
                 <TextBlock Text="{Binding Data.CustomerNumber}"
-                           Style="{StaticResource BodyTextBlockStyle}" />
+                           Style="{StaticResource BodyMedium}" />
               </StackPanel>
             </StackPanel>
           </ScrollViewer>
@@ -111,9 +111,9 @@
                       Spacing="16">
             <FontIcon Glyph="&#xE783;"
                       FontSize="48"
-                      Foreground="{ThemeResource SystemFillColorCriticalBrush}" />
+                      Foreground="{ThemeResource ErrorBrush}" />
             <TextBlock Text="Failed to load customer"
-                       Style="{StaticResource BodyTextBlockStyle}"
+                       Style="{StaticResource BodyMedium}"
                        HorizontalAlignment="Center" />
           </StackPanel>
         </DataTemplate>

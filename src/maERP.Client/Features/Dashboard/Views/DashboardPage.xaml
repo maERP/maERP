@@ -18,18 +18,22 @@
       <StackPanel Grid.Row="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Spacing="16">
+            Spacing="16"
+            Padding="24">
         <TextBlock Text="Welcome to maERP Dashboard"
                    Style="{StaticResource HeadlineMedium}"
                    HorizontalAlignment="Center" />
 
-        <TextBox Text="{Binding Name, Mode=TwoWay}"
-            PlaceholderText="Enter your name:" />
+        <TextBox Header="Name"
+                 Text="{Binding Name, Mode=TwoWay}"
+                 PlaceholderText="Enter your name" />
         <Button Content="Go to Second Page"
-            AutomationProperties.AutomationId="SecondPageButton"
-            Command="{Binding GoToSecond}" />
+                Style="{StaticResource FilledButtonStyle}"
+                AutomationProperties.AutomationId="SecondPageButton"
+                Command="{Binding GoToSecond}" />
         <Button Content="Logout"
-            Command="{Binding Logout}" />
+                Style="{StaticResource OutlinedButtonStyle}"
+                Command="{Binding Logout}" />
       </StackPanel>
     </Grid>
   </ScrollViewer>

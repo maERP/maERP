@@ -32,7 +32,8 @@
       <StackPanel Spacing="16" MaxWidth="500">
         <!-- Error Message -->
         <TextBlock Text="{Binding ErrorMessage}"
-                   Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                   Style="{StaticResource BodyMedium}"
+                   Foreground="{ThemeResource ErrorBrush}"
                    TextWrapping="Wrap"
                    Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" />
 

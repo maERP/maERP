@@ -14,25 +14,75 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <!-- Header -->
-    <utu:NavigationBar Grid.Row="0" Content="Customers">
-      <utu:NavigationBar.MainCommand>
-        <AppBarButton Icon="Add"
-                      Label="New"
-                      Command="{Binding CreateCustomer}" />
-      </utu:NavigationBar.MainCommand>
+    <!-- Header with NavigationBar -->
+    <utu:NavigationBar Grid.Row="0"
+                       Content="Customers">
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton Label="Refresh"
+                      ToolTipService.ToolTip="Refresh customer list"
+                      Command="{Binding Refresh, ElementName=CustomersFeedView}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE72C;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarButton Label="New"
+                      ToolTipService.ToolTip="Create new customer"
+                      Click="CreateCustomer_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE710;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
     </utu:NavigationBar>
 
-    <!-- Search Box -->
-    <TextBox Grid.Row="1"
-             Margin="16,8"
-             PlaceholderText="Search customers..."
-             Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    <!-- Search and Sort Controls -->
+    <Grid Grid.Row="1"
+          Margin="16,12,16,8">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+
+      <!-- Search Box with Icon -->
+      <Grid Grid.Column="0"
+            Margin="0,0,12,0">
+        <TextBox x:Name="SearchBox"
+                 PlaceholderText="Search customers..."
+                 TextChanged="SearchBox_TextChanged"
+                 Padding="40,11,12,11" />
+        <FontIcon Glyph="&#xE721;"
+                  FontSize="16"
+                  Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  Margin="12,0,0,0"
+                  IsHitTestVisible="False" />
+      </Grid>
+
+      <!-- Sort Dropdown -->
+      <ComboBox x:Name="SortComboBox"
+                Grid.Column="1"
+                MinWidth="180"
+                SelectionChanged="SortComboBox_SelectionChanged"
+                SelectedIndex="0">
+        <ComboBoxItem Content="Newest First" Tag="DateEnrollment Descending" />
+        <ComboBoxItem Content="Oldest First" Tag="DateEnrollment Ascending" />
+        <ComboBoxItem Content="Last Name A-Z" Tag="Lastname Ascending" />
+        <ComboBoxItem Content="Last Name Z-A" Tag="Lastname Descending" />
+        <ComboBoxItem Content="First Name A-Z" Tag="Firstname Ascending" />
+        <ComboBoxItem Content="First Name Z-A" Tag="Firstname Descending" />
+        <ComboBoxItem Content="Customer # Asc" Tag="CustomerId Ascending" />
+        <ComboBoxItem Content="Customer # Desc" Tag="CustomerId Descending" />
+      </ComboBox>
+    </Grid>
 
     <!-- Customer DataGrid -->
-    <mvux:FeedView Grid.Row="2"
+    <mvux:FeedView x:Name="CustomersFeedView"
+                   Grid.Row="2"
+                   Margin="16,0"
                    Source="{Binding Customers}">
       <mvux:FeedView.ValueTemplate>
         <DataTemplate>
@@ -45,7 +95,7 @@
                              HeadersVisibility="Column"
                              CanUserReorderColumns="True"
                              CanUserResizeColumns="True"
-                             CanUserSortColumns="True"
+                             CanUserSortColumns="False"
                              SelectionChanged="CustomerDataGrid_SelectionChanged">
             <controls:DataGrid.Columns>
               <controls:DataGridTextColumn Header="Customer #"
@@ -58,7 +108,7 @@
                                            Binding="{Binding Lastname}"
                                            Width="*" />
               <controls:DataGridTextColumn Header="Enrollment Date"
-                                           Binding="{Binding DateEnrollment}"
+                                           Binding="{Binding DateEnrollment, Converter={StaticResource DateOnlyConverter}}"
                                            Width="150" />
             </controls:DataGrid.Columns>
           </controls:DataGrid>
@@ -82,9 +132,9 @@
                       Spacing="16">
             <FontIcon Glyph="&#xE716;"
                       FontSize="48"
-                      Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                      Foreground="{ThemeResource OnSurfaceVariantBrush}" />
             <TextBlock Text="No customers found"
-                       Style="{StaticResource BodyTextBlockStyle}"
+                       Style="{StaticResource BodyMedium}"
                        HorizontalAlignment="Center" />
           </StackPanel>
         </DataTemplate>
@@ -97,13 +147,96 @@
                       Spacing="16">
             <FontIcon Glyph="&#xE783;"
                       FontSize="48"
-                      Foreground="{ThemeResource SystemFillColorCriticalBrush}" />
+                      Foreground="{ThemeResource ErrorBrush}" />
             <TextBlock Text="Failed to load customers"
-                       Style="{StaticResource BodyTextBlockStyle}"
+                       Style="{StaticResource BodyMedium}"
                        HorizontalAlignment="Center" />
           </StackPanel>
         </DataTemplate>
       </mvux:FeedView.ErrorTemplate>
     </mvux:FeedView>
+
+    <!-- Pagination Controls -->
+    <Border Grid.Row="3"
+            Background="{ThemeResource SurfaceBrush}"
+            BorderBrush="{ThemeResource OutlineVariantBrush}"
+            BorderThickness="0,1,0,0"
+            Padding="16,8">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Count Info (Left) -->
+        <mvux:FeedView Source="{Binding Pagination}"
+                       Grid.Column="0">
+          <mvux:FeedView.ValueTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Data.CountInfo}"
+                         Style="{StaticResource BodySmall}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         VerticalAlignment="Center" />
+            </DataTemplate>
+          </mvux:FeedView.ValueTemplate>
+        </mvux:FeedView>
+
+        <!-- Page Navigation (Center) -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Spacing="8">
+          <Button x:Name="PreviousPageButton"
+                  Style="{StaticResource IconButtonStyle}"
+                  ToolTipService.ToolTip="Previous page"
+                  Click="PreviousPage_Click">
+            <FontIcon Glyph="&#xE76B;"
+                      FontSize="16" />
+          </Button>
+
+          <mvux:FeedView Source="{Binding Pagination}">
+            <mvux:FeedView.ValueTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Data.PageInfo}"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center"
+                           MinWidth="100"
+                           TextAlignment="Center" />
+              </DataTemplate>
+            </mvux:FeedView.ValueTemplate>
+          </mvux:FeedView>
+
+          <Button x:Name="NextPageButton"
+                  Style="{StaticResource IconButtonStyle}"
+                  ToolTipService.ToolTip="Next page"
+                  Click="NextPage_Click">
+            <FontIcon Glyph="&#xE76C;"
+                      FontSize="16" />
+          </Button>
+        </StackPanel>
+
+        <!-- Page Size Selection (Right) -->
+        <StackPanel Grid.Column="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="8">
+          <TextBlock Text="Items per page:"
+                     Style="{StaticResource BodySmall}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                     VerticalAlignment="Center" />
+          <ComboBox x:Name="PageSizeComboBox"
+                    MinWidth="80"
+                    SelectionChanged="PageSizeComboBox_SelectionChanged"
+                    SelectedIndex="1">
+            <ComboBoxItem Content="10" Tag="10" />
+            <ComboBoxItem Content="25" Tag="25" />
+            <ComboBoxItem Content="100" Tag="100" />
+            <ComboBoxItem Content="500" Tag="500" />
+            <ComboBoxItem Content="1000" Tag="1000" />
+          </ComboBox>
+        </StackPanel>
+      </Grid>
+    </Border>
   </Grid>
 </Page>

@@ -9,7 +9,7 @@
      xmlns:uen="using:Uno.Extensions.Navigation.UI"
      mc:Ignorable="d"
      d:DesignHeight="768"
-     d:DesignWidth="1024">
+     d:DesignWidth="1200">
 
   <UserControl.Resources>
   </UserControl.Resources>

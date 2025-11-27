@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using maERP.Client.Core.Models;
 using maERP.Domain.Dtos.Customer;
 
 namespace maERP.Client.Features.Customers.Services;
@@ -9,12 +9,10 @@ namespace maERP.Client.Features.Customers.Services;
 public interface ICustomerService
 {
     /// <summary>
-    /// Gets a paginated list of customers.
+    /// Gets a paginated list of customers with full pagination metadata.
     /// </summary>
-    Task<IImmutableList<CustomerListDto>> GetCustomersAsync(
-        int page = 0,
-        int pageSize = 20,
-        string? searchQuery = null,
+    Task<PaginatedResponse<CustomerListDto>> GetCustomersAsync(
+        QueryParameters parameters,
         CancellationToken ct = default);
 
     /// <summary>

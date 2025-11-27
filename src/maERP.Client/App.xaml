@@ -1,7 +1,8 @@
 <Application x:Class="maERP.Client.App"
        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-       xmlns:utum="using:Uno.Toolkit.UI.Material">
+       xmlns:utum="using:Uno.Toolkit.UI.Material"
+       xmlns:converters="using:maERP.Client.Presentation">
 
   <Application.Resources>
     <ResourceDictionary>
@@ -21,7 +22,8 @@
         </utum:MaterialToolkitTheme>
       </ResourceDictionary.MergedDictionaries>
 
-      <!-- Add resources here -->
+      <!-- Converters -->
+      <converters:DateOnlyConverter x:Key="DateOnlyConverter" />
 
     </ResourceDictionary>
   </Application.Resources>

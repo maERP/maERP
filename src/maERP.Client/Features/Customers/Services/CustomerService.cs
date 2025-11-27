@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Net.Http.Json;
 using System.Text.Json;
 using maERP.Client.Core.Constants;
@@ -42,34 +41,35 @@ public class CustomerService : ICustomerService
         return serverUrl.TrimEnd('/');
     }
 
-    public async Task<IImmutableList<CustomerListDto>> GetCustomersAsync(
-        int page = 0,
-        int pageSize = 20,
-        string? searchQuery = null,
+    public async Task<PaginatedResponse<CustomerListDto>> GetCustomersAsync(
+        QueryParameters parameters,
         CancellationToken ct = default)
     {
         var baseUrl = await GetBaseUrlAsync();
-        var url = $"{baseUrl}{ApiEndpoints.Customers.Base}?page={page}&pageSize={pageSize}";
-        if (!string.IsNullOrWhiteSpace(searchQuery))
-        {
-            url += $"&search={Uri.EscapeDataString(searchQuery)}";
-        }
+        var url = $"{baseUrl}{ApiEndpoints.Customers.Base}?{parameters.ToQueryString()}";
 
         _logger.LogInformation("Fetching customers from URL: {Url}", url);
 
         try
         {
-            var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<List<CustomerListDto>>>(url, _jsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<CustomerListDto>>(
+                url, _jsonOptions, ct);
 
-            if (apiResponse?.Succeeded != true)
+            if (response?.Succeeded != true)
             {
                 _logger.LogWarning("API returned unsuccessful response: {Messages}",
-                    string.Join(", ", apiResponse?.Messages ?? new List<string>()));
-                return ImmutableList<CustomerListDto>.Empty;
+                    string.Join(", ", response?.Messages ?? new List<string>()));
+                return new PaginatedResponse<CustomerListDto>();
             }
 
-            _logger.LogInformation("Fetched {Count} customers", apiResponse.Data?.Count ?? 0);
-            return apiResponse.Data?.ToImmutableList() ?? ImmutableList<CustomerListDto>.Empty;
+            _logger.LogInformation(
+                "Fetched {Count} customers (Page {Page}/{TotalPages}, Total: {Total})",
+                response.Data?.Count ?? 0,
+                response.CurrentPage,
+                response.TotalPages,
+                response.TotalCount);
+
+            return response;
         }
         catch (Exception ex)
         {

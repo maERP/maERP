@@ -18,11 +18,13 @@
     <utu:NavigationBar Content="Second Page" />
     <StackPanel Grid.Row="1"
           HorizontalAlignment="Center"
-          VerticalAlignment="Center">
+          VerticalAlignment="Center"
+          Spacing="16"
+          Padding="24">
       <TextBlock Text="{Binding Entity.Name}"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-        Margin="8" />
+                 Style="{StaticResource BodyLarge}"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Center" />
     </StackPanel>
 
   </Grid>
