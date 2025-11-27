@@ -301,17 +301,75 @@
   <data name="CustomerDetailPage.AppBarButton.Delete.Label" xml:space="preserve">
     <value>Löschen</value>
   </data>
-  <data name="CustomerDetailPage.ContactInformation.Header" xml:space="preserve">
-    <value>Kontaktinformationen</value>
+  <data name="CustomerDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Kunde konnte nicht geladen werden</value>
   </data>
   <data name="CustomerDetailPage.NotAvailable.Text" xml:space="preserve">
     <value>Nicht verfügbar</value>
   </data>
-  <data name="CustomerDetailPage.CustomerNumber.Header" xml:space="preserve">
+
+  <!-- Customer Detail Page - Sections -->
+  <data name="CustomerDetailPage.Section.ContactInformation.Text" xml:space="preserve">
+    <value>Kontaktinformationen</value>
+  </data>
+  <data name="CustomerDetailPage.Section.BusinessData.Text" xml:space="preserve">
+    <value>Geschäftsdaten</value>
+  </data>
+  <data name="CustomerDetailPage.Section.Addresses.Text" xml:space="preserve">
+    <value>Adressen</value>
+  </data>
+  <data name="CustomerDetailPage.Section.Notes.Text" xml:space="preserve">
+    <value>Notizen</value>
+  </data>
+
+  <!-- Customer Detail Page - Field Labels -->
+  <data name="CustomerDetailPage.Field.Email.Text" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="CustomerDetailPage.Field.Phone.Text" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="CustomerDetailPage.Field.Website.Text" xml:space="preserve">
+    <value>Website</value>
+  </data>
+  <data name="CustomerDetailPage.Field.CustomerNumber.Text" xml:space="preserve">
     <value>Kundennummer</value>
   </data>
-  <data name="CustomerDetailPage.LoadError.Text" xml:space="preserve">
-    <value>Kunde konnte nicht geladen werden</value>
+  <data name="CustomerDetailPage.Field.CompanyName.Text" xml:space="preserve">
+    <value>Firma</value>
+  </data>
+  <data name="CustomerDetailPage.Field.VatNumber.Text" xml:space="preserve">
+    <value>USt-IdNr.</value>
+  </data>
+  <data name="CustomerDetailPage.Field.EnrollmentDate.Text" xml:space="preserve">
+    <value>Registrierungsdatum</value>
+  </data>
+
+  <!-- Customer Detail Page - Address Badges -->
+  <data name="CustomerDetailPage.Badge.DeliveryAddress.Text" xml:space="preserve">
+    <value>Lieferadresse</value>
+  </data>
+  <data name="CustomerDetailPage.Badge.InvoiceAddress.Text" xml:space="preserve">
+    <value>Rechnungsadresse</value>
+  </data>
+
+  <!-- Customer Detail Page - Empty States -->
+  <data name="CustomerDetailPage.NoAddresses.Text" xml:space="preserve">
+    <value>Keine Adressen vorhanden</value>
+  </data>
+  <data name="CustomerDetailPage.NoNotes.Text" xml:space="preserve">
+    <value>Keine Notizen vorhanden</value>
+  </data>
+
+  <!-- Customer Status -->
+  <data name="CustomerStatus.Active" xml:space="preserve">
+    <value>Aktiv</value>
+  </data>
+  <data name="CustomerStatus.Inactive" xml:space="preserve">
+    <value>Inaktiv</value>
+  </data>
+  <data name="CustomerStatus.NoDoi" xml:space="preserve">
+    <value>Kein DOI</value>
   </data>
 
   <!-- Second Page (Legacy) -->
@@ -340,5 +398,8 @@
   </data>
   <data name="Common.OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="Common.Retry.Content" xml:space="preserve">
+    <value>Erneut versuchen</value>
   </data>
 </root>

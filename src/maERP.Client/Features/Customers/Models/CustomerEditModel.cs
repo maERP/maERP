@@ -26,11 +26,11 @@ public class CustomerEditModel : INotifyPropertyChanged
     public CustomerEditModel(
         ICustomerService customerService,
         INavigator navigator,
-        Guid? customerId = null)
+        CustomerEditData? data = null)
     {
         _customerService = customerService;
         _navigator = navigator;
-        _customerId = customerId;
+        _customerId = data?.customerId;
 
         if (_customerId.HasValue)
         {

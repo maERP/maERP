@@ -89,10 +89,7 @@ public partial record CustomerListModel
     /// </summary>
     public async Task ViewCustomer(CustomerListDto customer)
     {
-        await _navigator.NavigateRouteAsync(
-            this,
-            Routes.CustomerDetail,
-            data: new Dictionary<string, object> { ["customerId"] = customer.Id });
+        await _navigator.NavigateDataAsync(this, new CustomerDetailData(customer.Id));
     }
 
     /// <summary>

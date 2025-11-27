@@ -7,6 +7,16 @@
       xmlns:utu="using:Uno.Toolkit.UI"
       Background="{ThemeResource BackgroundBrush}">
 
+  <Page.Resources>
+    <!-- Status Badge Colors -->
+    <SolidColorBrush x:Key="StatusActiveBrush" Color="#16A34A" />
+    <SolidColorBrush x:Key="StatusActiveBackgroundBrush" Color="#DCFCE7" />
+    <SolidColorBrush x:Key="StatusInactiveBrush" Color="#6B7280" />
+    <SolidColorBrush x:Key="StatusInactiveBackgroundBrush" Color="#F3F4F6" />
+    <SolidColorBrush x:Key="StatusNoDoiBrush" Color="#D97706" />
+    <SolidColorBrush x:Key="StatusNoDoiBackgroundBrush" Color="#FEF3C7" />
+  </Page.Resources>
+
   <Grid utu:SafeArea.Insets="VisibleBounds">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -30,92 +40,559 @@
       </utu:NavigationBar.PrimaryCommands>
     </utu:NavigationBar>
 
-    <!-- Customer Details -->
+    <!-- Customer Details Content -->
     <mvux:FeedView Grid.Row="1"
                    Source="{Binding Customer}">
       <mvux:FeedView.ValueTemplate>
         <DataTemplate>
-          <ScrollViewer Padding="16">
-            <StackPanel Spacing="24">
-              <!-- Avatar and Name -->
-              <StackPanel HorizontalAlignment="Center" Spacing="16">
-                <PersonPicture Width="96"
-                               Height="96"
-                               DisplayName="{Binding Data.Firstname}" />
-                <TextBlock Style="{StaticResource TitleLarge}"
-                           HorizontalAlignment="Center">
-                  <Run Text="{Binding Data.Firstname}" />
-                  <Run Text=" " />
-                  <Run Text="{Binding Data.Lastname}" />
-                </TextBlock>
-              </StackPanel>
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid Padding="24">
+              <!-- VisualStateManager for responsive layout -->
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                  <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="InfoCardsGrid.MaxWidth" Value="600" />
+                      <Setter Target="InfoColumn1.Width" Value="*" />
+                      <Setter Target="InfoColumn2.Width" Value="0" />
+                      <Setter Target="ContactCard.(Grid.Column)" Value="0" />
+                      <Setter Target="ContactCard.(Grid.Row)" Value="0" />
+                      <Setter Target="ContactCard.Margin" Value="0,0,0,16" />
+                      <Setter Target="BusinessCard.(Grid.Column)" Value="0" />
+                      <Setter Target="BusinessCard.(Grid.Row)" Value="1" />
+                      <Setter Target="BusinessCard.Margin" Value="0" />
+                    </VisualState.Setters>
+                  </VisualState>
 
-              <!-- Contact Information -->
-              <StackPanel Spacing="8">
-                <TextBlock x:Uid="CustomerDetailPage.ContactInformation"
-                           Style="{StaticResource TitleMedium}" />
+                  <VisualState x:Name="Medium">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="800" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="InfoCardsGrid.MaxWidth" Value="1200" />
+                      <Setter Target="InfoColumn1.Width" Value="*" />
+                      <Setter Target="InfoColumn2.Width" Value="*" />
+                      <Setter Target="ContactCard.(Grid.Column)" Value="0" />
+                      <Setter Target="ContactCard.(Grid.Row)" Value="0" />
+                      <Setter Target="ContactCard.Margin" Value="0,0,8,0" />
+                      <Setter Target="BusinessCard.(Grid.Column)" Value="1" />
+                      <Setter Target="BusinessCard.(Grid.Row)" Value="0" />
+                      <Setter Target="BusinessCard.Margin" Value="8,0,0,0" />
+                    </VisualState.Setters>
+                  </VisualState>
 
-                <Grid>
+                  <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="1200" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="InfoCardsGrid.MaxWidth" Value="10000" />
+                      <Setter Target="InfoColumn1.Width" Value="*" />
+                      <Setter Target="InfoColumn2.Width" Value="*" />
+                      <Setter Target="ContactCard.(Grid.Column)" Value="0" />
+                      <Setter Target="ContactCard.(Grid.Row)" Value="0" />
+                      <Setter Target="ContactCard.Margin" Value="0,0,8,0" />
+                      <Setter Target="BusinessCard.(Grid.Column)" Value="1" />
+                      <Setter Target="BusinessCard.(Grid.Row)" Value="0" />
+                      <Setter Target="BusinessCard.Margin" Value="8,0,0,0" />
+                    </VisualState.Setters>
+                  </VisualState>
+                </VisualStateGroup>
+              </VisualStateManager.VisualStateGroups>
+
+              <StackPanel Spacing="24"
+                          MaxWidth="1400"
+                          HorizontalAlignment="Stretch">
+
+                <!-- Profile Header Section -->
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        CornerRadius="12"
+                        Padding="24"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <StackPanel HorizontalAlignment="Center"
+                              Spacing="16">
+                    <!-- Avatar -->
+                    <PersonPicture Width="96"
+                                   Height="96"
+                                   DisplayName="{Binding Data.FullName}" />
+
+                    <!-- Full Name -->
+                    <TextBlock Style="{StaticResource HeadlineMedium}"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               Text="{Binding Data.FullName}" />
+
+                    <!-- Company Name (if available) -->
+                    <TextBlock Style="{StaticResource TitleMedium}"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                               Text="{Binding Data.CompanyName}"
+                               Visibility="{Binding Data.CompanyName, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}" />
+
+                    <!-- Status Badge -->
+                    <Border CornerRadius="16"
+                            Padding="16,6"
+                            HorizontalAlignment="Center"
+                            Background="{Binding Data.CustomerStatus, Converter={StaticResource CustomerStatusToBackgroundConverter}}">
+                      <TextBlock Text="{Binding Data.CustomerStatus, Converter={StaticResource CustomerStatusToTextConverter}}"
+                                 Style="{StaticResource LabelMedium}"
+                                 Foreground="{Binding Data.CustomerStatus, Converter={StaticResource CustomerStatusToForegroundConverter}}" />
+                    </Border>
+                  </StackPanel>
+                </Border>
+
+                <!-- Information Cards Grid -->
+                <Grid x:Name="InfoCardsGrid">
                   <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition x:Name="InfoColumn1" Width="*" />
+                    <ColumnDefinition x:Name="InfoColumn2" Width="*" />
                   </Grid.ColumnDefinitions>
                   <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                   </Grid.RowDefinitions>
 
-                  <FontIcon Grid.Row="0" Grid.Column="0"
-                            Glyph="&#xE715;"
-                            Margin="0,0,12,8" />
-                  <TextBlock Grid.Row="0" Grid.Column="1"
-                             Text="{Binding Data.Email}"
-                             Style="{StaticResource BodyMedium}" />
+                  <!-- Contact Information Card -->
+                  <Border x:Name="ContactCard"
+                          Grid.Column="0"
+                          Grid.Row="0"
+                          Margin="0,0,8,0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12">
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE779;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource PrimaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="CustomerDetailPage.Section.ContactInformation"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
 
-                  <FontIcon Grid.Row="1" Grid.Column="0"
-                            Glyph="&#xE717;"
-                            Margin="0,0,12,0" />
-                  <TextBlock Grid.Row="1" Grid.Column="1"
-                             x:Uid="CustomerDetailPage.NotAvailable"
-                             Style="{StaticResource BodyMedium}"
-                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <!-- Contact Fields -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="12">
+                        <!-- Email -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE715;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="CustomerDetailPage.Field.Email"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Email}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Phone -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE717;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="CustomerDetailPage.Field.Phone"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Phone}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       Visibility="{Binding Data.Phone, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="CustomerDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.Phone, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Website -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE774;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="CustomerDetailPage.Field.Website"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Website}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource PrimaryBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding Data.Website, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="CustomerDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.Website, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+
+                  <!-- Business Data Card -->
+                  <Border x:Name="BusinessCard"
+                          Grid.Column="1"
+                          Grid.Row="0"
+                          Margin="8,0,0,0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12">
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE8F1;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource TertiaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="CustomerDetailPage.Section.BusinessData"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Business Fields -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="12">
+                        <!-- Customer Number -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE8EC;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="CustomerDetailPage.Field.CustomerNumber"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.CustomerId}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Company Name -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE731;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="CustomerDetailPage.Field.CompanyName"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.CompanyName}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding Data.CompanyName, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="CustomerDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.CompanyName, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- VAT Number -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE9D5;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="CustomerDetailPage.Field.VatNumber"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.VatNumber}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       Visibility="{Binding Data.VatNumber, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="CustomerDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.VatNumber, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Enrollment Date -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE787;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="CustomerDetailPage.Field.EnrollmentDate"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.DateEnrollment, Converter={StaticResource DateTimeOffsetToStringConverter}}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}" />
+                          </StackPanel>
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
                 </Grid>
-              </StackPanel>
 
-              <!-- Customer Number -->
-              <StackPanel Spacing="8">
-                <TextBlock x:Uid="CustomerDetailPage.CustomerNumber"
-                           Style="{StaticResource TitleMedium}" />
-                <TextBlock Text="{Binding Data.CustomerNumber}"
-                           Style="{StaticResource BodyMedium}" />
+                <!-- Addresses Section -->
+                <StackPanel Spacing="12">
+                  <StackPanel Orientation="Horizontal"
+                              Spacing="12">
+                    <FontIcon Glyph="&#xE81D;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}" />
+                    <TextBlock x:Uid="CustomerDetailPage.Section.Addresses"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+
+                  <!-- Address Cards -->
+                  <ItemsRepeater ItemsSource="{Binding Data.CustomerAddresses}">
+                    <ItemsRepeater.Layout>
+                      <UniformGridLayout MinItemWidth="300"
+                                         MinColumnSpacing="16"
+                                         MinRowSpacing="16"
+                                         ItemsStretch="Fill" />
+                    </ItemsRepeater.Layout>
+                    <ItemsRepeater.ItemTemplate>
+                      <DataTemplate>
+                        <Border Background="{ThemeResource SurfaceBrush}"
+                                BorderBrush="{ThemeResource OutlineVariantBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12"
+                                Padding="16">
+                          <StackPanel Spacing="8">
+                            <!-- Address Type Badges -->
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="8">
+                              <!-- Delivery Address Badge -->
+                              <Border CornerRadius="12"
+                                      Padding="10,4"
+                                      Background="{ThemeResource PrimaryContainerBrush}"
+                                      Visibility="{Binding DefaultDeliveryAddress, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="6">
+                                  <FontIcon Glyph="&#xE7B8;"
+                                            FontSize="12"
+                                            Foreground="{ThemeResource OnPrimaryContainerBrush}" />
+                                  <TextBlock x:Uid="CustomerDetailPage.Badge.DeliveryAddress"
+                                             Style="{StaticResource LabelSmall}"
+                                             Foreground="{ThemeResource OnPrimaryContainerBrush}" />
+                                </StackPanel>
+                              </Border>
+
+                              <!-- Invoice Address Badge -->
+                              <Border CornerRadius="12"
+                                      Padding="10,4"
+                                      Background="{ThemeResource TertiaryContainerBrush}"
+                                      Visibility="{Binding DefaultInvoiceAddress, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="6">
+                                  <FontIcon Glyph="&#xE9D5;"
+                                            FontSize="12"
+                                            Foreground="{ThemeResource OnTertiaryContainerBrush}" />
+                                  <TextBlock x:Uid="CustomerDetailPage.Badge.InvoiceAddress"
+                                             Style="{StaticResource LabelSmall}"
+                                             Foreground="{ThemeResource OnTertiaryContainerBrush}" />
+                                </StackPanel>
+                              </Border>
+                            </StackPanel>
+
+                            <!-- Address Name -->
+                            <TextBlock Style="{StaticResource BodyLarge}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}">
+                              <Run Text="{Binding Firstname}" />
+                              <Run Text=" " />
+                              <Run Text="{Binding Lastname}" />
+                            </TextBlock>
+
+                            <!-- Company (if different) -->
+                            <TextBlock Text="{Binding CompanyName}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding CompanyName, Converter={StaticResource StringToVisibilityConverter}}" />
+
+                            <!-- Street Address -->
+                            <TextBlock Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}">
+                              <Run Text="{Binding Street}" />
+                              <Run Text=" " />
+                              <Run Text="{Binding HouseNr}" />
+                            </TextBlock>
+
+                            <!-- City and ZIP -->
+                            <TextBlock Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}">
+                              <Run Text="{Binding Zip}" />
+                              <Run Text=" " />
+                              <Run Text="{Binding City}" />
+                            </TextBlock>
+                          </StackPanel>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                  </ItemsRepeater>
+
+                  <!-- No Addresses Placeholder -->
+                  <Border Background="{ThemeResource SurfaceVariantBrush}"
+                          CornerRadius="12"
+                          Padding="24"
+                          Visibility="{Binding Data.CustomerAddresses.Count, Converter={StaticResource ZeroToVisibilityConverter}}">
+                    <StackPanel HorizontalAlignment="Center"
+                                Spacing="8">
+                      <FontIcon Glyph="&#xE81D;"
+                                FontSize="32"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <TextBlock x:Uid="CustomerDetailPage.NoAddresses"
+                                 Style="{StaticResource BodyMedium}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                 HorizontalAlignment="Center" />
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+
+                <!-- Notes Section -->
+                <StackPanel Spacing="12">
+                  <StackPanel Orientation="Horizontal"
+                              Spacing="12">
+                    <FontIcon Glyph="&#xE70B;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}" />
+                    <TextBlock x:Uid="CustomerDetailPage.Section.Notes"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+
+                  <Border Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12"
+                          Padding="16"
+                          MinHeight="80">
+                    <TextBlock Text="{Binding Data.Note}"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               TextWrapping="Wrap"
+                               Visibility="{Binding Data.Note, Converter={StaticResource StringToVisibilityConverter}}" />
+                  </Border>
+
+                  <!-- No Notes Placeholder (shown when Note is empty) -->
+                  <Border Background="{ThemeResource SurfaceVariantBrush}"
+                          CornerRadius="12"
+                          Padding="24"
+                          Visibility="{Binding Data.Note, Converter={StaticResource StringToInverseVisibilityConverter}}">
+                    <StackPanel HorizontalAlignment="Center"
+                                Spacing="8">
+                      <FontIcon Glyph="&#xE70B;"
+                                FontSize="32"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <TextBlock x:Uid="CustomerDetailPage.NoNotes"
+                                 Style="{StaticResource BodyMedium}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                 HorizontalAlignment="Center" />
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
               </StackPanel>
-            </StackPanel>
+            </Grid>
           </ScrollViewer>
         </DataTemplate>
       </mvux:FeedView.ValueTemplate>
 
       <mvux:FeedView.ProgressTemplate>
         <DataTemplate>
-          <ProgressRing IsActive="True"
-                        Width="48"
-                        Height="48"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center" />
+          <Grid HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
         </DataTemplate>
       </mvux:FeedView.ProgressTemplate>
 
       <mvux:FeedView.ErrorTemplate>
         <DataTemplate>
-          <StackPanel HorizontalAlignment="Center"
-                      VerticalAlignment="Center"
-                      Spacing="16">
-            <FontIcon Glyph="&#xE783;"
-                      FontSize="48"
-                      Foreground="{ThemeResource ErrorBrush}" />
-            <TextBlock x:Uid="CustomerDetailPage.LoadError"
-                       Style="{StaticResource BodyMedium}"
-                       HorizontalAlignment="Center" />
-          </StackPanel>
+          <Grid HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+              <FontIcon Glyph="&#xE783;"
+                        FontSize="48"
+                        Foreground="{ThemeResource ErrorBrush}" />
+              <TextBlock x:Uid="CustomerDetailPage.LoadError"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+              <Button x:Uid="Common.Retry"
+                      Style="{StaticResource FilledButtonStyle}"
+                      HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
         </DataTemplate>
       </mvux:FeedView.ErrorTemplate>
     </mvux:FeedView>

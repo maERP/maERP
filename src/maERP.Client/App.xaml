@@ -27,6 +27,14 @@
 
       <!-- Converters -->
       <converters:DateOnlyConverter x:Key="DateOnlyConverter" />
+      <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+      <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+      <converters:StringToInverseVisibilityConverter x:Key="StringToInverseVisibilityConverter" />
+      <converters:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter" />
+      <converters:DateTimeOffsetToStringConverter x:Key="DateTimeOffsetToStringConverter" />
+      <converters:CustomerStatusToTextConverter x:Key="CustomerStatusToTextConverter" />
+      <converters:CustomerStatusToBackgroundConverter x:Key="CustomerStatusToBackgroundConverter" />
+      <converters:CustomerStatusToForegroundConverter x:Key="CustomerStatusToForegroundConverter" />
 
     </ResourceDictionary>
   </Application.Resources>

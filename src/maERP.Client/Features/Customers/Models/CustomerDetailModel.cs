@@ -17,11 +17,11 @@ public partial record CustomerDetailModel
     public CustomerDetailModel(
         ICustomerService customerService,
         INavigator navigator,
-        Guid customerId)
+        CustomerDetailData data)
     {
         _customerService = customerService;
         _navigator = navigator;
-        _customerId = customerId;
+        _customerId = data.customerId;
     }
 
     /// <summary>
@@ -38,10 +38,7 @@ public partial record CustomerDetailModel
     /// </summary>
     public async Task EditCustomer()
     {
-        await _navigator.NavigateRouteAsync(
-            this,
-            Routes.CustomerEdit,
-            data: new Dictionary<string, object> { ["customerId"] = _customerId });
+        await _navigator.NavigateDataAsync(this, new CustomerEditData(_customerId));
     }
 
     /// <summary>

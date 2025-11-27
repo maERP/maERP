@@ -34,8 +34,8 @@ public static class CustomersModule
     {
         views.Register(
             new ViewMap<CustomerListPage, CustomerListModel>(),
-            new ViewMap<CustomerDetailPage, CustomerDetailModel>(),
-            new ViewMap<CustomerEditPage, CustomerEditModel>()
+            new ViewMap<CustomerDetailPage, CustomerDetailModel>(Data: new DataMap<CustomerDetailData>()),
+            new ViewMap<CustomerEditPage, CustomerEditModel>(Data: new DataMap<CustomerEditData>())
         );
     }
 
@@ -50,3 +50,13 @@ public static class CustomersModule
         yield return new RouteMap(Routes.CustomerCreate, View: views.FindByViewModel<CustomerEditModel>());
     }
 }
+
+/// <summary>
+/// Navigation data for customer detail page.
+/// </summary>
+public record CustomerDetailData(Guid customerId);
+
+/// <summary>
+/// Navigation data for customer edit page.
+/// </summary>
+public record CustomerEditData(Guid customerId);
