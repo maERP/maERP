@@ -25,31 +25,25 @@
           Spacing="16"
           Padding="24">
 
-      <TextBlock Text="Welcome to maERP"
+      <TextBlock x:Uid="LoginPage.Title"
                  Style="{StaticResource HeadlineSmall}"
                  HorizontalAlignment="Center"
                  Margin="0,0,0,24" />
 
       <TextBox x:Name="ServerUrlTextBox"
-               Header="Server URL"
-               PlaceholderText="https://api.maerp.com"
-               Text="{Binding ServerUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                x:Uid="LoginPage.TextBox.ServerUrl"
+               Text="{Binding ServerUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                AutomationProperties.Name="Server URL" />
 
       <TextBox x:Name="EmailTextBox"
-               Header="Email"
-               PlaceholderText="Enter your email"
-               Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                x:Uid="LoginPage.TextBox.Email"
+               Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                AutomationProperties.Name="Email"
                InputScope="EmailSmtpAddress" />
 
       <PasswordBox x:Name="PasswordBox"
-                   Header="Password"
-                   PlaceholderText="Enter your password"
-                   Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                    x:Uid="LoginPage.PasswordBox.Password"
+                   Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                    AutomationProperties.Name="Password" />
 
       <TextBlock Text="{Binding ErrorMessage}"
@@ -58,7 +52,7 @@
                  TextWrapping="Wrap"
                  Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" />
 
-      <Button Content="Login"
+      <Button x:Uid="LoginPage.Button.Login"
               Command="{Binding LoginCommand}"
               HorizontalAlignment="Stretch"
               Style="{StaticResource FilledButtonStyle}" />

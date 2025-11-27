@@ -74,7 +74,7 @@
       <NavigationView.MenuItems>
         <!-- Login Menu Item (only visible when NOT authenticated) -->
         <NavigationViewItem x:Name="NavItemLogin"
-                            Content="Login"
+                            x:Uid="Shell.NavItem.Login"
                             Tag="Login">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE77B;" />
@@ -83,7 +83,7 @@
 
         <!-- Authenticated Menu Items -->
         <NavigationViewItem x:Name="NavItemDashboard"
-                            Content="Dashboard"
+                            x:Uid="Shell.NavItem.Dashboard"
                             Tag="Main">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE80F;" />
@@ -93,10 +93,10 @@
         <NavigationViewItemSeparator x:Name="NavSeparator1" />
 
         <NavigationViewItemHeader x:Name="NavHeaderModules"
-                                  Content="Modules" />
+                                  x:Uid="Shell.NavHeader.Modules" />
 
         <NavigationViewItem x:Name="NavItemCustomers"
-                            Content="Customers"
+                            x:Uid="Shell.NavItem.Customers"
                             Tag="Customers">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE716;" />
@@ -104,7 +104,7 @@
         </NavigationViewItem>
 
         <NavigationViewItem x:Name="NavItemOrders"
-                            Content="Orders"
+                            x:Uid="Shell.NavItem.Orders"
                             Tag="Orders">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE7BF;" />
@@ -112,7 +112,7 @@
         </NavigationViewItem>
 
         <NavigationViewItem x:Name="NavItemProducts"
-                            Content="Products"
+                            x:Uid="Shell.NavItem.Products"
                             Tag="Products">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE7BF;" />
@@ -120,7 +120,7 @@
         </NavigationViewItem>
 
         <NavigationViewItem x:Name="NavItemInventory"
-                            Content="Inventory"
+                            x:Uid="Shell.NavItem.Inventory"
                             Tag="Inventory">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE8F1;" />
@@ -131,7 +131,7 @@
       <!-- Footer Menu Items -->
       <NavigationView.FooterMenuItems>
         <NavigationViewItem x:Name="NavItemSettings"
-                            Content="Settings"
+                            x:Uid="Shell.NavItem.Settings"
                             Tag="Settings">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE713;" />
@@ -139,7 +139,7 @@
         </NavigationViewItem>
 
         <NavigationViewItem x:Name="NavItemLogout"
-                            Content="Logout"
+                            x:Uid="Shell.NavItem.Logout"
                             Tag="Logout">
           <NavigationViewItem.Icon>
             <FontIcon Glyph="&#xE7E8;" />
@@ -191,7 +191,7 @@
             <!-- Login Tab (only visible when NOT authenticated) -->
             <utu:TabBarItem x:Name="TabItemLogin"
                             Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            Content="Login"
+                            x:Uid="Shell.NavItem.Login"
                             Tag="Login">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE77B;" />
@@ -201,7 +201,7 @@
             <!-- Authenticated Tabs -->
             <utu:TabBarItem x:Name="TabItemDashboard"
                             Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            Content="Dashboard"
+                            x:Uid="Shell.NavItem.Dashboard"
                             Tag="Main">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE80F;" />
@@ -210,7 +210,7 @@
 
             <utu:TabBarItem x:Name="TabItemCustomers"
                             Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            Content="Customers"
+                            x:Uid="Shell.NavItem.Customers"
                             Tag="Customers">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE716;" />
@@ -219,7 +219,7 @@
 
             <utu:TabBarItem x:Name="TabItemOrders"
                             Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            Content="Orders"
+                            x:Uid="Shell.NavItem.Orders"
                             Tag="Orders">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE7BF;" />
@@ -228,7 +228,7 @@
 
             <utu:TabBarItem x:Name="TabItemSettings"
                             Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            Content="Settings"
+                            x:Uid="Shell.NavItem.Settings"
                             Tag="Settings">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE713;" />
@@ -237,7 +237,7 @@
 
             <utu:TabBarItem x:Name="TabItemLogout"
                             Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            Content="Logout"
+                            x:Uid="Shell.NavItem.Logout"
                             Tag="Logout">
               <utu:TabBarItem.Icon>
                 <FontIcon Glyph="&#xE7E8;" />

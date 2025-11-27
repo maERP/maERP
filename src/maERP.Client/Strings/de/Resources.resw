@@ -1,0 +1,263 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Application -->
+  <data name="ApplicationName" xml:space="preserve">
+    <value>maERP</value>
+  </data>
+
+  <!-- Login Page -->
+  <data name="LoginPage.Title.Text" xml:space="preserve">
+    <value>Willkommen bei maERP</value>
+  </data>
+  <data name="LoginPage.TextBox.ServerUrl.Header" xml:space="preserve">
+    <value>Server-URL</value>
+  </data>
+  <data name="LoginPage.TextBox.ServerUrl.PlaceholderText" xml:space="preserve">
+    <value>https://api.maerp.com</value>
+  </data>
+  <data name="LoginPage.TextBox.Email.Header" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="LoginPage.TextBox.Email.PlaceholderText" xml:space="preserve">
+    <value>Ihre E-Mail eingeben</value>
+  </data>
+  <data name="LoginPage.PasswordBox.Password.Header" xml:space="preserve">
+    <value>Passwort</value>
+  </data>
+  <data name="LoginPage.PasswordBox.Password.PlaceholderText" xml:space="preserve">
+    <value>Ihr Passwort eingeben</value>
+  </data>
+  <data name="LoginPage.Button.Login.Content" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+
+  <!-- Dashboard Page -->
+  <data name="DashboardPage.Title.Text" xml:space="preserve">
+    <value>Willkommen bei maERP Dashboard</value>
+  </data>
+  <data name="DashboardPage.TextBox.Name.Header" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DashboardPage.TextBox.Name.PlaceholderText" xml:space="preserve">
+    <value>Ihren Namen eingeben</value>
+  </data>
+  <data name="DashboardPage.Button.SecondPage.Content" xml:space="preserve">
+    <value>Zur zweiten Seite</value>
+  </data>
+  <data name="DashboardPage.Button.Logout.Content" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+
+  <!-- Shell Navigation -->
+  <data name="Shell.NavItem.Login.Content" xml:space="preserve">
+    <value>Anmelden</value>
+  </data>
+  <data name="Shell.NavItem.Dashboard.Content" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Shell.NavHeader.Modules.Content" xml:space="preserve">
+    <value>Module</value>
+  </data>
+  <data name="Shell.NavItem.Customers.Content" xml:space="preserve">
+    <value>Kunden</value>
+  </data>
+  <data name="Shell.NavItem.Orders.Content" xml:space="preserve">
+    <value>Bestellungen</value>
+  </data>
+  <data name="Shell.NavItem.Products.Content" xml:space="preserve">
+    <value>Produkte</value>
+  </data>
+  <data name="Shell.NavItem.Inventory.Content" xml:space="preserve">
+    <value>Lagerbestand</value>
+  </data>
+  <data name="Shell.NavItem.Settings.Content" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Shell.NavItem.Logout.Content" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+
+  <!-- Customer List Page -->
+  <data name="CustomerListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Kunden</value>
+  </data>
+  <data name="CustomerListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="CustomerListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>Kundenliste aktualisieren</value>
+  </data>
+  <data name="CustomerListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="CustomerListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neuen Kunden anlegen</value>
+  </data>
+  <data name="CustomerListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Kunden suchen...</value>
+  </data>
+  <data name="CustomerListPage.Sort.NewestFirst.Content" xml:space="preserve">
+    <value>Neueste zuerst</value>
+  </data>
+  <data name="CustomerListPage.Sort.OldestFirst.Content" xml:space="preserve">
+    <value>Älteste zuerst</value>
+  </data>
+  <data name="CustomerListPage.Sort.LastNameAZ.Content" xml:space="preserve">
+    <value>Nachname A-Z</value>
+  </data>
+  <data name="CustomerListPage.Sort.LastNameZA.Content" xml:space="preserve">
+    <value>Nachname Z-A</value>
+  </data>
+  <data name="CustomerListPage.Sort.FirstNameAZ.Content" xml:space="preserve">
+    <value>Vorname A-Z</value>
+  </data>
+  <data name="CustomerListPage.Sort.FirstNameZA.Content" xml:space="preserve">
+    <value>Vorname Z-A</value>
+  </data>
+  <data name="CustomerListPage.Sort.CustomerIdAsc.Content" xml:space="preserve">
+    <value>Kunden-Nr. aufst.</value>
+  </data>
+  <data name="CustomerListPage.Sort.CustomerIdDesc.Content" xml:space="preserve">
+    <value>Kunden-Nr. abst.</value>
+  </data>
+  <data name="CustomerListPage.DataGrid.CustomerId.Header" xml:space="preserve">
+    <value>Kunden-Nr.</value>
+  </data>
+  <data name="CustomerListPage.DataGrid.FirstName.Header" xml:space="preserve">
+    <value>Vorname</value>
+  </data>
+  <data name="CustomerListPage.DataGrid.LastName.Header" xml:space="preserve">
+    <value>Nachname</value>
+  </data>
+  <data name="CustomerListPage.DataGrid.EnrollmentDate.Header" xml:space="preserve">
+    <value>Registrierungsdatum</value>
+  </data>
+  <data name="CustomerListPage.NoCustomers.Text" xml:space="preserve">
+    <value>Keine Kunden gefunden</value>
+  </data>
+  <data name="CustomerListPage.LoadError.Text" xml:space="preserve">
+    <value>Kunden konnten nicht geladen werden</value>
+  </data>
+  <data name="CustomerListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="CustomerListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="CustomerListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Einträge pro Seite:</value>
+  </data>
+
+  <!-- Customer Detail Page -->
+  <data name="CustomerDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>Kundendetails</value>
+  </data>
+  <data name="CustomerDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="CustomerDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="CustomerDetailPage.AppBarButton.Delete.Label" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="CustomerDetailPage.ContactInformation.Header" xml:space="preserve">
+    <value>Kontaktinformationen</value>
+  </data>
+  <data name="CustomerDetailPage.NotAvailable.Text" xml:space="preserve">
+    <value>Nicht verfügbar</value>
+  </data>
+  <data name="CustomerDetailPage.CustomerNumber.Header" xml:space="preserve">
+    <value>Kundennummer</value>
+  </data>
+  <data name="CustomerDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Kunde konnte nicht geladen werden</value>
+  </data>
+
+  <!-- Second Page (Legacy) -->
+  <data name="SecondPage.NavigationBar.Content" xml:space="preserve">
+    <value>Zweite Seite</value>
+  </data>
+
+  <!-- Common -->
+  <data name="Common.Loading" xml:space="preserve">
+    <value>Laden...</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="Common.Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="Common.Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="Common.Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="Common.No" xml:space="preserve">
+    <value>Nein</value>
+  </data>
+  <data name="Common.OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+</root>

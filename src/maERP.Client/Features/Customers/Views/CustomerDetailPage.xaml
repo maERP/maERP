@@ -14,18 +14,18 @@
     </Grid.RowDefinitions>
 
     <!-- Header with back button -->
-    <utu:NavigationBar Grid.Row="0" Content="Customer Details">
+    <utu:NavigationBar Grid.Row="0" x:Uid="CustomerDetailPage.NavigationBar">
       <utu:NavigationBar.MainCommand>
         <AppBarButton Icon="Back"
-                      Label="Back"
+                      x:Uid="CustomerDetailPage.AppBarButton.Back"
                       Command="{Binding GoBack}" />
       </utu:NavigationBar.MainCommand>
       <utu:NavigationBar.PrimaryCommands>
         <AppBarButton Icon="Edit"
-                      Label="Edit"
+                      x:Uid="CustomerDetailPage.AppBarButton.Edit"
                       Command="{Binding EditCustomer}" />
         <AppBarButton Icon="Delete"
-                      Label="Delete"
+                      x:Uid="CustomerDetailPage.AppBarButton.Delete"
                       Command="{Binding DeleteCustomer}" />
       </utu:NavigationBar.PrimaryCommands>
     </utu:NavigationBar>
@@ -52,7 +52,7 @@
 
               <!-- Contact Information -->
               <StackPanel Spacing="8">
-                <TextBlock Text="Contact Information"
+                <TextBlock x:Uid="CustomerDetailPage.ContactInformation"
                            Style="{StaticResource TitleMedium}" />
 
                 <Grid>
@@ -76,7 +76,7 @@
                             Glyph="&#xE717;"
                             Margin="0,0,12,0" />
                   <TextBlock Grid.Row="1" Grid.Column="1"
-                             Text="Not available"
+                             x:Uid="CustomerDetailPage.NotAvailable"
                              Style="{StaticResource BodyMedium}"
                              Foreground="{ThemeResource OnSurfaceVariantBrush}" />
                 </Grid>
@@ -84,7 +84,7 @@
 
               <!-- Customer Number -->
               <StackPanel Spacing="8">
-                <TextBlock Text="Customer Number"
+                <TextBlock x:Uid="CustomerDetailPage.CustomerNumber"
                            Style="{StaticResource TitleMedium}" />
                 <TextBlock Text="{Binding Data.CustomerNumber}"
                            Style="{StaticResource BodyMedium}" />
@@ -112,7 +112,7 @@
             <FontIcon Glyph="&#xE783;"
                       FontSize="48"
                       Foreground="{ThemeResource ErrorBrush}" />
-            <TextBlock Text="Failed to load customer"
+            <TextBlock x:Uid="CustomerDetailPage.LoadError"
                        Style="{StaticResource BodyMedium}"
                        HorizontalAlignment="Center" />
           </StackPanel>

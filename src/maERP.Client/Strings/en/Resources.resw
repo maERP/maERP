@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
-    Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
-
-    Example:
-
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -117,7 +58,206 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+
+  <!-- Application -->
   <data name="ApplicationName" xml:space="preserve">
-    <value>maERP.Client-en</value>
+    <value>maERP</value>
+  </data>
+
+  <!-- Login Page -->
+  <data name="LoginPage.Title.Text" xml:space="preserve">
+    <value>Welcome to maERP</value>
+  </data>
+  <data name="LoginPage.TextBox.ServerUrl.Header" xml:space="preserve">
+    <value>Server URL</value>
+  </data>
+  <data name="LoginPage.TextBox.ServerUrl.PlaceholderText" xml:space="preserve">
+    <value>https://api.maerp.com</value>
+  </data>
+  <data name="LoginPage.TextBox.Email.Header" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="LoginPage.TextBox.Email.PlaceholderText" xml:space="preserve">
+    <value>Enter your email</value>
+  </data>
+  <data name="LoginPage.PasswordBox.Password.Header" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="LoginPage.PasswordBox.Password.PlaceholderText" xml:space="preserve">
+    <value>Enter your password</value>
+  </data>
+  <data name="LoginPage.Button.Login.Content" xml:space="preserve">
+    <value>Login</value>
+  </data>
+
+  <!-- Dashboard Page -->
+  <data name="DashboardPage.Title.Text" xml:space="preserve">
+    <value>Welcome to maERP Dashboard</value>
+  </data>
+  <data name="DashboardPage.TextBox.Name.Header" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DashboardPage.TextBox.Name.PlaceholderText" xml:space="preserve">
+    <value>Enter your name</value>
+  </data>
+  <data name="DashboardPage.Button.SecondPage.Content" xml:space="preserve">
+    <value>Go to Second Page</value>
+  </data>
+  <data name="DashboardPage.Button.Logout.Content" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+
+  <!-- Shell Navigation -->
+  <data name="Shell.NavItem.Login.Content" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Shell.NavItem.Dashboard.Content" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Shell.NavHeader.Modules.Content" xml:space="preserve">
+    <value>Modules</value>
+  </data>
+  <data name="Shell.NavItem.Customers.Content" xml:space="preserve">
+    <value>Customers</value>
+  </data>
+  <data name="Shell.NavItem.Orders.Content" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="Shell.NavItem.Products.Content" xml:space="preserve">
+    <value>Products</value>
+  </data>
+  <data name="Shell.NavItem.Inventory.Content" xml:space="preserve">
+    <value>Inventory</value>
+  </data>
+  <data name="Shell.NavItem.Settings.Content" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Shell.NavItem.Logout.Content" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+
+  <!-- Customer List Page -->
+  <data name="CustomerListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Customers</value>
+  </data>
+  <data name="CustomerListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="CustomerListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>Refresh customer list</value>
+  </data>
+  <data name="CustomerListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="CustomerListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Create new customer</value>
+  </data>
+  <data name="CustomerListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Search customers...</value>
+  </data>
+  <data name="CustomerListPage.Sort.NewestFirst.Content" xml:space="preserve">
+    <value>Newest First</value>
+  </data>
+  <data name="CustomerListPage.Sort.OldestFirst.Content" xml:space="preserve">
+    <value>Oldest First</value>
+  </data>
+  <data name="CustomerListPage.Sort.LastNameAZ.Content" xml:space="preserve">
+    <value>Last Name A-Z</value>
+  </data>
+  <data name="CustomerListPage.Sort.LastNameZA.Content" xml:space="preserve">
+    <value>Last Name Z-A</value>
+  </data>
+  <data name="CustomerListPage.Sort.FirstNameAZ.Content" xml:space="preserve">
+    <value>First Name A-Z</value>
+  </data>
+  <data name="CustomerListPage.Sort.FirstNameZA.Content" xml:space="preserve">
+    <value>First Name Z-A</value>
+  </data>
+  <data name="CustomerListPage.Sort.CustomerIdAsc.Content" xml:space="preserve">
+    <value>Customer # Asc</value>
+  </data>
+  <data name="CustomerListPage.Sort.CustomerIdDesc.Content" xml:space="preserve">
+    <value>Customer # Desc</value>
+  </data>
+  <data name="CustomerListPage.DataGrid.CustomerId.Header" xml:space="preserve">
+    <value>Customer #</value>
+  </data>
+  <data name="CustomerListPage.DataGrid.FirstName.Header" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="CustomerListPage.DataGrid.LastName.Header" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="CustomerListPage.DataGrid.EnrollmentDate.Header" xml:space="preserve">
+    <value>Enrollment Date</value>
+  </data>
+  <data name="CustomerListPage.NoCustomers.Text" xml:space="preserve">
+    <value>No customers found</value>
+  </data>
+  <data name="CustomerListPage.LoadError.Text" xml:space="preserve">
+    <value>Failed to load customers</value>
+  </data>
+  <data name="CustomerListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Previous page</value>
+  </data>
+  <data name="CustomerListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Next page</value>
+  </data>
+  <data name="CustomerListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Items per page:</value>
+  </data>
+
+  <!-- Customer Detail Page -->
+  <data name="CustomerDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>Customer Details</value>
+  </data>
+  <data name="CustomerDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="CustomerDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="CustomerDetailPage.AppBarButton.Delete.Label" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CustomerDetailPage.ContactInformation.Header" xml:space="preserve">
+    <value>Contact Information</value>
+  </data>
+  <data name="CustomerDetailPage.NotAvailable.Text" xml:space="preserve">
+    <value>Not available</value>
+  </data>
+  <data name="CustomerDetailPage.CustomerNumber.Header" xml:space="preserve">
+    <value>Customer Number</value>
+  </data>
+  <data name="CustomerDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Failed to load customer</value>
+  </data>
+
+  <!-- Second Page (Legacy) -->
+  <data name="SecondPage.NavigationBar.Content" xml:space="preserve">
+    <value>Second Page</value>
+  </data>
+
+  <!-- Common -->
+  <data name="Common.Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Common.Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Common.Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Common.Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Common.No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Common.OK" xml:space="preserve">
+    <value>OK</value>
   </data>
 </root>

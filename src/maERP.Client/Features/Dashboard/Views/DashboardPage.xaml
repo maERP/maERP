@@ -20,18 +20,17 @@
             VerticalAlignment="Center"
             Spacing="16"
             Padding="24">
-        <TextBlock Text="Welcome to maERP Dashboard"
+        <TextBlock x:Uid="DashboardPage.Title"
                    Style="{StaticResource HeadlineMedium}"
                    HorizontalAlignment="Center" />
 
-        <TextBox Header="Name"
-                 Text="{Binding Name, Mode=TwoWay}"
-                 PlaceholderText="Enter your name" />
-        <Button Content="Go to Second Page"
+        <TextBox x:Uid="DashboardPage.TextBox.Name"
+                 Text="{Binding Name, Mode=TwoWay}" />
+        <Button x:Uid="DashboardPage.Button.SecondPage"
                 Style="{StaticResource FilledButtonStyle}"
                 AutomationProperties.AutomationId="SecondPageButton"
                 Command="{Binding GoToSecond}" />
-        <Button Content="Logout"
+        <Button x:Uid="DashboardPage.Button.Logout"
                 Style="{StaticResource OutlinedButtonStyle}"
                 Command="{Binding Logout}" />
       </StackPanel>

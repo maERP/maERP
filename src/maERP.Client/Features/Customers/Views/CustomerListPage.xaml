@@ -19,17 +19,15 @@
 
     <!-- Header with NavigationBar -->
     <utu:NavigationBar Grid.Row="0"
-                       Content="Customers">
+                       x:Uid="CustomerListPage.NavigationBar">
       <utu:NavigationBar.PrimaryCommands>
-        <AppBarButton Label="Refresh"
-                      ToolTipService.ToolTip="Refresh customer list"
+        <AppBarButton x:Uid="CustomerListPage.AppBarButton.Refresh"
                       Command="{Binding Refresh, ElementName=CustomersFeedView}">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE72C;" />
           </AppBarButton.Icon>
         </AppBarButton>
-        <AppBarButton Label="New"
-                      ToolTipService.ToolTip="Create new customer"
+        <AppBarButton x:Uid="CustomerListPage.AppBarButton.New"
                       Click="CreateCustomer_Click">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE710;" />
@@ -50,7 +48,7 @@
       <Grid Grid.Column="0"
             Margin="0,0,12,0">
         <TextBox x:Name="SearchBox"
-                 PlaceholderText="Search customers..."
+                 x:Uid="CustomerListPage.SearchBox"
                  TextChanged="SearchBox_TextChanged"
                  Padding="40,11,12,11" />
         <FontIcon Glyph="&#xE721;"
@@ -68,14 +66,14 @@
                 MinWidth="180"
                 SelectionChanged="SortComboBox_SelectionChanged"
                 SelectedIndex="0">
-        <ComboBoxItem Content="Newest First" Tag="DateEnrollment Descending" />
-        <ComboBoxItem Content="Oldest First" Tag="DateEnrollment Ascending" />
-        <ComboBoxItem Content="Last Name A-Z" Tag="Lastname Ascending" />
-        <ComboBoxItem Content="Last Name Z-A" Tag="Lastname Descending" />
-        <ComboBoxItem Content="First Name A-Z" Tag="Firstname Ascending" />
-        <ComboBoxItem Content="First Name Z-A" Tag="Firstname Descending" />
-        <ComboBoxItem Content="Customer # Asc" Tag="CustomerId Ascending" />
-        <ComboBoxItem Content="Customer # Desc" Tag="CustomerId Descending" />
+        <ComboBoxItem x:Uid="CustomerListPage.Sort.NewestFirst" Tag="DateEnrollment Descending" />
+        <ComboBoxItem x:Uid="CustomerListPage.Sort.OldestFirst" Tag="DateEnrollment Ascending" />
+        <ComboBoxItem x:Uid="CustomerListPage.Sort.LastNameAZ" Tag="Lastname Ascending" />
+        <ComboBoxItem x:Uid="CustomerListPage.Sort.LastNameZA" Tag="Lastname Descending" />
+        <ComboBoxItem x:Uid="CustomerListPage.Sort.FirstNameAZ" Tag="Firstname Ascending" />
+        <ComboBoxItem x:Uid="CustomerListPage.Sort.FirstNameZA" Tag="Firstname Descending" />
+        <ComboBoxItem x:Uid="CustomerListPage.Sort.CustomerIdAsc" Tag="CustomerId Ascending" />
+        <ComboBoxItem x:Uid="CustomerListPage.Sort.CustomerIdDesc" Tag="CustomerId Descending" />
       </ComboBox>
     </Grid>
 
@@ -98,16 +96,16 @@
                              CanUserSortColumns="False"
                              SelectionChanged="CustomerDataGrid_SelectionChanged">
             <controls:DataGrid.Columns>
-              <controls:DataGridTextColumn Header="Customer #"
+              <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.CustomerId"
                                            Binding="{Binding CustomerId}"
                                            Width="100" />
-              <controls:DataGridTextColumn Header="First Name"
+              <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.FirstName"
                                            Binding="{Binding Firstname}"
                                            Width="*" />
-              <controls:DataGridTextColumn Header="Last Name"
+              <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.LastName"
                                            Binding="{Binding Lastname}"
                                            Width="*" />
-              <controls:DataGridTextColumn Header="Enrollment Date"
+              <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.EnrollmentDate"
                                            Binding="{Binding DateEnrollment, Converter={StaticResource DateOnlyConverter}}"
                                            Width="150" />
             </controls:DataGrid.Columns>
@@ -133,7 +131,7 @@
             <FontIcon Glyph="&#xE716;"
                       FontSize="48"
                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-            <TextBlock Text="No customers found"
+            <TextBlock x:Uid="CustomerListPage.NoCustomers"
                        Style="{StaticResource BodyMedium}"
                        HorizontalAlignment="Center" />
           </StackPanel>
@@ -148,7 +146,7 @@
             <FontIcon Glyph="&#xE783;"
                       FontSize="48"
                       Foreground="{ThemeResource ErrorBrush}" />
-            <TextBlock Text="Failed to load customers"
+            <TextBlock x:Uid="CustomerListPage.LoadError"
                        Style="{StaticResource BodyMedium}"
                        HorizontalAlignment="Center" />
           </StackPanel>
@@ -189,7 +187,7 @@
                     Spacing="8">
           <Button x:Name="PreviousPageButton"
                   Style="{StaticResource IconButtonStyle}"
-                  ToolTipService.ToolTip="Previous page"
+                  x:Uid="CustomerListPage.PreviousPage"
                   Click="PreviousPage_Click">
             <FontIcon Glyph="&#xE76B;"
                       FontSize="16" />
@@ -209,7 +207,7 @@
 
           <Button x:Name="NextPageButton"
                   Style="{StaticResource IconButtonStyle}"
-                  ToolTipService.ToolTip="Next page"
+                  x:Uid="CustomerListPage.NextPage"
                   Click="NextPage_Click">
             <FontIcon Glyph="&#xE76C;"
                       FontSize="16" />
@@ -221,7 +219,7 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Spacing="8">
-          <TextBlock Text="Items per page:"
+          <TextBlock x:Uid="CustomerListPage.ItemsPerPage"
                      Style="{StaticResource BodySmall}"
                      Foreground="{ThemeResource OnSurfaceVariantBrush}"
                      VerticalAlignment="Center" />
