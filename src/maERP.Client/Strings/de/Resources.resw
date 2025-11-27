@@ -216,6 +216,20 @@
     <value>Einträge pro Seite:</value>
   </data>
 
+  <!-- Pagination -->
+  <data name="Pagination.PageInfo" xml:space="preserve">
+    <value>Seite {0} von {1}</value>
+  </data>
+  <data name="Pagination.NoResults" xml:space="preserve">
+    <value>Keine Ergebnisse</value>
+  </data>
+  <data name="Pagination.CustomersSingular" xml:space="preserve">
+    <value>1 Kunde</value>
+  </data>
+  <data name="Pagination.CustomersPlural" xml:space="preserve">
+    <value>{0} Kunden</value>
+  </data>
+
   <!-- Customer Detail Page -->
   <data name="CustomerDetailPage.NavigationBar.Content" xml:space="preserve">
     <value>Kundendetails</value>

@@ -13,13 +13,16 @@ public partial record CustomerListModel
 {
     private readonly ICustomerService _customerService;
     private readonly INavigator _navigator;
+    private readonly IStringLocalizer _localizer;
 
     public CustomerListModel(
         ICustomerService customerService,
-        INavigator navigator)
+        INavigator navigator,
+        IStringLocalizer localizer)
     {
         _customerService = customerService;
         _navigator = navigator;
+        _localizer = localizer;
     }
 
     /// <summary>
@@ -68,15 +71,14 @@ public partial record CustomerListModel
             var response = await _customerService.GetCustomersAsync(parameters, ct);
 
             // Update pagination info
-            await Pagination.UpdateAsync(_ => new PaginationInfo
-            {
-                CurrentPage = response.CurrentPage,
-                TotalPages = response.TotalPages,
-                TotalCount = response.TotalCount,
-                PageSize = response.PageSize,
-                HasPreviousPage = response.HasPreviousPage,
-                HasNextPage = response.HasNextPage
-            }, ct);
+            await Pagination.UpdateAsync(_ => new PaginationInfo(
+                response.CurrentPage,
+                response.TotalPages,
+                response.TotalCount,
+                response.PageSize,
+                response.HasPreviousPage,
+                response.HasNextPage,
+                _localizer), ct);
 
             return response.Data.ToImmutableList();
         })
@@ -161,6 +163,30 @@ public partial record CustomerListModel
 /// </summary>
 public record PaginationInfo
 {
+    private readonly IStringLocalizer? _localizer;
+
+    public PaginationInfo()
+    {
+    }
+
+    public PaginationInfo(
+        int currentPage,
+        int totalPages,
+        int totalCount,
+        int pageSize,
+        bool hasPreviousPage,
+        bool hasNextPage,
+        IStringLocalizer localizer)
+    {
+        CurrentPage = currentPage;
+        TotalPages = totalPages;
+        TotalCount = totalCount;
+        PageSize = pageSize;
+        HasPreviousPage = hasPreviousPage;
+        HasNextPage = hasNextPage;
+        _localizer = localizer;
+    }
+
     public int CurrentPage { get; init; }
     public int TotalPages { get; init; }
     public int TotalCount { get; init; }
@@ -171,10 +197,34 @@ public record PaginationInfo
     /// <summary>
     /// Display text for current page info (e.g., "Page 1 of 5").
     /// </summary>
-    public string PageInfo => TotalPages > 0 ? $"Page {CurrentPage + 1} of {TotalPages}" : "No results";
+    public string PageInfo
+    {
+        get
+        {
+            if (TotalPages <= 0)
+            {
+                return _localizer?["Pagination.NoResults"] ?? "No results";
+            }
+
+            var format = _localizer?["Pagination.PageInfo"] ?? "Page {0} of {1}";
+            return string.Format(format, CurrentPage + 1, TotalPages);
+        }
+    }
 
     /// <summary>
     /// Display text for total count info (e.g., "25 customers").
     /// </summary>
-    public string CountInfo => TotalCount == 1 ? "1 customer" : $"{TotalCount} customers";
+    public string CountInfo
+    {
+        get
+        {
+            if (TotalCount == 1)
+            {
+                return _localizer?["Pagination.CustomersSingular"] ?? "1 customer";
+            }
+
+            var format = _localizer?["Pagination.CustomersPlural"] ?? "{0} customers";
+            return string.Format(format, TotalCount);
+        }
+    }
 }

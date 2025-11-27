@@ -1,39 +1,9 @@
 <Page x:Class="maERP.Client.Features.Dashboard.Views.DashboardPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:maERP.Client.Features.Dashboard.Views"
-      xmlns:models="using:maERP.Client.Features.Dashboard.Models"
-      xmlns:uen="using:Uno.Extensions.Navigation.UI"
       xmlns:utu="using:Uno.Toolkit.UI"
-      xmlns:um="using:Uno.Material"
       NavigationCacheMode="Required"
       Background="{ThemeResource BackgroundBrush}">
-  <ScrollViewer IsTabStop="True">
-    <Grid utu:SafeArea.Insets="VisibleBounds">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition />
-      </Grid.RowDefinitions>
-
-      <StackPanel Grid.Row="1"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Spacing="16"
-            Padding="24">
-        <TextBlock x:Uid="DashboardPage.Title"
-                   Style="{StaticResource HeadlineMedium}"
-                   HorizontalAlignment="Center" />
-
-        <TextBox x:Uid="DashboardPage.TextBox.Name"
-                 Text="{Binding Name, Mode=TwoWay}" />
-        <Button x:Uid="DashboardPage.Button.SecondPage"
-                Style="{StaticResource FilledButtonStyle}"
-                AutomationProperties.AutomationId="SecondPageButton"
-                Command="{Binding GoToSecond}" />
-        <Button x:Uid="DashboardPage.Button.Logout"
-                Style="{StaticResource OutlinedButtonStyle}"
-                Command="{Binding Logout}" />
-      </StackPanel>
-    </Grid>
-  </ScrollViewer>
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+  </Grid>
 </Page>

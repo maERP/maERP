@@ -160,6 +160,12 @@ public partial class App : Application
 #endif
         MainWindow.SetWindowIcon();
 
+        // Set initial window size for desktop
+        if (MainWindow.AppWindow is not null)
+        {
+            MainWindow.AppWindow.Resize(new Windows.Graphics.SizeInt32 { Width = 1600, Height = 900 });
+        }
+
         Host = await builder.NavigateAsync<Shell>
             (initialNavigate: async (services, navigator) =>
             {

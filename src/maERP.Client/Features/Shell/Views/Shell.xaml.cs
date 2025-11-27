@@ -46,7 +46,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemLogin.Visibility = Visibility.Collapsed;
         NavItemDashboard.Visibility = Visibility.Visible;
         NavSeparator1.Visibility = Visibility.Visible;
-        NavHeaderModules.Visibility = Visibility.Visible;
         NavItemCustomers.Visibility = Visibility.Visible;
         NavItemOrders.Visibility = Visibility.Visible;
         NavItemProducts.Visibility = Visibility.Visible;
@@ -72,7 +71,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemLogin.Visibility = Visibility.Visible;
         NavItemDashboard.Visibility = Visibility.Collapsed;
         NavSeparator1.Visibility = Visibility.Collapsed;
-        NavHeaderModules.Visibility = Visibility.Collapsed;
         NavItemCustomers.Visibility = Visibility.Collapsed;
         NavItemOrders.Visibility = Visibility.Collapsed;
         NavItemProducts.Visibility = Visibility.Collapsed;
@@ -168,7 +166,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemLogin.Visibility = notAuthenticatedVisibility;
         NavItemDashboard.Visibility = authenticatedVisibility;
         NavSeparator1.Visibility = authenticatedVisibility;
-        NavHeaderModules.Visibility = authenticatedVisibility;
         NavItemCustomers.Visibility = authenticatedVisibility;
         NavItemOrders.Visibility = authenticatedVisibility;
         NavItemProducts.Visibility = authenticatedVisibility;
@@ -347,5 +344,10 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         {
             await NavigateToPageFromShell(navigator, "Logout");
         }
+    }
+
+    private void OnPaneToggleClick(object sender, RoutedEventArgs e)
+    {
+        NavView.IsPaneOpen = !NavView.IsPaneOpen;
     }
 }

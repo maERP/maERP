@@ -8,8 +8,8 @@
      xmlns:utu="using:Uno.Toolkit.UI"
      xmlns:uen="using:Uno.Extensions.Navigation.UI"
      mc:Ignorable="d"
-     d:DesignHeight="768"
-     d:DesignWidth="1200">
+     d:DesignHeight="800"
+     d:DesignWidth="1280">
 
   <UserControl.Resources>
   </UserControl.Resources>
@@ -23,7 +23,6 @@
         <VisualState x:Name="Narrow">
           <VisualState.Setters>
             <Setter Target="TabBarNav.Visibility" Value="Visible" />
-            <Setter Target="NavView.IsPaneToggleButtonVisible" Value="False" />
             <Setter Target="NavView.PaneDisplayMode" Value="LeftMinimal" />
             <Setter Target="NavView.IsPaneOpen" Value="False" />
             <Setter Target="NavView.IsPaneVisible" Value="False" />
@@ -38,7 +37,7 @@
           </VisualState.StateTriggers>
           <VisualState.Setters>
             <Setter Target="TabBarNav.Visibility" Value="Collapsed" />
-            <Setter Target="NavView.IsPaneToggleButtonVisible" Value="True" />
+            <Setter Target="PaneToggleButton.Visibility" Value="Visible" />
             <Setter Target="NavView.IsPaneVisible" Value="True" />
             <Setter Target="NavView.PaneDisplayMode" Value="Left" />
             <Setter Target="AppHeader.Visibility" Value="Visible" />
@@ -52,7 +51,7 @@
           </VisualState.StateTriggers>
           <VisualState.Setters>
             <Setter Target="TabBarNav.Visibility" Value="Collapsed" />
-            <Setter Target="NavView.IsPaneToggleButtonVisible" Value="True" />
+            <Setter Target="PaneToggleButton.Visibility" Value="Visible" />
             <Setter Target="NavView.IsPaneVisible" Value="True" />
             <Setter Target="NavView.PaneDisplayMode" Value="Left" />
             <Setter Target="NavView.IsPaneOpen" Value="True" />
@@ -80,11 +79,24 @@
         <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
 
-      <!-- Logo and App Name -->
-      <StackPanel Grid.Column="0"
+      <!-- Hamburger Menu Button -->
+      <Button x:Name="PaneToggleButton"
+              Grid.Column="0"
+              Width="48"
+              Height="48"
+              Background="Transparent"
+              BorderThickness="0"
+              Click="OnPaneToggleClick"
+              VerticalAlignment="Center">
+        <FontIcon Glyph="&#xE700;"
+                  FontSize="16" />
+      </Button>
+
+      <!-- Logo and App Name (centered) -->
+      <StackPanel Grid.Column="1"
                   Orientation="Horizontal"
-                  VerticalAlignment="Center"
-                  Margin="16,0,0,0">
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
         <Image Source="ms-appx:///Assets/Icons/icon.svg"
                Width="28"
                Height="28"
@@ -142,7 +154,7 @@
                       PaneDisplayMode="Left"
                       IsBackButtonVisible="Collapsed"
                       IsSettingsVisible="False"
-                      IsPaneToggleButtonVisible="True"
+                      IsPaneToggleButtonVisible="False"
                       OpenPaneLength="280"
                       CompactModeThresholdWidth="640"
                       ExpandedModeThresholdWidth="1000"
@@ -170,9 +182,6 @@
           </NavigationViewItem>
 
           <NavigationViewItemSeparator x:Name="NavSeparator1" />
-
-          <NavigationViewItemHeader x:Name="NavHeaderModules"
-                                    x:Uid="Shell.NavHeader.Modules" />
 
           <NavigationViewItem x:Name="NavItemCustomers"
                               x:Uid="Shell.NavItem.Customers"
