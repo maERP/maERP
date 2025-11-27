@@ -108,6 +108,15 @@
   </data>
 
   <!-- Shell Navigation -->
+  <data name="Shell.UserMenu.Text.Text" xml:space="preserve">
+    <value>Menü</value>
+  </data>
+  <data name="Shell.UserMenu.Settings.Text" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Shell.UserMenu.Logout.Text" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
   <data name="Shell.NavItem.Login.Content" xml:space="preserve">
     <value>Anmelden</value>
   </data>

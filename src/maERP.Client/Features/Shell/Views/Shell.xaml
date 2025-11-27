@@ -27,6 +27,7 @@
             <Setter Target="NavView.PaneDisplayMode" Value="LeftMinimal" />
             <Setter Target="NavView.IsPaneOpen" Value="False" />
             <Setter Target="NavView.IsPaneVisible" Value="False" />
+            <Setter Target="AppHeader.Visibility" Value="Collapsed" />
           </VisualState.Setters>
         </VisualState>
 
@@ -40,6 +41,7 @@
             <Setter Target="NavView.IsPaneToggleButtonVisible" Value="True" />
             <Setter Target="NavView.IsPaneVisible" Value="True" />
             <Setter Target="NavView.PaneDisplayMode" Value="Left" />
+            <Setter Target="AppHeader.Visibility" Value="Visible" />
           </VisualState.Setters>
         </VisualState>
 
@@ -54,198 +56,259 @@
             <Setter Target="NavView.IsPaneVisible" Value="True" />
             <Setter Target="NavView.PaneDisplayMode" Value="Left" />
             <Setter Target="NavView.IsPaneOpen" Value="True" />
+            <Setter Target="AppHeader.Visibility" Value="Visible" />
           </VisualState.Setters>
         </VisualState>
       </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
 
-    <NavigationView x:Name="NavView"
-                    PaneDisplayMode="Left"
-                    IsBackButtonVisible="Collapsed"
-                    IsSettingsVisible="False"
-                    IsPaneToggleButtonVisible="True"
-                    OpenPaneLength="280"
-                    CompactModeThresholdWidth="640"
-                    ExpandedModeThresholdWidth="1000"
-                    SelectionChanged="OnNavigationViewSelectionChanged"
-                    DataContext="{Binding}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
 
-      <!-- Navigation Menu Items -->
-      <NavigationView.MenuItems>
-        <!-- Login Menu Item (only visible when NOT authenticated) -->
-        <NavigationViewItem x:Name="NavItemLogin"
-                            x:Uid="Shell.NavItem.Login"
-                            Tag="Login">
-          <NavigationViewItem.Icon>
-            <FontIcon Glyph="&#xE77B;" />
-          </NavigationViewItem.Icon>
-        </NavigationViewItem>
+    <!-- App Header with Logo and User Menu -->
+    <Grid x:Name="AppHeader"
+          Grid.Row="0"
+          Height="48"
+          Background="{ThemeResource SurfaceVariantBrush}"
+          BorderBrush="{ThemeResource OutlineVariantBrush}"
+          BorderThickness="0,0,0,1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
 
-        <!-- Authenticated Menu Items -->
-        <NavigationViewItem x:Name="NavItemDashboard"
-                            x:Uid="Shell.NavItem.Dashboard"
-                            Tag="Main">
-          <NavigationViewItem.Icon>
-            <FontIcon Glyph="&#xE80F;" />
-          </NavigationViewItem.Icon>
-        </NavigationViewItem>
+      <!-- Logo and App Name -->
+      <StackPanel Grid.Column="0"
+                  Orientation="Horizontal"
+                  VerticalAlignment="Center"
+                  Margin="16,0,0,0">
+        <Image Source="ms-appx:///Assets/Icons/icon.svg"
+               Width="28"
+               Height="28"
+               Stretch="Uniform"
+               VerticalAlignment="Center" />
+        <TextBlock Text="maERP"
+                   Style="{StaticResource TitleTextBlockStyle}"
+                   VerticalAlignment="Center"
+                   Margin="12,0,0,0" />
+      </StackPanel>
 
-        <NavigationViewItemSeparator x:Name="NavSeparator1" />
+      <!-- User Menu -->
+      <StackPanel x:Name="UserMenuPanel"
+                  Grid.Column="2"
+                  Orientation="Horizontal"
+                  VerticalAlignment="Center"
+                  Margin="0,0,8,0">
+        <DropDownButton x:Name="UserMenuButton"
+                        x:Uid="Shell.UserMenu"
+                        VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal">
+            <FontIcon Glyph="&#xE77B;"
+                      FontSize="16"
+                      Margin="0,0,8,0" />
+            <TextBlock x:Name="UserMenuText"
+                       x:Uid="Shell.UserMenu.Text"
+                       VerticalAlignment="Center" />
+          </StackPanel>
+          <DropDownButton.Flyout>
+            <MenuFlyout Placement="BottomEdgeAlignedRight">
+              <MenuFlyoutItem x:Name="MenuItemSettings"
+                              x:Uid="Shell.UserMenu.Settings"
+                              Click="OnSettingsClick">
+                <MenuFlyoutItem.Icon>
+                  <FontIcon Glyph="&#xE713;" />
+                </MenuFlyoutItem.Icon>
+              </MenuFlyoutItem>
+              <MenuFlyoutSeparator />
+              <MenuFlyoutItem x:Name="MenuItemLogout"
+                              x:Uid="Shell.UserMenu.Logout"
+                              Click="OnLogoutClick">
+                <MenuFlyoutItem.Icon>
+                  <FontIcon Glyph="&#xE7E8;" />
+                </MenuFlyoutItem.Icon>
+              </MenuFlyoutItem>
+            </MenuFlyout>
+          </DropDownButton.Flyout>
+        </DropDownButton>
+      </StackPanel>
+    </Grid>
 
-        <NavigationViewItemHeader x:Name="NavHeaderModules"
-                                  x:Uid="Shell.NavHeader.Modules" />
+    <!-- Main Content Area with NavigationView -->
+    <Grid Grid.Row="1">
+      <NavigationView x:Name="NavView"
+                      PaneDisplayMode="Left"
+                      IsBackButtonVisible="Collapsed"
+                      IsSettingsVisible="False"
+                      IsPaneToggleButtonVisible="True"
+                      OpenPaneLength="280"
+                      CompactModeThresholdWidth="640"
+                      ExpandedModeThresholdWidth="1000"
+                      SelectionChanged="OnNavigationViewSelectionChanged"
+                      DataContext="{Binding}">
 
-        <NavigationViewItem x:Name="NavItemCustomers"
-                            x:Uid="Shell.NavItem.Customers"
-                            Tag="Customers">
-          <NavigationViewItem.Icon>
-            <FontIcon Glyph="&#xE716;" />
-          </NavigationViewItem.Icon>
-        </NavigationViewItem>
+        <!-- Navigation Menu Items -->
+        <NavigationView.MenuItems>
+          <!-- Login Menu Item (only visible when NOT authenticated) -->
+          <NavigationViewItem x:Name="NavItemLogin"
+                              x:Uid="Shell.NavItem.Login"
+                              Tag="Login">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE77B;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
 
-        <NavigationViewItem x:Name="NavItemOrders"
-                            x:Uid="Shell.NavItem.Orders"
-                            Tag="Orders">
-          <NavigationViewItem.Icon>
-            <FontIcon Glyph="&#xE7BF;" />
-          </NavigationViewItem.Icon>
-        </NavigationViewItem>
+          <!-- Authenticated Menu Items -->
+          <NavigationViewItem x:Name="NavItemDashboard"
+                              x:Uid="Shell.NavItem.Dashboard"
+                              Tag="Main">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE80F;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
 
-        <NavigationViewItem x:Name="NavItemProducts"
-                            x:Uid="Shell.NavItem.Products"
-                            Tag="Products">
-          <NavigationViewItem.Icon>
-            <FontIcon Glyph="&#xE7BF;" />
-          </NavigationViewItem.Icon>
-        </NavigationViewItem>
+          <NavigationViewItemSeparator x:Name="NavSeparator1" />
 
-        <NavigationViewItem x:Name="NavItemInventory"
-                            x:Uid="Shell.NavItem.Inventory"
-                            Tag="Inventory">
-          <NavigationViewItem.Icon>
-            <FontIcon Glyph="&#xE8F1;" />
-          </NavigationViewItem.Icon>
-        </NavigationViewItem>
-      </NavigationView.MenuItems>
+          <NavigationViewItemHeader x:Name="NavHeaderModules"
+                                    x:Uid="Shell.NavHeader.Modules" />
 
-      <!-- Footer Menu Items -->
-      <NavigationView.FooterMenuItems>
-        <NavigationViewItem x:Name="NavItemSettings"
-                            x:Uid="Shell.NavItem.Settings"
-                            Tag="Settings">
-          <NavigationViewItem.Icon>
-            <FontIcon Glyph="&#xE713;" />
-          </NavigationViewItem.Icon>
-        </NavigationViewItem>
+          <NavigationViewItem x:Name="NavItemCustomers"
+                              x:Uid="Shell.NavItem.Customers"
+                              Tag="Customers">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE716;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
 
-        <NavigationViewItem x:Name="NavItemLogout"
-                            x:Uid="Shell.NavItem.Logout"
-                            Tag="Logout">
-          <NavigationViewItem.Icon>
-            <FontIcon Glyph="&#xE7E8;" />
-          </NavigationViewItem.Icon>
-        </NavigationViewItem>
-      </NavigationView.FooterMenuItems>
+          <NavigationViewItem x:Name="NavItemOrders"
+                              x:Uid="Shell.NavItem.Orders"
+                              Tag="Orders">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE7BF;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
 
-      <!-- Content Area with ExtendedSplashScreen and TabBar -->
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="*" />
-          <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+          <NavigationViewItem x:Name="NavItemProducts"
+                              x:Uid="Shell.NavItem.Products"
+                              Tag="Products">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE7BF;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
 
-        <!-- Main Content Area -->
-        <Grid Grid.Row="0">
-          <utu:ExtendedSplashScreen x:Name="Splash"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch">
-            <utu:ExtendedSplashScreen.LoadingContentTemplate>
-              <DataTemplate>
-                <Grid>
-                  <Grid.RowDefinitions>
-                    <RowDefinition Height="2*" />
-                    <RowDefinition />
-                  </Grid.RowDefinitions>
+          <NavigationViewItem x:Name="NavItemInventory"
+                              x:Uid="Shell.NavItem.Inventory"
+                              Tag="Inventory">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE8F1;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
+        </NavigationView.MenuItems>
 
-                  <ProgressRing IsActive="True"
-                                Grid.Row="1"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                                Height="100"
-                                Width="100" />
-                </Grid>
-              </DataTemplate>
-            </utu:ExtendedSplashScreen.LoadingContentTemplate>
-          </utu:ExtendedSplashScreen>
+        <!-- Footer Menu Items removed - Settings and Logout moved to Header User Menu -->
+
+        <!-- Content Area with ExtendedSplashScreen and TabBar -->
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <!-- Main Content Area -->
+          <Grid Grid.Row="0">
+            <utu:ExtendedSplashScreen x:Name="Splash"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"
+                                      HorizontalContentAlignment="Stretch"
+                                      VerticalContentAlignment="Stretch">
+              <utu:ExtendedSplashScreen.LoadingContentTemplate>
+                <DataTemplate>
+                  <Grid>
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="2*" />
+                      <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <ProgressRing IsActive="True"
+                                  Grid.Row="1"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  Height="100"
+                                  Width="100" />
+                  </Grid>
+                </DataTemplate>
+              </utu:ExtendedSplashScreen.LoadingContentTemplate>
+            </utu:ExtendedSplashScreen>
+          </Grid>
+
+          <!-- TabBar for Mobile (Bottom Navigation) -->
+          <utu:TabBar x:Name="TabBarNav"
+                      Grid.Row="1"
+                      Visibility="Collapsed"
+                      VerticalAlignment="Bottom"
+                      Style="{StaticResource MaterialBottomTabBarStyle}">
+            <utu:TabBar.Items>
+              <!-- Login Tab (only visible when NOT authenticated) -->
+              <utu:TabBarItem x:Name="TabItemLogin"
+                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                              x:Uid="Shell.NavItem.Login"
+                              Tag="Login">
+                <utu:TabBarItem.Icon>
+                  <FontIcon Glyph="&#xE77B;" />
+                </utu:TabBarItem.Icon>
+              </utu:TabBarItem>
+
+              <!-- Authenticated Tabs -->
+              <utu:TabBarItem x:Name="TabItemDashboard"
+                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                              x:Uid="Shell.NavItem.Dashboard"
+                              Tag="Main">
+                <utu:TabBarItem.Icon>
+                  <FontIcon Glyph="&#xE80F;" />
+                </utu:TabBarItem.Icon>
+              </utu:TabBarItem>
+
+              <utu:TabBarItem x:Name="TabItemCustomers"
+                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                              x:Uid="Shell.NavItem.Customers"
+                              Tag="Customers">
+                <utu:TabBarItem.Icon>
+                  <FontIcon Glyph="&#xE716;" />
+                </utu:TabBarItem.Icon>
+              </utu:TabBarItem>
+
+              <utu:TabBarItem x:Name="TabItemOrders"
+                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                              x:Uid="Shell.NavItem.Orders"
+                              Tag="Orders">
+                <utu:TabBarItem.Icon>
+                  <FontIcon Glyph="&#xE7BF;" />
+                </utu:TabBarItem.Icon>
+              </utu:TabBarItem>
+
+              <utu:TabBarItem x:Name="TabItemSettings"
+                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                              x:Uid="Shell.NavItem.Settings"
+                              Tag="Settings">
+                <utu:TabBarItem.Icon>
+                  <FontIcon Glyph="&#xE713;" />
+                </utu:TabBarItem.Icon>
+              </utu:TabBarItem>
+
+              <utu:TabBarItem x:Name="TabItemLogout"
+                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                              x:Uid="Shell.NavItem.Logout"
+                              Tag="Logout">
+                <utu:TabBarItem.Icon>
+                  <FontIcon Glyph="&#xE7E8;" />
+                </utu:TabBarItem.Icon>
+              </utu:TabBarItem>
+            </utu:TabBar.Items>
+          </utu:TabBar>
         </Grid>
-
-        <!-- TabBar for Mobile (Bottom Navigation) -->
-        <utu:TabBar x:Name="TabBarNav"
-                    Grid.Row="1"
-                    Visibility="Collapsed"
-                    VerticalAlignment="Bottom"
-                    Style="{StaticResource MaterialBottomTabBarStyle}">
-          <utu:TabBar.Items>
-            <!-- Login Tab (only visible when NOT authenticated) -->
-            <utu:TabBarItem x:Name="TabItemLogin"
-                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            x:Uid="Shell.NavItem.Login"
-                            Tag="Login">
-              <utu:TabBarItem.Icon>
-                <FontIcon Glyph="&#xE77B;" />
-              </utu:TabBarItem.Icon>
-            </utu:TabBarItem>
-
-            <!-- Authenticated Tabs -->
-            <utu:TabBarItem x:Name="TabItemDashboard"
-                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            x:Uid="Shell.NavItem.Dashboard"
-                            Tag="Main">
-              <utu:TabBarItem.Icon>
-                <FontIcon Glyph="&#xE80F;" />
-              </utu:TabBarItem.Icon>
-            </utu:TabBarItem>
-
-            <utu:TabBarItem x:Name="TabItemCustomers"
-                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            x:Uid="Shell.NavItem.Customers"
-                            Tag="Customers">
-              <utu:TabBarItem.Icon>
-                <FontIcon Glyph="&#xE716;" />
-              </utu:TabBarItem.Icon>
-            </utu:TabBarItem>
-
-            <utu:TabBarItem x:Name="TabItemOrders"
-                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            x:Uid="Shell.NavItem.Orders"
-                            Tag="Orders">
-              <utu:TabBarItem.Icon>
-                <FontIcon Glyph="&#xE7BF;" />
-              </utu:TabBarItem.Icon>
-            </utu:TabBarItem>
-
-            <utu:TabBarItem x:Name="TabItemSettings"
-                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            x:Uid="Shell.NavItem.Settings"
-                            Tag="Settings">
-              <utu:TabBarItem.Icon>
-                <FontIcon Glyph="&#xE713;" />
-              </utu:TabBarItem.Icon>
-            </utu:TabBarItem>
-
-            <utu:TabBarItem x:Name="TabItemLogout"
-                            Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                            x:Uid="Shell.NavItem.Logout"
-                            Tag="Logout">
-              <utu:TabBarItem.Icon>
-                <FontIcon Glyph="&#xE7E8;" />
-              </utu:TabBarItem.Icon>
-            </utu:TabBarItem>
-          </utu:TabBar.Items>
-        </utu:TabBar>
-      </Grid>
-    </NavigationView>
+      </NavigationView>
+    </Grid>
   </Grid>
 </UserControl>

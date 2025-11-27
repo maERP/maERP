@@ -52,9 +52,8 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemProducts.Visibility = Visibility.Visible;
         NavItemInventory.Visibility = Visibility.Visible;
 
-        // Footer items - visible
-        NavItemSettings.Visibility = Visibility.Visible;
-        NavItemLogout.Visibility = Visibility.Visible;
+        // Header User Menu - visible when authenticated
+        UserMenuPanel.Visibility = Visibility.Visible;
 
         // TabBar items - Login hidden, all others visible
         TabItemLogin.Visibility = Visibility.Collapsed;
@@ -79,9 +78,8 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemProducts.Visibility = Visibility.Collapsed;
         NavItemInventory.Visibility = Visibility.Collapsed;
 
-        // Footer items - hidden
-        NavItemSettings.Visibility = Visibility.Collapsed;
-        NavItemLogout.Visibility = Visibility.Collapsed;
+        // Header User Menu - hidden when not authenticated
+        UserMenuPanel.Visibility = Visibility.Collapsed;
 
         // TabBar items - only Login visible
         TabItemLogin.Visibility = Visibility.Visible;
@@ -176,9 +174,8 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemProducts.Visibility = authenticatedVisibility;
         NavItemInventory.Visibility = authenticatedVisibility;
 
-        // Update footer items
-        NavItemSettings.Visibility = authenticatedVisibility;
-        NavItemLogout.Visibility = authenticatedVisibility;
+        // Update Header User Menu
+        UserMenuPanel.Visibility = authenticatedVisibility;
 
         // Update TabBar items
         TabItemLogin.Visibility = notAuthenticatedVisibility;
@@ -271,6 +268,10 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     Console.WriteLine("[Shell] Navigating to CustomerList");
                     await navigator.NavigateViewModelAsync<CustomerListModel>(this);
                     break;
+                case "Settings":
+                    Console.WriteLine("[Shell] Settings navigation - not yet implemented");
+                    // TODO: Implement settings page navigation
+                    break;
                 case "Logout":
                     Console.WriteLine("[Shell] Logging out");
                     var app = Application.Current as App;
@@ -311,6 +312,40 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     await NavigateToPageFromShell(navigator, tag);
                 }
             }
+        }
+    }
+
+    private async void OnSettingsClick(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] Settings menu item clicked");
+
+        var navigator = Splash.Navigator();
+        if (navigator == null)
+        {
+            var app = Application.Current as App;
+            navigator = app?.Host?.Services?.GetService<INavigator>();
+        }
+
+        if (navigator != null)
+        {
+            await NavigateToPageFromShell(navigator, "Settings");
+        }
+    }
+
+    private async void OnLogoutClick(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] Logout menu item clicked");
+
+        var navigator = Splash.Navigator();
+        if (navigator == null)
+        {
+            var app = Application.Current as App;
+            navigator = app?.Host?.Services?.GetService<INavigator>();
+        }
+
+        if (navigator != null)
+        {
+            await NavigateToPageFromShell(navigator, "Logout");
         }
     }
 }

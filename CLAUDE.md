@@ -24,6 +24,7 @@ The codebase implements:
 - No Automapper, using manual mapping instead
 - No MediatR, using manual Mediator instead
 - maERP.Client does not have database access, using REST-API with Kiota instead
+- Texts are created in multiple languages in the resource-files
 
 ### maERP.Client Uno Platform Project Settings
 - Framework .NET 10.0
