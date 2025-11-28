@@ -86,26 +86,20 @@ public class CustomerService : ICustomerService
         return apiResponse?.Data;
     }
 
-    public async Task<CustomerDetailDto> CreateCustomerAsync(CustomerInputDto input, CancellationToken ct = default)
+    public async Task CreateCustomerAsync(CustomerInputDto input, CancellationToken ct = default)
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Customers.Base}";
         var response = await _httpClient.PostAsJsonAsync(url, input, ct);
         response.EnsureSuccessStatusCode();
-        var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<CustomerDetailDto>>(_jsonOptions, ct);
-        return apiResponse?.Data
-            ?? throw new InvalidOperationException("Failed to create customer");
     }
 
-    public async Task<CustomerDetailDto> UpdateCustomerAsync(Guid id, CustomerInputDto input, CancellationToken ct = default)
+    public async Task UpdateCustomerAsync(Guid id, CustomerInputDto input, CancellationToken ct = default)
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Customers.ById(id)}";
         var response = await _httpClient.PutAsJsonAsync(url, input, ct);
         response.EnsureSuccessStatusCode();
-        var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<CustomerDetailDto>>(_jsonOptions, ct);
-        return apiResponse?.Data
-            ?? throw new InvalidOperationException("Failed to update customer");
     }
 
     public async Task DeleteCustomerAsync(Guid id, CancellationToken ct = default)

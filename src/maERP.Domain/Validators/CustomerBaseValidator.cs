@@ -42,8 +42,21 @@ public class CustomerBaseValidator<T> : AbstractValidator<T> where T : ICustomer
     {
         if (string.IsNullOrEmpty(url))
             return true;
-        
-        return Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
-            && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+
+        // Accept absolute URLs with http/https scheme
+        if (Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
+            && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+        {
+            return true;
+        }
+
+        // Accept URLs without scheme (e.g., "www.example.com" or "example.com")
+        // Try prepending https:// to validate the domain format
+        if (!url.Contains("://"))
+        {
+            return Uri.TryCreate("https://" + url, UriKind.Absolute, out _);
+        }
+
+        return false;
     }
 }

@@ -28,15 +28,15 @@
       <utu:NavigationBar.MainCommand>
         <AppBarButton Icon="Back"
                       x:Uid="CustomerDetailPage.AppBarButton.Back"
-                      Command="{Binding GoBack}" />
+                      Click="BackButton_Click" />
       </utu:NavigationBar.MainCommand>
       <utu:NavigationBar.PrimaryCommands>
         <AppBarButton Icon="Edit"
                       x:Uid="CustomerDetailPage.AppBarButton.Edit"
-                      Command="{Binding EditCustomer}" />
+                      Click="EditButton_Click" />
         <AppBarButton Icon="Delete"
                       x:Uid="CustomerDetailPage.AppBarButton.Delete"
-                      Command="{Binding DeleteCustomer}" />
+                      Click="DeleteButton_Click" />
       </utu:NavigationBar.PrimaryCommands>
     </utu:NavigationBar>
 

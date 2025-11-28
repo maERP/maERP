@@ -17,7 +17,7 @@
                        Content="{Binding Title}">
       <utu:NavigationBar.MainCommand>
         <AppBarButton x:Uid="CustomerEditPage.AppBarButton.Cancel"
-                      Command="{Binding CancelAsync}">
+                      Click="CancelButton_Click">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE711;" />
           </AppBarButton.Icon>
@@ -25,7 +25,7 @@
       </utu:NavigationBar.MainCommand>
       <utu:NavigationBar.PrimaryCommands>
         <AppBarButton x:Uid="CustomerEditPage.AppBarButton.Save"
-                      Command="{Binding SaveAsync}"
+                      Click="SaveButton_Click"
                       IsEnabled="{Binding CanSave}">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE74E;" />
@@ -352,13 +352,13 @@
                     x:Uid="CustomerEditPage.Button.Cancel"
                     Style="{StaticResource OutlinedButtonStyle}"
                     HorizontalAlignment="Stretch"
-                    Command="{Binding CancelAsync}" />
+                    Click="CancelButton_Click" />
 
             <Button Grid.Column="2"
                     x:Uid="CustomerEditPage.Button.Save"
                     Style="{StaticResource FilledButtonStyle}"
                     HorizontalAlignment="Stretch"
-                    Command="{Binding SaveAsync}"
+                    Click="SaveButton_Click"
                     IsEnabled="{Binding CanSave}" />
           </Grid>
         </StackPanel>

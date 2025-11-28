@@ -49,9 +49,25 @@ public class ManufacturerBaseValidator<T> : AbstractValidator<T> where T : IManu
             .MaximumLength(500).WithMessage("{PropertyName} must not exceed 500 characters.");
     }
 
-    private bool BeValidUrl(string url)
+    private static bool BeValidUrl(string url)
     {
-        return Uri.TryCreate(url, UriKind.Absolute, out var result)
-            && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps);
+        if (string.IsNullOrEmpty(url))
+            return true;
+
+        // Accept absolute URLs with http/https scheme
+        if (Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
+            && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+        {
+            return true;
+        }
+
+        // Accept URLs without scheme (e.g., "www.example.com" or "example.com")
+        // Try prepending https:// to validate the domain format
+        if (!url.Contains("://"))
+        {
+            return Uri.TryCreate("https://" + url, UriKind.Absolute, out _);
+        }
+
+        return false;
     }
 }

@@ -23,12 +23,12 @@ public interface ICustomerService
     /// <summary>
     /// Creates a new customer.
     /// </summary>
-    Task<CustomerDetailDto> CreateCustomerAsync(CustomerInputDto input, CancellationToken ct = default);
+    Task CreateCustomerAsync(CustomerInputDto input, CancellationToken ct = default);
 
     /// <summary>
     /// Updates an existing customer.
     /// </summary>
-    Task<CustomerDetailDto> UpdateCustomerAsync(Guid id, CustomerInputDto input, CancellationToken ct = default);
+    Task UpdateCustomerAsync(Guid id, CustomerInputDto input, CancellationToken ct = default);
 
     /// <summary>
     /// Deletes a customer.
