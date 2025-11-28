@@ -12,4 +12,5 @@ public class CustomerAddressListDto
     public string City { get; set; } = string.Empty;
     public bool DefaultDeliveryAddress { get; set; }
     public bool DefaultInvoiceAddress { get; set; }
+    public Guid CountryId { get; set; }
 }

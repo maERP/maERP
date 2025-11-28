@@ -1,4 +1,5 @@
 using maERP.Client.Core.Constants;
+using maERP.Client.Features.Countries.Services;
 using maERP.Client.Features.Customers.Models;
 using maERP.Client.Features.Customers.Services;
 using maERP.Client.Features.Customers.Views;
@@ -16,8 +17,9 @@ public static class CustomersModule
     /// </summary>
     public static IServiceCollection RegisterServices(IServiceCollection services)
     {
-        // Feature-specific service
+        // Feature-specific services
         services.AddTransient<ICustomerService, CustomerService>();
+        services.AddSingleton<ICountryService, CountryService>();
 
         // Page models
         services.AddTransient<CustomerListModel>();

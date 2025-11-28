@@ -29,6 +29,9 @@ public partial class App : Application
     protected Window? MainWindow { get; private set; }
     public IHost? Host { get; private set; }
 
+    public new static App Current => (App)Application.Current;
+    public IServiceProvider Services => Host!.Services;
+
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         var builder = this.CreateBuilder(args)

@@ -10,6 +10,7 @@ namespace maERP.Application.Features.Customer.Commands.CustomerCreate;
 /// Erweitert CustomerBaseValidator (aus maERP.Domain) um Server-spezifische Validierungen:
 /// - Datenbankbasierte Eindeutigkeitsprüfungen (Async mit Repository-Zugriff)
 /// - Foreign Key Validierungen
+/// - Address-Validierung (CountryId muss gültig sein)
 ///
 /// WICHTIG:
 /// - Basis-Regeln (Feldvalidierungen) sind in CustomerBaseValidator definiert
@@ -34,6 +35,10 @@ public class CustomerCreateValidator : CustomerBaseValidator<CustomerCreateComma
         // Add rule to check if the customer is unique before creating
         RuleFor(q => q)
             .MustAsync(IsUniqueAsync).WithMessage("Customer with the same values already exists.");
+
+        // Validate each address in the collection
+        RuleForEach(c => c.CustomerAddresses)
+            .SetValidator(new CustomerAddressBaseValidator());
     }
 
     /// <summary>

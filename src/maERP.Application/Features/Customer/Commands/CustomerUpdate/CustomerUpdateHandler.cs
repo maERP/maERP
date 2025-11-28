@@ -102,6 +102,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
                         existingAddress.City = addressDto.City;
                         existingAddress.DefaultDeliveryAddress = addressDto.DefaultDeliveryAddress;
                         existingAddress.DefaultInvoiceAddress = addressDto.DefaultInvoiceAddress;
+                        existingAddress.CountryId = addressDto.CountryId;
                     }
                     else if (addressDto.Id == Guid.Empty)
                     {
@@ -118,8 +119,7 @@ public class CustomerUpdateHandler : IRequestHandler<CustomerUpdateCommand, Resu
                             City = addressDto.City,
                             DefaultDeliveryAddress = addressDto.DefaultDeliveryAddress,
                             DefaultInvoiceAddress = addressDto.DefaultInvoiceAddress,
-                            // Using a fixed default value for CountryId as it's missing in CustomerAddressListDto
-                            CountryId = Guid.Empty // TODO: Need to get proper Country ID
+                            CountryId = addressDto.CountryId
                         };
 
                         await _customerRepository.AddCustomerAddressAsync(newAddress);

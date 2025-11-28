@@ -311,6 +311,188 @@
             </Border>
           </Grid>
 
+          <!-- Addresses Section -->
+          <StackPanel Spacing="12"
+                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <!-- Section Header with Add Button -->
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <StackPanel Grid.Column="0"
+                          Orientation="Horizontal"
+                          Spacing="12">
+                <FontIcon Glyph="&#xE81D;"
+                          FontSize="20"
+                          Foreground="{ThemeResource SecondaryBrush}" />
+                <TextBlock x:Uid="CustomerEditPage.Section.Addresses"
+                           Style="{StaticResource TitleMedium}"
+                           Foreground="{ThemeResource OnSurfaceBrush}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+              <Button Grid.Column="2"
+                      x:Uid="CustomerEditPage.Button.AddAddress"
+                      Style="{StaticResource FilledTonalButtonStyle}"
+                      Click="AddAddressButton_Click">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                  <FontIcon Glyph="&#xE710;"
+                            FontSize="14" />
+                  <TextBlock x:Uid="CustomerEditPage.Button.AddAddress.Text"
+                             Style="{StaticResource LabelMedium}" />
+                </StackPanel>
+              </Button>
+            </Grid>
+
+            <!-- Address Cards -->
+            <ItemsRepeater ItemsSource="{Binding Addresses}">
+              <ItemsRepeater.Layout>
+                <UniformGridLayout MinItemWidth="300"
+                                   MinColumnSpacing="16"
+                                   MinRowSpacing="16"
+                                   ItemsStretch="Fill" />
+              </ItemsRepeater.Layout>
+              <ItemsRepeater.ItemTemplate>
+                <DataTemplate>
+                  <Border Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12"
+                          Padding="16">
+                    <Grid>
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+
+                      <!-- Address Type Badges -->
+                      <StackPanel Grid.Row="0"
+                                  Orientation="Horizontal"
+                                  Spacing="8"
+                                  Margin="0,0,0,8">
+                        <!-- Delivery Address Badge -->
+                        <Border CornerRadius="12"
+                                Padding="10,4"
+                                Background="{ThemeResource PrimaryContainerBrush}"
+                                Visibility="{Binding DefaultDeliveryAddress, Converter={StaticResource BoolToVisibilityConverter}}">
+                          <StackPanel Orientation="Horizontal"
+                                      Spacing="6">
+                            <FontIcon Glyph="&#xE7B8;"
+                                      FontSize="12"
+                                      Foreground="{ThemeResource OnPrimaryContainerBrush}" />
+                            <TextBlock x:Uid="CustomerEditPage.Badge.DeliveryAddress"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnPrimaryContainerBrush}" />
+                          </StackPanel>
+                        </Border>
+
+                        <!-- Invoice Address Badge -->
+                        <Border CornerRadius="12"
+                                Padding="10,4"
+                                Background="{ThemeResource TertiaryContainerBrush}"
+                                Visibility="{Binding DefaultInvoiceAddress, Converter={StaticResource BoolToVisibilityConverter}}">
+                          <StackPanel Orientation="Horizontal"
+                                      Spacing="6">
+                            <FontIcon Glyph="&#xE9D5;"
+                                      FontSize="12"
+                                      Foreground="{ThemeResource OnTertiaryContainerBrush}" />
+                            <TextBlock x:Uid="CustomerEditPage.Badge.InvoiceAddress"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnTertiaryContainerBrush}" />
+                          </StackPanel>
+                        </Border>
+                      </StackPanel>
+
+                      <!-- Address Content -->
+                      <StackPanel Grid.Row="1"
+                                  Spacing="4">
+                        <!-- Name -->
+                        <TextBlock Style="{StaticResource BodyLarge}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}">
+                          <Run Text="{Binding Firstname}" />
+                          <Run Text=" " />
+                          <Run Text="{Binding Lastname}" />
+                        </TextBlock>
+
+                        <!-- Company (if available) -->
+                        <TextBlock Text="{Binding CompanyName}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   Visibility="{Binding CompanyName, Converter={StaticResource StringToVisibilityConverter}}" />
+
+                        <!-- Street -->
+                        <TextBlock Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}">
+                          <Run Text="{Binding Street}" />
+                          <Run Text=" " />
+                          <Run Text="{Binding HouseNr}" />
+                        </TextBlock>
+
+                        <!-- City and ZIP -->
+                        <TextBlock Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}">
+                          <Run Text="{Binding Zip}" />
+                          <Run Text=" " />
+                          <Run Text="{Binding City}" />
+                        </TextBlock>
+                      </StackPanel>
+
+                      <!-- Action Buttons -->
+                      <StackPanel Grid.Row="2"
+                                  Orientation="Horizontal"
+                                  Spacing="8"
+                                  HorizontalAlignment="Right"
+                                  Margin="0,12,0,0">
+                        <Button Style="{StaticResource TextButtonStyle}"
+                                Click="EditAddressButton_Click"
+                                Tag="{Binding}"
+                                MinWidth="44"
+                                MinHeight="44">
+                          <FontIcon Glyph="&#xE70F;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource PrimaryBrush}" />
+                        </Button>
+                        <Button Style="{StaticResource TextButtonStyle}"
+                                Click="DeleteAddressButton_Click"
+                                Tag="{Binding}"
+                                MinWidth="44"
+                                MinHeight="44">
+                          <FontIcon Glyph="&#xE74D;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource ErrorBrush}" />
+                        </Button>
+                      </StackPanel>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+
+            <!-- No Addresses Placeholder -->
+            <Border Background="{ThemeResource SurfaceVariantBrush}"
+                    CornerRadius="12"
+                    Padding="24"
+                    Visibility="{Binding HasAddresses, Converter={StaticResource BoolToInverseVisibilityConverter}}">
+              <StackPanel HorizontalAlignment="Center"
+                          Spacing="8">
+                <FontIcon Glyph="&#xE81D;"
+                          FontSize="32"
+                          Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                <TextBlock x:Uid="CustomerEditPage.NoAddresses"
+                           Style="{StaticResource BodyMedium}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           HorizontalAlignment="Center" />
+                <TextBlock x:Uid="CustomerEditPage.NoAddresses.Hint"
+                           Style="{StaticResource LabelSmall}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           HorizontalAlignment="Center" />
+              </StackPanel>
+            </Border>
+          </StackPanel>
+
           <!-- Notes Section -->
           <StackPanel Spacing="12"
                       Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">

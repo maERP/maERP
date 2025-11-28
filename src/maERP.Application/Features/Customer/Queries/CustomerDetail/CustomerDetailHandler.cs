@@ -109,7 +109,8 @@ public class CustomerDetailHandler : IRequestHandler<CustomerDetailQuery, Result
                     Zip = ca.Zip,
                     City = ca.City,
                     DefaultDeliveryAddress = ca.DefaultDeliveryAddress,
-                    DefaultInvoiceAddress = ca.DefaultInvoiceAddress
+                    DefaultInvoiceAddress = ca.DefaultInvoiceAddress,
+                    CountryId = ca.CountryId
                 }).ToList() ?? new List<CustomerAddressListDto>()
             };
 

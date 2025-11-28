@@ -472,6 +472,88 @@
     <value>Failed to save customer: {0}</value>
   </data>
 
+  <!-- Customer Edit Page - Addresses Section -->
+  <data name="CustomerEditPage.Section.Addresses.Text" xml:space="preserve">
+    <value>Addresses</value>
+  </data>
+  <data name="CustomerEditPage.Button.AddAddress.Content" xml:space="preserve">
+    <value>Add Address</value>
+  </data>
+  <data name="CustomerEditPage.Button.AddAddress.Text.Text" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="CustomerEditPage.NoAddresses.Text" xml:space="preserve">
+    <value>No addresses available</value>
+  </data>
+  <data name="CustomerEditPage.NoAddresses.Hint.Text" xml:space="preserve">
+    <value>Click "Add" to create a new address</value>
+  </data>
+  <data name="CustomerEditPage.Badge.DeliveryAddress.Text" xml:space="preserve">
+    <value>Delivery Address</value>
+  </data>
+  <data name="CustomerEditPage.Badge.InvoiceAddress.Text" xml:space="preserve">
+    <value>Invoice Address</value>
+  </data>
+
+  <!-- Customer Edit Page - Address Dialog (using flatter key structure for IStringLocalizer) -->
+  <data name="AddressDialog.TitleNew" xml:space="preserve">
+    <value>New Address</value>
+  </data>
+  <data name="AddressDialog.TitleEdit" xml:space="preserve">
+    <value>Edit Address</value>
+  </data>
+  <data name="AddressDialog.Firstname" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="AddressDialog.FirstnamePlaceholder" xml:space="preserve">
+    <value>Enter first name</value>
+  </data>
+  <data name="AddressDialog.Lastname" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="AddressDialog.LastnamePlaceholder" xml:space="preserve">
+    <value>Enter last name</value>
+  </data>
+  <data name="AddressDialog.CompanyName" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="AddressDialog.CompanyNamePlaceholder" xml:space="preserve">
+    <value>Enter company name (optional)</value>
+  </data>
+  <data name="AddressDialog.Street" xml:space="preserve">
+    <value>Street</value>
+  </data>
+  <data name="AddressDialog.StreetPlaceholder" xml:space="preserve">
+    <value>Enter street</value>
+  </data>
+  <data name="AddressDialog.HouseNr" xml:space="preserve">
+    <value>No.</value>
+  </data>
+  <data name="AddressDialog.HouseNrPlaceholder" xml:space="preserve">
+    <value>No.</value>
+  </data>
+  <data name="AddressDialog.Zip" xml:space="preserve">
+    <value>ZIP</value>
+  </data>
+  <data name="AddressDialog.ZipPlaceholder" xml:space="preserve">
+    <value>ZIP</value>
+  </data>
+  <data name="AddressDialog.City" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="AddressDialog.CityPlaceholder" xml:space="preserve">
+    <value>Enter city</value>
+  </data>
+  <data name="AddressDialog.Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="AddressDialog.DefaultDeliveryAddress" xml:space="preserve">
+    <value>Default Delivery Address</value>
+  </data>
+  <data name="AddressDialog.DefaultInvoiceAddress" xml:space="preserve">
+    <value>Default Invoice Address</value>
+  </data>
+
   <!-- Second Page (Legacy) -->
   <data name="SecondPage.NavigationBar.Content" xml:space="preserve">
     <value>Second Page</value>

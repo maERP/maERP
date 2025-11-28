@@ -32,6 +32,12 @@ public static class ApiEndpoints
         public static string ById(Guid id) => $"{Base}/{id}";
     }
 
+    // Countries
+    public static class Countries
+    {
+        public const string Base = $"{ApiBase}/countries";
+    }
+
     // Customers
     public static class Customers
     {

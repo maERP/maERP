@@ -11,6 +11,7 @@ namespace maERP.Application.Features.Customer.Commands.CustomerUpdate;
 /// - ID-Validierung (nicht Guid.Empty)
 /// - Existenz-Prüfung (Customer muss vorhanden sein)
 /// - Eindeutigkeitsprüfung (keine Duplikate außer dem aktuellen Customer)
+/// - Address-Validierung (CountryId muss gültig sein)
 ///
 /// WICHTIG:
 /// - Basis-Regeln (Feldvalidierungen) sind in CustomerBaseValidator definiert
@@ -38,6 +39,10 @@ public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateComma
         RuleFor(q => q)
             .MustAsync(IsUniqueAsync).WithMessage("Customer with the same values already exists.")
             .When(c => c.Id != Guid.Empty);
+
+        // Validate each address in the collection
+        RuleForEach(c => c.CustomerAddresses)
+            .SetValidator(new CustomerAddressBaseValidator());
     }
 
     private async Task<bool> CustomerExists(CustomerUpdateCommand command, CancellationToken cancellationToken)
