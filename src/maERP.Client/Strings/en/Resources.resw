@@ -258,6 +258,18 @@
   <data name="CustomerListPage.DataGrid.EnrollmentDate.Header" xml:space="preserve">
     <value>Enrollment Date</value>
   </data>
+  <data name="CustomerListPage.Header.CustomerId.Text" xml:space="preserve">
+    <value>Customer #</value>
+  </data>
+  <data name="CustomerListPage.Header.FirstName.Text" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="CustomerListPage.Header.LastName.Text" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="CustomerListPage.Header.EnrollmentDate.Text" xml:space="preserve">
+    <value>Enrollment Date</value>
+  </data>
   <data name="CustomerListPage.NoCustomers.Text" xml:space="preserve">
     <value>No customers found</value>
   </data>

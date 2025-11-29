@@ -6,7 +6,6 @@
       xmlns:mvux="using:Uno.Extensions.Reactive.UI"
       xmlns:utu="using:Uno.Toolkit.UI"
       xmlns:uen="using:Uno.Extensions.Navigation.UI"
-      xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
       Background="{ThemeResource BackgroundBrush}">
 
   <Grid utu:SafeArea.Insets="VisibleBounds">
@@ -52,84 +51,251 @@
                 IsHitTestVisible="False" />
     </Grid>
 
-    <!-- Customer DataGrid -->
+    <!-- Customer Table -->
     <mvux:FeedView x:Name="CustomersFeedView"
                    Grid.Row="2"
-                   Margin="16,0"
+                   Margin="16,0,16,16"
                    Source="{Binding Customers}">
       <mvux:FeedView.ValueTemplate>
         <DataTemplate>
-          <controls:DataGrid x:Name="CustomerDataGrid"
-                             ItemsSource="{Binding Data}"
-                             AutoGenerateColumns="False"
-                             IsReadOnly="True"
-                             SelectionMode="Single"
-                             GridLinesVisibility="Horizontal"
-                             HeadersVisibility="Column"
-                             CanUserReorderColumns="True"
-                             CanUserResizeColumns="True"
-                             CanUserSortColumns="True"
-                             SelectionChanged="CustomerDataGrid_SelectionChanged"
-                             Sorting="CustomerDataGrid_Sorting">
-            <controls:DataGrid.Columns>
-              <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.CustomerId"
-                                           Binding="{Binding CustomerId}"
-                                           Tag="CustomerId"
-                                           Width="100" />
-              <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.FirstName"
-                                           Binding="{Binding Firstname}"
-                                           Tag="Firstname"
-                                           Width="*" />
-              <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.LastName"
-                                           Binding="{Binding Lastname}"
-                                           Tag="Lastname"
-                                           Width="*" />
-              <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.EnrollmentDate"
-                                           Binding="{Binding DateEnrollment, Converter={StaticResource DateOnlyConverter}}"
-                                           Tag="DateEnrollment"
-                                           Width="150" />
-            </controls:DataGrid.Columns>
-          </controls:DataGrid>
+          <Border CornerRadius="12"
+                  BorderBrush="{ThemeResource OutlineVariantBrush}"
+                  BorderThickness="1"
+                  Background="{ThemeResource SurfaceBrush}">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+
+              <!-- Table Header -->
+              <Border Grid.Row="0"
+                      Background="{ThemeResource SurfaceVariantBrush}"
+                      CornerRadius="12,12,0,0"
+                      BorderBrush="{ThemeResource OutlineVariantBrush}"
+                      BorderThickness="0,0,0,1">
+                <Grid Padding="0">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="150" />
+                  </Grid.ColumnDefinitions>
+
+                  <!-- CustomerId Header -->
+                  <Button x:Name="HeaderCustomerId"
+                          Grid.Column="0"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="CustomerId"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="CustomerListPage.Header.CustomerId"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconCustomerId"
+                                Glyph="&#xE70D;"
+                                FontSize="12"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                Visibility="Collapsed" />
+                    </StackPanel>
+                  </Button>
+
+                  <!-- FirstName Header -->
+                  <Button x:Name="HeaderFirstname"
+                          Grid.Column="1"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="Firstname"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="CustomerListPage.Header.FirstName"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconFirstname"
+                                Glyph="&#xE70D;"
+                                FontSize="12"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                Visibility="Collapsed" />
+                    </StackPanel>
+                  </Button>
+
+                  <!-- LastName Header -->
+                  <Button x:Name="HeaderLastname"
+                          Grid.Column="2"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="Lastname"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="CustomerListPage.Header.LastName"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconLastname"
+                                Glyph="&#xE70D;"
+                                FontSize="12"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                Visibility="Collapsed" />
+                    </StackPanel>
+                  </Button>
+
+                  <!-- DateEnrollment Header -->
+                  <Button x:Name="HeaderDateEnrollment"
+                          Grid.Column="3"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="DateEnrollment"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="CustomerListPage.Header.EnrollmentDate"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconDateEnrollment"
+                                Glyph="&#xE70E;"
+                                FontSize="12"
+                                Foreground="{ThemeResource PrimaryBrush}"
+                                Visibility="Visible" />
+                    </StackPanel>
+                  </Button>
+                </Grid>
+              </Border>
+
+              <!-- Table Body with ScrollViewer -->
+              <ScrollViewer Grid.Row="1"
+                            VerticalScrollBarVisibility="Auto"
+                            HorizontalScrollBarVisibility="Disabled">
+                <ItemsRepeater x:Name="CustomerItemsRepeater"
+                               ItemsSource="{Binding Data}">
+                  <ItemsRepeater.Layout>
+                    <StackLayout Orientation="Vertical" Spacing="0" />
+                  </ItemsRepeater.Layout>
+                  <ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                      <Button Style="{StaticResource TextButtonStyle}"
+                              HorizontalAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch"
+                              Padding="0"
+                              CornerRadius="0"
+                              Click="CustomerRow_Click">
+                        <Grid Background="Transparent"
+                              Padding="0"
+                              BorderBrush="{ThemeResource OutlineVariantBrush}"
+                              BorderThickness="0,0,0,1">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="150" />
+                          </Grid.ColumnDefinitions>
+
+                          <!-- CustomerId -->
+                          <TextBlock Grid.Column="0"
+                                     Text="{Binding CustomerId}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14" />
+
+                          <!-- FirstName -->
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding Firstname}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14"
+                                     TextTrimming="CharacterEllipsis" />
+
+                          <!-- LastName -->
+                          <TextBlock Grid.Column="2"
+                                     Text="{Binding Lastname}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14"
+                                     TextTrimming="CharacterEllipsis" />
+
+                          <!-- DateEnrollment -->
+                          <TextBlock Grid.Column="3"
+                                     Text="{Binding DateEnrollment, Converter={StaticResource DateOnlyConverter}}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14" />
+                        </Grid>
+                      </Button>
+                    </DataTemplate>
+                  </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+              </ScrollViewer>
+            </Grid>
+          </Border>
         </DataTemplate>
       </mvux:FeedView.ValueTemplate>
 
       <mvux:FeedView.ProgressTemplate>
         <DataTemplate>
-          <ProgressRing IsActive="True"
-                        Width="48"
-                        Height="48"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center" />
+          <Border CornerRadius="12"
+                  BorderBrush="{ThemeResource OutlineVariantBrush}"
+                  BorderThickness="1"
+                  Background="{ThemeResource SurfaceBrush}">
+            <ProgressRing IsActive="True"
+                          Width="48"
+                          Height="48"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Margin="48" />
+          </Border>
         </DataTemplate>
       </mvux:FeedView.ProgressTemplate>
 
       <mvux:FeedView.NoneTemplate>
         <DataTemplate>
-          <StackPanel HorizontalAlignment="Center"
-                      VerticalAlignment="Center"
-                      Spacing="16">
-            <FontIcon Glyph="&#xE716;"
-                      FontSize="48"
-                      Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-            <TextBlock x:Uid="CustomerListPage.NoCustomers"
-                       Style="{StaticResource BodyMedium}"
-                       HorizontalAlignment="Center" />
-          </StackPanel>
+          <Border CornerRadius="12"
+                  BorderBrush="{ThemeResource OutlineVariantBrush}"
+                  BorderThickness="1"
+                  Background="{ThemeResource SurfaceBrush}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="16"
+                        Margin="48">
+              <FontIcon Glyph="&#xE716;"
+                        FontSize="48"
+                        Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+              <TextBlock x:Uid="CustomerListPage.NoCustomers"
+                         Style="{StaticResource BodyMedium}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
         </DataTemplate>
       </mvux:FeedView.NoneTemplate>
 
       <mvux:FeedView.ErrorTemplate>
         <DataTemplate>
-          <StackPanel HorizontalAlignment="Center"
-                      VerticalAlignment="Center"
-                      Spacing="16">
-            <FontIcon Glyph="&#xE783;"
-                      FontSize="48"
-                      Foreground="{ThemeResource ErrorBrush}" />
-            <TextBlock x:Uid="CustomerListPage.LoadError"
-                       Style="{StaticResource BodyMedium}"
-                       HorizontalAlignment="Center" />
-          </StackPanel>
+          <Border CornerRadius="12"
+                  BorderBrush="{ThemeResource ErrorBrush}"
+                  BorderThickness="1"
+                  Background="{ThemeResource ErrorContainerBrush}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="16"
+                        Margin="48">
+              <FontIcon Glyph="&#xE783;"
+                        FontSize="48"
+                        Foreground="{ThemeResource ErrorBrush}" />
+              <TextBlock x:Uid="CustomerListPage.LoadError"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnErrorContainerBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
         </DataTemplate>
       </mvux:FeedView.ErrorTemplate>
     </mvux:FeedView>
