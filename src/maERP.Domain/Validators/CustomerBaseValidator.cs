@@ -51,8 +51,8 @@ public class CustomerBaseValidator<T> : AbstractValidator<T> where T : ICustomer
         }
 
         // Accept URLs without scheme (e.g., "www.example.com" or "example.com")
-        // Try prepending https:// to validate the domain format
-        if (!url.Contains("://"))
+        // Must contain a dot to be considered a valid domain
+        if (!url.Contains("://") && url.Contains('.'))
         {
             return Uri.TryCreate("https://" + url, UriKind.Absolute, out _);
         }
