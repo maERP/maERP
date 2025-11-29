@@ -36,45 +36,20 @@
       </utu:NavigationBar.PrimaryCommands>
     </utu:NavigationBar>
 
-    <!-- Search and Sort Controls -->
+    <!-- Search Box -->
     <Grid Grid.Row="1"
           Margin="16,12,16,8">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="Auto" />
-      </Grid.ColumnDefinitions>
-
-      <!-- Search Box with Icon -->
-      <Grid Grid.Column="0"
-            Margin="0,0,12,0">
-        <TextBox x:Name="SearchBox"
-                 x:Uid="CustomerListPage.SearchBox"
-                 TextChanged="SearchBox_TextChanged"
-                 Padding="40,0,12,0" />
-        <FontIcon Glyph="&#xE721;"
-                  FontSize="16"
-                  Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Margin="12,0,0,0"
-                  IsHitTestVisible="False" />
-      </Grid>
-
-      <!-- Sort Dropdown -->
-      <ComboBox x:Name="SortComboBox"
-                Grid.Column="1"
-                MinWidth="180"
-                SelectionChanged="SortComboBox_SelectionChanged"
-                SelectedIndex="0">
-        <ComboBoxItem x:Uid="CustomerListPage.Sort.NewestFirst" Tag="DateEnrollment Descending" />
-        <ComboBoxItem x:Uid="CustomerListPage.Sort.OldestFirst" Tag="DateEnrollment Ascending" />
-        <ComboBoxItem x:Uid="CustomerListPage.Sort.LastNameAZ" Tag="Lastname Ascending" />
-        <ComboBoxItem x:Uid="CustomerListPage.Sort.LastNameZA" Tag="Lastname Descending" />
-        <ComboBoxItem x:Uid="CustomerListPage.Sort.FirstNameAZ" Tag="Firstname Ascending" />
-        <ComboBoxItem x:Uid="CustomerListPage.Sort.FirstNameZA" Tag="Firstname Descending" />
-        <ComboBoxItem x:Uid="CustomerListPage.Sort.CustomerIdAsc" Tag="CustomerId Ascending" />
-        <ComboBoxItem x:Uid="CustomerListPage.Sort.CustomerIdDesc" Tag="CustomerId Descending" />
-      </ComboBox>
+      <TextBox x:Name="SearchBox"
+               x:Uid="CustomerListPage.SearchBox"
+               TextChanged="SearchBox_TextChanged"
+               Padding="40,0,12,0" />
+      <FontIcon Glyph="&#xE721;"
+                FontSize="16"
+                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="12,0,0,0"
+                IsHitTestVisible="False" />
     </Grid>
 
     <!-- Customer DataGrid -->
@@ -93,20 +68,25 @@
                              HeadersVisibility="Column"
                              CanUserReorderColumns="True"
                              CanUserResizeColumns="True"
-                             CanUserSortColumns="False"
-                             SelectionChanged="CustomerDataGrid_SelectionChanged">
+                             CanUserSortColumns="True"
+                             SelectionChanged="CustomerDataGrid_SelectionChanged"
+                             Sorting="CustomerDataGrid_Sorting">
             <controls:DataGrid.Columns>
               <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.CustomerId"
                                            Binding="{Binding CustomerId}"
+                                           Tag="CustomerId"
                                            Width="100" />
               <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.FirstName"
                                            Binding="{Binding Firstname}"
+                                           Tag="Firstname"
                                            Width="*" />
               <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.LastName"
                                            Binding="{Binding Lastname}"
+                                           Tag="Lastname"
                                            Width="*" />
               <controls:DataGridTextColumn x:Uid="CustomerListPage.DataGrid.EnrollmentDate"
                                            Binding="{Binding DateEnrollment, Converter={StaticResource DateOnlyConverter}}"
+                                           Tag="DateEnrollment"
                                            Width="150" />
             </controls:DataGrid.Columns>
           </controls:DataGrid>

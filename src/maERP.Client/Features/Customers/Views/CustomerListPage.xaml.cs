@@ -29,17 +29,28 @@ public sealed partial class CustomerListPage : Page
         }
     }
 
-    private async void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private async void CustomerDataGrid_Sorting(object sender, DataGridColumnEventArgs e)
     {
-        if (_isInitializing) return;
+        if (sender is not DataGrid dataGrid || DataContext is not CustomerListModel model)
+            return;
 
-        if (sender is ComboBox comboBox &&
-            comboBox.SelectedItem is ComboBoxItem selectedItem &&
-            selectedItem.Tag is string orderBy &&
-            DataContext is CustomerListModel model)
+        // Determine new sort direction
+        var newDirection = e.Column.SortDirection == DataGridSortDirection.Ascending
+            ? DataGridSortDirection.Descending
+            : DataGridSortDirection.Ascending;
+
+        // Reset sort direction on all other columns
+        foreach (var column in dataGrid.Columns)
         {
-            await model.SetSortOrder(orderBy);
+            column.SortDirection = column == e.Column ? newDirection : null;
         }
+
+        // Build sort parameter (e.g., "Lastname Ascending")
+        var sortField = e.Column.Tag?.ToString() ?? string.Empty;
+        var sortDirection = newDirection == DataGridSortDirection.Ascending ? "Ascending" : "Descending";
+        var orderBy = $"{sortField} {sortDirection}";
+
+        await model.SetSortOrder(orderBy);
     }
 
     private async void CreateCustomer_Click(object sender, RoutedEventArgs e)
