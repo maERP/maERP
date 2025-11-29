@@ -27,6 +27,7 @@
 
       <!-- Converters -->
       <converters:DateOnlyConverter x:Key="DateOnlyConverter" />
+      <converters:CurrencyConverter x:Key="CurrencyConverter" />
       <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <converters:InverseBooleanToVisibilityConverter x:Key="BoolToInverseVisibilityConverter" />
       <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />

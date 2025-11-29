@@ -207,6 +207,14 @@
             </NavigationViewItem.Icon>
           </NavigationViewItem>
 
+          <NavigationViewItem x:Name="NavItemInvoices"
+                              x:Uid="Shell.NavItem.Invoices"
+                              Tag="Invoices">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE9F9;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
+
           <NavigationViewItem x:Name="NavItemProducts"
                               x:Uid="Shell.NavItem.Products"
                               Tag="Products">
@@ -215,11 +223,55 @@
             </NavigationViewItem.Icon>
           </NavigationViewItem>
 
-          <NavigationViewItem x:Name="NavItemInventory"
-                              x:Uid="Shell.NavItem.Inventory"
-                              Tag="Inventory">
+          <NavigationViewItem x:Name="NavItemManufacturers"
+                              x:Uid="Shell.NavItem.Manufacturers"
+                              Tag="Manufacturers">
             <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE8F1;" />
+              <FontIcon Glyph="&#xE8FD;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
+
+          <NavigationViewItem x:Name="NavItemWarehouses"
+                              x:Uid="Shell.NavItem.Warehouses"
+                              Tag="Warehouses">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE913;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
+
+          <NavigationViewItem x:Name="NavItemSalesChannels"
+                              x:Uid="Shell.NavItem.SalesChannels"
+                              Tag="SalesChannels">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE8A7;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
+
+          <NavigationViewItemSeparator x:Name="NavSeparator2" />
+
+          <NavigationViewItem x:Name="NavItemAiModels"
+                              x:Uid="Shell.NavItem.AiModels"
+                              Tag="AiModels">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE99A;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
+
+          <NavigationViewItem x:Name="NavItemAiPrompts"
+                              x:Uid="Shell.NavItem.AiPrompts"
+                              Tag="AiPrompts">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE8BD;" />
+            </NavigationViewItem.Icon>
+          </NavigationViewItem>
+
+          <NavigationViewItemSeparator x:Name="NavSeparator3" />
+
+          <NavigationViewItem x:Name="NavItemTaxClasses"
+                              x:Uid="Shell.NavItem.TaxClasses"
+                              Tag="TaxClasses">
+            <NavigationViewItem.Icon>
+              <FontIcon Glyph="&#xE912;" />
             </NavigationViewItem.Icon>
           </NavigationViewItem>
         </NavigationView.MenuItems>

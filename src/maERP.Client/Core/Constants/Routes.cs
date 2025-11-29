@@ -33,6 +33,9 @@ public static class Routes
     public const string ProductEdit = "ProductEdit";
     public const string ProductCreate = "ProductCreate";
 
+    // Manufacturers
+    public const string ManufacturerList = "Manufacturers";
+
     // Inventory / Warehouses
     public const string WarehouseList = "Warehouses";
     public const string WarehouseDetail = "WarehouseDetail";
@@ -51,6 +54,15 @@ public static class Routes
     public const string Settings = "Settings";
     public const string UserProfile = "UserProfile";
     public const string TenantSettings = "TenantSettings";
+
+    // AI Models
+    public const string AiModelList = "AiModels";
+
+    // AI Prompts
+    public const string AiPromptList = "AiPrompts";
+
+    // Tax Classes
+    public const string TaxClassList = "TaxClasses";
 
     // Admin
     public const string AdminUsers = "AdminUsers";

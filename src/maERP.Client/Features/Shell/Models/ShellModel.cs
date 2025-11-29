@@ -3,7 +3,6 @@ using maERP.Client.Core.Constants;
 using maERP.Client.Features.Auth.Models;
 using maERP.Client.Features.Customers.Models;
 using maERP.Client.Features.Dashboard.Models;
-using maERP.Client.Features.Legacy.Models;
 using Microsoft.UI.Xaml;
 
 namespace maERP.Client.Features.Shell.Models;
@@ -113,10 +112,6 @@ public partial class ShellModel : INotifyPropertyChanged
             case "Dashboard":
                 Console.WriteLine("[ShellModel] Navigating to DashboardModel");
                 await _navigator.NavigateViewModelAsync<DashboardModel>(this);
-                break;
-            case "Second":
-                Console.WriteLine("[ShellModel] Navigating to SecondModel");
-                await _navigator.NavigateViewModelAsync<SecondModel>(this);
                 break;
             case "Customers":
                 Console.WriteLine("[ShellModel] Navigating to CustomerListModel");

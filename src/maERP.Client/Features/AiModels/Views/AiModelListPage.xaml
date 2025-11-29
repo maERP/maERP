@@ -1,0 +1,352 @@
+<Page x:Class="maERP.Client.Features.AiModels.Views.AiModelListPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.AiModels.Views"
+      xmlns:models="using:maERP.Client.Features.AiModels.Models"
+      xmlns:mvux="using:Uno.Extensions.Reactive.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      xmlns:uen="using:Uno.Extensions.Navigation.UI"
+      xmlns:converters="using:maERP.Client.Core.Converters"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Page.Resources>
+    <converters:AiModelTypeConverter x:Key="AiModelTypeConverter" />
+  </Page.Resources>
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with NavigationBar -->
+    <utu:NavigationBar Grid.Row="0"
+                       x:Uid="AiModelListPage.NavigationBar">
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton x:Uid="AiModelListPage.AppBarButton.Refresh"
+                      Command="{Binding Refresh, ElementName=AiModelsFeedView}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE72C;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarButton x:Uid="AiModelListPage.AppBarButton.New"
+                      Click="CreateAiModel_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE710;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Search Box -->
+    <Grid Grid.Row="1"
+          Margin="16,12,16,8">
+      <TextBox x:Name="SearchBox"
+               x:Uid="AiModelListPage.SearchBox"
+               TextChanged="SearchBox_TextChanged"
+               Padding="40,0,12,0" />
+      <FontIcon Glyph="&#xE721;"
+                FontSize="16"
+                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="12,0,0,0"
+                IsHitTestVisible="False" />
+    </Grid>
+
+    <!-- AI Model Table -->
+    <mvux:FeedView x:Name="AiModelsFeedView"
+                   Grid.Row="2"
+                   Margin="16,0,16,16"
+                   Source="{Binding AiModels}">
+      <mvux:FeedView.ValueTemplate>
+        <DataTemplate>
+          <Border CornerRadius="12"
+                  BorderBrush="{ThemeResource OutlineVariantBrush}"
+                  BorderThickness="1"
+                  Background="{ThemeResource SurfaceBrush}">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+
+              <!-- Table Header -->
+              <Border Grid.Row="0"
+                      Background="{ThemeResource SurfaceVariantBrush}"
+                      CornerRadius="12,12,0,0"
+                      BorderBrush="{ThemeResource OutlineVariantBrush}"
+                      BorderThickness="0,0,0,1">
+                <Grid Padding="0">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="120" />
+                  </Grid.ColumnDefinitions>
+
+                  <!-- Name Header -->
+                  <Button x:Name="HeaderName"
+                          Grid.Column="0"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="Name"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="AiModelListPage.Header.Name"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconName"
+                                Glyph="&#xE70D;"
+                                FontSize="12"
+                                Foreground="{ThemeResource PrimaryBrush}"
+                                Visibility="Visible" />
+                    </StackPanel>
+                  </Button>
+
+                  <!-- AiModelType Header -->
+                  <Button x:Name="HeaderAiModelType"
+                          Grid.Column="1"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="AiModelType"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="AiModelListPage.Header.AiModelType"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconAiModelType"
+                                Glyph="&#xE70D;"
+                                FontSize="12"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                Visibility="Collapsed" />
+                    </StackPanel>
+                  </Button>
+
+                  <!-- NCtx Header -->
+                  <Button x:Name="HeaderNCtx"
+                          Grid.Column="2"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="NCtx"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="AiModelListPage.Header.NCtx"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconNCtx"
+                                Glyph="&#xE70D;"
+                                FontSize="12"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                Visibility="Collapsed" />
+                    </StackPanel>
+                  </Button>
+                </Grid>
+              </Border>
+
+              <!-- Table Body with ScrollViewer -->
+              <ScrollViewer Grid.Row="1"
+                            VerticalScrollBarVisibility="Auto"
+                            HorizontalScrollBarVisibility="Disabled">
+                <ItemsRepeater x:Name="AiModelItemsRepeater"
+                               ItemsSource="{Binding Data}">
+                  <ItemsRepeater.Layout>
+                    <StackLayout Orientation="Vertical" Spacing="0" />
+                  </ItemsRepeater.Layout>
+                  <ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                      <Grid Background="Transparent"
+                            Padding="0"
+                            BorderBrush="{ThemeResource OutlineVariantBrush}"
+                            BorderThickness="0,0,0,1">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="150" />
+                          <ColumnDefinition Width="120" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Name -->
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding Name}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}"
+                                   VerticalAlignment="Center"
+                                   Padding="16,14"
+                                   TextTrimming="CharacterEllipsis" />
+
+                        <!-- AiModelType -->
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding AiModelType, Converter={StaticResource AiModelTypeConverter}}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}"
+                                   VerticalAlignment="Center"
+                                   Padding="16,14" />
+
+                        <!-- NCtx -->
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding NCtx}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   VerticalAlignment="Center"
+                                   Padding="16,14" />
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+              </ScrollViewer>
+            </Grid>
+          </Border>
+        </DataTemplate>
+      </mvux:FeedView.ValueTemplate>
+
+      <mvux:FeedView.ProgressTemplate>
+        <DataTemplate>
+          <Border CornerRadius="12"
+                  BorderBrush="{ThemeResource OutlineVariantBrush}"
+                  BorderThickness="1"
+                  Background="{ThemeResource SurfaceBrush}">
+            <ProgressRing IsActive="True"
+                          Width="48"
+                          Height="48"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Margin="48" />
+          </Border>
+        </DataTemplate>
+      </mvux:FeedView.ProgressTemplate>
+
+      <mvux:FeedView.NoneTemplate>
+        <DataTemplate>
+          <Border CornerRadius="12"
+                  BorderBrush="{ThemeResource OutlineVariantBrush}"
+                  BorderThickness="1"
+                  Background="{ThemeResource SurfaceBrush}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="16"
+                        Margin="48">
+              <FontIcon Glyph="&#xE99A;"
+                        FontSize="48"
+                        Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+              <TextBlock x:Uid="AiModelListPage.NoAiModels"
+                         Style="{StaticResource BodyMedium}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+        </DataTemplate>
+      </mvux:FeedView.NoneTemplate>
+
+      <mvux:FeedView.ErrorTemplate>
+        <DataTemplate>
+          <Border CornerRadius="12"
+                  BorderBrush="{ThemeResource ErrorBrush}"
+                  BorderThickness="1"
+                  Background="{ThemeResource ErrorContainerBrush}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="16"
+                        Margin="48">
+              <FontIcon Glyph="&#xE783;"
+                        FontSize="48"
+                        Foreground="{ThemeResource ErrorBrush}" />
+              <TextBlock x:Uid="AiModelListPage.LoadError"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnErrorContainerBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+        </DataTemplate>
+      </mvux:FeedView.ErrorTemplate>
+    </mvux:FeedView>
+
+    <!-- Pagination Controls -->
+    <Border Grid.Row="3"
+            Background="{ThemeResource SurfaceBrush}"
+            BorderBrush="{ThemeResource OutlineVariantBrush}"
+            BorderThickness="0,1,0,0"
+            Padding="16,8">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Count Info (Left) -->
+        <mvux:FeedView Source="{Binding Pagination}"
+                       Grid.Column="0">
+          <mvux:FeedView.ValueTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Data.CountInfo}"
+                         Style="{StaticResource BodySmall}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         VerticalAlignment="Center" />
+            </DataTemplate>
+          </mvux:FeedView.ValueTemplate>
+        </mvux:FeedView>
+
+        <!-- Page Navigation (Center) -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Spacing="8">
+          <Button x:Name="PreviousPageButton"
+                  Style="{StaticResource IconButtonStyle}"
+                  x:Uid="AiModelListPage.PreviousPage"
+                  Click="PreviousPage_Click">
+            <FontIcon Glyph="&#xE76B;"
+                      FontSize="16" />
+          </Button>
+
+          <mvux:FeedView Source="{Binding Pagination}">
+            <mvux:FeedView.ValueTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Data.PageInfo}"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center"
+                           MinWidth="100"
+                           TextAlignment="Center" />
+              </DataTemplate>
+            </mvux:FeedView.ValueTemplate>
+          </mvux:FeedView>
+
+          <Button x:Name="NextPageButton"
+                  Style="{StaticResource IconButtonStyle}"
+                  x:Uid="AiModelListPage.NextPage"
+                  Click="NextPage_Click">
+            <FontIcon Glyph="&#xE76C;"
+                      FontSize="16" />
+          </Button>
+        </StackPanel>
+
+        <!-- Page Size Selection (Right) -->
+        <StackPanel Grid.Column="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="8">
+          <TextBlock x:Uid="AiModelListPage.ItemsPerPage"
+                     Style="{StaticResource BodySmall}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                     VerticalAlignment="Center" />
+          <ComboBox x:Name="PageSizeComboBox"
+                    MinWidth="80"
+                    SelectionChanged="PageSizeComboBox_SelectionChanged"
+                    SelectedIndex="1">
+            <ComboBoxItem Content="10" Tag="10" />
+            <ComboBoxItem Content="25" Tag="25" />
+            <ComboBoxItem Content="100" Tag="100" />
+            <ComboBoxItem Content="500" Tag="500" />
+            <ComboBoxItem Content="1000" Tag="1000" />
+          </ComboBox>
+        </StackPanel>
+      </Grid>
+    </Border>
+  </Grid>
+</Page>

@@ -2,6 +2,15 @@ using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Auth.Models;
 using maERP.Client.Features.Dashboard.Models;
 using maERP.Client.Features.Customers.Models;
+using maERP.Client.Features.Invoices.Models;
+using maERP.Client.Features.Manufacturers.Models;
+using maERP.Client.Features.Orders.Models;
+using maERP.Client.Features.Products.Models;
+using maERP.Client.Features.SalesChannels.Models;
+using maERP.Client.Features.TaxClasses.Models;
+using maERP.Client.Features.Warehouses.Models;
+using maERP.Client.Features.AiModels.Models;
+using maERP.Client.Features.AiPrompts.Models;
 using Uno.Toolkit.UI;
 
 namespace maERP.Client.Features.Shell.Views;
@@ -49,8 +58,16 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavSeparator1.Visibility = Visibility.Visible;
         NavItemCustomers.Visibility = Visibility.Visible;
         NavItemOrders.Visibility = Visibility.Visible;
+        NavItemInvoices.Visibility = Visibility.Visible;
         NavItemProducts.Visibility = Visibility.Visible;
-        NavItemInventory.Visibility = Visibility.Visible;
+        NavItemManufacturers.Visibility = Visibility.Visible;
+        NavItemWarehouses.Visibility = Visibility.Visible;
+        NavItemSalesChannels.Visibility = Visibility.Visible;
+        NavSeparator2.Visibility = Visibility.Visible;
+        NavItemAiModels.Visibility = Visibility.Visible;
+        NavItemAiPrompts.Visibility = Visibility.Visible;
+        NavSeparator3.Visibility = Visibility.Visible;
+        NavItemTaxClasses.Visibility = Visibility.Visible;
 
         // Header User Menu - visible when authenticated
         UserMenuPanel.Visibility = Visibility.Visible;
@@ -74,8 +91,16 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavSeparator1.Visibility = Visibility.Collapsed;
         NavItemCustomers.Visibility = Visibility.Collapsed;
         NavItemOrders.Visibility = Visibility.Collapsed;
+        NavItemInvoices.Visibility = Visibility.Collapsed;
         NavItemProducts.Visibility = Visibility.Collapsed;
-        NavItemInventory.Visibility = Visibility.Collapsed;
+        NavItemManufacturers.Visibility = Visibility.Collapsed;
+        NavItemWarehouses.Visibility = Visibility.Collapsed;
+        NavItemSalesChannels.Visibility = Visibility.Collapsed;
+        NavSeparator2.Visibility = Visibility.Collapsed;
+        NavItemAiModels.Visibility = Visibility.Collapsed;
+        NavItemAiPrompts.Visibility = Visibility.Collapsed;
+        NavSeparator3.Visibility = Visibility.Collapsed;
+        NavItemTaxClasses.Visibility = Visibility.Collapsed;
 
         // Header User Menu - hidden when not authenticated
         UserMenuPanel.Visibility = Visibility.Collapsed;
@@ -172,8 +197,16 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavSeparator1.Visibility = authenticatedVisibility;
         NavItemCustomers.Visibility = authenticatedVisibility;
         NavItemOrders.Visibility = authenticatedVisibility;
+        NavItemInvoices.Visibility = authenticatedVisibility;
         NavItemProducts.Visibility = authenticatedVisibility;
-        NavItemInventory.Visibility = authenticatedVisibility;
+        NavItemManufacturers.Visibility = authenticatedVisibility;
+        NavItemWarehouses.Visibility = authenticatedVisibility;
+        NavItemSalesChannels.Visibility = authenticatedVisibility;
+        NavSeparator2.Visibility = authenticatedVisibility;
+        NavItemAiModels.Visibility = authenticatedVisibility;
+        NavItemAiPrompts.Visibility = authenticatedVisibility;
+        NavSeparator3.Visibility = authenticatedVisibility;
+        NavItemTaxClasses.Visibility = authenticatedVisibility;
 
         // Update Header User Menu
         UserMenuPanel.Visibility = authenticatedVisibility;
@@ -268,6 +301,42 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                 case "Customers":
                     Console.WriteLine("[Shell] Navigating to CustomerList");
                     await navigator.NavigateViewModelAsync<CustomerListModel>(this);
+                    break;
+                case "Orders":
+                    Console.WriteLine("[Shell] Navigating to OrderList");
+                    await navigator.NavigateViewModelAsync<OrderListModel>(this);
+                    break;
+                case "Products":
+                    Console.WriteLine("[Shell] Navigating to ProductList");
+                    await navigator.NavigateViewModelAsync<ProductListModel>(this);
+                    break;
+                case "Manufacturers":
+                    Console.WriteLine("[Shell] Navigating to ManufacturerList");
+                    await navigator.NavigateViewModelAsync<ManufacturerListModel>(this);
+                    break;
+                case "Invoices":
+                    Console.WriteLine("[Shell] Navigating to InvoiceList");
+                    await navigator.NavigateViewModelAsync<InvoiceListModel>(this);
+                    break;
+                case "Warehouses":
+                    Console.WriteLine("[Shell] Navigating to WarehouseList");
+                    await navigator.NavigateViewModelAsync<WarehouseListModel>(this);
+                    break;
+                case "SalesChannels":
+                    Console.WriteLine("[Shell] Navigating to SalesChannelList");
+                    await navigator.NavigateViewModelAsync<SalesChannelListModel>(this);
+                    break;
+                case "TaxClasses":
+                    Console.WriteLine("[Shell] Navigating to TaxClassList");
+                    await navigator.NavigateViewModelAsync<TaxClassListModel>(this);
+                    break;
+                case "AiModels":
+                    Console.WriteLine("[Shell] Navigating to AiModelList");
+                    await navigator.NavigateViewModelAsync<AiModelListModel>(this);
+                    break;
+                case "AiPrompts":
+                    Console.WriteLine("[Shell] Navigating to AiPromptList");
+                    await navigator.NavigateViewModelAsync<AiPromptListModel>(this);
                     break;
                 case "Settings":
                     Console.WriteLine("[Shell] Settings navigation - not yet implemented");

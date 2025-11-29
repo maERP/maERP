@@ -6,8 +6,16 @@ using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Customers;
 using maERP.Client.Features.Dashboard;
 using maERP.Client.Features.Dashboard.Models;
-using maERP.Client.Features.Legacy;
+using maERP.Client.Features.Invoices;
+using maERP.Client.Features.Manufacturers;
+using maERP.Client.Features.Orders;
+using maERP.Client.Features.Products;
 using maERP.Client.Features.Shell;
+using maERP.Client.Features.AiModels;
+using maERP.Client.Features.AiPrompts;
+using maERP.Client.Features.SalesChannels;
+using maERP.Client.Features.TaxClasses;
+using maERP.Client.Features.Warehouses;
 using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Shell.Views;
 using maERP.Client.Services.Endpoints;
@@ -164,10 +172,7 @@ public partial class App : Application
         MainWindow.SetWindowIcon();
 
         // Set initial window size for desktop
-        if (MainWindow.AppWindow is not null)
-        {
-            MainWindow.AppWindow.Resize(new Windows.Graphics.SizeInt32 { Width = 1600, Height = 900 });
-        }
+        SetInitialWindowSize(MainWindow, 1500, 900);
 
         Host = await builder.NavigateAsync<Shell>
             (initialNavigate: async (services, navigator) =>
@@ -218,12 +223,15 @@ public partial class App : Application
         AuthModule.RegisterServices(services);
         DashboardModule.RegisterServices(services);
         CustomersModule.RegisterServices(services);
-        LegacyModule.RegisterServices(services);
-
-        // Future modules will be registered here:
-        // OrdersModule.RegisterServices(services);
-        // ProductsModule.RegisterServices(services);
-        // etc.
+        OrdersModule.RegisterServices(services);
+        ProductsModule.RegisterServices(services);
+        ManufacturersModule.RegisterServices(services);
+        InvoicesModule.RegisterServices(services);
+        WarehousesModule.RegisterServices(services);
+        AiModelsModule.RegisterServices(services);
+        AiPromptsModule.RegisterServices(services);
+        SalesChannelsModule.RegisterServices(services);
+        TaxClassesModule.RegisterServices(services);
     }
 
     /// <summary>
@@ -236,26 +244,63 @@ public partial class App : Application
         AuthModule.RegisterViews(views);
         DashboardModule.RegisterViews(views);
         CustomersModule.RegisterViews(views);
-        LegacyModule.RegisterViews(views);
-
-        // Future modules will register views here:
-        // OrdersModule.RegisterViews(views);
-        // ProductsModule.RegisterViews(views);
-        // etc.
+        OrdersModule.RegisterViews(views);
+        ProductsModule.RegisterViews(views);
+        ManufacturersModule.RegisterViews(views);
+        InvoicesModule.RegisterViews(views);
+        WarehousesModule.RegisterViews(views);
+        AiModelsModule.RegisterViews(views);
+        AiPromptsModule.RegisterViews(views);
+        SalesChannelsModule.RegisterViews(views);
+        TaxClassesModule.RegisterViews(views);
 
         // Collect routes from all feature modules
         var nestedRoutes = new List<RouteMap>();
         nestedRoutes.AddRange(AuthModule.GetRoutes(views));
         nestedRoutes.AddRange(DashboardModule.GetRoutes(views));
         nestedRoutes.AddRange(CustomersModule.GetRoutes(views));
-        nestedRoutes.AddRange(LegacyModule.GetRoutes(views));
-
-        // Future modules will add routes here:
-        // nestedRoutes.AddRange(OrdersModule.GetRoutes(views));
-        // nestedRoutes.AddRange(ProductsModule.GetRoutes(views));
-        // etc.
+        nestedRoutes.AddRange(OrdersModule.GetRoutes(views));
+        nestedRoutes.AddRange(ProductsModule.GetRoutes(views));
+        nestedRoutes.AddRange(ManufacturersModule.GetRoutes(views));
+        nestedRoutes.AddRange(InvoicesModule.GetRoutes(views));
+        nestedRoutes.AddRange(WarehousesModule.GetRoutes(views));
+        nestedRoutes.AddRange(AiModelsModule.GetRoutes(views));
+        nestedRoutes.AddRange(AiPromptsModule.GetRoutes(views));
+        nestedRoutes.AddRange(SalesChannelsModule.GetRoutes(views));
+        nestedRoutes.AddRange(TaxClassesModule.GetRoutes(views));
 
         // Register the root route with all nested routes
         routes.Register(ShellModule.GetRootRoute(views, nestedRoutes));
+    }
+
+    // Keep timer reference to prevent GC collection
+    private static System.Threading.Timer? _windowSizeTimer;
+
+    /// <summary>
+    /// Sets the initial window size for desktop platforms.
+    /// Uses a timer to ensure the window is fully initialized before resizing.
+    /// </summary>
+    private static void SetInitialWindowSize(Window window, int width, int height)
+    {
+        _windowSizeTimer = new System.Threading.Timer(_ =>
+        {
+            window.DispatcherQueue.TryEnqueue(() =>
+            {
+                var scaledWidth = width;
+                var scaledHeight = height;
+
+                // On macOS Retina displays, AppWindow.Resize uses physical pixels
+                // so we need to multiply by the scale factor (2x on Retina)
+                if (OperatingSystem.IsMacOS())
+                {
+                    scaledWidth = width * 2;
+                    scaledHeight = height * 2;
+                }
+
+                window.AppWindow?.Resize(new Windows.Graphics.SizeInt32 { Width = scaledWidth, Height = scaledHeight });
+            });
+            _windowSizeTimer?.Dispose();
+            _windowSizeTimer = null;
+        }, null, 2000, System.Threading.Timeout.Infinite);
     }
 }

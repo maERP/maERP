@@ -196,11 +196,32 @@
   <data name="Shell.NavItem.Inventory.Content" xml:space="preserve">
     <value>Lagerbestand</value>
   </data>
+  <data name="Shell.NavItem.Warehouses.Content" xml:space="preserve">
+    <value>Lager</value>
+  </data>
+  <data name="Shell.NavItem.Manufacturers.Content" xml:space="preserve">
+    <value>Hersteller</value>
+  </data>
+  <data name="Shell.NavItem.Invoices.Content" xml:space="preserve">
+    <value>Rechnungen</value>
+  </data>
   <data name="Shell.NavItem.Settings.Content" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
   <data name="Shell.NavItem.Logout.Content" xml:space="preserve">
     <value>Abmelden</value>
+  </data>
+  <data name="Shell.NavItem.AiModels.Content" xml:space="preserve">
+    <value>KI-Modelle</value>
+  </data>
+  <data name="Shell.NavItem.AiPrompts.Content" xml:space="preserve">
+    <value>KI-Prompts</value>
+  </data>
+  <data name="Shell.NavItem.TaxClasses.Content" xml:space="preserve">
+    <value>Steuerklassen</value>
+  </data>
+  <data name="Shell.NavItem.SalesChannels.Content" xml:space="preserve">
+    <value>Vertriebskanäle</value>
   </data>
 
   <!-- Customer List Page -->
@@ -298,6 +319,292 @@
   </data>
   <data name="Pagination.CustomersPlural" xml:space="preserve">
     <value>{0} Kunden</value>
+  </data>
+  <data name="Pagination.OrdersSingular" xml:space="preserve">
+    <value>1 Bestellung</value>
+  </data>
+  <data name="Pagination.OrdersPlural" xml:space="preserve">
+    <value>{0} Bestellungen</value>
+  </data>
+  <data name="Pagination.ProductsSingular" xml:space="preserve">
+    <value>1 Produkt</value>
+  </data>
+  <data name="Pagination.ProductsPlural" xml:space="preserve">
+    <value>{0} Produkte</value>
+  </data>
+  <data name="Pagination.InvoicesSingular" xml:space="preserve">
+    <value>1 Rechnung</value>
+  </data>
+  <data name="Pagination.InvoicesPlural" xml:space="preserve">
+    <value>{0} Rechnungen</value>
+  </data>
+  <data name="Pagination.ManufacturersSingular" xml:space="preserve">
+    <value>1 Hersteller</value>
+  </data>
+  <data name="Pagination.ManufacturersPlural" xml:space="preserve">
+    <value>{0} Hersteller</value>
+  </data>
+  <data name="Pagination.WarehousesSingular" xml:space="preserve">
+    <value>1 Lager</value>
+  </data>
+  <data name="Pagination.WarehousesPlural" xml:space="preserve">
+    <value>{0} Lager</value>
+  </data>
+  <data name="Pagination.AiModelsSingular" xml:space="preserve">
+    <value>1 KI-Modell</value>
+  </data>
+  <data name="Pagination.AiModelsPlural" xml:space="preserve">
+    <value>{0} KI-Modelle</value>
+  </data>
+  <data name="Pagination.AiPromptsSingular" xml:space="preserve">
+    <value>1 KI-Prompt</value>
+  </data>
+  <data name="Pagination.AiPromptsPlural" xml:space="preserve">
+    <value>{0} KI-Prompts</value>
+  </data>
+  <data name="Pagination.TaxClassesSingular" xml:space="preserve">
+    <value>1 Steuerklasse</value>
+  </data>
+  <data name="Pagination.TaxClassesPlural" xml:space="preserve">
+    <value>{0} Steuerklassen</value>
+  </data>
+  <data name="Pagination.SalesChannelsSingular" xml:space="preserve">
+    <value>1 Vertriebskanal</value>
+  </data>
+  <data name="Pagination.SalesChannelsPlural" xml:space="preserve">
+    <value>{0} Vertriebskanäle</value>
+  </data>
+
+  <!-- Order List Page -->
+  <data name="OrderListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Bestellungen</value>
+  </data>
+  <data name="OrderListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="OrderListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>Bestellliste aktualisieren</value>
+  </data>
+  <data name="OrderListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="OrderListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neue Bestellung anlegen</value>
+  </data>
+  <data name="OrderListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Bestellungen suchen...</value>
+  </data>
+  <data name="OrderListPage.Header.OrderId.Text" xml:space="preserve">
+    <value>Bestell-Nr.</value>
+  </data>
+  <data name="OrderListPage.Header.Customer.Text" xml:space="preserve">
+    <value>Kunde</value>
+  </data>
+  <data name="OrderListPage.Header.Total.Text" xml:space="preserve">
+    <value>Summe</value>
+  </data>
+  <data name="OrderListPage.Header.Status.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="OrderListPage.Header.DateOrdered.Text" xml:space="preserve">
+    <value>Bestelldatum</value>
+  </data>
+  <data name="OrderListPage.NoOrders.Text" xml:space="preserve">
+    <value>Keine Bestellungen gefunden</value>
+  </data>
+  <data name="OrderListPage.LoadError.Text" xml:space="preserve">
+    <value>Bestellungen konnten nicht geladen werden</value>
+  </data>
+  <data name="OrderListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="OrderListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="OrderListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Einträge pro Seite:</value>
+  </data>
+
+  <!-- Product List Page -->
+  <data name="ProductListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Produkte</value>
+  </data>
+  <data name="ProductListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="ProductListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>Produktliste aktualisieren</value>
+  </data>
+  <data name="ProductListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="ProductListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neues Produkt anlegen</value>
+  </data>
+  <data name="ProductListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Produkte suchen...</value>
+  </data>
+  <data name="ProductListPage.Header.Sku.Text" xml:space="preserve">
+    <value>SKU</value>
+  </data>
+  <data name="ProductListPage.Header.Name.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ProductListPage.Header.Manufacturer.Text" xml:space="preserve">
+    <value>Hersteller</value>
+  </data>
+  <data name="ProductListPage.Header.Price.Text" xml:space="preserve">
+    <value>Preis</value>
+  </data>
+  <data name="ProductListPage.Header.Msrp.Text" xml:space="preserve">
+    <value>UVP</value>
+  </data>
+  <data name="ProductListPage.NoProducts.Text" xml:space="preserve">
+    <value>Keine Produkte gefunden</value>
+  </data>
+  <data name="ProductListPage.LoadError.Text" xml:space="preserve">
+    <value>Produkte konnten nicht geladen werden</value>
+  </data>
+  <data name="ProductListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="ProductListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="ProductListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Einträge pro Seite:</value>
+  </data>
+
+  <!-- Invoice List Page -->
+  <data name="InvoiceListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Rechnungen</value>
+  </data>
+  <data name="InvoiceListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="InvoiceListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>Rechnungsliste aktualisieren</value>
+  </data>
+  <data name="InvoiceListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="InvoiceListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neue Rechnung anlegen</value>
+  </data>
+  <data name="InvoiceListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Rechnungen suchen...</value>
+  </data>
+  <data name="InvoiceListPage.Header.InvoiceNumber.Text" xml:space="preserve">
+    <value>Rechnungs-Nr.</value>
+  </data>
+  <data name="InvoiceListPage.Header.CustomerName.Text" xml:space="preserve">
+    <value>Kunde</value>
+  </data>
+  <data name="InvoiceListPage.Header.Total.Text" xml:space="preserve">
+    <value>Summe</value>
+  </data>
+  <data name="InvoiceListPage.Header.Status.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="InvoiceListPage.Header.InvoiceDate.Text" xml:space="preserve">
+    <value>Rechnungsdatum</value>
+  </data>
+  <data name="InvoiceListPage.NoInvoices.Text" xml:space="preserve">
+    <value>Keine Rechnungen gefunden</value>
+  </data>
+  <data name="InvoiceListPage.LoadError.Text" xml:space="preserve">
+    <value>Rechnungen konnten nicht geladen werden</value>
+  </data>
+  <data name="InvoiceListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="InvoiceListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="InvoiceListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Einträge pro Seite:</value>
+  </data>
+
+  <!-- Manufacturer List Page -->
+  <data name="ManufacturerListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Hersteller</value>
+  </data>
+  <data name="ManufacturerListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="ManufacturerListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>Herstellerliste aktualisieren</value>
+  </data>
+  <data name="ManufacturerListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="ManufacturerListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neuen Hersteller anlegen</value>
+  </data>
+  <data name="ManufacturerListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Hersteller suchen...</value>
+  </data>
+  <data name="ManufacturerListPage.Header.Name.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ManufacturerListPage.Header.City.Text" xml:space="preserve">
+    <value>Stadt</value>
+  </data>
+  <data name="ManufacturerListPage.Header.Country.Text" xml:space="preserve">
+    <value>Land</value>
+  </data>
+  <data name="ManufacturerListPage.NoManufacturers.Text" xml:space="preserve">
+    <value>Keine Hersteller gefunden</value>
+  </data>
+  <data name="ManufacturerListPage.LoadError.Text" xml:space="preserve">
+    <value>Hersteller konnten nicht geladen werden</value>
+  </data>
+  <data name="ManufacturerListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="ManufacturerListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="ManufacturerListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Einträge pro Seite:</value>
+  </data>
+
+  <!-- Warehouse List Page -->
+  <data name="WarehouseListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Lager</value>
+  </data>
+  <data name="WarehouseListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="WarehouseListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>Lagerliste aktualisieren</value>
+  </data>
+  <data name="WarehouseListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="WarehouseListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neues Lager anlegen</value>
+  </data>
+  <data name="WarehouseListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Lager suchen...</value>
+  </data>
+  <data name="WarehouseListPage.Header.Name.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="WarehouseListPage.NoWarehouses.Text" xml:space="preserve">
+    <value>Keine Lager gefunden</value>
+  </data>
+  <data name="WarehouseListPage.LoadError.Text" xml:space="preserve">
+    <value>Lager konnten nicht geladen werden</value>
+  </data>
+  <data name="WarehouseListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="WarehouseListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="WarehouseListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Einträge pro Seite:</value>
   </data>
 
   <!-- Customer Detail Page -->
@@ -575,6 +882,182 @@
   </data>
   <data name="AddressDialog.DefaultInvoiceAddress" xml:space="preserve">
     <value>Standard-Rechnungsadresse</value>
+  </data>
+
+  <!-- AI Model List Page -->
+  <data name="AiModelListPage.NavigationBar.Content" xml:space="preserve">
+    <value>KI-Modelle</value>
+  </data>
+  <data name="AiModelListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="AiModelListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>KI-Modell-Liste aktualisieren</value>
+  </data>
+  <data name="AiModelListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="AiModelListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neues KI-Modell anlegen</value>
+  </data>
+  <data name="AiModelListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>KI-Modelle suchen...</value>
+  </data>
+  <data name="AiModelListPage.Header.Name.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="AiModelListPage.Header.AiModelType.Text" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="AiModelListPage.Header.NCtx.Text" xml:space="preserve">
+    <value>Kontext</value>
+  </data>
+  <data name="AiModelListPage.NoAiModels.Text" xml:space="preserve">
+    <value>Keine KI-Modelle gefunden</value>
+  </data>
+  <data name="AiModelListPage.LoadError.Text" xml:space="preserve">
+    <value>KI-Modelle konnten nicht geladen werden</value>
+  </data>
+  <data name="AiModelListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="AiModelListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="AiModelListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Einträge pro Seite:</value>
+  </data>
+
+  <!-- AI Prompt List Page -->
+  <data name="AiPromptListPage.NavigationBar.Content" xml:space="preserve">
+    <value>KI-Prompts</value>
+  </data>
+  <data name="AiPromptListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="AiPromptListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>KI-Prompt-Liste aktualisieren</value>
+  </data>
+  <data name="AiPromptListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="AiPromptListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neuen KI-Prompt anlegen</value>
+  </data>
+  <data name="AiPromptListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>KI-Prompts suchen...</value>
+  </data>
+  <data name="AiPromptListPage.Header.Identifier.Text" xml:space="preserve">
+    <value>Bezeichner</value>
+  </data>
+  <data name="AiPromptListPage.Header.PromptText.Text" xml:space="preserve">
+    <value>Prompt-Text</value>
+  </data>
+  <data name="AiPromptListPage.Header.DateModified.Text" xml:space="preserve">
+    <value>Geändert</value>
+  </data>
+  <data name="AiPromptListPage.NoAiPrompts.Text" xml:space="preserve">
+    <value>Keine KI-Prompts gefunden</value>
+  </data>
+  <data name="AiPromptListPage.LoadError.Text" xml:space="preserve">
+    <value>KI-Prompts konnten nicht geladen werden</value>
+  </data>
+  <data name="AiPromptListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="AiPromptListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="AiPromptListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Einträge pro Seite:</value>
+  </data>
+
+  <!-- Tax Class List Page -->
+  <data name="TaxClassListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Steuerklassen</value>
+  </data>
+  <data name="TaxClassListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="TaxClassListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>Steuerklassenliste aktualisieren</value>
+  </data>
+  <data name="TaxClassListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="TaxClassListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neue Steuerklasse anlegen</value>
+  </data>
+  <data name="TaxClassListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Steuerklassen suchen...</value>
+  </data>
+  <data name="TaxClassListPage.Header.Id.Text" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="TaxClassListPage.Header.TaxRate.Text" xml:space="preserve">
+    <value>Steuersatz</value>
+  </data>
+  <data name="TaxClassListPage.NoTaxClasses.Text" xml:space="preserve">
+    <value>Keine Steuerklassen gefunden</value>
+  </data>
+  <data name="TaxClassListPage.LoadError.Text" xml:space="preserve">
+    <value>Steuerklassen konnten nicht geladen werden</value>
+  </data>
+  <data name="TaxClassListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="TaxClassListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="TaxClassListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Einträge pro Seite:</value>
+  </data>
+
+  <!-- Sales Channel List Page -->
+  <data name="SalesChannelListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Vertriebskanäle</value>
+  </data>
+  <data name="SalesChannelListPage.AppBarButton.Refresh.Label" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="SalesChannelListPage.AppBarButton.Refresh.ToolTip" xml:space="preserve">
+    <value>Vertriebskanalliste aktualisieren</value>
+  </data>
+  <data name="SalesChannelListPage.AppBarButton.New.Label" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="SalesChannelListPage.AppBarButton.New.ToolTip" xml:space="preserve">
+    <value>Neuen Vertriebskanal anlegen</value>
+  </data>
+  <data name="SalesChannelListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Vertriebskanäle suchen...</value>
+  </data>
+  <data name="SalesChannelListPage.Header.Name.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SalesChannelListPage.Header.Type.Text" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="SalesChannelListPage.Header.Url.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="SalesChannelListPage.Header.DateCreated.Text" xml:space="preserve">
+    <value>Erstellt am</value>
+  </data>
+  <data name="SalesChannelListPage.NoSalesChannels.Text" xml:space="preserve">
+    <value>Keine Vertriebskanäle gefunden</value>
+  </data>
+  <data name="SalesChannelListPage.LoadError.Text" xml:space="preserve">
+    <value>Vertriebskanäle konnten nicht geladen werden</value>
+  </data>
+  <data name="SalesChannelListPage.PreviousPage.ToolTip" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="SalesChannelListPage.NextPage.ToolTip" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="SalesChannelListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Einträge pro Seite:</value>
   </data>
 
   <!-- Second Page (Legacy) -->
