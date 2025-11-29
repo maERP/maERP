@@ -47,7 +47,7 @@
             Padding="16"
             Margin="16,8,16,0"
             CornerRadius="8"
-            Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}">
+            Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />

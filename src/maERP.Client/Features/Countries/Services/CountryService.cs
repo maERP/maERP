@@ -10,16 +10,18 @@ namespace maERP.Client.Features.Countries.Services;
 
 /// <summary>
 /// Implementation of country service using HTTP client.
+/// Registered as Singleton to maintain cache across the application lifetime.
 /// </summary>
 public class CountryService : ICountryService
 {
-    private readonly HttpClient _httpClient;
-    private readonly ITokenStorageService _tokenStorage;
-    private readonly ILogger<CountryService> _logger;
-    private readonly JsonSerializerOptions _jsonOptions = new()
+    private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
+
+    private readonly HttpClient _httpClient;
+    private readonly ITokenStorageService _tokenStorage;
+    private readonly ILogger<CountryService> _logger;
 
     // Cache for countries (they rarely change)
     private List<CountryListDto>? _cachedCountries;
@@ -63,7 +65,7 @@ public class CountryService : ICountryService
         try
         {
             var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<CountryListDto>>(
-                url, _jsonOptions, ct);
+                url, JsonOptions, ct);
 
             if (response?.Succeeded != true || response.Data == null)
             {

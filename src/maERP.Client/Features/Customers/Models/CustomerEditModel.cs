@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using maERP.Client.Core.Abstractions;
 using maERP.Client.Core.Exceptions;
 using maERP.Client.Features.Countries.Services;
 using maERP.Client.Features.Customers.Services;
@@ -8,14 +9,15 @@ using maERP.Domain.Dtos.Country;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Dtos.CustomerAddress;
 using maERP.Domain.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace maERP.Client.Features.Customers.Models;
 
 /// <summary>
 /// Model for customer edit/create page.
-/// Uses INotifyPropertyChanged for form binding.
+/// Inherits from AsyncInitializableModel for safe async initialization.
 /// </summary>
-public class CustomerEditModel : INotifyPropertyChanged
+public class CustomerEditModel : AsyncInitializableModel
 {
     private readonly ICustomerService _customerService;
     private readonly ICountryService _countryService;
@@ -50,7 +52,7 @@ public class CustomerEditModel : INotifyPropertyChanged
     private ObservableCollection<CountryListDto> _countries = new();
 
     // UI State
-    private bool _isLoading;
+    private bool _isSaving;
     private string _errorMessage = string.Empty;
 
     public CustomerEditModel(
@@ -58,7 +60,9 @@ public class CustomerEditModel : INotifyPropertyChanged
         ICountryService countryService,
         INavigator navigator,
         IStringLocalizer localizer,
+        ILogger<CustomerEditModel> logger,
         CustomerEditData? data = null)
+        : base(logger)
     {
         _customerService = customerService;
         _countryService = countryService;
@@ -66,35 +70,28 @@ public class CustomerEditModel : INotifyPropertyChanged
         _localizer = localizer;
         _customerId = data?.customerId;
 
-        // Load countries first, then customer data if editing
-        _ = InitializeAsync();
+        // Start async initialization with proper error handling
+        StartInitialization();
     }
 
-    private async Task InitializeAsync()
+    /// <inheritdoc />
+    protected override async Task InitializeCoreAsync(CancellationToken ct)
     {
-        await LoadCountriesAsync();
+        await LoadCountriesAsync(ct);
 
         if (_customerId.HasValue)
         {
-            await LoadCustomerAsync();
+            await LoadCustomerAsync(ct);
         }
     }
 
-    private async Task LoadCountriesAsync()
+    private async Task LoadCountriesAsync(CancellationToken ct)
     {
-        try
+        var countries = await _countryService.GetCountriesAsync(ct);
+        Countries.Clear();
+        foreach (var country in countries)
         {
-            var countries = await _countryService.GetCountriesAsync();
-            Countries.Clear();
-            foreach (var country in countries)
-            {
-                Countries.Add(country);
-            }
-        }
-        catch (Exception ex)
-        {
-            // Log error but don't fail - countries are needed for address dialog
-            System.Diagnostics.Debug.WriteLine($"Failed to load countries: {ex.Message}");
+            Countries.Add(country);
         }
     }
 
@@ -250,11 +247,32 @@ public class CustomerEditModel : INotifyPropertyChanged
 
     #region UI State
 
-    public bool IsLoading
+    /// <summary>
+    /// Indicates whether a save operation is in progress.
+    /// </summary>
+    public bool IsSaving
     {
-        get => _isLoading;
-        set => SetProperty(ref _isLoading, value);
+        get => _isSaving;
+        private set
+        {
+            if (SetProperty(ref _isSaving, value))
+            {
+                OnPropertyChanged(nameof(IsLoading));
+                OnPropertyChanged(nameof(IsNotLoading));
+                OnPropertyChanged(nameof(CanSave));
+            }
+        }
     }
+
+    /// <summary>
+    /// Combined loading state (initializing or saving).
+    /// </summary>
+    public bool IsLoading => IsInitializing || IsSaving;
+
+    /// <summary>
+    /// Inverse of IsLoading for binding convenience.
+    /// </summary>
+    public bool IsNotLoading => !IsLoading;
 
     public string ErrorMessage
     {
@@ -267,66 +285,52 @@ public class CustomerEditModel : INotifyPropertyChanged
         !string.IsNullOrWhiteSpace(Lastname) &&
         !IsLoading;
 
-    public bool IsNotLoading => !IsLoading;
-
     #endregion
 
-    private async Task LoadCustomerAsync()
+    private async Task LoadCustomerAsync(CancellationToken ct)
     {
         if (!_customerId.HasValue) return;
 
-        IsLoading = true;
-        try
+        var customer = await _customerService.GetCustomerAsync(_customerId.Value, ct);
+        if (customer != null)
         {
-            var customer = await _customerService.GetCustomerAsync(_customerId.Value);
-            if (customer != null)
+            // Personal Information
+            Firstname = customer.Firstname;
+            Lastname = customer.Lastname;
+
+            // Contact Information
+            Email = customer.Email ?? string.Empty;
+            Phone = customer.Phone ?? string.Empty;
+            Website = customer.Website ?? string.Empty;
+
+            // Business Information
+            CompanyName = customer.CompanyName ?? string.Empty;
+            VatNumber = customer.VatNumber ?? string.Empty;
+
+            // Status and Notes
+            CustomerStatus = customer.CustomerStatus;
+            Note = customer.Note ?? string.Empty;
+
+            // Addresses
+            Addresses.Clear();
+            foreach (var address in customer.CustomerAddresses)
             {
-                // Personal Information
-                Firstname = customer.Firstname;
-                Lastname = customer.Lastname;
-
-                // Contact Information
-                Email = customer.Email ?? string.Empty;
-                Phone = customer.Phone ?? string.Empty;
-                Website = customer.Website ?? string.Empty;
-
-                // Business Information
-                CompanyName = customer.CompanyName ?? string.Empty;
-                VatNumber = customer.VatNumber ?? string.Empty;
-
-                // Status and Notes
-                CustomerStatus = customer.CustomerStatus;
-                Note = customer.Note ?? string.Empty;
-
-                // Addresses
-                Addresses.Clear();
-                foreach (var address in customer.CustomerAddresses)
+                Addresses.Add(new EditableCustomerAddress
                 {
-                    Addresses.Add(new EditableCustomerAddress
-                    {
-                        Id = address.Id,
-                        Firstname = address.Firstname,
-                        Lastname = address.Lastname,
-                        CompanyName = address.CompanyName,
-                        Street = address.Street,
-                        HouseNr = address.HouseNr,
-                        Zip = address.Zip,
-                        City = address.City,
-                        DefaultDeliveryAddress = address.DefaultDeliveryAddress,
-                        DefaultInvoiceAddress = address.DefaultInvoiceAddress,
-                        CountryId = address.CountryId
-                    });
-                }
-                OnPropertyChanged(nameof(HasAddresses));
+                    Id = address.Id,
+                    Firstname = address.Firstname,
+                    Lastname = address.Lastname,
+                    CompanyName = address.CompanyName,
+                    Street = address.Street,
+                    HouseNr = address.HouseNr,
+                    Zip = address.Zip,
+                    City = address.City,
+                    DefaultDeliveryAddress = address.DefaultDeliveryAddress,
+                    DefaultInvoiceAddress = address.DefaultInvoiceAddress,
+                    CountryId = address.CountryId
+                });
             }
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = string.Format(_localizer["CustomerEditPage.Error.LoadFailed"], ex.Message);
-        }
-        finally
-        {
-            IsLoading = false;
+            OnPropertyChanged(nameof(HasAddresses));
         }
     }
 
@@ -334,7 +338,7 @@ public class CustomerEditModel : INotifyPropertyChanged
     {
         if (!CanSave) return;
 
-        IsLoading = true;
+        IsSaving = true;
         ErrorMessage = string.Empty;
 
         try
@@ -390,7 +394,7 @@ public class CustomerEditModel : INotifyPropertyChanged
         }
         finally
         {
-            IsLoading = false;
+            IsSaving = false;
         }
     }
 
@@ -517,30 +521,24 @@ public class CustomerEditModel : INotifyPropertyChanged
 
     #endregion
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    /// <inheritdoc />
+    protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        base.OnPropertyChanged(propertyName);
 
         // Update dependent properties
-        if (propertyName is nameof(Firstname) or nameof(Lastname) or nameof(IsLoading))
+        if (propertyName is nameof(Firstname) or nameof(Lastname))
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanSave)));
+            base.OnPropertyChanged(nameof(CanSave));
         }
 
-        if (propertyName is nameof(IsLoading))
+        // Handle IsInitializing changes from base class
+        if (propertyName is nameof(IsInitializing))
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsNotLoading)));
+            base.OnPropertyChanged(nameof(IsLoading));
+            base.OnPropertyChanged(nameof(IsNotLoading));
+            base.OnPropertyChanged(nameof(CanSave));
         }
-    }
-
-    protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        field = value;
-        OnPropertyChanged(propertyName);
-        return true;
     }
 }
 

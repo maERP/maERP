@@ -109,7 +109,7 @@
           <Border Background="{ThemeResource ErrorContainerBrush}"
                   CornerRadius="8"
                   Padding="16"
-                  Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}">
+                  Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}">
             <Grid>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />

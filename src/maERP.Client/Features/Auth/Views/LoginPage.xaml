@@ -50,7 +50,7 @@
                  Style="{StaticResource BodyMedium}"
                  Foreground="{ThemeResource ErrorBrush}"
                  TextWrapping="Wrap"
-                 Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" />
+                 Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}" />
 
       <Button x:Uid="LoginPage.Button.Login"
               Command="{Binding LoginCommand}"

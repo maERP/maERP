@@ -18,7 +18,10 @@ public static class CustomersModule
     public static IServiceCollection RegisterServices(IServiceCollection services)
     {
         // Feature-specific services
+        // CustomerService: Transient - stateless, creates new instance per request
         services.AddTransient<ICustomerService, CustomerService>();
+
+        // CountryService: Singleton - maintains in-memory cache for country lookups
         services.AddSingleton<ICountryService, CountryService>();
 
         // Page models

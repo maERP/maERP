@@ -14,13 +14,14 @@ namespace maERP.Client.Features.Customers.Services;
 /// </summary>
 public class CustomerService : ICustomerService
 {
-    private readonly HttpClient _httpClient;
-    private readonly ITokenStorageService _tokenStorage;
-    private readonly ILogger<CustomerService> _logger;
-    private readonly JsonSerializerOptions _jsonOptions = new()
+    private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
+
+    private readonly HttpClient _httpClient;
+    private readonly ITokenStorageService _tokenStorage;
+    private readonly ILogger<CustomerService> _logger;
 
     public CustomerService(
         IHttpClientFactory httpClientFactory,
@@ -54,7 +55,7 @@ public class CustomerService : ICustomerService
         try
         {
             var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<CustomerListDto>>(
-                url, _jsonOptions, ct);
+                url, JsonOptions, ct);
 
             if (response?.Succeeded != true)
             {
@@ -83,7 +84,7 @@ public class CustomerService : ICustomerService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Customers.ById(id)}";
-        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<CustomerDetailDto>>(url, _jsonOptions, ct);
+        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<CustomerDetailDto>>(url, JsonOptions, ct);
         return apiResponse?.Data;
     }
 
