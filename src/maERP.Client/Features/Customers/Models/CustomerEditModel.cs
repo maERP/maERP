@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using maERP.Client.Core.Exceptions;
 using maERP.Client.Features.Countries.Services;
 using maERP.Client.Features.Customers.Services;
 using maERP.Domain.Dtos.Country;
@@ -100,8 +101,8 @@ public class CustomerEditModel : INotifyPropertyChanged
     public bool IsEditMode => _customerId.HasValue;
 
     public string Title => IsEditMode
-        ? _localizer["CustomerEditPage.Title.Edit"]
-        : _localizer["CustomerEditPage.Title.New"];
+        ? _localizer["CustomerEditPage.TitleEdit"]
+        : _localizer["CustomerEditPage.TitleNew"];
 
     /// <summary>
     /// Available customer status options for the ComboBox.
@@ -377,6 +378,11 @@ public class CustomerEditModel : INotifyPropertyChanged
             }
 
             await _navigator.NavigateBackAsync(this);
+        }
+        catch (ApiException ex)
+        {
+            // Display detailed error messages from the API
+            ErrorMessage = ex.CombinedMessage;
         }
         catch (Exception ex)
         {

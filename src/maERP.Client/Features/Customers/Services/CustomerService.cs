@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Extensions;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Customer;
@@ -91,7 +92,7 @@ public class CustomerService : ICustomerService
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Customers.Base}";
         var response = await _httpClient.PostAsJsonAsync(url, input, ct);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
     public async Task UpdateCustomerAsync(Guid id, CustomerInputDto input, CancellationToken ct = default)
@@ -99,7 +100,7 @@ public class CustomerService : ICustomerService
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Customers.ById(id)}";
         var response = await _httpClient.PutAsJsonAsync(url, input, ct);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
     public async Task DeleteCustomerAsync(Guid id, CancellationToken ct = default)
@@ -107,6 +108,6 @@ public class CustomerService : ICustomerService
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Customers.ById(id)}";
         var response = await _httpClient.DeleteAsync(url, ct);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 }

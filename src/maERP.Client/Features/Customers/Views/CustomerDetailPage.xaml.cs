@@ -1,4 +1,6 @@
 using maERP.Client.Features.Customers.Models;
+using Microsoft.UI.Xaml.Controls;
+using Windows.ApplicationModel.Resources;
 
 namespace maERP.Client.Features.Customers.Views;
 
@@ -29,7 +31,29 @@ public sealed partial class CustomerDetailPage : Page
     {
         if (DataContext is CustomerDetailModel model)
         {
-            await model.DeleteCustomer(CancellationToken.None);
+            var confirmed = await ShowDeleteConfirmationAsync();
+            if (confirmed)
+            {
+                await model.DeleteCustomer(CancellationToken.None);
+            }
         }
+    }
+
+    private async Task<bool> ShowDeleteConfirmationAsync()
+    {
+        var resourceLoader = ResourceLoader.GetForViewIndependentUse();
+
+        var dialog = new ContentDialog
+        {
+            Title = resourceLoader.GetString("CustomerDetailPage.DeleteConfirmation.Title"),
+            Content = resourceLoader.GetString("CustomerDetailPage.DeleteConfirmation.Message"),
+            PrimaryButtonText = resourceLoader.GetString("Common.Delete"),
+            CloseButtonText = resourceLoader.GetString("Common.Cancel"),
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = this.XamlRoot
+        };
+
+        var result = await dialog.ShowAsync();
+        return result == ContentDialogResult.Primary;
     }
 }

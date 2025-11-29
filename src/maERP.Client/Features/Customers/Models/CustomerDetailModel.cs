@@ -1,4 +1,5 @@
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Exceptions;
 using maERP.Client.Features.Customers.Services;
 using maERP.Domain.Dtos.Customer;
 
@@ -25,6 +26,11 @@ public partial record CustomerDetailModel
     }
 
     /// <summary>
+    /// State for error messages from API operations.
+    /// </summary>
+    public IState<string> ErrorMessage => State<string>.Value(this, () => string.Empty);
+
+    /// <summary>
     /// Feed that loads the customer details.
     /// </summary>
     public IFeed<CustomerDetailDto> Customer => Feed.Async(async ct =>
@@ -46,8 +52,28 @@ public partial record CustomerDetailModel
     /// </summary>
     public async Task DeleteCustomer(CancellationToken ct)
     {
-        await _customerService.DeleteCustomerAsync(_customerId, ct);
-        await _navigator.NavigateBackAsync(this);
+        try
+        {
+            await ErrorMessage.Set(string.Empty, ct);
+            await _customerService.DeleteCustomerAsync(_customerId, ct);
+            await _navigator.NavigateBackAsync(this);
+        }
+        catch (ApiException ex)
+        {
+            await ErrorMessage.Set(ex.CombinedMessage, ct);
+        }
+        catch (Exception ex)
+        {
+            await ErrorMessage.Set(ex.Message, ct);
+        }
+    }
+
+    /// <summary>
+    /// Clear the error message.
+    /// </summary>
+    public async Task ClearError(CancellationToken ct)
+    {
+        await ErrorMessage.Set(string.Empty, ct);
     }
 
     /// <summary>

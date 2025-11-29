@@ -353,6 +353,17 @@
     <value>Rechnungsadresse</value>
   </data>
 
+  <!-- Customer Detail Page - Delete Confirmation -->
+  <data name="CustomerDetailPage.DeleteConfirmation.Title" xml:space="preserve">
+    <value>Kunde löschen</value>
+  </data>
+  <data name="CustomerDetailPage.DeleteConfirmation.Message" xml:space="preserve">
+    <value>Möchten Sie diesen Kunden wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.</value>
+  </data>
+  <data name="Common.Delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+
   <!-- Customer Detail Page - Empty States -->
   <data name="CustomerDetailPage.NoAddresses.Text" xml:space="preserve">
     <value>Keine Adressen vorhanden</value>
@@ -373,10 +384,10 @@
   </data>
 
   <!-- Customer Edit Page -->
-  <data name="CustomerEditPage.Title.New" xml:space="preserve">
+  <data name="CustomerEditPage.TitleNew" xml:space="preserve">
     <value>Neuer Kunde</value>
   </data>
-  <data name="CustomerEditPage.Title.Edit" xml:space="preserve">
+  <data name="CustomerEditPage.TitleEdit" xml:space="preserve">
     <value>Kunde bearbeiten</value>
   </data>
   <data name="CustomerEditPage.AppBarButton.Cancel.Label" xml:space="preserve">

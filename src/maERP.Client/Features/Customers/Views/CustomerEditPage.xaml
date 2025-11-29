@@ -15,15 +15,13 @@
     <!-- Header with NavigationBar -->
     <utu:NavigationBar Grid.Row="0"
                        Content="{Binding Title}">
-      <utu:NavigationBar.MainCommand>
+      <utu:NavigationBar.PrimaryCommands>
         <AppBarButton x:Uid="CustomerEditPage.AppBarButton.Cancel"
                       Click="CancelButton_Click">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE711;" />
           </AppBarButton.Icon>
         </AppBarButton>
-      </utu:NavigationBar.MainCommand>
-      <utu:NavigationBar.PrimaryCommands>
         <AppBarButton x:Uid="CustomerEditPage.AppBarButton.Save"
                       Click="SaveButton_Click"
                       IsEnabled="{Binding CanSave}">
@@ -521,28 +519,6 @@
             </Border>
           </StackPanel>
 
-          <!-- Action Buttons (Mobile-friendly) -->
-          <Grid Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}"
-                Margin="0,8,0,0">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="16" />
-              <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <Button Grid.Column="0"
-                    x:Uid="CustomerEditPage.Button.Cancel"
-                    Style="{StaticResource OutlinedButtonStyle}"
-                    HorizontalAlignment="Stretch"
-                    Click="CancelButton_Click" />
-
-            <Button Grid.Column="2"
-                    x:Uid="CustomerEditPage.Button.Save"
-                    Style="{StaticResource FilledButtonStyle}"
-                    HorizontalAlignment="Stretch"
-                    Click="SaveButton_Click"
-                    IsEnabled="{Binding CanSave}" />
-          </Grid>
         </StackPanel>
       </Grid>
     </ScrollViewer>

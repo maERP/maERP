@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Exceptions;
 using maERP.Client.Core.Helpers;
 using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Dashboard.Models;
@@ -181,6 +182,11 @@ public class LoginModel : INotifyPropertyChanged
             {
                 ErrorMessage = "Login failed. Please check your credentials and server URL.";
             }
+        }
+        catch (ApiException ex)
+        {
+            // Display detailed error messages from the API
+            ErrorMessage = ex.CombinedMessage;
         }
         catch (Exception ex)
         {

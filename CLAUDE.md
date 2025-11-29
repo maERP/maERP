@@ -41,6 +41,11 @@ The codebase implements:
 - Renderer: Skia
 - Authentication: Web
 
+### maERP.Client API Error Handling
+- Use `ApiException` and `HttpResponseExtensions.EnsureSuccessOrThrowApiExceptionAsync()` for HTTP error handling
+- In Services: use `await response.EnsureSuccessOrThrowApiExceptionAsync(ct)`
+- In Models: Catch `ApiException` and display `ex.CombinedMessage` as ErrorMessage to show server validation errors
+
 ## Role Management
 - IMPORTANT: only Superadmin-Role can use SuperadminController to add, edit or delete users in any tenant
 - IMPORTANT: all users can see their own user profile, even when they have no UserTenant
