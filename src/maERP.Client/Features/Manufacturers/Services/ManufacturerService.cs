@@ -78,4 +78,32 @@ public class ManufacturerService : IManufacturerService
             throw;
         }
     }
+
+    public async Task<ManufacturerDetailDto?> GetManufacturerAsync(
+        Guid id,
+        CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Manufacturers.ById(id)}";
+
+        _logger.LogInformation("Fetching manufacturer {Id} from URL: {Url}", id, url);
+
+        try
+        {
+            var response = await _httpClient.GetFromJsonAsync<ManufacturerDetailDto>(
+                url, JsonOptions, ct);
+
+            return response;
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _logger.LogWarning("Manufacturer {Id} not found", id);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching manufacturer {Id} from {Url}", id, url);
+            throw;
+        }
+    }
 }

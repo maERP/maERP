@@ -22,6 +22,7 @@ public static class InvoicesModule
 
         // Page models
         services.AddTransient<InvoiceListModel>();
+        services.AddTransient<InvoiceDetailModel>();
 
         return services;
     }
@@ -32,7 +33,8 @@ public static class InvoicesModule
     public static void RegisterViews(IViewRegistry views)
     {
         views.Register(
-            new ViewMap<InvoiceListPage, InvoiceListModel>()
+            new ViewMap<InvoiceListPage, InvoiceListModel>(),
+            new ViewMap<InvoiceDetailPage, InvoiceDetailModel>(Data: new DataMap<InvoiceDetailData>())
         );
     }
 
@@ -42,5 +44,6 @@ public static class InvoicesModule
     public static IEnumerable<RouteMap> GetRoutes(IViewRegistry views)
     {
         yield return new RouteMap(Routes.InvoiceList, View: views.FindByViewModel<InvoiceListModel>());
+        yield return new RouteMap(Routes.InvoiceDetail, View: views.FindByViewModel<InvoiceDetailModel>());
     }
 }

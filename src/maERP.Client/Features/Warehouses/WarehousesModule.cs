@@ -7,7 +7,7 @@ namespace maERP.Client.Features.Warehouses;
 
 /// <summary>
 /// Module registration for Warehouses feature.
-/// Provides list operations for warehouse management.
+/// Provides list and detail operations for warehouse management.
 /// </summary>
 public static class WarehousesModule
 {
@@ -22,6 +22,7 @@ public static class WarehousesModule
 
         // Page models
         services.AddTransient<WarehouseListModel>();
+        services.AddTransient<WarehouseDetailModel>();
 
         return services;
     }
@@ -32,7 +33,8 @@ public static class WarehousesModule
     public static void RegisterViews(IViewRegistry views)
     {
         views.Register(
-            new ViewMap<WarehouseListPage, WarehouseListModel>()
+            new ViewMap<WarehouseListPage, WarehouseListModel>(),
+            new ViewMap<WarehouseDetailPage, WarehouseDetailModel>(Data: new DataMap<WarehouseDetailData>())
         );
     }
 
@@ -42,5 +44,11 @@ public static class WarehousesModule
     public static IEnumerable<RouteMap> GetRoutes(IViewRegistry views)
     {
         yield return new RouteMap(Routes.WarehouseList, View: views.FindByViewModel<WarehouseListModel>());
+        yield return new RouteMap(Routes.WarehouseDetail, View: views.FindByViewModel<WarehouseDetailModel>());
     }
 }
+
+/// <summary>
+/// Navigation data for warehouse detail page.
+/// </summary>
+public record WarehouseDetailData(Guid WarehouseId);

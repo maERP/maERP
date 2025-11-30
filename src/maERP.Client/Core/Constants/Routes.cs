@@ -35,6 +35,7 @@ public static class Routes
 
     // Manufacturers
     public const string ManufacturerList = "Manufacturers";
+    public const string ManufacturerDetail = "ManufacturerDetail";
 
     // Inventory / Warehouses
     public const string WarehouseList = "Warehouses";
@@ -63,6 +64,7 @@ public static class Routes
 
     // Tax Classes
     public const string TaxClassList = "TaxClasses";
+    public const string TaxClassDetail = "TaxClassDetail";
 
     // Admin
     public const string AdminUsers = "AdminUsers";

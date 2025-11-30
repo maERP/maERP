@@ -1,0 +1,460 @@
+<Page x:Class="maERP.Client.Features.Manufacturers.Views.ManufacturerDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.Manufacturers.Views"
+      xmlns:models="using:maERP.Client.Features.Manufacturers.Models"
+      xmlns:mvux="using:Uno.Extensions.Reactive.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with back button -->
+    <utu:NavigationBar Grid.Row="0" x:Uid="ManufacturerDetailPage.NavigationBar">
+      <utu:NavigationBar.MainCommand>
+        <AppBarButton Icon="Back"
+                      x:Uid="ManufacturerDetailPage.AppBarButton.Back"
+                      Click="BackButton_Click" />
+      </utu:NavigationBar.MainCommand>
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton Icon="Edit"
+                      x:Uid="ManufacturerDetailPage.AppBarButton.Edit"
+                      Click="EditButton_Click" />
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Error Message Banner -->
+    <Border Grid.Row="1"
+            Background="{ThemeResource ErrorContainerBrush}"
+            Padding="16"
+            Margin="16,8,16,0"
+            CornerRadius="8"
+            Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <FontIcon Grid.Column="0"
+                  Glyph="&#xE783;"
+                  FontSize="20"
+                  Foreground="{ThemeResource OnErrorContainerBrush}"
+                  Margin="0,0,12,0"
+                  VerticalAlignment="Center" />
+        <TextBlock Grid.Column="1"
+                   Text="{Binding ErrorMessage}"
+                   Style="{StaticResource BodyMedium}"
+                   Foreground="{ThemeResource OnErrorContainerBrush}"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Center" />
+      </Grid>
+    </Border>
+
+    <!-- Manufacturer Details Content -->
+    <mvux:FeedView Grid.Row="2"
+                   Source="{Binding Manufacturer}">
+      <mvux:FeedView.ValueTemplate>
+        <DataTemplate>
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid Padding="24">
+              <!-- VisualStateManager for responsive layout -->
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                  <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="InfoCardsGrid.MaxWidth" Value="600" />
+                      <Setter Target="InfoColumn1.Width" Value="*" />
+                      <Setter Target="InfoColumn2.Width" Value="0" />
+                      <Setter Target="ContactCard.(Grid.Column)" Value="0" />
+                      <Setter Target="ContactCard.(Grid.Row)" Value="0" />
+                      <Setter Target="ContactCard.Margin" Value="0,0,0,16" />
+                      <Setter Target="AddressCard.(Grid.Column)" Value="0" />
+                      <Setter Target="AddressCard.(Grid.Row)" Value="1" />
+                      <Setter Target="AddressCard.Margin" Value="0" />
+                    </VisualState.Setters>
+                  </VisualState>
+
+                  <VisualState x:Name="Medium">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="800" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="InfoCardsGrid.MaxWidth" Value="1200" />
+                      <Setter Target="InfoColumn1.Width" Value="*" />
+                      <Setter Target="InfoColumn2.Width" Value="*" />
+                      <Setter Target="ContactCard.(Grid.Column)" Value="0" />
+                      <Setter Target="ContactCard.(Grid.Row)" Value="0" />
+                      <Setter Target="ContactCard.Margin" Value="0,0,8,0" />
+                      <Setter Target="AddressCard.(Grid.Column)" Value="1" />
+                      <Setter Target="AddressCard.(Grid.Row)" Value="0" />
+                      <Setter Target="AddressCard.Margin" Value="8,0,0,0" />
+                    </VisualState.Setters>
+                  </VisualState>
+
+                  <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="1200" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="InfoCardsGrid.MaxWidth" Value="10000" />
+                      <Setter Target="InfoColumn1.Width" Value="*" />
+                      <Setter Target="InfoColumn2.Width" Value="*" />
+                      <Setter Target="ContactCard.(Grid.Column)" Value="0" />
+                      <Setter Target="ContactCard.(Grid.Row)" Value="0" />
+                      <Setter Target="ContactCard.Margin" Value="0,0,8,0" />
+                      <Setter Target="AddressCard.(Grid.Column)" Value="1" />
+                      <Setter Target="AddressCard.(Grid.Row)" Value="0" />
+                      <Setter Target="AddressCard.Margin" Value="8,0,0,0" />
+                    </VisualState.Setters>
+                  </VisualState>
+                </VisualStateGroup>
+              </VisualStateManager.VisualStateGroups>
+
+              <StackPanel Spacing="24"
+                          MaxWidth="1400"
+                          HorizontalAlignment="Stretch">
+
+                <!-- Profile Header Section -->
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        CornerRadius="12"
+                        Padding="24"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <StackPanel HorizontalAlignment="Center"
+                              Spacing="16">
+                    <!-- Logo or Icon -->
+                    <Grid Width="96"
+                          Height="96"
+                          HorizontalAlignment="Center">
+                      <!-- Logo Image (when available) -->
+                      <Border CornerRadius="12"
+                              Visibility="{Binding Data.Logo, Converter={StaticResource StringToVisibilityConverter}}">
+                        <Image Source="{Binding Data.Logo}"
+                               Stretch="UniformToFill"
+                               Width="96"
+                               Height="96" />
+                      </Border>
+                      <!-- Fallback Icon (when no logo) -->
+                      <Border Background="{ThemeResource PrimaryContainerBrush}"
+                              CornerRadius="12"
+                              Visibility="{Binding Data.Logo, Converter={StaticResource StringToInverseVisibilityConverter}}">
+                        <FontIcon Glyph="&#xE731;"
+                                  FontSize="48"
+                                  Foreground="{ThemeResource OnPrimaryContainerBrush}"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" />
+                      </Border>
+                    </Grid>
+
+                    <!-- Manufacturer Name -->
+                    <TextBlock Style="{StaticResource HeadlineMedium}"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               Text="{Binding Data.Name}"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center" />
+                  </StackPanel>
+                </Border>
+
+                <!-- Information Cards Grid -->
+                <Grid x:Name="InfoCardsGrid">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="InfoColumn1" Width="*" />
+                    <ColumnDefinition x:Name="InfoColumn2" Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <!-- Contact Information Card -->
+                  <Border x:Name="ContactCard"
+                          Grid.Column="0"
+                          Grid.Row="0"
+                          Margin="0,0,8,0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12">
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE779;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource PrimaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="ManufacturerDetailPage.Section.ContactInformation"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Contact Fields -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="12">
+                        <!-- Email -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE715;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="ManufacturerDetailPage.Field.Email"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Email}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding Data.Email, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="ManufacturerDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.Email, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Phone -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE717;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="ManufacturerDetailPage.Field.Phone"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Phone}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       Visibility="{Binding Data.Phone, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="ManufacturerDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.Phone, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Website -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE774;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="ManufacturerDetailPage.Field.Website"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Website}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource PrimaryBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding Data.Website, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="ManufacturerDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.Website, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+
+                  <!-- Address Card -->
+                  <Border x:Name="AddressCard"
+                          Grid.Column="1"
+                          Grid.Row="0"
+                          Margin="8,0,0,0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12">
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE81D;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource TertiaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="ManufacturerDetailPage.Section.Address"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Address Fields -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="12">
+                        <!-- Street -->
+                        <Grid Visibility="{Binding Data.Street, Converter={StaticResource StringToVisibilityConverter}}">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE80F;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="ManufacturerDetailPage.Field.Street"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Street}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- City and ZipCode -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE8F1;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="ManufacturerDetailPage.Field.City"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap">
+                              <Run Text="{Binding Data.ZipCode}" />
+                              <Run Text=" " />
+                              <Run Text="{Binding Data.City}" />
+                            </TextBlock>
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- State (if available) -->
+                        <Grid Visibility="{Binding Data.State, Converter={StaticResource StringToVisibilityConverter}}">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE909;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="ManufacturerDetailPage.Field.State"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.State}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Country -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE128;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="ManufacturerDetailPage.Field.Country"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Country}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap" />
+                          </StackPanel>
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                </Grid>
+              </StackPanel>
+            </Grid>
+          </ScrollViewer>
+        </DataTemplate>
+      </mvux:FeedView.ValueTemplate>
+
+      <mvux:FeedView.ProgressTemplate>
+        <DataTemplate>
+          <Grid HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
+        </DataTemplate>
+      </mvux:FeedView.ProgressTemplate>
+
+      <mvux:FeedView.ErrorTemplate>
+        <DataTemplate>
+          <Grid HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+              <FontIcon Glyph="&#xE783;"
+                        FontSize="48"
+                        Foreground="{ThemeResource ErrorBrush}" />
+              <TextBlock x:Uid="ManufacturerDetailPage.LoadError"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+              <Button x:Uid="Common.Retry"
+                      Style="{StaticResource FilledButtonStyle}"
+                      HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
+        </DataTemplate>
+      </mvux:FeedView.ErrorTemplate>
+    </mvux:FeedView>
+  </Grid>
+</Page>

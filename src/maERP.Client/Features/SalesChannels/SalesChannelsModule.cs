@@ -22,6 +22,7 @@ public static class SalesChannelsModule
 
         // Page models
         services.AddTransient<SalesChannelListModel>();
+        services.AddTransient<SalesChannelDetailModel>();
 
         return services;
     }
@@ -32,7 +33,8 @@ public static class SalesChannelsModule
     public static void RegisterViews(IViewRegistry views)
     {
         views.Register(
-            new ViewMap<SalesChannelListPage, SalesChannelListModel>()
+            new ViewMap<SalesChannelListPage, SalesChannelListModel>(),
+            new ViewMap<SalesChannelDetailPage, SalesChannelDetailModel>(Data: new DataMap<SalesChannelDetailData>())
         );
     }
 
@@ -42,5 +44,6 @@ public static class SalesChannelsModule
     public static IEnumerable<RouteMap> GetRoutes(IViewRegistry views)
     {
         yield return new RouteMap(Routes.SalesChannelList, View: views.FindByViewModel<SalesChannelListModel>());
+        yield return new RouteMap(Routes.SalesChannelDetail, View: views.FindByViewModel<SalesChannelDetailModel>());
     }
 }

@@ -22,6 +22,7 @@ public static class OrdersModule
 
         // Page models
         services.AddTransient<OrderListModel>();
+        services.AddTransient<OrderDetailModel>();
 
         return services;
     }
@@ -32,7 +33,8 @@ public static class OrdersModule
     public static void RegisterViews(IViewRegistry views)
     {
         views.Register(
-            new ViewMap<OrderListPage, OrderListModel>()
+            new ViewMap<OrderListPage, OrderListModel>(),
+            new ViewMap<OrderDetailPage, OrderDetailModel>(Data: new DataMap<OrderDetailData>())
         );
     }
 
@@ -42,6 +44,7 @@ public static class OrdersModule
     public static IEnumerable<RouteMap> GetRoutes(IViewRegistry views)
     {
         yield return new RouteMap(Routes.OrderList, View: views.FindByViewModel<OrderListModel>());
+        yield return new RouteMap(Routes.OrderDetail, View: views.FindByViewModel<OrderDetailModel>());
     }
 }
 

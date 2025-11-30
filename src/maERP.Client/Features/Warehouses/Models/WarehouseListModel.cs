@@ -88,8 +88,7 @@ public partial record WarehouseListModel
     /// </summary>
     public async Task ViewWarehouse(WarehouseListDto warehouse)
     {
-        // TODO: Implement warehouse detail navigation when page is created
-        // await _navigator.NavigateDataAsync(this, new WarehouseDetailData(warehouse.Id));
+        await _navigator.NavigateDataAsync(this, new WarehouseDetailData(warehouse.Id));
     }
 
     /// <summary>

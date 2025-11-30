@@ -1,4 +1,5 @@
 using maERP.Client.Features.Manufacturers.Models;
+using maERP.Domain.Dtos.Manufacturer;
 
 namespace maERP.Client.Features.Manufacturers.Views;
 
@@ -100,6 +101,16 @@ public sealed partial class ManufacturerListPage : Page
             {
                 icon.Visibility = Visibility.Collapsed;
             }
+        }
+    }
+
+    private async void ManufacturerRow_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button &&
+            button.DataContext is ManufacturerListDto manufacturer &&
+            DataContext is ManufacturerListModel model)
+        {
+            await model.ViewManufacturer(manufacturer);
         }
     }
 

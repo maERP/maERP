@@ -84,6 +84,14 @@ public partial record ManufacturerListModel
         .AsListFeed();
 
     /// <summary>
+    /// Navigate to manufacturer detail page.
+    /// </summary>
+    public async Task ViewManufacturer(ManufacturerListDto manufacturer)
+    {
+        await _navigator.NavigateDataAsync(this, new ManufacturerDetailData(manufacturer.Id));
+    }
+
+    /// <summary>
     /// Navigate to create new manufacturer page (placeholder - no function yet).
     /// </summary>
     public async Task CreateManufacturer()

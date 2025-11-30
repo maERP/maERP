@@ -227,7 +227,3 @@ public record SalesChannelPaginationInfo
     }
 }
 
-/// <summary>
-/// Navigation data for sales channel detail page.
-/// </summary>
-public record SalesChannelDetailData(Guid salesChannelId);

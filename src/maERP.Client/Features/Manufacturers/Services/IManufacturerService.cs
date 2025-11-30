@@ -14,4 +14,11 @@ public interface IManufacturerService
     Task<PaginatedResponse<ManufacturerListDto>> GetManufacturersAsync(
         QueryParameters parameters,
         CancellationToken ct = default);
+
+    /// <summary>
+    /// Gets a manufacturer by ID.
+    /// </summary>
+    Task<ManufacturerDetailDto?> GetManufacturerAsync(
+        Guid id,
+        CancellationToken ct = default);
 }

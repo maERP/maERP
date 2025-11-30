@@ -1,5 +1,3 @@
-using Uno.Resizetizer;
-using maERP.Client.Core.Constants;
 using maERP.Client.Features.Auth;
 using maERP.Client.Features.Auth.Models;
 using maERP.Client.Features.Auth.Services;
@@ -16,9 +14,7 @@ using maERP.Client.Features.AiPrompts;
 using maERP.Client.Features.SalesChannels;
 using maERP.Client.Features.TaxClasses;
 using maERP.Client.Features.Warehouses;
-using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Shell.Views;
-using maERP.Client.Services.Endpoints;
 using maERP.Domain.Dtos.Auth;
 
 namespace maERP.Client;

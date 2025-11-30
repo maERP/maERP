@@ -107,9 +107,13 @@ public sealed partial class TaxClassListPage : Page
         // Placeholder for create functionality - not implemented yet
     }
 
-    private void TaxClassRow_Click(object sender, RoutedEventArgs e)
+    private async void TaxClassRow_Click(object sender, RoutedEventArgs e)
     {
-        // Placeholder for row click - detail view not implemented yet
+        if (sender is Button { DataContext: TaxClassListDto taxClass } &&
+            DataContext is TaxClassListModel model)
+        {
+            await model.NavigateToDetail(taxClass.Id);
+        }
     }
 
     private async void PreviousPage_Click(object sender, RoutedEventArgs e)

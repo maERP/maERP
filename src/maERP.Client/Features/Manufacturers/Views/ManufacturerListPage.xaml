@@ -157,42 +157,49 @@
                   </ItemsRepeater.Layout>
                   <ItemsRepeater.ItemTemplate>
                     <DataTemplate>
-                      <Grid Background="Transparent"
-                            Padding="0"
-                            BorderBrush="{ThemeResource OutlineVariantBrush}"
-                            BorderThickness="0,0,0,1">
-                        <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="*" />
-                          <ColumnDefinition Width="*" />
-                          <ColumnDefinition Width="150" />
-                        </Grid.ColumnDefinitions>
+                      <Button Style="{StaticResource TextButtonStyle}"
+                              HorizontalAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch"
+                              Padding="0"
+                              CornerRadius="0"
+                              Click="ManufacturerRow_Click">
+                        <Grid Background="Transparent"
+                              Padding="0"
+                              BorderBrush="{ThemeResource OutlineVariantBrush}"
+                              BorderThickness="0,0,0,1">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="150" />
+                          </Grid.ColumnDefinitions>
 
-                        <!-- Name -->
-                        <TextBlock Grid.Column="0"
-                                   Text="{Binding Name}"
-                                   Style="{StaticResource BodyMedium}"
-                                   Foreground="{ThemeResource OnSurfaceBrush}"
-                                   VerticalAlignment="Center"
-                                   Padding="16,14"
-                                   TextTrimming="CharacterEllipsis" />
+                          <!-- Name -->
+                          <TextBlock Grid.Column="0"
+                                     Text="{Binding Name}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14"
+                                     TextTrimming="CharacterEllipsis" />
 
-                        <!-- City -->
-                        <TextBlock Grid.Column="1"
-                                   Text="{Binding City}"
-                                   Style="{StaticResource BodyMedium}"
-                                   Foreground="{ThemeResource OnSurfaceBrush}"
-                                   VerticalAlignment="Center"
-                                   Padding="16,14"
-                                   TextTrimming="CharacterEllipsis" />
+                          <!-- City -->
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding City}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14"
+                                     TextTrimming="CharacterEllipsis" />
 
-                        <!-- Country -->
-                        <TextBlock Grid.Column="2"
-                                   Text="{Binding Country}"
-                                   Style="{StaticResource BodyMedium}"
-                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                   VerticalAlignment="Center"
-                                   Padding="16,14" />
-                      </Grid>
+                          <!-- Country -->
+                          <TextBlock Grid.Column="2"
+                                     Text="{Binding Country}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14" />
+                        </Grid>
+                      </Button>
                     </DataTemplate>
                   </ItemsRepeater.ItemTemplate>
                 </ItemsRepeater>

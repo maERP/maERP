@@ -1,0 +1,792 @@
+<Page x:Class="maERP.Client.Features.Invoices.Views.InvoiceDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.Invoices.Views"
+      xmlns:models="using:maERP.Client.Features.Invoices.Models"
+      xmlns:mvux="using:Uno.Extensions.Reactive.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with back button -->
+    <utu:NavigationBar Grid.Row="0" x:Uid="InvoiceDetailPage.NavigationBar">
+      <utu:NavigationBar.MainCommand>
+        <AppBarButton Icon="Back"
+                      x:Uid="InvoiceDetailPage.AppBarButton.Back"
+                      Click="BackButton_Click" />
+      </utu:NavigationBar.MainCommand>
+    </utu:NavigationBar>
+
+    <!-- Invoice Details Content -->
+    <mvux:FeedView Grid.Row="1"
+                   Source="{Binding Invoice}">
+      <mvux:FeedView.ValueTemplate>
+        <DataTemplate>
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid Padding="24">
+              <!-- VisualStateManager for responsive layout -->
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                  <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="MainCardsGrid.MaxWidth" Value="600" />
+                      <Setter Target="MainColumn1.Width" Value="*" />
+                      <Setter Target="MainColumn2.Width" Value="0" />
+                      <Setter Target="FinancialCard.(Grid.Column)" Value="0" />
+                      <Setter Target="FinancialCard.(Grid.Row)" Value="0" />
+                      <Setter Target="FinancialCard.Margin" Value="0,0,0,16" />
+                      <Setter Target="PaymentCard.(Grid.Column)" Value="0" />
+                      <Setter Target="PaymentCard.(Grid.Row)" Value="1" />
+                      <Setter Target="PaymentCard.Margin" Value="0" />
+                      <Setter Target="AddressCardsGrid.MaxWidth" Value="600" />
+                      <Setter Target="AddressColumn1.Width" Value="*" />
+                      <Setter Target="AddressColumn2.Width" Value="0" />
+                      <Setter Target="InvoiceAddressCard.(Grid.Column)" Value="0" />
+                      <Setter Target="InvoiceAddressCard.(Grid.Row)" Value="0" />
+                      <Setter Target="InvoiceAddressCard.Margin" Value="0,0,0,16" />
+                      <Setter Target="DeliveryAddressCard.(Grid.Column)" Value="0" />
+                      <Setter Target="DeliveryAddressCard.(Grid.Row)" Value="1" />
+                      <Setter Target="DeliveryAddressCard.Margin" Value="0" />
+                    </VisualState.Setters>
+                  </VisualState>
+
+                  <VisualState x:Name="Medium">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="800" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="MainCardsGrid.MaxWidth" Value="1200" />
+                      <Setter Target="MainColumn1.Width" Value="*" />
+                      <Setter Target="MainColumn2.Width" Value="*" />
+                      <Setter Target="FinancialCard.(Grid.Column)" Value="0" />
+                      <Setter Target="FinancialCard.(Grid.Row)" Value="0" />
+                      <Setter Target="FinancialCard.Margin" Value="0,0,8,0" />
+                      <Setter Target="PaymentCard.(Grid.Column)" Value="1" />
+                      <Setter Target="PaymentCard.(Grid.Row)" Value="0" />
+                      <Setter Target="PaymentCard.Margin" Value="8,0,0,0" />
+                      <Setter Target="AddressCardsGrid.MaxWidth" Value="1200" />
+                      <Setter Target="AddressColumn1.Width" Value="*" />
+                      <Setter Target="AddressColumn2.Width" Value="*" />
+                      <Setter Target="InvoiceAddressCard.(Grid.Column)" Value="0" />
+                      <Setter Target="InvoiceAddressCard.(Grid.Row)" Value="0" />
+                      <Setter Target="InvoiceAddressCard.Margin" Value="0,0,8,0" />
+                      <Setter Target="DeliveryAddressCard.(Grid.Column)" Value="1" />
+                      <Setter Target="DeliveryAddressCard.(Grid.Row)" Value="0" />
+                      <Setter Target="DeliveryAddressCard.Margin" Value="8,0,0,0" />
+                    </VisualState.Setters>
+                  </VisualState>
+
+                  <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="1200" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="MainCardsGrid.MaxWidth" Value="10000" />
+                      <Setter Target="MainColumn1.Width" Value="*" />
+                      <Setter Target="MainColumn2.Width" Value="*" />
+                      <Setter Target="FinancialCard.(Grid.Column)" Value="0" />
+                      <Setter Target="FinancialCard.(Grid.Row)" Value="0" />
+                      <Setter Target="FinancialCard.Margin" Value="0,0,8,0" />
+                      <Setter Target="PaymentCard.(Grid.Column)" Value="1" />
+                      <Setter Target="PaymentCard.(Grid.Row)" Value="0" />
+                      <Setter Target="PaymentCard.Margin" Value="8,0,0,0" />
+                      <Setter Target="AddressCardsGrid.MaxWidth" Value="10000" />
+                      <Setter Target="AddressColumn1.Width" Value="*" />
+                      <Setter Target="AddressColumn2.Width" Value="*" />
+                      <Setter Target="InvoiceAddressCard.(Grid.Column)" Value="0" />
+                      <Setter Target="InvoiceAddressCard.(Grid.Row)" Value="0" />
+                      <Setter Target="InvoiceAddressCard.Margin" Value="0,0,8,0" />
+                      <Setter Target="DeliveryAddressCard.(Grid.Column)" Value="1" />
+                      <Setter Target="DeliveryAddressCard.(Grid.Row)" Value="0" />
+                      <Setter Target="DeliveryAddressCard.Margin" Value="8,0,0,0" />
+                    </VisualState.Setters>
+                  </VisualState>
+                </VisualStateGroup>
+              </VisualStateManager.VisualStateGroups>
+
+              <StackPanel Spacing="24"
+                          MaxWidth="1400"
+                          HorizontalAlignment="Stretch">
+
+                <!-- Invoice Header Section -->
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        CornerRadius="12"
+                        Padding="24"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <StackPanel HorizontalAlignment="Center"
+                              Spacing="16">
+                    <!-- Invoice Icon -->
+                    <Border Width="80"
+                            Height="80"
+                            CornerRadius="40"
+                            Background="{ThemeResource PrimaryContainerBrush}"
+                            HorizontalAlignment="Center">
+                      <FontIcon Glyph="&#xE9D5;"
+                                FontSize="36"
+                                Foreground="{ThemeResource OnPrimaryContainerBrush}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                    </Border>
+
+                    <!-- Invoice Number -->
+                    <TextBlock Style="{StaticResource HeadlineMedium}"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               Text="{Binding Data.InvoiceNumber}" />
+
+                    <!-- Customer Name -->
+                    <TextBlock Style="{StaticResource TitleMedium}"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                               Text="{Binding Data.CustomerName}" />
+
+                    <!-- Status Badges -->
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8"
+                                HorizontalAlignment="Center">
+                      <!-- Invoice Status Badge -->
+                      <Border CornerRadius="16"
+                              Padding="16,6"
+                              Background="{Binding Data.InvoiceStatus, Converter={StaticResource InvoiceStatusToBackgroundConverter}}">
+                        <TextBlock Text="{Binding Data.InvoiceStatus, Converter={StaticResource InvoiceStatusToTextConverter}}"
+                                   Style="{StaticResource LabelMedium}"
+                                   Foreground="{Binding Data.InvoiceStatus, Converter={StaticResource InvoiceStatusToForegroundConverter}}" />
+                      </Border>
+
+                      <!-- Payment Status Badge -->
+                      <Border CornerRadius="16"
+                              Padding="16,6"
+                              Background="{Binding Data.PaymentStatus, Converter={StaticResource PaymentStatusToBackgroundConverter}}">
+                        <TextBlock Text="{Binding Data.PaymentStatus, Converter={StaticResource PaymentStatusToTextConverter}}"
+                                   Style="{StaticResource LabelMedium}"
+                                   Foreground="{Binding Data.PaymentStatus, Converter={StaticResource PaymentStatusToForegroundConverter}}" />
+                      </Border>
+                    </StackPanel>
+
+                    <!-- Invoice Date -->
+                    <TextBlock Style="{StaticResource BodyMedium}"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}">
+                      <Run x:Uid="InvoiceDetailPage.Label.InvoiceDate" />
+                      <Run Text="{Binding Data.InvoiceDate, Converter={StaticResource DateTimeOffsetToStringConverter}}" />
+                    </TextBlock>
+
+                    <!-- Order Reference (if available) -->
+                    <TextBlock Style="{StaticResource BodyMedium}"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource PrimaryBrush}"
+                               Visibility="{Binding Data.OrderNumber, Converter={StaticResource StringToVisibilityConverter}}">
+                      <Run x:Uid="InvoiceDetailPage.Label.OrderReference" />
+                      <Run Text="{Binding Data.OrderNumber}" />
+                    </TextBlock>
+                  </StackPanel>
+                </Border>
+
+                <!-- Financial and Payment Cards Grid -->
+                <Grid x:Name="MainCardsGrid">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="MainColumn1" Width="*" />
+                    <ColumnDefinition x:Name="MainColumn2" Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <!-- Financial Information Card -->
+                  <Border x:Name="FinancialCard"
+                          Grid.Column="0"
+                          Grid.Row="0"
+                          Margin="0,0,8,0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12">
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE8C7;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource PrimaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="InvoiceDetailPage.Section.FinancialInformation"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Financial Fields -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="12">
+                        <!-- Subtotal -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                          </Grid.ColumnDefinitions>
+                          <TextBlock Grid.Column="0"
+                                     x:Uid="InvoiceDetailPage.Field.Subtotal"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding Data.Subtotal, Converter={StaticResource CurrencyConverter}}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </Grid>
+
+                        <!-- Shipping Cost -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                          </Grid.ColumnDefinitions>
+                          <TextBlock Grid.Column="0"
+                                     x:Uid="InvoiceDetailPage.Field.ShippingCost"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding Data.ShippingCost, Converter={StaticResource CurrencyConverter}}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </Grid>
+
+                        <!-- Tax -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                          </Grid.ColumnDefinitions>
+                          <TextBlock Grid.Column="0"
+                                     x:Uid="InvoiceDetailPage.Field.Tax"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding Data.TotalTax, Converter={StaticResource CurrencyConverter}}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </Grid>
+
+                        <!-- Separator -->
+                        <Border Height="1"
+                                Background="{ThemeResource OutlineVariantBrush}"
+                                Margin="0,4" />
+
+                        <!-- Total -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                          </Grid.ColumnDefinitions>
+                          <TextBlock Grid.Column="0"
+                                     x:Uid="InvoiceDetailPage.Field.Total"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding Data.Total, Converter={StaticResource CurrencyConverter}}"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource PrimaryBrush}" />
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+
+                  <!-- Payment Information Card -->
+                  <Border x:Name="PaymentCard"
+                          Grid.Column="1"
+                          Grid.Row="0"
+                          Margin="8,0,0,0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12">
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE8C9;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource TertiaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="InvoiceDetailPage.Section.PaymentInformation"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Payment Fields -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="12">
+                        <!-- Payment Method -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE8C7;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="InvoiceDetailPage.Field.PaymentMethod"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.PaymentMethod}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       Visibility="{Binding Data.PaymentMethod, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="InvoiceDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.PaymentMethod, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Transaction ID -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE8EC;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="InvoiceDetailPage.Field.TransactionId"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.PaymentTransactionId}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding Data.PaymentTransactionId, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="InvoiceDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.PaymentTransactionId, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Created Date -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE787;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="InvoiceDetailPage.Field.CreatedDate"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.CreatedDate, Converter={StaticResource DateTimeOffsetToStringConverter}}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}" />
+                          </StackPanel>
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                </Grid>
+
+                <!-- Address Cards Grid -->
+                <Grid x:Name="AddressCardsGrid">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="AddressColumn1" Width="*" />
+                    <ColumnDefinition x:Name="AddressColumn2" Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <!-- Invoice Address Card -->
+                  <Border x:Name="InvoiceAddressCard"
+                          Grid.Column="0"
+                          Grid.Row="0"
+                          Margin="0,0,8,0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12">
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE9D5;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource SecondaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="InvoiceDetailPage.Section.InvoiceAddress"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Address Content -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="4">
+                        <!-- Name -->
+                        <TextBlock Style="{StaticResource BodyLarge}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}">
+                          <Run Text="{Binding Data.InvoiceAddressFirstName}" />
+                          <Run Text=" " />
+                          <Run Text="{Binding Data.InvoiceAddressLastName}" />
+                        </TextBlock>
+
+                        <!-- Company (if available) -->
+                        <TextBlock Text="{Binding Data.InvoiceAddressCompanyName}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   Visibility="{Binding Data.InvoiceAddressCompanyName, Converter={StaticResource StringToVisibilityConverter}}" />
+
+                        <!-- Street -->
+                        <TextBlock Text="{Binding Data.InvoiceAddressStreet}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}" />
+
+                        <!-- City and ZIP -->
+                        <TextBlock Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}">
+                          <Run Text="{Binding Data.InvoiceAddressZip}" />
+                          <Run Text=" " />
+                          <Run Text="{Binding Data.InvoiceAddressCity}" />
+                        </TextBlock>
+
+                        <!-- Country -->
+                        <TextBlock Text="{Binding Data.InvoiceAddressCountry}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   Visibility="{Binding Data.InvoiceAddressCountry, Converter={StaticResource StringToVisibilityConverter}}" />
+
+                        <!-- Phone -->
+                        <Grid Margin="0,8,0,0"
+                              Visibility="{Binding Data.InvoiceAddressPhone, Converter={StaticResource StringToVisibilityConverter}}">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE717;"
+                                    FontSize="14"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center" />
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding Data.InvoiceAddressPhone}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+
+                  <!-- Delivery Address Card -->
+                  <Border x:Name="DeliveryAddressCard"
+                          Grid.Column="1"
+                          Grid.Row="0"
+                          Margin="8,0,0,0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12">
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE7B8;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource SecondaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="InvoiceDetailPage.Section.DeliveryAddress"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Address Content -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="4">
+                        <!-- Name -->
+                        <TextBlock Style="{StaticResource BodyLarge}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}">
+                          <Run Text="{Binding Data.DeliveryAddressFirstName}" />
+                          <Run Text=" " />
+                          <Run Text="{Binding Data.DeliveryAddressLastName}" />
+                        </TextBlock>
+
+                        <!-- Company (if available) -->
+                        <TextBlock Text="{Binding Data.DeliveryAddressCompanyName}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   Visibility="{Binding Data.DeliveryAddressCompanyName, Converter={StaticResource StringToVisibilityConverter}}" />
+
+                        <!-- Street -->
+                        <TextBlock Text="{Binding Data.DeliveryAddressStreet}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}" />
+
+                        <!-- City and ZIP -->
+                        <TextBlock Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}">
+                          <Run Text="{Binding Data.DeliveryAddressZip}" />
+                          <Run Text=" " />
+                          <Run Text="{Binding Data.DeliveryAddressCity}" />
+                        </TextBlock>
+
+                        <!-- Country -->
+                        <TextBlock Text="{Binding Data.DeliveryAddressCountry}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   Visibility="{Binding Data.DeliveryAddressCountry, Converter={StaticResource StringToVisibilityConverter}}" />
+
+                        <!-- Phone -->
+                        <Grid Margin="0,8,0,0"
+                              Visibility="{Binding Data.DeliveryAddressPhone, Converter={StaticResource StringToVisibilityConverter}}">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE717;"
+                                    FontSize="14"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center" />
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding Data.DeliveryAddressPhone}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                </Grid>
+
+                <!-- Invoice Items Section -->
+                <StackPanel Spacing="12">
+                  <StackPanel Orientation="Horizontal"
+                              Spacing="12">
+                    <FontIcon Glyph="&#xE8EF;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}" />
+                    <TextBlock x:Uid="InvoiceDetailPage.Section.InvoiceItems"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+
+                  <!-- Items List -->
+                  <Border Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12"
+                          Padding="0">
+                    <!-- Items Header -->
+                    <StackPanel>
+                      <Grid Padding="16,12"
+                            Background="{ThemeResource SurfaceVariantBrush}"
+                            CornerRadius="12,12,0,0">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" MinWidth="150" />
+                          <ColumnDefinition Width="80" />
+                          <ColumnDefinition Width="100" />
+                          <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   x:Uid="InvoiceDetailPage.Header.Product"
+                                   Style="{StaticResource LabelMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                        <TextBlock Grid.Column="1"
+                                   x:Uid="InvoiceDetailPage.Header.Quantity"
+                                   Style="{StaticResource LabelMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="2"
+                                   x:Uid="InvoiceDetailPage.Header.UnitPrice"
+                                   Style="{StaticResource LabelMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   HorizontalAlignment="Right" />
+                        <TextBlock Grid.Column="3"
+                                   x:Uid="InvoiceDetailPage.Header.ItemTotal"
+                                   Style="{StaticResource LabelMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   HorizontalAlignment="Right" />
+                      </Grid>
+
+                      <!-- Items Repeater -->
+                      <ItemsRepeater ItemsSource="{Binding Data.InvoiceItems}">
+                        <ItemsRepeater.Layout>
+                          <StackLayout Orientation="Vertical" />
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                          <DataTemplate>
+                            <Border Padding="16,12"
+                                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                                    BorderThickness="0,1,0,0">
+                              <Grid>
+                                <Grid.ColumnDefinitions>
+                                  <ColumnDefinition Width="*" MinWidth="150" />
+                                  <ColumnDefinition Width="80" />
+                                  <ColumnDefinition Width="100" />
+                                  <ColumnDefinition Width="100" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0"
+                                            Spacing="2">
+                                  <TextBlock Text="{Binding Name}"
+                                             Style="{StaticResource BodyMedium}"
+                                             Foreground="{ThemeResource OnSurfaceBrush}"
+                                             TextWrapping="Wrap" />
+                                  <TextBlock Text="{Binding Sku}"
+                                             Style="{StaticResource LabelSmall}"
+                                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                             Visibility="{Binding Sku, Converter={StaticResource StringToVisibilityConverter}}" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Quantity}"
+                                           Style="{StaticResource BodyMedium}"
+                                           Foreground="{ThemeResource OnSurfaceBrush}"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="2"
+                                           Text="{Binding UnitPrice, Converter={StaticResource CurrencyConverter}}"
+                                           Style="{StaticResource BodyMedium}"
+                                           Foreground="{ThemeResource OnSurfaceBrush}"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="3"
+                                           Text="{Binding Total, Converter={StaticResource CurrencyConverter}}"
+                                           Style="{StaticResource BodyMedium}"
+                                           Foreground="{ThemeResource OnSurfaceBrush}"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Center" />
+                              </Grid>
+                            </Border>
+                          </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                      </ItemsRepeater>
+
+                      <!-- No Items Placeholder -->
+                      <Border Padding="24"
+                              Visibility="{Binding Data.InvoiceItems.Count, Converter={StaticResource ZeroToVisibilityConverter}}">
+                        <StackPanel HorizontalAlignment="Center"
+                                    Spacing="8">
+                          <FontIcon Glyph="&#xE8EF;"
+                                    FontSize="32"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                          <TextBlock x:Uid="InvoiceDetailPage.NoItems"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                     HorizontalAlignment="Center" />
+                        </StackPanel>
+                      </Border>
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+
+                <!-- Notes Section -->
+                <StackPanel Spacing="12">
+                  <StackPanel Orientation="Horizontal"
+                              Spacing="12">
+                    <FontIcon Glyph="&#xE70B;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}" />
+                    <TextBlock x:Uid="InvoiceDetailPage.Section.Notes"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+
+                  <Border Background="{ThemeResource SurfaceBrush}"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="12"
+                          Padding="16"
+                          MinHeight="80"
+                          Visibility="{Binding Data.Notes, Converter={StaticResource StringToVisibilityConverter}}">
+                    <TextBlock Text="{Binding Data.Notes}"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               TextWrapping="Wrap" />
+                  </Border>
+
+                  <!-- No Notes Placeholder -->
+                  <Border Background="{ThemeResource SurfaceVariantBrush}"
+                          CornerRadius="12"
+                          Padding="24"
+                          Visibility="{Binding Data.Notes, Converter={StaticResource StringToInverseVisibilityConverter}}">
+                    <StackPanel HorizontalAlignment="Center"
+                                Spacing="8">
+                      <FontIcon Glyph="&#xE70B;"
+                                FontSize="32"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <TextBlock x:Uid="InvoiceDetailPage.NoNotes"
+                                 Style="{StaticResource BodyMedium}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                 HorizontalAlignment="Center" />
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+              </StackPanel>
+            </Grid>
+          </ScrollViewer>
+        </DataTemplate>
+      </mvux:FeedView.ValueTemplate>
+
+      <mvux:FeedView.ProgressTemplate>
+        <DataTemplate>
+          <Grid HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
+        </DataTemplate>
+      </mvux:FeedView.ProgressTemplate>
+
+      <mvux:FeedView.ErrorTemplate>
+        <DataTemplate>
+          <Grid HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+              <FontIcon Glyph="&#xE783;"
+                        FontSize="48"
+                        Foreground="{ThemeResource ErrorBrush}" />
+              <TextBlock x:Uid="InvoiceDetailPage.LoadError"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+              <Button x:Uid="Common.Retry"
+                      Style="{StaticResource FilledButtonStyle}"
+                      HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
+        </DataTemplate>
+      </mvux:FeedView.ErrorTemplate>
+    </mvux:FeedView>
+  </Grid>
+</Page>

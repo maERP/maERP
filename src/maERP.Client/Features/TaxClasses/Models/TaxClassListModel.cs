@@ -6,7 +6,7 @@ namespace maERP.Client.Features.TaxClasses.Models;
 
 /// <summary>
 /// Model for tax class list page using MVUX pattern.
-/// Supports searching, sorting, and pagination.
+/// Supports searching, sorting, pagination, and navigation to detail view.
 /// </summary>
 public partial record TaxClassListModel
 {
@@ -22,6 +22,14 @@ public partial record TaxClassListModel
         _taxClassService = taxClassService;
         _navigator = navigator;
         _localizer = localizer;
+    }
+
+    /// <summary>
+    /// Navigate to tax class detail page.
+    /// </summary>
+    public async ValueTask NavigateToDetail(Guid taxClassId, CancellationToken ct = default)
+    {
+        await _navigator.NavigateDataAsync(this, new TaxClassDetailData(taxClassId));
     }
 
     /// <summary>

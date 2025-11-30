@@ -7,7 +7,7 @@ namespace maERP.Client.Features.Products;
 
 /// <summary>
 /// Module registration for Products feature.
-/// Provides list operations for product management.
+/// Provides list and detail operations for product management.
 /// </summary>
 public static class ProductsModule
 {
@@ -22,6 +22,7 @@ public static class ProductsModule
 
         // Page models
         services.AddTransient<ProductListModel>();
+        services.AddTransient<ProductDetailModel>();
 
         return services;
     }
@@ -32,7 +33,8 @@ public static class ProductsModule
     public static void RegisterViews(IViewRegistry views)
     {
         views.Register(
-            new ViewMap<ProductListPage, ProductListModel>()
+            new ViewMap<ProductListPage, ProductListModel>(),
+            new ViewMap<ProductDetailPage, ProductDetailModel>(Data: new DataMap<ProductDetailData>())
         );
     }
 
@@ -42,5 +44,6 @@ public static class ProductsModule
     public static IEnumerable<RouteMap> GetRoutes(IViewRegistry views)
     {
         yield return new RouteMap(Routes.ProductList, View: views.FindByViewModel<ProductListModel>());
+        yield return new RouteMap(Routes.ProductDetail, View: views.FindByViewModel<ProductDetailModel>());
     }
 }

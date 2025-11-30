@@ -569,6 +569,50 @@
     <value>Einträge pro Seite:</value>
   </data>
 
+  <!-- Manufacturer Detail Page -->
+  <data name="ManufacturerDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>Herstellerdetails</value>
+  </data>
+  <data name="ManufacturerDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="ManufacturerDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="ManufacturerDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Hersteller konnte nicht geladen werden</value>
+  </data>
+  <data name="ManufacturerDetailPage.NotAvailable.Text" xml:space="preserve">
+    <value>Nicht verfügbar</value>
+  </data>
+  <data name="ManufacturerDetailPage.Section.ContactInformation.Text" xml:space="preserve">
+    <value>Kontaktinformationen</value>
+  </data>
+  <data name="ManufacturerDetailPage.Section.Address.Text" xml:space="preserve">
+    <value>Adresse</value>
+  </data>
+  <data name="ManufacturerDetailPage.Field.Email.Text" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="ManufacturerDetailPage.Field.Phone.Text" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="ManufacturerDetailPage.Field.Website.Text" xml:space="preserve">
+    <value>Website</value>
+  </data>
+  <data name="ManufacturerDetailPage.Field.Street.Text" xml:space="preserve">
+    <value>Straße</value>
+  </data>
+  <data name="ManufacturerDetailPage.Field.City.Text" xml:space="preserve">
+    <value>Stadt</value>
+  </data>
+  <data name="ManufacturerDetailPage.Field.State.Text" xml:space="preserve">
+    <value>Bundesland</value>
+  </data>
+  <data name="ManufacturerDetailPage.Field.Country.Text" xml:space="preserve">
+    <value>Land</value>
+  </data>
+
   <!-- Warehouse List Page -->
   <data name="WarehouseListPage.NavigationBar.Content" xml:space="preserve">
     <value>Lager</value>
@@ -1013,6 +1057,35 @@
     <value>Einträge pro Seite:</value>
   </data>
 
+  <!-- Tax Class Detail Page -->
+  <data name="TaxClassDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>Steuerklassendetails</value>
+  </data>
+  <data name="TaxClassDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="TaxClassDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="TaxClassDetailPage.Section.Information.Text" xml:space="preserve">
+    <value>Informationen</value>
+  </data>
+  <data name="TaxClassDetailPage.Field.Id.Text" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="TaxClassDetailPage.Field.TaxRate.Text" xml:space="preserve">
+    <value>Steuersatz</value>
+  </data>
+  <data name="TaxClassDetailPage.Field.TaxRateValue.Text" xml:space="preserve">
+    <value>Steuersatzwert</value>
+  </data>
+  <data name="TaxClassDetailPage.UsageHint.Text" xml:space="preserve">
+    <value>Diese Steuerklasse kann Produkten zugewiesen werden, um den korrekten Steuerbetrag beim Verkauf automatisch zu berechnen.</value>
+  </data>
+  <data name="TaxClassDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Steuerklasse konnte nicht geladen werden</value>
+  </data>
+
   <!-- Sales Channel List Page -->
   <data name="SalesChannelListPage.NavigationBar.Content" xml:space="preserve">
     <value>Vertriebskanäle</value>
@@ -1060,6 +1133,99 @@
     <value>Einträge pro Seite:</value>
   </data>
 
+  <!-- Sales Channel Detail Page -->
+  <data name="SalesChannelDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>Vertriebskanaldetails</value>
+  </data>
+  <data name="SalesChannelDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="SalesChannelDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="SalesChannelDetailPage.Section.ConnectionInfo.Text" xml:space="preserve">
+    <value>Verbindungsinformationen</value>
+  </data>
+  <data name="SalesChannelDetailPage.Section.SyncSettings.Text" xml:space="preserve">
+    <value>Synchronisierungseinstellungen</value>
+  </data>
+  <data name="SalesChannelDetailPage.Section.Import.Text" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="SalesChannelDetailPage.Section.Export.Text" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="SalesChannelDetailPage.Section.Warehouses.Text" xml:space="preserve">
+    <value>Zugeordnete Lager</value>
+  </data>
+  <data name="SalesChannelDetailPage.Field.Url.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="SalesChannelDetailPage.Field.Username.Text" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="SalesChannelDetailPage.Field.Products.Text" xml:space="preserve">
+    <value>Produkte</value>
+  </data>
+  <data name="SalesChannelDetailPage.Field.Customers.Text" xml:space="preserve">
+    <value>Kunden</value>
+  </data>
+  <data name="SalesChannelDetailPage.Field.Orders.Text" xml:space="preserve">
+    <value>Bestellungen</value>
+  </data>
+  <data name="SalesChannelDetailPage.NotAvailable.Text" xml:space="preserve">
+    <value>Nicht verfügbar</value>
+  </data>
+  <data name="SalesChannelDetailPage.NoWarehouses.Text" xml:space="preserve">
+    <value>Keine Lager zugeordnet</value>
+  </data>
+  <data name="SalesChannelDetailPage.UsageHint.Text" xml:space="preserve">
+    <value>Dieser Vertriebskanal verbindet Ihr maERP-System mit externen Plattformen. Konfigurieren Sie Import- und Exporteinstellungen, um Produkte, Kunden und Bestellungen automatisch zu synchronisieren.</value>
+  </data>
+  <data name="SalesChannelDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Vertriebskanal konnte nicht geladen werden</value>
+  </data>
+
+  <!-- Sync Status -->
+  <data name="SyncStatus.Enabled" xml:space="preserve">
+    <value>Aktiviert</value>
+  </data>
+  <data name="SyncStatus.Disabled" xml:space="preserve">
+    <value>Deaktiviert</value>
+  </data>
+
+  <!-- Warehouse Detail Page -->
+  <data name="WarehouseDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>Lagerdetails</value>
+  </data>
+  <data name="WarehouseDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="WarehouseDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="WarehouseDetailPage.Section.Information.Text" xml:space="preserve">
+    <value>Informationen</value>
+  </data>
+  <data name="WarehouseDetailPage.Field.Name.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="WarehouseDetailPage.Field.ProductCount.Text" xml:space="preserve">
+    <value>Produktanzahl</value>
+  </data>
+  <data name="WarehouseDetailPage.Field.ProductCount.Unit.Text" xml:space="preserve">
+    <value>Produkte</value>
+  </data>
+  <data name="WarehouseDetailPage.Stats.ProductsStored.Text" xml:space="preserve">
+    <value>Gelagerte Produkte</value>
+  </data>
+  <data name="WarehouseDetailPage.UsageHint.Text" xml:space="preserve">
+    <value>Dieses Lager dient zur Verwaltung des Bestands und zur Verfolgung der Lagerbestände. Produkte können diesem Lager zur Lagerung und Auftragsabwicklung zugewiesen werden.</value>
+  </data>
+  <data name="WarehouseDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Lager konnte nicht geladen werden</value>
+  </data>
+
   <!-- Second Page (Legacy) -->
   <data name="SecondPage.NavigationBar.Content" xml:space="preserve">
     <value>Zweite Seite</value>
@@ -1089,5 +1255,401 @@
   </data>
   <data name="Common.Retry.Content" xml:space="preserve">
     <value>Erneut versuchen</value>
+  </data>
+
+  <!-- Product Detail Page -->
+  <data name="ProductDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>Produktdetails</value>
+  </data>
+  <data name="ProductDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="ProductDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="ProductDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Produkt konnte nicht geladen werden</value>
+  </data>
+  <data name="ProductDetailPage.NotAvailable.Text" xml:space="preserve">
+    <value>Nicht verfügbar</value>
+  </data>
+  <data name="ProductDetailPage.Label.Sku.Text" xml:space="preserve">
+    <value>SKU:</value>
+  </data>
+  <data name="ProductDetailPage.Badge.OptimizedContent.Text" xml:space="preserve">
+    <value>Optimierte Inhalte aktiv</value>
+  </data>
+
+  <!-- Product Detail Page - Sections -->
+  <data name="ProductDetailPage.Section.Identifiers.Text" xml:space="preserve">
+    <value>Produktidentifikatoren</value>
+  </data>
+  <data name="ProductDetailPage.Section.Pricing.Text" xml:space="preserve">
+    <value>Preise</value>
+  </data>
+  <data name="ProductDetailPage.Section.Dimensions.Text" xml:space="preserve">
+    <value>Abmessungen und Gewicht</value>
+  </data>
+  <data name="ProductDetailPage.Section.Description.Text" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="ProductDetailPage.Section.OptimizedDescription.Text" xml:space="preserve">
+    <value>Optimierte Beschreibung</value>
+  </data>
+  <data name="ProductDetailPage.Section.Manufacturer.Text" xml:space="preserve">
+    <value>Hersteller</value>
+  </data>
+
+  <!-- Product Detail Page - Field Labels -->
+  <data name="ProductDetailPage.Field.Sku.Text" xml:space="preserve">
+    <value>Artikelnummer (SKU)</value>
+  </data>
+  <data name="ProductDetailPage.Field.Ean.Text" xml:space="preserve">
+    <value>EAN</value>
+  </data>
+  <data name="ProductDetailPage.Field.Asin.Text" xml:space="preserve">
+    <value>ASIN (Amazon)</value>
+  </data>
+  <data name="ProductDetailPage.Field.Price.Text" xml:space="preserve">
+    <value>Verkaufspreis</value>
+  </data>
+  <data name="ProductDetailPage.Field.Msrp.Text" xml:space="preserve">
+    <value>UVP (unverb. Preisempfehlung)</value>
+  </data>
+  <data name="ProductDetailPage.Field.Weight.Text" xml:space="preserve">
+    <value>Gewicht</value>
+  </data>
+  <data name="ProductDetailPage.Field.Width.Text" xml:space="preserve">
+    <value>Breite</value>
+  </data>
+  <data name="ProductDetailPage.Field.Height.Text" xml:space="preserve">
+    <value>Höhe</value>
+  </data>
+  <data name="ProductDetailPage.Field.Depth.Text" xml:space="preserve">
+    <value>Tiefe</value>
+  </data>
+  <data name="ProductDetailPage.Field.OptimizedName.Text" xml:space="preserve">
+    <value>Optimierter Produktname</value>
+  </data>
+
+  <!-- Product Detail Page - Units -->
+  <data name="ProductDetailPage.Unit.Kg.Text" xml:space="preserve">
+    <value>kg</value>
+  </data>
+  <data name="ProductDetailPage.Unit.Cm.Text" xml:space="preserve">
+    <value>cm</value>
+  </data>
+
+  <!-- Product Detail Page - Empty States -->
+  <data name="ProductDetailPage.NoDescription.Text" xml:space="preserve">
+    <value>Keine Beschreibung vorhanden</value>
+  </data>
+
+  <!-- Invoice Detail Page -->
+  <data name="InvoiceDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>Rechnungsdetails</value>
+  </data>
+  <data name="InvoiceDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="InvoiceDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Rechnung konnte nicht geladen werden</value>
+  </data>
+  <data name="InvoiceDetailPage.NotAvailable.Text" xml:space="preserve">
+    <value>Nicht verfügbar</value>
+  </data>
+  <data name="InvoiceDetailPage.Label.InvoiceDate.Text" xml:space="preserve">
+    <value>Rechnungsdatum: </value>
+  </data>
+  <data name="InvoiceDetailPage.Label.OrderReference.Text" xml:space="preserve">
+    <value>Bestellung: </value>
+  </data>
+
+  <!-- Invoice Detail Page - Sections -->
+  <data name="InvoiceDetailPage.Section.FinancialInformation.Text" xml:space="preserve">
+    <value>Finanzinformationen</value>
+  </data>
+  <data name="InvoiceDetailPage.Section.PaymentInformation.Text" xml:space="preserve">
+    <value>Zahlungsinformationen</value>
+  </data>
+  <data name="InvoiceDetailPage.Section.InvoiceAddress.Text" xml:space="preserve">
+    <value>Rechnungsadresse</value>
+  </data>
+  <data name="InvoiceDetailPage.Section.DeliveryAddress.Text" xml:space="preserve">
+    <value>Lieferadresse</value>
+  </data>
+  <data name="InvoiceDetailPage.Section.InvoiceItems.Text" xml:space="preserve">
+    <value>Rechnungspositionen</value>
+  </data>
+  <data name="InvoiceDetailPage.Section.Notes.Text" xml:space="preserve">
+    <value>Notizen</value>
+  </data>
+
+  <!-- Invoice Detail Page - Field Labels -->
+  <data name="InvoiceDetailPage.Field.Subtotal.Text" xml:space="preserve">
+    <value>Zwischensumme</value>
+  </data>
+  <data name="InvoiceDetailPage.Field.ShippingCost.Text" xml:space="preserve">
+    <value>Versandkosten</value>
+  </data>
+  <data name="InvoiceDetailPage.Field.Tax.Text" xml:space="preserve">
+    <value>Steuern</value>
+  </data>
+  <data name="InvoiceDetailPage.Field.Total.Text" xml:space="preserve">
+    <value>Gesamtbetrag</value>
+  </data>
+  <data name="InvoiceDetailPage.Field.PaymentMethod.Text" xml:space="preserve">
+    <value>Zahlungsart</value>
+  </data>
+  <data name="InvoiceDetailPage.Field.TransactionId.Text" xml:space="preserve">
+    <value>Transaktions-ID</value>
+  </data>
+  <data name="InvoiceDetailPage.Field.CreatedDate.Text" xml:space="preserve">
+    <value>Erstellt am</value>
+  </data>
+
+  <!-- Invoice Detail Page - Table Headers -->
+  <data name="InvoiceDetailPage.Header.Product.Text" xml:space="preserve">
+    <value>Produkt</value>
+  </data>
+  <data name="InvoiceDetailPage.Header.Quantity.Text" xml:space="preserve">
+    <value>Menge</value>
+  </data>
+  <data name="InvoiceDetailPage.Header.UnitPrice.Text" xml:space="preserve">
+    <value>Einzelpreis</value>
+  </data>
+  <data name="InvoiceDetailPage.Header.ItemTotal.Text" xml:space="preserve">
+    <value>Gesamt</value>
+  </data>
+
+  <!-- Invoice Detail Page - Empty States -->
+  <data name="InvoiceDetailPage.NoItems.Text" xml:space="preserve">
+    <value>Keine Positionen in dieser Rechnung</value>
+  </data>
+  <data name="InvoiceDetailPage.NoNotes.Text" xml:space="preserve">
+    <value>Keine Notizen vorhanden</value>
+  </data>
+
+  <!-- Invoice Status -->
+  <data name="InvoiceStatus.Unknown" xml:space="preserve">
+    <value>Unbekannt</value>
+  </data>
+  <data name="InvoiceStatus.Created" xml:space="preserve">
+    <value>Erstellt</value>
+  </data>
+  <data name="InvoiceStatus.Sent" xml:space="preserve">
+    <value>Versendet</value>
+  </data>
+  <data name="InvoiceStatus.Overdue" xml:space="preserve">
+    <value>Überfällig</value>
+  </data>
+  <data name="InvoiceStatus.PartiallyPaid" xml:space="preserve">
+    <value>Teilweise bezahlt</value>
+  </data>
+  <data name="InvoiceStatus.Paid" xml:space="preserve">
+    <value>Bezahlt</value>
+  </data>
+  <data name="InvoiceStatus.Cancelled" xml:space="preserve">
+    <value>Storniert</value>
+  </data>
+  <data name="InvoiceStatus.Disputed" xml:space="preserve">
+    <value>Angefochten</value>
+  </data>
+  <data name="InvoiceStatus.Refunded" xml:space="preserve">
+    <value>Erstattet</value>
+  </data>
+  <data name="InvoiceStatus.WrittenOff" xml:space="preserve">
+    <value>Abgeschrieben</value>
+  </data>
+  <data name="InvoiceStatus.Archived" xml:space="preserve">
+    <value>Archiviert</value>
+  </data>
+
+  <!-- Order Detail Page -->
+  <data name="OrderDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>Bestelldetails</value>
+  </data>
+  <data name="OrderDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="OrderDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Bestellung konnte nicht geladen werden</value>
+  </data>
+  <data name="OrderDetailPage.NotAvailable.Text" xml:space="preserve">
+    <value>Nicht verfügbar</value>
+  </data>
+  <data name="OrderDetailPage.Label.OrderNumber.Text" xml:space="preserve">
+    <value>Bestellnummer</value>
+  </data>
+  <data name="OrderDetailPage.Label.RemoteOrderId.Text" xml:space="preserve">
+    <value>Externe Bestellung: </value>
+  </data>
+  <data name="OrderDetailPage.Label.OrderDate.Text" xml:space="preserve">
+    <value>Bestelldatum: </value>
+  </data>
+  <data name="OrderDetailPage.Label.CustomerId.Text" xml:space="preserve">
+    <value>Kunden-Nr.</value>
+  </data>
+
+  <!-- Order Detail Page - Sections -->
+  <data name="OrderDetailPage.Section.FinancialInformation.Text" xml:space="preserve">
+    <value>Finanzinformationen</value>
+  </data>
+  <data name="OrderDetailPage.Section.PaymentInformation.Text" xml:space="preserve">
+    <value>Zahlungsinformationen</value>
+  </data>
+  <data name="OrderDetailPage.Section.ShippingInformation.Text" xml:space="preserve">
+    <value>Versandinformationen</value>
+  </data>
+  <data name="OrderDetailPage.Section.InvoiceAddress.Text" xml:space="preserve">
+    <value>Rechnungsadresse</value>
+  </data>
+  <data name="OrderDetailPage.Section.DeliveryAddress.Text" xml:space="preserve">
+    <value>Lieferadresse</value>
+  </data>
+  <data name="OrderDetailPage.Section.OrderItems.Text" xml:space="preserve">
+    <value>Bestellpositionen</value>
+  </data>
+  <data name="OrderDetailPage.Section.OrderHistory.Text" xml:space="preserve">
+    <value>Bestellverlauf</value>
+  </data>
+  <data name="OrderDetailPage.Section.Notes.Text" xml:space="preserve">
+    <value>Notizen</value>
+  </data>
+
+  <!-- Order Detail Page - Field Labels -->
+  <data name="OrderDetailPage.Field.Subtotal.Text" xml:space="preserve">
+    <value>Zwischensumme</value>
+  </data>
+  <data name="OrderDetailPage.Field.ShippingCost.Text" xml:space="preserve">
+    <value>Versandkosten</value>
+  </data>
+  <data name="OrderDetailPage.Field.Tax.Text" xml:space="preserve">
+    <value>Steuern</value>
+  </data>
+  <data name="OrderDetailPage.Field.Total.Text" xml:space="preserve">
+    <value>Gesamtbetrag</value>
+  </data>
+  <data name="OrderDetailPage.Field.PaymentMethod.Text" xml:space="preserve">
+    <value>Zahlungsart</value>
+  </data>
+  <data name="OrderDetailPage.Field.PaymentProvider.Text" xml:space="preserve">
+    <value>Zahlungsanbieter</value>
+  </data>
+  <data name="OrderDetailPage.Field.TransactionId.Text" xml:space="preserve">
+    <value>Transaktions-ID</value>
+  </data>
+  <data name="OrderDetailPage.Field.ShippingMethod.Text" xml:space="preserve">
+    <value>Versandart</value>
+  </data>
+  <data name="OrderDetailPage.Field.ShippingProvider.Text" xml:space="preserve">
+    <value>Versanddienstleister</value>
+  </data>
+  <data name="OrderDetailPage.Field.TrackingId.Text" xml:space="preserve">
+    <value>Sendungsnummer</value>
+  </data>
+  <data name="OrderDetailPage.Field.ShippingStatus.Text" xml:space="preserve">
+    <value>Versandstatus</value>
+  </data>
+
+  <!-- Order Detail Page - Table Headers -->
+  <data name="OrderDetailPage.Header.Product.Text" xml:space="preserve">
+    <value>Produkt</value>
+  </data>
+  <data name="OrderDetailPage.Header.Quantity.Text" xml:space="preserve">
+    <value>Menge</value>
+  </data>
+  <data name="OrderDetailPage.Header.UnitPrice.Text" xml:space="preserve">
+    <value>Einzelpreis</value>
+  </data>
+  <data name="OrderDetailPage.Header.ItemTotal.Text" xml:space="preserve">
+    <value>Gesamt</value>
+  </data>
+
+  <!-- Order Detail Page - Empty States -->
+  <data name="OrderDetailPage.NoItems.Text" xml:space="preserve">
+    <value>Keine Positionen in dieser Bestellung</value>
+  </data>
+  <data name="OrderDetailPage.NoNotes.Text" xml:space="preserve">
+    <value>Keine Notizen vorhanden</value>
+  </data>
+
+  <!-- Order Status -->
+  <data name="OrderStatus.Unknown" xml:space="preserve">
+    <value>Unbekannt</value>
+  </data>
+  <data name="OrderStatus.Pending" xml:space="preserve">
+    <value>Ausstehend</value>
+  </data>
+  <data name="OrderStatus.Processing" xml:space="preserve">
+    <value>In Bearbeitung</value>
+  </data>
+  <data name="OrderStatus.ReadyForDelivery" xml:space="preserve">
+    <value>Versandbereit</value>
+  </data>
+  <data name="OrderStatus.PartiallyDelivered" xml:space="preserve">
+    <value>Teilweise geliefert</value>
+  </data>
+  <data name="OrderStatus.Completed" xml:space="preserve">
+    <value>Abgeschlossen</value>
+  </data>
+  <data name="OrderStatus.Cancelled" xml:space="preserve">
+    <value>Storniert</value>
+  </data>
+  <data name="OrderStatus.Returned" xml:space="preserve">
+    <value>Retourniert</value>
+  </data>
+  <data name="OrderStatus.Refunded" xml:space="preserve">
+    <value>Erstattet</value>
+  </data>
+  <data name="OrderStatus.OnHold" xml:space="preserve">
+    <value>Pausiert</value>
+  </data>
+  <data name="OrderStatus.Failed" xml:space="preserve">
+    <value>Fehlgeschlagen</value>
+  </data>
+
+  <!-- Payment Status -->
+  <data name="PaymentStatus.Unknown" xml:space="preserve">
+    <value>Unbekannt</value>
+  </data>
+  <data name="PaymentStatus.Invoiced" xml:space="preserve">
+    <value>In Rechnung gestellt</value>
+  </data>
+  <data name="PaymentStatus.PartiallyPaid" xml:space="preserve">
+    <value>Teilweise bezahlt</value>
+  </data>
+  <data name="PaymentStatus.CompletelyPaid" xml:space="preserve">
+    <value>Vollständig bezahlt</value>
+  </data>
+  <data name="PaymentStatus.FirstReminder" xml:space="preserve">
+    <value>1. Mahnung</value>
+  </data>
+  <data name="PaymentStatus.SecondReminder" xml:space="preserve">
+    <value>2. Mahnung</value>
+  </data>
+  <data name="PaymentStatus.ThirdReminder" xml:space="preserve">
+    <value>3. Mahnung</value>
+  </data>
+  <data name="PaymentStatus.Encashment" xml:space="preserve">
+    <value>Inkasso</value>
+  </data>
+  <data name="PaymentStatus.Reserved" xml:space="preserve">
+    <value>Reserviert</value>
+  </data>
+  <data name="PaymentStatus.Delayed" xml:space="preserve">
+    <value>Verzögert</value>
+  </data>
+  <data name="PaymentStatus.ReCrediting" xml:space="preserve">
+    <value>Rückgutschrift</value>
+  </data>
+  <data name="PaymentStatus.ReviewNecessary" xml:space="preserve">
+    <value>Prüfung erforderlich</value>
+  </data>
+  <data name="PaymentStatus.NoCreditApproved" xml:space="preserve">
+    <value>Kredit abgelehnt</value>
+  </data>
+  <data name="PaymentStatus.CreditPreliminarilyAccepted" xml:space="preserve">
+    <value>Kredit ausstehend</value>
   </data>
 </root>

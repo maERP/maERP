@@ -37,6 +37,18 @@
       <converters:CustomerStatusToTextConverter x:Key="CustomerStatusToTextConverter" />
       <converters:CustomerStatusToBackgroundConverter x:Key="CustomerStatusToBackgroundConverter" />
       <converters:CustomerStatusToForegroundConverter x:Key="CustomerStatusToForegroundConverter" />
+      <converters:BoolToSyncStatusTextConverter x:Key="BoolToSyncStatusTextConverter" />
+      <converters:BoolToSyncStatusBackgroundConverter x:Key="BoolToSyncStatusBackgroundConverter" />
+      <converters:BoolToSyncStatusForegroundConverter x:Key="BoolToSyncStatusForegroundConverter" />
+      <converters:InvoiceStatusToTextConverter x:Key="InvoiceStatusToTextConverter" />
+      <converters:InvoiceStatusToBackgroundConverter x:Key="InvoiceStatusToBackgroundConverter" />
+      <converters:InvoiceStatusToForegroundConverter x:Key="InvoiceStatusToForegroundConverter" />
+      <converters:PaymentStatusToTextConverter x:Key="PaymentStatusToTextConverter" />
+      <converters:PaymentStatusToBackgroundConverter x:Key="PaymentStatusToBackgroundConverter" />
+      <converters:PaymentStatusToForegroundConverter x:Key="PaymentStatusToForegroundConverter" />
+      <converters:OrderStatusToTextConverter x:Key="OrderStatusToTextConverter" />
+      <converters:OrderStatusToBackgroundConverter x:Key="OrderStatusToBackgroundConverter" />
+      <converters:OrderStatusToForegroundConverter x:Key="OrderStatusToForegroundConverter" />
 
     </ResourceDictionary>
   </Application.Resources>

@@ -7,7 +7,7 @@ namespace maERP.Client.Features.Manufacturers;
 
 /// <summary>
 /// Module registration for Manufacturers feature.
-/// Provides list view for manufacturer management.
+/// Provides list and detail views for manufacturer management.
 /// </summary>
 public static class ManufacturersModule
 {
@@ -21,6 +21,7 @@ public static class ManufacturersModule
 
         // Page models
         services.AddTransient<ManufacturerListModel>();
+        services.AddTransient<ManufacturerDetailModel>();
 
         return services;
     }
@@ -31,7 +32,8 @@ public static class ManufacturersModule
     public static void RegisterViews(IViewRegistry views)
     {
         views.Register(
-            new ViewMap<ManufacturerListPage, ManufacturerListModel>()
+            new ViewMap<ManufacturerListPage, ManufacturerListModel>(),
+            new ViewMap<ManufacturerDetailPage, ManufacturerDetailModel>(Data: new DataMap<ManufacturerDetailData>())
         );
     }
 
@@ -41,5 +43,11 @@ public static class ManufacturersModule
     public static IEnumerable<RouteMap> GetRoutes(IViewRegistry views)
     {
         yield return new RouteMap(Routes.ManufacturerList, View: views.FindByViewModel<ManufacturerListModel>());
+        yield return new RouteMap(Routes.ManufacturerDetail, View: views.FindByViewModel<ManufacturerDetailModel>());
     }
 }
+
+/// <summary>
+/// Navigation data for manufacturer detail page.
+/// </summary>
+public record ManufacturerDetailData(Guid manufacturerId);
