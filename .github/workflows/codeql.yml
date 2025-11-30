@@ -34,39 +34,29 @@ jobs:
       with:
         config-file: ./.github/codeql/codeql-config.yml
         languages: csharp
-        
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
-      
+
     - name: Setup NuGet.exe for use with actions
       uses: NuGet/setup-nuget@v2
-      
+
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
-      
-    - name: search workloads
-      run: dotnet workload search
-      
-    - name: restore workloads
-      run: dotnet workload install maui maui-android maui-ios maui-maccatalyst maui-windows android maui-tizen wasi-experimental --source https://api.nuget.org/v3/index.json
-      
+
+    - name: Install workloads
+      run: dotnet workload install wasm-tools android --source https://api.nuget.org/v3/index.json
+
     - name: list workloads
       run: dotnet workload list
-
-    - name: Create build directories
-      run: |
-        mkdir -p "D:\a\maERP\maERP\src\maERP.Client\obj\Debug\net9.0-windows10.0.22621.0\win10-x64\generated\Microsoft.Maui.Controls.SourceGen\Microsoft.Maui.Controls.SourceGen.CodeBehindGenerator"
 
     - name: Restore nuget packages
       run: msbuild ${{env.maerp_sln}} -t:restore -p:Configuration=Debug
 
     - name: Build app
       run: msbuild ${{env.maerp_sln}} -t:Build -p:Configuration=Debug -p:Platform="Any CPU" -p:RestorePackagesConfig=true -p:GenerateFullPaths=true
-
-    #- name: Autobuild
-    #  uses: github/codeql-action/autobuild@v3
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

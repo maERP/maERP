@@ -84,12 +84,19 @@ public partial record AiPromptListModel
         .AsListFeed();
 
     /// <summary>
-    /// Navigate to create new AI prompt page (placeholder - no function yet).
+    /// Navigate to create new AI prompt page.
     /// </summary>
     public async Task CreateAiPrompt()
     {
-        // TODO: Implement navigation to create AI prompt page
-        await Task.CompletedTask;
+        await _navigator.NavigateDataAsync(this, new AiPromptEditData(null));
+    }
+
+    /// <summary>
+    /// Navigate to AI prompt detail page.
+    /// </summary>
+    public async Task ViewAiPromptDetail(Guid aiPromptId)
+    {
+        await _navigator.NavigateDataAsync(this, new AiPromptDetailData(aiPromptId));
     }
 
     /// <summary>

@@ -33,6 +33,14 @@ public partial record TaxClassListModel
     }
 
     /// <summary>
+    /// Navigate to create new tax class page.
+    /// </summary>
+    public async ValueTask NavigateToCreate(CancellationToken ct = default)
+    {
+        await _navigator.NavigateDataAsync(this, new TaxClassEditData());
+    }
+
+    /// <summary>
     /// The search query entered by the user.
     /// </summary>
     public IState<string> SearchQuery => State<string>.Value(this, () => string.Empty);

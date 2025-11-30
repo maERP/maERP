@@ -23,6 +23,7 @@ public static class WarehousesModule
         // Page models
         services.AddTransient<WarehouseListModel>();
         services.AddTransient<WarehouseDetailModel>();
+        services.AddTransient<WarehouseEditModel>();
 
         return services;
     }
@@ -34,7 +35,8 @@ public static class WarehousesModule
     {
         views.Register(
             new ViewMap<WarehouseListPage, WarehouseListModel>(),
-            new ViewMap<WarehouseDetailPage, WarehouseDetailModel>(Data: new DataMap<WarehouseDetailData>())
+            new ViewMap<WarehouseDetailPage, WarehouseDetailModel>(Data: new DataMap<WarehouseDetailData>()),
+            new ViewMap<WarehouseEditPage, WarehouseEditModel>(Data: new DataMap<WarehouseEditData>())
         );
     }
 
@@ -45,6 +47,7 @@ public static class WarehousesModule
     {
         yield return new RouteMap(Routes.WarehouseList, View: views.FindByViewModel<WarehouseListModel>());
         yield return new RouteMap(Routes.WarehouseDetail, View: views.FindByViewModel<WarehouseDetailModel>());
+        yield return new RouteMap(Routes.WarehouseEdit, View: views.FindByViewModel<WarehouseEditModel>());
     }
 }
 
@@ -52,3 +55,8 @@ public static class WarehousesModule
 /// Navigation data for warehouse detail page.
 /// </summary>
 public record WarehouseDetailData(Guid WarehouseId);
+
+/// <summary>
+/// Navigation data for warehouse edit/create page.
+/// </summary>
+public record WarehouseEditData(Guid? WarehouseId = null);

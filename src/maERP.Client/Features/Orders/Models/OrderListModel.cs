@@ -93,6 +93,14 @@ public partial record OrderListModel
     }
 
     /// <summary>
+    /// Navigate to create new order page.
+    /// </summary>
+    public async Task CreateOrder()
+    {
+        await _navigator.NavigateRouteAsync(this, Routes.OrderCreate);
+    }
+
+    /// <summary>
     /// Go to the next page.
     /// </summary>
     public async ValueTask GoToNextPage(CancellationToken ct = default)

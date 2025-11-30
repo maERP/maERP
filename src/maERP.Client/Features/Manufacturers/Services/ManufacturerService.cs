@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Extensions;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Manufacturer;
@@ -105,5 +106,32 @@ public class ManufacturerService : IManufacturerService
             _logger.LogError(ex, "Error fetching manufacturer {Id} from {Url}", id, url);
             throw;
         }
+    }
+
+    public async Task CreateManufacturerAsync(
+        ManufacturerInputDto input,
+        CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Manufacturers.Base}";
+
+        _logger.LogInformation("Creating manufacturer at URL: {Url}", url);
+
+        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task UpdateManufacturerAsync(
+        Guid id,
+        ManufacturerInputDto input,
+        CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Manufacturers.ById(id)}";
+
+        _logger.LogInformation("Updating manufacturer {Id} at URL: {Url}", id, url);
+
+        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 }

@@ -4,14 +4,14 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'src/maERP.UI.Desktop/**'
-      - 'src/maERP.UI/**'
+      - 'src/maERP.Client/**'
+      - 'src/maERP.Domain/**'
   workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -21,13 +21,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '10.x'
 
     - name: Restore dependencies
-      run: dotnet restore src/maERP.UI.Desktop/maERP.UI.Desktop.csproj
+      run: dotnet restore src/maERP.Client/maERP.Client.csproj
 
     - name: Build project
-      run: dotnet build src/maERP.UI.Desktop/maERP.UI.Desktop.csproj --configuration Release --no-restore
+      run: dotnet build src/maERP.Client/maERP.Client.csproj --configuration Release --no-restore -f net10.0-desktop
 
     - name: Generate version
       id: version
@@ -38,67 +38,71 @@ jobs:
 
     - name: Publish Windows x64
       run: |
-        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj \
+        dotnet publish src/maERP.Client/maERP.Client.csproj \
           --configuration Release \
+          --framework net10.0-desktop \
           --runtime win-x64 \
           --self-contained true \
           --output ./publish/win-x64 \
           -p:PublishSingleFile=true \
           -p:PublishTrimmed=false
-        mv ./publish/win-x64/maERP.UI.Desktop.exe ./publish/win-x64/maERP.Desktop.exe
+        mv ./publish/win-x64/maERP.Client.exe ./publish/win-x64/maERP.Desktop.exe || true
 
     - name: Publish Linux x64
       run: |
-        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj \
+        dotnet publish src/maERP.Client/maERP.Client.csproj \
           --configuration Release \
+          --framework net10.0-desktop \
           --runtime linux-x64 \
           --self-contained true \
           --output ./publish/linux-x64 \
           -p:PublishSingleFile=true \
           -p:PublishTrimmed=false
-        mv ./publish/linux-x64/maERP.UI.Desktop ./publish/linux-x64/maERP.Desktop
+        mv ./publish/linux-x64/maERP.Client ./publish/linux-x64/maERP.Desktop || true
 
     - name: Publish macOS x64
       run: |
-        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj \
+        dotnet publish src/maERP.Client/maERP.Client.csproj \
           --configuration Release \
+          --framework net10.0-desktop \
           --runtime osx-x64 \
           --self-contained true \
           --output ./publish/osx-x64 \
           -p:PublishSingleFile=true \
           -p:PublishTrimmed=false
-        mv ./publish/osx-x64/maERP.UI.Desktop ./publish/osx-x64/maERP.Desktop
+        mv ./publish/osx-x64/maERP.Client ./publish/osx-x64/maERP.Desktop || true
 
     - name: Publish macOS ARM64
       run: |
-        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj \
+        dotnet publish src/maERP.Client/maERP.Client.csproj \
           --configuration Release \
+          --framework net10.0-desktop \
           --runtime osx-arm64 \
           --self-contained true \
           --output ./publish/osx-arm64 \
           -p:PublishSingleFile=true \
           -p:PublishTrimmed=false
-        mv ./publish/osx-arm64/maERP.UI.Desktop ./publish/osx-arm64/maERP.Desktop
+        mv ./publish/osx-arm64/maERP.Client ./publish/osx-arm64/maERP.Desktop || true
 
     - name: Create release archives
       run: |
         cd publish
-        
+
         # Windows
         cd win-x64
         zip -r ../maERP.Desktop-${{ steps.version.outputs.VERSION }}-win-x64.zip .
         cd ..
-        
+
         # Linux
         cd linux-x64
         tar -czf ../maERP.Desktop-${{ steps.version.outputs.VERSION }}-linux-x64.tar.gz .
         cd ..
-        
+
         # macOS x64
         cd osx-x64
         tar -czf ../maERP.Desktop-${{ steps.version.outputs.VERSION }}-osx-x64.tar.gz .
         cd ..
-        
+
         # macOS ARM64
         cd osx-arm64
         tar -czf ../maERP.Desktop-${{ steps.version.outputs.VERSION }}-osx-arm64.tar.gz .
@@ -111,22 +115,22 @@ jobs:
         name: maERP Desktop v${{ steps.version.outputs.VERSION }}
         body: |
           ## maERP Desktop Release v${{ steps.version.outputs.VERSION }}
-          
-          Automatisch erstelltes Release der maERP Desktop-Anwendung.
-          
+
+          Automatisch erstelltes Release der maERP Desktop-Anwendung (Uno Platform).
+
           ### Downloads
           - **Windows (x64)**: `maERP.Desktop-${{ steps.version.outputs.VERSION }}-win-x64.zip`
           - **Linux (x64)**: `maERP.Desktop-${{ steps.version.outputs.VERSION }}-linux-x64.tar.gz`
           - **macOS (Intel)**: `maERP.Desktop-${{ steps.version.outputs.VERSION }}-osx-x64.tar.gz`
           - **macOS (Apple Silicon)**: `maERP.Desktop-${{ steps.version.outputs.VERSION }}-osx-arm64.tar.gz`
-          
+
           ### Installation
           1. Laden Sie die entsprechende Datei für Ihr Betriebssystem herunter
           2. Entpacken Sie das Archiv
           3. Führen Sie die Anwendung aus (keine Installation erforderlich)
-          
+
           ---
-          
+
           🤖 Automatisch erstellt durch GitHub Actions
         draft: false
         prerelease: false

@@ -6,5 +6,4 @@ namespace maERP.Application.Features.Superadmin.Commands.SuperadminUpdate;
 
 public class SuperadminUpdateCommand : TenantInputDto, IRequest<Result<Guid>>
 {
-    public Guid Id { get; set; }
 }

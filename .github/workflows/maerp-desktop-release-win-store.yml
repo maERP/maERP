@@ -6,7 +6,7 @@ on:
 jobs:
   windows-store-release:
     runs-on: windows-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '10.x'
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
@@ -31,7 +31,7 @@ jobs:
         $month = Get-Date -Format "MM"
         $day = Get-Date -Format "dd"
         $build = if ($env:GITHUB_RUN_NUMBER) { $env:GITHUB_RUN_NUMBER } else { "1" }
-        
+
         # Calculate a Windows Store compliant version
         # Use year offset from 2020 to keep numbers small
         $yearOffset = [int]$year - 2020
@@ -39,13 +39,13 @@ jobs:
         $minorVersion = [int]$month * 100 + [int]$day  # MMDD format (e.g., 927 for Sept 27)
         $buildVersion = [int]$build
         $revisionVersion = 0  # Reserved for Store
-        
+
         $version = "$majorVersion.$minorVersion.$buildVersion.$revisionVersion"
         echo "VERSION=$version" >> $env:GITHUB_OUTPUT
         echo "Generated version: $version (Year offset: $yearOffset, Month-Day: $minorVersion, Build: $buildVersion)"
 
     - name: Restore dependencies
-      run: dotnet restore src/maERP.UI.Desktop/maERP.UI.Desktop.csproj
+      run: dotnet restore src/maERP.Client/maERP.Client.csproj
 
     - name: Decode certificate
       shell: pwsh
@@ -56,7 +56,7 @@ jobs:
     - name: Build for Windows Store (MSIX)
       shell: pwsh
       run: |
-        dotnet publish src/maERP.UI.Desktop/maERP.UI.Desktop.csproj --configuration Release --runtime win-x64 --self-contained false --output ./publish/msix -p:PublishSingleFile=false -p:PublishReadyToRun=false -p:Version="${{ steps.version.outputs.VERSION }}" -p:AssemblyVersion="${{ steps.version.outputs.VERSION }}" -p:FileVersion="${{ steps.version.outputs.VERSION }}" -p:UseAppHost=true
+        dotnet publish src/maERP.Client/maERP.Client.csproj --configuration Release --framework net10.0-desktop --runtime win-x64 --self-contained false --output ./publish/msix -p:PublishSingleFile=false -p:PublishReadyToRun=false -p:Version="${{ steps.version.outputs.VERSION }}" -p:AssemblyVersion="${{ steps.version.outputs.VERSION }}" -p:FileVersion="${{ steps.version.outputs.VERSION }}" -p:UseAppHost=true
 
     - name: Create MSIX Package
       shell: pwsh
@@ -67,12 +67,12 @@ jobs:
           Write-Error "Windows SDK path not found: $winKitsPath"
           exit 1
         }
-        
+
         # Get all available SDK versions and find the latest one with makeappx.exe
-        $sdkVersions = Get-ChildItem -Path $winKitsPath -Directory | 
+        $sdkVersions = Get-ChildItem -Path $winKitsPath -Directory |
                       Where-Object { $_.Name -match "^10\.0\.\d+\.\d+$" } |
                       Sort-Object { [version]($_.Name -replace "^10\.0\.","") } -Descending
-        
+
         $fullMakeappxPath = $null
         foreach ($version in $sdkVersions) {
           $makeappxPath = Join-Path $version.FullName "x64\makeappx.exe"
@@ -82,25 +82,25 @@ jobs:
             break
           }
         }
-        
+
         if (-not $fullMakeappxPath) {
           Write-Error "makeappx.exe not found in any Windows SDK version. Available SDK versions:"
           $sdkVersions | ForEach-Object { Write-Host "  - $($_.Name)" }
           exit 1
         }
-        
+
         # Create Assets directory and placeholder assets
         New-Item -Path "./publish/msix/Assets" -ItemType Directory -Force
-        
+
         # Create minimal placeholder PNG files (1x1 transparent pixel in base64)
         $transparentPixelBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChAI9BfKSVQAAAABJRU5ErkJggg=="
         $transparentPixelBytes = [System.Convert]::FromBase64String($transparentPixelBase64)
-        
+
         [System.IO.File]::WriteAllBytes("./publish/msix/Assets/StoreLogo.png", $transparentPixelBytes)
         [System.IO.File]::WriteAllBytes("./publish/msix/Assets/Square150x150Logo.png", $transparentPixelBytes)
         [System.IO.File]::WriteAllBytes("./publish/msix/Assets/Square44x44Logo.png", $transparentPixelBytes)
         [System.IO.File]::WriteAllBytes("./publish/msix/Assets/Wide310x150Logo.png", $transparentPixelBytes)
-        
+
         # Create package manifest as AppxManifest.xml (required by MakeAppx)
         $manifestContent = @"
         <?xml version="1.0" encoding="utf-8"?>
@@ -114,15 +114,15 @@ jobs:
             <DisplayName>maERP</DisplayName>
             <PublisherDisplayName>Martin Andrich</PublisherDisplayName>
             <Logo>Assets\StoreLogo.png</Logo>
-            <Description>Cross-platform ERP system</Description>
+            <Description>Cross-platform ERP system powered by Uno Platform</Description>
           </Properties>
           <Dependencies>
             <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22000.0" />
           </Dependencies>
           <Applications>
-            <Application Id="maERP" Executable="maERP.UI.Desktop.exe" EntryPoint="Windows.FullTrustApplication">
+            <Application Id="maERP" Executable="maERP.Client.exe" EntryPoint="Windows.FullTrustApplication">
               <uap:VisualElements DisplayName="maERP"
-                                  Description="Cross-platform ERP system"
+                                  Description="Cross-platform ERP system powered by Uno Platform"
                                   BackgroundColor="transparent"
                                   Square150x150Logo="Assets\Square150x150Logo.png"
                                   Square44x44Logo="Assets\Square44x44Logo.png">
@@ -135,9 +135,9 @@ jobs:
           </Capabilities>
         </Package>
         "@
-        
+
         $manifestContent | Out-File -FilePath "./publish/msix/AppxManifest.xml" -Encoding UTF8
-        
+
         # Create MSIX package
         & $fullMakeappxPath pack /d "./publish/msix" /p "./maERP-${{ steps.version.outputs.VERSION }}.msix"
 
@@ -150,12 +150,12 @@ jobs:
           Write-Error "Windows SDK path not found: $winKitsPath"
           exit 1
         }
-        
+
         # Get all available SDK versions and find the latest one with signtool.exe
-        $sdkVersions = Get-ChildItem -Path $winKitsPath -Directory | 
+        $sdkVersions = Get-ChildItem -Path $winKitsPath -Directory |
                       Where-Object { $_.Name -match "^10\.0\.\d+\.\d+$" } |
                       Sort-Object { [version]($_.Name -replace "^10\.0\.","") } -Descending
-        
+
         $fullSigntoolPath = $null
         foreach ($version in $sdkVersions) {
           $signtoolPath = Join-Path $version.FullName "x64\signtool.exe"
@@ -165,13 +165,13 @@ jobs:
             break
           }
         }
-        
+
         if (-not $fullSigntoolPath) {
           Write-Error "signtool.exe not found in any Windows SDK version. Available SDK versions:"
           $sdkVersions | ForEach-Object { Write-Host "  - $($_.Name)" }
           exit 1
         }
-        
+
         # Sign the package
         & $fullSigntoolPath sign /f "${{ github.workspace }}\certificate.pfx" /p "${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}" /fd SHA256 "./maERP-${{ steps.version.outputs.VERSION }}.msix"
 
@@ -198,17 +198,17 @@ jobs:
         name: maERP Windows Store v${{ steps.version.outputs.VERSION }}
         body: |
           ## maERP Windows Store Release v${{ steps.version.outputs.VERSION }}
-          
-          Automatisch erstelltes Windows Store Release der maERP Desktop-Anwendung.
-          
+
+          Automatisch erstelltes Windows Store Release der maERP Desktop-Anwendung (Uno Platform).
+
           ### MSIX Package
           - **Windows Store Package**: `maERP-${{ steps.version.outputs.VERSION }}.msix`
-          
+
           ### Installation
           Das Package wurde automatisch an den Microsoft Store übermittelt.
-          
+
           ---
-          
+
           🤖 Automatisch erstellt durch GitHub Actions
         draft: false
         prerelease: false

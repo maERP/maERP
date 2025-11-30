@@ -27,7 +27,7 @@
           </AppBarButton.Icon>
         </AppBarButton>
         <AppBarButton x:Uid="OrderListPage.AppBarButton.New"
-                      IsEnabled="False">
+                      Click="NewOrderButton_Click">
           <AppBarButton.Icon>
             <FontIcon Glyph="&#xE710;" />
           </AppBarButton.Icon>

@@ -5,6 +5,8 @@ namespace maERP.Domain.Dtos.Tenant;
 
 public class TenantInputDto : ITenantInputModel
 {
+    public Guid Id { get; set; }
+
     [Required]
     [MaxLength(100)]
     public string Name { get; set; } = string.Empty;

@@ -157,43 +157,50 @@
                   </ItemsRepeater.Layout>
                   <ItemsRepeater.ItemTemplate>
                     <DataTemplate>
-                      <Grid Background="Transparent"
-                            Padding="0"
-                            BorderBrush="{ThemeResource OutlineVariantBrush}"
-                            BorderThickness="0,0,0,1">
-                        <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="200" />
-                          <ColumnDefinition Width="*" />
-                          <ColumnDefinition Width="150" />
-                        </Grid.ColumnDefinitions>
+                      <Button Style="{StaticResource TextButtonStyle}"
+                              HorizontalAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch"
+                              Padding="0"
+                              Click="AiPromptRow_Click"
+                              Tag="{Binding Id}">
+                        <Grid Background="Transparent"
+                              Padding="0"
+                              BorderBrush="{ThemeResource OutlineVariantBrush}"
+                              BorderThickness="0,0,0,1">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="150" />
+                          </Grid.ColumnDefinitions>
 
-                        <!-- Identifier -->
-                        <TextBlock Grid.Column="0"
-                                   Text="{Binding Identifier}"
-                                   Style="{StaticResource BodyMedium}"
-                                   Foreground="{ThemeResource OnSurfaceBrush}"
-                                   VerticalAlignment="Center"
-                                   Padding="16,14"
-                                   TextTrimming="CharacterEllipsis" />
+                          <!-- Identifier -->
+                          <TextBlock Grid.Column="0"
+                                     Text="{Binding Identifier}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14"
+                                     TextTrimming="CharacterEllipsis" />
 
-                        <!-- PromptText -->
-                        <TextBlock Grid.Column="1"
-                                   Text="{Binding PromptText}"
-                                   Style="{StaticResource BodyMedium}"
-                                   Foreground="{ThemeResource OnSurfaceBrush}"
-                                   VerticalAlignment="Center"
-                                   Padding="16,14"
-                                   TextTrimming="CharacterEllipsis"
-                                   MaxLines="1" />
+                          <!-- PromptText -->
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding PromptText}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14"
+                                     TextTrimming="CharacterEllipsis"
+                                     MaxLines="1" />
 
-                        <!-- DateModified -->
-                        <TextBlock Grid.Column="2"
-                                   Text="{Binding DateModified, Converter={StaticResource DateOnlyConverter}}"
-                                   Style="{StaticResource BodyMedium}"
-                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                   VerticalAlignment="Center"
-                                   Padding="16,14" />
-                      </Grid>
+                          <!-- DateModified -->
+                          <TextBlock Grid.Column="2"
+                                     Text="{Binding DateModified, Converter={StaticResource DateOnlyConverter}}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14" />
+                        </Grid>
+                      </Button>
                     </DataTemplate>
                   </ItemsRepeater.ItemTemplate>
                 </ItemsRepeater>

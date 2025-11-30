@@ -7,7 +7,7 @@ namespace maERP.Client.Features.TaxClasses;
 
 /// <summary>
 /// Module registration for TaxClasses feature.
-/// Provides list and detail views for tax class management.
+/// Provides list, detail, and edit views for tax class management.
 /// </summary>
 public static class TaxClassesModule
 {
@@ -23,6 +23,7 @@ public static class TaxClassesModule
         // Page models
         services.AddTransient<TaxClassListModel>();
         services.AddTransient<TaxClassDetailModel>();
+        services.AddTransient<TaxClassEditModel>();
 
         return services;
     }
@@ -34,7 +35,8 @@ public static class TaxClassesModule
     {
         views.Register(
             new ViewMap<TaxClassListPage, TaxClassListModel>(),
-            new ViewMap<TaxClassDetailPage, TaxClassDetailModel>(Data: new DataMap<TaxClassDetailData>())
+            new ViewMap<TaxClassDetailPage, TaxClassDetailModel>(Data: new DataMap<TaxClassDetailData>()),
+            new ViewMap<TaxClassEditPage, TaxClassEditModel>(Data: new DataMap<TaxClassEditData>())
         );
     }
 
@@ -45,6 +47,7 @@ public static class TaxClassesModule
     {
         yield return new RouteMap(Routes.TaxClassList, View: views.FindByViewModel<TaxClassListModel>());
         yield return new RouteMap(Routes.TaxClassDetail, View: views.FindByViewModel<TaxClassDetailModel>());
+        yield return new RouteMap(Routes.TaxClassEdit, View: views.FindByViewModel<TaxClassEditModel>());
     }
 }
 
@@ -52,3 +55,8 @@ public static class TaxClassesModule
 /// Navigation data for tax class detail page.
 /// </summary>
 public record TaxClassDetailData(Guid TaxClassId);
+
+/// <summary>
+/// Navigation data for tax class edit page.
+/// </summary>
+public record TaxClassEditData(Guid? TaxClassId = null);

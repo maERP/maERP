@@ -23,6 +23,7 @@ public static class ProductsModule
         // Page models
         services.AddTransient<ProductListModel>();
         services.AddTransient<ProductDetailModel>();
+        services.AddTransient<ProductEditModel>();
 
         return services;
     }
@@ -34,7 +35,8 @@ public static class ProductsModule
     {
         views.Register(
             new ViewMap<ProductListPage, ProductListModel>(),
-            new ViewMap<ProductDetailPage, ProductDetailModel>(Data: new DataMap<ProductDetailData>())
+            new ViewMap<ProductDetailPage, ProductDetailModel>(Data: new DataMap<ProductDetailData>()),
+            new ViewMap<ProductEditPage, ProductEditModel>(Data: new DataMap<ProductEditData>())
         );
     }
 
@@ -45,5 +47,7 @@ public static class ProductsModule
     {
         yield return new RouteMap(Routes.ProductList, View: views.FindByViewModel<ProductListModel>());
         yield return new RouteMap(Routes.ProductDetail, View: views.FindByViewModel<ProductDetailModel>());
+        yield return new RouteMap(Routes.ProductEdit, View: views.FindByViewModel<ProductEditModel>());
+        yield return new RouteMap(Routes.ProductCreate, View: views.FindByViewModel<ProductEditModel>());
     }
 }

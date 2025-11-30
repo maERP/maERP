@@ -84,12 +84,19 @@ public partial record AiModelListModel
         .AsListFeed();
 
     /// <summary>
-    /// Navigate to create new AI model page (placeholder - no function yet).
+    /// Navigate to create new AI model page.
     /// </summary>
     public async Task CreateAiModel()
     {
-        // TODO: Implement navigation to create AI model page
-        await Task.CompletedTask;
+        await _navigator.NavigateDataAsync(this, new AiModelEditData(null));
+    }
+
+    /// <summary>
+    /// Navigate to AI model detail page.
+    /// </summary>
+    public async Task ViewAiModel(Guid aiModelId)
+    {
+        await _navigator.NavigateDataAsync(this, new AiModelDetailData(aiModelId));
     }
 
     /// <summary>

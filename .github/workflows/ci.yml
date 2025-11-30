@@ -19,7 +19,7 @@ jobs:
     name: Smoke Test (Debug Build of maERP)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -27,19 +27,20 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.STEP_TIMEOUT_MINUTES) }}
         uses: "./.github/steps/install_dependencies"
 
-      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.3.1
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
 
-      - name: Build maERP (Debug)
-        shell: pwsh
-        run: msbuild ./maERP/maERP.csproj /r
+      - name: Restore Solution
+        run: dotnet restore maERP.sln
+
+      - name: Build maERP Solution (Debug)
+        run: dotnet build maERP.sln --configuration Debug --no-restore
 
   unit_test:
     name: Unit Tests
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -47,14 +48,23 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.STEP_TIMEOUT_MINUTES) }}
         uses: "./.github/steps/install_dependencies"
 
-      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.3.1
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
 
-      - name: Build maERP.Tests (Release)
-        shell: pwsh
-        run: msbuild ./maERP.Tests/maERP.Tests.csproj /p:Configuration=Release /p:OverrideTargetFramework=net10.0 /r
+      - name: Restore Server Tests
+        run: dotnet restore tests/maERP.Server.Tests/maERP.Server.Tests.csproj
 
-      - name: Run Unit Tests
-        shell: pwsh
-        run: dotnet test ./maERP.Tests/maERP.Tests.csproj --no-build -c Release --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+      - name: Build Server Tests (Release)
+        run: dotnet build tests/maERP.Server.Tests/maERP.Server.Tests.csproj --configuration Release --no-restore
+
+      - name: Run Server Unit Tests
+        run: dotnet test tests/maERP.Server.Tests/maERP.Server.Tests.csproj --no-build -c Release --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+
+      - name: Restore Client Tests
+        run: dotnet restore tests/maERP.Client.Tests/maERP.Client.Tests.csproj
+
+      - name: Build Client Tests (Release)
+        run: dotnet build tests/maERP.Client.Tests/maERP.Client.Tests.csproj --configuration Release --no-restore
+
+      - name: Run Client Unit Tests
+        run: dotnet test tests/maERP.Client.Tests/maERP.Client.Tests.csproj --no-build -c Release --logger GitHubActions --blame-crash --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover

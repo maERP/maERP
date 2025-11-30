@@ -19,6 +19,8 @@ public class InvoiceInputDto : IInvoiceInputModel
 
     public Guid? OrderId { get; set; }
 
+    public List<InvoiceItemDto> InvoiceItems { get; set; } = new();
+
     public decimal Subtotal { get; set; }
     public decimal ShippingCost { get; set; }
     public decimal TotalTax { get; set; }

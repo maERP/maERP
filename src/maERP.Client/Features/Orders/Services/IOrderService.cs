@@ -19,4 +19,19 @@ public interface IOrderService
     /// Gets a single order by ID.
     /// </summary>
     Task<OrderDetailDto?> GetOrderAsync(Guid id, CancellationToken ct = default);
+
+    /// <summary>
+    /// Creates a new order.
+    /// </summary>
+    Task CreateOrderAsync(OrderInputDto input, CancellationToken ct = default);
+
+    /// <summary>
+    /// Updates an existing order.
+    /// </summary>
+    Task UpdateOrderAsync(Guid id, OrderInputDto input, CancellationToken ct = default);
+
+    /// <summary>
+    /// Deletes an order.
+    /// </summary>
+    Task DeleteOrderAsync(Guid id, CancellationToken ct = default);
 }

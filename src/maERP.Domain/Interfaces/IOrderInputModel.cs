@@ -34,5 +34,8 @@ public interface IOrderInputModel
     string InvoiceAddressCity { get; }
     string InvoiceAddressZip { get; }
     string InvoiceAddressCountry { get; }
+    bool OrderConfirmationSent { get; }
+    bool InvoiceSent { get; }
+    bool ShippingInformationSent { get; }
     DateTime DateOrdered { get; }
 }

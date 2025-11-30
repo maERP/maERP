@@ -39,4 +39,12 @@ public partial record OrderDetailModel
     {
         await _navigator.NavigateBackAsync(this);
     }
+
+    /// <summary>
+    /// Navigate to edit order page.
+    /// </summary>
+    public async Task EditOrder()
+    {
+        await _navigator.NavigateDataAsync(this, new OrderEditData(_orderId));
+    }
 }

@@ -96,8 +96,7 @@ public partial record WarehouseListModel
     /// </summary>
     public async Task CreateWarehouse()
     {
-        // TODO: Implement warehouse create navigation when page is created
-        // await _navigator.NavigateRouteAsync(this, Routes.WarehouseCreate);
+        await _navigator.NavigateDataAsync(this, new WarehouseEditData());
     }
 
     /// <summary>

@@ -41,12 +41,10 @@ public partial record WarehouseDetailModel
     }
 
     /// <summary>
-    /// Navigate to edit warehouse page (for future implementation).
+    /// Navigate to edit warehouse page.
     /// </summary>
     public async Task EditWarehouse()
     {
-        // TODO: Implement navigation to WarehouseEditPage when available
-        // await _navigator.NavigateDataAsync(this, new WarehouseEditData(_warehouseId));
-        await Task.CompletedTask;
+        await _navigator.NavigateDataAsync(this, new WarehouseEditData(_warehouseId));
     }
 }

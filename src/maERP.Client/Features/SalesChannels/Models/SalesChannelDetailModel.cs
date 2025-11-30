@@ -38,13 +38,11 @@ public partial record SalesChannelDetailModel
     });
 
     /// <summary>
-    /// Navigate to edit sales channel page (for future implementation).
+    /// Navigate to edit sales channel page.
     /// </summary>
     public async Task EditSalesChannel()
     {
-        // TODO: Implement when SalesChannelEditPage is available
-        // await _navigator.NavigateDataAsync(this, new SalesChannelEditData(_salesChannelId));
-        await Task.CompletedTask;
+        await _navigator.NavigateDataAsync(this, new SalesChannelEditData(_salesChannelId));
     }
 
     /// <summary>

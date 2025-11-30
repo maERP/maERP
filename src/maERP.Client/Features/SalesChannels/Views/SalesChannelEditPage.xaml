@@ -1,0 +1,513 @@
+<Page x:Class="maERP.Client.Features.SalesChannels.Views.SalesChannelEditPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.SalesChannels.Views"
+      xmlns:models="using:maERP.Client.Features.SalesChannels.Models"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with NavigationBar -->
+    <utu:NavigationBar Grid.Row="0"
+                       Content="{Binding Title}">
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton x:Uid="SalesChannelEditPage.AppBarButton.Cancel"
+                      Click="CancelButton_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE711;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarButton x:Uid="SalesChannelEditPage.AppBarButton.Save"
+                      Click="SaveButton_Click"
+                      IsEnabled="{Binding CanSave}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE74E;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Form Content -->
+    <ScrollViewer Grid.Row="1"
+                  VerticalScrollBarVisibility="Auto">
+      <Grid Padding="24">
+        <!-- VisualStateManager for responsive layout -->
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup>
+            <VisualState x:Name="Narrow">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="0" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="600" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="0" />
+                <Setter Target="BasicCard.(Grid.Column)" Value="0" />
+                <Setter Target="BasicCard.(Grid.Row)" Value="0" />
+                <Setter Target="BasicCard.Margin" Value="0,0,0,16" />
+                <Setter Target="ConnectionCard.(Grid.Column)" Value="0" />
+                <Setter Target="ConnectionCard.(Grid.Row)" Value="1" />
+                <Setter Target="ConnectionCard.Margin" Value="0,0,0,16" />
+                <Setter Target="SyncCardsGrid.MaxWidth" Value="600" />
+                <Setter Target="SyncColumn1.Width" Value="*" />
+                <Setter Target="SyncColumn2.Width" Value="0" />
+                <Setter Target="ImportCard.(Grid.Column)" Value="0" />
+                <Setter Target="ImportCard.(Grid.Row)" Value="0" />
+                <Setter Target="ImportCard.Margin" Value="0,0,0,16" />
+                <Setter Target="ExportCard.(Grid.Column)" Value="0" />
+                <Setter Target="ExportCard.(Grid.Row)" Value="1" />
+                <Setter Target="ExportCard.Margin" Value="0" />
+              </VisualState.Setters>
+            </VisualState>
+
+            <VisualState x:Name="Medium">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="800" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="1200" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="*" />
+                <Setter Target="BasicCard.(Grid.Column)" Value="0" />
+                <Setter Target="BasicCard.(Grid.Row)" Value="0" />
+                <Setter Target="BasicCard.Margin" Value="0,0,8,16" />
+                <Setter Target="ConnectionCard.(Grid.Column)" Value="1" />
+                <Setter Target="ConnectionCard.(Grid.Row)" Value="0" />
+                <Setter Target="ConnectionCard.Margin" Value="8,0,0,16" />
+                <Setter Target="SyncCardsGrid.MaxWidth" Value="1200" />
+                <Setter Target="SyncColumn1.Width" Value="*" />
+                <Setter Target="SyncColumn2.Width" Value="*" />
+                <Setter Target="ImportCard.(Grid.Column)" Value="0" />
+                <Setter Target="ImportCard.(Grid.Row)" Value="0" />
+                <Setter Target="ImportCard.Margin" Value="0,0,8,0" />
+                <Setter Target="ExportCard.(Grid.Column)" Value="1" />
+                <Setter Target="ExportCard.(Grid.Row)" Value="0" />
+                <Setter Target="ExportCard.Margin" Value="8,0,0,0" />
+              </VisualState.Setters>
+            </VisualState>
+
+            <VisualState x:Name="Wide">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="1200" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="10000" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="*" />
+                <Setter Target="BasicCard.(Grid.Column)" Value="0" />
+                <Setter Target="BasicCard.(Grid.Row)" Value="0" />
+                <Setter Target="BasicCard.Margin" Value="0,0,8,16" />
+                <Setter Target="ConnectionCard.(Grid.Column)" Value="1" />
+                <Setter Target="ConnectionCard.(Grid.Row)" Value="0" />
+                <Setter Target="ConnectionCard.Margin" Value="8,0,0,16" />
+                <Setter Target="SyncCardsGrid.MaxWidth" Value="10000" />
+                <Setter Target="SyncColumn1.Width" Value="*" />
+                <Setter Target="SyncColumn2.Width" Value="*" />
+                <Setter Target="ImportCard.(Grid.Column)" Value="0" />
+                <Setter Target="ImportCard.(Grid.Row)" Value="0" />
+                <Setter Target="ImportCard.Margin" Value="0,0,8,0" />
+                <Setter Target="ExportCard.(Grid.Column)" Value="1" />
+                <Setter Target="ExportCard.(Grid.Row)" Value="0" />
+                <Setter Target="ExportCard.Margin" Value="8,0,0,0" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <StackPanel Spacing="24"
+                    MaxWidth="1400"
+                    HorizontalAlignment="Stretch">
+
+          <!-- Error Message Banner -->
+          <Border Background="{ThemeResource ErrorContainerBrush}"
+                  CornerRadius="8"
+                  Padding="16"
+                  Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <FontIcon Grid.Column="0"
+                        Glyph="&#xE783;"
+                        FontSize="20"
+                        Foreground="{ThemeResource OnErrorContainerBrush}"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Text="{Binding ErrorMessage}"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnErrorContainerBrush}"
+                         TextWrapping="Wrap"
+                         VerticalAlignment="Center" />
+            </Grid>
+          </Border>
+
+          <!-- Loading Overlay -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Padding="24"
+                  Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center"
+                        Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+
+          <!-- Form Cards Grid -->
+          <Grid x:Name="FormCardsGrid"
+                Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition x:Name="FormColumn1" Width="*" />
+              <ColumnDefinition x:Name="FormColumn2" Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Basic Information Card -->
+            <Border x:Name="BasicCard"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="0,0,8,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE8F1;"
+                              FontSize="20"
+                              Foreground="{ThemeResource PrimaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="SalesChannelEditPage.Section.BasicInfo"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Basic Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- Name (Required) -->
+                  <TextBox x:Uid="SalesChannelEditPage.Field.Name"
+                           Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Sales Channel Type -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="SalesChannelEditPage.Field.Type.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <ComboBox x:Name="TypeComboBox"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding SalesChannelTypeOptions}"
+                              SelectedValue="{Binding SalesChannelType, Mode=TwoWay}"
+                              SelectedValuePath="Value"
+                              IsEnabled="{Binding IsNotLoading}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <TextBlock Text="{Binding Value, Converter={StaticResource SalesChannelTypeToTextConverter}}" />
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+
+                  <!-- Required Fields Note -->
+                  <TextBlock x:Uid="SalesChannelEditPage.RequiredFieldsNote"
+                             Style="{StaticResource LabelSmall}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Connection Information Card -->
+            <Border x:Name="ConnectionCard"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Margin="8,0,0,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE774;"
+                              FontSize="20"
+                              Foreground="{ThemeResource PrimaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="SalesChannelEditPage.Section.ConnectionInfo"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Connection Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- URL -->
+                  <TextBox x:Uid="SalesChannelEditPage.Field.Url"
+                           Text="{Binding Url, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           InputScope="Url"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Username -->
+                  <TextBox x:Uid="SalesChannelEditPage.Field.Username"
+                           Text="{Binding Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Password -->
+                  <PasswordBox x:Uid="SalesChannelEditPage.Field.Password"
+                               Password="{Binding Password, Mode=TwoWay}"
+                               IsEnabled="{Binding IsNotLoading}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <!-- Synchronization Settings Section Header -->
+          <StackPanel Orientation="Horizontal"
+                      Spacing="12"
+                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <FontIcon Glyph="&#xE895;"
+                      FontSize="20"
+                      Foreground="{ThemeResource SecondaryBrush}" />
+            <TextBlock x:Uid="SalesChannelEditPage.Section.SyncSettings"
+                       Style="{StaticResource TitleMedium}"
+                       Foreground="{ThemeResource OnSurfaceBrush}" />
+          </StackPanel>
+
+          <!-- Synchronization Cards Grid -->
+          <Grid x:Name="SyncCardsGrid"
+                Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition x:Name="SyncColumn1" Width="*" />
+              <ColumnDefinition x:Name="SyncColumn2" Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Import Settings Card -->
+            <Border x:Name="ImportCard"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="0,0,8,0"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE896;"
+                              FontSize="20"
+                              Foreground="{ThemeResource TertiaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="SalesChannelEditPage.Section.Import"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Import Settings -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="12">
+                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ImportProducts"
+                                IsOn="{Binding ImportProducts, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}" />
+
+                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ImportCustomers"
+                                IsOn="{Binding ImportCustomers, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}" />
+
+                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ImportOrders"
+                                IsOn="{Binding ImportOrders, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Export Settings Card -->
+            <Border x:Name="ExportCard"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Margin="8,0,0,0"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE898;"
+                              FontSize="20"
+                              Foreground="{ThemeResource TertiaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="SalesChannelEditPage.Section.Export"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Export Settings -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="12">
+                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ExportProducts"
+                                IsOn="{Binding ExportProducts, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}" />
+
+                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ExportCustomers"
+                                IsOn="{Binding ExportCustomers, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}" />
+
+                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ExportOrders"
+                                IsOn="{Binding ExportOrders, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <!-- Initial Status Section -->
+          <StackPanel Spacing="12"
+                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="12">
+              <FontIcon Glyph="&#xE73E;"
+                        FontSize="20"
+                        Foreground="{ThemeResource SecondaryBrush}" />
+              <TextBlock x:Uid="SalesChannelEditPage.Section.InitialStatus"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+            </StackPanel>
+
+            <Border Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <ToggleSwitch Grid.Column="0"
+                              x:Uid="SalesChannelEditPage.Field.InitialProductImportCompleted"
+                              IsOn="{Binding InitialProductImportCompleted, Mode=TwoWay}"
+                              IsEnabled="{Binding IsNotLoading}" />
+
+                <ToggleSwitch Grid.Column="1"
+                              x:Uid="SalesChannelEditPage.Field.InitialProductExportCompleted"
+                              IsOn="{Binding InitialProductExportCompleted, Mode=TwoWay}"
+                              IsEnabled="{Binding IsNotLoading}" />
+              </Grid>
+            </Border>
+          </StackPanel>
+
+          <!-- Warehouses Section -->
+          <StackPanel Spacing="12"
+                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="12">
+              <FontIcon Glyph="&#xE80F;"
+                        FontSize="20"
+                        Foreground="{ThemeResource SecondaryBrush}" />
+              <TextBlock x:Uid="SalesChannelEditPage.Section.Warehouses"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+            </StackPanel>
+
+            <!-- Warehouse Selection -->
+            <Border Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16"
+                    Visibility="{Binding HasWarehouses, Converter={StaticResource BoolToVisibilityConverter}}">
+              <ItemsRepeater ItemsSource="{Binding Warehouses}">
+                <ItemsRepeater.Layout>
+                  <UniformGridLayout MinItemWidth="250"
+                                     MinColumnSpacing="16"
+                                     MinRowSpacing="12"
+                                     ItemsStretch="Fill" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                  <DataTemplate>
+                    <CheckBox Content="{Binding Name}"
+                              IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                  </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+              </ItemsRepeater>
+            </Border>
+
+            <!-- No Warehouses Placeholder -->
+            <Border Background="{ThemeResource SurfaceVariantBrush}"
+                    CornerRadius="12"
+                    Padding="24"
+                    Visibility="{Binding HasWarehouses, Converter={StaticResource BoolToInverseVisibilityConverter}}">
+              <StackPanel HorizontalAlignment="Center"
+                          Spacing="8">
+                <FontIcon Glyph="&#xE80F;"
+                          FontSize="32"
+                          Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                <TextBlock x:Uid="SalesChannelEditPage.NoWarehouses"
+                           Style="{StaticResource BodyMedium}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           HorizontalAlignment="Center" />
+                <TextBlock x:Uid="SalesChannelEditPage.NoWarehouses.Hint"
+                           Style="{StaticResource LabelSmall}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           HorizontalAlignment="Center" />
+              </StackPanel>
+            </Border>
+          </StackPanel>
+
+          <!-- Hint Card -->
+          <Border Background="{ThemeResource SecondaryContainerBrush}"
+                  CornerRadius="12"
+                  Padding="16"
+                  Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <FontIcon Grid.Column="0"
+                        Glyph="&#xE946;"
+                        FontSize="20"
+                        Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Top" />
+              <TextBlock Grid.Column="1"
+                         x:Uid="SalesChannelEditPage.Hint"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                         TextWrapping="Wrap" />
+            </Grid>
+          </Border>
+
+        </StackPanel>
+      </Grid>
+    </ScrollViewer>
+  </Grid>
+</Page>

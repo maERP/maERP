@@ -15,5 +15,7 @@ public interface ISalesChannelInputModel
     bool ExportProducts { get; }
     bool ExportCustomers { get; }
     bool ExportOrders { get; }
+    bool InitialProductImportCompleted { get; }
+    bool InitialProductExportCompleted { get; }
     List<Guid> WarehouseIds { get; }
 }

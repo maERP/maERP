@@ -1,18 +1,16 @@
-name: maERP.Browser Build and Test
+name: maERP.Client Build and Test
 
 on:
   push:
     branches-ignore: [ main ]
     paths:
       - 'src/maERP.Domain/**'
-      - 'src/maERP.UI/**'
-      - 'src/maERP.UI.Browser**'
+      - 'src/maERP.Client/**'
   pull_request:
     branches: [ main ]
     paths:
       - 'src/maERP.Domain/**'
-      - 'src/maERP.UI/**'
-      - 'src/maERP.UI.Browser/**'
+      - 'src/maERP.Client/**'
 
 jobs:
   test:
@@ -22,11 +20,11 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.x
+          dotnet-version: 10.x
 
-      - name: Restore maERP.Web.Tests
-        run: dotnet restore tests/maERP.Web.Tests
-      - name: Build maERP.Web.Tests
-        run: dotnet build tests/maERP.Web.Tests
-      - name: Test maERP.Web.Tests
-        run: dotnet test tests/maERP.Web.Tests --no-build --verbosity normal
+      - name: Restore maERP.Client.Tests
+        run: dotnet restore tests/maERP.Client.Tests
+      - name: Build maERP.Client.Tests
+        run: dotnet build tests/maERP.Client.Tests
+      - name: Test maERP.Client.Tests
+        run: dotnet test tests/maERP.Client.Tests --no-build --verbosity normal

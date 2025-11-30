@@ -1,0 +1,538 @@
+<Page x:Class="maERP.Client.Features.Products.Views.ProductEditPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.Products.Views"
+      xmlns:models="using:maERP.Client.Features.Products.Models"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with NavigationBar -->
+    <utu:NavigationBar Grid.Row="0"
+                       Content="{Binding Title}">
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton x:Uid="ProductEditPage.AppBarButton.Cancel"
+                      Click="CancelButton_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE711;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarButton x:Uid="ProductEditPage.AppBarButton.Save"
+                      Click="SaveButton_Click"
+                      IsEnabled="{Binding CanSave}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE74E;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Form Content -->
+    <ScrollViewer Grid.Row="1"
+                  VerticalScrollBarVisibility="Auto">
+      <Grid Padding="24">
+        <!-- VisualStateManager for responsive layout -->
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup>
+            <VisualState x:Name="Narrow">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="0" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="600" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="0" />
+                <Setter Target="BasicInfoCard.(Grid.Column)" Value="0" />
+                <Setter Target="BasicInfoCard.(Grid.Row)" Value="0" />
+                <Setter Target="BasicInfoCard.Margin" Value="0,0,0,16" />
+                <Setter Target="PricingCard.(Grid.Column)" Value="0" />
+                <Setter Target="PricingCard.(Grid.Row)" Value="1" />
+                <Setter Target="PricingCard.Margin" Value="0,0,0,16" />
+                <Setter Target="DimensionsCard.(Grid.Column)" Value="0" />
+                <Setter Target="DimensionsCard.(Grid.Row)" Value="2" />
+                <Setter Target="DimensionsCard.Margin" Value="0,0,0,16" />
+                <Setter Target="RelationshipsCard.(Grid.Column)" Value="0" />
+                <Setter Target="RelationshipsCard.(Grid.Row)" Value="3" />
+                <Setter Target="RelationshipsCard.Margin" Value="0" />
+              </VisualState.Setters>
+            </VisualState>
+
+            <VisualState x:Name="Medium">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="800" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="1200" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="*" />
+                <Setter Target="BasicInfoCard.(Grid.Column)" Value="0" />
+                <Setter Target="BasicInfoCard.(Grid.Row)" Value="0" />
+                <Setter Target="BasicInfoCard.Margin" Value="0,0,8,16" />
+                <Setter Target="PricingCard.(Grid.Column)" Value="1" />
+                <Setter Target="PricingCard.(Grid.Row)" Value="0" />
+                <Setter Target="PricingCard.Margin" Value="8,0,0,16" />
+                <Setter Target="DimensionsCard.(Grid.Column)" Value="0" />
+                <Setter Target="DimensionsCard.(Grid.Row)" Value="1" />
+                <Setter Target="DimensionsCard.Margin" Value="0,0,8,16" />
+                <Setter Target="RelationshipsCard.(Grid.Column)" Value="1" />
+                <Setter Target="RelationshipsCard.(Grid.Row)" Value="1" />
+                <Setter Target="RelationshipsCard.Margin" Value="8,0,0,16" />
+              </VisualState.Setters>
+            </VisualState>
+
+            <VisualState x:Name="Wide">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="1200" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="10000" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="*" />
+                <Setter Target="BasicInfoCard.(Grid.Column)" Value="0" />
+                <Setter Target="BasicInfoCard.(Grid.Row)" Value="0" />
+                <Setter Target="BasicInfoCard.Margin" Value="0,0,8,16" />
+                <Setter Target="PricingCard.(Grid.Column)" Value="1" />
+                <Setter Target="PricingCard.(Grid.Row)" Value="0" />
+                <Setter Target="PricingCard.Margin" Value="8,0,0,16" />
+                <Setter Target="DimensionsCard.(Grid.Column)" Value="0" />
+                <Setter Target="DimensionsCard.(Grid.Row)" Value="1" />
+                <Setter Target="DimensionsCard.Margin" Value="0,0,8,16" />
+                <Setter Target="RelationshipsCard.(Grid.Column)" Value="1" />
+                <Setter Target="RelationshipsCard.(Grid.Row)" Value="1" />
+                <Setter Target="RelationshipsCard.Margin" Value="8,0,0,16" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <StackPanel Spacing="24"
+                    MaxWidth="1400"
+                    HorizontalAlignment="Stretch">
+
+          <!-- Error Message Banner -->
+          <Border Background="{ThemeResource ErrorContainerBrush}"
+                  CornerRadius="8"
+                  Padding="16"
+                  Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <FontIcon Grid.Column="0"
+                        Glyph="&#xE783;"
+                        FontSize="20"
+                        Foreground="{ThemeResource OnErrorContainerBrush}"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Text="{Binding ErrorMessage}"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnErrorContainerBrush}"
+                         TextWrapping="Wrap"
+                         VerticalAlignment="Center" />
+            </Grid>
+          </Border>
+
+          <!-- Loading Overlay -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Padding="24"
+                  Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center"
+                        Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+
+          <!-- Form Cards Grid -->
+          <Grid x:Name="FormCardsGrid"
+                Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition x:Name="FormColumn1" Width="*" />
+              <ColumnDefinition x:Name="FormColumn2" Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Basic Information Card -->
+            <Border x:Name="BasicInfoCard"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="0,0,8,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE7BF;"
+                              FontSize="20"
+                              Foreground="{ThemeResource PrimaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="ProductEditPage.Section.BasicInformation"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Basic Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- SKU (Required) -->
+                  <TextBox x:Uid="ProductEditPage.Field.Sku"
+                           Text="{Binding Sku, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Name (Required) -->
+                  <TextBox x:Uid="ProductEditPage.Field.Name"
+                           Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- EAN -->
+                  <TextBox x:Uid="ProductEditPage.Field.Ean"
+                           Text="{Binding Ean, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- ASIN -->
+                  <TextBox x:Uid="ProductEditPage.Field.Asin"
+                           Text="{Binding Asin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Required Fields Note -->
+                  <TextBlock x:Uid="ProductEditPage.RequiredFieldsNote"
+                             Style="{StaticResource LabelSmall}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Pricing Card -->
+            <Border x:Name="PricingCard"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Margin="8,0,0,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE8C7;"
+                              FontSize="20"
+                              Foreground="{ThemeResource TertiaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="ProductEditPage.Section.Pricing"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Pricing Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- Price -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="ProductEditPage.Field.Price.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <NumberBox x:Uid="ProductEditPage.Field.Price"
+                               Value="{Binding Price, Mode=TwoWay}"
+                               SpinButtonPlacementMode="Inline"
+                               SmallChange="0.01"
+                               LargeChange="1"
+                               Minimum="0"
+                               IsEnabled="{Binding IsNotLoading}"
+                               HorizontalAlignment="Stretch" />
+                  </StackPanel>
+
+                  <!-- MSRP -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="ProductEditPage.Field.Msrp.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <NumberBox x:Uid="ProductEditPage.Field.Msrp"
+                               Value="{Binding Msrp, Mode=TwoWay}"
+                               SpinButtonPlacementMode="Inline"
+                               SmallChange="0.01"
+                               LargeChange="1"
+                               Minimum="0"
+                               IsEnabled="{Binding IsNotLoading}"
+                               HorizontalAlignment="Stretch" />
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Dimensions Card -->
+            <Border x:Name="DimensionsCard"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    Margin="0,0,8,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xEE40;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="ProductEditPage.Section.Dimensions"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Dimension Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- Weight -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="ProductEditPage.Field.Weight.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <NumberBox Value="{Binding Weight, Mode=TwoWay}"
+                                 SpinButtonPlacementMode="Compact"
+                                 SmallChange="0.1"
+                                 LargeChange="1"
+                                 Minimum="0"
+                                 IsEnabled="{Binding IsNotLoading}"
+                                 HorizontalAlignment="Stretch" />
+                      <TextBlock Grid.Column="1"
+                                 x:Uid="ProductEditPage.Unit.Kg"
+                                 Style="{StaticResource BodyMedium}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                 VerticalAlignment="Center"
+                                 Margin="8,0,0,0" />
+                    </Grid>
+                  </StackPanel>
+
+                  <!-- Width, Height, Depth in a row -->
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Width -->
+                    <StackPanel Grid.Column="0" Spacing="4">
+                      <TextBlock x:Uid="ProductEditPage.Field.Width.Label"
+                                 Style="{StaticResource LabelMedium}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <NumberBox Value="{Binding Width, Mode=TwoWay}"
+                                 SpinButtonPlacementMode="Hidden"
+                                 SmallChange="0.1"
+                                 Minimum="0"
+                                 IsEnabled="{Binding IsNotLoading}" />
+                    </StackPanel>
+
+                    <!-- Height -->
+                    <StackPanel Grid.Column="2" Spacing="4">
+                      <TextBlock x:Uid="ProductEditPage.Field.Height.Label"
+                                 Style="{StaticResource LabelMedium}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <NumberBox Value="{Binding Height, Mode=TwoWay}"
+                                 SpinButtonPlacementMode="Hidden"
+                                 SmallChange="0.1"
+                                 Minimum="0"
+                                 IsEnabled="{Binding IsNotLoading}" />
+                    </StackPanel>
+
+                    <!-- Depth -->
+                    <StackPanel Grid.Column="4" Spacing="4">
+                      <TextBlock x:Uid="ProductEditPage.Field.Depth.Label"
+                                 Style="{StaticResource LabelMedium}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <NumberBox Value="{Binding Depth, Mode=TwoWay}"
+                                 SpinButtonPlacementMode="Hidden"
+                                 SmallChange="0.1"
+                                 Minimum="0"
+                                 IsEnabled="{Binding IsNotLoading}" />
+                    </StackPanel>
+                  </Grid>
+
+                  <!-- Unit hint -->
+                  <TextBlock x:Uid="ProductEditPage.DimensionsUnit.Hint"
+                             Style="{StaticResource LabelSmall}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Relationships Card -->
+            <Border x:Name="RelationshipsCard"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    Margin="8,0,0,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE8D4;"
+                              FontSize="20"
+                              Foreground="{ThemeResource PrimaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="ProductEditPage.Section.Relationships"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Relationship Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- Tax Class (Required) -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="ProductEditPage.Field.TaxClass.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <ComboBox x:Name="TaxClassComboBox"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding TaxClasses}"
+                              SelectedValue="{Binding TaxClassId, Mode=TwoWay}"
+                              SelectedValuePath="Id"
+                              IsEnabled="{Binding IsNotLoading}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <TextBlock>
+                            <Run Text="{Binding TaxRate}" />
+                            <Run Text="%" />
+                          </TextBlock>
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+
+                  <!-- Manufacturer (Optional) -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="ProductEditPage.Field.Manufacturer.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <ComboBox x:Name="ManufacturerComboBox"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding Manufacturers}"
+                              SelectedValue="{Binding ManufacturerId, Mode=TwoWay}"
+                              SelectedValuePath="Id"
+                              IsEnabled="{Binding IsNotLoading}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock x:Uid="ProductEditPage.Field.Manufacturer.Hint"
+                               Style="{StaticResource LabelSmall}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <!-- Description Section -->
+          <StackPanel Spacing="12"
+                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="12">
+              <FontIcon Glyph="&#xE70B;"
+                        FontSize="20"
+                        Foreground="{ThemeResource SecondaryBrush}" />
+              <TextBlock x:Uid="ProductEditPage.Section.Description"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+            </StackPanel>
+
+            <Border Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16">
+              <TextBox x:Uid="ProductEditPage.Field.Description"
+                       Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       AcceptsReturn="True"
+                       TextWrapping="Wrap"
+                       MinHeight="120"
+                       MaxHeight="300"
+                       IsEnabled="{Binding IsNotLoading}" />
+            </Border>
+          </StackPanel>
+
+          <!-- Optimized Content Section -->
+          <StackPanel Spacing="12"
+                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="12">
+              <FontIcon Glyph="&#xE8D4;"
+                        FontSize="20"
+                        Foreground="{ThemeResource TertiaryBrush}" />
+              <TextBlock x:Uid="ProductEditPage.Section.OptimizedContent"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+            </StackPanel>
+
+            <Border Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="16">
+              <StackPanel Spacing="16">
+                <!-- Use Optimized Toggle -->
+                <ToggleSwitch x:Uid="ProductEditPage.Field.UseOptimized"
+                              IsOn="{Binding UseOptimized, Mode=TwoWay}"
+                              IsEnabled="{Binding IsNotLoading}" />
+
+                <!-- Name Optimized -->
+                <TextBox x:Uid="ProductEditPage.Field.NameOptimized"
+                         Text="{Binding NameOptimized, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsNotLoading}" />
+
+                <!-- Description Optimized -->
+                <TextBox x:Uid="ProductEditPage.Field.DescriptionOptimized"
+                         Text="{Binding DescriptionOptimized, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         MinHeight="120"
+                         MaxHeight="300"
+                         IsEnabled="{Binding IsNotLoading}" />
+              </StackPanel>
+            </Border>
+          </StackPanel>
+
+        </StackPanel>
+      </Grid>
+    </ScrollViewer>
+  </Grid>
+</Page>

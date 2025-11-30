@@ -19,4 +19,14 @@ public interface IWarehouseService
     /// Gets a single warehouse by ID.
     /// </summary>
     Task<WarehouseDetailDto?> GetWarehouseAsync(Guid id, CancellationToken ct = default);
+
+    /// <summary>
+    /// Creates a new warehouse.
+    /// </summary>
+    Task CreateWarehouseAsync(WarehouseInputDto input, CancellationToken ct = default);
+
+    /// <summary>
+    /// Updates an existing warehouse.
+    /// </summary>
+    Task UpdateWarehouseAsync(Guid id, WarehouseInputDto input, CancellationToken ct = default);
 }

@@ -1,0 +1,257 @@
+<Page x:Class="maERP.Client.Features.AiPrompts.Views.AiPromptEditPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.AiPrompts.Views"
+      xmlns:models="using:maERP.Client.Features.AiPrompts.Models"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with NavigationBar -->
+    <utu:NavigationBar Grid.Row="0"
+                       Content="{Binding Title}">
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton x:Uid="AiPromptEditPage.AppBarButton.Cancel"
+                      Click="CancelButton_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE711;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarButton x:Uid="AiPromptEditPage.AppBarButton.Save"
+                      Click="SaveButton_Click"
+                      IsEnabled="{Binding CanSave}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE74E;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Form Content -->
+    <ScrollViewer Grid.Row="1"
+                  VerticalScrollBarVisibility="Auto">
+      <Grid Padding="24">
+        <!-- VisualStateManager for responsive layout -->
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup>
+            <VisualState x:Name="Narrow">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="0" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="600" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="0" />
+                <Setter Target="BasicInfoCard.(Grid.Column)" Value="0" />
+                <Setter Target="BasicInfoCard.(Grid.Row)" Value="0" />
+                <Setter Target="BasicInfoCard.Margin" Value="0,0,0,16" />
+                <Setter Target="PromptCard.(Grid.Column)" Value="0" />
+                <Setter Target="PromptCard.(Grid.Row)" Value="1" />
+                <Setter Target="PromptCard.Margin" Value="0" />
+              </VisualState.Setters>
+            </VisualState>
+
+            <VisualState x:Name="Medium">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="800" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="1200" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="*" />
+                <Setter Target="BasicInfoCard.(Grid.Column)" Value="0" />
+                <Setter Target="BasicInfoCard.(Grid.Row)" Value="0" />
+                <Setter Target="BasicInfoCard.Margin" Value="0,0,8,16" />
+                <Setter Target="PromptCard.(Grid.Column)" Value="0" />
+                <Setter Target="PromptCard.(Grid.Row)" Value="1" />
+                <Setter Target="PromptCard.(Grid.ColumnSpan)" Value="2" />
+                <Setter Target="PromptCard.Margin" Value="0" />
+              </VisualState.Setters>
+            </VisualState>
+
+            <VisualState x:Name="Wide">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="1200" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="10000" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="*" />
+                <Setter Target="BasicInfoCard.(Grid.Column)" Value="0" />
+                <Setter Target="BasicInfoCard.(Grid.Row)" Value="0" />
+                <Setter Target="BasicInfoCard.Margin" Value="0,0,8,16" />
+                <Setter Target="PromptCard.(Grid.Column)" Value="0" />
+                <Setter Target="PromptCard.(Grid.Row)" Value="1" />
+                <Setter Target="PromptCard.(Grid.ColumnSpan)" Value="2" />
+                <Setter Target="PromptCard.Margin" Value="0" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <StackPanel Spacing="24"
+                    MaxWidth="1400"
+                    HorizontalAlignment="Stretch">
+
+          <!-- Error Message Banner -->
+          <Border Background="{ThemeResource ErrorContainerBrush}"
+                  CornerRadius="8"
+                  Padding="16"
+                  Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <FontIcon Grid.Column="0"
+                        Glyph="&#xE783;"
+                        FontSize="20"
+                        Foreground="{ThemeResource OnErrorContainerBrush}"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Text="{Binding ErrorMessage}"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnErrorContainerBrush}"
+                         TextWrapping="Wrap"
+                         VerticalAlignment="Center" />
+            </Grid>
+          </Border>
+
+          <!-- Loading Overlay -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Padding="24"
+                  Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center"
+                        Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+
+          <!-- Form Cards Grid -->
+          <Grid x:Name="FormCardsGrid"
+                Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition x:Name="FormColumn1" Width="*" />
+              <ColumnDefinition x:Name="FormColumn2" Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Basic Information Card -->
+            <Border x:Name="BasicInfoCard"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="0,0,8,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE8BD;"
+                              FontSize="20"
+                              Foreground="{ThemeResource PrimaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="AiPromptEditPage.Section.BasicInformation"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Basic Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- Identifier (Required) -->
+                  <TextBox x:Uid="AiPromptEditPage.Field.Identifier"
+                           Text="{Binding Identifier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- AI Model Selection (Required) -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="AiPromptEditPage.Field.AiModel.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <ComboBox x:Name="AiModelComboBox"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding AiModels}"
+                              SelectedValue="{Binding AiModelId, Mode=TwoWay}"
+                              SelectedValuePath="Id"
+                              DisplayMemberPath="Name"
+                              IsEnabled="{Binding IsNotLoading}" />
+                  </StackPanel>
+
+                  <!-- Required Fields Note -->
+                  <TextBlock x:Uid="AiPromptEditPage.RequiredFieldsNote"
+                             Style="{StaticResource LabelSmall}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Prompt Text Card -->
+            <Border x:Name="PromptCard"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Margin="0"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE70B;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="AiPromptEditPage.Section.PromptText"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Prompt Text Field -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <TextBox x:Uid="AiPromptEditPage.Field.PromptText"
+                           Text="{Binding PromptText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           AcceptsReturn="True"
+                           TextWrapping="Wrap"
+                           MinHeight="200"
+                           MaxHeight="500"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Prompt Help Text -->
+                  <TextBlock x:Uid="AiPromptEditPage.PromptHelpText"
+                             Style="{StaticResource LabelSmall}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                             TextWrapping="Wrap" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+
+        </StackPanel>
+      </Grid>
+    </ScrollViewer>
+  </Grid>
+</Page>

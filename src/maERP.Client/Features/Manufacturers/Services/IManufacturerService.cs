@@ -21,4 +21,19 @@ public interface IManufacturerService
     Task<ManufacturerDetailDto?> GetManufacturerAsync(
         Guid id,
         CancellationToken ct = default);
+
+    /// <summary>
+    /// Creates a new manufacturer.
+    /// </summary>
+    Task CreateManufacturerAsync(
+        ManufacturerInputDto input,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// Updates an existing manufacturer.
+    /// </summary>
+    Task UpdateManufacturerAsync(
+        Guid id,
+        ManufacturerInputDto input,
+        CancellationToken ct = default);
 }

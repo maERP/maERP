@@ -1,11 +1,11 @@
-name: maERP.Browser Publish
+name: maERP.Client Publish
 
 on:
   push:
     branches: [ main ]
     paths:
-      - 'src/maERP.UI/**'
-      - 'src/maERP.UI.Browser/**'
+      - 'src/maERP.Domain/**'
+      - 'src/maERP.Client/**'
 
 jobs:
   push_to_registry:
@@ -13,18 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3
-        
+        uses: actions/checkout@v4
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.x
+          dotnet-version: 10.x
 
       - name: Install WASM workload
         run: dotnet workload install wasm-tools
 
       - name: Restore dependencies
-        run: dotnet restore src/maERP.UI.Browser
+        run: dotnet restore src/maERP.Client/maERP.Client.csproj
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -42,14 +42,14 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: maerp/web
+          images: maerp/browser
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./src/maERP.UI.Browser/Dockerfile
+          file: ./src/maERP.Client/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           labels: ${{ steps.meta.outputs.labels }}
-          tags: maerp/web:latest
+          tags: maerp/browser:latest

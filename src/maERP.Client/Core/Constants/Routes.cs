@@ -25,6 +25,7 @@ public static class Routes
     // Orders
     public const string OrderList = "Orders";
     public const string OrderDetail = "OrderDetail";
+    public const string OrderEdit = "OrderEdit";
     public const string OrderCreate = "OrderCreate";
 
     // Products
@@ -36,10 +37,12 @@ public static class Routes
     // Manufacturers
     public const string ManufacturerList = "Manufacturers";
     public const string ManufacturerDetail = "ManufacturerDetail";
+    public const string ManufacturerEdit = "ManufacturerEdit";
 
     // Inventory / Warehouses
     public const string WarehouseList = "Warehouses";
     public const string WarehouseDetail = "WarehouseDetail";
+    public const string WarehouseEdit = "WarehouseEdit";
     public const string GoodsReceiptList = "GoodsReceipts";
     public const string GoodsReceiptDetail = "GoodsReceiptDetail";
 
@@ -50,6 +53,7 @@ public static class Routes
     // Sales Channels
     public const string SalesChannelList = "SalesChannels";
     public const string SalesChannelDetail = "SalesChannelDetail";
+    public const string SalesChannelEdit = "SalesChannelEdit";
 
     // Settings
     public const string Settings = "Settings";
@@ -58,13 +62,20 @@ public static class Routes
 
     // AI Models
     public const string AiModelList = "AiModels";
+    public const string AiModelDetail = "AiModelDetail";
+    public const string AiModelEdit = "AiModelEdit";
+    public const string AiModelCreate = "AiModelCreate";
 
     // AI Prompts
     public const string AiPromptList = "AiPrompts";
+    public const string AiPromptDetail = "AiPromptDetail";
+    public const string AiPromptEdit = "AiPromptEdit";
+    public const string AiPromptCreate = "AiPromptCreate";
 
     // Tax Classes
     public const string TaxClassList = "TaxClasses";
     public const string TaxClassDetail = "TaxClassDetail";
+    public const string TaxClassEdit = "TaxClassEdit";
 
     // Admin
     public const string AdminUsers = "AdminUsers";

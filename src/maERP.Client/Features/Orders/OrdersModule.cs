@@ -7,7 +7,7 @@ namespace maERP.Client.Features.Orders;
 
 /// <summary>
 /// Module registration for Orders feature.
-/// Provides list and detail operations for order management.
+/// Provides CRUD operations for order management.
 /// </summary>
 public static class OrdersModule
 {
@@ -23,6 +23,7 @@ public static class OrdersModule
         // Page models
         services.AddTransient<OrderListModel>();
         services.AddTransient<OrderDetailModel>();
+        services.AddTransient<OrderEditModel>();
 
         return services;
     }
@@ -34,7 +35,8 @@ public static class OrdersModule
     {
         views.Register(
             new ViewMap<OrderListPage, OrderListModel>(),
-            new ViewMap<OrderDetailPage, OrderDetailModel>(Data: new DataMap<OrderDetailData>())
+            new ViewMap<OrderDetailPage, OrderDetailModel>(Data: new DataMap<OrderDetailData>()),
+            new ViewMap<OrderEditPage, OrderEditModel>(Data: new DataMap<OrderEditData>())
         );
     }
 
@@ -45,6 +47,8 @@ public static class OrdersModule
     {
         yield return new RouteMap(Routes.OrderList, View: views.FindByViewModel<OrderListModel>());
         yield return new RouteMap(Routes.OrderDetail, View: views.FindByViewModel<OrderDetailModel>());
+        yield return new RouteMap(Routes.OrderEdit, View: views.FindByViewModel<OrderEditModel>());
+        yield return new RouteMap(Routes.OrderCreate, View: views.FindByViewModel<OrderEditModel>());
     }
 }
 
@@ -52,3 +56,8 @@ public static class OrdersModule
 /// Navigation data for order detail page.
 /// </summary>
 public record OrderDetailData(Guid orderId);
+
+/// <summary>
+/// Navigation data for order edit page.
+/// </summary>
+public record OrderEditData(Guid orderId);

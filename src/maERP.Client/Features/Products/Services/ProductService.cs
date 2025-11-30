@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Extensions;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Product;
@@ -85,5 +86,27 @@ public class ProductService : IProductService
         var url = $"{baseUrl}{ApiEndpoints.Products.ById(id)}";
         var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<ProductDetailDto>>(url, JsonOptions, ct);
         return apiResponse?.Data;
+    }
+
+    public async Task CreateProductAsync(ProductInputDto input, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Products.Base}";
+
+        _logger.LogInformation("Creating product at URL: {Url}", url);
+
+        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task UpdateProductAsync(Guid id, ProductInputDto input, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Products.ById(id)}";
+
+        _logger.LogInformation("Updating product {Id} at URL: {Url}", id, url);
+
+        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 }

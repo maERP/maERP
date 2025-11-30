@@ -20,6 +20,14 @@
                       x:Uid="OrderDetailPage.AppBarButton.Back"
                       Click="BackButton_Click" />
       </utu:NavigationBar.MainCommand>
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton x:Uid="OrderDetailPage.AppBarButton.Edit"
+                      Click="EditButton_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE70F;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
     </utu:NavigationBar>
 
     <!-- Order Details Content -->

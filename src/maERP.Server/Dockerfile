@@ -1,13 +1,13 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS base
 WORKDIR /app
 EXPOSE 8443
 
 ENV DatabaseConfig__Provider=Sqlite
 ENV DatabaseConfig__ConnectionString=Data Source=maerp.db
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
 COPY ["src/maERP.Server/maERP.Server.csproj", "maERP.Server/"]
 COPY ["src/maERP.Application/maERP.Application.csproj", "maERP.Application/"]

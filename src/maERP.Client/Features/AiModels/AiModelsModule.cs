@@ -22,6 +22,8 @@ public static class AiModelsModule
 
         // Page models
         services.AddTransient<AiModelListModel>();
+        services.AddTransient<AiModelDetailModel>();
+        services.AddTransient<AiModelEditModel>();
 
         return services;
     }
@@ -32,7 +34,9 @@ public static class AiModelsModule
     public static void RegisterViews(IViewRegistry views)
     {
         views.Register(
-            new ViewMap<AiModelListPage, AiModelListModel>()
+            new ViewMap<AiModelListPage, AiModelListModel>(),
+            new ViewMap<AiModelDetailPage, AiModelDetailModel>(Data: new DataMap<AiModelDetailData>()),
+            new ViewMap<AiModelEditPage, AiModelEditModel>(Data: new DataMap<AiModelEditData>())
         );
     }
 
@@ -42,5 +46,8 @@ public static class AiModelsModule
     public static IEnumerable<RouteMap> GetRoutes(IViewRegistry views)
     {
         yield return new RouteMap(Routes.AiModelList, View: views.FindByViewModel<AiModelListModel>());
+        yield return new RouteMap(Routes.AiModelDetail, View: views.FindByViewModel<AiModelDetailModel>());
+        yield return new RouteMap(Routes.AiModelEdit, View: views.FindByViewModel<AiModelEditModel>());
+        yield return new RouteMap(Routes.AiModelCreate, View: views.FindByViewModel<AiModelEditModel>());
     }
 }

@@ -87,4 +87,28 @@ public class OrderService : IOrderService
         var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<OrderDetailDto>>(url, JsonOptions, ct);
         return apiResponse?.Data;
     }
+
+    public async Task CreateOrderAsync(OrderInputDto input, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Orders.Base}";
+        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task UpdateOrderAsync(Guid id, OrderInputDto input, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Orders.ById(id)}";
+        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task DeleteOrderAsync(Guid id, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Orders.ById(id)}";
+        var response = await _httpClient.DeleteAsync(url, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
 }

@@ -108,6 +108,14 @@ public sealed partial class OrderListPage : Page
         }
     }
 
+    private async void NewOrderButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is OrderListModel model)
+        {
+            await model.CreateOrder();
+        }
+    }
+
     private async void OrderRow_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button button &&

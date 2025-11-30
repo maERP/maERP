@@ -111,6 +111,16 @@ public sealed partial class AiPromptListPage : Page
         }
     }
 
+    private async void AiPromptRow_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button &&
+            button.Tag is Guid aiPromptId &&
+            DataContext is AiPromptListModel model)
+        {
+            await model.ViewAiPromptDetail(aiPromptId);
+        }
+    }
+
     private async void PreviousPage_Click(object sender, RoutedEventArgs e)
     {
         if (DataContext is AiPromptListModel model)

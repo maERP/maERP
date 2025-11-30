@@ -23,17 +23,10 @@ public class OrderInputDto : IOrderInputModel
     public string CustomerNote { get; set; } = string.Empty;
     public string InternalNote { get; set; } = string.Empty;
 
-    public string ShippingMethod { get; set; } = string.Empty;
-    public string ShippingStatus { get; set; } = string.Empty;
-    public string ShippingProvider { get; set; } = string.Empty;
-    public string ShippingTrackingId { get; set; } = string.Empty;
-
     public decimal Subtotal { get; set; }
     public decimal ShippingCost { get; set; }
     public decimal TotalTax { get; set; }
     public decimal Total { get; set; }
-
-    public string Note { get; set; } = string.Empty;
 
     public string DeliveryAddressFirstName { get; set; } = string.Empty;
     public string DeliveryAddressLastName { get; set; } = string.Empty;
@@ -52,6 +45,10 @@ public class OrderInputDto : IOrderInputModel
     public string InvoiceAddressCity { get; set; } = string.Empty;
     public string InvoiceAddressZip { get; set; } = string.Empty;
     public string InvoiceAddressCountry { get; set; } = string.Empty;
+
+    public bool OrderConfirmationSent { get; set; }
+    public bool InvoiceSent { get; set; }
+    public bool ShippingInformationSent { get; set; }
 
     public DateTime DateOrdered { get; set; }
 }

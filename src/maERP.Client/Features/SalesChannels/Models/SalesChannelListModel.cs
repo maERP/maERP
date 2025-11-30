@@ -97,8 +97,7 @@ public partial record SalesChannelListModel
     /// </summary>
     public async Task CreateSalesChannel()
     {
-        // Navigation to create page - not yet implemented
-        // await _navigator.NavigateRouteAsync(this, Routes.SalesChannelCreate);
+        await _navigator.NavigateDataAsync(this, new SalesChannelEditData());
     }
 
     /// <summary>

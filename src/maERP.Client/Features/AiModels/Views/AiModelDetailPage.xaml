@@ -1,0 +1,332 @@
+<Page x:Class="maERP.Client.Features.AiModels.Views.AiModelDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.AiModels.Views"
+      xmlns:models="using:maERP.Client.Features.AiModels.Models"
+      xmlns:mvux="using:Uno.Extensions.Reactive.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      xmlns:converters="using:maERP.Client.Core.Converters"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Page.Resources>
+    <converters:AiModelTypeConverter x:Key="AiModelTypeConverter" />
+  </Page.Resources>
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with back button -->
+    <utu:NavigationBar Grid.Row="0" x:Uid="AiModelDetailPage.NavigationBar">
+      <utu:NavigationBar.MainCommand>
+        <AppBarButton Icon="Back"
+                      x:Uid="AiModelDetailPage.AppBarButton.Back"
+                      Click="BackButton_Click" />
+      </utu:NavigationBar.MainCommand>
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton Icon="Edit"
+                      x:Uid="AiModelDetailPage.AppBarButton.Edit"
+                      Click="EditButton_Click" />
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- AI Model Details Content -->
+    <mvux:FeedView Grid.Row="1"
+                   Source="{Binding AiModel}">
+      <mvux:FeedView.ValueTemplate>
+        <DataTemplate>
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid Padding="24">
+              <!-- VisualStateManager for responsive layout -->
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                  <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="ContentStack.MaxWidth" Value="400" />
+                    </VisualState.Setters>
+                  </VisualState>
+
+                  <VisualState x:Name="Medium">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="600" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="ContentStack.MaxWidth" Value="500" />
+                    </VisualState.Setters>
+                  </VisualState>
+
+                  <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="900" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="ContentStack.MaxWidth" Value="600" />
+                    </VisualState.Setters>
+                  </VisualState>
+                </VisualStateGroup>
+              </VisualStateManager.VisualStateGroups>
+
+              <StackPanel x:Name="ContentStack"
+                          Spacing="24"
+                          MaxWidth="500"
+                          HorizontalAlignment="Center">
+
+                <!-- AI Model Hero Card -->
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        CornerRadius="16"
+                        Padding="32"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <StackPanel HorizontalAlignment="Center"
+                              Spacing="16">
+                    <!-- AI Icon -->
+                    <Border Width="80"
+                            Height="80"
+                            CornerRadius="40"
+                            Background="{ThemeResource PrimaryContainerBrush}"
+                            HorizontalAlignment="Center">
+                      <FontIcon Glyph="&#xE99A;"
+                                FontSize="36"
+                                Foreground="{ThemeResource OnPrimaryContainerBrush}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                    </Border>
+
+                    <!-- Model Name -->
+                    <TextBlock Text="{Binding Data.Name}"
+                               Style="{StaticResource TitleLarge}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap" />
+
+                    <!-- Model Type Badge -->
+                    <Border CornerRadius="16"
+                            Padding="16,6"
+                            Background="{ThemeResource SecondaryContainerBrush}"
+                            HorizontalAlignment="Center">
+                      <TextBlock Text="{Binding Data.AiModelType, Converter={StaticResource AiModelTypeConverter}}"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSecondaryContainerBrush}" />
+                    </Border>
+                  </StackPanel>
+                </Border>
+
+                <!-- Model Configuration Card -->
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        BorderBrush="{ThemeResource OutlineVariantBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12">
+                  <StackPanel Spacing="0">
+                    <!-- Card Header -->
+                    <Grid Padding="16,16,16,8">
+                      <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE8F8;"
+                                  FontSize="20"
+                                  Foreground="{ThemeResource PrimaryBrush}"
+                                  Margin="0,0,12,0" />
+                        <TextBlock x:Uid="AiModelDetailPage.Section.Configuration"
+                                   Style="{StaticResource TitleMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}" />
+                      </StackPanel>
+                    </Grid>
+
+                    <!-- Configuration Fields -->
+                    <StackPanel Padding="16,0,16,16"
+                                Spacing="16">
+                      <!-- ID Field -->
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <FontIcon Grid.Column="0"
+                                  Glyph="&#xE8EC;"
+                                  FontSize="16"
+                                  Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                  Margin="0,0,12,0"
+                                  VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1">
+                          <TextBlock x:Uid="AiModelDetailPage.Field.Id"
+                                     Style="{StaticResource LabelSmall}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                          <TextBlock Text="{Binding Data.Id}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     IsTextSelectionEnabled="True"
+                                     TextWrapping="Wrap" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Context Window Size Field -->
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <FontIcon Grid.Column="0"
+                                  Glyph="&#xE762;"
+                                  FontSize="16"
+                                  Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                  Margin="0,0,12,0"
+                                  VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1">
+                          <TextBlock x:Uid="AiModelDetailPage.Field.NCtx"
+                                     Style="{StaticResource LabelSmall}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                          <TextBlock Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}">
+                            <Run Text="{Binding Data.NCtx}" />
+                            <Run Text=" " />
+                            <Run x:Uid="AiModelDetailPage.Field.NCtx.Tokens" />
+                          </TextBlock>
+                        </StackPanel>
+                      </Grid>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+
+                <!-- Authentication Card -->
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        BorderBrush="{ThemeResource OutlineVariantBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12">
+                  <StackPanel Spacing="0">
+                    <!-- Card Header -->
+                    <Grid Padding="16,16,16,8">
+                      <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE774;"
+                                  FontSize="20"
+                                  Foreground="{ThemeResource TertiaryBrush}"
+                                  Margin="0,0,12,0" />
+                        <TextBlock x:Uid="AiModelDetailPage.Section.Authentication"
+                                   Style="{StaticResource TitleMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}" />
+                      </StackPanel>
+                    </Grid>
+
+                    <!-- Authentication Fields -->
+                    <StackPanel Padding="16,0,16,16"
+                                Spacing="16">
+                      <!-- API Username Field -->
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <FontIcon Grid.Column="0"
+                                  Glyph="&#xE77B;"
+                                  FontSize="16"
+                                  Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                  Margin="0,0,12,0"
+                                  VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1">
+                          <TextBlock x:Uid="AiModelDetailPage.Field.ApiUsername"
+                                     Style="{StaticResource LabelSmall}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                          <TextBlock Text="{Binding Data.ApiUsername}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     IsTextSelectionEnabled="True" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- API Key Field (Masked) -->
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <FontIcon Grid.Column="0"
+                                  Glyph="&#xE8D7;"
+                                  FontSize="16"
+                                  Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                  Margin="0,0,12,0"
+                                  VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1">
+                          <TextBlock x:Uid="AiModelDetailPage.Field.ApiKey"
+                                     Style="{StaticResource LabelSmall}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                          <TextBlock x:Uid="AiModelDetailPage.Field.ApiKey.Masked"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                        </StackPanel>
+                      </Grid>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+
+                <!-- Usage Hint Card -->
+                <Border Background="{ThemeResource SecondaryContainerBrush}"
+                        CornerRadius="12"
+                        Padding="16">
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Grid.Column="0"
+                              Glyph="&#xE946;"
+                              FontSize="20"
+                              Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                              Margin="0,0,12,0"
+                              VerticalAlignment="Top" />
+                    <TextBlock Grid.Column="1"
+                               x:Uid="AiModelDetailPage.UsageHint"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                               TextWrapping="Wrap" />
+                  </Grid>
+                </Border>
+              </StackPanel>
+            </Grid>
+          </ScrollViewer>
+        </DataTemplate>
+      </mvux:FeedView.ValueTemplate>
+
+      <mvux:FeedView.ProgressTemplate>
+        <DataTemplate>
+          <Grid HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
+        </DataTemplate>
+      </mvux:FeedView.ProgressTemplate>
+
+      <mvux:FeedView.ErrorTemplate>
+        <DataTemplate>
+          <Grid HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+              <FontIcon Glyph="&#xE783;"
+                        FontSize="48"
+                        Foreground="{ThemeResource ErrorBrush}" />
+              <TextBlock x:Uid="AiModelDetailPage.LoadError"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+              <Button x:Uid="Common.Retry"
+                      Style="{StaticResource FilledButtonStyle}"
+                      HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
+        </DataTemplate>
+      </mvux:FeedView.ErrorTemplate>
+    </mvux:FeedView>
+  </Grid>
+</Page>

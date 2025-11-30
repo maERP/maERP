@@ -17,4 +17,12 @@ public sealed partial class OrderDetailPage : Page
             await model.GoBack();
         }
     }
+
+    private async void EditButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is OrderDetailModel model)
+        {
+            await model.EditOrder();
+        }
+    }
 }

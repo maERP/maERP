@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Extensions;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.AiPrompt;
@@ -75,6 +76,89 @@ public class AiPromptService : IAiPromptService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error fetching AI prompts from {Url}", url);
+            throw;
+        }
+    }
+
+    public async Task<AiPromptDetailDto?> GetAiPromptAsync(Guid id, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.AiPrompts.ById(id)}";
+
+        _logger.LogInformation("Fetching AI prompt {Id} from URL: {Url}", id, url);
+
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<AiPromptDetailDto>(url, JsonOptions, ct);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching AI prompt {Id} from {Url}", id, url);
+            throw;
+        }
+    }
+
+    public async Task<Guid> CreateAiPromptAsync(AiPromptInputDto input, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.AiPrompts.Base}";
+
+        _logger.LogInformation("Creating AI prompt at URL: {Url}", url);
+
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+            await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+
+            var createdId = await response.Content.ReadFromJsonAsync<Guid>(ct);
+            _logger.LogInformation("Created AI prompt with ID: {Id}", createdId);
+            return createdId;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating AI prompt at {Url}", url);
+            throw;
+        }
+    }
+
+    public async Task UpdateAiPromptAsync(Guid id, AiPromptInputDto input, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.AiPrompts.ById(id)}";
+
+        _logger.LogInformation("Updating AI prompt {Id} at URL: {Url}", id, url);
+
+        try
+        {
+            var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+            await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+
+            _logger.LogInformation("Updated AI prompt {Id}", id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating AI prompt {Id} at {Url}", id, url);
+            throw;
+        }
+    }
+
+    public async Task DeleteAiPromptAsync(Guid id, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.AiPrompts.ById(id)}";
+
+        _logger.LogInformation("Deleting AI prompt {Id} at URL: {Url}", id, url);
+
+        try
+        {
+            var response = await _httpClient.DeleteAsync(url, ct);
+            await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+
+            _logger.LogInformation("Deleted AI prompt {Id}", id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting AI prompt {Id} at {Url}", id, url);
             throw;
         }
     }

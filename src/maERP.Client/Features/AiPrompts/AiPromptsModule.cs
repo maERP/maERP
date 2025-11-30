@@ -22,6 +22,8 @@ public static class AiPromptsModule
 
         // Page models
         services.AddTransient<AiPromptListModel>();
+        services.AddTransient<AiPromptDetailModel>();
+        services.AddTransient<AiPromptEditModel>();
 
         return services;
     }
@@ -32,7 +34,9 @@ public static class AiPromptsModule
     public static void RegisterViews(IViewRegistry views)
     {
         views.Register(
-            new ViewMap<AiPromptListPage, AiPromptListModel>()
+            new ViewMap<AiPromptListPage, AiPromptListModel>(),
+            new ViewMap<AiPromptDetailPage, AiPromptDetailModel>(Data: new DataMap<AiPromptDetailData>()),
+            new ViewMap<AiPromptEditPage, AiPromptEditModel>(Data: new DataMap<AiPromptEditData>())
         );
     }
 
@@ -42,5 +46,8 @@ public static class AiPromptsModule
     public static IEnumerable<RouteMap> GetRoutes(IViewRegistry views)
     {
         yield return new RouteMap(Routes.AiPromptList, View: views.FindByViewModel<AiPromptListModel>());
+        yield return new RouteMap(Routes.AiPromptDetail, View: views.FindByViewModel<AiPromptDetailModel>());
+        yield return new RouteMap(Routes.AiPromptEdit, View: views.FindByViewModel<AiPromptEditModel>());
+        yield return new RouteMap(Routes.AiPromptCreate, View: views.FindByViewModel<AiPromptEditModel>());
     }
 }

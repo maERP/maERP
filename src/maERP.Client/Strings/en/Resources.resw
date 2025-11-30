@@ -569,6 +569,104 @@
     <value>Items per page:</value>
   </data>
 
+  <!-- Manufacturer Edit Page -->
+  <data name="ManufacturerEditPage.TitleNew" xml:space="preserve">
+    <value>New Manufacturer</value>
+  </data>
+  <data name="ManufacturerEditPage.TitleEdit" xml:space="preserve">
+    <value>Edit Manufacturer</value>
+  </data>
+  <data name="ManufacturerEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ManufacturerEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ManufacturerEditPage.Section.BasicInformation.Text" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="ManufacturerEditPage.Section.ContactInformation.Text" xml:space="preserve">
+    <value>Contact Information</value>
+  </data>
+  <data name="ManufacturerEditPage.Section.Address.Text" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Name.Header" xml:space="preserve">
+    <value>Name *</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Name.PlaceholderText" xml:space="preserve">
+    <value>Enter manufacturer name</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Logo.Header" xml:space="preserve">
+    <value>Logo URL</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Logo.PlaceholderText" xml:space="preserve">
+    <value>https://example.com/logo.png</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Email.Header" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Email.PlaceholderText" xml:space="preserve">
+    <value>info@manufacturer.com</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Phone.Header" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Phone.PlaceholderText" xml:space="preserve">
+    <value>+1 234 567890</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Website.Header" xml:space="preserve">
+    <value>Website</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Website.PlaceholderText" xml:space="preserve">
+    <value>https://www.manufacturer.com</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Street.Header" xml:space="preserve">
+    <value>Street</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Street.PlaceholderText" xml:space="preserve">
+    <value>Enter street</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.ZipCode.Header" xml:space="preserve">
+    <value>ZIP</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.ZipCode.PlaceholderText" xml:space="preserve">
+    <value>ZIP</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.City.Header" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.City.PlaceholderText" xml:space="preserve">
+    <value>Enter city</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.State.Header" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.State.PlaceholderText" xml:space="preserve">
+    <value>Enter state/province</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Country.Header" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="ManufacturerEditPage.Field.Country.PlaceholderText" xml:space="preserve">
+    <value>Enter country</value>
+  </data>
+  <data name="ManufacturerEditPage.RequiredFieldsNote.Text" xml:space="preserve">
+    <value>* Required fields</value>
+  </data>
+  <data name="ManufacturerEditPage.Button.Cancel.Content" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ManufacturerEditPage.Button.Save.Content" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ManufacturerEditPage.Error.LoadFailed" xml:space="preserve">
+    <value>Failed to load manufacturer: {0}</value>
+  </data>
+  <data name="ManufacturerEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Failed to save manufacturer: {0}</value>
+  </data>
+
   <!-- Manufacturer Detail Page -->
   <data name="ManufacturerDetailPage.NavigationBar.Content" xml:space="preserve">
     <value>Manufacturer Details</value>
@@ -972,6 +1070,147 @@
     <value>Items per page:</value>
   </data>
 
+  <!-- AI Model Detail Page -->
+  <data name="AiModelDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>AI Model Details</value>
+  </data>
+  <data name="AiModelDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="AiModelDetailPage.AppBarButton.Back.ToolTip" xml:space="preserve">
+    <value>Back to AI model list</value>
+  </data>
+  <data name="AiModelDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="AiModelDetailPage.AppBarButton.Edit.ToolTip" xml:space="preserve">
+    <value>Edit AI model</value>
+  </data>
+  <data name="AiModelDetailPage.Section.Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="AiModelDetailPage.Section.Authentication" xml:space="preserve">
+    <value>Authentication</value>
+  </data>
+  <data name="AiModelDetailPage.Field.Id.Text" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="AiModelDetailPage.Field.NCtx.Text" xml:space="preserve">
+    <value>Context Window Size</value>
+  </data>
+  <data name="AiModelDetailPage.Field.NCtx.Tokens.Text" xml:space="preserve">
+    <value>tokens</value>
+  </data>
+  <data name="AiModelDetailPage.Field.ApiUsername.Text" xml:space="preserve">
+    <value>API Username</value>
+  </data>
+  <data name="AiModelDetailPage.Field.ApiKey.Text" xml:space="preserve">
+    <value>API Key</value>
+  </data>
+  <data name="AiModelDetailPage.Field.ApiKey.Masked.Text" xml:space="preserve">
+    <value>(hidden for security)</value>
+  </data>
+  <data name="AiModelDetailPage.UsageHint.Text" xml:space="preserve">
+    <value>This AI model can be used in AI prompts to generate text completions. Configure the API settings to connect to your AI service provider.</value>
+  </data>
+  <data name="AiModelDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Failed to load AI model details</value>
+  </data>
+
+  <!-- AI Model Edit Page -->
+  <data name="AiModelEditPage.TitleNew" xml:space="preserve">
+    <value>New AI Model</value>
+  </data>
+  <data name="AiModelEditPage.TitleEdit" xml:space="preserve">
+    <value>Edit AI Model</value>
+  </data>
+  <data name="AiModelEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AiModelEditPage.AppBarButton.Cancel.ToolTip" xml:space="preserve">
+    <value>Cancel and go back</value>
+  </data>
+  <data name="AiModelEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="AiModelEditPage.AppBarButton.Save.ToolTip" xml:space="preserve">
+    <value>Save AI model</value>
+  </data>
+  <data name="AiModelEditPage.Section.BasicInformation.Text" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="AiModelEditPage.Section.ApiSettings.Text" xml:space="preserve">
+    <value>API Settings</value>
+  </data>
+  <data name="AiModelEditPage.Section.Authentication.Text" xml:space="preserve">
+    <value>Authentication</value>
+  </data>
+  <data name="AiModelEditPage.Field.Name.Header" xml:space="preserve">
+    <value>Name *</value>
+  </data>
+  <data name="AiModelEditPage.Field.Name.PlaceholderText" xml:space="preserve">
+    <value>Enter model name</value>
+  </data>
+  <data name="AiModelEditPage.Field.AiModelType.Label.Text" xml:space="preserve">
+    <value>AI Model Type</value>
+  </data>
+  <data name="AiModelEditPage.Field.NCtx.Header" xml:space="preserve">
+    <value>Context Window Size</value>
+  </data>
+  <data name="AiModelEditPage.Field.NCtx.PlaceholderText" xml:space="preserve">
+    <value>e.g. 4096</value>
+  </data>
+  <data name="AiModelEditPage.Field.ApiUrl.Header" xml:space="preserve">
+    <value>API URL</value>
+  </data>
+  <data name="AiModelEditPage.Field.ApiUrl.PlaceholderText" xml:space="preserve">
+    <value>https://api.example.com/v1</value>
+  </data>
+  <data name="AiModelEditPage.Field.ApiKey.Header" xml:space="preserve">
+    <value>API Key</value>
+  </data>
+  <data name="AiModelEditPage.Field.ApiKey.PlaceholderText" xml:space="preserve">
+    <value>Enter API key</value>
+  </data>
+  <data name="AiModelEditPage.Field.ApiUsername.Header" xml:space="preserve">
+    <value>API Username</value>
+  </data>
+  <data name="AiModelEditPage.Field.ApiUsername.PlaceholderText" xml:space="preserve">
+    <value>Enter username (optional)</value>
+  </data>
+  <data name="AiModelEditPage.Field.ApiPassword.Header" xml:space="preserve">
+    <value>API Password</value>
+  </data>
+  <data name="AiModelEditPage.Field.ApiPassword.PlaceholderText" xml:space="preserve">
+    <value>Enter password (optional)</value>
+  </data>
+  <data name="AiModelEditPage.RequiredFieldsNote.Text" xml:space="preserve">
+    <value>* Required fields</value>
+  </data>
+  <data name="AiModelEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Failed to save AI model: {0}</value>
+  </data>
+
+  <!-- AI Model Types -->
+  <data name="AiModelType.None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="AiModelType.Ollama" xml:space="preserve">
+    <value>Ollama</value>
+  </data>
+  <data name="AiModelType.VLlm" xml:space="preserve">
+    <value>vLLM</value>
+  </data>
+  <data name="AiModelType.LmStudio" xml:space="preserve">
+    <value>LM Studio</value>
+  </data>
+  <data name="AiModelType.ChatGpt4O" xml:space="preserve">
+    <value>ChatGPT-4o</value>
+  </data>
+  <data name="AiModelType.Claude35" xml:space="preserve">
+    <value>Claude 3.5</value>
+  </data>
+
   <!-- AI Prompt List Page -->
   <data name="AiPromptListPage.NavigationBar.Content" xml:space="preserve">
     <value>AI Prompts</value>
@@ -1014,6 +1253,94 @@
   </data>
   <data name="AiPromptListPage.ItemsPerPage.Text" xml:space="preserve">
     <value>Items per page:</value>
+  </data>
+
+  <!-- AI Prompt Detail Page -->
+  <data name="AiPromptDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>AI Prompt Details</value>
+  </data>
+  <data name="AiPromptDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="AiPromptDetailPage.AppBarButton.Back.ToolTip" xml:space="preserve">
+    <value>Back to list</value>
+  </data>
+  <data name="AiPromptDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="AiPromptDetailPage.AppBarButton.Edit.ToolTip" xml:space="preserve">
+    <value>Edit AI prompt</value>
+  </data>
+  <data name="AiPromptDetailPage.Badge.AiPrompt.Text" xml:space="preserve">
+    <value>AI Prompt</value>
+  </data>
+  <data name="AiPromptDetailPage.Section.Details.Text" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="AiPromptDetailPage.Section.PromptText.Text" xml:space="preserve">
+    <value>Prompt Text</value>
+  </data>
+  <data name="AiPromptDetailPage.Field.Id.Text" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="AiPromptDetailPage.Field.AiModelId.Text" xml:space="preserve">
+    <value>AI Model ID</value>
+  </data>
+  <data name="AiPromptDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Failed to load AI prompt</value>
+  </data>
+  <data name="AiPromptDetailPage.UsageHint.Text" xml:space="preserve">
+    <value>This AI prompt is used when processing AI requests and can contain placeholders for dynamic content.</value>
+  </data>
+
+  <!-- AI Prompt Edit Page -->
+  <data name="AiPromptEditPage.TitleNew" xml:space="preserve">
+    <value>New AI Prompt</value>
+  </data>
+  <data name="AiPromptEditPage.TitleEdit" xml:space="preserve">
+    <value>Edit AI Prompt</value>
+  </data>
+  <data name="AiPromptEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AiPromptEditPage.AppBarButton.Cancel.ToolTip" xml:space="preserve">
+    <value>Discard changes</value>
+  </data>
+  <data name="AiPromptEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="AiPromptEditPage.AppBarButton.Save.ToolTip" xml:space="preserve">
+    <value>Save changes</value>
+  </data>
+  <data name="AiPromptEditPage.Section.BasicInformation.Text" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="AiPromptEditPage.Section.PromptText.Text" xml:space="preserve">
+    <value>Prompt Text</value>
+  </data>
+  <data name="AiPromptEditPage.Field.Identifier.Header" xml:space="preserve">
+    <value>Identifier *</value>
+  </data>
+  <data name="AiPromptEditPage.Field.Identifier.PlaceholderText" xml:space="preserve">
+    <value>Enter unique identifier</value>
+  </data>
+  <data name="AiPromptEditPage.Field.AiModel.Label.Text" xml:space="preserve">
+    <value>AI Model *</value>
+  </data>
+  <data name="AiPromptEditPage.Field.PromptText.Header" xml:space="preserve">
+    <value>Prompt Text *</value>
+  </data>
+  <data name="AiPromptEditPage.Field.PromptText.PlaceholderText" xml:space="preserve">
+    <value>Enter prompt text...</value>
+  </data>
+  <data name="AiPromptEditPage.RequiredFieldsNote.Text" xml:space="preserve">
+    <value>* Required fields</value>
+  </data>
+  <data name="AiPromptEditPage.PromptHelpText.Text" xml:space="preserve">
+    <value>The prompt text can contain placeholders like {context}, {question} or other dynamic variables that will be replaced at runtime.</value>
+  </data>
+  <data name="AiPromptEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Error saving: {0}</value>
   </data>
 
   <!-- Tax Class List Page -->
@@ -1084,6 +1411,56 @@
   </data>
   <data name="TaxClassDetailPage.LoadError.Text" xml:space="preserve">
     <value>Failed to load tax class</value>
+  </data>
+
+  <!-- Tax Class Edit Page -->
+  <data name="TaxClassEditPage.TitleNew" xml:space="preserve">
+    <value>New Tax Class</value>
+  </data>
+  <data name="TaxClassEditPage.TitleEdit" xml:space="preserve">
+    <value>Edit Tax Class</value>
+  </data>
+  <data name="TaxClassEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="TaxClassEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="TaxClassEditPage.Section.TaxClassDetails.Text" xml:space="preserve">
+    <value>Tax Class Details</value>
+  </data>
+  <data name="TaxClassEditPage.Section.TaxClassDetails.Subtitle.Text" xml:space="preserve">
+    <value>Configure the tax rate for this tax class</value>
+  </data>
+  <data name="TaxClassEditPage.Field.TaxRate.Label.Text" xml:space="preserve">
+    <value>Tax Rate</value>
+  </data>
+  <data name="TaxClassEditPage.Field.TaxRate.Header" xml:space="preserve">
+    <value>Tax Rate</value>
+  </data>
+  <data name="TaxClassEditPage.Field.TaxRate.PlaceholderText" xml:space="preserve">
+    <value>Enter tax rate</value>
+  </data>
+  <data name="TaxClassEditPage.Field.TaxRate.HelperText.Text" xml:space="preserve">
+    <value>Enter the tax rate as a percentage (e.g., 19 for 19%)</value>
+  </data>
+  <data name="TaxClassEditPage.QuickSelect.Label.Text" xml:space="preserve">
+    <value>Quick select common tax rates</value>
+  </data>
+  <data name="TaxClassEditPage.Info.UsageHint.Text" xml:space="preserve">
+    <value>Tax classes are assigned to products to automatically calculate the correct tax amount during sales. Different products may require different tax rates depending on the type of goods or services.</value>
+  </data>
+  <data name="TaxClassEditPage.Button.Cancel.Content" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="TaxClassEditPage.Button.Save.Content" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="TaxClassEditPage.Error.LoadFailed" xml:space="preserve">
+    <value>Failed to load tax class: {0}</value>
+  </data>
+  <data name="TaxClassEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Failed to save tax class: {0}</value>
   </data>
 
   <!-- Sales Channel List Page -->
@@ -1186,6 +1563,124 @@
     <value>Failed to load sales channel</value>
   </data>
 
+  <!-- Sales Channel Edit Page -->
+  <data name="SalesChannelEditPage.TitleNew" xml:space="preserve">
+    <value>New Sales Channel</value>
+  </data>
+  <data name="SalesChannelEditPage.TitleEdit" xml:space="preserve">
+    <value>Edit Sales Channel</value>
+  </data>
+  <data name="SalesChannelEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SalesChannelEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SalesChannelEditPage.Section.BasicInfo.Text" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="SalesChannelEditPage.Section.ConnectionInfo.Text" xml:space="preserve">
+    <value>Connection</value>
+  </data>
+  <data name="SalesChannelEditPage.Section.SyncSettings.Text" xml:space="preserve">
+    <value>Synchronization Settings</value>
+  </data>
+  <data name="SalesChannelEditPage.Section.Import.Text" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="SalesChannelEditPage.Section.Export.Text" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="SalesChannelEditPage.Section.InitialStatus.Text" xml:space="preserve">
+    <value>Initial Status</value>
+  </data>
+  <data name="SalesChannelEditPage.Section.Warehouses.Text" xml:space="preserve">
+    <value>Warehouses</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.Name.Header" xml:space="preserve">
+    <value>Name *</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.Name.PlaceholderText" xml:space="preserve">
+    <value>Enter sales channel name</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.Type.Label.Text" xml:space="preserve">
+    <value>Channel Type</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.Url.Header" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.Url.PlaceholderText" xml:space="preserve">
+    <value>https://example.com/api</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.Username.Header" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.Username.PlaceholderText" xml:space="preserve">
+    <value>Enter API username</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.Password.Header" xml:space="preserve">
+    <value>Password / API Key</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.Password.PlaceholderText" xml:space="preserve">
+    <value>Enter password or API key</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.ImportProducts.Header" xml:space="preserve">
+    <value>Import Products</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.ImportCustomers.Header" xml:space="preserve">
+    <value>Import Customers</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.ImportOrders.Header" xml:space="preserve">
+    <value>Import Orders</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.ExportProducts.Header" xml:space="preserve">
+    <value>Export Products</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.ExportCustomers.Header" xml:space="preserve">
+    <value>Export Customers</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.ExportOrders.Header" xml:space="preserve">
+    <value>Export Orders</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.InitialProductImportCompleted.Header" xml:space="preserve">
+    <value>Initial Product Import Completed</value>
+  </data>
+  <data name="SalesChannelEditPage.Field.InitialProductExportCompleted.Header" xml:space="preserve">
+    <value>Initial Product Export Completed</value>
+  </data>
+  <data name="SalesChannelEditPage.RequiredFieldsNote.Text" xml:space="preserve">
+    <value>* Required fields</value>
+  </data>
+  <data name="SalesChannelEditPage.NoWarehouses.Text" xml:space="preserve">
+    <value>No warehouses available</value>
+  </data>
+  <data name="SalesChannelEditPage.NoWarehouses.Hint.Text" xml:space="preserve">
+    <value>Create warehouses first to assign them to this sales channel</value>
+  </data>
+  <data name="SalesChannelEditPage.Hint.Text" xml:space="preserve">
+    <value>Configure the connection settings to enable synchronization with external platforms. Ensure the URL and credentials are correct before saving.</value>
+  </data>
+  <data name="SalesChannelEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Failed to save sales channel: {0}</value>
+  </data>
+
+  <!-- Sales Channel Type Names -->
+  <data name="SalesChannelType.PointOfSale" xml:space="preserve">
+    <value>Point of Sale</value>
+  </data>
+  <data name="SalesChannelType.Shopware5" xml:space="preserve">
+    <value>Shopware 5</value>
+  </data>
+  <data name="SalesChannelType.Shopware6" xml:space="preserve">
+    <value>Shopware 6</value>
+  </data>
+  <data name="SalesChannelType.WooCommerce" xml:space="preserve">
+    <value>WooCommerce</value>
+  </data>
+  <data name="SalesChannelType.eBay" xml:space="preserve">
+    <value>eBay</value>
+  </data>
+
   <!-- Sync Status -->
   <data name="SyncStatus.Enabled" xml:space="preserve">
     <value>Enabled</value>
@@ -1224,6 +1719,56 @@
   </data>
   <data name="WarehouseDetailPage.LoadError.Text" xml:space="preserve">
     <value>Failed to load warehouse</value>
+  </data>
+
+  <!-- Warehouse Edit Page -->
+  <data name="WarehouseEditPage.TitleNew" xml:space="preserve">
+    <value>New Warehouse</value>
+  </data>
+  <data name="WarehouseEditPage.TitleEdit" xml:space="preserve">
+    <value>Edit Warehouse</value>
+  </data>
+  <data name="WarehouseEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="WarehouseEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="WarehouseEditPage.Section.WarehouseDetails.Text" xml:space="preserve">
+    <value>Warehouse Details</value>
+  </data>
+  <data name="WarehouseEditPage.Section.WarehouseDetails.Subtitle.Text" xml:space="preserve">
+    <value>Configure the warehouse information</value>
+  </data>
+  <data name="WarehouseEditPage.Field.Name.Label.Text" xml:space="preserve">
+    <value>Name *</value>
+  </data>
+  <data name="WarehouseEditPage.Field.Name.Header" xml:space="preserve">
+    <value>Name *</value>
+  </data>
+  <data name="WarehouseEditPage.Field.Name.PlaceholderText" xml:space="preserve">
+    <value>Enter warehouse name</value>
+  </data>
+  <data name="WarehouseEditPage.Field.Name.HelperText.Text" xml:space="preserve">
+    <value>Enter a unique name for this warehouse</value>
+  </data>
+  <data name="WarehouseEditPage.RequiredFieldsNote.Text" xml:space="preserve">
+    <value>* Required fields</value>
+  </data>
+  <data name="WarehouseEditPage.Info.UsageHint.Text" xml:space="preserve">
+    <value>Warehouses are used to manage product inventory and can be assigned to sales channels to fulfill orders from different locations.</value>
+  </data>
+  <data name="WarehouseEditPage.Button.Cancel.Content" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="WarehouseEditPage.Button.Save.Content" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="WarehouseEditPage.Error.LoadFailed" xml:space="preserve">
+    <value>Failed to load warehouse: {0}</value>
+  </data>
+  <data name="WarehouseEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Failed to save warehouse: {0}</value>
   </data>
 
   <!-- Second Page (Legacy) -->
@@ -1343,6 +1888,143 @@
   <!-- Product Detail Page - Empty States -->
   <data name="ProductDetailPage.NoDescription.Text" xml:space="preserve">
     <value>No description available</value>
+  </data>
+
+  <!-- Product Edit Page -->
+  <data name="ProductEditPage.TitleNew" xml:space="preserve">
+    <value>New Product</value>
+  </data>
+  <data name="ProductEditPage.TitleEdit" xml:space="preserve">
+    <value>Edit Product</value>
+  </data>
+  <data name="ProductEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ProductEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+
+  <!-- Product Edit Page - Sections -->
+  <data name="ProductEditPage.Section.BasicInformation.Text" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="ProductEditPage.Section.Pricing.Text" xml:space="preserve">
+    <value>Pricing</value>
+  </data>
+  <data name="ProductEditPage.Section.Dimensions.Text" xml:space="preserve">
+    <value>Dimensions</value>
+  </data>
+  <data name="ProductEditPage.Section.Relationships.Text" xml:space="preserve">
+    <value>Relationships</value>
+  </data>
+  <data name="ProductEditPage.Section.Description.Text" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ProductEditPage.Section.OptimizedContent.Text" xml:space="preserve">
+    <value>Optimized Content</value>
+  </data>
+
+  <!-- Product Edit Page - Fields -->
+  <data name="ProductEditPage.Field.Sku.Header" xml:space="preserve">
+    <value>SKU (Stock Keeping Unit) *</value>
+  </data>
+  <data name="ProductEditPage.Field.Sku.PlaceholderText" xml:space="preserve">
+    <value>e.g. PROD-001</value>
+  </data>
+  <data name="ProductEditPage.Field.Name.Header" xml:space="preserve">
+    <value>Name *</value>
+  </data>
+  <data name="ProductEditPage.Field.Name.PlaceholderText" xml:space="preserve">
+    <value>Enter product name</value>
+  </data>
+  <data name="ProductEditPage.Field.Ean.Header" xml:space="preserve">
+    <value>EAN</value>
+  </data>
+  <data name="ProductEditPage.Field.Ean.PlaceholderText" xml:space="preserve">
+    <value>13-digit EAN code</value>
+  </data>
+  <data name="ProductEditPage.Field.Asin.Header" xml:space="preserve">
+    <value>ASIN</value>
+  </data>
+  <data name="ProductEditPage.Field.Asin.PlaceholderText" xml:space="preserve">
+    <value>Amazon Standard Identification Number</value>
+  </data>
+  <data name="ProductEditPage.Field.Price.Label.Text" xml:space="preserve">
+    <value>Sale Price</value>
+  </data>
+  <data name="ProductEditPage.Field.Price.PlaceholderText" xml:space="preserve">
+    <value>0.00</value>
+  </data>
+  <data name="ProductEditPage.Field.Msrp.Label.Text" xml:space="preserve">
+    <value>MSRP (Manufacturer's Suggested Retail Price)</value>
+  </data>
+  <data name="ProductEditPage.Field.Msrp.PlaceholderText" xml:space="preserve">
+    <value>0.00</value>
+  </data>
+  <data name="ProductEditPage.Field.Weight.Label.Text" xml:space="preserve">
+    <value>Weight</value>
+  </data>
+  <data name="ProductEditPage.Field.Width.Label.Text" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="ProductEditPage.Field.Height.Label.Text" xml:space="preserve">
+    <value>Height</value>
+  </data>
+  <data name="ProductEditPage.Field.Depth.Label.Text" xml:space="preserve">
+    <value>Depth</value>
+  </data>
+  <data name="ProductEditPage.Unit.Kg.Text" xml:space="preserve">
+    <value>kg</value>
+  </data>
+  <data name="ProductEditPage.DimensionsUnit.Hint.Text" xml:space="preserve">
+    <value>All dimensions in centimeters (cm)</value>
+  </data>
+  <data name="ProductEditPage.Field.TaxClass.Label.Text" xml:space="preserve">
+    <value>Tax Class *</value>
+  </data>
+  <data name="ProductEditPage.Field.Manufacturer.Label.Text" xml:space="preserve">
+    <value>Manufacturer</value>
+  </data>
+  <data name="ProductEditPage.Field.Manufacturer.Hint.Text" xml:space="preserve">
+    <value>Optional - Leave empty if not applicable</value>
+  </data>
+  <data name="ProductEditPage.Field.Description.Header" xml:space="preserve">
+    <value>Product Description</value>
+  </data>
+  <data name="ProductEditPage.Field.Description.PlaceholderText" xml:space="preserve">
+    <value>Enter detailed product description...</value>
+  </data>
+  <data name="ProductEditPage.Field.UseOptimized.Header" xml:space="preserve">
+    <value>Use Optimized Content</value>
+  </data>
+  <data name="ProductEditPage.Field.UseOptimized.OnContent" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="ProductEditPage.Field.UseOptimized.OffContent" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="ProductEditPage.Field.NameOptimized.Header" xml:space="preserve">
+    <value>Optimized Name</value>
+  </data>
+  <data name="ProductEditPage.Field.NameOptimized.PlaceholderText" xml:space="preserve">
+    <value>SEO-optimized product name</value>
+  </data>
+  <data name="ProductEditPage.Field.DescriptionOptimized.Header" xml:space="preserve">
+    <value>Optimized Description</value>
+  </data>
+  <data name="ProductEditPage.Field.DescriptionOptimized.PlaceholderText" xml:space="preserve">
+    <value>Enter SEO-optimized product description...</value>
+  </data>
+
+  <!-- Product Edit Page - Notes and Errors -->
+  <data name="ProductEditPage.RequiredFieldsNote.Text" xml:space="preserve">
+    <value>* Required fields</value>
+  </data>
+  <data name="ProductEditPage.Error.LoadFailed" xml:space="preserve">
+    <value>Failed to load product: {0}</value>
+  </data>
+  <data name="ProductEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Failed to save product: {0}</value>
   </data>
 
   <!-- Invoice Detail Page -->
@@ -1471,6 +2153,9 @@
   </data>
   <data name="OrderDetailPage.AppBarButton.Back.Label" xml:space="preserve">
     <value>Back</value>
+  </data>
+  <data name="OrderDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Edit</value>
   </data>
   <data name="OrderDetailPage.LoadError.Text" xml:space="preserve">
     <value>Failed to load order</value>
@@ -1651,5 +2336,273 @@
   </data>
   <data name="PaymentStatus.CreditPreliminarilyAccepted" xml:space="preserve">
     <value>Credit Pending</value>
+  </data>
+
+  <!-- Order Edit Page -->
+  <data name="OrderEditPage.TitleNew" xml:space="preserve">
+    <value>New Order</value>
+  </data>
+  <data name="OrderEditPage.TitleEdit" xml:space="preserve">
+    <value>Edit Order</value>
+  </data>
+  <data name="OrderEditPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="OrderEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="OrderEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+
+  <!-- Order Edit Page - Sections -->
+  <data name="OrderEditPage.Section.OrderInformation.Text" xml:space="preserve">
+    <value>Order Information</value>
+  </data>
+  <data name="OrderEditPage.Section.StatusInformation.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="OrderEditPage.Section.FinancialInformation.Text" xml:space="preserve">
+    <value>Financial Information</value>
+  </data>
+  <data name="OrderEditPage.Section.PaymentInformation.Text" xml:space="preserve">
+    <value>Payment Information</value>
+  </data>
+  <data name="OrderEditPage.Section.DeliveryAddress.Text" xml:space="preserve">
+    <value>Delivery Address</value>
+  </data>
+  <data name="OrderEditPage.Section.InvoiceAddress.Text" xml:space="preserve">
+    <value>Invoice Address</value>
+  </data>
+  <data name="OrderEditPage.Section.Notes.Text" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+
+  <!-- Order Edit Page - Order Information Fields -->
+  <data name="OrderEditPage.Field.OrderId.Header" xml:space="preserve">
+    <value>Order ID</value>
+  </data>
+  <data name="OrderEditPage.Field.OrderId.PlaceholderText" xml:space="preserve">
+    <value>Enter order ID</value>
+  </data>
+  <data name="OrderEditPage.Field.RemoteOrderId.Header" xml:space="preserve">
+    <value>Remote Order ID</value>
+  </data>
+  <data name="OrderEditPage.Field.RemoteOrderId.PlaceholderText" xml:space="preserve">
+    <value>Enter remote order ID</value>
+  </data>
+  <data name="OrderEditPage.Field.SalesChannel.Label.Text" xml:space="preserve">
+    <value>Sales Channel</value>
+  </data>
+  <data name="OrderEditPage.Field.CustomerId.Header" xml:space="preserve">
+    <value>Customer ID</value>
+  </data>
+  <data name="OrderEditPage.Field.CustomerId.PlaceholderText" xml:space="preserve">
+    <value>Enter customer ID</value>
+  </data>
+  <data name="OrderEditPage.Field.DateOrdered.Label.Text" xml:space="preserve">
+    <value>Order Date</value>
+  </data>
+
+  <!-- Order Edit Page - Status Fields -->
+  <data name="OrderEditPage.Field.OrderStatus.Label.Text" xml:space="preserve">
+    <value>Order Status</value>
+  </data>
+  <data name="OrderEditPage.Field.PaymentStatus.Label.Text" xml:space="preserve">
+    <value>Payment Status</value>
+  </data>
+  <data name="OrderEditPage.Field.Notifications.Label.Text" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="OrderEditPage.Field.OrderConfirmationSent.Content" xml:space="preserve">
+    <value>Order confirmation sent</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceSent.Content" xml:space="preserve">
+    <value>Invoice sent</value>
+  </data>
+  <data name="OrderEditPage.Field.ShippingInformationSent.Content" xml:space="preserve">
+    <value>Shipping information sent</value>
+  </data>
+
+  <!-- Order Edit Page - Financial Fields -->
+  <data name="OrderEditPage.Field.Subtotal.Header" xml:space="preserve">
+    <value>Subtotal</value>
+  </data>
+  <data name="OrderEditPage.Field.Subtotal.PlaceholderText" xml:space="preserve">
+    <value>0.00</value>
+  </data>
+  <data name="OrderEditPage.Field.ShippingCost.Header" xml:space="preserve">
+    <value>Shipping Cost</value>
+  </data>
+  <data name="OrderEditPage.Field.ShippingCost.PlaceholderText" xml:space="preserve">
+    <value>0.00</value>
+  </data>
+  <data name="OrderEditPage.Field.TotalTax.Header" xml:space="preserve">
+    <value>Tax</value>
+  </data>
+  <data name="OrderEditPage.Field.TotalTax.PlaceholderText" xml:space="preserve">
+    <value>0.00</value>
+  </data>
+  <data name="OrderEditPage.Field.Total.Header" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="OrderEditPage.Field.Total.PlaceholderText" xml:space="preserve">
+    <value>0.00</value>
+  </data>
+
+  <!-- Order Edit Page - Payment Fields -->
+  <data name="OrderEditPage.Field.PaymentMethod.Header" xml:space="preserve">
+    <value>Payment Method</value>
+  </data>
+  <data name="OrderEditPage.Field.PaymentMethod.PlaceholderText" xml:space="preserve">
+    <value>e.g. Credit Card, PayPal</value>
+  </data>
+  <data name="OrderEditPage.Field.PaymentProvider.Header" xml:space="preserve">
+    <value>Payment Provider</value>
+  </data>
+  <data name="OrderEditPage.Field.PaymentProvider.PlaceholderText" xml:space="preserve">
+    <value>e.g. Stripe, PayPal</value>
+  </data>
+  <data name="OrderEditPage.Field.PaymentTransactionId.Header" xml:space="preserve">
+    <value>Transaction ID</value>
+  </data>
+  <data name="OrderEditPage.Field.PaymentTransactionId.PlaceholderText" xml:space="preserve">
+    <value>Enter transaction ID</value>
+  </data>
+
+  <!-- Order Edit Page - Delivery Address Fields -->
+  <data name="OrderEditPage.Field.DeliveryFirstName.Header" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryFirstName.PlaceholderText" xml:space="preserve">
+    <value>Enter first name</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryLastName.Header" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryLastName.PlaceholderText" xml:space="preserve">
+    <value>Enter last name</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryCompanyName.Header" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryCompanyName.PlaceholderText" xml:space="preserve">
+    <value>Enter company name (optional)</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryPhone.Header" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryPhone.PlaceholderText" xml:space="preserve">
+    <value>Enter phone number</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryStreet.Header" xml:space="preserve">
+    <value>Street</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryStreet.PlaceholderText" xml:space="preserve">
+    <value>Enter street address</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryZip.Header" xml:space="preserve">
+    <value>ZIP Code</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryZip.PlaceholderText" xml:space="preserve">
+    <value>ZIP</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryCity.Header" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryCity.PlaceholderText" xml:space="preserve">
+    <value>Enter city</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryCountry.Header" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="OrderEditPage.Field.DeliveryCountry.PlaceholderText" xml:space="preserve">
+    <value>Enter country</value>
+  </data>
+
+  <!-- Order Edit Page - Invoice Address Fields -->
+  <data name="OrderEditPage.Field.InvoiceFirstName.Header" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceFirstName.PlaceholderText" xml:space="preserve">
+    <value>Enter first name</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceLastName.Header" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceLastName.PlaceholderText" xml:space="preserve">
+    <value>Enter last name</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceCompanyName.Header" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceCompanyName.PlaceholderText" xml:space="preserve">
+    <value>Enter company name (optional)</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoicePhone.Header" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoicePhone.PlaceholderText" xml:space="preserve">
+    <value>Enter phone number</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceStreet.Header" xml:space="preserve">
+    <value>Street</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceStreet.PlaceholderText" xml:space="preserve">
+    <value>Enter street address</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceZip.Header" xml:space="preserve">
+    <value>ZIP Code</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceZip.PlaceholderText" xml:space="preserve">
+    <value>ZIP</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceCity.Header" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceCity.PlaceholderText" xml:space="preserve">
+    <value>Enter city</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceCountry.Header" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="OrderEditPage.Field.InvoiceCountry.PlaceholderText" xml:space="preserve">
+    <value>Enter country</value>
+  </data>
+
+  <!-- Order Edit Page - Notes Fields -->
+  <data name="OrderEditPage.Field.CustomerNote.Label.Text" xml:space="preserve">
+    <value>Customer Note</value>
+  </data>
+  <data name="OrderEditPage.Field.CustomerNote.PlaceholderText" xml:space="preserve">
+    <value>Notes from the customer</value>
+  </data>
+  <data name="OrderEditPage.Field.InternalNote.Label.Text" xml:space="preserve">
+    <value>Internal Note</value>
+  </data>
+  <data name="OrderEditPage.Field.InternalNote.PlaceholderText" xml:space="preserve">
+    <value>Internal notes (not visible to customer)</value>
+  </data>
+
+  <!-- Order Edit Page - Buttons -->
+  <data name="OrderEditPage.Button.CopyToInvoice.ToolTip" xml:space="preserve">
+    <value>Copy to invoice address</value>
+  </data>
+  <data name="OrderEditPage.Button.CopyToInvoice.Text.Text" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="OrderEditPage.Button.CopyToDelivery.ToolTip" xml:space="preserve">
+    <value>Copy to delivery address</value>
+  </data>
+  <data name="OrderEditPage.Button.CopyToDelivery.Text.Text" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+
+  <!-- Order Edit Page - Errors -->
+  <data name="OrderEditPage.Error.LoadFailed" xml:space="preserve">
+    <value>Failed to load order: {0}</value>
+  </data>
+  <data name="OrderEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Failed to save order: {0}</value>
   </data>
 </root>

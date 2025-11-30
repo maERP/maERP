@@ -1,0 +1,744 @@
+<Page x:Class="maERP.Client.Features.Orders.Views.OrderEditPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.Orders.Views"
+      xmlns:models="using:maERP.Client.Features.Orders.Models"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with NavigationBar -->
+    <utu:NavigationBar Grid.Row="0"
+                       Content="{Binding Title}">
+      <utu:NavigationBar.MainCommand>
+        <AppBarButton Icon="Back"
+                      x:Uid="OrderEditPage.AppBarButton.Back"
+                      Click="BackButton_Click" />
+      </utu:NavigationBar.MainCommand>
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton x:Uid="OrderEditPage.AppBarButton.Cancel"
+                      Click="CancelButton_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE711;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarButton x:Uid="OrderEditPage.AppBarButton.Save"
+                      Click="SaveButton_Click"
+                      IsEnabled="{Binding CanSave}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE74E;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Form Content -->
+    <ScrollViewer Grid.Row="1"
+                  VerticalScrollBarVisibility="Auto">
+      <Grid Padding="24">
+        <!-- VisualStateManager for responsive layout -->
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup>
+            <VisualState x:Name="Narrow">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="0" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="600" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="0" />
+                <Setter Target="OrderInfoCard.(Grid.Column)" Value="0" />
+                <Setter Target="OrderInfoCard.(Grid.Row)" Value="0" />
+                <Setter Target="OrderInfoCard.Margin" Value="0,0,0,16" />
+                <Setter Target="StatusCard.(Grid.Column)" Value="0" />
+                <Setter Target="StatusCard.(Grid.Row)" Value="1" />
+                <Setter Target="StatusCard.Margin" Value="0,0,0,16" />
+                <Setter Target="AddressCardsGrid.MaxWidth" Value="600" />
+                <Setter Target="AddressColumn1.Width" Value="*" />
+                <Setter Target="AddressColumn2.Width" Value="0" />
+                <Setter Target="DeliveryAddressCard.(Grid.Column)" Value="0" />
+                <Setter Target="DeliveryAddressCard.(Grid.Row)" Value="0" />
+                <Setter Target="DeliveryAddressCard.Margin" Value="0,0,0,16" />
+                <Setter Target="InvoiceAddressCard.(Grid.Column)" Value="0" />
+                <Setter Target="InvoiceAddressCard.(Grid.Row)" Value="1" />
+                <Setter Target="InvoiceAddressCard.Margin" Value="0" />
+              </VisualState.Setters>
+            </VisualState>
+
+            <VisualState x:Name="Medium">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="800" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="1200" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="*" />
+                <Setter Target="OrderInfoCard.(Grid.Column)" Value="0" />
+                <Setter Target="OrderInfoCard.(Grid.Row)" Value="0" />
+                <Setter Target="OrderInfoCard.Margin" Value="0,0,8,16" />
+                <Setter Target="StatusCard.(Grid.Column)" Value="1" />
+                <Setter Target="StatusCard.(Grid.Row)" Value="0" />
+                <Setter Target="StatusCard.Margin" Value="8,0,0,16" />
+                <Setter Target="AddressCardsGrid.MaxWidth" Value="1200" />
+                <Setter Target="AddressColumn1.Width" Value="*" />
+                <Setter Target="AddressColumn2.Width" Value="*" />
+                <Setter Target="DeliveryAddressCard.(Grid.Column)" Value="0" />
+                <Setter Target="DeliveryAddressCard.(Grid.Row)" Value="0" />
+                <Setter Target="DeliveryAddressCard.Margin" Value="0,0,8,0" />
+                <Setter Target="InvoiceAddressCard.(Grid.Column)" Value="1" />
+                <Setter Target="InvoiceAddressCard.(Grid.Row)" Value="0" />
+                <Setter Target="InvoiceAddressCard.Margin" Value="8,0,0,0" />
+              </VisualState.Setters>
+            </VisualState>
+
+            <VisualState x:Name="Wide">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="1200" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="FormCardsGrid.MaxWidth" Value="10000" />
+                <Setter Target="FormColumn1.Width" Value="*" />
+                <Setter Target="FormColumn2.Width" Value="*" />
+                <Setter Target="OrderInfoCard.(Grid.Column)" Value="0" />
+                <Setter Target="OrderInfoCard.(Grid.Row)" Value="0" />
+                <Setter Target="OrderInfoCard.Margin" Value="0,0,8,16" />
+                <Setter Target="StatusCard.(Grid.Column)" Value="1" />
+                <Setter Target="StatusCard.(Grid.Row)" Value="0" />
+                <Setter Target="StatusCard.Margin" Value="8,0,0,16" />
+                <Setter Target="AddressCardsGrid.MaxWidth" Value="10000" />
+                <Setter Target="AddressColumn1.Width" Value="*" />
+                <Setter Target="AddressColumn2.Width" Value="*" />
+                <Setter Target="DeliveryAddressCard.(Grid.Column)" Value="0" />
+                <Setter Target="DeliveryAddressCard.(Grid.Row)" Value="0" />
+                <Setter Target="DeliveryAddressCard.Margin" Value="0,0,8,0" />
+                <Setter Target="InvoiceAddressCard.(Grid.Column)" Value="1" />
+                <Setter Target="InvoiceAddressCard.(Grid.Row)" Value="0" />
+                <Setter Target="InvoiceAddressCard.Margin" Value="8,0,0,0" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <StackPanel Spacing="24"
+                    MaxWidth="1400"
+                    HorizontalAlignment="Stretch">
+
+          <!-- Error Message Banner -->
+          <Border Background="{ThemeResource ErrorContainerBrush}"
+                  CornerRadius="8"
+                  Padding="16"
+                  Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <FontIcon Grid.Column="0"
+                        Glyph="&#xE783;"
+                        FontSize="20"
+                        Foreground="{ThemeResource OnErrorContainerBrush}"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Text="{Binding ErrorMessage}"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnErrorContainerBrush}"
+                         TextWrapping="Wrap"
+                         VerticalAlignment="Center" />
+            </Grid>
+          </Border>
+
+          <!-- Loading Overlay -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Padding="24"
+                  Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center"
+                        Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+
+          <!-- Form Cards Grid -->
+          <Grid x:Name="FormCardsGrid"
+                Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition x:Name="FormColumn1" Width="*" />
+              <ColumnDefinition x:Name="FormColumn2" Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Order Information Card -->
+            <Border x:Name="OrderInfoCard"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="0,0,8,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE7BF;"
+                              FontSize="20"
+                              Foreground="{ThemeResource PrimaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="OrderEditPage.Section.OrderInformation"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Order Info Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- Order ID (Read-only for edit, editable for new) -->
+                  <TextBox x:Uid="OrderEditPage.Field.OrderId"
+                           Text="{Binding OrderIdNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}"
+                           InputScope="Number" />
+
+                  <!-- Remote Order ID -->
+                  <TextBox x:Uid="OrderEditPage.Field.RemoteOrderId"
+                           Text="{Binding RemoteOrderId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Sales Channel -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="OrderEditPage.Field.SalesChannel.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <ComboBox x:Name="SalesChannelComboBox"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding SalesChannels}"
+                              SelectedValue="{Binding SalesChannelId, Mode=TwoWay}"
+                              SelectedValuePath="Id"
+                              DisplayMemberPath="Name"
+                              IsEnabled="{Binding IsNotLoading}" />
+                  </StackPanel>
+
+                  <!-- Customer ID -->
+                  <TextBox x:Uid="OrderEditPage.Field.CustomerId"
+                           Text="{Binding CustomerId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}"
+                           InputScope="Number" />
+
+                  <!-- Date Ordered -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="OrderEditPage.Field.DateOrdered.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <DatePicker Date="{Binding DateOrderedOffset, Mode=TwoWay}"
+                                HorizontalAlignment="Stretch"
+                                IsEnabled="{Binding IsNotLoading}" />
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Status Card -->
+            <Border x:Name="StatusCard"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Margin="8,0,0,16"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE9F5;"
+                              FontSize="20"
+                              Foreground="{ThemeResource TertiaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="OrderEditPage.Section.StatusInformation"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Status Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- Order Status -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="OrderEditPage.Field.OrderStatus.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <ComboBox x:Name="OrderStatusComboBox"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding OrderStatusOptions}"
+                              SelectedValue="{Binding Status, Mode=TwoWay}"
+                              SelectedValuePath="Value"
+                              IsEnabled="{Binding IsNotLoading}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <TextBlock Text="{Binding Value, Converter={StaticResource OrderStatusToTextConverter}}" />
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+
+                  <!-- Payment Status -->
+                  <StackPanel Spacing="4">
+                    <TextBlock x:Uid="OrderEditPage.Field.PaymentStatus.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <ComboBox x:Name="PaymentStatusComboBox"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding PaymentStatusOptions}"
+                              SelectedValue="{Binding PaymentStatus, Mode=TwoWay}"
+                              SelectedValuePath="Value"
+                              IsEnabled="{Binding IsNotLoading}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <TextBlock Text="{Binding Value, Converter={StaticResource PaymentStatusToTextConverter}}" />
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </StackPanel>
+
+                  <!-- Notification Flags -->
+                  <StackPanel Spacing="8"
+                              Margin="0,8,0,0">
+                    <TextBlock x:Uid="OrderEditPage.Field.Notifications.Label"
+                               Style="{StaticResource LabelMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                    <CheckBox x:Uid="OrderEditPage.Field.OrderConfirmationSent"
+                              IsChecked="{Binding OrderConfirmationSent, Mode=TwoWay}"
+                              IsEnabled="{Binding IsNotLoading}" />
+                    <CheckBox x:Uid="OrderEditPage.Field.InvoiceSent"
+                              IsChecked="{Binding InvoiceSent, Mode=TwoWay}"
+                              IsEnabled="{Binding IsNotLoading}" />
+                    <CheckBox x:Uid="OrderEditPage.Field.ShippingInformationSent"
+                              IsChecked="{Binding ShippingInformationSent, Mode=TwoWay}"
+                              IsEnabled="{Binding IsNotLoading}" />
+                  </StackPanel>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <!-- Financial Information Card -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  BorderBrush="{ThemeResource OutlineVariantBrush}"
+                  BorderThickness="1"
+                  CornerRadius="12"
+                  Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Spacing="0">
+              <!-- Card Header -->
+              <Grid Padding="16,16,16,8">
+                <StackPanel Orientation="Horizontal">
+                  <FontIcon Glyph="&#xE8C7;"
+                            FontSize="20"
+                            Foreground="{ThemeResource SecondaryBrush}"
+                            Margin="0,0,12,0" />
+                  <TextBlock x:Uid="OrderEditPage.Section.FinancialInformation"
+                             Style="{StaticResource TitleMedium}"
+                             Foreground="{ThemeResource OnSurfaceBrush}" />
+                </StackPanel>
+              </Grid>
+
+              <!-- Financial Fields -->
+              <Grid Padding="16,0,16,16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Subtotal -->
+                <TextBox Grid.Column="0"
+                         x:Uid="OrderEditPage.Field.Subtotal"
+                         Text="{Binding Subtotal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,8,0"
+                         IsEnabled="{Binding IsNotLoading}"
+                         InputScope="Number" />
+
+                <!-- Shipping Cost -->
+                <TextBox Grid.Column="1"
+                         x:Uid="OrderEditPage.Field.ShippingCost"
+                         Text="{Binding ShippingCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="8,0,8,0"
+                         IsEnabled="{Binding IsNotLoading}"
+                         InputScope="Number" />
+
+                <!-- Tax -->
+                <TextBox Grid.Column="2"
+                         x:Uid="OrderEditPage.Field.TotalTax"
+                         Text="{Binding TotalTax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="8,0,8,0"
+                         IsEnabled="{Binding IsNotLoading}"
+                         InputScope="Number" />
+
+                <!-- Total -->
+                <TextBox Grid.Column="3"
+                         x:Uid="OrderEditPage.Field.Total"
+                         Text="{Binding Total, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="8,0,0,0"
+                         IsEnabled="{Binding IsNotLoading}"
+                         InputScope="Number" />
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <!-- Payment Information Card -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  BorderBrush="{ThemeResource OutlineVariantBrush}"
+                  BorderThickness="1"
+                  CornerRadius="12"
+                  Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Spacing="0">
+              <!-- Card Header -->
+              <Grid Padding="16,16,16,8">
+                <StackPanel Orientation="Horizontal">
+                  <FontIcon Glyph="&#xE8C9;"
+                            FontSize="20"
+                            Foreground="{ThemeResource TertiaryBrush}"
+                            Margin="0,0,12,0" />
+                  <TextBlock x:Uid="OrderEditPage.Section.PaymentInformation"
+                             Style="{StaticResource TitleMedium}"
+                             Foreground="{ThemeResource OnSurfaceBrush}" />
+                </StackPanel>
+              </Grid>
+
+              <!-- Payment Fields -->
+              <Grid Padding="16,0,16,16">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Payment Method -->
+                <TextBox Grid.Column="0"
+                         x:Uid="OrderEditPage.Field.PaymentMethod"
+                         Text="{Binding PaymentMethod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,8,0"
+                         IsEnabled="{Binding IsNotLoading}" />
+
+                <!-- Payment Provider -->
+                <TextBox Grid.Column="1"
+                         x:Uid="OrderEditPage.Field.PaymentProvider"
+                         Text="{Binding PaymentProvider, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="8,0,8,0"
+                         IsEnabled="{Binding IsNotLoading}" />
+
+                <!-- Transaction ID -->
+                <TextBox Grid.Column="2"
+                         x:Uid="OrderEditPage.Field.PaymentTransactionId"
+                         Text="{Binding PaymentTransactionId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="8,0,0,0"
+                         IsEnabled="{Binding IsNotLoading}" />
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <!-- Address Cards Grid -->
+          <Grid x:Name="AddressCardsGrid"
+                Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition x:Name="AddressColumn1" Width="*" />
+              <ColumnDefinition x:Name="AddressColumn2" Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Delivery Address Card -->
+            <Border x:Name="DeliveryAddressCard"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Margin="0,0,8,0"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header with Copy Button -->
+                <Grid Padding="16,16,16,8">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel Grid.Column="0"
+                              Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE7B8;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="OrderEditPage.Section.DeliveryAddress"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                  <Button Grid.Column="1"
+                          Style="{StaticResource TextButtonStyle}"
+                          x:Uid="OrderEditPage.Button.CopyToInvoice"
+                          Click="CopyToInvoiceButton_Click"
+                          IsEnabled="{Binding IsNotLoading}">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6">
+                      <FontIcon Glyph="&#xE8C8;"
+                                FontSize="14" />
+                      <TextBlock x:Uid="OrderEditPage.Button.CopyToInvoice.Text"
+                                 Style="{StaticResource LabelSmall}" />
+                    </StackPanel>
+                  </Button>
+                </Grid>
+
+                <!-- Delivery Address Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="12">
+                  <!-- First Name / Last Name Row -->
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             x:Uid="OrderEditPage.Field.DeliveryFirstName"
+                             Text="{Binding DeliveryAddressFirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotLoading}" />
+                    <TextBox Grid.Column="2"
+                             x:Uid="OrderEditPage.Field.DeliveryLastName"
+                             Text="{Binding DeliveryAddressLastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotLoading}" />
+                  </Grid>
+
+                  <!-- Company Name -->
+                  <TextBox x:Uid="OrderEditPage.Field.DeliveryCompanyName"
+                           Text="{Binding DeliveryAddressCompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Phone -->
+                  <TextBox x:Uid="OrderEditPage.Field.DeliveryPhone"
+                           Text="{Binding DeliveryAddressPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           InputScope="TelephoneNumber"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Street -->
+                  <TextBox x:Uid="OrderEditPage.Field.DeliveryStreet"
+                           Text="{Binding DeliveryAddressStreet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- ZIP / City Row -->
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="120" />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             x:Uid="OrderEditPage.Field.DeliveryZip"
+                             Text="{Binding DeliveryAddressZip, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotLoading}" />
+                    <TextBox Grid.Column="2"
+                             x:Uid="OrderEditPage.Field.DeliveryCity"
+                             Text="{Binding DeliveryAddressCity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotLoading}" />
+                  </Grid>
+
+                  <!-- Country -->
+                  <TextBox x:Uid="OrderEditPage.Field.DeliveryCountry"
+                           Text="{Binding DeliveryAddressCountry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Invoice Address Card -->
+            <Border x:Name="InvoiceAddressCard"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Margin="8,0,0,0"
+                    Background="{ThemeResource SurfaceBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+              <StackPanel Spacing="0">
+                <!-- Card Header with Copy Button -->
+                <Grid Padding="16,16,16,8">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel Grid.Column="0"
+                              Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE9D5;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="OrderEditPage.Section.InvoiceAddress"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                  <Button Grid.Column="1"
+                          Style="{StaticResource TextButtonStyle}"
+                          x:Uid="OrderEditPage.Button.CopyToDelivery"
+                          Click="CopyToDeliveryButton_Click"
+                          IsEnabled="{Binding IsNotLoading}">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6">
+                      <FontIcon Glyph="&#xE8C8;"
+                                FontSize="14" />
+                      <TextBlock x:Uid="OrderEditPage.Button.CopyToDelivery.Text"
+                                 Style="{StaticResource LabelSmall}" />
+                    </StackPanel>
+                  </Button>
+                </Grid>
+
+                <!-- Invoice Address Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="12">
+                  <!-- First Name / Last Name Row -->
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             x:Uid="OrderEditPage.Field.InvoiceFirstName"
+                             Text="{Binding InvoiceAddressFirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotLoading}" />
+                    <TextBox Grid.Column="2"
+                             x:Uid="OrderEditPage.Field.InvoiceLastName"
+                             Text="{Binding InvoiceAddressLastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotLoading}" />
+                  </Grid>
+
+                  <!-- Company Name -->
+                  <TextBox x:Uid="OrderEditPage.Field.InvoiceCompanyName"
+                           Text="{Binding InvoiceAddressCompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Phone -->
+                  <TextBox x:Uid="OrderEditPage.Field.InvoicePhone"
+                           Text="{Binding InvoiceAddressPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           InputScope="TelephoneNumber"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- Street -->
+                  <TextBox x:Uid="OrderEditPage.Field.InvoiceStreet"
+                           Text="{Binding InvoiceAddressStreet, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+
+                  <!-- ZIP / City Row -->
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="120" />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             x:Uid="OrderEditPage.Field.InvoiceZip"
+                             Text="{Binding InvoiceAddressZip, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotLoading}" />
+                    <TextBox Grid.Column="2"
+                             x:Uid="OrderEditPage.Field.InvoiceCity"
+                             Text="{Binding InvoiceAddressCity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotLoading}" />
+                  </Grid>
+
+                  <!-- Country -->
+                  <TextBox x:Uid="OrderEditPage.Field.InvoiceCountry"
+                           Text="{Binding InvoiceAddressCountry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <!-- Notes Section -->
+          <StackPanel Spacing="12"
+                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="12">
+              <FontIcon Glyph="&#xE70B;"
+                        FontSize="20"
+                        Foreground="{ThemeResource SecondaryBrush}" />
+              <TextBlock x:Uid="OrderEditPage.Section.Notes"
+                         Style="{StaticResource TitleMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}" />
+            </StackPanel>
+
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+
+              <!-- Customer Note -->
+              <Border Grid.Column="0"
+                      Background="{ThemeResource SurfaceBrush}"
+                      BorderBrush="{ThemeResource OutlineVariantBrush}"
+                      BorderThickness="1"
+                      CornerRadius="12"
+                      Padding="16">
+                <StackPanel Spacing="8">
+                  <TextBlock x:Uid="OrderEditPage.Field.CustomerNote.Label"
+                             Style="{StaticResource LabelMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                  <TextBox x:Uid="OrderEditPage.Field.CustomerNote"
+                           Text="{Binding CustomerNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           AcceptsReturn="True"
+                           TextWrapping="Wrap"
+                           MinHeight="100"
+                           MaxHeight="200"
+                           IsEnabled="{Binding IsNotLoading}" />
+                </StackPanel>
+              </Border>
+
+              <!-- Internal Note -->
+              <Border Grid.Column="2"
+                      Background="{ThemeResource SurfaceBrush}"
+                      BorderBrush="{ThemeResource OutlineVariantBrush}"
+                      BorderThickness="1"
+                      CornerRadius="12"
+                      Padding="16">
+                <StackPanel Spacing="8">
+                  <TextBlock x:Uid="OrderEditPage.Field.InternalNote.Label"
+                             Style="{StaticResource LabelMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                  <TextBox x:Uid="OrderEditPage.Field.InternalNote"
+                           Text="{Binding InternalNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           AcceptsReturn="True"
+                           TextWrapping="Wrap"
+                           MinHeight="100"
+                           MaxHeight="200"
+                           IsEnabled="{Binding IsNotLoading}" />
+                </StackPanel>
+              </Border>
+            </Grid>
+          </StackPanel>
+
+        </StackPanel>
+      </Grid>
+    </ScrollViewer>
+  </Grid>
+</Page>

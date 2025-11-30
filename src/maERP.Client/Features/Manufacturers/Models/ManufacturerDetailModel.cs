@@ -42,9 +42,7 @@ public partial record ManufacturerDetailModel
     /// </summary>
     public async Task EditManufacturer()
     {
-        // TODO: Navigate to edit page when implemented
-        // await _navigator.NavigateDataAsync(this, new ManufacturerEditData(_manufacturerId));
-        await Task.CompletedTask;
+        await _navigator.NavigateDataAsync(this, new ManufacturerEditData(_manufacturerId));
     }
 
     /// <summary>

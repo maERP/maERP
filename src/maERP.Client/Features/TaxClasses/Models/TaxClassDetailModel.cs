@@ -33,13 +33,11 @@ public partial record TaxClassDetailModel
     });
 
     /// <summary>
-    /// Navigate to edit tax class page (for future implementation).
+    /// Navigate to edit tax class page.
     /// </summary>
     public async Task EditTaxClass()
     {
-        // TODO: Implement when TaxClassEditPage is available
-        // await _navigator.NavigateDataAsync(this, new TaxClassEditData(_taxClassId));
-        await Task.CompletedTask;
+        await _navigator.NavigateDataAsync(this, new TaxClassEditData(_taxClassId));
     }
 
     /// <summary>

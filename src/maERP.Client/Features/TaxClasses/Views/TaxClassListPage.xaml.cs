@@ -102,9 +102,12 @@ public sealed partial class TaxClassListPage : Page
         }
     }
 
-    private void CreateTaxClass_Click(object sender, RoutedEventArgs e)
+    private async void CreateTaxClass_Click(object sender, RoutedEventArgs e)
     {
-        // Placeholder for create functionality - not implemented yet
+        if (DataContext is TaxClassListModel model)
+        {
+            await model.NavigateToCreate();
+        }
     }
 
     private async void TaxClassRow_Click(object sender, RoutedEventArgs e)

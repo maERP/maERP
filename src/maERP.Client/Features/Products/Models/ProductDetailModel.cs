@@ -43,8 +43,7 @@ public partial record ProductDetailModel
     /// </summary>
     public async Task EditProduct()
     {
-        // TODO: Navigate to ProductEditPage when implemented
-        // await _navigator.NavigateDataAsync(this, new ProductEditData(_productId));
+        await _navigator.NavigateDataAsync(this, new ProductEditData(_productId));
     }
 
     /// <summary>

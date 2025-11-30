@@ -4,6 +4,8 @@ namespace maERP.Domain.Dtos.GoodsReceipt;
 
 public class GoodsReceiptInputDto
 {
+    public Guid Id { get; set; }
+
     [Required]
     public DateTime ReceiptDate { get; set; } = DateTime.Today;
 

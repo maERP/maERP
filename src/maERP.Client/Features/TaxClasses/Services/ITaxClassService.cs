@@ -19,4 +19,19 @@ public interface ITaxClassService
     /// Gets a single tax class by ID.
     /// </summary>
     Task<TaxClassDetailDto?> GetTaxClassAsync(Guid id, CancellationToken ct = default);
+
+    /// <summary>
+    /// Creates a new tax class.
+    /// </summary>
+    Task CreateTaxClassAsync(TaxClassInputDto input, CancellationToken ct = default);
+
+    /// <summary>
+    /// Updates an existing tax class.
+    /// </summary>
+    Task UpdateTaxClassAsync(Guid id, TaxClassInputDto input, CancellationToken ct = default);
+
+    /// <summary>
+    /// Deletes a tax class.
+    /// </summary>
+    Task DeleteTaxClassAsync(Guid id, CancellationToken ct = default);
 }

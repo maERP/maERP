@@ -7,7 +7,7 @@ maERP ist ein kostenloses, Open-Source-ERP-System mit mandantenfähiger Architek
 ## Was maERP bietet
 - Mandantenisolierte REST-API für Kunden-, Produkt-, Lager- und Auftragsverwaltung
 - Module für Angebote, Bestellungen, Rechnungen und Warenzugänge inklusive Nachverfolgung
-- Cross-Plattform-Oberflächen auf Basis von Avalonia unterstützen Desktop- und Mobile-Clients
+- Cross-Plattform-Oberflächen auf Basis von Uno Platform unterstützen Desktop-, Web- und Mobile-Clients
 - Anbindung externer Vertriebskanäle und Versanddienstleister über konfigurierbare Schnittstellen
 - Auswertungen zu Verkäufen, Produkten und Lagerbewegungen zur schnellen Entscheidungsfindung
 - KI-gestützte Funktionen (z. B. Prompt-Verwaltung) zur Automatisierung wiederkehrender Aufgaben

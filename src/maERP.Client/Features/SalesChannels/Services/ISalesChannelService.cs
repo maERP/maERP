@@ -19,4 +19,14 @@ public interface ISalesChannelService
     /// Gets a single sales channel by ID.
     /// </summary>
     Task<SalesChannelDetailDto?> GetSalesChannelAsync(Guid id, CancellationToken ct = default);
+
+    /// <summary>
+    /// Creates a new sales channel.
+    /// </summary>
+    Task CreateSalesChannelAsync(SalesChannelInputDto input, CancellationToken ct = default);
+
+    /// <summary>
+    /// Updates an existing sales channel.
+    /// </summary>
+    Task UpdateSalesChannelAsync(Guid id, SalesChannelInputDto input, CancellationToken ct = default);
 }

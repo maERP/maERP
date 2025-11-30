@@ -49,6 +49,7 @@
       <converters:OrderStatusToTextConverter x:Key="OrderStatusToTextConverter" />
       <converters:OrderStatusToBackgroundConverter x:Key="OrderStatusToBackgroundConverter" />
       <converters:OrderStatusToForegroundConverter x:Key="OrderStatusToForegroundConverter" />
+      <converters:SalesChannelTypeToTextConverter x:Key="SalesChannelTypeToTextConverter" />
 
     </ResourceDictionary>
   </Application.Resources>

@@ -19,4 +19,14 @@ public interface IProductService
     /// Gets a single product by ID.
     /// </summary>
     Task<ProductDetailDto?> GetProductAsync(Guid id, CancellationToken ct = default);
+
+    /// <summary>
+    /// Creates a new product.
+    /// </summary>
+    Task CreateProductAsync(ProductInputDto input, CancellationToken ct = default);
+
+    /// <summary>
+    /// Updates an existing product.
+    /// </summary>
+    Task UpdateProductAsync(Guid id, ProductInputDto input, CancellationToken ct = default);
 }

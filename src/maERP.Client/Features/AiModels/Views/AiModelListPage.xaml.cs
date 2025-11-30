@@ -111,6 +111,16 @@ public sealed partial class AiModelListPage : Page
         }
     }
 
+    private async void AiModelRow_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button &&
+            button.Tag is Guid aiModelId &&
+            DataContext is AiModelListModel model)
+        {
+            await model.ViewAiModel(aiModelId);
+        }
+    }
+
     private async void PreviousPage_Click(object sender, RoutedEventArgs e)
     {
         if (DataContext is AiModelListModel model)

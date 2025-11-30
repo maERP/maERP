@@ -1,4 +1,4 @@
-name: maERP.Browser SFTP Deploy
+name: maERP.Client SFTP Deploy
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ jobs:
   build-and-deploy:
     name: Build and Deploy via SFTP
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Check out the repo
@@ -21,7 +21,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.x
+          dotnet-version: 10.x
 
       - name: Install WASM workload
         run: dotnet workload install wasm-tools
@@ -35,13 +35,13 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore src/maERP.UI.Browser/maERP.UI.Browser.csproj --verbosity minimal
+        run: dotnet restore src/maERP.Client/maERP.Client.csproj --verbosity minimal
 
-      - name: Publish maERP.UI.Browser
-        run: dotnet publish src/maERP.UI.Browser/maERP.UI.Browser.csproj --configuration Release --output ./publish --no-restore --verbosity minimal
+      - name: Publish maERP.Client
+        run: dotnet publish src/maERP.Client/maERP.Client.csproj -c Release -f net10.0-browserwasm -o ./publish --no-restore --verbosity minimal
 
       - name: List published files
-        run: ls -la ./publish/
+        run: ls -la ./publish/wwwroot/
 
       - name: Clear remote directory
         uses: appleboy/ssh-action@v1.0.3
@@ -62,7 +62,7 @@ jobs:
           server: ${{ secrets.MAERPDE_SFTP_HOST }}
           port: ${{ secrets.MAERPDE_SFTP_PORT }}
           password: ${{ secrets.MAERPDE_SFTP_PASSWORD }}
-          local_path: './publish/*'
+          local_path: './publish/wwwroot/*'
           remote_path: '/wwwroot/'
           sftp_only: true
           delete_remote_files: true

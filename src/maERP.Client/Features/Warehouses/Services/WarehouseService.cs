@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Extensions;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Warehouse;
@@ -85,5 +86,21 @@ public class WarehouseService : IWarehouseService
         var url = $"{baseUrl}{ApiEndpoints.Warehouses.ById(id)}";
         var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<WarehouseDetailDto>>(url, JsonOptions, ct);
         return apiResponse?.Data;
+    }
+
+    public async Task CreateWarehouseAsync(WarehouseInputDto input, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Warehouses.Base}";
+        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task UpdateWarehouseAsync(Guid id, WarehouseInputDto input, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Warehouses.ById(id)}";
+        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 }

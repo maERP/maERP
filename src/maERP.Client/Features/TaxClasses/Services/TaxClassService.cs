@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Extensions;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.TaxClass;
@@ -85,5 +86,29 @@ public class TaxClassService : ITaxClassService
         var url = $"{baseUrl}{ApiEndpoints.TaxClasses.ById(id)}";
         var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<TaxClassDetailDto>>(url, JsonOptions, ct);
         return apiResponse?.Data;
+    }
+
+    public async Task CreateTaxClassAsync(TaxClassInputDto input, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.TaxClasses.Base}";
+        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task UpdateTaxClassAsync(Guid id, TaxClassInputDto input, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.TaxClasses.ById(id)}";
+        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task DeleteTaxClassAsync(Guid id, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.TaxClasses.ById(id)}";
+        var response = await _httpClient.DeleteAsync(url, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 }

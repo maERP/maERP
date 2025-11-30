@@ -1,0 +1,299 @@
+<Page x:Class="maERP.Client.Features.TaxClasses.Views.TaxClassEditPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.TaxClasses.Views"
+      xmlns:models="using:maERP.Client.Features.TaxClasses.Models"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with NavigationBar -->
+    <utu:NavigationBar Grid.Row="0"
+                       Content="{Binding Title}">
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton x:Uid="TaxClassEditPage.AppBarButton.Cancel"
+                      Click="CancelButton_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE711;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarButton x:Uid="TaxClassEditPage.AppBarButton.Save"
+                      Click="SaveButton_Click"
+                      IsEnabled="{Binding CanSave}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE74E;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Form Content -->
+    <ScrollViewer Grid.Row="1"
+                  VerticalScrollBarVisibility="Auto">
+      <Grid Padding="24">
+        <!-- VisualStateManager for responsive layout -->
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup>
+            <VisualState x:Name="Narrow">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="0" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="ContentStack.MaxWidth" Value="480" />
+                <Setter Target="TaxRateCard.Padding" Value="16" />
+                <Setter Target="InfoCard.Padding" Value="16" />
+              </VisualState.Setters>
+            </VisualState>
+
+            <VisualState x:Name="Medium">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="600" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="ContentStack.MaxWidth" Value="560" />
+                <Setter Target="TaxRateCard.Padding" Value="24" />
+                <Setter Target="InfoCard.Padding" Value="20" />
+              </VisualState.Setters>
+            </VisualState>
+
+            <VisualState x:Name="Wide">
+              <VisualState.StateTriggers>
+                <AdaptiveTrigger MinWindowWidth="900" />
+              </VisualState.StateTriggers>
+              <VisualState.Setters>
+                <Setter Target="ContentStack.MaxWidth" Value="640" />
+                <Setter Target="TaxRateCard.Padding" Value="32" />
+                <Setter Target="InfoCard.Padding" Value="24" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <StackPanel x:Name="ContentStack"
+                    Spacing="24"
+                    HorizontalAlignment="Center">
+
+          <!-- Error Message Banner -->
+          <Border Background="{ThemeResource ErrorContainerBrush}"
+                  CornerRadius="12"
+                  Padding="16"
+                  Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <FontIcon Grid.Column="0"
+                        Glyph="&#xE783;"
+                        FontSize="20"
+                        Foreground="{ThemeResource OnErrorContainerBrush}"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Text="{Binding ErrorMessage}"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnErrorContainerBrush}"
+                         TextWrapping="Wrap"
+                         VerticalAlignment="Center" />
+            </Grid>
+          </Border>
+
+          <!-- Loading Overlay -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="16"
+                  Padding="32"
+                  Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel HorizontalAlignment="Center"
+                        Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+
+          <!-- Main Tax Rate Card -->
+          <Border x:Name="TaxRateCard"
+                  Background="{ThemeResource SurfaceBrush}"
+                  BorderBrush="{ThemeResource OutlineVariantBrush}"
+                  BorderThickness="1"
+                  CornerRadius="16"
+                  Padding="24"
+                  Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel Spacing="24">
+              <!-- Card Header with Icon -->
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Large Icon Circle -->
+                <Border Grid.Column="0"
+                        Width="56"
+                        Height="56"
+                        CornerRadius="28"
+                        Background="{ThemeResource PrimaryContainerBrush}"
+                        Margin="0,0,16,0">
+                  <FontIcon Glyph="&#xE912;"
+                            FontSize="24"
+                            Foreground="{ThemeResource OnPrimaryContainerBrush}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                </Border>
+
+                <StackPanel Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Spacing="4">
+                  <TextBlock x:Uid="TaxClassEditPage.Section.TaxClassDetails"
+                             Style="{StaticResource TitleMedium}"
+                             Foreground="{ThemeResource OnSurfaceBrush}" />
+                  <TextBlock x:Uid="TaxClassEditPage.Section.TaxClassDetails.Subtitle"
+                             Style="{StaticResource BodySmall}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </Grid>
+
+              <!-- Divider -->
+              <Border Height="1"
+                      Background="{ThemeResource OutlineVariantBrush}" />
+
+              <!-- Tax Rate Input -->
+              <StackPanel Spacing="8">
+                <TextBlock x:Uid="TaxClassEditPage.Field.TaxRate.Label"
+                           Style="{StaticResource LabelMedium}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+
+                  <NumberBox x:Name="TaxRateNumberBox"
+                             x:Uid="TaxClassEditPage.Field.TaxRate"
+                             Grid.Column="0"
+                             Value="{Binding TaxRate, Mode=TwoWay}"
+                             SpinButtonPlacementMode="Inline"
+                             SmallChange="0.5"
+                             LargeChange="5"
+                             Minimum="0"
+                             Maximum="100"
+                             IsEnabled="{Binding IsNotLoading}"
+                             HorizontalAlignment="Stretch" />
+
+                  <!-- Percentage Symbol -->
+                  <Border Grid.Column="1"
+                          Background="{ThemeResource SecondaryContainerBrush}"
+                          CornerRadius="8"
+                          Padding="16,8"
+                          Margin="12,0,0,0"
+                          VerticalAlignment="Center">
+                    <TextBlock Text="%"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSecondaryContainerBrush}" />
+                  </Border>
+                </Grid>
+
+                <!-- Helper Text -->
+                <TextBlock x:Uid="TaxClassEditPage.Field.TaxRate.HelperText"
+                           Style="{StaticResource LabelSmall}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           TextWrapping="Wrap" />
+              </StackPanel>
+
+              <!-- Common Tax Rate Quick Select -->
+              <StackPanel Spacing="8">
+                <TextBlock x:Uid="TaxClassEditPage.QuickSelect.Label"
+                           Style="{StaticResource LabelMedium}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                  <Button Content="0%"
+                          Style="{StaticResource OutlinedButtonStyle}"
+                          Click="QuickSelect_Click"
+                          Tag="0"
+                          MinWidth="60" />
+                  <Button Content="7%"
+                          Style="{StaticResource OutlinedButtonStyle}"
+                          Click="QuickSelect_Click"
+                          Tag="7"
+                          MinWidth="60" />
+                  <Button Content="19%"
+                          Style="{StaticResource OutlinedButtonStyle}"
+                          Click="QuickSelect_Click"
+                          Tag="19"
+                          MinWidth="60" />
+                  <Button Content="20%"
+                          Style="{StaticResource OutlinedButtonStyle}"
+                          Click="QuickSelect_Click"
+                          Tag="20"
+                          MinWidth="60" />
+                </StackPanel>
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+          <!-- Info Card -->
+          <Border x:Name="InfoCard"
+                  Background="{ThemeResource SecondaryContainerBrush}"
+                  CornerRadius="12"
+                  Padding="20"
+                  Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <FontIcon Grid.Column="0"
+                        Glyph="&#xE946;"
+                        FontSize="20"
+                        Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Top" />
+              <TextBlock Grid.Column="1"
+                         x:Uid="TaxClassEditPage.Info.UsageHint"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                         TextWrapping="Wrap" />
+            </Grid>
+          </Border>
+
+          <!-- Action Buttons (Mobile-friendly) -->
+          <Grid Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                Margin="0,8,0,24">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="12" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    x:Uid="TaxClassEditPage.Button.Cancel"
+                    Style="{StaticResource OutlinedButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Click="CancelButton_Click"
+                    MinHeight="48" />
+
+            <Button Grid.Column="2"
+                    x:Uid="TaxClassEditPage.Button.Save"
+                    Style="{StaticResource FilledButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Click="SaveButton_Click"
+                    IsEnabled="{Binding CanSave}"
+                    MinHeight="48" />
+          </Grid>
+
+        </StackPanel>
+      </Grid>
+    </ScrollViewer>
+  </Grid>
+</Page>

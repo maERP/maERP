@@ -92,12 +92,11 @@ public partial record ManufacturerListModel
     }
 
     /// <summary>
-    /// Navigate to create new manufacturer page (placeholder - no function yet).
+    /// Navigate to create new manufacturer page.
     /// </summary>
     public async Task CreateManufacturer()
     {
-        // TODO: Implement navigation to create manufacturer page when available
-        await Task.CompletedTask;
+        await _navigator.NavigateDataAsync(this, new ManufacturerEditData());
     }
 
     /// <summary>
