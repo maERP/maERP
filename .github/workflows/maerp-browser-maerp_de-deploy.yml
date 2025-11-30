@@ -23,8 +23,8 @@ jobs:
         with:
           dotnet-version: 10.x
 
-      - name: Install WASM workload
-        run: dotnet workload install wasm-tools
+      - name: Install workloads
+        run: dotnet workload install wasm-tools ios android maccatalyst maui tvos
 
       - name: Cache .NET packages
         uses: actions/cache@v4

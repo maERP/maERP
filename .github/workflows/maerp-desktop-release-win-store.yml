@@ -18,6 +18,9 @@ jobs:
       with:
         dotnet-version: '10.x'
 
+    - name: Install workloads
+      run: dotnet workload install wasm-tools ios android maccatalyst maui tvos
+
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
