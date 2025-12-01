@@ -13,8 +13,8 @@ COPY ["Directory.Build.props", "./"]
 COPY ["Directory.Packages.props", "./"]
 COPY ["global.json", "./"]
 
-# Restore dependencies
-RUN dotnet restore "maERP.Client/maERP.Client.csproj" -r browser-wasm
+# Restore dependencies (only for browserwasm to avoid needing android/ios workloads)
+RUN dotnet restore "maERP.Client/maERP.Client.csproj" /p:TargetFrameworks=net10.0-browserwasm
 
 # Copy source files
 COPY src/maERP.Client/ maERP.Client/

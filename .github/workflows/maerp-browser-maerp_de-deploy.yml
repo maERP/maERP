@@ -35,7 +35,7 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore src/maERP.Client/maERP.Client.csproj --verbosity minimal
+        run: dotnet restore src/maERP.Client/maERP.Client.csproj -p:TargetFrameworks=net10.0-browserwasm --verbosity minimal
 
       - name: Publish maERP.Client
         run: dotnet publish src/maERP.Client/maERP.Client.csproj -c Release -f net10.0-browserwasm -o ./publish --no-restore --verbosity minimal
