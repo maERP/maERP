@@ -10,7 +10,7 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - name: Checkout code
@@ -23,8 +23,8 @@ jobs:
       with:
         dotnet-version: '10.x'
 
-    - name: Install workloads
-      run: dotnet workload install wasm-tools ios android maccatalyst maui tvos
+    - name: Restore workloads
+      run: dotnet workload restore src/maERP.Client/maERP.Client.csproj
 
     - name: Restore dependencies
       run: dotnet restore src/maERP.Client/maERP.Client.csproj

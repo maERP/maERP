@@ -215,9 +215,11 @@
                           Grid.Row="0"
                           Margin="0,0,8,16"
                           Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
-                          CornerRadius="12">
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <StackPanel Spacing="0">
                       <!-- Card Header -->
                       <Grid Padding="16,16,16,8">
@@ -321,9 +323,11 @@
                           Grid.Row="0"
                           Margin="8,0,0,16"
                           Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
-                          CornerRadius="12">
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <StackPanel Spacing="0">
                       <!-- Card Header -->
                       <Grid Padding="16,16,16,8">
@@ -395,9 +399,11 @@
                           Grid.ColumnSpan="2"
                           Margin="0"
                           Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
-                          CornerRadius="12">
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <StackPanel Spacing="0">
                       <!-- Card Header -->
                       <Grid Padding="16,16,16,8">
@@ -490,11 +496,13 @@
                   </StackPanel>
 
                   <Border Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
                           CornerRadius="12"
                           Padding="16"
-                          MinHeight="80">
+                          MinHeight="80"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <TextBlock Text="{Binding Data.Description}"
                                Style="{StaticResource BodyMedium}"
                                Foreground="{ThemeResource OnSurfaceBrush}"
@@ -534,12 +542,14 @@
                   </StackPanel>
 
                   <Border Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
                           CornerRadius="12"
                           Padding="16"
                           MinHeight="80"
+                          Translation="0,0,8"
                           Visibility="{Binding Data.DescriptionOptimized, Converter={StaticResource StringToVisibilityConverter}}">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <TextBlock Text="{Binding Data.DescriptionOptimized}"
                                Style="{StaticResource BodyMedium}"
                                Foreground="{ThemeResource OnSurfaceBrush}"
@@ -577,10 +587,12 @@
                   </StackPanel>
 
                   <Border Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
                           CornerRadius="12"
-                          Padding="16">
+                          Padding="16"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <Grid>
                       <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />

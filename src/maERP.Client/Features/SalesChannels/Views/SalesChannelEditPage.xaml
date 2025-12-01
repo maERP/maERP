@@ -182,9 +182,11 @@
                     Grid.Row="0"
                     Margin="0,0,8,16"
                     Background="{ThemeResource SurfaceBrush}"
-                    BorderBrush="{ThemeResource OutlineVariantBrush}"
-                    BorderThickness="1"
-                    CornerRadius="12">
+                    CornerRadius="12"
+                    Translation="0,0,8">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
               <StackPanel Spacing="0">
                 <!-- Card Header -->
                 <Grid Padding="16,16,16,8">
@@ -240,9 +242,11 @@
                     Grid.Row="0"
                     Margin="8,0,0,16"
                     Background="{ThemeResource SurfaceBrush}"
-                    BorderBrush="{ThemeResource OutlineVariantBrush}"
-                    BorderThickness="1"
-                    CornerRadius="12">
+                    CornerRadius="12"
+                    Translation="0,0,8">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
               <StackPanel Spacing="0">
                 <!-- Card Header -->
                 <Grid Padding="16,16,16,8">
@@ -310,9 +314,11 @@
                     Grid.Row="0"
                     Margin="0,0,8,0"
                     Background="{ThemeResource SurfaceBrush}"
-                    BorderBrush="{ThemeResource OutlineVariantBrush}"
-                    BorderThickness="1"
-                    CornerRadius="12">
+                    CornerRadius="12"
+                    Translation="0,0,8">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
               <StackPanel Spacing="0">
                 <!-- Card Header -->
                 <Grid Padding="16,16,16,8">
@@ -351,9 +357,11 @@
                     Grid.Row="0"
                     Margin="8,0,0,0"
                     Background="{ThemeResource SurfaceBrush}"
-                    BorderBrush="{ThemeResource OutlineVariantBrush}"
-                    BorderThickness="1"
-                    CornerRadius="12">
+                    CornerRadius="12"
+                    Translation="0,0,8">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
               <StackPanel Spacing="0">
                 <!-- Card Header -->
                 <Grid Padding="16,16,16,8">
@@ -401,10 +409,12 @@
             </StackPanel>
 
             <Border Background="{ThemeResource SurfaceBrush}"
-                    BorderBrush="{ThemeResource OutlineVariantBrush}"
-                    BorderThickness="1"
                     CornerRadius="12"
-                    Padding="16">
+                    Padding="16"
+                    Translation="0,0,8">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
               <Grid>
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="*" />
@@ -439,11 +449,13 @@
 
             <!-- Warehouse Selection -->
             <Border Background="{ThemeResource SurfaceBrush}"
-                    BorderBrush="{ThemeResource OutlineVariantBrush}"
-                    BorderThickness="1"
                     CornerRadius="12"
                     Padding="16"
+                    Translation="0,0,8"
                     Visibility="{Binding HasWarehouses, Converter={StaticResource BoolToVisibilityConverter}}">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
               <ItemsRepeater ItemsSource="{Binding Warehouses}">
                 <ItemsRepeater.Layout>
                   <UniformGridLayout MinItemWidth="250"

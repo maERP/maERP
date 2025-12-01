@@ -46,6 +46,22 @@ The codebase implements:
 - In Services: use `await response.EnsureSuccessOrThrowApiExceptionAsync(ct)`
 - In Models: Catch `ApiException` and display `ex.CombinedMessage` as ErrorMessage to show server validation errors
 
+### maERP.Client Card Styling
+Cards must use `ThemeShadow` and `Translation` for a consistent 3D shadow effect:
+```xml
+<Border Background="{ThemeResource SurfaceBrush}"
+        CornerRadius="12"
+        Translation="0,0,8">
+  <Border.Shadow>
+    <ThemeShadow />
+  </Border.Shadow>
+  <!-- Card content -->
+</Border>
+```
+- Do not use `BorderBrush` and `BorderThickness` for card styling
+- Use `Translation="0,0,8"` for the elevation effect
+- Use `CornerRadius="12"` for rounded corners
+
 ## Role Management
 - IMPORTANT: only Superadmin-Role can use SuperadminController to add, edit or delete users in any tenant
 - IMPORTANT: all users can see their own user profile, even when they have no UserTenant

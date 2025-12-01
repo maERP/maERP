@@ -116,9 +116,11 @@
 
                 <!-- Information Card -->
                 <Border Background="{ThemeResource SurfaceBrush}"
-                        BorderBrush="{ThemeResource OutlineVariantBrush}"
-                        BorderThickness="1"
-                        CornerRadius="12">
+                        CornerRadius="12"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
                   <StackPanel Spacing="0">
                     <!-- Card Header -->
                     <Grid Padding="16,16,16,8">

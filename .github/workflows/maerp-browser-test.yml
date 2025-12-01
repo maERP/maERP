@@ -22,8 +22,8 @@ jobs:
         with:
           dotnet-version: 10.x
 
-      - name: Install workloads
-        run: dotnet workload install wasm-tools ios android maccatalyst maui tvos
+      - name: Restore workloads
+        run: dotnet workload restore src/maERP.Client/maERP.Client.csproj
 
       - name: Restore maERP.Client.Tests
         run: dotnet restore tests/maERP.Client.Tests -p:TargetFramework=net10.0

@@ -123,11 +123,13 @@
           <!-- Main Tax Rate Card -->
           <Border x:Name="TaxRateCard"
                   Background="{ThemeResource SurfaceBrush}"
-                  BorderBrush="{ThemeResource OutlineVariantBrush}"
-                  BorderThickness="1"
                   CornerRadius="16"
                   Padding="24"
+                  Translation="0,0,8"
                   Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
             <StackPanel Spacing="24">
               <!-- Card Header with Icon -->
               <Grid>

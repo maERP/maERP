@@ -188,9 +188,11 @@
                     Grid.Row="0"
                     Margin="0,0,8,16"
                     Background="{ThemeResource SurfaceBrush}"
-                    BorderBrush="{ThemeResource OutlineVariantBrush}"
-                    BorderThickness="1"
-                    CornerRadius="12">
+                    CornerRadius="12"
+                    Translation="0,0,8">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
               <StackPanel Spacing="0">
                 <!-- Card Header -->
                 <Grid Padding="16,16,16,8">
@@ -258,9 +260,11 @@
                     Grid.Row="0"
                     Margin="8,0,0,16"
                     Background="{ThemeResource SurfaceBrush}"
-                    BorderBrush="{ThemeResource OutlineVariantBrush}"
-                    BorderThickness="1"
-                    CornerRadius="12">
+                    CornerRadius="12"
+                    Translation="0,0,8">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
               <StackPanel Spacing="0">
                 <!-- Card Header -->
                 <Grid Padding="16,16,16,8">
@@ -339,10 +343,12 @@
 
           <!-- Financial Information Card -->
           <Border Background="{ThemeResource SurfaceBrush}"
-                  BorderBrush="{ThemeResource OutlineVariantBrush}"
-                  BorderThickness="1"
                   CornerRadius="12"
+                  Translation="0,0,8"
                   Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
             <StackPanel Spacing="0">
               <!-- Card Header -->
               <Grid Padding="16,16,16,8">
@@ -406,10 +412,12 @@
 
           <!-- Payment Information Card -->
           <Border Background="{ThemeResource SurfaceBrush}"
-                  BorderBrush="{ThemeResource OutlineVariantBrush}"
-                  BorderThickness="1"
                   CornerRadius="12"
+                  Translation="0,0,8"
                   Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
             <StackPanel Spacing="0">
               <!-- Card Header -->
               <Grid Padding="16,16,16,8">
@@ -474,9 +482,11 @@
                     Grid.Row="0"
                     Margin="0,0,8,0"
                     Background="{ThemeResource SurfaceBrush}"
-                    BorderBrush="{ThemeResource OutlineVariantBrush}"
-                    BorderThickness="1"
-                    CornerRadius="12">
+                    CornerRadius="12"
+                    Translation="0,0,8">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
               <StackPanel Spacing="0">
                 <!-- Card Header with Copy Button -->
                 <Grid Padding="16,16,16,8">
@@ -576,9 +586,11 @@
                     Grid.Row="0"
                     Margin="8,0,0,0"
                     Background="{ThemeResource SurfaceBrush}"
-                    BorderBrush="{ThemeResource OutlineVariantBrush}"
-                    BorderThickness="1"
-                    CornerRadius="12">
+                    CornerRadius="12"
+                    Translation="0,0,8">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
               <StackPanel Spacing="0">
                 <!-- Card Header with Copy Button -->
                 <Grid Padding="16,16,16,8">
@@ -696,10 +708,12 @@
               <!-- Customer Note -->
               <Border Grid.Column="0"
                       Background="{ThemeResource SurfaceBrush}"
-                      BorderBrush="{ThemeResource OutlineVariantBrush}"
-                      BorderThickness="1"
                       CornerRadius="12"
-                      Padding="16">
+                      Padding="16"
+                      Translation="0,0,8">
+                <Border.Shadow>
+                  <ThemeShadow />
+                </Border.Shadow>
                 <StackPanel Spacing="8">
                   <TextBlock x:Uid="OrderEditPage.Field.CustomerNote.Label"
                              Style="{StaticResource LabelMedium}"
@@ -717,10 +731,12 @@
               <!-- Internal Note -->
               <Border Grid.Column="2"
                       Background="{ThemeResource SurfaceBrush}"
-                      BorderBrush="{ThemeResource OutlineVariantBrush}"
-                      BorderThickness="1"
                       CornerRadius="12"
-                      Padding="16">
+                      Padding="16"
+                      Translation="0,0,8">
+                <Border.Shadow>
+                  <ThemeShadow />
+                </Border.Shadow>
                 <StackPanel Spacing="8">
                   <TextBlock x:Uid="OrderEditPage.Field.InternalNote.Label"
                              Style="{StaticResource LabelMedium}"

@@ -210,9 +210,11 @@
                           Grid.Row="0"
                           Margin="0,0,8,0"
                           Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
-                          CornerRadius="12">
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <StackPanel Spacing="0">
                       <!-- Card Header -->
                       <Grid Padding="16,16,16,8">
@@ -308,9 +310,11 @@
                           Grid.Row="0"
                           Margin="8,0,0,0"
                           Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
-                          CornerRadius="12">
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <StackPanel Spacing="0">
                       <!-- Card Header -->
                       <Grid Padding="16,16,16,8">
@@ -426,9 +430,11 @@
                           Grid.Row="0"
                           Margin="0,0,8,0"
                           Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
-                          CornerRadius="12">
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <StackPanel Spacing="0">
                       <!-- Card Header -->
                       <Grid Padding="16,16,16,8">
@@ -507,9 +513,11 @@
                           Grid.Row="0"
                           Margin="8,0,0,0"
                           Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
-                          CornerRadius="12">
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <StackPanel Spacing="0">
                       <!-- Card Header -->
                       <Grid Padding="16,16,16,8">
@@ -597,10 +605,12 @@
 
                   <!-- Items List -->
                   <Border Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
                           CornerRadius="12"
-                          Padding="0">
+                          Padding="0"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <!-- Items Header -->
                     <StackPanel>
                       <Grid Padding="16,12"
@@ -716,12 +726,14 @@
                   </StackPanel>
 
                   <Border Background="{ThemeResource SurfaceBrush}"
-                          BorderBrush="{ThemeResource OutlineVariantBrush}"
-                          BorderThickness="1"
                           CornerRadius="12"
                           Padding="16"
                           MinHeight="80"
+                          Translation="0,0,8"
                           Visibility="{Binding Data.Notes, Converter={StaticResource StringToVisibilityConverter}}">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
                     <TextBlock Text="{Binding Data.Notes}"
                                Style="{StaticResource BodyMedium}"
                                Foreground="{ThemeResource OnSurfaceBrush}"
