@@ -64,16 +64,16 @@
     <PackageReference Include="Xamarin.Google.Android.Material" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-browserwasm'">
-    <PackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-desktop'">
     <PackageReference Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" />
     <PackageReference Include="Uno.WinUI.Runtime.Skia.MacOS" />
     <PackageReference Include="Uno.WinUI.Runtime.Skia.Win32" />
     <PackageReference Include="Uno.WinUI.Runtime.Skia.Wpf" />
     <PackageReference Include="Uno.WinUI.Runtime.Skia.X11" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-browserwasm'">
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" />
   </ItemGroup>
 
 </Project>

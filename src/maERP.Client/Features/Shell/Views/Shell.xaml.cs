@@ -1,5 +1,6 @@
 using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Auth.Models;
+using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Dashboard.Models;
 using maERP.Client.Features.Customers.Models;
 using maERP.Client.Features.Invoices.Models;
@@ -7,7 +8,9 @@ using maERP.Client.Features.Manufacturers.Models;
 using maERP.Client.Features.Orders.Models;
 using maERP.Client.Features.Products.Models;
 using maERP.Client.Features.SalesChannels.Models;
+using maERP.Client.Features.Superadmin.Models;
 using maERP.Client.Features.TaxClasses.Models;
+using maERP.Client.Features.Tenants.Models;
 using maERP.Client.Features.Warehouses.Models;
 using maERP.Client.Features.AiModels.Models;
 using maERP.Client.Features.AiPrompts.Models;
@@ -33,7 +36,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         this.Loaded += OnShellLoaded;
     }
 
-    private void OnAuthenticationStateChanged(object? sender, bool isAuthenticated)
+    private async void OnAuthenticationStateChanged(object? sender, bool isAuthenticated)
     {
         Console.WriteLine($"[Shell] OnAuthenticationStateChanged received: {isAuthenticated}");
 
@@ -41,10 +44,12 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         if (isAuthenticated)
         {
             SetAuthenticatedVisibility();
+            await UpdateSuperadminMenuVisibilityAsync();
         }
         else
         {
             SetUnauthenticatedVisibility();
+            MenuItemSuperadminTenants.Visibility = Visibility.Collapsed;
         }
     }
 
@@ -146,6 +151,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     // Now check authentication state and update visibility
                     await shellModel.InitializeAuthenticationState();
                     UpdateNavigationVisibility(shellModel);
+
+                    // Update superadmin menu visibility
+                    await UpdateSuperadminMenuVisibilityAsync();
 
                     // Initialize dark mode toggle state
                     InitializeDarkModeToggle();
@@ -338,6 +346,14 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     Console.WriteLine("[Shell] Navigating to AiPromptList");
                     await navigator.NavigateViewModelAsync<AiPromptListModel>(this);
                     break;
+                case "Tenants":
+                    Console.WriteLine("[Shell] Navigating to TenantList");
+                    await navigator.NavigateViewModelAsync<TenantListModel>(this);
+                    break;
+                case "SuperadminTenants":
+                    Console.WriteLine("[Shell] Navigating to SuperadminTenantList");
+                    await navigator.NavigateViewModelAsync<SuperadminTenantListModel>(this);
+                    break;
                 case "Settings":
                     Console.WriteLine("[Shell] Settings navigation - not yet implemented");
                     // TODO: Implement settings page navigation
@@ -382,6 +398,70 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     await NavigateToPageFromShell(navigator, tag);
                 }
             }
+        }
+    }
+
+    private async void OnTenantsClick(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] Tenants menu item clicked");
+
+        var navigator = Splash.Navigator();
+        if (navigator == null)
+        {
+            var app = Application.Current as App;
+            navigator = app?.Host?.Services?.GetService<INavigator>();
+        }
+
+        if (navigator != null)
+        {
+            await NavigateToPageFromShell(navigator, "Tenants");
+        }
+    }
+
+    private async void OnSuperadminTenantsClick(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] Superadmin Tenants menu item clicked");
+
+        var navigator = Splash.Navigator();
+        if (navigator == null)
+        {
+            var app = Application.Current as App;
+            navigator = app?.Host?.Services?.GetService<INavigator>();
+        }
+
+        if (navigator != null)
+        {
+            await NavigateToPageFromShell(navigator, "SuperadminTenants");
+        }
+    }
+
+    private async Task UpdateSuperadminMenuVisibilityAsync()
+    {
+        try
+        {
+            var app = Application.Current as App;
+            if (app?.Host?.Services == null)
+            {
+                Console.WriteLine("[Shell] Cannot check superadmin role - services not available");
+                return;
+            }
+
+            var tokenStorage = app.Host.Services.GetService<ITokenStorageService>();
+            if (tokenStorage == null)
+            {
+                Console.WriteLine("[Shell] Cannot check superadmin role - token storage not available");
+                return;
+            }
+
+            var isSuperadmin = await tokenStorage.IsInRoleAsync("Superadmin");
+            Console.WriteLine($"[Shell] User is Superadmin: {isSuperadmin}");
+
+            MenuItemSuperadminTenants.Visibility = isSuperadmin ? Visibility.Visible : Visibility.Collapsed;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] Error checking superadmin role: {ex.Message}");
+            MenuItemSuperadminTenants.Visibility = Visibility.Collapsed;
         }
     }
 

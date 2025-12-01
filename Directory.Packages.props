@@ -16,13 +16,13 @@
     <PackageVersion Include="Uno.WinUI.DevServer" Version="6.4.106" />
     <PackageVersion Include="Uno.WinUI.Graphics2DSK" Version="6.4.106" />
     <PackageVersion Include="Uno.WinUI.Lottie" Version="6.4.106" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Android" Version="6.4.106" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Version="6.4.106" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.MacOS" Version="6.4.106" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" Version="6.4.106" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Win32" Version="6.4.106" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Wpf" Version="6.4.106" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.X11" Version="6.4.106" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Android" Version="6.4.185" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Version="6.4.185" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.MacOS" Version="6.4.185" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" Version="6.4.185" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Win32" Version="6.4.185" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Wpf" Version="6.4.185" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.X11" Version="6.4.185" />
     <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.11.0" />
     <PackageVersion Include="Xamarin.AndroidX.AppCompat" Version="1.7.1.1" />
     <PackageVersion Include="Xamarin.AndroidX.Browser" Version="1.9.0" />

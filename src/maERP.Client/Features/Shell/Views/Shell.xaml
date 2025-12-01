@@ -127,6 +127,22 @@
           </StackPanel>
           <DropDownButton.Flyout>
             <MenuFlyout Placement="BottomEdgeAlignedRight">
+              <MenuFlyoutItem x:Name="MenuItemTenants"
+                              x:Uid="Shell.UserMenu.Tenants"
+                              Click="OnTenantsClick">
+                <MenuFlyoutItem.Icon>
+                  <FontIcon Glyph="&#xE902;" />
+                </MenuFlyoutItem.Icon>
+              </MenuFlyoutItem>
+              <MenuFlyoutItem x:Name="MenuItemSuperadminTenants"
+                              x:Uid="Shell.UserMenu.SuperadminTenants"
+                              Click="OnSuperadminTenantsClick"
+                              Visibility="Collapsed">
+                <MenuFlyoutItem.Icon>
+                  <FontIcon Glyph="&#xE7EE;" />
+                </MenuFlyoutItem.Icon>
+              </MenuFlyoutItem>
+              <MenuFlyoutSeparator />
               <ToggleMenuFlyoutItem x:Name="MenuItemDarkMode"
                                     x:Uid="Shell.UserMenu.DarkMode"
                                     Click="OnDarkModeToggle">

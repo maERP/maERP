@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json;
 using Windows.Storage;
 
 namespace maERP.Client.Features.Auth.Services;
@@ -7,6 +9,7 @@ public class TokenStorageService : ITokenStorageService
     private const string TokenKey = "auth_token";
     private const string ServerUrlKey = "server_url";
     private const string TenantIdKey = "current_tenant_id";
+    private const string RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
 
     private readonly ILogger<TokenStorageService> _logger;
 
@@ -155,5 +158,110 @@ public class TokenStorageService : ITokenStorageService
             _logger.LogError(ex, "Error storing tenant ID in local storage");
         }
         await Task.CompletedTask;
+    }
+
+    public async Task<IReadOnlyList<string>> GetRolesAsync()
+    {
+        try
+        {
+            var token = await GetTokenAsync();
+            if (string.IsNullOrEmpty(token))
+            {
+                _logger.LogDebug("No token available to extract roles");
+                return Array.Empty<string>();
+            }
+
+            var roles = ParseRolesFromJwt(token);
+            _logger.LogDebug("Extracted roles from token: {Roles}", string.Join(", ", roles));
+            return roles;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error extracting roles from token");
+            return Array.Empty<string>();
+        }
+    }
+
+    public async Task<bool> IsInRoleAsync(string role)
+    {
+        var roles = await GetRolesAsync();
+        return roles.Contains(role, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private IReadOnlyList<string> ParseRolesFromJwt(string token)
+    {
+        var roles = new List<string>();
+
+        try
+        {
+            // JWT format: header.payload.signature
+            var parts = token.Split('.');
+            if (parts.Length != 3)
+            {
+                _logger.LogWarning("Invalid JWT token format");
+                return roles;
+            }
+
+            // Decode the payload (second part)
+            var payload = parts[1];
+
+            // Add padding if needed for Base64 decoding
+            payload = payload.Replace('-', '+').Replace('_', '/');
+            switch (payload.Length % 4)
+            {
+                case 2: payload += "=="; break;
+                case 3: payload += "="; break;
+            }
+
+            var payloadBytes = Convert.FromBase64String(payload);
+            var payloadJson = Encoding.UTF8.GetString(payloadBytes);
+
+            using var document = JsonDocument.Parse(payloadJson);
+            var root = document.RootElement;
+
+            // Try standard role claim
+            if (root.TryGetProperty(RoleClaimType, out var roleElement))
+            {
+                ExtractRolesFromElement(roleElement, roles);
+            }
+
+            // Also try simple "role" claim
+            if (root.TryGetProperty("role", out var simpleRoleElement))
+            {
+                ExtractRolesFromElement(simpleRoleElement, roles);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error parsing JWT token for roles");
+        }
+
+        return roles;
+    }
+
+    private static void ExtractRolesFromElement(JsonElement element, List<string> roles)
+    {
+        if (element.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in element.EnumerateArray())
+            {
+                if (item.ValueKind == JsonValueKind.String)
+                {
+                    var role = item.GetString();
+                    if (!string.IsNullOrEmpty(role) && !roles.Contains(role))
+                    {
+                        roles.Add(role);
+                    }
+                }
+            }
+        }
+        else if (element.ValueKind == JsonValueKind.String)
+        {
+            var role = element.GetString();
+            if (!string.IsNullOrEmpty(role) && !roles.Contains(role))
+            {
+                roles.Add(role);
+            }
+        }
     }
 }

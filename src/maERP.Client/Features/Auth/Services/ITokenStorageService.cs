@@ -9,4 +9,6 @@ public interface ITokenStorageService
     Task SetServerUrlAsync(string serverUrl);
     Task<Guid?> GetCurrentTenantIdAsync();
     Task SetCurrentTenantIdAsync(Guid? tenantId);
+    Task<IReadOnlyList<string>> GetRolesAsync();
+    Task<bool> IsInRoleAsync(string role);
 }

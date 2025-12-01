@@ -134,5 +134,7 @@ public static class ApiEndpoints
         public const string Base = $"{ApiBase}/superadmin";
         public const string Users = $"{Base}/users";
         public static string UserById(string id) => $"{Users}/{id}";
+        public const string Tenants = $"{Base}/tenants";
+        public static string TenantById(Guid id) => $"{Tenants}/{id}";
     }
 }

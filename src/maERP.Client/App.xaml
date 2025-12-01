@@ -50,6 +50,9 @@
       <converters:OrderStatusToBackgroundConverter x:Key="OrderStatusToBackgroundConverter" />
       <converters:OrderStatusToForegroundConverter x:Key="OrderStatusToForegroundConverter" />
       <converters:SalesChannelTypeToTextConverter x:Key="SalesChannelTypeToTextConverter" />
+      <converters:BoolToStatusTextConverter x:Key="BoolToStatusTextConverter" />
+      <converters:BoolToStatusBackgroundConverter x:Key="BoolToStatusBackgroundConverter" />
+      <converters:BoolToStatusForegroundConverter x:Key="BoolToStatusForegroundConverter" />
 
     </ResourceDictionary>
   </Application.Resources>

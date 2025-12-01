@@ -60,6 +60,11 @@ public static class Routes
     public const string UserProfile = "UserProfile";
     public const string TenantSettings = "TenantSettings";
 
+    // Tenants
+    public const string TenantList = "Tenants";
+    public const string TenantEdit = "TenantEdit";
+    public const string TenantCreate = "TenantCreate";
+
     // AI Models
     public const string AiModelList = "AiModels";
     public const string AiModelDetail = "AiModelDetail";
@@ -80,6 +85,10 @@ public static class Routes
     // Admin
     public const string AdminUsers = "AdminUsers";
     public const string AdminTenants = "AdminTenants";
+
+    // Superadmin
+    public const string SuperadminTenantList = "SuperadminTenants";
+    public const string SuperadminTenantEdit = "SuperadminTenantEdit";
 
     // Legacy (for migration - remove after complete)
     public const string Main = "Main";

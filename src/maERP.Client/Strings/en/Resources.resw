@@ -2605,4 +2605,376 @@
   <data name="OrderEditPage.Error.SaveFailed" xml:space="preserve">
     <value>Failed to save order: {0}</value>
   </data>
+
+  <!-- Shell User Menu - Tenants -->
+  <data name="Shell.UserMenu.Tenants.Text" xml:space="preserve">
+    <value>Tenants</value>
+  </data>
+
+  <!-- Tenant List Page -->
+  <data name="TenantListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Tenants</value>
+  </data>
+  <data name="TenantListPage.AppBarButton.Refresh.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="TenantListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Search tenants...</value>
+  </data>
+  <data name="TenantListPage.Header.Name.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="TenantListPage.Header.CompanyName.Text" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="TenantListPage.Header.Status.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="TenantListPage.Header.DateCreated.Text" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="TenantListPage.NoTenants.Text" xml:space="preserve">
+    <value>No tenants found</value>
+  </data>
+  <data name="TenantListPage.LoadError.Text" xml:space="preserve">
+    <value>Failed to load tenants</value>
+  </data>
+  <data name="TenantListPage.PreviousPage.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Previous page</value>
+  </data>
+  <data name="TenantListPage.NextPage.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Next page</value>
+  </data>
+  <data name="TenantListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Items per page:</value>
+  </data>
+
+  <!-- Pagination - Tenants -->
+  <data name="Pagination.TenantsSingular" xml:space="preserve">
+    <value>1 tenant</value>
+  </data>
+  <data name="Pagination.TenantsPlural" xml:space="preserve">
+    <value>{0} tenants</value>
+  </data>
+
+  <!-- Tenant Status -->
+  <data name="TenantStatus.Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="TenantStatus.Inactive" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+
+  <!-- TenantListPage - Create button -->
+  <data name="TenantListPage.AppBarButton.Create.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Create tenant</value>
+  </data>
+
+  <!-- TenantEditPage -->
+  <data name="TenantEditPage.TitleNew" xml:space="preserve">
+    <value>New Tenant</value>
+  </data>
+  <data name="TenantEditPage.TitleEdit" xml:space="preserve">
+    <value>Edit Tenant</value>
+  </data>
+  <data name="TenantEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="TenantEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+
+  <!-- TenantEditPage - Section Headers -->
+  <data name="TenantEditPage.Section.BasicInformation.Text" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="TenantEditPage.Section.CompanyInformation.Text" xml:space="preserve">
+    <value>Company Information</value>
+  </data>
+  <data name="TenantEditPage.Section.Address.Text" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="TenantEditPage.Section.PaymentInformation.Text" xml:space="preserve">
+    <value>Payment Information</value>
+  </data>
+
+  <!-- TenantEditPage - Basic Fields -->
+  <data name="TenantEditPage.Field.Name.Header" xml:space="preserve">
+    <value>Name *</value>
+  </data>
+  <data name="TenantEditPage.Field.Name.PlaceholderText" xml:space="preserve">
+    <value>Enter tenant name</value>
+  </data>
+  <data name="TenantEditPage.Field.Description.Header" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="TenantEditPage.Field.Description.PlaceholderText" xml:space="preserve">
+    <value>Enter description</value>
+  </data>
+  <data name="TenantEditPage.Field.IsActive.Header" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="TenantEditPage.Field.IsActive.OnContent" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="TenantEditPage.Field.IsActive.OffContent" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="TenantEditPage.RequiredFieldsNote.Text" xml:space="preserve">
+    <value>* Required field</value>
+  </data>
+
+  <!-- TenantEditPage - Company Fields -->
+  <data name="TenantEditPage.Field.CompanyName.Header" xml:space="preserve">
+    <value>Company Name</value>
+  </data>
+  <data name="TenantEditPage.Field.CompanyName.PlaceholderText" xml:space="preserve">
+    <value>Enter company name</value>
+  </data>
+  <data name="TenantEditPage.Field.ContactEmail.Header" xml:space="preserve">
+    <value>Contact Email</value>
+  </data>
+  <data name="TenantEditPage.Field.ContactEmail.PlaceholderText" xml:space="preserve">
+    <value>Enter email address</value>
+  </data>
+  <data name="TenantEditPage.Field.Phone.Header" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="TenantEditPage.Field.Phone.PlaceholderText" xml:space="preserve">
+    <value>Enter phone number</value>
+  </data>
+  <data name="TenantEditPage.Field.Website.Header" xml:space="preserve">
+    <value>Website</value>
+  </data>
+  <data name="TenantEditPage.Field.Website.PlaceholderText" xml:space="preserve">
+    <value>Enter website URL</value>
+  </data>
+
+  <!-- TenantEditPage - Address Fields -->
+  <data name="TenantEditPage.Field.Street.Header" xml:space="preserve">
+    <value>Street</value>
+  </data>
+  <data name="TenantEditPage.Field.Street.PlaceholderText" xml:space="preserve">
+    <value>Enter street address</value>
+  </data>
+  <data name="TenantEditPage.Field.Street2.Header" xml:space="preserve">
+    <value>Street 2</value>
+  </data>
+  <data name="TenantEditPage.Field.Street2.PlaceholderText" xml:space="preserve">
+    <value>Additional address line</value>
+  </data>
+  <data name="TenantEditPage.Field.PostalCode.Header" xml:space="preserve">
+    <value>Postal Code</value>
+  </data>
+  <data name="TenantEditPage.Field.PostalCode.PlaceholderText" xml:space="preserve">
+    <value>Postal code</value>
+  </data>
+  <data name="TenantEditPage.Field.City.Header" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="TenantEditPage.Field.City.PlaceholderText" xml:space="preserve">
+    <value>Enter city</value>
+  </data>
+  <data name="TenantEditPage.Field.State.Header" xml:space="preserve">
+    <value>State / Province</value>
+  </data>
+  <data name="TenantEditPage.Field.State.PlaceholderText" xml:space="preserve">
+    <value>Enter state or province</value>
+  </data>
+  <data name="TenantEditPage.Field.Country.Header" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="TenantEditPage.Field.Country.PlaceholderText" xml:space="preserve">
+    <value>Enter country</value>
+  </data>
+
+  <!-- TenantEditPage - Payment Fields -->
+  <data name="TenantEditPage.Field.Iban.Header" xml:space="preserve">
+    <value>IBAN</value>
+  </data>
+  <data name="TenantEditPage.Field.Iban.PlaceholderText" xml:space="preserve">
+    <value>Enter IBAN</value>
+  </data>
+  <data name="TenantEditPage.Field.Iban.Hint.Text" xml:space="preserve">
+    <value>Format: DE89 3704 0044 0532 0130 00</value>
+  </data>
+
+  <!-- TenantEditPage - Errors -->
+  <data name="TenantEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Failed to save tenant: {0}</value>
+  </data>
+
+  <!-- Shell User Menu - Superadmin Tenants -->
+  <data name="Shell.UserMenu.SuperadminTenants.Text" xml:space="preserve">
+    <value>Superadmin - Tenants</value>
+  </data>
+
+  <!-- Superadmin Tenant List Page -->
+  <data name="SuperadminTenantListPage.NavigationBar.Content" xml:space="preserve">
+    <value>Superadmin - Tenants</value>
+  </data>
+  <data name="SuperadminTenantListPage.AppBarButton.Refresh.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="SuperadminTenantListPage.SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Search tenants...</value>
+  </data>
+  <data name="SuperadminTenantListPage.Header.Name.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SuperadminTenantListPage.Header.CompanyName.Text" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="SuperadminTenantListPage.Header.Status.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SuperadminTenantListPage.Header.DateCreated.Text" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="SuperadminTenantListPage.NoTenants.Text" xml:space="preserve">
+    <value>No tenants found</value>
+  </data>
+  <data name="SuperadminTenantListPage.LoadError.Text" xml:space="preserve">
+    <value>Failed to load tenants</value>
+  </data>
+  <data name="SuperadminTenantListPage.PreviousPage.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Previous page</value>
+  </data>
+  <data name="SuperadminTenantListPage.NextPage.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Next page</value>
+  </data>
+  <data name="SuperadminTenantListPage.ItemsPerPage.Text" xml:space="preserve">
+    <value>Items per page:</value>
+  </data>
+
+  <!-- SuperadminTenantEditPage -->
+  <data name="SuperadminTenantEditPage.Title" xml:space="preserve">
+    <value>Edit Tenant (Superadmin)</value>
+  </data>
+  <data name="SuperadminTenantEditPage.AppBarButton.Cancel.Label" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SuperadminTenantEditPage.AppBarButton.Save.Label" xml:space="preserve">
+    <value>Save</value>
+  </data>
+
+  <!-- SuperadminTenantEditPage - Section Headers -->
+  <data name="SuperadminTenantEditPage.Section.BasicInformation.Text" xml:space="preserve">
+    <value>Basic Information</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Section.CompanyInformation.Text" xml:space="preserve">
+    <value>Company Information</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Section.Address.Text" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Section.PaymentInformation.Text" xml:space="preserve">
+    <value>Payment Information</value>
+  </data>
+
+  <!-- SuperadminTenantEditPage - Basic Information Fields -->
+  <data name="SuperadminTenantEditPage.Field.Name.Header" xml:space="preserve">
+    <value>Name *</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Name.PlaceholderText" xml:space="preserve">
+    <value>Enter tenant name</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Description.Header" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Description.PlaceholderText" xml:space="preserve">
+    <value>Enter description</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.IsActive.Header" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.IsActive.OnContent" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.IsActive.OffContent" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="SuperadminTenantEditPage.RequiredFieldsNote.Text" xml:space="preserve">
+    <value>* Required fields</value>
+  </data>
+
+  <!-- SuperadminTenantEditPage - Company Information Fields -->
+  <data name="SuperadminTenantEditPage.Field.CompanyName.Header" xml:space="preserve">
+    <value>Company Name</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.CompanyName.PlaceholderText" xml:space="preserve">
+    <value>Enter company name</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.ContactEmail.Header" xml:space="preserve">
+    <value>Contact Email</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.ContactEmail.PlaceholderText" xml:space="preserve">
+    <value>Enter contact email</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Phone.Header" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Phone.PlaceholderText" xml:space="preserve">
+    <value>Enter phone number</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Website.Header" xml:space="preserve">
+    <value>Website</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Website.PlaceholderText" xml:space="preserve">
+    <value>Enter website URL</value>
+  </data>
+
+  <!-- SuperadminTenantEditPage - Address Fields -->
+  <data name="SuperadminTenantEditPage.Field.Street.Header" xml:space="preserve">
+    <value>Street</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Street.PlaceholderText" xml:space="preserve">
+    <value>Enter street</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Street2.Header" xml:space="preserve">
+    <value>Street 2</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Street2.PlaceholderText" xml:space="preserve">
+    <value>Additional address</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.PostalCode.Header" xml:space="preserve">
+    <value>Postal Code</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.PostalCode.PlaceholderText" xml:space="preserve">
+    <value>Postal code</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.City.Header" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.City.PlaceholderText" xml:space="preserve">
+    <value>Enter city</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.State.Header" xml:space="preserve">
+    <value>State / Province</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.State.PlaceholderText" xml:space="preserve">
+    <value>Enter state</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Country.Header" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Country.PlaceholderText" xml:space="preserve">
+    <value>Enter country</value>
+  </data>
+
+  <!-- SuperadminTenantEditPage - Payment Information Fields -->
+  <data name="SuperadminTenantEditPage.Field.Iban.Header" xml:space="preserve">
+    <value>IBAN</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Iban.PlaceholderText" xml:space="preserve">
+    <value>Enter IBAN</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Field.Iban.Hint.Text" xml:space="preserve">
+    <value>International Bank Account Number (e.g., DE89370400440532013000)</value>
+  </data>
+
+  <!-- SuperadminTenantEditPage - Error Messages -->
+  <data name="SuperadminTenantEditPage.Error.SaveFailed" xml:space="preserve">
+    <value>Failed to save tenant: {0}</value>
+  </data>
 </root>

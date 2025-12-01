@@ -1,0 +1,398 @@
+<Page x:Class="maERP.Client.Features.Tenants.Views.TenantListPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.Tenants.Views"
+      xmlns:models="using:maERP.Client.Features.Tenants.Models"
+      xmlns:mvux="using:Uno.Extensions.Reactive.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      xmlns:uen="using:Uno.Extensions.Navigation.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with NavigationBar -->
+    <utu:NavigationBar Grid.Row="0"
+                       x:Uid="TenantListPage.NavigationBar">
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton x:Uid="TenantListPage.AppBarButton.Create"
+                      Click="CreateTenant_Click">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE710;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+        <AppBarButton x:Uid="TenantListPage.AppBarButton.Refresh"
+                      Command="{Binding Refresh, ElementName=TenantsFeedView}">
+          <AppBarButton.Icon>
+            <FontIcon Glyph="&#xE72C;" />
+          </AppBarButton.Icon>
+        </AppBarButton>
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Search Box -->
+    <Grid Grid.Row="1"
+          Margin="16,12,16,8">
+      <TextBox x:Name="SearchBox"
+               x:Uid="TenantListPage.SearchBox"
+               TextChanged="SearchBox_TextChanged"
+               Padding="40,0,12,0" />
+      <FontIcon Glyph="&#xE721;"
+                FontSize="16"
+                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="12,0,0,0"
+                IsHitTestVisible="False" />
+    </Grid>
+
+    <!-- Tenant Table -->
+    <mvux:FeedView x:Name="TenantsFeedView"
+                   Grid.Row="2"
+                   Margin="16,0,16,16"
+                   Source="{Binding Tenants}">
+      <mvux:FeedView.ValueTemplate>
+        <DataTemplate>
+          <Border CornerRadius="12"
+                  Background="{ThemeResource SurfaceBrush}"
+                  Translation="0,0,8">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+
+              <!-- Table Header -->
+              <Border Grid.Row="0"
+                      Background="{ThemeResource SurfaceVariantBrush}"
+                      CornerRadius="12,12,0,0"
+                      BorderBrush="{ThemeResource OutlineVariantBrush}"
+                      BorderThickness="0,0,0,1">
+                <Grid Padding="0">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="150" />
+                  </Grid.ColumnDefinitions>
+
+                  <!-- Name Header -->
+                  <Button x:Name="HeaderName"
+                          Grid.Column="0"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="Name"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="TenantListPage.Header.Name"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconName"
+                                Glyph="&#xE70D;"
+                                FontSize="12"
+                                Foreground="{ThemeResource PrimaryBrush}"
+                                Visibility="Visible" />
+                    </StackPanel>
+                  </Button>
+
+                  <!-- CompanyName Header -->
+                  <Button x:Name="HeaderCompanyName"
+                          Grid.Column="1"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="CompanyName"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="TenantListPage.Header.CompanyName"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconCompanyName"
+                                Glyph="&#xE70D;"
+                                FontSize="12"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                Visibility="Collapsed" />
+                    </StackPanel>
+                  </Button>
+
+                  <!-- Status Header -->
+                  <Button x:Name="HeaderStatus"
+                          Grid.Column="2"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="IsActive"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="TenantListPage.Header.Status"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconIsActive"
+                                Glyph="&#xE70D;"
+                                FontSize="12"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                Visibility="Collapsed" />
+                    </StackPanel>
+                  </Button>
+
+                  <!-- DateCreated Header -->
+                  <Button x:Name="HeaderDateCreated"
+                          Grid.Column="3"
+                          Style="{StaticResource TextButtonStyle}"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          Padding="16,12"
+                          Tag="DateCreated"
+                          Click="SortHeader_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                      <TextBlock x:Uid="TenantListPage.Header.DateCreated"
+                                 Style="{StaticResource LabelLarge}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <FontIcon x:Name="SortIconDateCreated"
+                                Glyph="&#xE70D;"
+                                FontSize="12"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                Visibility="Collapsed" />
+                    </StackPanel>
+                  </Button>
+                </Grid>
+              </Border>
+
+              <!-- Table Body with ScrollViewer -->
+              <ScrollViewer Grid.Row="1"
+                            VerticalScrollBarVisibility="Auto"
+                            HorizontalScrollBarVisibility="Disabled">
+                <ItemsRepeater x:Name="TenantItemsRepeater"
+                               ItemsSource="{Binding Data}">
+                  <ItemsRepeater.Layout>
+                    <StackLayout Orientation="Vertical" Spacing="0" />
+                  </ItemsRepeater.Layout>
+                  <ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                      <Button Style="{StaticResource TextButtonStyle}"
+                              HorizontalAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch"
+                              Padding="0"
+                              CornerRadius="0"
+                              Tag="{Binding}"
+                              Click="TenantRow_Click">
+                        <Grid Background="Transparent"
+                              Padding="0"
+                              BorderBrush="{ThemeResource OutlineVariantBrush}"
+                              BorderThickness="0,0,0,1">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="150" />
+                          </Grid.ColumnDefinitions>
+
+                          <!-- Name -->
+                          <TextBlock Grid.Column="0"
+                                     Text="{Binding Name}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14"
+                                     TextTrimming="CharacterEllipsis" />
+
+                          <!-- CompanyName -->
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding CompanyName}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14"
+                                     TextTrimming="CharacterEllipsis" />
+
+                          <!-- Status -->
+                          <Border Grid.Column="2"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Left"
+                                  Margin="16,0"
+                                  Padding="8,4"
+                                  CornerRadius="4"
+                                  Background="{Binding IsActive, Converter={StaticResource BoolToStatusBackgroundConverter}}">
+                            <TextBlock Text="{Binding IsActive, Converter={StaticResource BoolToStatusTextConverter}}"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{Binding IsActive, Converter={StaticResource BoolToStatusForegroundConverter}}" />
+                          </Border>
+
+                          <!-- DateCreated -->
+                          <TextBlock Grid.Column="3"
+                                     Text="{Binding DateCreated, Converter={StaticResource DateOnlyConverter}}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                     VerticalAlignment="Center"
+                                     Padding="16,14" />
+                        </Grid>
+                      </Button>
+                    </DataTemplate>
+                  </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+              </ScrollViewer>
+            </Grid>
+          </Border>
+        </DataTemplate>
+      </mvux:FeedView.ValueTemplate>
+
+      <mvux:FeedView.ProgressTemplate>
+        <DataTemplate>
+          <Border CornerRadius="12"
+                  Background="{ThemeResource SurfaceBrush}"
+                  Translation="0,0,8">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <ProgressRing IsActive="True"
+                          Width="48"
+                          Height="48"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Margin="48" />
+          </Border>
+        </DataTemplate>
+      </mvux:FeedView.ProgressTemplate>
+
+      <mvux:FeedView.NoneTemplate>
+        <DataTemplate>
+          <Border CornerRadius="12"
+                  Background="{ThemeResource SurfaceBrush}"
+                  Translation="0,0,8">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="16"
+                        Margin="48">
+              <FontIcon Glyph="&#xE902;"
+                        FontSize="48"
+                        Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+              <TextBlock x:Uid="TenantListPage.NoTenants"
+                         Style="{StaticResource BodyMedium}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+        </DataTemplate>
+      </mvux:FeedView.NoneTemplate>
+
+      <mvux:FeedView.ErrorTemplate>
+        <DataTemplate>
+          <Border CornerRadius="12"
+                  BorderBrush="{ThemeResource ErrorBrush}"
+                  BorderThickness="1"
+                  Background="{ThemeResource ErrorContainerBrush}">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="16"
+                        Margin="48">
+              <FontIcon Glyph="&#xE783;"
+                        FontSize="48"
+                        Foreground="{ThemeResource ErrorBrush}" />
+              <TextBlock x:Uid="TenantListPage.LoadError"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnErrorContainerBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Border>
+        </DataTemplate>
+      </mvux:FeedView.ErrorTemplate>
+    </mvux:FeedView>
+
+    <!-- Pagination Controls -->
+    <Border Grid.Row="3"
+            Background="{ThemeResource SurfaceBrush}"
+            BorderBrush="{ThemeResource OutlineVariantBrush}"
+            BorderThickness="0,1,0,0"
+            Padding="16,8">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Count Info (Left) -->
+        <mvux:FeedView Source="{Binding Pagination}"
+                       Grid.Column="0">
+          <mvux:FeedView.ValueTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Data.CountInfo}"
+                         Style="{StaticResource BodySmall}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         VerticalAlignment="Center" />
+            </DataTemplate>
+          </mvux:FeedView.ValueTemplate>
+        </mvux:FeedView>
+
+        <!-- Page Navigation (Center) -->
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Spacing="8">
+          <Button x:Name="PreviousPageButton"
+                  Style="{StaticResource IconButtonStyle}"
+                  x:Uid="TenantListPage.PreviousPage"
+                  Click="PreviousPage_Click">
+            <FontIcon Glyph="&#xE76B;"
+                      FontSize="16" />
+          </Button>
+
+          <mvux:FeedView Source="{Binding Pagination}">
+            <mvux:FeedView.ValueTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Data.PageInfo}"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center"
+                           MinWidth="100"
+                           TextAlignment="Center" />
+              </DataTemplate>
+            </mvux:FeedView.ValueTemplate>
+          </mvux:FeedView>
+
+          <Button x:Name="NextPageButton"
+                  Style="{StaticResource IconButtonStyle}"
+                  x:Uid="TenantListPage.NextPage"
+                  Click="NextPage_Click">
+            <FontIcon Glyph="&#xE76C;"
+                      FontSize="16" />
+          </Button>
+        </StackPanel>
+
+        <!-- Page Size Selection (Right) -->
+        <StackPanel Grid.Column="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="8">
+          <TextBlock x:Uid="TenantListPage.ItemsPerPage"
+                     Style="{StaticResource BodySmall}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                     VerticalAlignment="Center" />
+          <ComboBox x:Name="PageSizeComboBox"
+                    MinWidth="80"
+                    SelectionChanged="PageSizeComboBox_SelectionChanged"
+                    SelectedIndex="1">
+            <ComboBoxItem Content="10" Tag="10" />
+            <ComboBoxItem Content="25" Tag="25" />
+            <ComboBoxItem Content="100" Tag="100" />
+            <ComboBoxItem Content="500" Tag="500" />
+            <ComboBoxItem Content="1000" Tag="1000" />
+          </ComboBox>
+        </StackPanel>
+      </Grid>
+    </Border>
+  </Grid>
+</Page>
