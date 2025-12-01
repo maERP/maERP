@@ -3,9 +3,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
 
-# Install wasm-tools workload
-RUN dotnet workload install wasm-tools
-
 # Copy project files for restore
 COPY ["src/maERP.Client/maERP.Client.csproj", "maERP.Client/"]
 COPY ["src/maERP.Domain/maERP.Domain.csproj", "maERP.Domain/"]
@@ -13,8 +10,11 @@ COPY ["Directory.Build.props", "./"]
 COPY ["Directory.Packages.props", "./"]
 COPY ["global.json", "./"]
 
-# Restore dependencies (only for browserwasm to avoid needing android/ios workloads)
-RUN dotnet restore "maERP.Client/maERP.Client.csproj" /p:TargetFrameworks=net10.0-browserwasm
+# Install all required workloads for the project
+RUN dotnet workload restore "maERP.Client/maERP.Client.csproj"
+
+# Restore dependencies
+RUN dotnet restore "maERP.Client/maERP.Client.csproj"
 
 # Copy source files
 COPY src/maERP.Client/ maERP.Client/

@@ -47,10 +47,9 @@ jobs:
           --configuration Release `
           --framework net10.0-desktop `
           --runtime win-x64 `
-          --self-contained true `
+          --self-contained false `
           --output ./publish/win-x64 `
-          -p:PublishSingleFile=true `
-          -p:PublishTrimmed=false
+          -p:PublishSingleFile=true
 
     - name: Rename executable
       run: |
@@ -95,10 +94,9 @@ jobs:
           --configuration Release \
           --framework net10.0-desktop \
           --runtime linux-x64 \
-          --self-contained true \
+          --self-contained false \
           --output ./publish/linux-x64 \
-          -p:PublishSingleFile=true \
-          -p:PublishTrimmed=false
+          -p:PublishSingleFile=true
 
     - name: Rename executable
       run: |
@@ -143,10 +141,9 @@ jobs:
           --configuration Release \
           --framework net10.0-desktop \
           --runtime osx-x64 \
-          --self-contained true \
+          --self-contained false \
           --output ./publish/osx-x64 \
-          -p:PublishSingleFile=true \
-          -p:PublishTrimmed=false
+          -p:PublishSingleFile=true
 
     - name: Publish macOS ARM64
       run: |
@@ -154,10 +151,9 @@ jobs:
           --configuration Release \
           --framework net10.0-desktop \
           --runtime osx-arm64 \
-          --self-contained true \
+          --self-contained false \
           --output ./publish/osx-arm64 \
-          -p:PublishSingleFile=true \
-          -p:PublishTrimmed=false
+          -p:PublishSingleFile=true
 
     - name: Rename executables
       run: |
@@ -209,6 +205,9 @@ jobs:
 
           Automatisch erstelltes Release der maERP Desktop-Anwendung (Uno Platform).
 
+          ### Voraussetzungen
+          - **.NET 10 Runtime** muss installiert sein: https://dotnet.microsoft.com/download/dotnet/10.0
+
           ### Downloads
           - **Windows (x64)**: `maERP.Desktop-${{ needs.version.outputs.version }}-win-x64.zip`
           - **Linux (x64)**: `maERP.Desktop-${{ needs.version.outputs.version }}-linux-x64.tar.gz`
@@ -216,9 +215,10 @@ jobs:
           - **macOS (Apple Silicon)**: `maERP.Desktop-${{ needs.version.outputs.version }}-osx-arm64.tar.gz`
 
           ### Installation
-          1. Laden Sie die entsprechende Datei für Ihr Betriebssystem herunter
-          2. Entpacken Sie das Archiv
-          3. Führen Sie die Anwendung aus (keine Installation erforderlich)
+          1. Installieren Sie die .NET 10 Runtime (falls noch nicht vorhanden)
+          2. Laden Sie die entsprechende Datei für Ihr Betriebssystem herunter
+          3. Entpacken Sie das Archiv
+          4. Führen Sie die Anwendung aus
 
           ---
 
