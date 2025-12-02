@@ -250,26 +250,53 @@
                   <!-- Progress -->
                   <StackPanel Spacing="4"
                               Visibility="{Binding IsGeneratingProducts, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ProgressBar IsIndeterminate="True" />
-                    <TextBlock x:Uid="DemoDataGeneratorPage.Products.Progress"
-                               Style="{StaticResource LabelSmall}"
+                    <ProgressBar Value="{Binding ProductsProgressPercent}"
+                                 Maximum="100"
+                                 IsIndeterminate="False" />
+                    <TextBlock Style="{StaticResource LabelSmall}"
                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                               HorizontalAlignment="Center" />
+                               HorizontalAlignment="Center">
+                      <Run Text="{Binding ProductsProgress}" />
+                      <Run Text=" / " />
+                      <Run Text="{Binding ProductsTotalCount}" />
+                      <Run x:Uid="DemoDataGeneratorPage.Progress.Created" />
+                    </TextBlock>
                   </StackPanel>
 
-                  <!-- Start Button -->
-                  <Button x:Uid="DemoDataGeneratorPage.Products.StartButton"
-                          Click="GenerateProducts_Click"
-                          HorizontalAlignment="Stretch"
-                          IsEnabled="{Binding IsNotGeneratingProducts}"
-                          Style="{StaticResource FilledButtonStyle}">
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="8">
-                      <FontIcon Glyph="&#xE768;"
-                                FontSize="16" />
-                      <TextBlock x:Uid="DemoDataGeneratorPage.Products.StartButton.Text" />
-                    </StackPanel>
-                  </Button>
+                  <!-- Error Message -->
+                  <TextBlock Text="{Binding ProductsErrorMessage}"
+                             Visibility="{Binding ProductsErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"
+                             Style="{StaticResource BodySmall}"
+                             Foreground="{ThemeResource ErrorBrush}"
+                             TextWrapping="Wrap" />
+
+                  <!-- Buttons: Generate / Cancel -->
+                  <Grid>
+                    <Button x:Uid="DemoDataGeneratorPage.Products.StartButton"
+                            Click="GenerateProducts_Click"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding IsNotGeneratingProducts, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Style="{StaticResource FilledButtonStyle}">
+                      <StackPanel Orientation="Horizontal"
+                                  Spacing="8">
+                        <FontIcon Glyph="&#xE768;"
+                                  FontSize="16" />
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Products.StartButton.Text" />
+                      </StackPanel>
+                    </Button>
+                    <Button x:Uid="DemoDataGeneratorPage.Products.CancelButton"
+                            Click="CancelProducts_Click"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding IsGeneratingProducts, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Style="{StaticResource OutlinedButtonStyle}">
+                      <StackPanel Orientation="Horizontal"
+                                  Spacing="8">
+                        <FontIcon Glyph="&#xE711;"
+                                  FontSize="16" />
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Products.CancelButton.Text" />
+                      </StackPanel>
+                    </Button>
+                  </Grid>
                 </StackPanel>
               </Grid>
             </Border>
@@ -369,26 +396,53 @@
                   <!-- Progress -->
                   <StackPanel Spacing="4"
                               Visibility="{Binding IsGeneratingCustomers, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ProgressBar IsIndeterminate="True" />
-                    <TextBlock x:Uid="DemoDataGeneratorPage.Customers.Progress"
-                               Style="{StaticResource LabelSmall}"
+                    <ProgressBar Value="{Binding CustomersProgressPercent}"
+                                 Maximum="100"
+                                 IsIndeterminate="False" />
+                    <TextBlock Style="{StaticResource LabelSmall}"
                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                               HorizontalAlignment="Center" />
+                               HorizontalAlignment="Center">
+                      <Run Text="{Binding CustomersProgress}" />
+                      <Run Text=" / " />
+                      <Run Text="{Binding CustomersTotalCount}" />
+                      <Run x:Uid="DemoDataGeneratorPage.Progress.Created" />
+                    </TextBlock>
                   </StackPanel>
 
-                  <!-- Start Button -->
-                  <Button x:Uid="DemoDataGeneratorPage.Customers.StartButton"
-                          Click="GenerateCustomers_Click"
-                          HorizontalAlignment="Stretch"
-                          IsEnabled="{Binding IsNotGeneratingCustomers}"
-                          Style="{StaticResource FilledButtonStyle}">
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="8">
-                      <FontIcon Glyph="&#xE768;"
-                                FontSize="16" />
-                      <TextBlock x:Uid="DemoDataGeneratorPage.Customers.StartButton.Text" />
-                    </StackPanel>
-                  </Button>
+                  <!-- Error Message -->
+                  <TextBlock Text="{Binding CustomersErrorMessage}"
+                             Visibility="{Binding CustomersErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"
+                             Style="{StaticResource BodySmall}"
+                             Foreground="{ThemeResource ErrorBrush}"
+                             TextWrapping="Wrap" />
+
+                  <!-- Buttons: Generate / Cancel -->
+                  <Grid>
+                    <Button x:Uid="DemoDataGeneratorPage.Customers.StartButton"
+                            Click="GenerateCustomers_Click"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding IsNotGeneratingCustomers, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Style="{StaticResource FilledButtonStyle}">
+                      <StackPanel Orientation="Horizontal"
+                                  Spacing="8">
+                        <FontIcon Glyph="&#xE768;"
+                                  FontSize="16" />
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Customers.StartButton.Text" />
+                      </StackPanel>
+                    </Button>
+                    <Button x:Uid="DemoDataGeneratorPage.Customers.CancelButton"
+                            Click="CancelCustomers_Click"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding IsGeneratingCustomers, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Style="{StaticResource OutlinedButtonStyle}">
+                      <StackPanel Orientation="Horizontal"
+                                  Spacing="8">
+                        <FontIcon Glyph="&#xE711;"
+                                  FontSize="16" />
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Customers.CancelButton.Text" />
+                      </StackPanel>
+                    </Button>
+                  </Grid>
                 </StackPanel>
               </Grid>
             </Border>
@@ -512,26 +566,53 @@
                   <!-- Progress -->
                   <StackPanel Spacing="4"
                               Visibility="{Binding IsGeneratingOrders, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ProgressBar IsIndeterminate="True" />
-                    <TextBlock x:Uid="DemoDataGeneratorPage.Orders.Progress"
-                               Style="{StaticResource LabelSmall}"
+                    <ProgressBar Value="{Binding OrdersProgressPercent}"
+                                 Maximum="100"
+                                 IsIndeterminate="False" />
+                    <TextBlock Style="{StaticResource LabelSmall}"
                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                               HorizontalAlignment="Center" />
+                               HorizontalAlignment="Center">
+                      <Run Text="{Binding OrdersProgress}" />
+                      <Run Text=" / " />
+                      <Run Text="{Binding OrdersTotalCount}" />
+                      <Run x:Uid="DemoDataGeneratorPage.Progress.Created" />
+                    </TextBlock>
                   </StackPanel>
 
-                  <!-- Start Button -->
-                  <Button x:Uid="DemoDataGeneratorPage.Orders.StartButton"
-                          Click="GenerateOrders_Click"
-                          HorizontalAlignment="Stretch"
-                          IsEnabled="{Binding IsNotGeneratingOrders}"
-                          Style="{StaticResource FilledButtonStyle}">
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="8">
-                      <FontIcon Glyph="&#xE768;"
-                                FontSize="16" />
-                      <TextBlock x:Uid="DemoDataGeneratorPage.Orders.StartButton.Text" />
-                    </StackPanel>
-                  </Button>
+                  <!-- Error Message -->
+                  <TextBlock Text="{Binding OrdersErrorMessage}"
+                             Visibility="{Binding OrdersErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"
+                             Style="{StaticResource BodySmall}"
+                             Foreground="{ThemeResource ErrorBrush}"
+                             TextWrapping="Wrap" />
+
+                  <!-- Buttons: Generate / Cancel -->
+                  <Grid>
+                    <Button x:Uid="DemoDataGeneratorPage.Orders.StartButton"
+                            Click="GenerateOrders_Click"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding IsNotGeneratingOrders, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Style="{StaticResource FilledButtonStyle}">
+                      <StackPanel Orientation="Horizontal"
+                                  Spacing="8">
+                        <FontIcon Glyph="&#xE768;"
+                                  FontSize="16" />
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Orders.StartButton.Text" />
+                      </StackPanel>
+                    </Button>
+                    <Button x:Uid="DemoDataGeneratorPage.Orders.CancelButton"
+                            Click="CancelOrders_Click"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding IsGeneratingOrders, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Style="{StaticResource OutlinedButtonStyle}">
+                      <StackPanel Orientation="Horizontal"
+                                  Spacing="8">
+                        <FontIcon Glyph="&#xE711;"
+                                  FontSize="16" />
+                        <TextBlock x:Uid="DemoDataGeneratorPage.Orders.CancelButton.Text" />
+                      </StackPanel>
+                    </Button>
+                  </Grid>
                 </StackPanel>
               </Grid>
             </Border>
@@ -624,7 +705,7 @@
                     </StackPanel>
                   </Border>
 
-                  <!-- Count Input -->
+                  <!-- Count Input (hidden for AI Data - fixed to 4 items) -->
                   <NumberBox x:Uid="DemoDataGeneratorPage.AiData.Count"
                              x:Name="AiDataCountInput"
                              Value="{Binding AiDataCount, Mode=TwoWay}"
@@ -633,7 +714,8 @@
                              SpinButtonPlacementMode="Inline"
                              SmallChange="1"
                              LargeChange="5"
-                             IsEnabled="{Binding IsNotGeneratingAiData}" />
+                             IsEnabled="{Binding IsNotGeneratingAiData}"
+                             Visibility="Collapsed" />
 
                   <!-- AI Hint -->
                   <Border Background="{ThemeResource TertiaryContainerBrush}"
@@ -667,26 +749,53 @@
                   <!-- Progress -->
                   <StackPanel Spacing="4"
                               Visibility="{Binding IsGeneratingAiData, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ProgressBar IsIndeterminate="True" />
-                    <TextBlock x:Uid="DemoDataGeneratorPage.AiData.Progress"
-                               Style="{StaticResource LabelSmall}"
+                    <ProgressBar Value="{Binding AiDataProgressPercent}"
+                                 Maximum="100"
+                                 IsIndeterminate="False" />
+                    <TextBlock Style="{StaticResource LabelSmall}"
                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                               HorizontalAlignment="Center" />
+                               HorizontalAlignment="Center">
+                      <Run Text="{Binding AiDataProgress}" />
+                      <Run Text=" / " />
+                      <Run Text="{Binding AiDataTotalCount}" />
+                      <Run x:Uid="DemoDataGeneratorPage.Progress.Created" />
+                    </TextBlock>
                   </StackPanel>
 
-                  <!-- Start Button -->
-                  <Button x:Uid="DemoDataGeneratorPage.AiData.StartButton"
-                          Click="GenerateAiData_Click"
-                          HorizontalAlignment="Stretch"
-                          IsEnabled="{Binding IsNotGeneratingAiData}"
-                          Style="{StaticResource FilledTonalButtonStyle}">
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="8">
-                      <FontIcon Glyph="&#xE99A;"
-                                FontSize="16" />
-                      <TextBlock x:Uid="DemoDataGeneratorPage.AiData.StartButton.Text" />
-                    </StackPanel>
-                  </Button>
+                  <!-- Error Message -->
+                  <TextBlock Text="{Binding AiDataErrorMessage}"
+                             Visibility="{Binding AiDataErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"
+                             Style="{StaticResource BodySmall}"
+                             Foreground="{ThemeResource ErrorBrush}"
+                             TextWrapping="Wrap" />
+
+                  <!-- Buttons: Generate / Cancel -->
+                  <Grid>
+                    <Button x:Uid="DemoDataGeneratorPage.AiData.StartButton"
+                            Click="GenerateAiData_Click"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding IsNotGeneratingAiData, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Style="{StaticResource FilledTonalButtonStyle}">
+                      <StackPanel Orientation="Horizontal"
+                                  Spacing="8">
+                        <FontIcon Glyph="&#xE99A;"
+                                  FontSize="16" />
+                        <TextBlock x:Uid="DemoDataGeneratorPage.AiData.StartButton.Text" />
+                      </StackPanel>
+                    </Button>
+                    <Button x:Uid="DemoDataGeneratorPage.AiData.CancelButton"
+                            Click="CancelAiData_Click"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding IsGeneratingAiData, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Style="{StaticResource OutlinedButtonStyle}">
+                      <StackPanel Orientation="Horizontal"
+                                  Spacing="8">
+                        <FontIcon Glyph="&#xE711;"
+                                  FontSize="16" />
+                        <TextBlock x:Uid="DemoDataGeneratorPage.AiData.CancelButton.Text" />
+                      </StackPanel>
+                    </Button>
+                  </Grid>
                 </StackPanel>
               </Grid>
             </Border>

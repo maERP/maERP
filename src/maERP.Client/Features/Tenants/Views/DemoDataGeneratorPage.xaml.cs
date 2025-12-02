@@ -48,4 +48,24 @@ public sealed partial class DemoDataGeneratorPage : Page
             await model.GenerateAiDataAsync();
         }
     }
+
+    private void CancelProducts_Click(object sender, RoutedEventArgs e)
+    {
+        (DataContext as DemoDataGeneratorModel)?.CancelProductsGeneration();
+    }
+
+    private void CancelCustomers_Click(object sender, RoutedEventArgs e)
+    {
+        (DataContext as DemoDataGeneratorModel)?.CancelCustomersGeneration();
+    }
+
+    private void CancelOrders_Click(object sender, RoutedEventArgs e)
+    {
+        (DataContext as DemoDataGeneratorModel)?.CancelOrdersGeneration();
+    }
+
+    private void CancelAiData_Click(object sender, RoutedEventArgs e)
+    {
+        (DataContext as DemoDataGeneratorModel)?.CancelAiDataGeneration();
+    }
 }

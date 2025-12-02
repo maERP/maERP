@@ -3180,6 +3180,42 @@
     <value>Generate with AI</value>
   </data>
 
+  <!-- DemoDataGeneratorPage - Progress -->
+  <data name="DemoDataGeneratorPage.Progress.Created.Text" xml:space="preserve">
+    <value> created</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - Cancel Buttons -->
+  <data name="DemoDataGeneratorPage.Products.CancelButton.Text.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Customers.CancelButton.Text.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.CancelButton.Text.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.CancelButton.Text.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - Error Messages -->
+  <data name="DemoDataGeneratorPage.Error.NoTaxClass" xml:space="preserve">
+    <value>No tax class found. Please create a tax class first.</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Error.NoCountry" xml:space="preserve">
+    <value>No country found. Please create a country first.</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Error.NoCustomers" xml:space="preserve">
+    <value>No customers found. Please generate customers first.</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Error.NoProducts" xml:space="preserve">
+    <value>No products found. Please generate products first.</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Error.NoSalesChannel" xml:space="preserve">
+    <value>No sales channel found. Please create a sales channel first.</value>
+  </data>
+
   <!-- DemoDataGeneratorPage - Warning -->
   <data name="DemoDataGeneratorPage.Warning.Text" xml:space="preserve">
     <value>Warning: Generated demo data will be permanently added to your tenant. This action cannot be undone. Only use this feature in test environments.</value>

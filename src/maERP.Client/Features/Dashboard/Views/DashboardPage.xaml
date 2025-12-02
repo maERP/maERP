@@ -5,7 +5,6 @@
       xmlns:models="using:maERP.Client.Features.Dashboard.Models"
       xmlns:mvux="using:Uno.Extensions.Reactive.UI"
       xmlns:utu="using:Uno.Toolkit.UI"
-      NavigationCacheMode="Required"
       Background="{ThemeResource BackgroundBrush}">
 
   <Page.Resources>

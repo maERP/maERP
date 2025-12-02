@@ -2608,7 +2608,7 @@
 
   <!-- Shell User Menu - Tenants -->
   <data name="Shell.UserMenu.Tenants.Text" xml:space="preserve">
-    <value>Meine wMandanten</value>
+    <value>Meine Mandanten</value>
   </data>
 
   <!-- Tenant List Page -->
@@ -3178,6 +3178,42 @@
   </data>
   <data name="DemoDataGeneratorPage.AiData.StartButton.Text.Text" xml:space="preserve">
     <value>Mit KI generieren</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - Progress -->
+  <data name="DemoDataGeneratorPage.Progress.Created.Text" xml:space="preserve">
+    <value> erstellt</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - Cancel Buttons -->
+  <data name="DemoDataGeneratorPage.Products.CancelButton.Text.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Customers.CancelButton.Text.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.CancelButton.Text.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.CancelButton.Text.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - Error Messages -->
+  <data name="DemoDataGeneratorPage.Error.NoTaxClass" xml:space="preserve">
+    <value>Keine Steuerklasse gefunden. Bitte erstellen Sie zuerst eine Steuerklasse.</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Error.NoCountry" xml:space="preserve">
+    <value>Kein Land gefunden. Bitte erstellen Sie zuerst ein Land.</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Error.NoCustomers" xml:space="preserve">
+    <value>Keine Kunden gefunden. Bitte generieren Sie zuerst Kunden.</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Error.NoProducts" xml:space="preserve">
+    <value>Keine Produkte gefunden. Bitte generieren Sie zuerst Produkte.</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Error.NoSalesChannel" xml:space="preserve">
+    <value>Kein Vertriebskanal gefunden. Bitte erstellen Sie zuerst einen Vertriebskanal.</value>
   </data>
 
   <!-- DemoDataGeneratorPage - Warning -->
