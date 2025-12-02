@@ -29,8 +29,6 @@ public sealed partial class TaxClassListPage : Page
     private void CacheSortIcons()
     {
         // Find sort icons in the visual tree
-        if (FindName("SortIconId") is FontIcon iconId)
-            _sortIcons["Id"] = iconId;
         if (FindName("SortIconTaxRate") is FontIcon iconTaxRate)
             _sortIcons["TaxRate"] = iconTaxRate;
     }

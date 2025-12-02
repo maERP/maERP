@@ -28,17 +28,16 @@ public class TenantMiddleware
         logger.LogDebug($"🔐 TenantMiddleware - IsAuthenticated: {isAuthenticated}, User: {user?.Identity?.Name ?? "null"}");
         logger.LogDebug($"📋 TenantMiddleware - Authorization header: {context.Request.Headers.ContainsKey("Authorization")}");
 
-        // Skip tenant validation for auth endpoints (login, register, forgot-password, reset-password), superadmin endpoints, swagger, and demo data endpoints
+        // Skip tenant validation for auth endpoints (login, register, forgot-password, reset-password), superadmin endpoints and swagger
         var pathLower = path?.ToLower();
         var isAuthEndpoint = pathLower != null && (pathLower.EndsWith("/auth/login") || pathLower.EndsWith("/auth/register") || pathLower.EndsWith("/auth/forgot-password") || pathLower.EndsWith("/auth/reset-password"));
         var isSuperadminEndpoint = pathLower != null && pathLower.Contains("/superadmin");
         var isSwaggerEndpoint = pathLower != null && (pathLower.StartsWith("/swagger") || pathLower.StartsWith("/_framework") || pathLower.StartsWith("/_content"));
-        var isDemoDataEndpoint = pathLower != null && pathLower.Contains("/demodata");
         var isHealthEndpoint = pathLower != null && pathLower == "/health";
 
         logger.LogDebug($"🔍 TenantMiddleware - isAuthEndpoint: {isAuthEndpoint}, isSuperadminEndpoint: {isSuperadminEndpoint}, isSwaggerEndpoint: {isSwaggerEndpoint}");
 
-        if (isAuthEndpoint || isSuperadminEndpoint || isSwaggerEndpoint || isDemoDataEndpoint || isHealthEndpoint)
+        if (isAuthEndpoint || isSuperadminEndpoint || isSwaggerEndpoint || isHealthEndpoint)
         {
             logger.LogDebug($"✅  TenantMiddleware - Skipping tenant validation for: {path}");
             await _next(context);

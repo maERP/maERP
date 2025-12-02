@@ -1,4 +1,5 @@
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Services.NameGeneration;
 using maERP.Client.Features.Tenants.Models;
 using maERP.Client.Features.Tenants.Services;
 using maERP.Client.Features.Tenants.Views;
@@ -20,9 +21,13 @@ public static class TenantsModule
         // TenantService: Transient - stateless, creates new instance per request
         services.AddTransient<ITenantService, TenantService>();
 
+        // Name generators - Singleton for consistent randomization per session
+        services.AddSingleton<INameGeneratorFactory, NameGeneratorFactory>();
+
         // Page models
         services.AddTransient<TenantListModel>();
         services.AddTransient<TenantEditModel>();
+        services.AddTransient<DemoDataGeneratorModel>();
 
         return services;
     }
@@ -34,7 +39,8 @@ public static class TenantsModule
     {
         views.Register(
             new ViewMap<TenantListPage, TenantListModel>(),
-            new ViewMap<TenantEditPage, TenantEditModel>(Data: new DataMap<TenantEditData>())
+            new ViewMap<TenantEditPage, TenantEditModel>(Data: new DataMap<TenantEditData>()),
+            new ViewMap<DemoDataGeneratorPage, DemoDataGeneratorModel>(Data: new DataMap<DemoDataGeneratorData>())
         );
     }
 
@@ -46,5 +52,6 @@ public static class TenantsModule
         yield return new RouteMap(Routes.TenantList, View: views.FindByViewModel<TenantListModel>());
         yield return new RouteMap(Routes.TenantEdit, View: views.FindByViewModel<TenantEditModel>());
         yield return new RouteMap(Routes.TenantCreate, View: views.FindByViewModel<TenantEditModel>());
+        yield return new RouteMap(Routes.DemoDataGenerator, View: views.FindByViewModel<DemoDataGeneratorModel>());
     }
 }

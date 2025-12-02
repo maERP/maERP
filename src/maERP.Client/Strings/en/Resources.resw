@@ -3041,4 +3041,155 @@
   <data name="SuperadminTenantEditPage.Error.AddUserFailed" xml:space="preserve">
     <value>Failed to add user: {0}</value>
   </data>
+
+  <!-- DemoDataGeneratorPage -->
+  <data name="DemoDataGeneratorPage.Title" xml:space="preserve">
+    <value>Demo Data Generator</value>
+  </data>
+  <data name="DemoDataGeneratorPage.TitleWithTenant" xml:space="preserve">
+    <value>Demo Data - {0}</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - Page Description -->
+  <data name="DemoDataGeneratorPage.PageDescription.Title.Text" xml:space="preserve">
+    <value>Generate Demo Data</value>
+  </data>
+  <data name="DemoDataGeneratorPage.PageDescription.Text.Text" xml:space="preserve">
+    <value>Use these tools to populate your tenant with realistic demo data for testing and demonstration purposes.</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - Products Section -->
+  <data name="DemoDataGeneratorPage.Products.Title.Text" xml:space="preserve">
+    <value>Demo Products</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Products.Subtitle.Text" xml:space="preserve">
+    <value>Generate sample products</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Products.Info.Title.Text" xml:space="preserve">
+    <value>What will be created:</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Products.Info.Item1.Text" xml:space="preserve">
+    <value>• Products with realistic names and descriptions</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Products.Info.Item2.Text" xml:space="preserve">
+    <value>• Random prices and SKU numbers</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Products.Info.Item3.Text" xml:space="preserve">
+    <value>• Associated with existing tax classes</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Products.Count.Header" xml:space="preserve">
+    <value>Number of products</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Products.Progress.Text" xml:space="preserve">
+    <value>Generating products...</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Products.StartButton.Text.Text" xml:space="preserve">
+    <value>Generate Products</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - Customers Section -->
+  <data name="DemoDataGeneratorPage.Customers.Title.Text" xml:space="preserve">
+    <value>Demo Customers</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Customers.Subtitle.Text" xml:space="preserve">
+    <value>Generate customer profiles</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Customers.Info.Title.Text" xml:space="preserve">
+    <value>What will be created:</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Customers.Info.Item1.Text" xml:space="preserve">
+    <value>• Customer profiles with contact data</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Customers.Info.Item2.Text" xml:space="preserve">
+    <value>• Billing and shipping addresses</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Customers.Info.Item3.Text" xml:space="preserve">
+    <value>• Random customer numbers</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Customers.Count.Header" xml:space="preserve">
+    <value>Number of customers</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Customers.Progress.Text" xml:space="preserve">
+    <value>Generating customers...</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Customers.StartButton.Text.Text" xml:space="preserve">
+    <value>Generate Customers</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - Orders Section -->
+  <data name="DemoDataGeneratorPage.Orders.Title.Text" xml:space="preserve">
+    <value>Demo Orders</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.Subtitle.Text" xml:space="preserve">
+    <value>Generate order data</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.Info.Title.Text" xml:space="preserve">
+    <value>What will be created:</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.Info.Item1.Text" xml:space="preserve">
+    <value>• Orders with random products</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.Info.Item2.Text" xml:space="preserve">
+    <value>• Various order statuses</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.Info.Item3.Text" xml:space="preserve">
+    <value>• Random order dates in the past</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.Count.Header" xml:space="preserve">
+    <value>Number of orders</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.Hint.Text" xml:space="preserve">
+    <value>Requires existing customers and products in the system.</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.Progress.Text" xml:space="preserve">
+    <value>Generating orders...</value>
+  </data>
+  <data name="DemoDataGeneratorPage.Orders.StartButton.Text.Text" xml:space="preserve">
+    <value>Generate Orders</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - AI Data Section -->
+  <data name="DemoDataGeneratorPage.AiData.Title.Text" xml:space="preserve">
+    <value>AI Demo Data</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.Subtitle.Text" xml:space="preserve">
+    <value>AI-generated realistic data</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.Info.Title.Text" xml:space="preserve">
+    <value>What will be created:</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.Info.Item1.Text" xml:space="preserve">
+    <value>• Realistic product descriptions</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.Info.Item2.Text" xml:space="preserve">
+    <value>• Natural customer names and addresses</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.Info.Item3.Text" xml:space="preserve">
+    <value>• Coherent order histories</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.Count.Header" xml:space="preserve">
+    <value>Number of entries</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.Hint.Text" xml:space="preserve">
+    <value>Uses AI to generate more realistic and coherent demo data. Requires an active AI model configuration.</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.Progress.Text" xml:space="preserve">
+    <value>Generating AI data...</value>
+  </data>
+  <data name="DemoDataGeneratorPage.AiData.StartButton.Text.Text" xml:space="preserve">
+    <value>Generate with AI</value>
+  </data>
+
+  <!-- DemoDataGeneratorPage - Warning -->
+  <data name="DemoDataGeneratorPage.Warning.Text" xml:space="preserve">
+    <value>Warning: Generated demo data will be permanently added to your tenant. This action cannot be undone. Only use this feature in test environments.</value>
+  </data>
+
+  <!-- TenantEditPage - Demo Data Button -->
+  <data name="TenantEditPage.Button.DemoData.Content" xml:space="preserve">
+    <value>Generate Demo Data</value>
+  </data>
+  <data name="TenantEditPage.AppBarButton.DemoData.Label" xml:space="preserve">
+    <value>Demo Data</value>
+  </data>
 </root>

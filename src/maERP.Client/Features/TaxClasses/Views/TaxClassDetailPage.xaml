@@ -138,31 +138,7 @@
                     <!-- Information Fields -->
                     <StackPanel Padding="16,0,16,16"
                                 Spacing="16">
-                      <!-- ID Field -->
-                      <Grid>
-                        <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="Auto" />
-                          <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Grid.Column="0"
-                                  Glyph="&#xE8EC;"
-                                  FontSize="16"
-                                  Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                  Margin="0,0,12,0"
-                                  VerticalAlignment="Center" />
-                        <StackPanel Grid.Column="1">
-                          <TextBlock x:Uid="TaxClassDetailPage.Field.Id"
-                                     Style="{StaticResource LabelSmall}"
-                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                          <TextBlock Text="{Binding Data.Id}"
-                                     Style="{StaticResource BodyMedium}"
-                                     Foreground="{ThemeResource OnSurfaceBrush}"
-                                     IsTextSelectionEnabled="True"
-                                     TextWrapping="Wrap" />
-                        </StackPanel>
-                      </Grid>
-
-                      <!-- Tax Rate Field (Secondary) -->
+                      <!-- Tax Rate Field -->
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="Auto" />

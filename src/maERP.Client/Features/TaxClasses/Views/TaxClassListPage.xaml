@@ -75,35 +75,8 @@
                       BorderBrush="{ThemeResource OutlineVariantBrush}"
                       BorderThickness="0,0,0,1">
                 <Grid Padding="0">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                  </Grid.ColumnDefinitions>
-
-                  <!-- Id Header -->
-                  <Button x:Name="HeaderId"
-                          Grid.Column="0"
-                          Style="{StaticResource TextButtonStyle}"
-                          HorizontalAlignment="Stretch"
-                          HorizontalContentAlignment="Left"
-                          Padding="16,12"
-                          Tag="Id"
-                          Click="SortHeader_Click">
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                      <TextBlock x:Uid="TaxClassListPage.Header.Id"
-                                 Style="{StaticResource LabelLarge}"
-                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                      <FontIcon x:Name="SortIconId"
-                                Glyph="&#xE70D;"
-                                FontSize="12"
-                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                Visibility="Collapsed" />
-                    </StackPanel>
-                  </Button>
-
                   <!-- TaxRate Header -->
                   <Button x:Name="HeaderTaxRate"
-                          Grid.Column="1"
                           Style="{StaticResource TextButtonStyle}"
                           HorizontalAlignment="Stretch"
                           HorizontalContentAlignment="Left"
@@ -145,23 +118,8 @@
                               Padding="0"
                               BorderBrush="{ThemeResource OutlineVariantBrush}"
                               BorderThickness="0,0,0,1">
-                          <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                          </Grid.ColumnDefinitions>
-
-                          <!-- Id -->
-                          <TextBlock Grid.Column="0"
-                                     Text="{Binding Id}"
-                                     Style="{StaticResource BodyMedium}"
-                                     Foreground="{ThemeResource OnSurfaceBrush}"
-                                     VerticalAlignment="Center"
-                                     Padding="16,14"
-                                     TextTrimming="CharacterEllipsis" />
-
                           <!-- TaxRate -->
-                          <StackPanel Grid.Column="1"
-                                      Orientation="Horizontal"
+                          <StackPanel Orientation="Horizontal"
                                       VerticalAlignment="Center"
                                       Padding="16,14">
                             <TextBlock Text="{Binding TaxRate}"

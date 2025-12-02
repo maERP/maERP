@@ -64,6 +64,7 @@ public static class Routes
     public const string TenantList = "Tenants";
     public const string TenantEdit = "TenantEdit";
     public const string TenantCreate = "TenantCreate";
+    public const string DemoDataGenerator = "DemoDataGenerator";
 
     // AI Models
     public const string AiModelList = "AiModels";
