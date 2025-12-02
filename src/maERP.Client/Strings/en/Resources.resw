@@ -2608,7 +2608,7 @@
 
   <!-- Shell User Menu - Tenants -->
   <data name="Shell.UserMenu.Tenants.Text" xml:space="preserve">
-    <value>Tenants</value>
+    <value>My Tenants</value>
   </data>
 
   <!-- Tenant List Page -->
@@ -2976,5 +2976,69 @@
   <!-- SuperadminTenantEditPage - Error Messages -->
   <data name="SuperadminTenantEditPage.Error.SaveFailed" xml:space="preserve">
     <value>Failed to save tenant: {0}</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Error.RemoveUserFailed" xml:space="preserve">
+    <value>Failed to remove user: {0}</value>
+  </data>
+
+  <!-- SuperadminTenantEditPage - Users Section -->
+  <data name="SuperadminTenantEditPage.Section.Users.Text" xml:space="preserve">
+    <value>Assigned Users</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Users.Header.Name.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Users.Header.Email.Text" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Users.Header.Roles.Text" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Users.Header.Actions.Text" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Users.Badge.Default.Text" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Users.Badge.ManageTenant.Text" xml:space="preserve">
+    <value>Tenant</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Users.Badge.ManageUser.Text" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="SuperadminTenantEditPage.NoUsers.Text" xml:space="preserve">
+    <value>No users assigned</value>
+  </data>
+  <data name="SuperadminTenantEditPage.NoUsers.Hint.Text" xml:space="preserve">
+    <value>No users have been assigned to this tenant yet.</value>
+  </data>
+
+  <!-- SuperadminTenantEditPage - Add User -->
+  <data name="SuperadminTenantEditPage.Button.AddUser.Text" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Flyout.AddUser.Title.Text" xml:space="preserve">
+    <value>Add User</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Flyout.AddUser.ComboBox.Header" xml:space="preserve">
+    <value>Select user</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Flyout.AddUser.ComboBox.PlaceholderText" xml:space="preserve">
+    <value>Select a user...</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Flyout.AddUser.NoUsersAvailable.Text" xml:space="preserve">
+    <value>No more users available.</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Flyout.AddUser.Cancel.Content" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Flyout.AddUser.Add.Content" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Error.LoadUsersFailed" xml:space="preserve">
+    <value>Failed to load users: {0}</value>
+  </data>
+  <data name="SuperadminTenantEditPage.Error.AddUserFailed" xml:space="preserve">
+    <value>Failed to add user: {0}</value>
   </data>
 </root>

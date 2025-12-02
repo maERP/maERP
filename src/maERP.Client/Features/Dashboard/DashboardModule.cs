@@ -1,5 +1,6 @@
 using maERP.Client.Core.Constants;
 using maERP.Client.Features.Dashboard.Models;
+using maERP.Client.Features.Dashboard.Services;
 using maERP.Client.Features.Dashboard.Views;
 
 namespace maERP.Client.Features.Dashboard;
@@ -15,6 +16,7 @@ public static class DashboardModule
     /// </summary>
     public static IServiceCollection RegisterServices(IServiceCollection services)
     {
+        services.AddTransient<IStatisticsService, StatisticsService>();
         services.AddTransient<DashboardModel>();
         return services;
     }

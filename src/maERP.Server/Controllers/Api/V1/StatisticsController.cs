@@ -1,4 +1,10 @@
 ﻿using Asp.Versioning;
+using maERP.Application.Features.Statistic.Queries.CustomersToday;
+using maERP.Application.Features.Statistic.Queries.OrdersLatest;
+using maERP.Application.Features.Statistic.Queries.OrdersToday;
+using maERP.Application.Features.Statistic.Queries.ProductsBestSelling;
+using maERP.Application.Features.Statistic.Queries.ProductsToday;
+using maERP.Application.Features.Statistic.Queries.SalesToday;
 using maERP.Application.Features.Statistic.Queries.StatisticOrder;
 using maERP.Application.Features.Statistic.Queries.StatisticOrderCustomerChart;
 using maERP.Application.Features.Statistic.Queries.StatisticProduct;
@@ -18,6 +24,78 @@ namespace maERP.Server.Controllers.Api.V1;
 [Route("/api/v{version:apiVersion}/[controller]")]
 public class StatisticsController(IMediator mediator) : ControllerBase
 {
+    // GET: api/v1/<StatisticsController>/SalesToday
+    [HttpGet("SalesToday")]
+    public async Task<ActionResult<Result<SalesTodayDto>>> SalesToday()
+    {
+        var result = await mediator.Send(new SalesTodayQuery());
+
+        if (!result.Succeeded)
+            return StatusCode((int)result.StatusCode, result);
+
+        return Ok(result);
+    }
+
+    // GET: api/v1/<StatisticsController>/OrdersToday
+    [HttpGet("OrdersToday")]
+    public async Task<ActionResult<Result<OrdersTodayDto>>> OrdersToday()
+    {
+        var result = await mediator.Send(new OrdersTodayQuery());
+
+        if (!result.Succeeded)
+            return StatusCode((int)result.StatusCode, result);
+
+        return Ok(result);
+    }
+
+    // GET: api/v1/<StatisticsController>/CustomersToday
+    [HttpGet("CustomersToday")]
+    public async Task<ActionResult<Result<CustomersTodayDto>>> CustomersToday()
+    {
+        var result = await mediator.Send(new CustomersTodayQuery());
+
+        if (!result.Succeeded)
+            return StatusCode((int)result.StatusCode, result);
+
+        return Ok(result);
+    }
+
+    // GET: api/v1/<StatisticsController>/ProductsToday
+    [HttpGet("ProductsToday")]
+    public async Task<ActionResult<Result<ProductsTodayDto>>> ProductsToday()
+    {
+        var result = await mediator.Send(new ProductsTodayQuery());
+
+        if (!result.Succeeded)
+            return StatusCode((int)result.StatusCode, result);
+
+        return Ok(result);
+    }
+
+    // GET: api/v1/<StatisticsController>/OrdersLatest
+    [HttpGet("OrdersLatest")]
+    public async Task<ActionResult<Result<OrdersLatestDto>>> OrdersLatest([FromQuery] int count = 5)
+    {
+        var result = await mediator.Send(new OrdersLatestQuery(count));
+
+        if (!result.Succeeded)
+            return StatusCode((int)result.StatusCode, result);
+
+        return Ok(result);
+    }
+
+    // GET: api/v1/<StatisticsController>/ProductsBestSelling
+    [HttpGet("ProductsBestSelling")]
+    public async Task<ActionResult<Result<ProductsBestSellingDto>>> ProductsBestSelling([FromQuery] int count = 5)
+    {
+        var result = await mediator.Send(new ProductsBestSellingQuery(count));
+
+        if (!result.Succeeded)
+            return StatusCode((int)result.StatusCode, result);
+
+        return Ok(result);
+    }
+
     // GET: api/v1/<StatisticsController>
     [HttpGet("OrderStatistic")]
     public async Task<ActionResult<Result<StatisticOrderDto>>> OrderStatistic()

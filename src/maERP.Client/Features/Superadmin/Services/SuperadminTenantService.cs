@@ -4,7 +4,9 @@ using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
+using maERP.Domain.Dtos.Superadmin;
 using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Dtos.User;
 using Microsoft.Extensions.Logging;
 
 namespace maERP.Client.Features.Superadmin.Services;
@@ -88,6 +90,25 @@ public class SuperadminTenantService : ISuperadminTenantService
         return apiResponse?.Data;
     }
 
+    public async Task<SuperadminTenantDetailDto?> GetTenantDetailAsync(Guid id, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Superadmin.TenantById(id)}";
+
+        _logger.LogInformation("Fetching tenant details with users from URL: {Url}", url);
+
+        try
+        {
+            var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<SuperadminTenantDetailDto>>(url, JsonOptions, ct);
+            return apiResponse?.Data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching tenant details from {Url}", url);
+            throw;
+        }
+    }
+
     public async Task UpdateTenantAsync(Guid id, TenantInputDto input, CancellationToken ct = default)
     {
         var baseUrl = await GetBaseUrlAsync();
@@ -97,5 +118,48 @@ public class SuperadminTenantService : ISuperadminTenantService
 
         var response = await _httpClient.PutAsJsonAsync(url, input, JsonOptions, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task AssignUserToTenantAsync(string userId, Guid tenantId, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Superadmin.UserTenants(userId)}";
+
+        _logger.LogInformation("Assigning user {UserId} to tenant {TenantId} at URL: {Url}", userId, tenantId, url);
+
+        var payload = new { TenantId = tenantId };
+        var response = await _httpClient.PostAsJsonAsync(url, payload, JsonOptions, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task RemoveUserFromTenantAsync(string userId, Guid tenantId, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Superadmin.UserTenantById(userId, tenantId)}";
+
+        _logger.LogInformation("Removing user {UserId} from tenant {TenantId} at URL: {Url}", userId, tenantId, url);
+
+        var response = await _httpClient.DeleteAsync(url, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task<List<UserListDto>> GetAllUsersAsync(CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        // Fetch a large page to get all users
+        var url = $"{baseUrl}{ApiEndpoints.Superadmin.Users}?pageSize=1000";
+
+        _logger.LogInformation("Fetching all users from URL: {Url}", url);
+
+        try
+        {
+            var apiResponse = await _httpClient.GetFromJsonAsync<PaginatedResponse<UserListDto>>(url, JsonOptions, ct);
+            return apiResponse?.Data ?? new List<UserListDto>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching users from {Url}", url);
+            throw;
+        }
     }
 }

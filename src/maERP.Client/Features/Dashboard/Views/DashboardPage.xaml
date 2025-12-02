@@ -87,121 +87,121 @@
                      Margin="0,4,0,0" />
         </StackPanel>
 
-        <!-- KPI Cards Section using Grid with responsive columns -->
-        <mvux:FeedView Source="{Binding KpiData}">
-          <mvux:FeedView.ValueTemplate>
-            <DataTemplate>
-              <Grid x:Name="KpiGrid">
-                <VisualStateManager.VisualStateGroups>
-                  <VisualStateGroup>
-                    <VisualState x:Name="KpiNarrow">
-                      <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                      </VisualState.StateTriggers>
-                      <VisualState.Setters>
-                        <!-- 1 column layout -->
-                        <Setter Target="KpiColumn1.Width" Value="*" />
-                        <Setter Target="KpiColumn2.Width" Value="0" />
-                        <Setter Target="KpiColumn3.Width" Value="0" />
-                        <Setter Target="KpiColumn4.Width" Value="0" />
-                        <!-- Revenue: Row 0, Col 0 -->
-                        <Setter Target="RevenueCard.(Grid.Row)" Value="0" />
-                        <Setter Target="RevenueCard.(Grid.Column)" Value="0" />
-                        <Setter Target="RevenueCard.Margin" Value="0,0,0,16" />
-                        <!-- Orders: Row 1, Col 0 -->
-                        <Setter Target="OrdersCard.(Grid.Row)" Value="1" />
-                        <Setter Target="OrdersCard.(Grid.Column)" Value="0" />
-                        <Setter Target="OrdersCard.Margin" Value="0,0,0,16" />
-                        <!-- Customers: Row 2, Col 0 -->
-                        <Setter Target="CustomersCard.(Grid.Row)" Value="2" />
-                        <Setter Target="CustomersCard.(Grid.Column)" Value="0" />
-                        <Setter Target="CustomersCard.Margin" Value="0,0,0,16" />
-                        <!-- Inventory: Row 3, Col 0 -->
-                        <Setter Target="InventoryCard.(Grid.Row)" Value="3" />
-                        <Setter Target="InventoryCard.(Grid.Column)" Value="0" />
-                        <Setter Target="InventoryCard.Margin" Value="0" />
-                      </VisualState.Setters>
-                    </VisualState>
+        <!-- KPI Cards Section using Grid with responsive columns - Each card loads independently -->
+        <Grid x:Name="KpiGrid">
+          <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+              <VisualState x:Name="KpiNarrow">
+                <VisualState.StateTriggers>
+                  <AdaptiveTrigger MinWindowWidth="0" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                  <!-- 1 column layout -->
+                  <Setter Target="KpiColumn1.Width" Value="*" />
+                  <Setter Target="KpiColumn2.Width" Value="0" />
+                  <Setter Target="KpiColumn3.Width" Value="0" />
+                  <Setter Target="KpiColumn4.Width" Value="0" />
+                  <!-- Revenue: Row 0, Col 0 -->
+                  <Setter Target="RevenueCardContainer.(Grid.Row)" Value="0" />
+                  <Setter Target="RevenueCardContainer.(Grid.Column)" Value="0" />
+                  <Setter Target="RevenueCardContainer.Margin" Value="0,0,0,16" />
+                  <!-- Orders: Row 1, Col 0 -->
+                  <Setter Target="OrdersCardContainer.(Grid.Row)" Value="1" />
+                  <Setter Target="OrdersCardContainer.(Grid.Column)" Value="0" />
+                  <Setter Target="OrdersCardContainer.Margin" Value="0,0,0,16" />
+                  <!-- Customers: Row 2, Col 0 -->
+                  <Setter Target="CustomersCardContainer.(Grid.Row)" Value="2" />
+                  <Setter Target="CustomersCardContainer.(Grid.Column)" Value="0" />
+                  <Setter Target="CustomersCardContainer.Margin" Value="0,0,0,16" />
+                  <!-- Inventory: Row 3, Col 0 -->
+                  <Setter Target="InventoryCardContainer.(Grid.Row)" Value="3" />
+                  <Setter Target="InventoryCardContainer.(Grid.Column)" Value="0" />
+                  <Setter Target="InventoryCardContainer.Margin" Value="0" />
+                </VisualState.Setters>
+              </VisualState>
 
-                    <VisualState x:Name="KpiMedium">
-                      <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="600" />
-                      </VisualState.StateTriggers>
-                      <VisualState.Setters>
-                        <!-- 2 column layout -->
-                        <Setter Target="KpiColumn1.Width" Value="*" />
-                        <Setter Target="KpiColumn2.Width" Value="*" />
-                        <Setter Target="KpiColumn3.Width" Value="0" />
-                        <Setter Target="KpiColumn4.Width" Value="0" />
-                        <!-- Revenue: Row 0, Col 0 -->
-                        <Setter Target="RevenueCard.(Grid.Row)" Value="0" />
-                        <Setter Target="RevenueCard.(Grid.Column)" Value="0" />
-                        <Setter Target="RevenueCard.Margin" Value="0,0,8,16" />
-                        <!-- Orders: Row 0, Col 1 -->
-                        <Setter Target="OrdersCard.(Grid.Row)" Value="0" />
-                        <Setter Target="OrdersCard.(Grid.Column)" Value="1" />
-                        <Setter Target="OrdersCard.Margin" Value="8,0,0,16" />
-                        <!-- Customers: Row 1, Col 0 -->
-                        <Setter Target="CustomersCard.(Grid.Row)" Value="1" />
-                        <Setter Target="CustomersCard.(Grid.Column)" Value="0" />
-                        <Setter Target="CustomersCard.Margin" Value="0,0,8,0" />
-                        <!-- Inventory: Row 1, Col 1 -->
-                        <Setter Target="InventoryCard.(Grid.Row)" Value="1" />
-                        <Setter Target="InventoryCard.(Grid.Column)" Value="1" />
-                        <Setter Target="InventoryCard.Margin" Value="8,0,0,0" />
-                      </VisualState.Setters>
-                    </VisualState>
+              <VisualState x:Name="KpiMedium">
+                <VisualState.StateTriggers>
+                  <AdaptiveTrigger MinWindowWidth="600" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                  <!-- 2 column layout -->
+                  <Setter Target="KpiColumn1.Width" Value="*" />
+                  <Setter Target="KpiColumn2.Width" Value="*" />
+                  <Setter Target="KpiColumn3.Width" Value="0" />
+                  <Setter Target="KpiColumn4.Width" Value="0" />
+                  <!-- Revenue: Row 0, Col 0 -->
+                  <Setter Target="RevenueCardContainer.(Grid.Row)" Value="0" />
+                  <Setter Target="RevenueCardContainer.(Grid.Column)" Value="0" />
+                  <Setter Target="RevenueCardContainer.Margin" Value="0,0,8,16" />
+                  <!-- Orders: Row 0, Col 1 -->
+                  <Setter Target="OrdersCardContainer.(Grid.Row)" Value="0" />
+                  <Setter Target="OrdersCardContainer.(Grid.Column)" Value="1" />
+                  <Setter Target="OrdersCardContainer.Margin" Value="8,0,0,16" />
+                  <!-- Customers: Row 1, Col 0 -->
+                  <Setter Target="CustomersCardContainer.(Grid.Row)" Value="1" />
+                  <Setter Target="CustomersCardContainer.(Grid.Column)" Value="0" />
+                  <Setter Target="CustomersCardContainer.Margin" Value="0,0,8,0" />
+                  <!-- Inventory: Row 1, Col 1 -->
+                  <Setter Target="InventoryCardContainer.(Grid.Row)" Value="1" />
+                  <Setter Target="InventoryCardContainer.(Grid.Column)" Value="1" />
+                  <Setter Target="InventoryCardContainer.Margin" Value="8,0,0,0" />
+                </VisualState.Setters>
+              </VisualState>
 
-                    <VisualState x:Name="KpiWide">
-                      <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1100" />
-                      </VisualState.StateTriggers>
-                      <VisualState.Setters>
-                        <!-- 4 column layout -->
-                        <Setter Target="KpiColumn1.Width" Value="*" />
-                        <Setter Target="KpiColumn2.Width" Value="*" />
-                        <Setter Target="KpiColumn3.Width" Value="*" />
-                        <Setter Target="KpiColumn4.Width" Value="*" />
-                        <!-- Revenue: Row 0, Col 0 -->
-                        <Setter Target="RevenueCard.(Grid.Row)" Value="0" />
-                        <Setter Target="RevenueCard.(Grid.Column)" Value="0" />
-                        <Setter Target="RevenueCard.Margin" Value="0,0,8,0" />
-                        <!-- Orders: Row 0, Col 1 -->
-                        <Setter Target="OrdersCard.(Grid.Row)" Value="0" />
-                        <Setter Target="OrdersCard.(Grid.Column)" Value="1" />
-                        <Setter Target="OrdersCard.Margin" Value="8,0,8,0" />
-                        <!-- Customers: Row 0, Col 2 -->
-                        <Setter Target="CustomersCard.(Grid.Row)" Value="0" />
-                        <Setter Target="CustomersCard.(Grid.Column)" Value="2" />
-                        <Setter Target="CustomersCard.Margin" Value="8,0,8,0" />
-                        <!-- Inventory: Row 0, Col 3 -->
-                        <Setter Target="InventoryCard.(Grid.Row)" Value="0" />
-                        <Setter Target="InventoryCard.(Grid.Column)" Value="3" />
-                        <Setter Target="InventoryCard.Margin" Value="8,0,0,0" />
-                      </VisualState.Setters>
-                    </VisualState>
-                  </VisualStateGroup>
-                </VisualStateManager.VisualStateGroups>
+              <VisualState x:Name="KpiWide">
+                <VisualState.StateTriggers>
+                  <AdaptiveTrigger MinWindowWidth="1100" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                  <!-- 4 column layout -->
+                  <Setter Target="KpiColumn1.Width" Value="*" />
+                  <Setter Target="KpiColumn2.Width" Value="*" />
+                  <Setter Target="KpiColumn3.Width" Value="*" />
+                  <Setter Target="KpiColumn4.Width" Value="*" />
+                  <!-- Revenue: Row 0, Col 0 -->
+                  <Setter Target="RevenueCardContainer.(Grid.Row)" Value="0" />
+                  <Setter Target="RevenueCardContainer.(Grid.Column)" Value="0" />
+                  <Setter Target="RevenueCardContainer.Margin" Value="0,0,8,0" />
+                  <!-- Orders: Row 0, Col 1 -->
+                  <Setter Target="OrdersCardContainer.(Grid.Row)" Value="0" />
+                  <Setter Target="OrdersCardContainer.(Grid.Column)" Value="1" />
+                  <Setter Target="OrdersCardContainer.Margin" Value="8,0,8,0" />
+                  <!-- Customers: Row 0, Col 2 -->
+                  <Setter Target="CustomersCardContainer.(Grid.Row)" Value="0" />
+                  <Setter Target="CustomersCardContainer.(Grid.Column)" Value="2" />
+                  <Setter Target="CustomersCardContainer.Margin" Value="8,0,8,0" />
+                  <!-- Inventory: Row 0, Col 3 -->
+                  <Setter Target="InventoryCardContainer.(Grid.Row)" Value="0" />
+                  <Setter Target="InventoryCardContainer.(Grid.Column)" Value="3" />
+                  <Setter Target="InventoryCardContainer.Margin" Value="8,0,0,0" />
+                </VisualState.Setters>
+              </VisualState>
+            </VisualStateGroup>
+          </VisualStateManager.VisualStateGroups>
 
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition x:Name="KpiColumn1" Width="*" />
-                  <ColumnDefinition x:Name="KpiColumn2" Width="*" />
-                  <ColumnDefinition x:Name="KpiColumn3" Width="*" />
-                  <ColumnDefinition x:Name="KpiColumn4" Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="KpiColumn1" Width="*" />
+            <ColumnDefinition x:Name="KpiColumn2" Width="*" />
+            <ColumnDefinition x:Name="KpiColumn3" Width="*" />
+            <ColumnDefinition x:Name="KpiColumn4" Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
 
-                <!-- Revenue Card -->
-                <Border x:Name="RevenueCard"
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="0,0,8,0"
-                        Background="{ThemeResource SurfaceBrush}"
+          <!-- Revenue Card with FeedView -->
+          <mvux:FeedView x:Name="RevenueCardContainer"
+                         Grid.Row="0"
+                         Grid.Column="0"
+                         Margin="0,0,8,0"
+                         Source="{Binding RevenueData}">
+            <mvux:FeedView.ValueTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource SurfaceBrush}"
                         CornerRadius="12"
                         Padding="20"
                         Translation="0,0,8">
@@ -269,17 +269,67 @@
                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
                                Margin="0,4,0,0">
                       <Run x:Uid="DashboardPage.KPI.ThisWeek" />
-                      <Run Text="{Binding Data.RevenueThisWeek}" />
+                      <Run Text="{Binding Data.RevenueThisWeekFormatted}" />
                     </TextBlock>
                   </Grid>
                 </Border>
+              </DataTemplate>
+            </mvux:FeedView.ValueTemplate>
+            <mvux:FeedView.ProgressTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        CornerRadius="12"
+                        Padding="20"
+                        MinHeight="140"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <ProgressRing IsActive="True"
+                                Width="32"
+                                Height="32"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                </Border>
+              </DataTemplate>
+            </mvux:FeedView.ProgressTemplate>
+            <mvux:FeedView.ErrorTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource ErrorContainerBrush}"
+                        CornerRadius="12"
+                        Padding="12"
+                        MinHeight="140"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Error loading revenue"
+                               Style="{StaticResource BodySmall}"
+                               Foreground="{ThemeResource OnErrorContainerBrush}"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding Error.Message}"
+                               Style="{StaticResource BodySmall}"
+                               Foreground="{ThemeResource OnErrorContainerBrush}"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxLines="3"
+                               Margin="0,4,0,0" />
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </mvux:FeedView.ErrorTemplate>
+          </mvux:FeedView>
 
-                <!-- Orders Card -->
-                <Border x:Name="OrdersCard"
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="8,0,8,0"
-                        Background="{ThemeResource SurfaceBrush}"
+          <!-- Orders Card with FeedView -->
+          <mvux:FeedView x:Name="OrdersCardContainer"
+                         Grid.Row="0"
+                         Grid.Column="1"
+                         Margin="8,0,8,0"
+                         Source="{Binding OrdersData}">
+            <mvux:FeedView.ValueTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource SurfaceBrush}"
                         CornerRadius="12"
                         Padding="20"
                         Translation="0,0,8">
@@ -351,13 +401,63 @@
                     </TextBlock>
                   </Grid>
                 </Border>
+              </DataTemplate>
+            </mvux:FeedView.ValueTemplate>
+            <mvux:FeedView.ProgressTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        CornerRadius="12"
+                        Padding="20"
+                        MinHeight="140"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <ProgressRing IsActive="True"
+                                Width="32"
+                                Height="32"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                </Border>
+              </DataTemplate>
+            </mvux:FeedView.ProgressTemplate>
+            <mvux:FeedView.ErrorTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource ErrorContainerBrush}"
+                        CornerRadius="12"
+                        Padding="12"
+                        MinHeight="140"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Error loading orders"
+                               Style="{StaticResource BodySmall}"
+                               Foreground="{ThemeResource OnErrorContainerBrush}"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding Error.Message}"
+                               Style="{StaticResource BodySmall}"
+                               Foreground="{ThemeResource OnErrorContainerBrush}"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxLines="3"
+                               Margin="0,4,0,0" />
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </mvux:FeedView.ErrorTemplate>
+          </mvux:FeedView>
 
-                <!-- Customers Card -->
-                <Border x:Name="CustomersCard"
-                        Grid.Row="0"
-                        Grid.Column="2"
-                        Margin="8,0,8,0"
-                        Background="{ThemeResource SurfaceBrush}"
+          <!-- Customers Card with FeedView -->
+          <mvux:FeedView x:Name="CustomersCardContainer"
+                         Grid.Row="0"
+                         Grid.Column="2"
+                         Margin="8,0,8,0"
+                         Source="{Binding CustomersData}">
+            <mvux:FeedView.ValueTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource SurfaceBrush}"
                         CornerRadius="12"
                         Padding="20"
                         Translation="0,0,8">
@@ -429,13 +529,63 @@
                     </TextBlock>
                   </Grid>
                 </Border>
+              </DataTemplate>
+            </mvux:FeedView.ValueTemplate>
+            <mvux:FeedView.ProgressTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        CornerRadius="12"
+                        Padding="20"
+                        MinHeight="140"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <ProgressRing IsActive="True"
+                                Width="32"
+                                Height="32"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                </Border>
+              </DataTemplate>
+            </mvux:FeedView.ProgressTemplate>
+            <mvux:FeedView.ErrorTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource ErrorContainerBrush}"
+                        CornerRadius="12"
+                        Padding="12"
+                        MinHeight="140"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Error loading customers"
+                               Style="{StaticResource BodySmall}"
+                               Foreground="{ThemeResource OnErrorContainerBrush}"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding Error.Message}"
+                               Style="{StaticResource BodySmall}"
+                               Foreground="{ThemeResource OnErrorContainerBrush}"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxLines="3"
+                               Margin="0,4,0,0" />
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </mvux:FeedView.ErrorTemplate>
+          </mvux:FeedView>
 
-                <!-- Inventory Card -->
-                <Border x:Name="InventoryCard"
-                        Grid.Row="0"
-                        Grid.Column="3"
-                        Margin="8,0,0,0"
-                        Background="{ThemeResource SurfaceBrush}"
+          <!-- Inventory Card with FeedView -->
+          <mvux:FeedView x:Name="InventoryCardContainer"
+                         Grid.Row="0"
+                         Grid.Column="3"
+                         Margin="8,0,0,0"
+                         Source="{Binding ProductsData}">
+            <mvux:FeedView.ValueTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource SurfaceBrush}"
                         CornerRadius="12"
                         Padding="20"
                         Translation="0,0,8">
@@ -507,19 +657,14 @@
                     </TextBlock>
                   </Grid>
                 </Border>
-              </Grid>
-            </DataTemplate>
-          </mvux:FeedView.ValueTemplate>
-
-          <mvux:FeedView.ProgressTemplate>
-            <DataTemplate>
-              <Grid>
+              </DataTemplate>
+            </mvux:FeedView.ValueTemplate>
+            <mvux:FeedView.ProgressTemplate>
+              <DataTemplate>
                 <Border Background="{ThemeResource SurfaceBrush}"
                         CornerRadius="12"
                         Padding="20"
-                        Width="280"
-                        Height="160"
-                        HorizontalAlignment="Left"
+                        MinHeight="140"
                         Translation="0,0,8">
                   <Border.Shadow>
                     <ThemeShadow />
@@ -530,10 +675,36 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center" />
                 </Border>
-              </Grid>
-            </DataTemplate>
-          </mvux:FeedView.ProgressTemplate>
-        </mvux:FeedView>
+              </DataTemplate>
+            </mvux:FeedView.ProgressTemplate>
+            <mvux:FeedView.ErrorTemplate>
+              <DataTemplate>
+                <Border Background="{ThemeResource ErrorContainerBrush}"
+                        CornerRadius="12"
+                        Padding="12"
+                        MinHeight="140"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Error loading inventory"
+                               Style="{StaticResource BodySmall}"
+                               Foreground="{ThemeResource OnErrorContainerBrush}"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="{Binding Error.Message}"
+                               Style="{StaticResource BodySmall}"
+                               Foreground="{ThemeResource OnErrorContainerBrush}"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"
+                               MaxLines="3"
+                               Margin="0,4,0,0" />
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </mvux:FeedView.ErrorTemplate>
+          </mvux:FeedView>
+        </Grid>
 
         <!-- Activity Section Header -->
         <TextBlock x:Uid="DashboardPage.Section.Activity"
@@ -588,6 +759,7 @@
                 </StackPanel>
                 <Button Grid.Column="1"
                         x:Uid="DashboardPage.Button.ViewAll"
+                        Command="{Binding NavigateToOrderList}"
                         Style="{StaticResource TextButtonStyle}" />
               </Grid>
 
@@ -600,51 +772,58 @@
                     <ItemsRepeater ItemsSource="{Binding Data}">
                       <ItemsRepeater.ItemTemplate>
                         <DataTemplate>
-                          <Grid Padding="16,10"
-                                Background="Transparent">
-                            <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="Auto" />
-                              <ColumnDefinition Width="*" />
-                              <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                              <RowDefinition Height="Auto" />
-                              <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+                          <Button Click="OrderRow_Click"
+                                  HorizontalAlignment="Stretch"
+                                  HorizontalContentAlignment="Stretch"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  Padding="0">
+                            <Grid Padding="16,10"
+                                  Background="Transparent">
+                              <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                              </Grid.ColumnDefinitions>
+                              <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                              </Grid.RowDefinitions>
 
-                            <FontIcon Grid.Row="0"
-                                      Grid.RowSpan="2"
-                                      Grid.Column="0"
-                                      Glyph="{Binding StatusIcon}"
-                                      FontSize="16"
-                                      Foreground="{ThemeResource PrimaryBrush}"
-                                      VerticalAlignment="Center"
-                                      Margin="0,0,12,0" />
+                              <FontIcon Grid.Row="0"
+                                        Grid.RowSpan="2"
+                                        Grid.Column="0"
+                                        Glyph="{Binding StatusIcon}"
+                                        FontSize="16"
+                                        Foreground="{ThemeResource PrimaryBrush}"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,12,0" />
 
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="1"
-                                       Text="{Binding OrderNumber}"
-                                       Style="{StaticResource BodyMedium}"
-                                       Foreground="{ThemeResource OnSurfaceBrush}" />
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="1"
-                                       Text="{Binding CustomerName}"
-                                       Style="{StaticResource BodySmall}"
-                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                              <TextBlock Grid.Row="0"
+                                         Grid.Column="1"
+                                         Text="{Binding OrderNumber}"
+                                         Style="{StaticResource BodyMedium}"
+                                         Foreground="{ThemeResource OnSurfaceBrush}" />
+                              <TextBlock Grid.Row="1"
+                                         Grid.Column="1"
+                                         Text="{Binding CustomerName}"
+                                         Style="{StaticResource BodySmall}"
+                                         Foreground="{ThemeResource OnSurfaceVariantBrush}" />
 
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="2"
-                                       Text="{Binding AmountFormatted}"
-                                       Style="{StaticResource BodyMedium}"
-                                       Foreground="{ThemeResource OnSurfaceBrush}"
-                                       HorizontalAlignment="Right" />
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="2"
-                                       Text="{Binding DateFormatted}"
-                                       Style="{StaticResource BodySmall}"
-                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                       HorizontalAlignment="Right" />
-                          </Grid>
+                              <TextBlock Grid.Row="0"
+                                         Grid.Column="2"
+                                         Text="{Binding AmountFormatted}"
+                                         Style="{StaticResource BodyMedium}"
+                                         Foreground="{ThemeResource OnSurfaceBrush}"
+                                         HorizontalAlignment="Right" />
+                              <TextBlock Grid.Row="1"
+                                         Grid.Column="2"
+                                         Text="{Binding DateFormatted}"
+                                         Style="{StaticResource BodySmall}"
+                                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                         HorizontalAlignment="Right" />
+                            </Grid>
+                          </Button>
                         </DataTemplate>
                       </ItemsRepeater.ItemTemplate>
                     </ItemsRepeater>
@@ -701,6 +880,7 @@
                 </StackPanel>
                 <Button Grid.Column="1"
                         x:Uid="DashboardPage.Button.ViewAll"
+                        Command="{Binding NavigateToProductList}"
                         Style="{StaticResource TextButtonStyle}" />
               </Grid>
 

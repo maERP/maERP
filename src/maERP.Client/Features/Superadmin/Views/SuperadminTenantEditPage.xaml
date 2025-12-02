@@ -396,6 +396,277 @@
             </Border>
           </Grid>
 
+          <!-- Users Section -->
+          <StackPanel Spacing="12"
+                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <!-- Section Header -->
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <StackPanel Grid.Column="0"
+                          Orientation="Horizontal"
+                          Spacing="12">
+                <FontIcon Glyph="&#xE716;"
+                          FontSize="20"
+                          Foreground="{ThemeResource SecondaryBrush}" />
+                <TextBlock x:Uid="SuperadminTenantEditPage.Section.Users"
+                           Style="{StaticResource TitleMedium}"
+                           Foreground="{ThemeResource OnSurfaceBrush}"
+                           VerticalAlignment="Center" />
+                <!-- User Count Badge -->
+                <Border CornerRadius="12"
+                        Padding="8,4"
+                        Background="{ThemeResource SecondaryContainerBrush}"
+                        VerticalAlignment="Center">
+                  <TextBlock Text="{Binding UserCount}"
+                             Style="{StaticResource LabelMedium}"
+                             Foreground="{ThemeResource OnSecondaryContainerBrush}" />
+                </Border>
+              </StackPanel>
+
+              <!-- Add User Button with Flyout -->
+              <Button Grid.Column="2"
+                      x:Name="AddUserButton"
+                      Style="{StaticResource FilledTonalButtonStyle}"
+                      Click="AddUserButton_Click">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="8">
+                  <FontIcon Glyph="&#xE710;"
+                            FontSize="14" />
+                  <TextBlock x:Uid="SuperadminTenantEditPage.Button.AddUser" />
+                </StackPanel>
+                <Button.Flyout>
+                  <Flyout x:Name="AddUserFlyout"
+                          Placement="Bottom">
+                    <StackPanel Spacing="16"
+                                MinWidth="320">
+                      <TextBlock x:Uid="SuperadminTenantEditPage.Flyout.AddUser.Title"
+                                 Style="{StaticResource TitleSmall}"
+                                 Foreground="{ThemeResource OnSurfaceBrush}" />
+
+                      <!-- Loading Indicator -->
+                      <ProgressRing IsActive="{Binding IsLoadingAvailableUsers}"
+                                    Visibility="{Binding IsLoadingAvailableUsers, Converter={StaticResource BoolToVisibilityConverter}}"
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center" />
+
+                      <!-- User Selection -->
+                      <StackPanel Spacing="8"
+                                  Visibility="{Binding IsLoadingAvailableUsers, Converter={StaticResource BoolToInverseVisibilityConverter}}">
+                        <ComboBox x:Uid="SuperadminTenantEditPage.Flyout.AddUser.ComboBox"
+                                  ItemsSource="{Binding AvailableUsers}"
+                                  SelectedItem="{Binding SelectedUserToAdd, Mode=TwoWay}"
+                                  HorizontalAlignment="Stretch"
+                                  MinWidth="280">
+                          <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                              <StackPanel Orientation="Horizontal"
+                                          Spacing="8">
+                                <TextBlock>
+                                  <Run Text="{Binding Firstname}" />
+                                  <Run Text=" " />
+                                  <Run Text="{Binding Lastname}" />
+                                </TextBlock>
+                                <TextBlock Text="-"
+                                           Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                                <TextBlock Text="{Binding Email}"
+                                           Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                              </StackPanel>
+                            </DataTemplate>
+                          </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <!-- No Users Available Message -->
+                        <TextBlock x:Uid="SuperadminTenantEditPage.Flyout.AddUser.NoUsersAvailable"
+                                   Style="{StaticResource BodySmall}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   Visibility="{Binding HasNoAvailableUsers, Converter={StaticResource BoolToVisibilityConverter}}" />
+                      </StackPanel>
+
+                      <!-- Action Buttons -->
+                      <Grid ColumnSpacing="8"
+                            Visibility="{Binding IsLoadingAvailableUsers, Converter={StaticResource BoolToInverseVisibilityConverter}}">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0"
+                                x:Uid="SuperadminTenantEditPage.Flyout.AddUser.Cancel"
+                                Style="{StaticResource OutlinedButtonStyle}"
+                                HorizontalAlignment="Stretch"
+                                Click="CancelAddUserFlyout_Click" />
+                        <Button Grid.Column="1"
+                                x:Uid="SuperadminTenantEditPage.Flyout.AddUser.Add"
+                                Style="{StaticResource FilledButtonStyle}"
+                                HorizontalAlignment="Stretch"
+                                IsEnabled="{Binding CanAddUser}"
+                                Click="ConfirmAddUser_Click" />
+                      </Grid>
+                    </StackPanel>
+                  </Flyout>
+                </Button.Flyout>
+              </Button>
+            </Grid>
+
+            <!-- Users Table -->
+            <Border Background="{ThemeResource SurfaceBrush}"
+                    CornerRadius="12"
+                    Translation="0,0,8"
+                    Visibility="{Binding HasUsers, Converter={StaticResource BoolToVisibilityConverter}}">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
+              <StackPanel>
+                <!-- Table Header -->
+                <Grid Padding="16,12"
+                      Background="{ThemeResource SurfaceVariantBrush}"
+                      CornerRadius="12,12,0,0">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="150" />
+                    <ColumnDefinition Width="*" MinWidth="200" />
+                    <ColumnDefinition Width="Auto" MinWidth="100" />
+                    <ColumnDefinition Width="Auto" MinWidth="80" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Grid.Column="0"
+                             x:Uid="SuperadminTenantEditPage.Users.Header.Name"
+                             Style="{StaticResource LabelMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                  <TextBlock Grid.Column="1"
+                             x:Uid="SuperadminTenantEditPage.Users.Header.Email"
+                             Style="{StaticResource LabelMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                  <TextBlock Grid.Column="2"
+                             x:Uid="SuperadminTenantEditPage.Users.Header.Roles"
+                             Style="{StaticResource LabelMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                  <TextBlock Grid.Column="3"
+                             x:Uid="SuperadminTenantEditPage.Users.Header.Actions"
+                             Style="{StaticResource LabelMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                             HorizontalAlignment="Center" />
+                </Grid>
+
+                <!-- Users List -->
+                <ItemsRepeater ItemsSource="{Binding Users}">
+                  <ItemsRepeater.Layout>
+                    <StackLayout Orientation="Vertical" />
+                  </ItemsRepeater.Layout>
+                  <ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                      <Grid Padding="16,12"
+                            BorderBrush="{ThemeResource OutlineVariantBrush}"
+                            BorderThickness="0,0,0,1">
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" MinWidth="150" />
+                          <ColumnDefinition Width="*" MinWidth="200" />
+                          <ColumnDefinition Width="Auto" MinWidth="100" />
+                          <ColumnDefinition Width="Auto" MinWidth="80" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Name with Default Badge -->
+                        <StackPanel Grid.Column="0"
+                                    Orientation="Horizontal"
+                                    Spacing="8"
+                                    VerticalAlignment="Center">
+                          <TextBlock Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center">
+                            <Run Text="{Binding Firstname}" />
+                            <Run Text=" " />
+                            <Run Text="{Binding Lastname}" />
+                          </TextBlock>
+                          <!-- Default Tenant Badge -->
+                          <Border CornerRadius="8"
+                                  Padding="6,2"
+                                  Background="{ThemeResource PrimaryContainerBrush}"
+                                  Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock x:Uid="SuperadminTenantEditPage.Users.Badge.Default"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnPrimaryContainerBrush}" />
+                          </Border>
+                        </StackPanel>
+
+                        <!-- Email -->
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding Email}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis" />
+
+                        <!-- Role Badges -->
+                        <StackPanel Grid.Column="2"
+                                    Orientation="Horizontal"
+                                    Spacing="4"
+                                    VerticalAlignment="Center">
+                          <!-- Manage Tenant Badge -->
+                          <Border CornerRadius="8"
+                                  Padding="6,2"
+                                  Background="{ThemeResource TertiaryContainerBrush}"
+                                  Visibility="{Binding RoleManageTenant, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock x:Uid="SuperadminTenantEditPage.Users.Badge.ManageTenant"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnTertiaryContainerBrush}" />
+                          </Border>
+                          <!-- Manage User Badge -->
+                          <Border CornerRadius="8"
+                                  Padding="6,2"
+                                  Background="{ThemeResource SecondaryContainerBrush}"
+                                  Visibility="{Binding RoleManageUser, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock x:Uid="SuperadminTenantEditPage.Users.Badge.ManageUser"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSecondaryContainerBrush}" />
+                          </Border>
+                        </StackPanel>
+
+                        <!-- Actions -->
+                        <StackPanel Grid.Column="3"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                          <Button Style="{StaticResource TextButtonStyle}"
+                                  Click="RemoveUserButton_Click"
+                                  Tag="{Binding}"
+                                  MinWidth="44"
+                                  MinHeight="44">
+                            <FontIcon Glyph="&#xE74D;"
+                                      FontSize="16"
+                                      Foreground="{ThemeResource ErrorBrush}" />
+                          </Button>
+                        </StackPanel>
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+              </StackPanel>
+            </Border>
+
+            <!-- No Users Placeholder -->
+            <Border Background="{ThemeResource SurfaceVariantBrush}"
+                    CornerRadius="12"
+                    Padding="24"
+                    Visibility="{Binding HasUsers, Converter={StaticResource BoolToInverseVisibilityConverter}}">
+              <StackPanel HorizontalAlignment="Center"
+                          Spacing="8">
+                <FontIcon Glyph="&#xE716;"
+                          FontSize="32"
+                          Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                <TextBlock x:Uid="SuperadminTenantEditPage.NoUsers"
+                           Style="{StaticResource BodyMedium}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           HorizontalAlignment="Center" />
+                <TextBlock x:Uid="SuperadminTenantEditPage.NoUsers.Hint"
+                           Style="{StaticResource LabelSmall}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           HorizontalAlignment="Center" />
+              </StackPanel>
+            </Border>
+          </StackPanel>
+
         </StackPanel>
       </Grid>
     </ScrollViewer>

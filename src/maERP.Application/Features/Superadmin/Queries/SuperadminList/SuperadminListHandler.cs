@@ -2,13 +2,13 @@ using System.Linq.Dynamic.Core;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Extensions;
-using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Dtos.Superadmin;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Superadmin.Queries.SuperadminList;
 
-public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, PaginatedResult<TenantListDto>>
+public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, PaginatedResult<SuperadminTenantListDto>>
 {
     private readonly IAppLogger<SuperadminListHandler> _logger;
     private readonly ITenantRepository _tenantRepository;
@@ -21,7 +21,7 @@ public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, Pagina
         _tenantRepository = tenantRepository;
     }
 
-    public async Task<PaginatedResult<TenantListDto>> Handle(SuperadminListQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<SuperadminTenantListDto>> Handle(SuperadminListQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("SuperadminListHandler.Handle: Retrieving tenants.");
 
@@ -51,7 +51,7 @@ public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, Pagina
         }
 
         return await query
-            .Select(t => new TenantListDto
+            .Select(t => new SuperadminTenantListDto
             {
                 Id = t.Id,
                 Name = t.Name,

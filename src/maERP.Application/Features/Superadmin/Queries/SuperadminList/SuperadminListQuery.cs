@@ -1,10 +1,10 @@
-using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Dtos.Superadmin;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Superadmin.Queries.SuperadminList;
 
-public class SuperadminListQuery : IRequest<PaginatedResult<TenantListDto>>
+public class SuperadminListQuery : IRequest<PaginatedResult<SuperadminTenantListDto>>
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }

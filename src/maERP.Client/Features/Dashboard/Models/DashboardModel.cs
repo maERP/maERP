@@ -1,3 +1,10 @@
+using maERP.Client.Features.Dashboard.Services;
+using maERP.Client.Features.Orders;
+using maERP.Client.Features.Orders.Models;
+using maERP.Client.Features.Products.Models;
+using maERP.Domain.Enums;
+using Microsoft.Extensions.Logging;
+
 namespace maERP.Client.Features.Dashboard.Models;
 
 /// <summary>
@@ -7,14 +14,42 @@ namespace maERP.Client.Features.Dashboard.Models;
 public partial record DashboardModel
 {
     private readonly IStringLocalizer _localizer;
+    private readonly IStatisticsService _statisticsService;
+    private readonly INavigator _navigator;
+    private readonly ILogger<DashboardModel> _logger;
 
-    public DashboardModel(IStringLocalizer localizer)
+    public DashboardModel(
+        IStringLocalizer localizer,
+        IStatisticsService statisticsService,
+        INavigator navigator,
+        ILogger<DashboardModel> logger)
     {
         _localizer = localizer;
+        _statisticsService = statisticsService;
+        _navigator = navigator;
+        _logger = logger;
     }
 
-    // KPI Data Feeds
-    public IFeed<DashboardKpiData> KpiData => Feed.Async(LoadKpiDataAsync);
+    public async ValueTask NavigateToOrderList()
+    {
+        await _navigator.NavigateViewModelAsync<OrderListModel>(this);
+    }
+
+    public async ValueTask NavigateToProductList()
+    {
+        await _navigator.NavigateViewModelAsync<ProductListModel>(this);
+    }
+
+    public async ValueTask ViewOrder(RecentOrderItem order)
+    {
+        await _navigator.NavigateDataAsync(this, new OrderDetailData(order.Id));
+    }
+
+    // KPI Data Feeds - four separate feeds for parallel loading
+    public IFeed<RevenueKpiData> RevenueData => Feed.Async(LoadRevenueDataAsync);
+    public IFeed<OrdersKpiData> OrdersData => Feed.Async(LoadOrdersDataAsync);
+    public IFeed<CustomersKpiData> CustomersData => Feed.Async(LoadCustomersDataAsync);
+    public IFeed<ProductsKpiData> ProductsData => Feed.Async(LoadProductsDataAsync);
 
     // Recent Orders Feed
     public IListFeed<RecentOrderItem> RecentOrders => ListFeed.Async(LoadRecentOrdersAsync);
@@ -25,69 +60,188 @@ public partial record DashboardModel
     // Low Stock Alerts Feed
     public IListFeed<LowStockItem> LowStockAlerts => ListFeed.Async(LoadLowStockAlertsAsync);
 
-    private async ValueTask<DashboardKpiData> LoadKpiDataAsync(CancellationToken ct)
+    private async ValueTask<RevenueKpiData> LoadRevenueDataAsync(CancellationToken ct)
     {
-        // Simulate API call delay
-        await Task.Delay(500, ct);
-
-        // Return dummy data
-        return new DashboardKpiData
+        try
         {
-            RevenueToday = 12489.50m,
-            RevenueThisWeek = 87234.00m,
-            RevenueThisMonth = 324567.80m,
-            RevenueChange = 12.5m,
+            _logger.LogInformation("Loading revenue KPI data");
+            var data = await _statisticsService.GetSalesTodayAsync(ct);
 
-            OrdersToday = 47,
-            OrdersPending = 23,
-            OrdersThisWeek = 312,
-            OrdersChange = 8.3m,
+            if (data == null)
+            {
+                _logger.LogWarning("SalesToday service returned null");
+                return new RevenueKpiData();
+            }
 
-            CustomersTotal = 1847,
-            CustomersNewThisMonth = 56,
-            CustomersChange = 15.2m,
+            _logger.LogInformation("Revenue KPI loaded - RevenueToday: {RevenueToday}", data.RevenueToday);
 
-            ProductsInStock = 2341,
-            ProductsTotal = 2567,
-            ProductsLowStock = 12,
-            ProductsChange = -3.1m
-        };
+            return new RevenueKpiData
+            {
+                RevenueToday = data.RevenueToday,
+                RevenueThisWeek = data.RevenueThisWeek,
+                RevenueThisMonth = data.RevenueThisMonth,
+                RevenueChange = data.RevenueChangePercent
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading revenue KPI data");
+            throw;
+        }
+    }
+
+    private async ValueTask<OrdersKpiData> LoadOrdersDataAsync(CancellationToken ct)
+    {
+        try
+        {
+            _logger.LogInformation("Loading orders KPI data");
+            var data = await _statisticsService.GetOrdersTodayAsync(ct);
+
+            if (data == null)
+            {
+                _logger.LogWarning("OrdersToday service returned null");
+                return new OrdersKpiData();
+            }
+
+            _logger.LogInformation("Orders KPI loaded - OrdersToday: {OrdersToday}", data.OrdersToday);
+
+            return new OrdersKpiData
+            {
+                OrdersToday = data.OrdersToday,
+                OrdersPending = data.OrdersPending,
+                OrdersThisWeek = data.OrdersThisWeek,
+                OrdersChange = data.OrdersChangePercent
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading orders KPI data");
+            throw;
+        }
+    }
+
+    private async ValueTask<CustomersKpiData> LoadCustomersDataAsync(CancellationToken ct)
+    {
+        try
+        {
+            _logger.LogInformation("Loading customers KPI data");
+            var data = await _statisticsService.GetCustomersTodayAsync(ct);
+
+            if (data == null)
+            {
+                _logger.LogWarning("CustomersToday service returned null");
+                return new CustomersKpiData();
+            }
+
+            _logger.LogInformation("Customers KPI loaded - CustomersTotal: {CustomersTotal}", data.CustomersTotal);
+
+            return new CustomersKpiData
+            {
+                CustomersTotal = data.CustomersTotal,
+                CustomersNewThisMonth = data.CustomersNewThisMonth,
+                CustomersChange = data.CustomersChangePercent
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading customers KPI data");
+            throw;
+        }
+    }
+
+    private async ValueTask<ProductsKpiData> LoadProductsDataAsync(CancellationToken ct)
+    {
+        try
+        {
+            _logger.LogInformation("Loading products KPI data");
+            var data = await _statisticsService.GetProductsTodayAsync(ct);
+
+            if (data == null)
+            {
+                _logger.LogWarning("ProductsToday service returned null");
+                return new ProductsKpiData();
+            }
+
+            _logger.LogInformation("Products KPI loaded - ProductsTotal: {ProductsTotal}", data.ProductsTotal);
+
+            return new ProductsKpiData
+            {
+                ProductsInStock = data.ProductsInStock,
+                ProductsTotal = data.ProductsTotal,
+                ProductsLowStock = data.ProductsLowStock,
+                ProductsChange = data.ProductsChangePercent
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading products KPI data");
+            throw;
+        }
     }
 
     private async ValueTask<IImmutableList<RecentOrderItem>> LoadRecentOrdersAsync(CancellationToken ct)
     {
-        // Simulate API call delay
-        await Task.Delay(300, ct);
-
-        // Return dummy data
-        var orders = new List<RecentOrderItem>
+        try
         {
-            new() { OrderNumber = "ORD-2024-001247", CustomerName = "Max Mustermann", Amount = 234.50m, Status = OrderStatus.Processing, OrderDate = DateTime.Now.AddHours(-1) },
-            new() { OrderNumber = "ORD-2024-001246", CustomerName = "Anna Schmidt", Amount = 89.99m, Status = OrderStatus.Shipped, OrderDate = DateTime.Now.AddHours(-3) },
-            new() { OrderNumber = "ORD-2024-001245", CustomerName = "Peter Weber", Amount = 567.00m, Status = OrderStatus.Pending, OrderDate = DateTime.Now.AddHours(-5) },
-            new() { OrderNumber = "ORD-2024-001244", CustomerName = "Maria Fischer", Amount = 123.45m, Status = OrderStatus.Delivered, OrderDate = DateTime.Now.AddDays(-1) },
-            new() { OrderNumber = "ORD-2024-001243", CustomerName = "Thomas Bauer", Amount = 445.00m, Status = OrderStatus.Processing, OrderDate = DateTime.Now.AddDays(-1) }
-        };
+            _logger.LogInformation("Loading recent orders");
+            var data = await _statisticsService.GetOrdersLatestAsync(5, ct);
 
-        return orders.ToImmutableList();
+            if (data == null || data.Orders.Count == 0)
+            {
+                _logger.LogWarning("OrdersLatest service returned null or empty");
+                return ImmutableList<RecentOrderItem>.Empty;
+            }
+
+            var orders = data.Orders.Select(o => new RecentOrderItem
+            {
+                Id = o.Id,
+                OrderNumber = o.OrderNumber,
+                CustomerName = o.CustomerName,
+                Amount = o.Amount,
+                Status = o.Status,
+                OrderDate = o.OrderDate
+            }).ToImmutableList();
+
+            _logger.LogInformation("Successfully loaded {Count} recent orders", orders.Count);
+            return orders;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading recent orders");
+            throw;
+        }
     }
 
     private async ValueTask<IImmutableList<TopProductItem>> LoadTopProductsAsync(CancellationToken ct)
     {
-        // Simulate API call delay
-        await Task.Delay(400, ct);
-
-        // Return dummy data
-        var products = new List<TopProductItem>
+        try
         {
-            new() { Rank = 1, ProductName = "Wireless Bluetooth Headphones", Sku = "WBH-001", QuantitySold = 156, Revenue = 15444.00m },
-            new() { Rank = 2, ProductName = "USB-C Charging Cable 2m", Sku = "UCC-002", QuantitySold = 234, Revenue = 4680.00m },
-            new() { Rank = 3, ProductName = "Smartphone Case Premium", Sku = "SCP-003", QuantitySold = 189, Revenue = 5670.00m },
-            new() { Rank = 4, ProductName = "LED Desk Lamp", Sku = "LDL-004", QuantitySold = 98, Revenue = 4900.00m },
-            new() { Rank = 5, ProductName = "Portable Power Bank 20000mAh", Sku = "PPB-005", QuantitySold = 87, Revenue = 4350.00m }
-        };
+            _logger.LogInformation("Loading top products");
+            var data = await _statisticsService.GetProductsBestSellingAsync(5, ct);
 
-        return products.ToImmutableList();
+            if (data == null || data.Products.Count == 0)
+            {
+                _logger.LogWarning("ProductsBestSelling service returned null or empty");
+                return ImmutableList<TopProductItem>.Empty;
+            }
+
+            var products = data.Products.Select(p => new TopProductItem
+            {
+                Rank = p.Rank,
+                ProductName = p.ProductName,
+                Sku = p.Sku,
+                QuantitySold = p.QuantitySold,
+                Revenue = p.Revenue
+            }).ToImmutableList();
+
+            _logger.LogInformation("Successfully loaded {Count} top products", products.Count);
+            return products;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error loading top products");
+            throw;
+        }
     }
 
     private async ValueTask<IImmutableList<LowStockItem>> LoadLowStockAlertsAsync(CancellationToken ct)
@@ -109,55 +263,69 @@ public partial record DashboardModel
 }
 
 /// <summary>
-/// KPI data for the dashboard overview cards.
+/// Revenue KPI data for the first dashboard card.
 /// </summary>
-public record DashboardKpiData
+public record RevenueKpiData
 {
-    // Revenue KPIs
     public decimal RevenueToday { get; init; }
     public decimal RevenueThisWeek { get; init; }
     public decimal RevenueThisMonth { get; init; }
     public decimal RevenueChange { get; init; }
 
-    // Order KPIs
+    public string RevenueTodayFormatted => RevenueToday.ToString("C0");
+    public string RevenueThisWeekFormatted => RevenueThisWeek.ToString("C0");
+    public string RevenueChangeFormatted => $"{(RevenueChange >= 0 ? "+" : "")}{RevenueChange:F1}%";
+    public bool RevenueChangePositive => RevenueChange >= 0;
+}
+
+/// <summary>
+/// Orders KPI data for the second dashboard card.
+/// </summary>
+public record OrdersKpiData
+{
     public int OrdersToday { get; init; }
     public int OrdersPending { get; init; }
     public int OrdersThisWeek { get; init; }
     public decimal OrdersChange { get; init; }
 
-    // Customer KPIs
+    public string OrdersChangeFormatted => $"{(OrdersChange >= 0 ? "+" : "")}{OrdersChange:F1}%";
+    public bool OrdersChangePositive => OrdersChange >= 0;
+}
+
+/// <summary>
+/// Customers KPI data for the third dashboard card.
+/// </summary>
+public record CustomersKpiData
+{
     public int CustomersTotal { get; init; }
     public int CustomersNewThisMonth { get; init; }
     public decimal CustomersChange { get; init; }
 
-    // Product/Inventory KPIs
+    public string CustomersChangeFormatted => $"{(CustomersChange >= 0 ? "+" : "")}{CustomersChange:F1}%";
+    public bool CustomersChangePositive => CustomersChange >= 0;
+}
+
+/// <summary>
+/// Products/Inventory KPI data for the fourth dashboard card.
+/// </summary>
+public record ProductsKpiData
+{
     public int ProductsInStock { get; init; }
     public int ProductsTotal { get; init; }
     public int ProductsLowStock { get; init; }
     public decimal ProductsChange { get; init; }
 
-    // Formatted properties for display
-    public string RevenueTodayFormatted => RevenueToday.ToString("C0");
-    public string RevenueChangeFormatted => $"{(RevenueChange >= 0 ? "+" : "")}{RevenueChange:F1}%";
-    public bool RevenueChangePositive => RevenueChange >= 0;
-
-    public string OrdersChangeFormatted => $"{(OrdersChange >= 0 ? "+" : "")}{OrdersChange:F1}%";
-    public bool OrdersChangePositive => OrdersChange >= 0;
-
-    public string CustomersChangeFormatted => $"{(CustomersChange >= 0 ? "+" : "")}{CustomersChange:F1}%";
-    public bool CustomersChangePositive => CustomersChange >= 0;
-
     public string ProductsChangeFormatted => $"{(ProductsChange >= 0 ? "+" : "")}{ProductsChange:F1}%";
     public bool ProductsChangePositive => ProductsChange >= 0;
-
     public string StockRatio => $"{ProductsInStock} / {ProductsTotal}";
 }
 
 /// <summary>
 /// Recent order item for the activity list.
 /// </summary>
-public record RecentOrderItem
+public partial record RecentOrderItem
 {
+    public Guid Id { get; init; }
     public string OrderNumber { get; init; } = string.Empty;
     public string CustomerName { get; init; } = string.Empty;
     public decimal Amount { get; init; }
@@ -168,20 +336,18 @@ public record RecentOrderItem
     public string DateFormatted => OrderDate.ToString("g");
     public string StatusIcon => Status switch
     {
-        OrderStatus.Pending => "\uE823",      // Clock
-        OrderStatus.Processing => "\uE895",   // Sync
-        OrderStatus.Shipped => "\uE122",      // Airplane
-        OrderStatus.Delivered => "\uE73E",    // Checkmark
-        _ => "\uE946"                         // Unknown
+        OrderStatus.Pending => "\uE823",           // Clock
+        OrderStatus.Processing => "\uE895",        // Sync
+        OrderStatus.ReadyForDelivery => "\uE7B8",  // Package
+        OrderStatus.PartiallyDelivered => "\uE122", // Airplane
+        OrderStatus.Completed => "\uE73E",         // Checkmark
+        OrderStatus.Cancelled => "\uE711",         // Cancel
+        OrderStatus.Returned => "\uE72B",          // Back
+        OrderStatus.Refunded => "\uE8BB",          // Money
+        OrderStatus.OnHold => "\uE769",            // Pause
+        OrderStatus.Failed => "\uE783",            // Error
+        _ => "\uE946"                              // Unknown
     };
-}
-
-public enum OrderStatus
-{
-    Pending,
-    Processing,
-    Shipped,
-    Delivered
 }
 
 /// <summary>

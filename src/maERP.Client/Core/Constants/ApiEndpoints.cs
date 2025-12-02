@@ -111,6 +111,12 @@ public static class ApiEndpoints
     public static class Statistics
     {
         public const string Base = $"{ApiBase}/statistics";
+        public const string SalesToday = $"{Base}/SalesToday";
+        public const string OrdersToday = $"{Base}/OrdersToday";
+        public const string CustomersToday = $"{Base}/CustomersToday";
+        public const string ProductsToday = $"{Base}/ProductsToday";
+        public const string OrdersLatest = $"{Base}/OrdersLatest";
+        public const string ProductsBestSelling = $"{Base}/ProductsBestSelling";
     }
 
     // Tenants
@@ -136,5 +142,9 @@ public static class ApiEndpoints
         public static string UserById(string id) => $"{Users}/{id}";
         public const string Tenants = $"{Base}/tenants";
         public static string TenantById(Guid id) => $"{Tenants}/{id}";
+
+        // User-Tenant management endpoints
+        public static string UserTenants(string userId) => $"{Users}/{userId}/tenants";
+        public static string UserTenantById(string userId, Guid tenantId) => $"{Users}/{userId}/tenants/{tenantId}";
     }
 }

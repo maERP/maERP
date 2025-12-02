@@ -151,14 +151,6 @@
                 </ToggleMenuFlyoutItem.Icon>
               </ToggleMenuFlyoutItem>
               <MenuFlyoutSeparator />
-              <MenuFlyoutItem x:Name="MenuItemSettings"
-                              x:Uid="Shell.UserMenu.Settings"
-                              Click="OnSettingsClick">
-                <MenuFlyoutItem.Icon>
-                  <FontIcon Glyph="&#xE713;" />
-                </MenuFlyoutItem.Icon>
-              </MenuFlyoutItem>
-              <MenuFlyoutSeparator />
               <MenuFlyoutItem x:Name="MenuItemLogout"
                               x:Uid="Shell.UserMenu.Logout"
                               Click="OnLogoutClick">

@@ -1,7 +1,7 @@
 using System.Net;
 using System.Linq;
 using maERP.Domain.Constants;
-using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Dtos.Superadmin;
 using maERP.Domain.Wrapper;
 using maERP.Server.Tests.Infrastructure;
 using Xunit;
@@ -30,7 +30,7 @@ public class SuperadminListQueryTests : TenantIsolatedTestBase
         var response = await Client.GetAsync("/api/v1/superadmin/tenants");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
+        var result = await ReadResponseAsync<PaginatedResult<SuperadminTenantListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(3, result.Data.Count);
@@ -45,7 +45,7 @@ public class SuperadminListQueryTests : TenantIsolatedTestBase
         var response = await Client.GetAsync("/api/v1/superadmin/tenants?searchString=Test%20Tenant%202");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
+        var result = await ReadResponseAsync<PaginatedResult<SuperadminTenantListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(1, result.Data.Count);
@@ -63,7 +63,7 @@ public class SuperadminListQueryTests : TenantIsolatedTestBase
         var response = await Client.GetAsync("/api/v1/superadmin/tenants?pageNumber=0&pageSize=2");
 
         TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
-        var result = await ReadResponseAsync<PaginatedResult<TenantListDto>>(response);
+        var result = await ReadResponseAsync<PaginatedResult<SuperadminTenantListDto>>(response);
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(2, result.Data.Count);

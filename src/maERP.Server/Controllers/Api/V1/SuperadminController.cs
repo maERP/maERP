@@ -13,7 +13,7 @@ using maERP.Application.Features.Superadmin.Users.Commands.UserUpdate;
 using maERP.Application.Features.Superadmin.Users.Queries.UserDetail;
 using maERP.Application.Features.Superadmin.Users.Queries.UserList;
 using maERP.Application.Mediator;
-using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Dtos.Superadmin;
 using maERP.Domain.Dtos.User;
 using maERP.Domain.Wrapper;
 using Microsoft.AspNetCore.Authentication;
@@ -37,7 +37,7 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     /// <param name="orderBy">Order by clause</param>
     /// <returns>Paginated list of tenants</returns>
     [HttpGet("tenants")]
-    public async Task<ActionResult<PaginatedResult<TenantListDto>>> GetTenants(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<SuperadminTenantListDto>>> GetTenants(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
     {
         var accessCheckResult = await EnsureSuperadminAccessAsync();
         if (accessCheckResult is not null)
@@ -55,14 +55,14 @@ public class SuperadminController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
-    /// Get details of a specific tenant
+    /// Get details of a specific tenant including assigned users
     /// </summary>
     /// <param name="id">Tenant ID</param>
-    /// <returns>Tenant details</returns>
+    /// <returns>Tenant details with user list</returns>
     [HttpGet("tenants/{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TenantDetailDto>> GetTenantDetails(Guid id)
+    public async Task<ActionResult<SuperadminTenantDetailDto>> GetTenantDetails(Guid id)
     {
         var accessCheckResult = await EnsureSuperadminAccessAsync();
         if (accessCheckResult is not null)
