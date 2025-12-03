@@ -18,6 +18,7 @@ public static class AuthModule
     {
         // Authentication services (singleton for state management)
         services.AddSingleton<ITokenStorageService, TokenStorageService>();
+        services.AddSingleton<ITenantContextService, TenantContextService>();
         services.AddSingleton<IMaErpAuthenticationService, MaErpAuthenticationService>();
 
         // Page models (transient - new instance per navigation)

@@ -1,6 +1,7 @@
 using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Auth.Models;
 using maERP.Client.Features.Auth.Services;
+using maERP.Domain.Dtos.Tenant;
 using maERP.Client.Features.Dashboard.Models;
 using maERP.Client.Features.Customers.Models;
 using maERP.Client.Features.Invoices.Models;
@@ -31,6 +32,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         // Subscribe to static authentication state changed event
         ShellModel.AuthenticationStateChanged += OnAuthenticationStateChanged;
 
+        // Subscribe to static tenant state changed event
+        ShellModel.TenantStateChanged += OnTenantStateChanged;
+
         // Note: NavView.SelectionChanged is now wired in XAML
         TabBarNav.SelectionChanged += OnTabBarSelectionChanged;
         this.Loaded += OnShellLoaded;
@@ -45,11 +49,115 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         {
             SetAuthenticatedVisibility();
             await UpdateSuperadminMenuVisibilityAsync();
+            UpdateTenantDisplay();
         }
         else
         {
             SetUnauthenticatedVisibility();
             MenuItemSuperadminTenants.Visibility = Visibility.Collapsed;
+            // Reset tenant display to default
+            TenantSwitcher.Visibility = Visibility.Collapsed;
+            TenantName.Visibility = Visibility.Visible;
+            TenantName.Text = "maERP";
+        }
+    }
+
+    private void OnTenantStateChanged(object? sender, TenantListDto? tenant)
+    {
+        Console.WriteLine($"[Shell] OnTenantStateChanged received: {tenant?.Name ?? "null"}");
+        UpdateTenantDisplay();
+    }
+
+    private void UpdateTenantDisplay()
+    {
+        try
+        {
+            var app = Application.Current as App;
+            var tenantContext = app?.Host?.Services?.GetService<ITenantContextService>();
+            if (tenantContext == null)
+            {
+                Console.WriteLine("[Shell] UpdateTenantDisplay: TenantContextService not available");
+                TenantSwitcher.Visibility = Visibility.Collapsed;
+                TenantName.Visibility = Visibility.Visible;
+                TenantName.Text = "maERP";
+                return;
+            }
+
+            var tenants = tenantContext.AvailableTenants;
+            Console.WriteLine($"[Shell] UpdateTenantDisplay: {tenants.Count} tenants available");
+
+            if (tenants.Count > 1)
+            {
+                // Multiple tenants: Show dropdown button
+                TenantSwitcherText.Text = tenantContext.CurrentTenant?.Name ?? "Tenant";
+                PopulateTenantMenu(tenants, tenantContext.CurrentTenantId);
+                TenantSwitcher.Visibility = Visibility.Visible;
+                TenantName.Visibility = Visibility.Collapsed;
+                Console.WriteLine($"[Shell] Showing tenant dropdown with {tenants.Count} items, current: {tenantContext.CurrentTenant?.Name}");
+            }
+            else
+            {
+                // One or no tenant: Show text
+                TenantSwitcher.Visibility = Visibility.Collapsed;
+                TenantName.Visibility = Visibility.Visible;
+                TenantName.Text = tenants.Count == 1 ? tenants[0].Name : "maERP";
+                Console.WriteLine($"[Shell] Showing tenant text: {TenantName.Text}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] UpdateTenantDisplay error: {ex.Message}");
+            TenantSwitcher.Visibility = Visibility.Collapsed;
+            TenantName.Visibility = Visibility.Visible;
+            TenantName.Text = "maERP";
+        }
+    }
+
+    private void PopulateTenantMenu(IReadOnlyList<TenantListDto> tenants, Guid? currentTenantId)
+    {
+        TenantMenuFlyout.Items.Clear();
+
+        foreach (var tenant in tenants)
+        {
+            var menuItem = new MenuFlyoutItem
+            {
+                Text = tenant.Name,
+                Tag = tenant.Id
+            };
+
+            // Add checkmark icon for current tenant
+            if (tenant.Id == currentTenantId)
+            {
+                menuItem.Icon = new FontIcon { Glyph = "\uE73E" }; // Checkmark
+            }
+
+            menuItem.Click += OnTenantMenuItemClick;
+            TenantMenuFlyout.Items.Add(menuItem);
+        }
+    }
+
+    private async void OnTenantMenuItemClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuFlyoutItem menuItem && menuItem.Tag is Guid selectedTenantId)
+        {
+            Console.WriteLine($"[Shell] OnTenantMenuItemClick: Selected tenant ID {selectedTenantId}");
+
+            // Close the flyout immediately
+            TenantMenuFlyout.Hide();
+
+            try
+            {
+                var app = Application.Current as App;
+                var shellModel = app?.Host?.Services?.GetService<ShellModel>();
+                if (shellModel != null)
+                {
+                    await shellModel.SwitchTenantAsync(selectedTenantId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Shell] OnTenantMenuItemClick error: {ex.Message}");
+            }
         }
     }
 
@@ -154,6 +262,12 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
                     // Update superadmin menu visibility
                     await UpdateSuperadminMenuVisibilityAsync();
+
+                    // Update tenant display if authenticated
+                    if (shellModel.IsAuthenticated)
+                    {
+                        UpdateTenantDisplay();
+                    }
 
                     // Initialize dark mode toggle state
                     InitializeDarkModeToggle();

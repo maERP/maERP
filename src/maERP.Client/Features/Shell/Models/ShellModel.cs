@@ -1,8 +1,10 @@
 using System.ComponentModel;
 using maERP.Client.Core.Constants;
 using maERP.Client.Features.Auth.Models;
+using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Customers.Models;
 using maERP.Client.Features.Dashboard.Models;
+using maERP.Domain.Dtos.Tenant;
 using Microsoft.UI.Xaml;
 
 namespace maERP.Client.Features.Shell.Models;
@@ -11,6 +13,7 @@ public partial class ShellModel : INotifyPropertyChanged
 {
     private readonly INavigator _navigator;
     private readonly IAuthenticationService _authentication;
+    private readonly ITenantContextService _tenantContext;
     private bool _isAuthenticated = false; // Default to false
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -18,16 +21,33 @@ public partial class ShellModel : INotifyPropertyChanged
     // Static event for authentication state changes - allows Shell to subscribe without DI
     public static event EventHandler<bool>? AuthenticationStateChanged;
 
+    // Static event for tenant state changes - allows Shell to subscribe without DI
+    public static event EventHandler<TenantListDto?>? TenantStateChanged;
+
     public ShellModel(
         IAuthenticationService authentication,
-        INavigator navigator)
+        INavigator navigator,
+        ITenantContextService tenantContext)
     {
         _navigator = navigator;
         _authentication = authentication;
+        _tenantContext = tenantContext;
         _authentication.LoggedOut += LoggedOut;
+        _tenantContext.CurrentTenantChanged += OnCurrentTenantChanged;
 
         // Initialize authentication state asynchronously
         _ = InitializeAuthenticationState();
+    }
+
+    private void OnCurrentTenantChanged(object? sender, TenantListDto? tenant)
+    {
+        Console.WriteLine($"[ShellModel] OnCurrentTenantChanged: {tenant?.Name ?? "null"}");
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AvailableTenants)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentTenant)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasMultipleTenants)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasTenants)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentTenantDisplayName)));
+        TenantStateChanged?.Invoke(this, tenant);
     }
 
     public bool IsAuthenticated
@@ -83,6 +103,23 @@ public partial class ShellModel : INotifyPropertyChanged
         }
     }
 
+    // Tenant properties
+    public IReadOnlyList<TenantListDto> AvailableTenants => _tenantContext.AvailableTenants;
+    public TenantListDto? CurrentTenant => _tenantContext.CurrentTenant;
+    public bool HasMultipleTenants => AvailableTenants.Count > 1;
+    public bool HasTenants => AvailableTenants.Count > 0;
+    public string CurrentTenantDisplayName => CurrentTenant?.Name ?? "maERP";
+
+    public async Task SwitchTenantAsync(Guid tenantId)
+    {
+        Console.WriteLine($"[ShellModel] SwitchTenantAsync called with tenantId: {tenantId}");
+        await _tenantContext.SetCurrentTenantAsync(tenantId);
+
+        // Navigate to Dashboard to reload UI with new tenant context
+        Console.WriteLine("[ShellModel] Navigating to Dashboard after tenant switch");
+        await _navigator.NavigateViewModelAsync<DashboardModel>(this, qualifier: Qualifiers.ClearBackStack);
+    }
+
     public async Task InitializeAuthenticationState()
     {
         System.Diagnostics.Debug.WriteLine("[ShellModel] InitializeAuthenticationState called");
@@ -95,6 +132,7 @@ public partial class ShellModel : INotifyPropertyChanged
     private async void LoggedOut(object? sender, EventArgs e)
     {
         IsAuthenticated = false;
+        await _tenantContext.ClearAsync();
         await _navigator.NavigateRouteAsync(this, Routes.Login, qualifier: Qualifiers.ClearBackStack);
     }
 

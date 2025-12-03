@@ -92,7 +92,7 @@
                   FontSize="16" />
       </Button>
 
-      <!-- Logo and App Name (centered) -->
+      <!-- Logo and Tenant Switcher (centered) -->
       <StackPanel Grid.Column="1"
                   Orientation="Horizontal"
                   HorizontalAlignment="Center"
@@ -102,10 +102,28 @@
                Height="28"
                Stretch="Uniform"
                VerticalAlignment="Center" />
-        <TextBlock Text="maERP"
+
+        <!-- Multiple Tenants: Show Dropdown Button -->
+        <DropDownButton x:Name="TenantSwitcher"
+                        Margin="12,0,0,0"
+                        Visibility="Collapsed"
+                        Background="Transparent"
+                        BorderThickness="0">
+          <TextBlock x:Name="TenantSwitcherText"
+                     Style="{StaticResource TitleTextBlockStyle}"
+                     VerticalAlignment="Center" />
+          <DropDownButton.Flyout>
+            <MenuFlyout x:Name="TenantMenuFlyout"
+                        Placement="BottomEdgeAlignedLeft" />
+          </DropDownButton.Flyout>
+        </DropDownButton>
+
+        <!-- Single Tenant or No Tenant: Show Text -->
+        <TextBlock x:Name="TenantName"
                    Style="{StaticResource TitleTextBlockStyle}"
                    VerticalAlignment="Center"
-                   Margin="12,0,0,0" />
+                   Margin="12,0,0,0"
+                   Visibility="Visible" />
       </StackPanel>
 
       <!-- User Menu -->

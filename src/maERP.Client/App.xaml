@@ -23,6 +23,9 @@
 
         <!-- Compact Input Controls Styling -->
         <ResourceDictionary Source="ms-appx:///Styles/InputControls.xaml" />
+
+        <!-- Tenant Switcher Styling -->
+        <ResourceDictionary Source="ms-appx:///Styles/TenantSwitcher.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <!-- Converters -->

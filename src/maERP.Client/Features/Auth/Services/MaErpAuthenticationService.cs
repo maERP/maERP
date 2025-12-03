@@ -11,15 +11,18 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ITokenStorageService _tokenStorage;
+    private readonly ITenantContextService _tenantContext;
     private readonly ILogger<MaErpAuthenticationService> _logger;
 
     public MaErpAuthenticationService(
         IHttpClientFactory httpClientFactory,
         ITokenStorageService tokenStorage,
+        ITenantContextService tenantContext,
         ILogger<MaErpAuthenticationService> logger)
     {
         _httpClientFactory = httpClientFactory;
         _tokenStorage = tokenStorage;
+        _tenantContext = tenantContext;
         _logger = logger;
     }
 
@@ -56,18 +59,18 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
             await _tokenStorage.SetTokenAsync(loginResponse.Token);
             await _tokenStorage.SetServerUrlAsync(request.Server);
 
-            if (loginResponse.CurrentTenantId.HasValue)
+            // Store available tenants in context (handles current tenant selection)
+            if (loginResponse.AvailableTenants != null)
             {
-                await _tokenStorage.SetCurrentTenantIdAsync(loginResponse.CurrentTenantId.Value);
-                _logger.LogInformation("Using current tenant ID from login response: {TenantId}", loginResponse.CurrentTenantId.Value);
-            }
-            else if (loginResponse.AvailableTenants?.Count > 0)
-            {
-                // Auto-select the first available tenant if no current tenant is set
-                var firstTenant = loginResponse.AvailableTenants.First();
-                await _tokenStorage.SetCurrentTenantIdAsync(firstTenant.Id);
-                _logger.LogInformation("Auto-selected first available tenant: {TenantId} ({TenantName})",
-                    firstTenant.Id, firstTenant.Name);
+                // If a specific current tenant ID is provided, set it first
+                if (loginResponse.CurrentTenantId.HasValue)
+                {
+                    await _tokenStorage.SetCurrentTenantIdAsync(loginResponse.CurrentTenantId.Value);
+                    _logger.LogInformation("Using current tenant ID from login response: {TenantId}", loginResponse.CurrentTenantId.Value);
+                }
+
+                // Store available tenants (will restore/select current tenant automatically)
+                await _tenantContext.SetAvailableTenantsAsync(loginResponse.AvailableTenants);
             }
             else
             {
