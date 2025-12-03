@@ -36,6 +36,7 @@
       <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
       <converters:StringToInverseVisibilityConverter x:Key="StringToInverseVisibilityConverter" />
       <converters:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter" />
+      <converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibilityConverter" />
       <converters:DateTimeOffsetToStringConverter x:Key="DateTimeOffsetToStringConverter" />
       <converters:CustomerStatusToTextConverter x:Key="CustomerStatusToTextConverter" />
       <converters:CustomerStatusToBackgroundConverter x:Key="CustomerStatusToBackgroundConverter" />

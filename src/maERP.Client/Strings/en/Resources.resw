@@ -175,6 +175,21 @@
   <data name="Shell.UserMenu.Logout.Text" xml:space="preserve">
     <value>Logout</value>
   </data>
+  <data name="Shell.UserMenu.SalesChannels.Text" xml:space="preserve">
+    <value>Sales Channels</value>
+  </data>
+  <data name="Shell.UserMenu.TaxClasses.Text" xml:space="preserve">
+    <value>Tax Classes</value>
+  </data>
+  <data name="Shell.UserMenu.Warehouses.Text" xml:space="preserve">
+    <value>Warehouses</value>
+  </data>
+  <data name="Shell.UserMenu.AiModels.Text" xml:space="preserve">
+    <value>AI Models</value>
+  </data>
+  <data name="Shell.UserMenu.AiPrompts.Text" xml:space="preserve">
+    <value>AI Prompts</value>
+  </data>
   <data name="Shell.NavItem.Login.Content" xml:space="preserve">
     <value>Login</value>
   </data>
@@ -1556,6 +1571,9 @@
   <data name="SalesChannelDetailPage.NoWarehouses.Text" xml:space="preserve">
     <value>No warehouses assigned</value>
   </data>
+  <data name="SalesChannelDetailPage.Header.WarehouseName.Text" xml:space="preserve">
+    <value>Warehouse Name</value>
+  </data>
   <data name="SalesChannelDetailPage.UsageHint.Text" xml:space="preserve">
     <value>This sales channel connects your maERP system with external platforms. Configure import and export settings to synchronize products, customers, and orders automatically.</value>
   </data>
@@ -1624,28 +1642,28 @@
   <data name="SalesChannelEditPage.Field.Password.PlaceholderText" xml:space="preserve">
     <value>Enter password or API key</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ImportProducts.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ImportProducts.Text" xml:space="preserve">
     <value>Import Products</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ImportCustomers.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ImportCustomers.Text" xml:space="preserve">
     <value>Import Customers</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ImportOrders.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ImportOrders.Text" xml:space="preserve">
     <value>Import Orders</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ExportProducts.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ExportProducts.Text" xml:space="preserve">
     <value>Export Products</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ExportCustomers.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ExportCustomers.Text" xml:space="preserve">
     <value>Export Customers</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ExportOrders.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ExportOrders.Text" xml:space="preserve">
     <value>Export Orders</value>
   </data>
-  <data name="SalesChannelEditPage.Field.InitialProductImportCompleted.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.InitialProductImportCompleted.Text" xml:space="preserve">
     <value>Initial Product Import Completed</value>
   </data>
-  <data name="SalesChannelEditPage.Field.InitialProductExportCompleted.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.InitialProductExportCompleted.Text" xml:space="preserve">
     <value>Initial Product Export Completed</value>
   </data>
   <data name="SalesChannelEditPage.RequiredFieldsNote.Text" xml:space="preserve">
@@ -1653,6 +1671,9 @@
   </data>
   <data name="SalesChannelEditPage.NoWarehouses.Text" xml:space="preserve">
     <value>No warehouses available</value>
+  </data>
+  <data name="SalesChannelEditPage.Header.WarehouseName.Text" xml:space="preserve">
+    <value>Warehouse Name</value>
   </data>
   <data name="SalesChannelEditPage.NoWarehouses.Hint.Text" xml:space="preserve">
     <value>Create warehouses first to assign them to this sales channel</value>
@@ -2892,6 +2913,49 @@
   <!-- TenantEditPage - Errors -->
   <data name="TenantEditPage.Error.SaveFailed" xml:space="preserve">
     <value>Failed to save tenant: {0}</value>
+  </data>
+  <data name="TenantEditPage.Error.SearchUserFailed" xml:space="preserve">
+    <value>Failed to search for user: {0}</value>
+  </data>
+  <data name="TenantEditPage.Error.AddUserFailed" xml:space="preserve">
+    <value>Failed to add user: {0}</value>
+  </data>
+
+  <!-- TenantEditPage - Users Section -->
+  <data name="TenantEditPage.Section.Users.Text" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="TenantEditPage.Button.AddUser.Text" xml:space="preserve">
+    <value>Add User</value>
+  </data>
+  <data name="TenantEditPage.Users.Info.Text" xml:space="preserve">
+    <value>Here you can add users to this tenant. Users must already be registered in the system.</value>
+  </data>
+
+  <!-- TenantEditPage - Add User Overlay -->
+  <data name="TenantEditPage.AddUser.Title.Text" xml:space="preserve">
+    <value>Add User</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Description.Text" xml:space="preserve">
+    <value>Enter the email address of the user you want to add to this tenant. The user must already be registered in the system.</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Email.Header" xml:space="preserve">
+    <value>Email Address</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Email.PlaceholderText" xml:space="preserve">
+    <value>user@example.com</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Search.Text" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Searching.Text" xml:space="preserve">
+    <value>Searching...</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Cancel.Content" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Add.Text" xml:space="preserve">
+    <value>Add</value>
   </data>
 
   <!-- Shell User Menu - Superadmin Tenants -->

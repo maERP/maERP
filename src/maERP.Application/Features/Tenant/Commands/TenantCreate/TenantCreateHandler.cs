@@ -3,6 +3,7 @@ using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 using maERP.Domain.Entities;
+using maERP.Domain.Enums;
 
 namespace maERP.Application.Features.Tenant.Commands.TenantCreate;
 
@@ -11,15 +12,24 @@ public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<G
     private readonly IAppLogger<TenantCreateHandler> _logger;
     private readonly ITenantRepository _tenantRepository;
     private readonly IUserTenantRepository _userTenantRepository;
+    private readonly IWarehouseRepository _warehouseRepository;
+    private readonly ISalesChannelRepository _salesChannelRepository;
+    private readonly ITaxClassRepository _taxClassRepository;
 
     public TenantCreateHandler(
         IAppLogger<TenantCreateHandler> logger,
         ITenantRepository tenantRepository,
-        IUserTenantRepository userTenantRepository)
+        IUserTenantRepository userTenantRepository,
+        IWarehouseRepository warehouseRepository,
+        ISalesChannelRepository salesChannelRepository,
+        ITaxClassRepository taxClassRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _tenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
         _userTenantRepository = userTenantRepository ?? throw new ArgumentNullException(nameof(userTenantRepository));
+        _warehouseRepository = warehouseRepository ?? throw new ArgumentNullException(nameof(warehouseRepository));
+        _salesChannelRepository = salesChannelRepository ?? throw new ArgumentNullException(nameof(salesChannelRepository));
+        _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
     }
 
     public async Task<Result<Guid>> Handle(TenantCreateCommand request, CancellationToken cancellationToken)
@@ -85,6 +95,32 @@ public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<G
             // Add user-tenant association to context without saving
             _userTenantRepository.Add(userTenant);
 
+            // Create default warehouse
+            var defaultWarehouse = new Domain.Entities.Warehouse
+            {
+                Name = "Hauptlager",
+                TenantId = tenantToCreate.Id
+            };
+            _warehouseRepository.Add(defaultWarehouse);
+
+            // Create default tax classes
+            var taxClass0 = new Domain.Entities.TaxClass { TaxRate = 0, TenantId = tenantToCreate.Id };
+            var taxClass7 = new Domain.Entities.TaxClass { TaxRate = 7, TenantId = tenantToCreate.Id };
+            var taxClass19 = new Domain.Entities.TaxClass { TaxRate = 19, TenantId = tenantToCreate.Id };
+            _taxClassRepository.Add(taxClass0);
+            _taxClassRepository.Add(taxClass7);
+            _taxClassRepository.Add(taxClass19);
+
+            // Create default sales channel (Point of Sale) with the warehouse
+            var defaultSalesChannel = new Domain.Entities.SalesChannel
+            {
+                Name = "Kasse Hauptlager",
+                Type = SalesChannelType.PointOfSale,
+                TenantId = tenantToCreate.Id,
+                Warehouses = new List<Domain.Entities.Warehouse> { defaultWarehouse }
+            };
+            _salesChannelRepository.Add(defaultSalesChannel);
+
             // Save all changes within the transaction
             await _tenantRepository.SaveChangesAsync(cancellationToken);
 
@@ -95,7 +131,7 @@ public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<G
             result.StatusCode = ResultStatusCode.Created;
             result.Data = tenantToCreate.Id;
 
-            _logger.LogInformation("Successfully created tenant with ID: {Id} and assigned user {UserId} to it",
+            _logger.LogInformation("Successfully created tenant with ID: {Id} and assigned user {UserId} to it with default warehouse, sales channel and tax classes",
                 tenantToCreate.Id, request.UserId);
         }
         catch (Exception ex)

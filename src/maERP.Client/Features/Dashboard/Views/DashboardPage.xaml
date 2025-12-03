@@ -758,7 +758,7 @@
                 </StackPanel>
                 <Button Grid.Column="1"
                         x:Uid="DashboardPage.Button.ViewAll"
-                        Command="{Binding NavigateToOrderList}"
+                        Click="ViewAllOrders_Click"
                         Style="{StaticResource TextButtonStyle}" />
               </Grid>
 
@@ -879,7 +879,7 @@
                 </StackPanel>
                 <Button Grid.Column="1"
                         x:Uid="DashboardPage.Button.ViewAll"
-                        Command="{Binding NavigateToProductList}"
+                        Click="ViewAllProducts_Click"
                         Style="{StaticResource TextButtonStyle}" />
               </Grid>
 

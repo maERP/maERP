@@ -1,10 +1,12 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Web;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Dtos.User;
 using Microsoft.Extensions.Logging;
 
 namespace maERP.Client.Features.Tenants.Services;
@@ -110,6 +112,33 @@ public class TenantService : ITenantService
         _logger.LogInformation("Updating tenant {Id} at URL: {Url}", id, url);
 
         var response = await _httpClient.PutAsJsonAsync(url, input, JsonOptions, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
+
+    public async Task<UserListDto?> SearchUserByEmailAsync(Guid tenantId, string email, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var encodedEmail = HttpUtility.UrlEncode(email);
+        var url = $"{baseUrl}{ApiEndpoints.Tenants.UserSearch(tenantId)}?email={encodedEmail}";
+
+        _logger.LogInformation("Searching user by email at URL: {Url}", url);
+
+        var response = await _httpClient.GetAsync(url, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+
+        var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<UserListDto>>(JsonOptions, ct);
+        return apiResponse?.Data;
+    }
+
+    public async Task AddUserToTenantAsync(Guid tenantId, string email, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Tenants.Users(tenantId)}";
+
+        _logger.LogInformation("Adding user to tenant {TenantId} at URL: {Url}", tenantId, url);
+
+        var payload = new { Email = email };
+        var response = await _httpClient.PostAsJsonAsync(url, payload, JsonOptions, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 }

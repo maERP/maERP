@@ -449,48 +449,84 @@
                                Foreground="{ThemeResource OnSurfaceBrush}" />
                   </StackPanel>
 
-                  <!-- Warehouse Cards -->
-                  <ItemsRepeater ItemsSource="{Binding Data.Warehouses}">
-                    <ItemsRepeater.Layout>
-                      <StackLayout Spacing="12" />
-                    </ItemsRepeater.Layout>
-                    <ItemsRepeater.ItemTemplate>
-                      <DataTemplate>
-                        <Border Background="{ThemeResource SurfaceBrush}"
-                                CornerRadius="12"
-                                Padding="16"
-                                Translation="0,0,8">
-                          <Border.Shadow>
-                            <ThemeShadow />
-                          </Border.Shadow>
-                          <Grid>
-                            <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="Auto" />
-                              <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0"
-                                    Width="40"
-                                    Height="40"
-                                    CornerRadius="20"
-                                    Background="{ThemeResource SecondaryContainerBrush}"
-                                    Margin="0,0,12,0">
-                              <FontIcon Glyph="&#xE80F;"
-                                        FontSize="18"
-                                        Foreground="{ThemeResource OnSecondaryContainerBrush}"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center" />
-                            </Border>
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding Name}"
-                                       Style="{StaticResource BodyLarge}"
-                                       Foreground="{ThemeResource OnSurfaceBrush}"
-                                       VerticalAlignment="Center"
-                                       TextWrapping="Wrap" />
-                          </Grid>
-                        </Border>
-                      </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                  </ItemsRepeater>
+                  <!-- Warehouse Table -->
+                  <Border CornerRadius="12"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          Background="{ThemeResource SurfaceBrush}"
+                          Visibility="{Binding Data.Warehouses.Count, Converter={StaticResource NotZeroToVisibilityConverter}}">
+                    <Grid>
+                      <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                      </Grid.RowDefinitions>
+
+                      <!-- Table Header -->
+                      <Border Grid.Row="0"
+                              Background="{ThemeResource SurfaceVariantBrush}"
+                              CornerRadius="12,12,0,0"
+                              BorderBrush="{ThemeResource OutlineVariantBrush}"
+                              BorderThickness="0,0,0,1">
+                        <Grid Padding="16,12">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE80F;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <TextBlock Grid.Column="1"
+                                     x:Uid="SalesChannelDetailPage.Header.WarehouseName"
+                                     Style="{StaticResource LabelLarge}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                     VerticalAlignment="Center" />
+                        </Grid>
+                      </Border>
+
+                      <!-- Table Body -->
+                      <ItemsRepeater Grid.Row="1"
+                                     ItemsSource="{Binding Data.Warehouses}">
+                        <ItemsRepeater.Layout>
+                          <StackLayout Orientation="Vertical" Spacing="0" />
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                          <DataTemplate>
+                            <Grid Padding="16,14"
+                                  BorderBrush="{ThemeResource OutlineVariantBrush}"
+                                  BorderThickness="0,0,0,1">
+                              <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                              </Grid.ColumnDefinitions>
+
+                              <Border Grid.Column="0"
+                                      Width="32"
+                                      Height="32"
+                                      CornerRadius="16"
+                                      Background="{ThemeResource SecondaryContainerBrush}"
+                                      Margin="0,0,12,0">
+                                <FontIcon Glyph="&#xE80F;"
+                                          FontSize="14"
+                                          Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                              </Border>
+                              <TextBlock Grid.Column="1"
+                                         Text="{Binding Name}"
+                                         Style="{StaticResource BodyMedium}"
+                                         Foreground="{ThemeResource OnSurfaceBrush}"
+                                         VerticalAlignment="Center"
+                                         TextTrimming="CharacterEllipsis" />
+                            </Grid>
+                          </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                      </ItemsRepeater>
+                    </Grid>
+                  </Border>
 
                   <!-- No Warehouses Placeholder -->
                   <Border Background="{ThemeResource SurfaceVariantBrush}"

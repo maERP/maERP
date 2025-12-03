@@ -1,5 +1,6 @@
 using maERP.Client.Core.Models;
 using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Dtos.User;
 
 namespace maERP.Client.Features.Tenants.Services;
 
@@ -29,4 +30,14 @@ public interface ITenantService
     /// Updates an existing tenant.
     /// </summary>
     Task UpdateTenantAsync(Guid id, TenantInputDto input, CancellationToken ct = default);
+
+    /// <summary>
+    /// Searches for a user by email address to add to a tenant.
+    /// </summary>
+    Task<UserListDto?> SearchUserByEmailAsync(Guid tenantId, string email, CancellationToken ct = default);
+
+    /// <summary>
+    /// Adds a user to a tenant by email address.
+    /// </summary>
+    Task AddUserToTenantAsync(Guid tenantId, string email, CancellationToken ct = default);
 }

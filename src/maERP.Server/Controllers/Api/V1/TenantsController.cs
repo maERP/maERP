@@ -1,10 +1,13 @@
 using Asp.Versioning;
 using maERP.Application.Features.Tenant.Commands.TenantCreate;
 using maERP.Application.Features.Tenant.Commands.TenantUpdate;
+using maERP.Application.Features.Tenant.Commands.TenantUserAdd;
 using maERP.Application.Features.Tenant.Queries.TenantDetail;
 using maERP.Application.Features.Tenant.Queries.TenantList;
+using maERP.Application.Features.Tenant.Queries.TenantUserSearch;
 using maERP.Application.Mediator;
 using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Dtos.User;
 using maERP.Domain.Wrapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -150,6 +153,78 @@ public class TenantsController(IMediator mediator) : ControllerBase
 
         // Set the user ID and tenant ID on the command
         command.UserId = userId;
+        command.TenantId = id;
+
+        var response = await mediator.Send(command);
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    /// <summary>
+    /// Search for a user by email address to add to a tenant.
+    /// Requires RoleManageUser permission on the tenant.
+    /// </summary>
+    /// <param name="id">Tenant ID</param>
+    /// <param name="email">Email address to search for</param>
+    /// <returns>User details if found</returns>
+    [HttpGet("{id:guid}/users/search")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Result<UserListDto?>>> SearchUser(Guid id, [FromQuery] string email)
+    {
+        var userId = User.FindFirst("uid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized(new Result<UserListDto?>
+            {
+                Succeeded = false,
+                StatusCode = ResultStatusCode.Unauthorized,
+                Messages = new List<string> { "User ID not found in token" }
+            });
+        }
+
+        var query = new TenantUserSearchQuery
+        {
+            TenantId = id,
+            CurrentUserId = userId,
+            Email = email
+        };
+
+        var response = await mediator.Send(query);
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    /// <summary>
+    /// Add a user to a tenant by email address.
+    /// Requires RoleManageUser permission on the tenant.
+    /// </summary>
+    /// <param name="id">Tenant ID</param>
+    /// <param name="command">User add command containing email and options</param>
+    /// <returns>Success status</returns>
+    [HttpPost("{id:guid}/users")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Result<bool>>> AddUser(Guid id, [FromBody] TenantUserAddCommand command)
+    {
+        var userId = User.FindFirst("uid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized(new Result<bool>
+            {
+                Succeeded = false,
+                StatusCode = ResultStatusCode.Unauthorized,
+                Messages = new List<string> { "User ID not found in token" }
+            });
+        }
+
+        command.CurrentUserId = userId;
         command.TenantId = id;
 
         var response = await mediator.Send(command);

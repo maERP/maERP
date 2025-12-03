@@ -25,4 +25,26 @@ public sealed partial class SalesChannelEditPage : Page
             await model.SaveAsync();
         }
     }
+
+    private void SelectAllCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is SalesChannelEditModel model)
+        {
+            foreach (var warehouse in model.Warehouses)
+            {
+                warehouse.IsSelected = true;
+            }
+        }
+    }
+
+    private void SelectAllCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is SalesChannelEditModel model)
+        {
+            foreach (var warehouse in model.Warehouses)
+            {
+                warehouse.IsSelected = false;
+            }
+        }
+    }
 }

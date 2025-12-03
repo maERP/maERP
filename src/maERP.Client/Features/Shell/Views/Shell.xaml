@@ -145,6 +145,28 @@
           </StackPanel>
           <DropDownButton.Flyout>
             <MenuFlyout Placement="BottomEdgeAlignedRight">
+              <MenuFlyoutItem x:Name="MenuItemSalesChannels"
+                              x:Uid="Shell.UserMenu.SalesChannels"
+                              Click="OnSalesChannelsClick">
+                <MenuFlyoutItem.Icon>
+                  <FontIcon Glyph="&#xE8A7;" />
+                </MenuFlyoutItem.Icon>
+              </MenuFlyoutItem>
+              <MenuFlyoutItem x:Name="MenuItemTaxClasses"
+                              x:Uid="Shell.UserMenu.TaxClasses"
+                              Click="OnTaxClassesClick">
+                <MenuFlyoutItem.Icon>
+                  <FontIcon Glyph="&#xE912;" />
+                </MenuFlyoutItem.Icon>
+              </MenuFlyoutItem>
+              <MenuFlyoutItem x:Name="MenuItemWarehouses"
+                              x:Uid="Shell.UserMenu.Warehouses"
+                              Click="OnWarehousesClick">
+                <MenuFlyoutItem.Icon>
+                  <FontIcon Glyph="&#xE913;" />
+                </MenuFlyoutItem.Icon>
+              </MenuFlyoutItem>
+              <MenuFlyoutSeparator />
               <MenuFlyoutItem x:Name="MenuItemTenants"
                               x:Uid="Shell.UserMenu.Tenants"
                               Click="OnTenantsClick">
@@ -158,6 +180,21 @@
                               Visibility="Collapsed">
                 <MenuFlyoutItem.Icon>
                   <FontIcon Glyph="&#xE7EE;" />
+                </MenuFlyoutItem.Icon>
+              </MenuFlyoutItem>
+              <MenuFlyoutSeparator />
+              <MenuFlyoutItem x:Name="MenuItemAiModels"
+                              x:Uid="Shell.UserMenu.AiModels"
+                              Click="OnAiModelsClick">
+                <MenuFlyoutItem.Icon>
+                  <FontIcon Glyph="&#xE99A;" />
+                </MenuFlyoutItem.Icon>
+              </MenuFlyoutItem>
+              <MenuFlyoutItem x:Name="MenuItemAiPrompts"
+                              x:Uid="Shell.UserMenu.AiPrompts"
+                              Click="OnAiPromptsClick">
+                <MenuFlyoutItem.Icon>
+                  <FontIcon Glyph="&#xE8BD;" />
                 </MenuFlyoutItem.Icon>
               </MenuFlyoutItem>
               <MenuFlyoutSeparator />
@@ -254,50 +291,6 @@
                               Tag="Manufacturers">
             <NavigationViewItem.Icon>
               <FontIcon Glyph="&#xE8FD;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-
-          <NavigationViewItem x:Name="NavItemWarehouses"
-                              x:Uid="Shell.NavItem.Warehouses"
-                              Tag="Warehouses">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE913;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-
-          <NavigationViewItem x:Name="NavItemSalesChannels"
-                              x:Uid="Shell.NavItem.SalesChannels"
-                              Tag="SalesChannels">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE8A7;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-
-          <NavigationViewItemSeparator x:Name="NavSeparator2" />
-
-          <NavigationViewItem x:Name="NavItemAiModels"
-                              x:Uid="Shell.NavItem.AiModels"
-                              Tag="AiModels">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE99A;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-
-          <NavigationViewItem x:Name="NavItemAiPrompts"
-                              x:Uid="Shell.NavItem.AiPrompts"
-                              Tag="AiPrompts">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE8BD;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-
-          <NavigationViewItemSeparator x:Name="NavSeparator3" />
-
-          <NavigationViewItem x:Name="NavItemTaxClasses"
-                              x:Uid="Shell.NavItem.TaxClasses"
-                              Tag="TaxClasses">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE912;" />
             </NavigationViewItem.Icon>
           </NavigationViewItem>
         </NavigationView.MenuItems>

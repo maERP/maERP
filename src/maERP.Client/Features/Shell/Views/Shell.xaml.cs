@@ -138,26 +138,72 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
     private async void OnTenantMenuItemClick(object sender, RoutedEventArgs e)
     {
-        if (sender is MenuFlyoutItem menuItem && menuItem.Tag is Guid selectedTenantId)
+        Console.WriteLine($"[Shell] OnTenantMenuItemClick called. Sender: {sender?.GetType().Name}");
+
+        if (sender is not MenuFlyoutItem menuItem)
         {
-            Console.WriteLine($"[Shell] OnTenantMenuItemClick: Selected tenant ID {selectedTenantId}");
+            Console.WriteLine($"[Shell] Sender is not a MenuFlyoutItem");
+            return;
+        }
 
-            // Close the flyout immediately
-            TenantMenuFlyout.Hide();
+        Console.WriteLine($"[Shell] MenuFlyoutItem Tag: {menuItem.Tag} (Type: {menuItem.Tag?.GetType().Name})");
 
-            try
+        if (menuItem.Tag is not Guid selectedTenantId)
+        {
+            Console.WriteLine($"[Shell] Tag is not a Guid - cannot switch tenant");
+            return;
+        }
+
+        Console.WriteLine($"[Shell] Selected tenant ID: {selectedTenantId}");
+
+        // Close the flyout immediately to avoid UI issues
+        TenantMenuFlyout.Hide();
+
+        try
+        {
+            var app = Application.Current as App;
+            var tenantContext = app?.Host?.Services?.GetService<ITenantContextService>();
+
+            // Check if this is a different tenant than the current one
+            bool isSameTenant = tenantContext?.CurrentTenantId == selectedTenantId;
+            Console.WriteLine($"[Shell] Current tenant: {tenantContext?.CurrentTenantId}, Selected: {selectedTenantId}, IsSame: {isSameTenant}");
+
+            if (isSameTenant)
             {
-                var app = Application.Current as App;
-                var shellModel = app?.Host?.Services?.GetService<ShellModel>();
-                if (shellModel != null)
-                {
-                    await shellModel.SwitchTenantAsync(selectedTenantId);
-                }
+                Console.WriteLine("[Shell] Same tenant selected, skipping switch");
+                return;
             }
-            catch (Exception ex)
+
+            // Switch tenant via TenantContextService
+            if (tenantContext != null)
             {
-                Console.WriteLine($"[Shell] OnTenantMenuItemClick error: {ex.Message}");
+                Console.WriteLine("[Shell] Calling SetCurrentTenantAsync...");
+                await tenantContext.SetCurrentTenantAsync(selectedTenantId);
+                Console.WriteLine("[Shell] SetCurrentTenantAsync completed");
             }
+
+            // Navigate to Dashboard after tenant switch
+            var navigator = Splash.Navigator();
+            if (navigator == null)
+            {
+                navigator = app?.Host?.Services?.GetService<INavigator>();
+            }
+
+            if (navigator != null)
+            {
+                Console.WriteLine("[Shell] Navigating to Dashboard after tenant switch");
+                await navigator.NavigateViewModelAsync<DashboardModel>(this, qualifier: Qualifiers.ClearBackStack);
+                Console.WriteLine("[Shell] Navigation to Dashboard completed");
+            }
+            else
+            {
+                Console.WriteLine("[Shell] Navigator not found");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] OnTenantMenuItemClick error: {ex.Message}");
+            Console.WriteLine($"[Shell] Stack trace: {ex.StackTrace}");
         }
     }
 
@@ -174,13 +220,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemInvoices.Visibility = Visibility.Visible;
         NavItemProducts.Visibility = Visibility.Visible;
         NavItemManufacturers.Visibility = Visibility.Visible;
-        NavItemWarehouses.Visibility = Visibility.Visible;
-        NavItemSalesChannels.Visibility = Visibility.Visible;
-        NavSeparator2.Visibility = Visibility.Visible;
-        NavItemAiModels.Visibility = Visibility.Visible;
-        NavItemAiPrompts.Visibility = Visibility.Visible;
-        NavSeparator3.Visibility = Visibility.Visible;
-        NavItemTaxClasses.Visibility = Visibility.Visible;
 
         // Header User Menu - visible when authenticated
         UserMenuPanel.Visibility = Visibility.Visible;
@@ -207,13 +246,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemInvoices.Visibility = Visibility.Collapsed;
         NavItemProducts.Visibility = Visibility.Collapsed;
         NavItemManufacturers.Visibility = Visibility.Collapsed;
-        NavItemWarehouses.Visibility = Visibility.Collapsed;
-        NavItemSalesChannels.Visibility = Visibility.Collapsed;
-        NavSeparator2.Visibility = Visibility.Collapsed;
-        NavItemAiModels.Visibility = Visibility.Collapsed;
-        NavItemAiPrompts.Visibility = Visibility.Collapsed;
-        NavSeparator3.Visibility = Visibility.Collapsed;
-        NavItemTaxClasses.Visibility = Visibility.Collapsed;
 
         // Header User Menu - hidden when not authenticated
         UserMenuPanel.Visibility = Visibility.Collapsed;
@@ -322,13 +354,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         NavItemInvoices.Visibility = authenticatedVisibility;
         NavItemProducts.Visibility = authenticatedVisibility;
         NavItemManufacturers.Visibility = authenticatedVisibility;
-        NavItemWarehouses.Visibility = authenticatedVisibility;
-        NavItemSalesChannels.Visibility = authenticatedVisibility;
-        NavSeparator2.Visibility = authenticatedVisibility;
-        NavItemAiModels.Visibility = authenticatedVisibility;
-        NavItemAiPrompts.Visibility = authenticatedVisibility;
-        NavSeparator3.Visibility = authenticatedVisibility;
-        NavItemTaxClasses.Visibility = authenticatedVisibility;
 
         // Update Header User Menu
         UserMenuPanel.Visibility = authenticatedVisibility;
@@ -546,6 +571,91 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         if (navigator != null)
         {
             await NavigateToPageFromShell(navigator, "SuperadminTenants");
+        }
+    }
+
+    private async void OnSalesChannelsClick(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] Sales Channels menu item clicked");
+
+        var navigator = Splash.Navigator();
+        if (navigator == null)
+        {
+            var app = Application.Current as App;
+            navigator = app?.Host?.Services?.GetService<INavigator>();
+        }
+
+        if (navigator != null)
+        {
+            await NavigateToPageFromShell(navigator, "SalesChannels");
+        }
+    }
+
+    private async void OnTaxClassesClick(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] Tax Classes menu item clicked");
+
+        var navigator = Splash.Navigator();
+        if (navigator == null)
+        {
+            var app = Application.Current as App;
+            navigator = app?.Host?.Services?.GetService<INavigator>();
+        }
+
+        if (navigator != null)
+        {
+            await NavigateToPageFromShell(navigator, "TaxClasses");
+        }
+    }
+
+    private async void OnWarehousesClick(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] Warehouses menu item clicked");
+
+        var navigator = Splash.Navigator();
+        if (navigator == null)
+        {
+            var app = Application.Current as App;
+            navigator = app?.Host?.Services?.GetService<INavigator>();
+        }
+
+        if (navigator != null)
+        {
+            await NavigateToPageFromShell(navigator, "Warehouses");
+        }
+    }
+
+    private async void OnAiModelsClick(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] AI Models menu item clicked");
+
+        var navigator = Splash.Navigator();
+        if (navigator == null)
+        {
+            var app = Application.Current as App;
+            navigator = app?.Host?.Services?.GetService<INavigator>();
+        }
+
+        if (navigator != null)
+        {
+            await NavigateToPageFromShell(navigator, "AiModels");
+        }
+    }
+
+    private async void OnAiPromptsClick(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] AI Prompts menu item clicked");
+
+        var navigator = Splash.Navigator();
+        if (navigator == null)
+        {
+            var app = Application.Current as App;
+            navigator = app?.Host?.Services?.GetService<INavigator>();
+        }
+
+        if (navigator != null)
+        {
+            await NavigateToPageFromShell(navigator, "AiPrompts");
         }
     }
 

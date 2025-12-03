@@ -339,17 +339,26 @@
                 <!-- Import Settings -->
                 <StackPanel Padding="16,0,16,16"
                             Spacing="12">
-                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ImportProducts"
-                                IsOn="{Binding ImportProducts, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}" />
+                  <ToggleSwitch IsOn="{Binding ImportProducts, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}">
+                    <ToggleSwitch.Header>
+                      <TextBlock x:Uid="SalesChannelEditPage.Field.ImportProducts" />
+                    </ToggleSwitch.Header>
+                  </ToggleSwitch>
 
-                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ImportCustomers"
-                                IsOn="{Binding ImportCustomers, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}" />
+                  <ToggleSwitch IsOn="{Binding ImportCustomers, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}">
+                    <ToggleSwitch.Header>
+                      <TextBlock x:Uid="SalesChannelEditPage.Field.ImportCustomers" />
+                    </ToggleSwitch.Header>
+                  </ToggleSwitch>
 
-                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ImportOrders"
-                                IsOn="{Binding ImportOrders, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}" />
+                  <ToggleSwitch IsOn="{Binding ImportOrders, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}">
+                    <ToggleSwitch.Header>
+                      <TextBlock x:Uid="SalesChannelEditPage.Field.ImportOrders" />
+                    </ToggleSwitch.Header>
+                  </ToggleSwitch>
                 </StackPanel>
               </StackPanel>
             </Border>
@@ -382,17 +391,26 @@
                 <!-- Export Settings -->
                 <StackPanel Padding="16,0,16,16"
                             Spacing="12">
-                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ExportProducts"
-                                IsOn="{Binding ExportProducts, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}" />
+                  <ToggleSwitch IsOn="{Binding ExportProducts, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}">
+                    <ToggleSwitch.Header>
+                      <TextBlock x:Uid="SalesChannelEditPage.Field.ExportProducts" />
+                    </ToggleSwitch.Header>
+                  </ToggleSwitch>
 
-                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ExportCustomers"
-                                IsOn="{Binding ExportCustomers, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}" />
+                  <ToggleSwitch IsOn="{Binding ExportCustomers, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}">
+                    <ToggleSwitch.Header>
+                      <TextBlock x:Uid="SalesChannelEditPage.Field.ExportCustomers" />
+                    </ToggleSwitch.Header>
+                  </ToggleSwitch>
 
-                  <ToggleSwitch x:Uid="SalesChannelEditPage.Field.ExportOrders"
-                                IsOn="{Binding ExportOrders, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}" />
+                  <ToggleSwitch IsOn="{Binding ExportOrders, Mode=TwoWay}"
+                                IsEnabled="{Binding IsNotLoading}">
+                    <ToggleSwitch.Header>
+                      <TextBlock x:Uid="SalesChannelEditPage.Field.ExportOrders" />
+                    </ToggleSwitch.Header>
+                  </ToggleSwitch>
                 </StackPanel>
               </StackPanel>
             </Border>
@@ -425,14 +443,20 @@
                 </Grid.ColumnDefinitions>
 
                 <ToggleSwitch Grid.Column="0"
-                              x:Uid="SalesChannelEditPage.Field.InitialProductImportCompleted"
                               IsOn="{Binding InitialProductImportCompleted, Mode=TwoWay}"
-                              IsEnabled="{Binding IsNotLoading}" />
+                              IsEnabled="{Binding IsNotLoading}">
+                  <ToggleSwitch.Header>
+                    <TextBlock x:Uid="SalesChannelEditPage.Field.InitialProductImportCompleted" />
+                  </ToggleSwitch.Header>
+                </ToggleSwitch>
 
                 <ToggleSwitch Grid.Column="1"
-                              x:Uid="SalesChannelEditPage.Field.InitialProductExportCompleted"
                               IsOn="{Binding InitialProductExportCompleted, Mode=TwoWay}"
-                              IsEnabled="{Binding IsNotLoading}" />
+                              IsEnabled="{Binding IsNotLoading}">
+                  <ToggleSwitch.Header>
+                    <TextBlock x:Uid="SalesChannelEditPage.Field.InitialProductExportCompleted" />
+                  </ToggleSwitch.Header>
+                </ToggleSwitch>
               </Grid>
             </Border>
           </StackPanel>
@@ -450,29 +474,100 @@
                          Foreground="{ThemeResource OnSurfaceBrush}" />
             </StackPanel>
 
-            <!-- Warehouse Selection -->
-            <Border Background="{ThemeResource SurfaceBrush}"
-                    CornerRadius="12"
-                    Padding="16"
-                    Translation="0,0,8"
+            <!-- Warehouse Selection Table -->
+            <Border CornerRadius="12"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    Background="{ThemeResource SurfaceBrush}"
                     Visibility="{Binding HasWarehouses, Converter={StaticResource BoolToVisibilityConverter}}">
-              <Border.Shadow>
-                <ThemeShadow />
-              </Border.Shadow>
-              <ItemsRepeater ItemsSource="{Binding Warehouses}">
-                <ItemsRepeater.Layout>
-                  <UniformGridLayout MinItemWidth="250"
-                                     MinColumnSpacing="16"
-                                     MinRowSpacing="12"
-                                     ItemsStretch="Fill" />
-                </ItemsRepeater.Layout>
-                <ItemsRepeater.ItemTemplate>
-                  <DataTemplate>
-                    <CheckBox Content="{Binding Name}"
-                              IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                  </DataTemplate>
-                </ItemsRepeater.ItemTemplate>
-              </ItemsRepeater>
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Table Header -->
+                <Border Grid.Row="0"
+                        Background="{ThemeResource SurfaceVariantBrush}"
+                        CornerRadius="12,12,0,0"
+                        BorderBrush="{ThemeResource OutlineVariantBrush}"
+                        BorderThickness="0,0,0,1">
+                  <Grid Padding="16,12">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox Grid.Column="0"
+                              x:Name="SelectAllCheckBox"
+                              Margin="0,0,12,0"
+                              VerticalAlignment="Center"
+                              Checked="SelectAllCheckBox_Checked"
+                              Unchecked="SelectAllCheckBox_Unchecked" />
+                    <FontIcon Grid.Column="1"
+                              Glyph="&#xE80F;"
+                              FontSize="16"
+                              Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                              Margin="0,0,12,0"
+                              VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2"
+                               x:Uid="SalesChannelEditPage.Header.WarehouseName"
+                               Style="{StaticResource LabelLarge}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                               VerticalAlignment="Center" />
+                  </Grid>
+                </Border>
+
+                <!-- Table Body -->
+                <ScrollViewer Grid.Row="1"
+                              MaxHeight="300"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                  <ItemsRepeater ItemsSource="{Binding Warehouses}">
+                    <ItemsRepeater.Layout>
+                      <StackLayout Orientation="Vertical" Spacing="0" />
+                    </ItemsRepeater.Layout>
+                    <ItemsRepeater.ItemTemplate>
+                      <DataTemplate>
+                        <Grid Padding="16,10"
+                              BorderBrush="{ThemeResource OutlineVariantBrush}"
+                              BorderThickness="0,0,0,1"
+                              Background="Transparent">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+
+                          <CheckBox Grid.Column="0"
+                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <Border Grid.Column="1"
+                                  Width="32"
+                                  Height="32"
+                                  CornerRadius="16"
+                                  Background="{ThemeResource SecondaryContainerBrush}"
+                                  Margin="0,0,12,0">
+                            <FontIcon Glyph="&#xE80F;"
+                                      FontSize="14"
+                                      Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                          </Border>
+                          <TextBlock Grid.Column="2"
+                                     Text="{Binding Name}"
+                                     Style="{StaticResource BodyMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}"
+                                     VerticalAlignment="Center"
+                                     TextTrimming="CharacterEllipsis" />
+                        </Grid>
+                      </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                  </ItemsRepeater>
+                </ScrollViewer>
+              </Grid>
             </Border>
 
             <!-- No Warehouses Placeholder -->

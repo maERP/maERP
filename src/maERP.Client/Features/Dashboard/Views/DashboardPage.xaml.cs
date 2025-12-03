@@ -18,4 +18,20 @@ public sealed partial class DashboardPage : Page
             await model.ViewOrder(order);
         }
     }
+
+    private async void ViewAllOrders_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is DashboardModel model)
+        {
+            await model.NavigateToOrderList();
+        }
+    }
+
+    private async void ViewAllProducts_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is DashboardModel model)
+        {
+            await model.NavigateToProductList();
+        }
+    }
 }

@@ -3,6 +3,7 @@ using maERP.Client.Core.Abstractions;
 using maERP.Client.Core.Exceptions;
 using maERP.Client.Features.Tenants.Services;
 using maERP.Domain.Dtos.Tenant;
+using maERP.Domain.Dtos.User;
 using Microsoft.Extensions.Logging;
 
 namespace maERP.Client.Features.Tenants.Models;
@@ -43,6 +44,14 @@ public class TenantEditModel : AsyncInitializableModel
     // UI State
     private bool _isSaving;
     private string _errorMessage = string.Empty;
+
+    // User Invite UI State
+    private bool _isAddUserOverlayOpen;
+    private string _inviteEmail = string.Empty;
+    private string _inviteErrorMessage = string.Empty;
+    private bool _isSearchingUser;
+    private bool _isAddingUser;
+    private UserListDto? _foundUser;
 
     public TenantEditModel(
         ITenantService tenantService,
@@ -217,6 +226,120 @@ public class TenantEditModel : AsyncInitializableModel
 
     #endregion
 
+    #region User Invite State
+
+    /// <summary>
+    /// Indicates whether the add user overlay is open.
+    /// </summary>
+    public bool IsAddUserOverlayOpen
+    {
+        get => _isAddUserOverlayOpen;
+        set => SetProperty(ref _isAddUserOverlayOpen, value);
+    }
+
+    /// <summary>
+    /// The email address entered in the invite field.
+    /// </summary>
+    public string InviteEmail
+    {
+        get => _inviteEmail;
+        set
+        {
+            if (SetProperty(ref _inviteEmail, value))
+            {
+                // Clear previous search results when email changes
+                FoundUser = null;
+                InviteErrorMessage = string.Empty;
+                OnPropertyChanged(nameof(CanSearchUser));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Error message for the user invite operation.
+    /// </summary>
+    public string InviteErrorMessage
+    {
+        get => _inviteErrorMessage;
+        set => SetProperty(ref _inviteErrorMessage, value);
+    }
+
+    /// <summary>
+    /// Indicates whether a user search is in progress.
+    /// </summary>
+    public bool IsSearchingUser
+    {
+        get => _isSearchingUser;
+        private set
+        {
+            if (SetProperty(ref _isSearchingUser, value))
+            {
+                OnPropertyChanged(nameof(IsNotSearchingUser));
+                OnPropertyChanged(nameof(CanSearchUser));
+                OnPropertyChanged(nameof(CanAddUser));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Indicates whether a user search is NOT in progress (inverse of IsSearchingUser).
+    /// </summary>
+    public bool IsNotSearchingUser => !IsSearchingUser;
+
+    /// <summary>
+    /// Indicates whether a user add operation is in progress.
+    /// </summary>
+    public bool IsAddingUser
+    {
+        get => _isAddingUser;
+        private set
+        {
+            if (SetProperty(ref _isAddingUser, value))
+            {
+                OnPropertyChanged(nameof(CanAddUser));
+            }
+        }
+    }
+
+    /// <summary>
+    /// The user found by the search operation.
+    /// </summary>
+    public UserListDto? FoundUser
+    {
+        get => _foundUser;
+        private set
+        {
+            if (SetProperty(ref _foundUser, value))
+            {
+                OnPropertyChanged(nameof(HasFoundUser));
+                OnPropertyChanged(nameof(CanAddUser));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Indicates whether a user has been found.
+    /// </summary>
+    public bool HasFoundUser => FoundUser != null;
+
+    /// <summary>
+    /// Indicates whether the user can initiate a search.
+    /// </summary>
+    public bool CanSearchUser =>
+        !string.IsNullOrWhiteSpace(InviteEmail) &&
+        !IsSearchingUser &&
+        !IsAddingUser;
+
+    /// <summary>
+    /// Indicates whether the user can add the found user.
+    /// </summary>
+    public bool CanAddUser =>
+        HasFoundUser &&
+        !IsSearchingUser &&
+        !IsAddingUser;
+
+    #endregion
+
     private async Task LoadTenantAsync(CancellationToken ct)
     {
         if (!_tenantId.HasValue) return;
@@ -305,6 +428,87 @@ public class TenantEditModel : AsyncInitializableModel
     public async Task CancelAsync()
     {
         await _navigator.NavigateBackAsync(this);
+    }
+
+    /// <summary>
+    /// Opens the add user overlay.
+    /// </summary>
+    public void OpenAddUserOverlay()
+    {
+        InviteEmail = string.Empty;
+        InviteErrorMessage = string.Empty;
+        FoundUser = null;
+        IsAddUserOverlayOpen = true;
+    }
+
+    /// <summary>
+    /// Closes the add user overlay.
+    /// </summary>
+    public void CloseAddUserOverlay()
+    {
+        IsAddUserOverlayOpen = false;
+        InviteEmail = string.Empty;
+        InviteErrorMessage = string.Empty;
+        FoundUser = null;
+    }
+
+    /// <summary>
+    /// Searches for a user by email address.
+    /// </summary>
+    public async Task SearchUserAsync(CancellationToken ct = default)
+    {
+        if (!CanSearchUser || !_tenantId.HasValue) return;
+
+        IsSearchingUser = true;
+        InviteErrorMessage = string.Empty;
+        FoundUser = null;
+
+        try
+        {
+            var user = await _tenantService.SearchUserByEmailAsync(_tenantId.Value, InviteEmail, ct);
+            FoundUser = user;
+        }
+        catch (ApiException ex)
+        {
+            InviteErrorMessage = ex.CombinedMessage;
+        }
+        catch (Exception ex)
+        {
+            InviteErrorMessage = string.Format(_localizer["TenantEditPage.Error.SearchUserFailed"], ex.Message);
+        }
+        finally
+        {
+            IsSearchingUser = false;
+        }
+    }
+
+    /// <summary>
+    /// Adds the found user to the tenant.
+    /// </summary>
+    public async Task AddUserToTenantAsync(CancellationToken ct = default)
+    {
+        if (!CanAddUser || !_tenantId.HasValue || FoundUser == null) return;
+
+        IsAddingUser = true;
+        InviteErrorMessage = string.Empty;
+
+        try
+        {
+            await _tenantService.AddUserToTenantAsync(_tenantId.Value, InviteEmail, ct);
+            CloseAddUserOverlay();
+        }
+        catch (ApiException ex)
+        {
+            InviteErrorMessage = ex.CombinedMessage;
+        }
+        catch (Exception ex)
+        {
+            InviteErrorMessage = string.Format(_localizer["TenantEditPage.Error.AddUserFailed"], ex.Message);
+        }
+        finally
+        {
+            IsAddingUser = false;
+        }
     }
 
     /// <inheritdoc />

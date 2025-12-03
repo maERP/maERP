@@ -166,6 +166,7 @@
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto" />
               <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Basic Information Card -->
@@ -394,10 +395,257 @@
                 </StackPanel>
               </StackPanel>
             </Border>
+
+            <!-- Users Card (only visible in Edit Mode) -->
+            <Border x:Name="UsersCard"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="2"
+                    Margin="0"
+                    Background="{ThemeResource SurfaceBrush}"
+                    CornerRadius="12"
+                    Translation="0,0,8"
+                    Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibilityConverter}}">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel Grid.Column="0"
+                              Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE716;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="TenantEditPage.Section.Users"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                  <Button Grid.Column="1"
+                          x:Uid="TenantEditPage.Button.AddUser"
+                          Style="{StaticResource FilledTonalButtonStyle}"
+                          Click="AddUserButton_Click">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8">
+                      <FontIcon Glyph="&#xE710;"
+                                FontSize="14" />
+                      <TextBlock x:Uid="TenantEditPage.Button.AddUser.Text" />
+                    </StackPanel>
+                  </Button>
+                </Grid>
+
+                <!-- Users Info -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="12">
+                  <TextBlock x:Uid="TenantEditPage.Users.Info"
+                             Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                             TextWrapping="Wrap" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
           </Grid>
 
         </StackPanel>
       </Grid>
     </ScrollViewer>
+
+    <!-- Add User Overlay -->
+    <Grid Grid.Row="0"
+          Grid.RowSpan="2"
+          Visibility="{Binding IsAddUserOverlayOpen, Converter={StaticResource BoolToVisibilityConverter}}">
+      <!-- Backdrop -->
+      <Border Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"
+              Opacity="0.8" />
+
+      <!-- Dialog -->
+      <Border Background="{ThemeResource SurfaceBrush}"
+              CornerRadius="16"
+              MaxWidth="480"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Translation="0,0,32"
+              Margin="24">
+        <Border.Shadow>
+          <ThemeShadow />
+        </Border.Shadow>
+        <StackPanel Padding="24"
+                    Spacing="20">
+          <!-- Dialog Header -->
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0"
+                        Orientation="Horizontal"
+                        Spacing="12">
+              <Border Width="40"
+                      Height="40"
+                      CornerRadius="20"
+                      Background="{ThemeResource SecondaryContainerBrush}">
+                <FontIcon Glyph="&#xE8FA;"
+                          FontSize="20"
+                          Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center" />
+              </Border>
+              <TextBlock x:Uid="TenantEditPage.AddUser.Title"
+                         Style="{StaticResource TitleLarge}"
+                         Foreground="{ThemeResource OnSurfaceBrush}"
+                         VerticalAlignment="Center" />
+            </StackPanel>
+            <Button Grid.Column="1"
+                    Style="{StaticResource IconButtonStyle}"
+                    Click="CloseOverlayButton_Click">
+              <FontIcon Glyph="&#xE711;"
+                        FontSize="16" />
+            </Button>
+          </Grid>
+
+          <!-- Description -->
+          <TextBlock x:Uid="TenantEditPage.AddUser.Description"
+                     Style="{StaticResource BodyMedium}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                     TextWrapping="Wrap" />
+
+          <!-- Error Message -->
+          <Border Background="{ThemeResource ErrorContainerBrush}"
+                  CornerRadius="8"
+                  Padding="12"
+                  Visibility="{Binding InviteErrorMessage, Converter={StaticResource StringToVisibilityConverter}}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <FontIcon Grid.Column="0"
+                        Glyph="&#xE783;"
+                        FontSize="16"
+                        Foreground="{ThemeResource OnErrorContainerBrush}"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center" />
+              <TextBlock Grid.Column="1"
+                         Text="{Binding InviteErrorMessage}"
+                         Style="{StaticResource BodySmall}"
+                         Foreground="{ThemeResource OnErrorContainerBrush}"
+                         TextWrapping="Wrap"
+                         VerticalAlignment="Center" />
+            </Grid>
+          </Border>
+
+          <!-- Email Input with Search Button -->
+          <Grid ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0"
+                     x:Uid="TenantEditPage.AddUser.Email"
+                     Text="{Binding InviteEmail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     InputScope="EmailSmtpAddress"
+                     IsEnabled="{Binding IsNotSearchingUser}" />
+            <Button Grid.Column="1"
+                    x:Uid="TenantEditPage.AddUser.Search"
+                    Style="{StaticResource FilledTonalButtonStyle}"
+                    Click="SearchUserButton_Click"
+                    IsEnabled="{Binding CanSearchUser}">
+              <StackPanel Orientation="Horizontal"
+                          Spacing="8">
+                <FontIcon Glyph="&#xE721;"
+                          FontSize="14" />
+                <TextBlock x:Uid="TenantEditPage.AddUser.Search.Text" />
+              </StackPanel>
+            </Button>
+          </Grid>
+
+          <!-- Search Progress -->
+          <StackPanel Orientation="Horizontal"
+                      HorizontalAlignment="Center"
+                      Spacing="12"
+                      Visibility="{Binding IsSearchingUser, Converter={StaticResource BoolToVisibilityConverter}}">
+            <ProgressRing IsActive="True"
+                          Width="20"
+                          Height="20" />
+            <TextBlock x:Uid="TenantEditPage.AddUser.Searching"
+                       Style="{StaticResource BodyMedium}"
+                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+          </StackPanel>
+
+          <!-- Found User Card -->
+          <Border Background="{ThemeResource SecondaryContainerBrush}"
+                  CornerRadius="12"
+                  Padding="16"
+                  Visibility="{Binding HasFoundUser, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Border Grid.Column="0"
+                      Width="48"
+                      Height="48"
+                      CornerRadius="24"
+                      Background="{ThemeResource PrimaryContainerBrush}"
+                      Margin="0,0,16,0">
+                <FontIcon Glyph="&#xE77B;"
+                          FontSize="24"
+                          Foreground="{ThemeResource OnPrimaryContainerBrush}"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center" />
+              </Border>
+              <StackPanel Grid.Column="1"
+                          VerticalAlignment="Center">
+                <TextBlock Style="{StaticResource TitleMedium}"
+                           Foreground="{ThemeResource OnSecondaryContainerBrush}">
+                  <Run Text="{Binding FoundUser.Firstname}" />
+                  <Run Text=" " />
+                  <Run Text="{Binding FoundUser.Lastname}" />
+                </TextBlock>
+                <TextBlock Text="{Binding FoundUser.Email}"
+                           Style="{StaticResource BodyMedium}"
+                           Foreground="{ThemeResource OnSecondaryContainerBrush}"
+                           Opacity="0.8" />
+              </StackPanel>
+            </Grid>
+          </Border>
+
+          <!-- Action Buttons -->
+          <Grid ColumnSpacing="12"
+                Visibility="{Binding HasFoundUser, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    x:Uid="TenantEditPage.AddUser.Cancel"
+                    Style="{StaticResource OutlinedButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Click="CloseOverlayButton_Click" />
+            <Button Grid.Column="1"
+                    x:Uid="TenantEditPage.AddUser.Add"
+                    Style="{StaticResource FilledButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Click="AddUserToTenantButton_Click"
+                    IsEnabled="{Binding CanAddUser}">
+              <StackPanel Orientation="Horizontal"
+                          Spacing="8"
+                          HorizontalAlignment="Center">
+                <ProgressRing IsActive="{Binding IsAddingUser}"
+                              Width="16"
+                              Height="16"
+                              Visibility="{Binding IsAddingUser, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <TextBlock x:Uid="TenantEditPage.AddUser.Add.Text" />
+              </StackPanel>
+            </Button>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Grid>
   </Grid>
 </Page>

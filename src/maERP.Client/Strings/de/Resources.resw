@@ -175,6 +175,21 @@
   <data name="Shell.UserMenu.Logout.Text" xml:space="preserve">
     <value>Abmelden</value>
   </data>
+  <data name="Shell.UserMenu.SalesChannels.Text" xml:space="preserve">
+    <value>Vertriebskanäle</value>
+  </data>
+  <data name="Shell.UserMenu.TaxClasses.Text" xml:space="preserve">
+    <value>Steuerklassen</value>
+  </data>
+  <data name="Shell.UserMenu.Warehouses.Text" xml:space="preserve">
+    <value>Lager</value>
+  </data>
+  <data name="Shell.UserMenu.AiModels.Text" xml:space="preserve">
+    <value>KI-Modelle</value>
+  </data>
+  <data name="Shell.UserMenu.AiPrompts.Text" xml:space="preserve">
+    <value>KI-Prompts</value>
+  </data>
   <data name="Shell.NavItem.Login.Content" xml:space="preserve">
     <value>Anmelden</value>
   </data>
@@ -1556,6 +1571,9 @@
   <data name="SalesChannelDetailPage.NoWarehouses.Text" xml:space="preserve">
     <value>Keine Lager zugeordnet</value>
   </data>
+  <data name="SalesChannelDetailPage.Header.WarehouseName.Text" xml:space="preserve">
+    <value>Lagername</value>
+  </data>
   <data name="SalesChannelDetailPage.UsageHint.Text" xml:space="preserve">
     <value>Dieser Vertriebskanal verbindet Ihr maERP-System mit externen Plattformen. Konfigurieren Sie Import- und Exporteinstellungen, um Produkte, Kunden und Bestellungen automatisch zu synchronisieren.</value>
   </data>
@@ -1624,28 +1642,28 @@
   <data name="SalesChannelEditPage.Field.Password.PlaceholderText" xml:space="preserve">
     <value>Passwort oder API-Schlüssel eingeben</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ImportProducts.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ImportProducts.Text" xml:space="preserve">
     <value>Produkte importieren</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ImportCustomers.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ImportCustomers.Text" xml:space="preserve">
     <value>Kunden importieren</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ImportOrders.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ImportOrders.Text" xml:space="preserve">
     <value>Bestellungen importieren</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ExportProducts.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ExportProducts.Text" xml:space="preserve">
     <value>Produkte exportieren</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ExportCustomers.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ExportCustomers.Text" xml:space="preserve">
     <value>Kunden exportieren</value>
   </data>
-  <data name="SalesChannelEditPage.Field.ExportOrders.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.ExportOrders.Text" xml:space="preserve">
     <value>Bestellungen exportieren</value>
   </data>
-  <data name="SalesChannelEditPage.Field.InitialProductImportCompleted.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.InitialProductImportCompleted.Text" xml:space="preserve">
     <value>Initialer Produktimport abgeschlossen</value>
   </data>
-  <data name="SalesChannelEditPage.Field.InitialProductExportCompleted.Header" xml:space="preserve">
+  <data name="SalesChannelEditPage.Field.InitialProductExportCompleted.Text" xml:space="preserve">
     <value>Initialer Produktexport abgeschlossen</value>
   </data>
   <data name="SalesChannelEditPage.RequiredFieldsNote.Text" xml:space="preserve">
@@ -1653,6 +1671,9 @@
   </data>
   <data name="SalesChannelEditPage.NoWarehouses.Text" xml:space="preserve">
     <value>Keine Lager verfügbar</value>
+  </data>
+  <data name="SalesChannelEditPage.Header.WarehouseName.Text" xml:space="preserve">
+    <value>Lagername</value>
   </data>
   <data name="SalesChannelEditPage.NoWarehouses.Hint.Text" xml:space="preserve">
     <value>Erstellen Sie zuerst Lager, um sie diesem Vertriebskanal zuzuweisen</value>
@@ -2892,6 +2913,49 @@
   <!-- TenantEditPage - Errors -->
   <data name="TenantEditPage.Error.SaveFailed" xml:space="preserve">
     <value>Fehler beim Speichern des Mandanten: {0}</value>
+  </data>
+  <data name="TenantEditPage.Error.SearchUserFailed" xml:space="preserve">
+    <value>Fehler bei der Benutzersuche: {0}</value>
+  </data>
+  <data name="TenantEditPage.Error.AddUserFailed" xml:space="preserve">
+    <value>Fehler beim Hinzufügen des Benutzers: {0}</value>
+  </data>
+
+  <!-- TenantEditPage - Users Section -->
+  <data name="TenantEditPage.Section.Users.Text" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="TenantEditPage.Button.AddUser.Text" xml:space="preserve">
+    <value>Benutzer hinzufügen</value>
+  </data>
+  <data name="TenantEditPage.Users.Info.Text" xml:space="preserve">
+    <value>Hier können Sie Benutzer zu diesem Mandanten hinzufügen. Benutzer müssen bereits im System registriert sein.</value>
+  </data>
+
+  <!-- TenantEditPage - Add User Overlay -->
+  <data name="TenantEditPage.AddUser.Title.Text" xml:space="preserve">
+    <value>Benutzer hinzufügen</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Description.Text" xml:space="preserve">
+    <value>Geben Sie die E-Mail-Adresse des Benutzers ein, den Sie zu diesem Mandanten hinzufügen möchten. Der Benutzer muss bereits im System registriert sein.</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Email.Header" xml:space="preserve">
+    <value>E-Mail-Adresse</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Email.PlaceholderText" xml:space="preserve">
+    <value>benutzer@beispiel.de</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Search.Text" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Searching.Text" xml:space="preserve">
+    <value>Suche läuft...</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Cancel.Content" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="TenantEditPage.AddUser.Add.Text" xml:space="preserve">
+    <value>Hinzufügen</value>
   </data>
 
   <!-- Shell User Menu - Superadmin Tenants -->
