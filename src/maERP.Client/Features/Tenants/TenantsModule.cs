@@ -26,6 +26,7 @@ public static class TenantsModule
 
         // Page models
         services.AddTransient<TenantListModel>();
+        services.AddTransient<TenantDetailModel>();
         services.AddTransient<TenantEditModel>();
         services.AddTransient<DemoDataGeneratorModel>();
 
@@ -39,6 +40,7 @@ public static class TenantsModule
     {
         views.Register(
             new ViewMap<TenantListPage, TenantListModel>(),
+            new ViewMap<TenantDetailPage, TenantDetailModel>(Data: new DataMap<TenantDetailData>()),
             new ViewMap<TenantEditPage, TenantEditModel>(Data: new DataMap<TenantEditData>()),
             new ViewMap<DemoDataGeneratorPage, DemoDataGeneratorModel>(Data: new DataMap<DemoDataGeneratorData>())
         );
@@ -50,6 +52,7 @@ public static class TenantsModule
     public static IEnumerable<RouteMap> GetRoutes(IViewRegistry views)
     {
         yield return new RouteMap(Routes.TenantList, View: views.FindByViewModel<TenantListModel>());
+        yield return new RouteMap(Routes.TenantDetail, View: views.FindByViewModel<TenantDetailModel>());
         yield return new RouteMap(Routes.TenantEdit, View: views.FindByViewModel<TenantEditModel>());
         yield return new RouteMap(Routes.TenantCreate, View: views.FindByViewModel<TenantEditModel>());
         yield return new RouteMap(Routes.DemoDataGenerator, View: views.FindByViewModel<DemoDataGeneratorModel>());

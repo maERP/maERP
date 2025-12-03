@@ -62,6 +62,7 @@ public static class Routes
 
     // Tenants
     public const string TenantList = "Tenants";
+    public const string TenantDetail = "TenantDetail";
     public const string TenantEdit = "TenantEdit";
     public const string TenantCreate = "TenantCreate";
     public const string DemoDataGenerator = "DemoDataGenerator";

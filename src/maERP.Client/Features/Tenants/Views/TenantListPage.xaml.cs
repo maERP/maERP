@@ -150,7 +150,7 @@ public sealed partial class TenantListPage : Page
             button.Tag is TenantListDto tenant &&
             DataContext is TenantListModel model)
         {
-            await model.EditTenant(tenant);
+            await model.ViewTenant(tenant);
         }
     }
 }

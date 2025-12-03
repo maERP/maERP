@@ -496,6 +496,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
             var productNames = generator.GenerateMany(ProductsTotalCount);
 
             var random = new Random();
+            var batchId = DateTime.Now.ToString("yyyyMMddHHmmss");
 
             // 3. Create products one by one with progress tracking
             for (int i = 0; i < productNames.Count; i++)
@@ -508,7 +509,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
 
                 var input = new ProductInputDto
                 {
-                    Sku = $"DEMO-{i + 1:D4}",
+                    Sku = $"DEMO-{batchId}-{i + 1:D4}",
                     Name = name,
                     Ean = GenerateEan13(random),
                     Asin = GenerateAsin(random),
@@ -611,7 +612,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                     Phone = $"+49 {random.Next(100, 999)} {random.Next(1000000, 9999999)}",
                     Website = random.NextDouble() > 0.7 ? $"https://www.{lastName.ToLower()}.example.com" : string.Empty,
                     CustomerStatus = CustomerStatus.Active,
-                    DateEnrollment = DateTimeOffset.Now.AddDays(-random.Next(1, 365)),
+                    DateEnrollment = DateTimeOffset.UtcNow.AddDays(-random.Next(1, 365)),
                     CustomerAddresses = customerAddresses
                 };
 
@@ -688,6 +689,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
             var salesChannelId = salesChannelsResponse.Data[0].Id;
 
             var random = new Random();
+            var batchId = DateTime.Now.ToString("yyyyMMddHHmmss");
             var paymentMethods = new[] { "PayPal", "Credit Card", "Invoice", "Direct Debit", "Prepayment" };
             var orderStatuses = new[] { OrderStatus.Pending, OrderStatus.Processing, OrderStatus.Completed, OrderStatus.ReadyForDelivery };
             var paymentStatuses = new[] { PaymentStatus.Invoiced, PaymentStatus.CompletelyPaid, PaymentStatus.PartiallyPaid };
@@ -737,7 +739,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                 var input = new OrderInputDto
                 {
                     SalesChannelId = salesChannelId,
-                    RemoteOrderId = $"DEMO-{DateTime.Now:yyyyMMdd}-{i + 1:D4}",
+                    RemoteOrderId = $"DEMO-{batchId}-{i + 1:D4}",
                     CustomerId = customer.CustomerId,
                     Status = orderStatuses[random.Next(orderStatuses.Length)],
                     OrderItems = orderItems,
@@ -803,11 +805,13 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
 
         try
         {
+            var batchId = DateTime.Now.ToString("yyyyMMddHHmmss");
+
             // 1. Create AI Model with demo Ollama configuration
             var aiModelInput = new AiModelInputDto
             {
                 AiModelType = AiModelType.Ollama,
-                Name = "Demo AI Model",
+                Name = $"Demo AI Model {batchId}",
                 ApiUrl = "http://localhost:11434",
                 NCtx = 4096
             };
@@ -823,19 +827,19 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                 new AiPromptInputDto
                 {
                     AiModelId = aiModelId,
-                    Identifier = "rewrite-description",
+                    Identifier = $"rewrite-description-{batchId}",
                     PromptText = "You are a professional copywriter. Rewrite the following product description to be more engaging and persuasive while maintaining accuracy. Keep the same approximate length.\n\nOriginal description:\n{description}"
                 },
                 new AiPromptInputDto
                 {
                     AiModelId = aiModelId,
-                    Identifier = "shorten-description",
+                    Identifier = $"shorten-description-{batchId}",
                     PromptText = "You are a professional copywriter. Create a concise, compelling version of the following product description. Reduce the length by approximately 50% while keeping the most important selling points.\n\nOriginal description:\n{description}"
                 },
                 new AiPromptInputDto
                 {
                     AiModelId = aiModelId,
-                    Identifier = "extend-description",
+                    Identifier = $"extend-description-{batchId}",
                     PromptText = "You are a professional copywriter. Expand the following product description with additional details, benefits, and use cases. Make it approximately twice as long while maintaining a professional tone.\n\nOriginal description:\n{description}"
                 }
             };

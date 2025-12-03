@@ -211,12 +211,12 @@ public class CustomerCsvImportHandler : IRequestHandler<CustomerCsvImportCommand
             }
             else
             {
-                customer.DateEnrollment = DateTimeOffset.Now; // Default to now
+                customer.DateEnrollment = DateTimeOffset.UtcNow; // Default to now
             }
         }
         else
         {
-            customer.DateEnrollment = DateTimeOffset.Now; // Default to now
+            customer.DateEnrollment = DateTimeOffset.UtcNow; // Default to now
         }
 
         return customer;

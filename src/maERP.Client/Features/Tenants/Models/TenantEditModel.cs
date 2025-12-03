@@ -307,15 +307,6 @@ public class TenantEditModel : AsyncInitializableModel
         await _navigator.NavigateBackAsync(this);
     }
 
-    public async Task NavigateToDemoDataGeneratorAsync()
-    {
-        if (!_tenantId.HasValue) return;
-
-        await _navigator.NavigateViewModelAsync<DemoDataGeneratorModel>(
-            this,
-            data: new DemoDataGeneratorData(_tenantId.Value, Name));
-    }
-
     /// <inheritdoc />
     protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {

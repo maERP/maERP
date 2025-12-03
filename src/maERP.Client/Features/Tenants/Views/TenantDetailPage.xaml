@@ -1,0 +1,778 @@
+<Page x:Class="maERP.Client.Features.Tenants.Views.TenantDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.Tenants.Views"
+      xmlns:models="using:maERP.Client.Features.Tenants.Models"
+      xmlns:mvux="using:Uno.Extensions.Reactive.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Page.Resources>
+    <!-- Status Badge Colors -->
+    <SolidColorBrush x:Key="StatusActiveBrush" Color="#16A34A" />
+    <SolidColorBrush x:Key="StatusActiveBackgroundBrush" Color="#DCFCE7" />
+    <SolidColorBrush x:Key="StatusInactiveBrush" Color="#6B7280" />
+    <SolidColorBrush x:Key="StatusInactiveBackgroundBrush" Color="#F3F4F6" />
+  </Page.Resources>
+
+  <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Header with back button -->
+    <utu:NavigationBar Grid.Row="0" x:Uid="TenantDetailPage.NavigationBar">
+      <utu:NavigationBar.MainCommand>
+        <AppBarButton Icon="Back"
+                      x:Uid="TenantDetailPage.AppBarButton.Back"
+                      Click="BackButton_Click" />
+      </utu:NavigationBar.MainCommand>
+      <utu:NavigationBar.PrimaryCommands>
+        <AppBarButton Icon="Edit"
+                      x:Uid="TenantDetailPage.AppBarButton.Edit"
+                      Click="EditButton_Click" />
+      </utu:NavigationBar.PrimaryCommands>
+    </utu:NavigationBar>
+
+    <!-- Error Message Banner -->
+    <Border Grid.Row="1"
+            Background="{ThemeResource ErrorContainerBrush}"
+            Padding="16"
+            Margin="16,8,16,0"
+            CornerRadius="8"
+            Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <FontIcon Grid.Column="0"
+                  Glyph="&#xE783;"
+                  FontSize="20"
+                  Foreground="{ThemeResource OnErrorContainerBrush}"
+                  Margin="0,0,12,0"
+                  VerticalAlignment="Center" />
+        <TextBlock Grid.Column="1"
+                   Text="{Binding ErrorMessage}"
+                   Style="{StaticResource BodyMedium}"
+                   Foreground="{ThemeResource OnErrorContainerBrush}"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Center" />
+      </Grid>
+    </Border>
+
+    <!-- Tenant Details Content -->
+    <mvux:FeedView Grid.Row="2"
+                   Source="{Binding Tenant}">
+      <mvux:FeedView.ValueTemplate>
+        <DataTemplate>
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid Padding="24">
+              <!-- VisualStateManager for responsive layout -->
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup>
+                  <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="InfoCardsGrid.MaxWidth" Value="600" />
+                      <Setter Target="InfoColumn1.Width" Value="*" />
+                      <Setter Target="InfoColumn2.Width" Value="0" />
+                      <Setter Target="CompanyCard.(Grid.Column)" Value="0" />
+                      <Setter Target="CompanyCard.(Grid.Row)" Value="0" />
+                      <Setter Target="CompanyCard.Margin" Value="0,0,0,16" />
+                      <Setter Target="AddressCard.(Grid.Column)" Value="0" />
+                      <Setter Target="AddressCard.(Grid.Row)" Value="1" />
+                      <Setter Target="AddressCard.Margin" Value="0,0,0,16" />
+                      <Setter Target="PaymentCard.(Grid.Column)" Value="0" />
+                      <Setter Target="PaymentCard.(Grid.Row)" Value="2" />
+                      <Setter Target="PaymentCard.Margin" Value="0,0,0,16" />
+                      <Setter Target="MetadataCard.(Grid.Column)" Value="0" />
+                      <Setter Target="MetadataCard.(Grid.Row)" Value="3" />
+                      <Setter Target="MetadataCard.Margin" Value="0" />
+                    </VisualState.Setters>
+                  </VisualState>
+
+                  <VisualState x:Name="Medium">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="800" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="InfoCardsGrid.MaxWidth" Value="1200" />
+                      <Setter Target="InfoColumn1.Width" Value="*" />
+                      <Setter Target="InfoColumn2.Width" Value="*" />
+                      <Setter Target="CompanyCard.(Grid.Column)" Value="0" />
+                      <Setter Target="CompanyCard.(Grid.Row)" Value="0" />
+                      <Setter Target="CompanyCard.Margin" Value="0,0,8,16" />
+                      <Setter Target="AddressCard.(Grid.Column)" Value="1" />
+                      <Setter Target="AddressCard.(Grid.Row)" Value="0" />
+                      <Setter Target="AddressCard.Margin" Value="8,0,0,16" />
+                      <Setter Target="PaymentCard.(Grid.Column)" Value="0" />
+                      <Setter Target="PaymentCard.(Grid.Row)" Value="1" />
+                      <Setter Target="PaymentCard.Margin" Value="0,0,8,0" />
+                      <Setter Target="MetadataCard.(Grid.Column)" Value="1" />
+                      <Setter Target="MetadataCard.(Grid.Row)" Value="1" />
+                      <Setter Target="MetadataCard.Margin" Value="8,0,0,0" />
+                    </VisualState.Setters>
+                  </VisualState>
+
+                  <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                      <AdaptiveTrigger MinWindowWidth="1200" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                      <Setter Target="InfoCardsGrid.MaxWidth" Value="10000" />
+                      <Setter Target="InfoColumn1.Width" Value="*" />
+                      <Setter Target="InfoColumn2.Width" Value="*" />
+                      <Setter Target="CompanyCard.(Grid.Column)" Value="0" />
+                      <Setter Target="CompanyCard.(Grid.Row)" Value="0" />
+                      <Setter Target="CompanyCard.Margin" Value="0,0,8,16" />
+                      <Setter Target="AddressCard.(Grid.Column)" Value="1" />
+                      <Setter Target="AddressCard.(Grid.Row)" Value="0" />
+                      <Setter Target="AddressCard.Margin" Value="8,0,0,16" />
+                      <Setter Target="PaymentCard.(Grid.Column)" Value="0" />
+                      <Setter Target="PaymentCard.(Grid.Row)" Value="1" />
+                      <Setter Target="PaymentCard.Margin" Value="0,0,8,0" />
+                      <Setter Target="MetadataCard.(Grid.Column)" Value="1" />
+                      <Setter Target="MetadataCard.(Grid.Row)" Value="1" />
+                      <Setter Target="MetadataCard.Margin" Value="8,0,0,0" />
+                    </VisualState.Setters>
+                  </VisualState>
+                </VisualStateGroup>
+              </VisualStateManager.VisualStateGroups>
+
+              <StackPanel Spacing="24"
+                          MaxWidth="1400"
+                          HorizontalAlignment="Stretch">
+
+                <!-- Profile Header Section -->
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        CornerRadius="12"
+                        Padding="24"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <StackPanel HorizontalAlignment="Center"
+                              Spacing="16">
+                    <!-- Tenant Icon -->
+                    <Border Width="96"
+                            Height="96"
+                            CornerRadius="48"
+                            Background="{ThemeResource PrimaryContainerBrush}">
+                      <FontIcon Glyph="&#xE902;"
+                                FontSize="48"
+                                Foreground="{ThemeResource OnPrimaryContainerBrush}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                    </Border>
+
+                    <!-- Tenant Name -->
+                    <TextBlock Style="{StaticResource HeadlineMedium}"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               Text="{Binding Data.Name}" />
+
+                    <!-- Company Name (if available) -->
+                    <TextBlock Style="{StaticResource TitleMedium}"
+                               HorizontalAlignment="Center"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                               Text="{Binding Data.CompanyName}"
+                               Visibility="{Binding Data.CompanyName, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}" />
+
+                    <!-- Status and User Count Badges -->
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Spacing="12">
+                      <!-- Status Badge -->
+                      <Border CornerRadius="16"
+                              Padding="16,6"
+                              Background="{Binding Data.IsActive, Converter={StaticResource BoolToStatusBackgroundConverter}}">
+                        <TextBlock Text="{Binding Data.IsActive, Converter={StaticResource BoolToStatusTextConverter}}"
+                                   Style="{StaticResource LabelMedium}"
+                                   Foreground="{Binding Data.IsActive, Converter={StaticResource BoolToStatusForegroundConverter}}" />
+                      </Border>
+
+                      <!-- User Count Badge -->
+                      <Border CornerRadius="16"
+                              Padding="16,6"
+                              Background="{ThemeResource SecondaryContainerBrush}">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="6">
+                          <FontIcon Glyph="&#xE716;"
+                                    FontSize="14"
+                                    Foreground="{ThemeResource OnSecondaryContainerBrush}" />
+                          <TextBlock Style="{StaticResource LabelMedium}"
+                                     Foreground="{ThemeResource OnSecondaryContainerBrush}">
+                            <Run Text="{Binding Data.UserCount}" />
+                            <Run x:Uid="TenantDetailPage.Badge.Users" />
+                          </TextBlock>
+                        </StackPanel>
+                      </Border>
+                    </StackPanel>
+                  </StackPanel>
+                </Border>
+
+                <!-- Information Cards Grid -->
+                <Grid x:Name="InfoCardsGrid">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="InfoColumn1" Width="*" />
+                    <ColumnDefinition x:Name="InfoColumn2" Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <!-- Company Information Card -->
+                  <Border x:Name="CompanyCard"
+                          Grid.Column="0"
+                          Grid.Row="0"
+                          Margin="0,0,8,16"
+                          Background="{ThemeResource SurfaceBrush}"
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE8F1;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource PrimaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="TenantDetailPage.Section.CompanyInformation"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Company Fields -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="12">
+                        <!-- Contact Email -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE715;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="TenantDetailPage.Field.Email"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.ContactEmail}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding Data.ContactEmail, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="TenantDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.ContactEmail, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Phone -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE717;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="TenantDetailPage.Field.Phone"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Phone}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       Visibility="{Binding Data.Phone, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="TenantDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.Phone, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Website -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE774;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="TenantDetailPage.Field.Website"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Website}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource PrimaryBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding Data.Website, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="TenantDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.Website, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+
+                  <!-- Address Card -->
+                  <Border x:Name="AddressCard"
+                          Grid.Column="1"
+                          Grid.Row="0"
+                          Margin="8,0,0,16"
+                          Background="{ThemeResource SurfaceBrush}"
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE81D;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource TertiaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="TenantDetailPage.Section.Address"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Address Fields -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="12">
+                        <!-- Street -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE80F;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="TenantDetailPage.Field.Street"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Street}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding Data.Street, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock Text="{Binding Data.Street2}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding Data.Street2, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="TenantDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.Street, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- City and Postal Code -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE909;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="TenantDetailPage.Field.City"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       Visibility="{Binding Data.City, Converter={StaticResource StringToVisibilityConverter}}">
+                              <Run Text="{Binding Data.PostalCode}" />
+                              <Run Text=" " />
+                              <Run Text="{Binding Data.City}" />
+                            </TextBlock>
+                            <TextBlock x:Uid="TenantDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.City, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- State and Country -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE909;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="TenantDetailPage.Field.Country"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       Visibility="{Binding Data.Country, Converter={StaticResource StringToVisibilityConverter}}">
+                              <Run Text="{Binding Data.State}" />
+                              <Run Text=", " />
+                              <Run Text="{Binding Data.Country}" />
+                            </TextBlock>
+                            <TextBlock x:Uid="TenantDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.Country, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+
+                  <!-- Payment Information Card -->
+                  <Border x:Name="PaymentCard"
+                          Grid.Column="0"
+                          Grid.Row="1"
+                          Margin="0,0,8,0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE8C7;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource SecondaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="TenantDetailPage.Section.PaymentInformation"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Payment Fields -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="12">
+                        <!-- IBAN -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE8A1;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="TenantDetailPage.Field.Iban"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.Iban}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       Visibility="{Binding Data.Iban, Converter={StaticResource StringToVisibilityConverter}}" />
+                            <TextBlock x:Uid="TenantDetailPage.NotAvailable"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       Visibility="{Binding Data.Iban, Converter={StaticResource StringToInverseVisibilityConverter}}" />
+                          </StackPanel>
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+
+                  <!-- Metadata Card -->
+                  <Border x:Name="MetadataCard"
+                          Grid.Column="1"
+                          Grid.Row="1"
+                          Margin="8,0,0,0"
+                          Background="{ThemeResource SurfaceBrush}"
+                          CornerRadius="12"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
+                    <StackPanel Spacing="0">
+                      <!-- Card Header -->
+                      <Grid Padding="16,16,16,8">
+                        <StackPanel Orientation="Horizontal">
+                          <FontIcon Glyph="&#xE946;"
+                                    FontSize="20"
+                                    Foreground="{ThemeResource TertiaryBrush}"
+                                    Margin="0,0,12,0" />
+                          <TextBlock x:Uid="TenantDetailPage.Section.Metadata"
+                                     Style="{StaticResource TitleMedium}"
+                                     Foreground="{ThemeResource OnSurfaceBrush}" />
+                        </StackPanel>
+                      </Grid>
+
+                      <!-- Metadata Fields -->
+                      <StackPanel Padding="16,0,16,16"
+                                  Spacing="12">
+                        <!-- Date Created -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE787;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="TenantDetailPage.Field.DateCreated"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.DateCreated, Converter={StaticResource DateTimeToStringConverter}}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Date Modified -->
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE70F;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="TenantDetailPage.Field.DateModified"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.DateModified, Converter={StaticResource DateTimeToStringConverter}}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}" />
+                          </StackPanel>
+                        </Grid>
+
+                        <!-- Valid Until -->
+                        <Grid Visibility="{Binding Data.ValidUntil, Converter={StaticResource NullToVisibilityConverter}}">
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                          </Grid.ColumnDefinitions>
+                          <FontIcon Grid.Column="0"
+                                    Glyph="&#xE823;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center" />
+                          <StackPanel Grid.Column="1">
+                            <TextBlock x:Uid="TenantDetailPage.Field.ValidUntil"
+                                       Style="{StaticResource LabelSmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                            <TextBlock Text="{Binding Data.ValidUntil, Converter={StaticResource DateTimeToStringConverter}}"
+                                       Style="{StaticResource BodyMedium}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}" />
+                          </StackPanel>
+                        </Grid>
+                      </StackPanel>
+                    </StackPanel>
+                  </Border>
+                </Grid>
+
+                <!-- Description Section -->
+                <StackPanel Spacing="12">
+                  <StackPanel Orientation="Horizontal"
+                              Spacing="12">
+                    <FontIcon Glyph="&#xE70B;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}" />
+                    <TextBlock x:Uid="TenantDetailPage.Section.Description"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+
+                  <Border Background="{ThemeResource SurfaceBrush}"
+                          CornerRadius="12"
+                          Padding="16"
+                          MinHeight="80"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
+                    <TextBlock Text="{Binding Data.Description}"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               TextWrapping="Wrap"
+                               Visibility="{Binding Data.Description, Converter={StaticResource StringToVisibilityConverter}}" />
+                  </Border>
+
+                  <!-- No Description Placeholder (shown when Description is empty) -->
+                  <Border Background="{ThemeResource SurfaceVariantBrush}"
+                          CornerRadius="12"
+                          Padding="24"
+                          Visibility="{Binding Data.Description, Converter={StaticResource StringToInverseVisibilityConverter}}">
+                    <StackPanel HorizontalAlignment="Center"
+                                Spacing="8">
+                      <FontIcon Glyph="&#xE70B;"
+                                FontSize="32"
+                                Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      <TextBlock x:Uid="TenantDetailPage.NoDescription"
+                                 Style="{StaticResource BodyMedium}"
+                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                 HorizontalAlignment="Center" />
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+
+                <!-- Actions Section -->
+                <StackPanel Spacing="12">
+                  <StackPanel Orientation="Horizontal"
+                              Spacing="12">
+                    <FontIcon Glyph="&#xE90F;"
+                              FontSize="20"
+                              Foreground="{ThemeResource SecondaryBrush}" />
+                    <TextBlock x:Uid="TenantDetailPage.Section.Actions"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+
+                  <Border Background="{ThemeResource SurfaceBrush}"
+                          CornerRadius="12"
+                          Padding="16"
+                          Translation="0,0,8">
+                    <Border.Shadow>
+                      <ThemeShadow />
+                    </Border.Shadow>
+                    <StackPanel Spacing="12">
+                      <!-- Generate Demo Data Button -->
+                      <Button x:Uid="TenantDetailPage.Button.GenerateDemoData"
+                              Style="{StaticResource FilledButtonStyle}"
+                              HorizontalAlignment="Stretch"
+                              Tag="{Binding Data.Name}"
+                              Click="GenerateDemoDataButton_Click">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8">
+                          <FontIcon Glyph="&#xE946;"
+                                    FontSize="16" />
+                          <TextBlock x:Uid="TenantDetailPage.Button.GenerateDemoData.Text" />
+                        </StackPanel>
+                      </Button>
+
+                      <!-- Clear Tenant Button -->
+                      <Button x:Uid="TenantDetailPage.Button.ClearTenant"
+                              Style="{StaticResource OutlinedButtonStyle}"
+                              HorizontalAlignment="Stretch"
+                              Click="ClearTenantButton_Click">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8">
+                          <FontIcon Glyph="&#xE74D;"
+                                    FontSize="16" />
+                          <TextBlock x:Uid="TenantDetailPage.Button.ClearTenant.Text" />
+                        </StackPanel>
+                      </Button>
+
+                      <!-- Delete Tenant Button -->
+                      <Button x:Uid="TenantDetailPage.Button.DeleteTenant"
+                              Style="{StaticResource OutlinedButtonStyle}"
+                              HorizontalAlignment="Stretch"
+                              Foreground="{ThemeResource ErrorBrush}"
+                              Click="DeleteTenantButton_Click">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="8">
+                          <FontIcon Glyph="&#xE74D;"
+                                    FontSize="16"
+                                    Foreground="{ThemeResource ErrorBrush}" />
+                          <TextBlock x:Uid="TenantDetailPage.Button.DeleteTenant.Text"
+                                     Foreground="{ThemeResource ErrorBrush}" />
+                        </StackPanel>
+                      </Button>
+                    </StackPanel>
+                  </Border>
+                </StackPanel>
+              </StackPanel>
+            </Grid>
+          </ScrollViewer>
+        </DataTemplate>
+      </mvux:FeedView.ValueTemplate>
+
+      <mvux:FeedView.ProgressTemplate>
+        <DataTemplate>
+          <Grid HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+              <ProgressRing IsActive="True"
+                            Width="48"
+                            Height="48" />
+              <TextBlock x:Uid="Common.Loading"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
+        </DataTemplate>
+      </mvux:FeedView.ProgressTemplate>
+
+      <mvux:FeedView.ErrorTemplate>
+        <DataTemplate>
+          <Grid HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+              <FontIcon Glyph="&#xE783;"
+                        FontSize="48"
+                        Foreground="{ThemeResource ErrorBrush}" />
+              <TextBlock x:Uid="TenantDetailPage.LoadError"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center" />
+              <Button x:Uid="Common.Retry"
+                      Style="{StaticResource FilledButtonStyle}"
+                      HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
+        </DataTemplate>
+      </mvux:FeedView.ErrorTemplate>
+    </mvux:FeedView>
+  </Grid>
+</Page>

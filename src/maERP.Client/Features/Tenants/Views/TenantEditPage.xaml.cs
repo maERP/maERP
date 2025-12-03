@@ -24,12 +24,4 @@ public sealed partial class TenantEditPage : Page
             await model.SaveAsync();
         }
     }
-
-    private async void DemoDataButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (DataContext is TenantEditModel model)
-        {
-            await model.NavigateToDemoDataGeneratorAsync();
-        }
-    }
 }

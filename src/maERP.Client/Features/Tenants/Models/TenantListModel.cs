@@ -85,11 +85,11 @@ public partial record TenantListModel
         .AsListFeed();
 
     /// <summary>
-    /// Navigate to tenant edit page.
+    /// Navigate to tenant detail page.
     /// </summary>
-    public async Task EditTenant(TenantListDto tenant)
+    public async Task ViewTenant(TenantListDto tenant)
     {
-        await _navigator.NavigateDataAsync(this, new TenantEditData(tenant.Id));
+        await _navigator.NavigateDataAsync(this, new TenantDetailData(tenant.Id));
     }
 
     /// <summary>

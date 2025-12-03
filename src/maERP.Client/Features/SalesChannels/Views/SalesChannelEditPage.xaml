@@ -204,12 +204,7 @@
                 <!-- Basic Fields -->
                 <StackPanel Padding="16,0,16,16"
                             Spacing="16">
-                  <!-- Name (Required) -->
-                  <TextBox x:Uid="SalesChannelEditPage.Field.Name"
-                           Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           IsEnabled="{Binding IsNotLoading}" />
-
-                  <!-- Sales Channel Type -->
+                  <!-- Sales Channel Type (Required) -->
                   <StackPanel Spacing="4">
                     <TextBlock x:Uid="SalesChannelEditPage.Field.Type.Label"
                                Style="{StaticResource LabelMedium}"
@@ -219,7 +214,8 @@
                               ItemsSource="{Binding SalesChannelTypeOptions}"
                               SelectedValue="{Binding SalesChannelType, Mode=TwoWay}"
                               SelectedValuePath="Value"
-                              IsEnabled="{Binding IsNotLoading}">
+                              IsEnabled="{Binding IsNotLoading}"
+                              IsEditable="False">
                       <ComboBox.ItemTemplate>
                         <DataTemplate>
                           <TextBlock Text="{Binding Value, Converter={StaticResource SalesChannelTypeToTextConverter}}" />
@@ -227,6 +223,11 @@
                       </ComboBox.ItemTemplate>
                     </ComboBox>
                   </StackPanel>
+
+                  <!-- Name (Required) -->
+                  <TextBox x:Uid="SalesChannelEditPage.Field.Name"
+                           Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           IsEnabled="{Binding IsNotLoading}" />
 
                   <!-- Required Fields Note -->
                   <TextBlock x:Uid="SalesChannelEditPage.RequiredFieldsNote"
@@ -236,14 +237,15 @@
               </StackPanel>
             </Border>
 
-            <!-- Connection Information Card -->
+            <!-- Connection Information Card (hidden for PointOfSale) -->
             <Border x:Name="ConnectionCard"
                     Grid.Column="1"
                     Grid.Row="0"
                     Margin="8,0,0,16"
                     Background="{ThemeResource SurfaceBrush}"
                     CornerRadius="12"
-                    Translation="0,0,8">
+                    Translation="0,0,8"
+                    Visibility="{Binding ShowConnectionInfo, Converter={StaticResource BoolToVisibilityConverter}}">
               <Border.Shadow>
                 <ThemeShadow />
               </Border.Shadow>
@@ -264,11 +266,12 @@
                 <!-- Connection Fields -->
                 <StackPanel Padding="16,0,16,16"
                             Spacing="16">
-                  <!-- URL -->
+                  <!-- URL (hidden for eBay and PointOfSale) -->
                   <TextBox x:Uid="SalesChannelEditPage.Field.Url"
                            Text="{Binding Url, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                            InputScope="Url"
-                           IsEnabled="{Binding IsNotLoading}" />
+                           IsEnabled="{Binding IsNotLoading}"
+                           Visibility="{Binding ShowUrlField, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                   <!-- Username -->
                   <TextBox x:Uid="SalesChannelEditPage.Field.Username"
@@ -284,10 +287,10 @@
             </Border>
           </Grid>
 
-          <!-- Synchronization Settings Section Header -->
+          <!-- Synchronization Settings Section Header (hidden for PointOfSale) -->
           <StackPanel Orientation="Horizontal"
                       Spacing="12"
-                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+                      Visibility="{Binding ShowImportExportSettings, Converter={StaticResource BoolToVisibilityConverter}}">
             <FontIcon Glyph="&#xE895;"
                       FontSize="20"
                       Foreground="{ThemeResource SecondaryBrush}" />
@@ -296,9 +299,9 @@
                        Foreground="{ThemeResource OnSurfaceBrush}" />
           </StackPanel>
 
-          <!-- Synchronization Cards Grid -->
+          <!-- Synchronization Cards Grid (hidden for PointOfSale) -->
           <Grid x:Name="SyncCardsGrid"
-                Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{Binding ShowImportExportSettings, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
               <ColumnDefinition x:Name="SyncColumn1" Width="*" />
               <ColumnDefinition x:Name="SyncColumn2" Width="*" />
@@ -395,9 +398,9 @@
             </Border>
           </Grid>
 
-          <!-- Initial Status Section -->
+          <!-- Initial Status Section (hidden for PointOfSale) -->
           <StackPanel Spacing="12"
-                      Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+                      Visibility="{Binding ShowImportExportSettings, Converter={StaticResource BoolToVisibilityConverter}}">
             <StackPanel Orientation="Horizontal"
                         Spacing="12">
               <FontIcon Glyph="&#xE73E;"

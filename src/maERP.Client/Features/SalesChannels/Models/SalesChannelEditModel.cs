@@ -135,8 +135,41 @@ public class SalesChannelEditModel : AsyncInitializableModel
     public SalesChannelType SalesChannelType
     {
         get => _salesChannelType;
-        set => SetProperty(ref _salesChannelType, value);
+        set
+        {
+            if (SetProperty(ref _salesChannelType, value))
+            {
+                // Update visibility properties when type changes
+                OnPropertyChanged(nameof(ShowConnectionInfo));
+                OnPropertyChanged(nameof(ShowUrlField));
+                OnPropertyChanged(nameof(ShowImportExportSettings));
+                OnPropertyChanged(nameof(CanSave));
+            }
+        }
     }
+
+    #endregion
+
+    #region Type-Specific Visibility
+
+    /// <summary>
+    /// Shows connection info section for all types except PointOfSale.
+    /// </summary>
+    public bool ShowConnectionInfo => SalesChannelType != SalesChannelType.PointOfSale;
+
+    /// <summary>
+    /// Shows URL field only for Shopware5, Shopware6, and WooCommerce.
+    /// eBay and PointOfSale do not require URL.
+    /// </summary>
+    public bool ShowUrlField => SalesChannelType is
+        SalesChannelType.Shopware5 or
+        SalesChannelType.Shopware6 or
+        SalesChannelType.WooCommerce;
+
+    /// <summary>
+    /// Shows import/export settings for all types except PointOfSale.
+    /// </summary>
+    public bool ShowImportExportSettings => SalesChannelType != SalesChannelType.PointOfSale;
 
     #endregion
 
@@ -269,9 +302,33 @@ public class SalesChannelEditModel : AsyncInitializableModel
         set => SetProperty(ref _errorMessage, value);
     }
 
-    public bool CanSave =>
-        !string.IsNullOrWhiteSpace(Name) &&
-        !IsLoading;
+    /// <summary>
+    /// Determines if the save operation is allowed based on required fields per SalesChannelType.
+    /// </summary>
+    public bool CanSave
+    {
+        get
+        {
+            if (IsLoading || string.IsNullOrWhiteSpace(Name))
+                return false;
+
+            // Type-specific validation
+            return SalesChannelType switch
+            {
+                // PointOfSale: Only Name required
+                SalesChannelType.PointOfSale => true,
+
+                // eBay: Name, Username, Password required (no URL)
+                SalesChannelType.eBay => !string.IsNullOrWhiteSpace(Username) &&
+                                         !string.IsNullOrWhiteSpace(Password),
+
+                // Shopware5, Shopware6, WooCommerce: Name, URL, Username, Password required
+                _ => !string.IsNullOrWhiteSpace(Url) &&
+                     !string.IsNullOrWhiteSpace(Username) &&
+                     !string.IsNullOrWhiteSpace(Password)
+            };
+        }
+    }
 
     #endregion
 
@@ -378,8 +435,8 @@ public class SalesChannelEditModel : AsyncInitializableModel
     {
         base.OnPropertyChanged(propertyName);
 
-        // Update dependent properties
-        if (propertyName is nameof(Name))
+        // Update CanSave when relevant fields change
+        if (propertyName is nameof(Name) or nameof(Url) or nameof(Username) or nameof(Password))
         {
             base.OnPropertyChanged(nameof(CanSave));
         }

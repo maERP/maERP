@@ -16,13 +16,6 @@
     <utu:NavigationBar Grid.Row="0"
                        Content="{Binding Title}">
       <utu:NavigationBar.PrimaryCommands>
-        <AppBarButton x:Uid="TenantEditPage.AppBarButton.DemoData"
-                      Click="DemoDataButton_Click"
-                      Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibilityConverter}}">
-          <AppBarButton.Icon>
-            <FontIcon Glyph="&#xE946;" />
-          </AppBarButton.Icon>
-        </AppBarButton>
         <AppBarButton x:Uid="TenantEditPage.AppBarButton.Cancel"
                       Click="CancelButton_Click">
           <AppBarButton.Icon>

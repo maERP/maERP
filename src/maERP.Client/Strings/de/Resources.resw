@@ -2670,6 +2670,96 @@
     <value>Mandant erstellen</value>
   </data>
 
+  <!-- TenantDetailPage -->
+  <data name="TenantDetailPage.NavigationBar.Content" xml:space="preserve">
+    <value>Mandant Details</value>
+  </data>
+  <data name="TenantDetailPage.AppBarButton.Back.Label" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="TenantDetailPage.AppBarButton.Edit.Label" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+
+  <!-- TenantDetailPage - Sections -->
+  <data name="TenantDetailPage.Section.CompanyInformation.Text" xml:space="preserve">
+    <value>Firmeninformationen</value>
+  </data>
+  <data name="TenantDetailPage.Section.Address.Text" xml:space="preserve">
+    <value>Adresse</value>
+  </data>
+  <data name="TenantDetailPage.Section.PaymentInformation.Text" xml:space="preserve">
+    <value>Zahlungsinformationen</value>
+  </data>
+  <data name="TenantDetailPage.Section.Metadata.Text" xml:space="preserve">
+    <value>Metadaten</value>
+  </data>
+  <data name="TenantDetailPage.Section.Description.Text" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+
+  <!-- TenantDetailPage - Fields -->
+  <data name="TenantDetailPage.Field.Email.Text" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="TenantDetailPage.Field.Phone.Text" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="TenantDetailPage.Field.Website.Text" xml:space="preserve">
+    <value>Webseite</value>
+  </data>
+  <data name="TenantDetailPage.Field.Street.Text" xml:space="preserve">
+    <value>Straße</value>
+  </data>
+  <data name="TenantDetailPage.Field.City.Text" xml:space="preserve">
+    <value>Stadt</value>
+  </data>
+  <data name="TenantDetailPage.Field.Country.Text" xml:space="preserve">
+    <value>Land</value>
+  </data>
+  <data name="TenantDetailPage.Field.Iban.Text" xml:space="preserve">
+    <value>IBAN</value>
+  </data>
+  <data name="TenantDetailPage.Field.DateCreated.Text" xml:space="preserve">
+    <value>Erstellt</value>
+  </data>
+  <data name="TenantDetailPage.Field.DateModified.Text" xml:space="preserve">
+    <value>Geändert</value>
+  </data>
+  <data name="TenantDetailPage.Field.ValidUntil.Text" xml:space="preserve">
+    <value>Gültig bis</value>
+  </data>
+
+  <!-- TenantDetailPage - Badges -->
+  <data name="TenantDetailPage.Badge.Users.Text" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+
+  <!-- TenantDetailPage - Status -->
+  <data name="TenantDetailPage.NotAvailable.Text" xml:space="preserve">
+    <value>Nicht verfügbar</value>
+  </data>
+  <data name="TenantDetailPage.NoDescription.Text" xml:space="preserve">
+    <value>Keine Beschreibung verfügbar</value>
+  </data>
+  <data name="TenantDetailPage.LoadError.Text" xml:space="preserve">
+    <value>Fehler beim Laden der Mandantendaten</value>
+  </data>
+
+  <!-- TenantDetailPage - Actions Section -->
+  <data name="TenantDetailPage.Section.Actions.Text" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+  <data name="TenantDetailPage.Button.GenerateDemoData.Text.Text" xml:space="preserve">
+    <value>Demo-Daten erstellen</value>
+  </data>
+  <data name="TenantDetailPage.Button.ClearTenant.Text.Text" xml:space="preserve">
+    <value>Tenant leeren</value>
+  </data>
+  <data name="TenantDetailPage.Button.DeleteTenant.Text.Text" xml:space="preserve">
+    <value>Tenant löschen</value>
+  </data>
+
   <!-- TenantEditPage -->
   <data name="TenantEditPage.TitleNew" xml:space="preserve">
     <value>Neuer Mandant</value>
