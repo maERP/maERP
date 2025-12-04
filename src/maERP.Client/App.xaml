@@ -33,6 +33,7 @@
       <converters:CurrencyConverter x:Key="CurrencyConverter" />
       <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <converters:InverseBooleanToVisibilityConverter x:Key="BoolToInverseVisibilityConverter" />
+      <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
       <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
       <converters:StringToInverseVisibilityConverter x:Key="StringToInverseVisibilityConverter" />
       <converters:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter" />

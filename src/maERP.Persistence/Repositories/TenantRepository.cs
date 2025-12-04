@@ -118,4 +118,172 @@ public class TenantRepository : ITenantRepository
     {
         _context.Set<Tenant>().Add(entity);
     }
+
+    public async Task DeleteTenantWithCascadeAsync(Guid tenantId, CancellationToken cancellationToken = default)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+        try
+        {
+            // Delete all tenant-related data in order (respecting foreign key constraints)
+            // Using ExecuteDeleteAsync for efficient bulk deletion
+
+            // 1. OrderItemSerialNumber
+            await _context.OrderItemSerialNumber
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 2. OrderItem
+            await _context.OrderItem
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 3. OrderHistory
+            await _context.OrderHistory
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 4. Shipping
+            await _context.Shipping
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 5. InvoiceItem
+            await _context.InvoiceItem
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 6. Invoice
+            await _context.Invoice
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 7. Order
+            await _context.Order
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 8. CustomerSalesChannel
+            await _context.CustomerSalesChannel
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 9. CustomerAddress
+            await _context.CustomerAddress
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 10. Customer
+            await _context.Customer
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 11. ProductStock
+            await _context.ProductStock
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 12. ProductSalesChannel
+            await _context.ProductSalesChannel
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 13. GoodsReceipt
+            await _context.GoodsReceipt
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 14. Product
+            await _context.Product
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 15. SalesChannel
+            await _context.SalesChannel
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 16. Warehouse
+            await _context.Warehouse
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 17. TaxClass
+            await _context.TaxClass
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 18. ShippingProviderRate
+            await _context.ShippingProviderRate
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 19. ShippingProvider
+            await _context.ShippingProvider
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 20. AiPrompt
+            await _context.AiPrompt
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 21. AiModel
+            await _context.AiModel
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 22. Manufacturer
+            await _context.Manufacturer
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 23. Country
+            await _context.Country
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 24. UserTenant (cascade delete is configured, but delete explicitly for clarity)
+            await _context.UserTenant
+                .IgnoreQueryFilters()
+                .Where(x => x.TenantId == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            // 25. Tenant (final delete)
+            await _context.Tenant
+                .IgnoreQueryFilters()
+                .Where(x => x.Id == tenantId)
+                .ExecuteDeleteAsync(cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
+    }
 }

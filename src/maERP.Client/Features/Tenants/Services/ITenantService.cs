@@ -40,4 +40,9 @@ public interface ITenantService
     /// Adds a user to a tenant by email address.
     /// </summary>
     Task AddUserToTenantAsync(Guid tenantId, string email, CancellationToken ct = default);
+
+    /// <summary>
+    /// Deletes a tenant by ID.
+    /// </summary>
+    Task DeleteTenantAsync(Guid id, CancellationToken ct = default);
 }

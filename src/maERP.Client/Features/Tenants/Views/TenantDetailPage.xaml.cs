@@ -41,8 +41,28 @@ public sealed partial class TenantDetailPage : Page
         // TODO: Implement clear tenant functionality
     }
 
-    private void DeleteTenantButton_Click(object sender, RoutedEventArgs e)
+    private async void DeleteTenantButton_Click(object sender, RoutedEventArgs e)
     {
-        // TODO: Implement delete tenant functionality
+        if (DataContext is not TenantDetailModel model)
+        {
+            return;
+        }
+
+        var dialog = new ContentDialog
+        {
+            Title = "Delete Tenant",
+            Content = "Are you sure you want to delete this tenant? This action cannot be undone.",
+            PrimaryButtonText = "Delete",
+            CloseButtonText = "Cancel",
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = this.XamlRoot
+        };
+
+        var result = await dialog.ShowAsync();
+
+        if (result == ContentDialogResult.Primary)
+        {
+            await model.DeleteTenant();
+        }
     }
 }

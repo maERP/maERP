@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using maERP.Application.Features.Tenant.Commands.TenantCreate;
+using maERP.Application.Features.Tenant.Commands.TenantDelete;
 using maERP.Application.Features.Tenant.Commands.TenantUpdate;
 using maERP.Application.Features.Tenant.Commands.TenantUserAdd;
 using maERP.Application.Features.Tenant.Queries.TenantDetail;
@@ -154,6 +155,43 @@ public class TenantsController(IMediator mediator) : ControllerBase
         // Set the user ID and tenant ID on the command
         command.UserId = userId;
         command.TenantId = id;
+
+        var response = await mediator.Send(command);
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    /// <summary>
+    /// Delete a tenant (requires RoleManageTenant permission and tenant must be inactive)
+    /// </summary>
+    /// <param name="id">Tenant ID</param>
+    /// <returns>No content if successful</returns>
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Result<Guid>>> DeleteTenant(Guid id)
+    {
+        // Get the current user's ID from the authenticated claims
+        // Try "uid" claim first (JWT), then fall back to NameIdentifier (Test/Standard)
+        var userId = User.FindFirst("uid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized(new Result<Guid>
+            {
+                Succeeded = false,
+                StatusCode = ResultStatusCode.Unauthorized,
+                Messages = new List<string> { "User ID not found in token" }
+            });
+        }
+
+        var command = new TenantDeleteCommand
+        {
+            TenantId = id,
+            UserId = userId
+        };
 
         var response = await mediator.Send(command);
         return StatusCode((int)response.StatusCode, response);

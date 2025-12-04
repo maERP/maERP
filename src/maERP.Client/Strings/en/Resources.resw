@@ -2780,6 +2780,9 @@
   <data name="TenantDetailPage.Button.DeleteTenant.Text.Text" xml:space="preserve">
     <value>Delete Tenant</value>
   </data>
+  <data name="TenantDetailPage.DeleteHint.Text" xml:space="preserve">
+    <value>To delete a tenant, it must first be deactivated. Edit the tenant and set the status to "Inactive".</value>
+  </data>
 
   <!-- TenantEditPage -->
   <data name="TenantEditPage.TitleNew" xml:space="preserve">

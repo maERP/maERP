@@ -1,4 +1,5 @@
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Exceptions;
 using maERP.Client.Features.Tenants.Services;
 using maERP.Domain.Dtos.Tenant;
 
@@ -70,6 +71,26 @@ public partial record TenantDetailModel
         await _navigator.NavigateViewModelAsync<DemoDataGeneratorModel>(
             this,
             data: new DemoDataGeneratorData(_tenantId, tenantName));
+    }
+
+    /// <summary>
+    /// Delete the current tenant.
+    /// </summary>
+    public async Task DeleteTenant(CancellationToken ct = default)
+    {
+        try
+        {
+            await _tenantService.DeleteTenantAsync(_tenantId, ct);
+            await _navigator.NavigateViewModelAsync<TenantListModel>(this);
+        }
+        catch (ApiException ex)
+        {
+            await ErrorMessage.Set(ex.CombinedMessage, ct);
+        }
+        catch (Exception ex)
+        {
+            await ErrorMessage.Set($"Failed to delete tenant: {ex.Message}", ct);
+        }
     }
 }
 

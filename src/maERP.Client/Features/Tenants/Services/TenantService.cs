@@ -141,4 +141,15 @@ public class TenantService : ITenantService
         var response = await _httpClient.PostAsJsonAsync(url, payload, JsonOptions, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
+
+    public async Task DeleteTenantAsync(Guid id, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Tenants.ById(id)}";
+
+        _logger.LogInformation("Deleting tenant {Id} at URL: {Url}", id, url);
+
+        var response = await _httpClient.DeleteAsync(url, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
 }

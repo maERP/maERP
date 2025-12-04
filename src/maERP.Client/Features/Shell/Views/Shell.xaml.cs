@@ -21,6 +21,13 @@ namespace maERP.Client.Features.Shell.Views;
 
 public sealed partial class Shell : UserControl, IContentControlProvider
 {
+    // Mapping of navigation tags to their corresponding NavigationViewItems
+    // Tags that exist in this dictionary will be highlighted in the sidebar
+    private Dictionary<string, NavigationViewItem>? _sidebarTagMap;
+
+    // Flag to prevent recursive selection changes
+    private bool _isUpdatingSidebarSelection;
+
     public Shell()
     {
         this.InitializeComponent();
@@ -38,6 +45,69 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         // Note: NavView.SelectionChanged is now wired in XAML
         TabBarNav.SelectionChanged += OnTabBarSelectionChanged;
         this.Loaded += OnShellLoaded;
+    }
+
+    /// <summary>
+    /// Initialize the mapping of sidebar tags to NavigationViewItems.
+    /// Only tags that have sidebar entries are included.
+    /// </summary>
+    private void InitializeSidebarTagMap()
+    {
+        _sidebarTagMap = new Dictionary<string, NavigationViewItem>
+        {
+            { "Login", NavItemLogin },
+            { "Main", NavItemDashboard },
+            { "Dashboard", NavItemDashboard },
+            { "Customers", NavItemCustomers },
+            { "Orders", NavItemOrders },
+            { "Invoices", NavItemInvoices },
+            { "Products", NavItemProducts },
+            { "Manufacturers", NavItemManufacturers }
+        };
+    }
+
+    /// <summary>
+    /// Updates the sidebar selection to match the current page.
+    /// If the tag doesn't correspond to a sidebar item, clears the selection.
+    /// </summary>
+    /// <param name="tag">The navigation tag of the current page</param>
+    private void UpdateSidebarSelection(string? tag)
+    {
+        if (_isUpdatingSidebarSelection) return;
+
+        try
+        {
+            _isUpdatingSidebarSelection = true;
+
+            // Ensure the tag map is initialized
+            if (_sidebarTagMap == null)
+            {
+                InitializeSidebarTagMap();
+            }
+
+            Console.WriteLine($"[Shell] UpdateSidebarSelection for tag: '{tag}'");
+
+            if (!string.IsNullOrEmpty(tag) && _sidebarTagMap!.TryGetValue(tag, out var navItem))
+            {
+                // Tag has a corresponding sidebar item - select it
+                if (NavView.SelectedItem != navItem)
+                {
+                    Console.WriteLine($"[Shell] Selecting sidebar item: {tag}");
+                    NavView.SelectedItem = navItem;
+                }
+            }
+            else
+            {
+                // Tag has no sidebar item (e.g., TaxClasses, Warehouses, etc.)
+                // Clear the selection to avoid misleading highlighting
+                Console.WriteLine($"[Shell] Clearing sidebar selection (tag '{tag}' has no sidebar item)");
+                NavView.SelectedItem = null;
+            }
+        }
+        finally
+        {
+            _isUpdatingSidebarSelection = false;
+        }
     }
 
     private async void OnAuthenticationStateChanged(object? sender, bool isAuthenticated)
@@ -194,6 +264,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                 Console.WriteLine("[Shell] Navigating to Dashboard after tenant switch");
                 await navigator.NavigateViewModelAsync<DashboardModel>(this, qualifier: Qualifiers.ClearBackStack);
                 Console.WriteLine("[Shell] Navigation to Dashboard completed");
+
+                // Update sidebar selection to Dashboard
+                UpdateSidebarSelection("Dashboard");
             }
             else
             {
@@ -379,6 +452,13 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
     private async void OnNavigationViewSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
+        // Skip if we're programmatically updating the sidebar selection
+        if (_isUpdatingSidebarSelection)
+        {
+            Console.WriteLine("[Shell] OnNavigationViewSelectionChanged skipped (programmatic update)");
+            return;
+        }
+
         Console.WriteLine($"[Shell] OnNavigationViewSelectionChanged fired");
         Console.WriteLine($"[Shell] SelectedItem type: {args.SelectedItem?.GetType().Name ?? "null"}");
 
@@ -510,6 +590,10 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     Console.WriteLine($"[Shell] Tag '{tag}' not handled yet");
                     break;
             }
+
+            // Update sidebar selection to match the navigated page
+            // For pages without a sidebar entry, this will clear the selection
+            UpdateSidebarSelection(tag);
         }
         catch (Exception ex)
         {
