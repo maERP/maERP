@@ -239,6 +239,26 @@
     <value>Sales Channels</value>
   </data>
 
+  <!-- Shell First Tenant Creation -->
+  <data name="Shell.FirstTenant.Title.Text" xml:space="preserve">
+    <value>Welcome to maERP!</value>
+  </data>
+  <data name="Shell.FirstTenant.Subtitle.Text" xml:space="preserve">
+    <value>Create your first organization to get started. You can add more organizations later.</value>
+  </data>
+  <data name="Shell.FirstTenant.FormTitle.Text" xml:space="preserve">
+    <value>Organization Details</value>
+  </data>
+  <data name="Shell.FirstTenant.Cancel.Content" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Shell.FirstTenant.Create.Content" xml:space="preserve">
+    <value>Create Organization</value>
+  </data>
+  <data name="Shell.FirstTenant.Create.Text.Text" xml:space="preserve">
+    <value>Create Organization</value>
+  </data>
+
   <!-- Customer List Page -->
   <data name="CustomerListPage.NavigationBar.Content" xml:space="preserve">
     <value>Customers</value>

@@ -41,6 +41,19 @@ public interface ITenantContextService
     Task ClearAsync();
 
     /// <summary>
+    /// Refreshes the available tenants from the API.
+    /// Called after creating a new tenant to update the tenant list.
+    /// </summary>
+    Task RefreshTenantsAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Refreshes tenants from API and returns whether any tenants are available.
+    /// If the current tenant was deleted/deactivated, automatically selects another tenant.
+    /// </summary>
+    /// <returns>True if at least one tenant is available, false if no tenants remain.</returns>
+    Task<bool> RefreshTenantsAndCheckAvailabilityAsync(CancellationToken ct = default);
+
+    /// <summary>
     /// Event fired when the current tenant changes.
     /// </summary>
     event EventHandler<TenantListDto?>? CurrentTenantChanged;

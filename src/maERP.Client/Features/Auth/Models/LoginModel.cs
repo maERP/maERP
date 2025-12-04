@@ -16,6 +16,7 @@ public class LoginModel : INotifyPropertyChanged
     private readonly INavigator _navigator;
     private readonly IAuthenticationService _authentication;
     private readonly IMaErpAuthenticationService _maErpAuth;
+    private readonly ITenantContextService _tenantContext;
     private readonly ShellModel _shell;
     private readonly IHostEnvironment _hostEnvironment;
 
@@ -30,6 +31,7 @@ public class LoginModel : INotifyPropertyChanged
         INavigator navigator,
         IAuthenticationService authentication,
         IMaErpAuthenticationService maErpAuth,
+        ITenantContextService tenantContext,
         ShellModel shell,
         IHostEnvironment hostEnvironment)
     {
@@ -38,6 +40,7 @@ public class LoginModel : INotifyPropertyChanged
         _navigator = navigator;
         _authentication = authentication;
         _maErpAuth = maErpAuth;
+        _tenantContext = tenantContext;
         _shell = shell;
         _hostEnvironment = hostEnvironment;
 
@@ -176,7 +179,19 @@ public class LoginModel : INotifyPropertyChanged
             if (success)
             {
                 _shell.UpdateAuthenticationState(true);
-                await _navigator.NavigateRouteAsync(this, Routes.Dashboard, qualifier: Qualifiers.ClearBackStack);
+
+                // Check if user has any tenants
+                if (_tenantContext.AvailableTenants.Count == 0)
+                {
+                    // No tenants - show first tenant creation overlay in Shell
+                    // The Shell's FirstTenantOverlay will be shown, covering the content area
+                    _shell.UpdateNoTenantsState(true);
+                }
+                else
+                {
+                    // Has tenants - normal Dashboard navigation
+                    await _navigator.NavigateRouteAsync(this, Routes.Dashboard, qualifier: Qualifiers.ClearBackStack);
+                }
             }
             else
             {

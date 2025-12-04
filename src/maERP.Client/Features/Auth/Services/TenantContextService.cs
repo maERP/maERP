@@ -1,4 +1,7 @@
+using maERP.Client.Core.Models;
+using maERP.Client.Features.Tenants.Services;
 using maERP.Domain.Dtos.Tenant;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace maERP.Client.Features.Auth.Services;
 
@@ -9,6 +12,7 @@ namespace maERP.Client.Features.Auth.Services;
 public class TenantContextService : ITenantContextService
 {
     private readonly ITokenStorageService _tokenStorage;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<TenantContextService> _logger;
     private List<TenantListDto> _availableTenants = new();
     private TenantListDto? _currentTenant;
@@ -17,9 +21,11 @@ public class TenantContextService : ITenantContextService
 
     public TenantContextService(
         ITokenStorageService tokenStorage,
+        IServiceProvider serviceProvider,
         ILogger<TenantContextService> logger)
     {
         _tokenStorage = tokenStorage;
+        _serviceProvider = serviceProvider;
         _logger = logger;
     }
 
@@ -96,6 +102,35 @@ public class TenantContextService : ITenantContextService
         _logger.LogInformation("Cleared tenant context");
 
         CurrentTenantChanged?.Invoke(this, null);
+    }
+
+    public async Task RefreshTenantsAsync(CancellationToken ct = default)
+    {
+        _logger.LogInformation("Refreshing available tenants from API");
+
+        try
+        {
+            var tenantService = _serviceProvider.GetRequiredService<ITenantService>();
+            var parameters = new QueryParameters { PageNumber = 0, PageSize = 100 };
+            var response = await tenantService.GetTenantsAsync(parameters, ct);
+
+            if (response?.Data != null)
+            {
+                await SetAvailableTenantsAsync(response.Data);
+                _logger.LogInformation("Refreshed tenants: {Count} available", response.Data.Count);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to refresh tenants from API");
+            throw;
+        }
+    }
+
+    public async Task<bool> RefreshTenantsAndCheckAvailabilityAsync(CancellationToken ct = default)
+    {
+        await RefreshTenantsAsync(ct);
+        return _availableTenants.Count > 0;
     }
 
     private async Task SelectFirstAvailableTenantAsync()

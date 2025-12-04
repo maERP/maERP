@@ -1,7 +1,9 @@
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Exceptions;
+using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Tenants.Services;
 using maERP.Domain.Dtos.Tenant;
+using Uno.Extensions.Authentication;
 
 namespace maERP.Client.Features.Tenants.Models;
 
@@ -13,15 +15,21 @@ public partial record TenantDetailModel
 {
     private readonly ITenantService _tenantService;
     private readonly INavigator _navigator;
+    private readonly ITenantContextService _tenantContext;
+    private readonly IAuthenticationService _authentication;
     private readonly Guid _tenantId;
 
     public TenantDetailModel(
         ITenantService tenantService,
         INavigator navigator,
+        ITenantContextService tenantContext,
+        IAuthenticationService authentication,
         TenantDetailData data)
     {
         _tenantService = tenantService;
         _navigator = navigator;
+        _tenantContext = tenantContext;
+        _authentication = authentication;
         _tenantId = data.tenantId;
     }
 
@@ -81,7 +89,20 @@ public partial record TenantDetailModel
         try
         {
             await _tenantService.DeleteTenantAsync(_tenantId, ct);
-            await _navigator.NavigateViewModelAsync<TenantListModel>(this);
+
+            // Refresh tenant list after deletion
+            var hasTenantsRemaining = await _tenantContext.RefreshTenantsAndCheckAvailabilityAsync(ct);
+
+            if (hasTenantsRemaining)
+            {
+                // Navigate to tenant list (another tenant was auto-selected)
+                await _navigator.NavigateViewModelAsync<TenantListModel>(this);
+            }
+            else
+            {
+                // No tenants remaining - log out the user
+                await _authentication.LogoutAsync(ct);
+            }
         }
         catch (ApiException ex)
         {

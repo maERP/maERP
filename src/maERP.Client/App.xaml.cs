@@ -17,6 +17,7 @@ using maERP.Client.Features.TaxClasses;
 using maERP.Client.Features.Tenants;
 using maERP.Client.Features.Warehouses;
 using maERP.Client.Features.Shell.Views;
+using maERP.Client.Features.Shell.Models;
 using maERP.Domain.Dtos.Auth;
 
 namespace maERP.Client;
@@ -177,9 +178,23 @@ public partial class App : Application
             {
                 var auth = services.GetRequiredService<IAuthenticationService>();
                 var authenticated = await auth.RefreshAsync();
+
                 if (authenticated)
                 {
-                    await navigator.NavigateViewModelAsync<DashboardModel>(this, qualifier: Qualifiers.Nested);
+                    var tenantContext = services.GetRequiredService<ITenantContextService>();
+                    var shell = services.GetRequiredService<ShellModel>();
+
+                    if (tenantContext.AvailableTenants.Count == 0)
+                    {
+                        // Authenticated but no tenants - show first tenant creation overlay
+                        // Don't navigate anywhere, the Shell's FirstTenantOverlay will be shown
+                        shell.UpdateNoTenantsState(true);
+                    }
+                    else
+                    {
+                        // Has tenants - normal Dashboard
+                        await navigator.NavigateViewModelAsync<DashboardModel>(this, qualifier: Qualifiers.Nested);
+                    }
                 }
                 else
                 {

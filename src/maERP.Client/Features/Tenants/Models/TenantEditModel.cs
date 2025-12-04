@@ -1,10 +1,12 @@
 using System.Runtime.CompilerServices;
 using maERP.Client.Core.Abstractions;
 using maERP.Client.Core.Exceptions;
+using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Tenants.Services;
 using maERP.Domain.Dtos.Tenant;
 using maERP.Domain.Dtos.User;
 using Microsoft.Extensions.Logging;
+using Uno.Extensions.Authentication;
 
 namespace maERP.Client.Features.Tenants.Models;
 
@@ -17,6 +19,8 @@ public class TenantEditModel : AsyncInitializableModel
     private readonly ITenantService _tenantService;
     private readonly INavigator _navigator;
     private readonly IStringLocalizer _localizer;
+    private readonly ITenantContextService _tenantContext;
+    private readonly IAuthenticationService _authentication;
     private readonly Guid? _tenantId;
 
     // Basic Information
@@ -57,6 +61,8 @@ public class TenantEditModel : AsyncInitializableModel
         ITenantService tenantService,
         INavigator navigator,
         IStringLocalizer localizer,
+        ITenantContextService tenantContext,
+        IAuthenticationService authentication,
         ILogger<TenantEditModel> logger,
         TenantEditData? data = null)
         : base(logger)
@@ -64,6 +70,8 @@ public class TenantEditModel : AsyncInitializableModel
         _tenantService = tenantService;
         _navigator = navigator;
         _localizer = localizer;
+        _tenantContext = tenantContext;
+        _authentication = authentication;
         _tenantId = data?.tenantId;
 
         // Start async initialization with proper error handling
@@ -400,12 +408,27 @@ public class TenantEditModel : AsyncInitializableModel
 
             if (_tenantId.HasValue)
             {
+                // Edit mode: Update existing tenant
                 input.Id = _tenantId.Value;
                 await _tenantService.UpdateTenantAsync(_tenantId.Value, input, ct);
+
+                // Refresh tenant list after update (handles deactivation)
+                var hasTenantsRemaining = await _tenantContext.RefreshTenantsAndCheckAvailabilityAsync(ct);
+
+                if (!hasTenantsRemaining)
+                {
+                    // No tenants remaining (user deactivated their only tenant) - log out
+                    await _authentication.LogoutAsync(ct);
+                    return;
+                }
             }
             else
             {
+                // Create mode: Create new tenant
                 await _tenantService.CreateTenantAsync(input, ct);
+
+                // Refresh tenant list after creating a new tenant
+                await _tenantContext.RefreshTenantsAsync(ct);
             }
 
             await _navigator.NavigateBackAsync(this);

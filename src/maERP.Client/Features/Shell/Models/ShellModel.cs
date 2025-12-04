@@ -24,6 +24,9 @@ public partial class ShellModel : INotifyPropertyChanged
     // Static event for tenant state changes - allows Shell to subscribe without DI
     public static event EventHandler<TenantListDto?>? TenantStateChanged;
 
+    // Static event for no-tenants state changes - allows Shell to hide navigation for users without tenants
+    public static event EventHandler<bool>? NoTenantsStateChanged;
+
     public ShellModel(
         IAuthenticationService authentication,
         INavigator navigator,
@@ -188,5 +191,11 @@ public partial class ShellModel : INotifyPropertyChanged
     public void UpdateAuthenticationState(bool isAuthenticated)
     {
         IsAuthenticated = isAuthenticated;
+    }
+
+    public void UpdateNoTenantsState(bool hasNoTenants)
+    {
+        Console.WriteLine($"[ShellModel] UpdateNoTenantsState: {hasNoTenants}");
+        NoTenantsStateChanged?.Invoke(this, hasNoTenants);
     }
 }

@@ -1,6 +1,8 @@
+using maERP.Client.Core.Exceptions;
 using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Auth.Models;
 using maERP.Client.Features.Auth.Services;
+using maERP.Client.Features.Tenants.Services;
 using maERP.Domain.Dtos.Tenant;
 using maERP.Client.Features.Dashboard.Models;
 using maERP.Client.Features.Customers.Models;
@@ -41,6 +43,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
         // Subscribe to static tenant state changed event
         ShellModel.TenantStateChanged += OnTenantStateChanged;
+
+        // Subscribe to static no-tenants state changed event
+        ShellModel.NoTenantsStateChanged += OnNoTenantsStateChanged;
 
         // Note: NavView.SelectionChanged is now wired in XAML
         TabBarNav.SelectionChanged += OnTabBarSelectionChanged;
@@ -123,12 +128,10 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         }
         else
         {
+            // Complete Shell reset - handles all UI state including FirstTenantOverlay,
+            // tenant display, navigation items, and sidebar selection
             SetUnauthenticatedVisibility();
             MenuItemSuperadminTenants.Visibility = Visibility.Collapsed;
-            // Reset tenant display to default
-            TenantSwitcher.Visibility = Visibility.Collapsed;
-            TenantName.Visibility = Visibility.Visible;
-            TenantName.Text = "maERP";
         }
     }
 
@@ -136,6 +139,23 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     {
         Console.WriteLine($"[Shell] OnTenantStateChanged received: {tenant?.Name ?? "null"}");
         UpdateTenantDisplay();
+    }
+
+    private async void OnNoTenantsStateChanged(object? sender, bool hasNoTenants)
+    {
+        Console.WriteLine($"[Shell] OnNoTenantsStateChanged received: {hasNoTenants}");
+
+        if (hasNoTenants)
+        {
+            SetNoTenantsVisibility();
+        }
+        else
+        {
+            // User now has tenants, show full authenticated UI
+            SetAuthenticatedVisibility();
+            await UpdateSuperadminMenuVisibilityAsync();
+            UpdateTenantDisplay();
+        }
     }
 
     private void UpdateTenantDisplay()
@@ -284,6 +304,12 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     {
         Console.WriteLine("[Shell] SetAuthenticatedVisibility called");
 
+        // Hide FirstTenantOverlay if visible
+        FirstTenantOverlay.Visibility = Visibility.Collapsed;
+
+        // Show NavigationView pane
+        NavView.IsPaneVisible = true;
+
         // NavigationView menu items - Login hidden, all others visible
         NavItemLogin.Visibility = Visibility.Collapsed;
         NavItemDashboard.Visibility = Visibility.Visible;
@@ -308,7 +334,31 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
     private void SetUnauthenticatedVisibility()
     {
-        Console.WriteLine("[Shell] SetUnauthenticatedVisibility called");
+        Console.WriteLine("[Shell] SetUnauthenticatedVisibility called - resetting complete Shell state");
+
+        // Hide FirstTenantOverlay if it was visible
+        FirstTenantOverlay.Visibility = Visibility.Collapsed;
+
+        // Reset FirstTenantOverlay form state
+        FirstTenantName.Text = string.Empty;
+        FirstTenantDescription.Text = string.Empty;
+        FirstTenantSaveButton.IsEnabled = false;
+        FirstTenantErrorBanner.Visibility = Visibility.Collapsed;
+        FirstTenantErrorText.Text = string.Empty;
+        FirstTenantProgress.Visibility = Visibility.Collapsed;
+        FirstTenantProgress.IsActive = false;
+
+        // Show AppHeader (might have been hidden for FirstTenantOverlay)
+        AppHeader.Visibility = Visibility.Visible;
+
+        // Show NavigationView pane (might have been hidden)
+        NavView.IsPaneVisible = true;
+
+        // Reset tenant display to default
+        TenantSwitcher.Visibility = Visibility.Collapsed;
+        TenantName.Visibility = Visibility.Visible;
+        TenantName.Text = "maERP";
+        TenantMenuFlyout.Items.Clear();
 
         // NavigationView menu items - only Login visible
         NavItemLogin.Visibility = Visibility.Visible;
@@ -325,6 +375,56 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
         // TabBar items - only Login visible
         TabItemLogin.Visibility = Visibility.Visible;
+        TabItemDashboard.Visibility = Visibility.Collapsed;
+        TabItemCustomers.Visibility = Visibility.Collapsed;
+        TabItemOrders.Visibility = Visibility.Collapsed;
+        TabItemSettings.Visibility = Visibility.Collapsed;
+        TabItemLogout.Visibility = Visibility.Collapsed;
+
+        // Reset sidebar selection to Login
+        UpdateSidebarSelection("Login");
+
+        Console.WriteLine("[Shell] SetUnauthenticatedVisibility completed - Shell fully reset");
+    }
+
+    private void SetNoTenantsVisibility()
+    {
+        Console.WriteLine("[Shell] SetNoTenantsVisibility called");
+
+        // Show FirstTenantOverlay
+        FirstTenantOverlay.Visibility = Visibility.Visible;
+
+        // Reset form state
+        FirstTenantName.Text = string.Empty;
+        FirstTenantDescription.Text = string.Empty;
+        FirstTenantSaveButton.IsEnabled = false;
+        FirstTenantErrorBanner.Visibility = Visibility.Collapsed;
+        FirstTenantErrorText.Text = string.Empty;
+        FirstTenantProgress.Visibility = Visibility.Collapsed;
+        FirstTenantProgress.IsActive = false;
+
+        // NavigationView menu items - all hidden for users without tenants
+        NavItemLogin.Visibility = Visibility.Collapsed;
+        NavItemDashboard.Visibility = Visibility.Collapsed;
+        NavSeparator1.Visibility = Visibility.Collapsed;
+        NavItemCustomers.Visibility = Visibility.Collapsed;
+        NavItemOrders.Visibility = Visibility.Collapsed;
+        NavItemInvoices.Visibility = Visibility.Collapsed;
+        NavItemProducts.Visibility = Visibility.Collapsed;
+        NavItemManufacturers.Visibility = Visibility.Collapsed;
+
+        // Hide NavigationView pane completely
+        NavView.IsPaneVisible = false;
+
+        // Header - hide completely for first tenant creation
+        AppHeader.Visibility = Visibility.Collapsed;
+
+        // Hide tenant display
+        TenantSwitcher.Visibility = Visibility.Collapsed;
+        TenantName.Visibility = Visibility.Collapsed;
+
+        // TabBar items - all hidden
+        TabItemLogin.Visibility = Visibility.Collapsed;
         TabItemDashboard.Visibility = Visibility.Collapsed;
         TabItemCustomers.Visibility = Visibility.Collapsed;
         TabItemOrders.Visibility = Visibility.Collapsed;
@@ -870,4 +970,122 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             Console.WriteLine($"[Shell] Failed to initialize dark mode toggle: {ex.Message}");
         }
     }
+
+    #region First Tenant Creation
+
+    private void FirstTenantName_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        // Enable save button only if name is not empty
+        FirstTenantSaveButton.IsEnabled = !string.IsNullOrWhiteSpace(FirstTenantName.Text);
+    }
+
+    private async void FirstTenantCancel_Click(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] FirstTenantCancel_Click - logging out");
+
+        try
+        {
+            var app = Application.Current as App;
+            if (app?.Host?.Services != null)
+            {
+                var auth = app.Host.Services.GetRequiredService<IAuthenticationService>();
+                await auth.LogoutAsync(CancellationToken.None);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] FirstTenantCancel_Click error: {ex.Message}");
+        }
+    }
+
+    private async void FirstTenantSave_Click(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] FirstTenantSave_Click - creating first tenant");
+
+        var tenantName = FirstTenantName.Text?.Trim();
+        if (string.IsNullOrWhiteSpace(tenantName))
+        {
+            return;
+        }
+
+        // Show progress
+        FirstTenantSaveButton.IsEnabled = false;
+        FirstTenantCancelButton.IsEnabled = false;
+        FirstTenantProgress.Visibility = Visibility.Visible;
+        FirstTenantProgress.IsActive = true;
+        FirstTenantErrorBanner.Visibility = Visibility.Collapsed;
+
+        try
+        {
+            var app = Application.Current as App;
+            if (app?.Host?.Services == null)
+            {
+                throw new InvalidOperationException("Services not available");
+            }
+
+            var tenantService = app.Host.Services.GetRequiredService<ITenantService>();
+            var tenantContext = app.Host.Services.GetRequiredService<ITenantContextService>();
+            var shellModel = app.Host.Services.GetRequiredService<ShellModel>();
+
+            // Create the tenant
+            var input = new TenantInputDto
+            {
+                Name = tenantName,
+                Description = FirstTenantDescription.Text?.Trim(),
+                IsActive = true
+            };
+
+            var newTenantId = await tenantService.CreateTenantAsync(input);
+            Console.WriteLine($"[Shell] First tenant created with ID: {newTenantId}");
+
+            // Refresh tenant list
+            await tenantContext.RefreshTenantsAsync();
+            Console.WriteLine("[Shell] Tenant list refreshed");
+
+            // Set the new tenant as current
+            if (newTenantId != Guid.Empty)
+            {
+                await tenantContext.SetCurrentTenantAsync(newTenantId);
+                Console.WriteLine("[Shell] New tenant set as current");
+            }
+
+            // Hide overlay and show full authenticated UI
+            shellModel.UpdateNoTenantsState(false);
+
+            // Navigate to Dashboard
+            var navigator = Splash.Navigator();
+            if (navigator == null)
+            {
+                navigator = app.Host.Services.GetService<INavigator>();
+            }
+
+            if (navigator != null)
+            {
+                Console.WriteLine("[Shell] Navigating to Dashboard after first tenant creation");
+                await navigator.NavigateViewModelAsync<DashboardModel>(this, qualifier: Qualifiers.ClearBackStack);
+            }
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine($"[Shell] FirstTenantSave_Click API error: {ex.CombinedMessage}");
+            FirstTenantErrorText.Text = ex.CombinedMessage;
+            FirstTenantErrorBanner.Visibility = Visibility.Visible;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] FirstTenantSave_Click error: {ex.Message}");
+            FirstTenantErrorText.Text = ex.Message;
+            FirstTenantErrorBanner.Visibility = Visibility.Visible;
+        }
+        finally
+        {
+            // Hide progress and re-enable buttons
+            FirstTenantProgress.Visibility = Visibility.Collapsed;
+            FirstTenantProgress.IsActive = false;
+            FirstTenantSaveButton.IsEnabled = !string.IsNullOrWhiteSpace(FirstTenantName.Text);
+            FirstTenantCancelButton.IsEnabled = true;
+        }
+    }
+
+    #endregion
 }

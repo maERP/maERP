@@ -397,6 +397,144 @@
           </utu:TabBar>
         </Grid>
       </NavigationView>
+
+      <!-- First Tenant Creation Overlay (shown when user has no tenants) -->
+      <Grid x:Name="FirstTenantOverlay"
+            Visibility="Collapsed"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+          <StackPanel Spacing="24"
+                      Padding="24"
+                      MaxWidth="500"
+                      HorizontalAlignment="Center">
+
+            <!-- Welcome Header -->
+            <StackPanel Spacing="8"
+                        HorizontalAlignment="Center">
+              <Image Source="ms-appx:///Assets/Icons/icon.svg"
+                     Width="64"
+                     Height="64"
+                     Stretch="Uniform"
+                     HorizontalAlignment="Center" />
+              <TextBlock x:Uid="Shell.FirstTenant.Title"
+                         Style="{StaticResource HeadlineMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}"
+                         HorizontalAlignment="Center"
+                         TextAlignment="Center" />
+              <TextBlock x:Uid="Shell.FirstTenant.Subtitle"
+                         Style="{StaticResource BodyLarge}"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         HorizontalAlignment="Center"
+                         TextAlignment="Center"
+                         TextWrapping="Wrap" />
+            </StackPanel>
+
+            <!-- Error Message Banner -->
+            <Border x:Name="FirstTenantErrorBanner"
+                    Background="{ThemeResource ErrorContainerBrush}"
+                    CornerRadius="8"
+                    Padding="16"
+                    Visibility="Collapsed">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <FontIcon Grid.Column="0"
+                          Glyph="&#xE783;"
+                          FontSize="20"
+                          Foreground="{ThemeResource OnErrorContainerBrush}"
+                          Margin="0,0,12,0"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Name="FirstTenantErrorText"
+                           Grid.Column="1"
+                           Style="{StaticResource BodyMedium}"
+                           Foreground="{ThemeResource OnErrorContainerBrush}"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center" />
+              </Grid>
+            </Border>
+
+            <!-- Tenant Form Card -->
+            <Border Background="{ThemeResource SurfaceBrush}"
+                    CornerRadius="12"
+                    Translation="0,0,8">
+              <Border.Shadow>
+                <ThemeShadow />
+              </Border.Shadow>
+              <StackPanel Spacing="0">
+                <!-- Card Header -->
+                <Grid Padding="16,16,16,8">
+                  <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE902;"
+                              FontSize="20"
+                              Foreground="{ThemeResource PrimaryBrush}"
+                              Margin="0,0,12,0" />
+                    <TextBlock x:Uid="Shell.FirstTenant.FormTitle"
+                               Style="{StaticResource TitleMedium}"
+                               Foreground="{ThemeResource OnSurfaceBrush}" />
+                  </StackPanel>
+                </Grid>
+
+                <!-- Form Fields -->
+                <StackPanel Padding="16,0,16,16"
+                            Spacing="16">
+                  <!-- Name (Required) -->
+                  <TextBox x:Name="FirstTenantName"
+                           x:Uid="TenantEditPage.Field.Name"
+                           TextChanged="FirstTenantName_TextChanged" />
+
+                  <!-- Description -->
+                  <TextBox x:Name="FirstTenantDescription"
+                           x:Uid="TenantEditPage.Field.Description"
+                           AcceptsReturn="True"
+                           TextWrapping="Wrap"
+                           MinHeight="80"
+                           MaxHeight="120" />
+
+                  <!-- Required Fields Note -->
+                  <TextBlock x:Uid="TenantEditPage.RequiredFieldsNote"
+                             Style="{StaticResource LabelSmall}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+
+            <!-- Action Buttons -->
+            <StackPanel Spacing="16">
+              <!-- Progress indicator (shown during save) -->
+              <ProgressRing x:Name="FirstTenantProgress"
+                            IsActive="False"
+                            Width="24"
+                            Height="24"
+                            Visibility="Collapsed"
+                            HorizontalAlignment="Center" />
+              <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="FirstTenantCancelButton"
+                        Grid.Column="0"
+                        x:Uid="Shell.FirstTenant.Cancel"
+                        Style="{StaticResource OutlinedButtonStyle}"
+                        HorizontalAlignment="Stretch"
+                        Click="FirstTenantCancel_Click" />
+                <Button x:Name="FirstTenantSaveButton"
+                        Grid.Column="1"
+                        x:Uid="Shell.FirstTenant.Create"
+                        Style="{StaticResource FilledButtonStyle}"
+                        HorizontalAlignment="Stretch"
+                        IsEnabled="False"
+                        Click="FirstTenantSave_Click" />
+              </Grid>
+            </StackPanel>
+
+          </StackPanel>
+        </ScrollViewer>
+      </Grid>
     </Grid>
   </Grid>
 </UserControl>
