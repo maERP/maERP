@@ -1,11 +1,9 @@
 #nullable disable
 
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using maERP.Application;
 using maERP.Domain.Enums;
 using maERP.Server.Infrastructure.JsonConverters;
-using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Services;
 using maERP.Identity;
@@ -133,7 +131,7 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ISettingRepository, SettingRepository>();
-builder.Services.AddScoped<ISettingsService, maERP.Persistence.Services.SettingsService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
 builder.Services.AddScoped<IAiModelRepository, AiModelRepository>();
 builder.Services.AddScoped<IAiPromptRepository, AiPromptRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
@@ -172,7 +170,6 @@ using (var scope = app.Services.CreateScope())
     }
 
     // Initialize settings
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<SettingsInitializer>>();
     var settingsInitializer = scope.ServiceProvider.GetRequiredService<SettingsInitializer>();
     await settingsInitializer.EnsureRequiredSettingsExistAsync();
     app.Logger.LogInformation("Settings initialization completed");
@@ -207,10 +204,10 @@ app.Use(async (context, next) =>
     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
     logger.LogDebug($"🔍 DEBUG After UseAuthentication:");
     logger.LogDebug($"   Path: {context.Request.Path}");
-    logger.LogDebug($"   User: {context.User?.Identity?.Name ?? "null"}");
-    logger.LogDebug($"   IsAuthenticated: {context.User?.Identity?.IsAuthenticated}");
-    logger.LogDebug($"   Claims count: {context.User?.Claims?.Count() ?? 0}");
-    if (context.User?.Identity?.IsAuthenticated == true)
+    logger.LogDebug($"   User: {context.User.Identity?.Name ?? "null"}");
+    logger.LogDebug($"   IsAuthenticated: {context.User.Identity?.IsAuthenticated}");
+    logger.LogDebug($"   Claims count: {context.User.Claims.Count()}");
+    if (context.User.Identity?.IsAuthenticated == true)
     {
         var roles = context.User.Claims.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role).Select(c => c.Value);
         logger.LogDebug($"   Roles: {string.Join(", ", roles)}");
@@ -288,7 +285,7 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 });
 
 // Display formatted startup message
-var urls = app.Urls.Any() ? app.Urls : new[] { "http://localhost:8080" };
+var urls = app.Urls.Any() ? app.Urls : ["http://localhost:8080"];
 var environment = app.Environment.EnvironmentName;
 
 Console.WriteLine();
@@ -320,5 +317,6 @@ app.Run();
 // Make the implicit Program class public so test projects can access it
 namespace maERP.Server
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class Program { }
 }

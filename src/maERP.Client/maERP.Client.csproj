@@ -52,6 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Uno.WinUI" />
     <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" />
   </ItemGroup>
 
@@ -61,6 +62,7 @@
     <PackageReference Include="Xamarin.AndroidX.Browser" />
     <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
     <PackageReference Include="Xamarin.AndroidX.Legacy.Support.V4" />
+    <PackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout" />
     <PackageReference Include="Xamarin.Google.Android.Material" />
   </ItemGroup>
 
@@ -73,6 +75,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-browserwasm'">
+    <PackageReference Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" />
     <PackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" />
   </ItemGroup>
 
