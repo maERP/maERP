@@ -80,7 +80,7 @@
     <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.1" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.1.0" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.3.1" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.1" />
     <PackageVersion Include="WooCommerceNET" Version="0.8.6" />
