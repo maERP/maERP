@@ -5,6 +5,6 @@
     "allowPrerelease": true
   },
   "msbuild-sdks": {
-    "Uno.Sdk": "6.4.42"
+    "Uno.Sdk": "6.4.53"
   }
 }
