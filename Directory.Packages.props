@@ -7,32 +7,26 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="NUnit" Version="4.4.0" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="6.0.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="6.0.1" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="3.0.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.204" />
     <PackageVersion Include="Uno.Extensions.Navigation" Version="7.0.4" />
-    <PackageVersion Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="6.4.195" />
     <PackageVersion Include="Uno.UI.App.Mcp" Version="1.0.11" />
     <PackageVersion Include="Uno.UI.HotDesign" Version="1.17.377" />
     <PackageVersion Include="Uno.UITest.Helpers" Version="1.1.0-dev.70" />
-    <PackageVersion Include="Uno.WinUI" Version="6.4.195" />
-    <PackageVersion Include="Uno.WinUI.DevServer" Version="6.4.195" />
-    <PackageVersion Include="Uno.WinUI.Graphics2DSK" Version="6.4.195" />
-    <PackageVersion Include="Uno.WinUI.Lottie" Version="6.4.195" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Android" Version="6.4.195" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Version="6.4.195" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.MacOS" Version="6.4.195" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" Version="6.4.195" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Win32" Version="6.4.195" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Wpf" Version="6.4.195" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.X11" Version="6.4.195" />
-    <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.11.0" />
-    <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.12.1" />
-    <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.12.1" />
-    <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.12.1" />
-    <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.12.1" />
-    <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.12.1" />
+    <PackageVersion Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI.DevServer" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI.Graphics2DSK" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI.Lottie" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Android" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.MacOS" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Win32" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Wpf" Version="6.4.229" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.X11" Version="6.4.229" />
     <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.12.1" />
     <PackageVersion Include="Xamarin.AndroidX.AppCompat" Version="1.7.1.1" />
     <PackageVersion Include="Xamarin.AndroidX.Browser" Version="1.9.0" />
@@ -41,7 +35,7 @@
     <PackageVersion Include="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.2.0" />
     <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.13.0" />
     <PackageVersion Include="Xamarin.UITest" Version="4.4.2" />
-    <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1" />
+    <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.1" />
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
@@ -65,7 +59,7 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0" />
     <PackageVersion Include="Microsoft.OData.Core" Version="8.4.3" />
-    <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.1" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
@@ -79,8 +73,8 @@
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
-    <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.1" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+    <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.2" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.1.0" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.3.1" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.1" />
     <PackageVersion Include="WooCommerceNET" Version="0.8.6" />
