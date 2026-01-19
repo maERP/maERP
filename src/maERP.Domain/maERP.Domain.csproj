@@ -12,6 +12,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
 	</ItemGroup>
 	<ItemGroup>
+  	<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
 	  <Folder Include="Dtos\Setting\" />
 	</ItemGroup>
 </Project>
