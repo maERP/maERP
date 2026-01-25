@@ -1,86 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0">
   <ItemGroup>
-    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
-    <PackageVersion Include="FluentAssertions" Version="8.8.0" />
-    <PackageVersion Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.101" />
+    <!-- Microsoft ASP.NET Core -->
+    <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.OData" Version="9.4.1" />
+    <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.1.0" />
+
+    <!-- Microsoft Entity Framework Core -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+
+    <!-- Microsoft Extensions -->
+    <PackageVersion Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.102" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageVersion Include="NUnit" Version="4.4.0" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="6.0.1" />
-    <PackageVersion Include="GitHubActionsTestLogger" Version="3.0.1" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.OData.Core" Version="8.4.3" />
+
+    <!-- Uno Platform -->
     <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.204" />
     <PackageVersion Include="Uno.Extensions.Navigation" Version="7.0.4" />
+    <PackageVersion Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="6.4.242" />
     <PackageVersion Include="Uno.UI.App.Mcp" Version="1.0.11" />
     <PackageVersion Include="Uno.UI.HotDesign" Version="1.17.377" />
     <PackageVersion Include="Uno.UITest.Helpers" Version="1.1.0-dev.70" />
-    <PackageVersion Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI.DevServer" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI.Graphics2DSK" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI.Lottie" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Android" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.MacOS" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Win32" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Wpf" Version="6.4.229" />
-    <PackageVersion Include="Uno.WinUI.Runtime.Skia.X11" Version="6.4.229" />
-    <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.12.1" />
+    <PackageVersion Include="Uno.WinUI" Version="6.4.242" />
+    <PackageVersion Include="Uno.WinUI.DevServer" Version="6.4.242" />
+    <PackageVersion Include="Uno.WinUI.Graphics2DSK" Version="6.4.242" />
+    <PackageVersion Include="Uno.WinUI.Lottie" Version="6.4.242" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Android" Version="6.4.242" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Version="6.4.242" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.MacOS" Version="6.4.242" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" Version="6.4.242" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Win32" Version="6.4.242" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.Wpf" Version="6.4.242" />
+    <PackageVersion Include="Uno.WinUI.Runtime.Skia.X11" Version="6.4.242" />
+
+    <!-- Xamarin / Android -->
+    <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.12.2.1" />
     <PackageVersion Include="Xamarin.AndroidX.AppCompat" Version="1.7.1.1" />
-    <PackageVersion Include="Xamarin.AndroidX.Browser" Version="1.9.0" />
-    <PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0" />
-    <PackageVersion Include="Xamarin.AndroidX.Legacy.Support.V4" Version="1.0.0.34" />
-    <PackageVersion Include="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.2.0" />
-    <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.13.0" />
+    <PackageVersion Include="Xamarin.AndroidX.Browser" Version="1.9.0.1" />
+    <PackageVersion Include="Xamarin.AndroidX.Compose.Runtime.Annotation.Jvm" Version="1.10.0.1" />
+    <PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.1" />
+    <PackageVersion Include="Xamarin.AndroidX.Legacy.Support.V4" Version="1.0.0.35" />
+    <PackageVersion Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.10.0.1" />
+    <PackageVersion Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.1" />
+    <PackageVersion Include="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.2.0.1" />
+    <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.13.0.1" />
     <PackageVersion Include="Xamarin.UITest" Version="4.4.2" />
-    <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.1" />
-    <PackageVersion Include="CsvHelper" Version="33.1.0" />
-    <PackageVersion Include="FluentValidation" Version="12.1.1" />
-    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.OData" Version="9.4.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0" />
-    <PackageVersion Include="Microsoft.OData.Core" Version="8.4.3" />
-    <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.1" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
-    <PackageVersion Include="PDFsharp" Version="6.2.3" />
-    <PackageVersion Include="PDFsharp-MigraDoc" Version="6.2.3" />
-    <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
-    <PackageVersion Include="SendGrid" Version="9.29.3" />
+
+    <!-- OpenTelemetry -->
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
+
+    <!-- Logging -->
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
     <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.2" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.1.0" />
+
+    <!-- Testing -->
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="FluentAssertions" Version="8.8.0" />
+    <PackageVersion Include="GitHubActionsTestLogger" Version="3.0.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageVersion Include="NUnit" Version="4.4.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="6.1.0" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+
+    <!-- Utilities -->
+    <PackageVersion Include="CsvHelper" Version="33.1.0" />
+    <PackageVersion Include="FluentValidation" Version="12.1.1" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageVersion Include="PDFsharp" Version="6.2.4" />
+    <PackageVersion Include="PDFsharp-MigraDoc" Version="6.2.4" />
+    <PackageVersion Include="SendGrid" Version="9.29.3" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.3.1" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.1" />
     <PackageVersion Include="WooCommerceNET" Version="0.8.6" />
-    <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
+
   <ItemGroup Condition="$(UsingUnoSdk) != 'true'">
     <PackageVersion Include="Uno.Wasm.Bootstrap.Server" Version="10.0.0" />
   </ItemGroup>
