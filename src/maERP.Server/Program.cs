@@ -23,6 +23,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
+using System.Threading.RateLimiting;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -105,6 +106,21 @@ builder.Services.AddResponseCaching(options =>
     options.UseCaseSensitivePaths = true;
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.AddPolicy("auth", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+});
+
 if (!builder.Environment.IsEnvironment("Testing"))
 {
     builder.Services.AddPersistenceServices();
@@ -177,6 +193,24 @@ using (var scope = app.Services.CreateScope())
 
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
+
+// Security headers
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    context.Response.Headers["Content-Security-Policy"] = "default-src 'self'";
+    context.Response.Headers["X-Permitted-Cross-Domain-Policies"] = "none";
+
+    if (!app.Environment.IsDevelopment())
+    {
+        context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
+    }
+
+    await next();
+});
+
 app.UseCors();
 app.UseStaticFiles();
 app.UseRouting();
@@ -217,6 +251,7 @@ app.Use(async (context, next) =>
 
 app.UseMiddleware<maERP.Server.Middleware.TenantMiddleware>(); // set tenant context
 app.UseAuthorization(); // what are you allowed to do?
+app.UseRateLimiter();
 
 if (!app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing"))
 {

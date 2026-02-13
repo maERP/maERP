@@ -59,19 +59,18 @@ public class ExceptionMiddleware
                 break;
 
             default:
+                _logger.LogError(ex, "Unhandled exception at {Path}", httpContext.Request.Path);
                 problem = new CustomProblemDetails
                 {
-                    Title = ex.Message,
+                    Title = "An internal server error occurred.",
                     Status = (int)statusCode,
                     Type = nameof(HttpStatusCode.InternalServerError),
-                    Detail = ex.StackTrace,
                 };
                 break;
         }
 
         httpContext.Response.StatusCode = (int)statusCode;
-        var logMessage = JsonConvert.SerializeObject(problem);
-        _logger.LogError(logMessage);
+        _logger.LogError("Exception response: {StatusCode} {Title}", problem.Status, problem.Title);
         await httpContext.Response.WriteAsJsonAsync(problem);
     }
 }

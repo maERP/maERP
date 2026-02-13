@@ -24,9 +24,10 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
         }
         else
         {
-            problemDetails.Title = exception.Message;
+            logger.LogError(exception, "Unhandled exception at {Path}", httpContext.Request.Path);
+            problemDetails.Title = "An internal server error occurred.";
         }
-        logger.LogError("{ProblemDetailsTitle}", problemDetails.Title);
+        logger.LogError("Exception response: {StatusCode} {Title}", problemDetails.Status, problemDetails.Title);
         problemDetails.Status = httpContext.Response.StatusCode;
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken).ConfigureAwait(false);
         return true;

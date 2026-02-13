@@ -72,6 +72,16 @@ public class Shopware5OrderImportTask : IHostedService
                 continue;
             }
 
+            try
+            {
+                SalesChannelUrlValidator.Validate(salesChannel.Url);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError("Invalid sales channel URL for {Name} (ID: {Id}): {Message}", salesChannel.Name, salesChannel.Id, ex.Message);
+                continue;
+            }
+
             _logger.LogDebug($"Start OrderDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             int requestStart = 0;

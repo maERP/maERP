@@ -61,6 +61,16 @@ public class WooCommerceProductImportTask : IHostedService
                 continue;
             }
 
+            try
+            {
+                SalesChannelUrlValidator.Validate(salesChannel.Url);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError("Invalid sales channel URL for {Name} (ID: {Id}): {Message}", salesChannel.Name, salesChannel.Id, ex.Message);
+                continue;
+            }
+
             _logger.LogDebug($"Start ProductDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             salesChannel.Url += "/wp-json/wc/v3/";

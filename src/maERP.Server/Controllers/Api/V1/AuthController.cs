@@ -1,9 +1,11 @@
+using System.Threading.RateLimiting;
 using Asp.Versioning;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Models.Identity;
 using maERP.Domain.Dtos.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace maERP.Server.Controllers.Api.V1;
 
@@ -11,6 +13,7 @@ namespace maERP.Server.Controllers.Api.V1;
 [Authorize]
 [ApiVersion(1.0)]
 [Route("/api/v{version:apiVersion}/[controller]")]
+[EnableRateLimiting("auth")]
 public class AuthController(IAuthService authenticationService, ILogger<AuthController> logger) : ControllerBase
 {
     [HttpPost("login")]

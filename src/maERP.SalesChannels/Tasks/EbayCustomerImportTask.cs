@@ -66,6 +66,16 @@ public class EbayCustomerImportTask : IHostedService
                 continue;
             }
 
+            try
+            {
+                SalesChannelUrlValidator.Validate(salesChannel.Url);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError("Invalid sales channel URL for {Name} (ID: {Id}): {Message}", salesChannel.Name, salesChannel.Id, ex.Message);
+                continue;
+            }
+
             _logger.LogDebug($"Start CustomerDownload for {salesChannel.Name} (ID: {salesChannel.Id})");
 
             try
