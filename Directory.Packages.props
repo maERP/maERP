@@ -7,6 +7,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.3" />
     <PackageVersion Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.103" />
     <PackageVersion Include="SkiaSharp.Skottie" Version="3.119.2" />
@@ -46,7 +47,7 @@
     <PackageVersion Include="Uno.WinUI.Runtime.Skia.X11" Version="6.5.153" />
     <!-- Xamarin / Android -->
     <PackageVersion Include="Xamarin.AndroidX.Activity" Version="1.12.2.1" />
-    <PackageVersion Include="Xamarin.AndroidX.AppCompat" Version="1.7.1.1" />
+    <PackageVersion Include="Xamarin.AndroidX.AppCompat" Version="1.7.1.2" />
     <PackageVersion Include="Xamarin.AndroidX.Browser" Version="1.9.0.1" />
     <PackageVersion Include="Xamarin.AndroidX.Compose.Runtime.Annotation.Jvm" Version="1.10.0.1" />
     <PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.1" />
@@ -63,6 +64,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
     <!-- Logging -->
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
     <!-- Testing -->
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />

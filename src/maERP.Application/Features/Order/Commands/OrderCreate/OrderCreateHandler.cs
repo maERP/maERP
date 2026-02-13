@@ -75,10 +75,17 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<Gui
 
         try
         {
+            // Auto-generate OrderId if not provided
+            var orderId = request.OrderId;
+            if (orderId == 0)
+            {
+                orderId = await _orderRepository.GetNextOrderIdAsync();
+            }
+
             // Manual mapping instead of using AutoMapper
             var orderToCreate = new Domain.Entities.Order
             {
-                OrderId = request.OrderId,
+                OrderId = orderId,
                 SalesChannelId = request.SalesChannelId,
                 RemoteOrderId = request.RemoteOrderId,
                 CustomerId = request.CustomerId,
@@ -109,7 +116,9 @@ public class OrderCreateHandler : IRequestHandler<OrderCreateCommand, Result<Gui
                 InvoiceAddressCity = request.InvoiceAddressCity,
                 InvoiceAddressZip = request.InvoiceAddressZip,
                 InvoiceAddressCountry = request.InvoiceAddressCountry,
-                DateOrdered = request.DateOrdered
+                DateOrdered = request.DateOrdered.Kind == DateTimeKind.Utc
+                    ? request.DateOrdered
+                    : request.DateOrdered.ToUniversalTime()
                 // OrderItems would need to be mapped separately
             };
 

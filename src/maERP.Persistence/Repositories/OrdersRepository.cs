@@ -52,6 +52,15 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
             .ToListAsync();
     }
 
+    public async Task<int> GetNextOrderIdAsync()
+    {
+        var maxOrderId = await Entities
+            .Select(o => (int?)o.OrderId)
+            .MaxAsync() ?? 0;
+
+        return maxOrderId + 1;
+    }
+
     public async Task<bool> CanCreateInvoice(Guid orderId)
     {
         var order = await Entities

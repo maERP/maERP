@@ -9,4 +9,5 @@ public interface IOrderRepository : IGenericRepository<Order>
     Task<Order?> GetByRemoteOrderIdAsync(Guid salesChannelId, string remoteOrderId);
     Task<List<OrderHistory>> GetOrderHistoryAsync(Guid orderId);
     Task<bool> CanCreateInvoice(Guid orderId);
+    Task<int> GetNextOrderIdAsync();
 }

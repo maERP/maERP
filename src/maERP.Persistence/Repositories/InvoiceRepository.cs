@@ -96,8 +96,8 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
             // Rechnung erstellen
             var invoice = new Invoice
             {
-                InvoiceNumber = $"INV-{DateTime.Now:yyyyMMdd}-{order.Id}",
-                InvoiceDate = DateTime.Now,
+                InvoiceNumber = $"INV-{DateTime.UtcNow:yyyyMMdd}-{order.Id}",
+                InvoiceDate = DateTime.UtcNow,
                 CustomerId = order.CustomerId,
                 OrderId = order.Id,
                 Subtotal = order.Subtotal,
@@ -156,7 +156,7 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
             var createdInvoice = await this.CreateAsync(invoice);
 
             // PDF-Rechnung erstellen
-            string outputPath = $"Invoices/INV-{DateTime.Now:yyyyMMdd}-{order.Id}.pdf";
+            string outputPath = $"Invoices/INV-{DateTime.UtcNow:yyyyMMdd}-{order.Id}.pdf";
             _pdfService.GenerateInvoice(invoice, outputPath);
 
             _logger.LogInformation("Successfully created invoice for order ID: {Id}", order.Id);

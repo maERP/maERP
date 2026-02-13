@@ -121,7 +121,9 @@ public class OrderUpdateHandler : IRequestHandler<OrderUpdateCommand, Result<Gui
                 InvoiceAddressCity = request.InvoiceAddressCity,
                 InvoiceAddressZip = request.InvoiceAddressZip,
                 InvoiceAddressCountry = request.InvoiceAddressCountry,
-                DateOrdered = request.DateOrdered
+                DateOrdered = request.DateOrdered.Kind == DateTimeKind.Utc
+                    ? request.DateOrdered
+                    : request.DateOrdered.ToUniversalTime()
                 // OrderItems müssten separat gemappt werden
             };
 

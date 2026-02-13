@@ -761,7 +761,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                     InvoiceAddressCity = address?.City ?? "Demo City",
                     InvoiceAddressZip = address?.Zip ?? "12345",
                     InvoiceAddressCountry = "DE",
-                    DateOrdered = DateTime.Now.AddDays(-random.Next(1, 90))
+                    DateOrdered = DateTime.UtcNow.AddDays(-random.Next(1, 90))
                 };
 
                 await _orderService.CreateOrderAsync(input, token);

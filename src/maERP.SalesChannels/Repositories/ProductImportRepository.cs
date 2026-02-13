@@ -57,8 +57,8 @@ public class ProductImportRepository : IProductImportRepository
                     }
                 ],
                 Description = importProduct.Description,
-                DateCreated = DateTime.Now,
-                DateModified = DateTime.Now
+                DateCreated = DateTime.UtcNow,
+                DateModified = DateTime.UtcNow
             };
 
             await _productRepository.CreateAsync(newProduct);
