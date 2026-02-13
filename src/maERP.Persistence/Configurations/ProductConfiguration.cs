@@ -8,6 +8,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
+        builder.HasIndex(e => e.Sku)
+            .IsUnique();
+
         builder.Property(e => e.Price)
             .HasPrecision(18, 2);
 

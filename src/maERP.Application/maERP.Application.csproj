@@ -12,8 +12,7 @@
 		<PackageReference Include="FluentValidation" />
 		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Features" />
-		<PackageReference Include="Serilog.Sinks.Grafana.Loki" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
 		<PackageReference Include="System.Linq.Dynamic.Core" />
 	</ItemGroup>
 	<ItemGroup>

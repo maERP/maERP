@@ -40,13 +40,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
-		<PackageReference Include="Microsoft.AspNetCore.OData" />
-		<PackageReference Include="Microsoft.OData.Core" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" >
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -55,34 +48,27 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="OpenTelemetry.Exporter.Console" />
 		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
 		<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" />
-		<PackageReference Include="Serilog.Sinks.Console" />
-		<PackageReference Include="Serilog.Sinks.Grafana.Loki" />
-		<PackageReference Include="Swashbuckle.AspNetCore" />
 		<PackageReference Include="Serilog.AspNetCore" />
-		<PackageReference Include="Serilog.Sinks.Async" />
+		<PackageReference Include="Serilog.Sinks.Console" />
+		<PackageReference Include="Swashbuckle.AspNetCore" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="\" />
 		<None Remove="Properties\PublishProfiles\tipover.maerp.de.pubxml" />
 	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="../maERP.Analytics/maERP.Analytics.csproj" />
-		<ProjectReference Include="../maERP.Application/maERP.Application.csproj" />
-		<ProjectReference Include="../maERP.Infrastructure/maERP.Infrastructure.csproj" />
-		<ProjectReference Include="../maERP.Persistence/maERP.Persistence.csproj" />
-		<ProjectReference Include="../maERP.Persistence.MSSQL/maERP.Persistence.MSSQL.csproj" />
-		<ProjectReference Include="../maERP.Persistence.MySQL/maERP.Persistence.MySQL.csproj" />
-		<ProjectReference Include="../maERP.Persistence.PostgreSQL/maERP.Persistence.PostgreSQL.csproj" />
-		<ProjectReference Include="../maERP.Persistence.SQLite/maERP.Persistence.SQLite.csproj" />
-		<ProjectReference Include="../maERP.SalesChannels/maERP.SalesChannels.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="../maERP.Analytics/maERP.Analytics.csproj" />
+        <ProjectReference Include="../maERP.Application/maERP.Application.csproj" />
+        <ProjectReference Include="../maERP.Infrastructure/maERP.Infrastructure.csproj" />
+        <ProjectReference Include="../maERP.Persistence/maERP.Persistence.csproj" />
+        <ProjectReference Include="../maERP.Persistence.MSSQL/maERP.Persistence.MSSQL.csproj" />
+        <ProjectReference Include="../maERP.Persistence.MySQL/maERP.Persistence.MySQL.csproj" />
+        <ProjectReference Include="../maERP.Persistence.PostgreSQL/maERP.Persistence.PostgreSQL.csproj" />
+        <ProjectReference Include="../maERP.Persistence.SQLite/maERP.Persistence.SQLite.csproj" />
+        <ProjectReference Include="../maERP.SalesChannels/maERP.SalesChannels.csproj" />
+    </ItemGroup>
 </Project>

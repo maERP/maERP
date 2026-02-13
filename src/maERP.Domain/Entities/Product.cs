@@ -1,9 +1,7 @@
 ﻿using maERP.Domain.Entities.Common;
-using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Domain.Entities;
 
-[Index(nameof(Sku), IsUnique = true)]
 public class Product : BaseEntity, IBaseEntity
 {
     public string Sku { get; set; } = string.Empty;

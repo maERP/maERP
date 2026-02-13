@@ -10,12 +10,10 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 		<PackageReference Include="PDFsharp" />
 		<PackageReference Include="PDFsharp-MigraDoc" />
 		<PackageReference Include="SendGrid" />
-		<PackageReference Include="Serilog.Sinks.Grafana.Loki" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />

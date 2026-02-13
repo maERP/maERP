@@ -9,7 +9,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Stores" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Dtos\Setting\" />
