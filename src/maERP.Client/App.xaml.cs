@@ -1,5 +1,4 @@
 using maERP.Client.Features.Auth;
-using maERP.Client.Features.Auth.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Customers;
 using maERP.Client.Features.Dashboard;
@@ -196,10 +195,7 @@ public partial class App : Application
                         await navigator.NavigateViewModelAsync<DashboardModel>(this, qualifier: Qualifiers.Nested);
                     }
                 }
-                else
-                {
-                    await navigator.NavigateViewModelAsync<LoginModel>(this, qualifier: Qualifiers.Nested);
-                }
+                // When not authenticated, Shell constructor already shows LoginOverlay
             });
     }
 

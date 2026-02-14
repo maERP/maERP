@@ -1,6 +1,5 @@
 using maERP.Client.Core.Exceptions;
 using maERP.Client.Features.Shell.Models;
-using maERP.Client.Features.Auth.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Tenants.Services;
 using maERP.Domain.Dtos.Tenant;
@@ -60,7 +59,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     {
         _sidebarTagMap = new Dictionary<string, NavigationViewItem>
         {
-            { "Login", NavItemLogin },
             { "Main", NavItemDashboard },
             { "Dashboard", NavItemDashboard },
             { "Customers", NavItemCustomers },
@@ -304,14 +302,15 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     {
         Console.WriteLine("[Shell] SetAuthenticatedVisibility called");
 
-        // Hide FirstTenantOverlay if visible
+        // Hide overlays
+        LoginOverlay.Visibility = Visibility.Collapsed;
         FirstTenantOverlay.Visibility = Visibility.Collapsed;
 
-        // Show NavigationView pane
+        // Show AppHeader and NavigationView pane
+        AppHeader.Visibility = Visibility.Visible;
         NavView.IsPaneVisible = true;
 
-        // NavigationView menu items - Login hidden, all others visible
-        NavItemLogin.Visibility = Visibility.Collapsed;
+        // NavigationView menu items - all visible
         NavItemDashboard.Visibility = Visibility.Visible;
         NavSeparator1.Visibility = Visibility.Visible;
         NavItemCustomers.Visibility = Visibility.Visible;
@@ -323,8 +322,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         // Header User Menu - visible when authenticated
         UserMenuPanel.Visibility = Visibility.Visible;
 
-        // TabBar items - Login hidden, all others visible
-        TabItemLogin.Visibility = Visibility.Collapsed;
+        // TabBar items - all visible
         TabItemDashboard.Visibility = Visibility.Visible;
         TabItemCustomers.Visibility = Visibility.Visible;
         TabItemOrders.Visibility = Visibility.Visible;
@@ -336,7 +334,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     {
         Console.WriteLine("[Shell] SetUnauthenticatedVisibility called - resetting complete Shell state");
 
-        // Hide FirstTenantOverlay if it was visible
+        // Show LoginOverlay, hide FirstTenantOverlay
+        InitializeLoginOverlay();
+        LoginOverlay.Visibility = Visibility.Visible;
         FirstTenantOverlay.Visibility = Visibility.Collapsed;
 
         // Reset FirstTenantOverlay form state
@@ -348,11 +348,11 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         FirstTenantProgress.Visibility = Visibility.Collapsed;
         FirstTenantProgress.IsActive = false;
 
-        // Show AppHeader (might have been hidden for FirstTenantOverlay)
-        AppHeader.Visibility = Visibility.Visible;
+        // Hide AppHeader
+        AppHeader.Visibility = Visibility.Collapsed;
 
-        // Show NavigationView pane (might have been hidden)
-        NavView.IsPaneVisible = true;
+        // Hide NavigationView pane
+        NavView.IsPaneVisible = false;
 
         // Reset tenant display to default
         TenantSwitcher.Visibility = Visibility.Collapsed;
@@ -360,8 +360,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         TenantName.Text = "maERP";
         TenantMenuFlyout.Items.Clear();
 
-        // NavigationView menu items - only Login visible
-        NavItemLogin.Visibility = Visibility.Visible;
+        // NavigationView menu items - all hidden
         NavItemDashboard.Visibility = Visibility.Collapsed;
         NavSeparator1.Visibility = Visibility.Collapsed;
         NavItemCustomers.Visibility = Visibility.Collapsed;
@@ -373,16 +372,15 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         // Header User Menu - hidden when not authenticated
         UserMenuPanel.Visibility = Visibility.Collapsed;
 
-        // TabBar items - only Login visible
-        TabItemLogin.Visibility = Visibility.Visible;
+        // TabBar items - all hidden
         TabItemDashboard.Visibility = Visibility.Collapsed;
         TabItemCustomers.Visibility = Visibility.Collapsed;
         TabItemOrders.Visibility = Visibility.Collapsed;
         TabItemSettings.Visibility = Visibility.Collapsed;
         TabItemLogout.Visibility = Visibility.Collapsed;
 
-        // Reset sidebar selection to Login
-        UpdateSidebarSelection("Login");
+        // Clear sidebar selection
+        UpdateSidebarSelection(null);
 
         Console.WriteLine("[Shell] SetUnauthenticatedVisibility completed - Shell fully reset");
     }
@@ -391,7 +389,8 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     {
         Console.WriteLine("[Shell] SetNoTenantsVisibility called");
 
-        // Show FirstTenantOverlay
+        // Hide LoginOverlay, show FirstTenantOverlay
+        LoginOverlay.Visibility = Visibility.Collapsed;
         FirstTenantOverlay.Visibility = Visibility.Visible;
 
         // Reset form state
@@ -404,7 +403,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         FirstTenantProgress.IsActive = false;
 
         // NavigationView menu items - all hidden for users without tenants
-        NavItemLogin.Visibility = Visibility.Collapsed;
         NavItemDashboard.Visibility = Visibility.Collapsed;
         NavSeparator1.Visibility = Visibility.Collapsed;
         NavItemCustomers.Visibility = Visibility.Collapsed;
@@ -424,7 +422,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         TenantName.Visibility = Visibility.Collapsed;
 
         // TabBar items - all hidden
-        TabItemLogin.Visibility = Visibility.Collapsed;
         TabItemDashboard.Visibility = Visibility.Collapsed;
         TabItemCustomers.Visibility = Visibility.Collapsed;
         TabItemOrders.Visibility = Visibility.Collapsed;
@@ -513,33 +510,15 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     {
         Console.WriteLine($"[Shell] UpdateNavigationVisibility - IsAuthenticated: {model.IsAuthenticated}");
 
-        var authenticatedVisibility = model.IsAuthenticated ? Visibility.Visible : Visibility.Collapsed;
-        var notAuthenticatedVisibility = model.IsAuthenticated ? Visibility.Collapsed : Visibility.Visible;
+        if (model.IsAuthenticated)
+        {
+            SetAuthenticatedVisibility();
+        }
+        else
+        {
+            SetUnauthenticatedVisibility();
+        }
 
-        Console.WriteLine($"[Shell] Authenticated: {authenticatedVisibility}, NotAuthenticated: {notAuthenticatedVisibility}");
-
-        // Update NavigationView menu items directly by name
-        NavItemLogin.Visibility = notAuthenticatedVisibility;
-        NavItemDashboard.Visibility = authenticatedVisibility;
-        NavSeparator1.Visibility = authenticatedVisibility;
-        NavItemCustomers.Visibility = authenticatedVisibility;
-        NavItemOrders.Visibility = authenticatedVisibility;
-        NavItemInvoices.Visibility = authenticatedVisibility;
-        NavItemProducts.Visibility = authenticatedVisibility;
-        NavItemManufacturers.Visibility = authenticatedVisibility;
-
-        // Update Header User Menu
-        UserMenuPanel.Visibility = authenticatedVisibility;
-
-        // Update TabBar items
-        TabItemLogin.Visibility = notAuthenticatedVisibility;
-        TabItemDashboard.Visibility = authenticatedVisibility;
-        TabItemCustomers.Visibility = authenticatedVisibility;
-        TabItemOrders.Visibility = authenticatedVisibility;
-        TabItemSettings.Visibility = authenticatedVisibility;
-        TabItemLogout.Visibility = authenticatedVisibility;
-
-        Console.WriteLine($"[Shell] NavItemLogin.Visibility set to: {NavItemLogin.Visibility}");
         Console.WriteLine($"[Shell] NavItemDashboard.Visibility set to: {NavItemDashboard.Visibility}");
     }
 
@@ -616,10 +595,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         {
             switch (tag)
             {
-                case "Login":
-                    Console.WriteLine("[Shell] Navigating to Login");
-                    await navigator.NavigateViewModelAsync<LoginModel>(this);
-                    break;
                 case "Main":
                 case "Dashboard":
                     Console.WriteLine("[Shell] Navigating to Dashboard");
@@ -970,6 +945,145 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             Console.WriteLine($"[Shell] Failed to initialize dark mode toggle: {ex.Message}");
         }
     }
+
+    #region Login Overlay
+
+    private void InitializeLoginOverlay()
+    {
+        // Reset form state
+        LoginServerUrl.Text = "https://";
+        LoginEmail.Text = string.Empty;
+        LoginPassword.Password = string.Empty;
+        LoginErrorBanner.Visibility = Visibility.Collapsed;
+        LoginErrorText.Text = string.Empty;
+        LoginProgress.Visibility = Visibility.Collapsed;
+        LoginProgress.IsActive = false;
+        LoginButton.IsEnabled = true;
+
+        // Pre-fill dev credentials if in Development environment
+        try
+        {
+            var app = Application.Current as App;
+            var hostEnvironment = app?.Host?.Services?.GetService<IHostEnvironment>();
+            if (hostEnvironment?.IsDevelopment() == true)
+            {
+                LoginServerUrl.Text = "https://localhost:8443";
+                LoginEmail.Text = "admin@localhost.com";
+                LoginPassword.Password = "P@ssword1";
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] InitializeLoginOverlay - could not check environment: {ex.Message}");
+        }
+    }
+
+    private async void LoginButton_Click(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine("[Shell] LoginButton_Click - attempting login");
+
+        var serverUrl = LoginServerUrl.Text?.Trim();
+        var email = LoginEmail.Text?.Trim();
+        var password = LoginPassword.Password;
+
+        // Validate inputs
+        if (string.IsNullOrWhiteSpace(serverUrl) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            LoginErrorText.Text = "Please fill in all fields";
+            LoginErrorBanner.Visibility = Visibility.Visible;
+            return;
+        }
+
+        // Normalize server URL
+        if (!serverUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
+            !serverUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            serverUrl = "https://" + serverUrl;
+        }
+
+        serverUrl = serverUrl.TrimEnd('/');
+
+        // Show progress
+        LoginButton.IsEnabled = false;
+        LoginProgress.Visibility = Visibility.Visible;
+        LoginProgress.IsActive = true;
+        LoginErrorBanner.Visibility = Visibility.Collapsed;
+
+        try
+        {
+            var app = Application.Current as App;
+            if (app?.Host?.Services == null)
+            {
+                throw new InvalidOperationException("Services not available");
+            }
+
+            var auth = app.Host.Services.GetRequiredService<IAuthenticationService>();
+            var tenantContext = app.Host.Services.GetRequiredService<ITenantContextService>();
+            var shellModel = app.Host.Services.GetRequiredService<ShellModel>();
+
+            var credentials = new Dictionary<string, string>
+            {
+                ["Email"] = email,
+                ["Password"] = password,
+                ["ServerUrl"] = serverUrl
+            };
+
+            // IDispatcher is nullable - passing null is safe since we're already on the UI thread
+            var success = await auth.LoginAsync(dispatcher: null, credentials);
+
+            if (success)
+            {
+                shellModel.UpdateAuthenticationState(true);
+
+                // Check if user has any tenants
+                if (tenantContext.AvailableTenants.Count == 0)
+                {
+                    // No tenants - show first tenant creation overlay
+                    shellModel.UpdateNoTenantsState(true);
+                }
+                else
+                {
+                    // Has tenants - navigate to Dashboard
+                    var navigator = Splash.Navigator();
+                    if (navigator == null)
+                    {
+                        navigator = app.Host.Services.GetService<INavigator>();
+                    }
+
+                    if (navigator != null)
+                    {
+                        Console.WriteLine("[Shell] Login successful, navigating to Dashboard");
+                        await navigator.NavigateViewModelAsync<DashboardModel>(this, qualifier: Qualifiers.ClearBackStack);
+                    }
+                }
+            }
+            else
+            {
+                LoginErrorText.Text = "Login failed. Please check your credentials and server URL.";
+                LoginErrorBanner.Visibility = Visibility.Visible;
+            }
+        }
+        catch (ApiException ex)
+        {
+            Console.WriteLine($"[Shell] LoginButton_Click API error: {ex.CombinedMessage}");
+            LoginErrorText.Text = ex.CombinedMessage;
+            LoginErrorBanner.Visibility = Visibility.Visible;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] LoginButton_Click error: {ex.Message}");
+            LoginErrorText.Text = $"An error occurred: {ex.Message}";
+            LoginErrorBanner.Visibility = Visibility.Visible;
+        }
+        finally
+        {
+            LoginProgress.Visibility = Visibility.Collapsed;
+            LoginProgress.IsActive = false;
+            LoginButton.IsEnabled = true;
+        }
+    }
+
+    #endregion
 
     #region First Tenant Creation
 

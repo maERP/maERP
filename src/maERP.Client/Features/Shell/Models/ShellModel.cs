@@ -1,6 +1,4 @@
 using System.ComponentModel;
-using maERP.Client.Core.Constants;
-using maERP.Client.Features.Auth.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Customers.Models;
 using maERP.Client.Features.Dashboard.Models;
@@ -136,7 +134,7 @@ public partial class ShellModel : INotifyPropertyChanged
     {
         IsAuthenticated = false;
         await _tenantContext.ClearAsync();
-        await _navigator.NavigateRouteAsync(this, Routes.Login, qualifier: Qualifiers.ClearBackStack);
+        // LoginOverlay is shown automatically via SetUnauthenticatedVisibility
     }
 
     public async ValueTask NavigateToPage(string tag)
@@ -145,10 +143,6 @@ public partial class ShellModel : INotifyPropertyChanged
 
         switch (tag)
         {
-            case "Login":
-                Console.WriteLine("[ShellModel] Navigating to LoginModel");
-                await _navigator.NavigateViewModelAsync<LoginModel>(this);
-                break;
             case "Main":
             case "Dashboard":
                 Console.WriteLine("[ShellModel] Navigating to DashboardModel");

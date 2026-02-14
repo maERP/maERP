@@ -71,21 +71,6 @@ public static class NavigatorExtensions
     }
 
     /// <summary>
-    /// Navigate to login page, clearing navigation stack.
-    /// </summary>
-    public static async ValueTask<NavigationResponse?> NavigateToLoginAsync(
-        this INavigator navigator,
-        object sender,
-        CancellationToken ct = default)
-    {
-        return await navigator.NavigateRouteAsync(
-            sender,
-            Routes.Login,
-            qualifier: Qualifiers.ClearBackStack,
-            cancellation: ct);
-    }
-
-    /// <summary>
     /// Navigate back if possible.
     /// </summary>
     public static async ValueTask<NavigationResponse?> GoBackSafeAsync(

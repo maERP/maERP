@@ -1,7 +1,4 @@
-using maERP.Client.Core.Constants;
-using maERP.Client.Features.Auth.Models;
 using maERP.Client.Features.Auth.Services;
-using maERP.Client.Features.Auth.Views;
 
 namespace maERP.Client.Features.Auth;
 
@@ -21,9 +18,6 @@ public static class AuthModule
         services.AddSingleton<ITenantContextService, TenantContextService>();
         services.AddSingleton<IMaErpAuthenticationService, MaErpAuthenticationService>();
 
-        // Page models (transient - new instance per navigation)
-        services.AddTransient<LoginModel>();
-
         return services;
     }
 
@@ -32,9 +26,7 @@ public static class AuthModule
     /// </summary>
     public static void RegisterViews(IViewRegistry views)
     {
-        views.Register(
-            new ViewMap<LoginPage, LoginModel>()
-        );
+        // Login is handled by Shell's LoginOverlay - no page registration needed
     }
 
     /// <summary>
@@ -42,6 +34,7 @@ public static class AuthModule
     /// </summary>
     public static IEnumerable<RouteMap> GetRoutes(IViewRegistry views)
     {
-        yield return new RouteMap(Routes.Login, View: views.FindByViewModel<LoginModel>());
+        // Login is handled by Shell's LoginOverlay - no routes needed
+        yield break;
     }
 }

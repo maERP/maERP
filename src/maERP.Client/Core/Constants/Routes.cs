@@ -10,7 +10,6 @@ public static class Routes
     public const string Shell = "";
 
     // Auth
-    public const string Login = "Login";
     public const string ServerSelect = "ServerSelect";
 
     // Dashboard

@@ -64,29 +64,35 @@
     <value>maERP</value>
   </data>
 
-  <!-- Login Page -->
-  <data name="LoginPage.Title.Text" xml:space="preserve">
+  <!-- Shell Login Overlay -->
+  <data name="Shell.Login.Title.Text" xml:space="preserve">
     <value>Welcome to maERP</value>
   </data>
-  <data name="LoginPage.TextBox.ServerUrl.Header" xml:space="preserve">
+  <data name="Shell.Login.Subtitle.Text" xml:space="preserve">
+    <value>Sign in to your account to continue.</value>
+  </data>
+  <data name="Shell.Login.FormTitle.Text" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="Shell.Login.ServerUrl.Header" xml:space="preserve">
     <value>Server URL</value>
   </data>
-  <data name="LoginPage.TextBox.ServerUrl.PlaceholderText" xml:space="preserve">
+  <data name="Shell.Login.ServerUrl.PlaceholderText" xml:space="preserve">
     <value>https://api.maerp.com</value>
   </data>
-  <data name="LoginPage.TextBox.Email.Header" xml:space="preserve">
+  <data name="Shell.Login.Email.Header" xml:space="preserve">
     <value>Email</value>
   </data>
-  <data name="LoginPage.TextBox.Email.PlaceholderText" xml:space="preserve">
+  <data name="Shell.Login.Email.PlaceholderText" xml:space="preserve">
     <value>Enter your email</value>
   </data>
-  <data name="LoginPage.PasswordBox.Password.Header" xml:space="preserve">
+  <data name="Shell.Login.Password.Header" xml:space="preserve">
     <value>Password</value>
   </data>
-  <data name="LoginPage.PasswordBox.Password.PlaceholderText" xml:space="preserve">
+  <data name="Shell.Login.Password.PlaceholderText" xml:space="preserve">
     <value>Enter your password</value>
   </data>
-  <data name="LoginPage.Button.Login.Content" xml:space="preserve">
+  <data name="Shell.Login.LoginButton.Content" xml:space="preserve">
     <value>Login</value>
   </data>
 
@@ -189,9 +195,6 @@
   </data>
   <data name="Shell.UserMenu.AiPrompts.Text" xml:space="preserve">
     <value>AI Prompts</value>
-  </data>
-  <data name="Shell.NavItem.Login.Content" xml:space="preserve">
-    <value>Login</value>
   </data>
   <data name="Shell.NavItem.Dashboard.Content" xml:space="preserve">
     <value>Dashboard</value>
