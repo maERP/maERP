@@ -2795,13 +2795,13 @@
     <value>Demo-Daten erstellen</value>
   </data>
   <data name="TenantDetailPage.Button.ClearTenant.Text.Text" xml:space="preserve">
-    <value>Tenant leeren</value>
+    <value>Mandant leeren</value>
   </data>
   <data name="TenantDetailPage.Button.DeleteTenant.Text.Text" xml:space="preserve">
-    <value>Tenant löschen</value>
+    <value>Mandant löschen</value>
   </data>
   <data name="TenantDetailPage.DeleteHint.Text" xml:space="preserve">
-    <value>Um einen Tenant zu löschen, muss dieser zuerst deaktiviert werden. Bearbeiten Sie den Tenant und setzen Sie den Status auf "Inaktiv".</value>
+    <value>Um einen Mandanten zu löschen, muss dieser zuerst deaktiviert werden. Bearbeiten Sie den Mandanten und setzen Sie den Status auf "Inaktiv".</value>
   </data>
 
   <!-- TenantEditPage -->

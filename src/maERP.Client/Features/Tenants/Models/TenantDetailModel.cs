@@ -95,8 +95,8 @@ public partial record TenantDetailModel
 
             if (hasTenantsRemaining)
             {
-                // Navigate to tenant list (another tenant was auto-selected)
-                await _navigator.NavigateViewModelAsync<TenantListModel>(this);
+                // Navigate back to tenant list (another tenant was auto-selected)
+                await _navigator.NavigateBackAsync(this);
             }
             else
             {
