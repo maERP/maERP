@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.AiModel;
@@ -14,11 +14,6 @@ namespace maERP.Client.Features.AiModels.Services;
 /// </summary>
 public class AiModelService : IAiModelService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<AiModelService> _logger;
@@ -54,8 +49,8 @@ public class AiModelService : IAiModelService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<AiModelListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseAiModelListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -89,7 +84,7 @@ public class AiModelService : IAiModelService
 
         try
         {
-            return await _httpClient.GetFromJsonAsync<AiModelDetailDto>(url, JsonOptions, ct);
+            return await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.AiModelDetailDto, ct);
         }
         catch (Exception ex)
         {
@@ -107,10 +102,10 @@ public class AiModelService : IAiModelService
 
         try
         {
-            var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+            var response = await _httpClient.PostAsJsonAsync(url, input, AppJsonSerializerContext.Default.AiModelInputDto, ct);
             await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
-            var createdId = await response.Content.ReadFromJsonAsync<Guid>(ct);
+            var createdId = await response.Content.ReadFromJsonAsync(AppJsonSerializerContext.Default.Guid, ct);
             _logger.LogInformation("Created AI model with ID: {Id}", createdId);
             return createdId;
         }
@@ -130,7 +125,7 @@ public class AiModelService : IAiModelService
 
         try
         {
-            var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+            var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.AiModelInputDto, ct);
             await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
             _logger.LogInformation("Updated AI model {Id}", id);

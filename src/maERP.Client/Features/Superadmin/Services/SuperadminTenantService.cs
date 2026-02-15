@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Superadmin;
@@ -16,11 +16,6 @@ namespace maERP.Client.Features.Superadmin.Services;
 /// </summary>
 public class SuperadminTenantService : ISuperadminTenantService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<SuperadminTenantService> _logger;
@@ -56,8 +51,8 @@ public class SuperadminTenantService : ISuperadminTenantService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<TenantListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseTenantListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -86,7 +81,7 @@ public class SuperadminTenantService : ISuperadminTenantService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Superadmin.TenantById(id)}";
-        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<TenantDetailDto>>(url, JsonOptions, ct);
+        var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.ApiResponseTenantDetailDto, ct);
         return apiResponse?.Data;
     }
 
@@ -99,7 +94,7 @@ public class SuperadminTenantService : ISuperadminTenantService
 
         try
         {
-            var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<SuperadminTenantDetailDto>>(url, JsonOptions, ct);
+            var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.ApiResponseSuperadminTenantDetailDto, ct);
             return apiResponse?.Data;
         }
         catch (Exception ex)
@@ -116,7 +111,7 @@ public class SuperadminTenantService : ISuperadminTenantService
 
         _logger.LogInformation("Updating tenant {Id} at URL: {Url}", id, url);
 
-        var response = await _httpClient.PutAsJsonAsync(url, input, JsonOptions, ct);
+        var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.TenantInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
@@ -127,8 +122,8 @@ public class SuperadminTenantService : ISuperadminTenantService
 
         _logger.LogInformation("Assigning user {UserId} to tenant {TenantId} at URL: {Url}", userId, tenantId, url);
 
-        var payload = new { TenantId = tenantId };
-        var response = await _httpClient.PostAsJsonAsync(url, payload, JsonOptions, ct);
+        var payload = new AssignUserToTenantPayload(tenantId);
+        var response = await _httpClient.PostAsJsonAsync(url, payload, AppJsonSerializerContext.Default.AssignUserToTenantPayload, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
@@ -153,7 +148,7 @@ public class SuperadminTenantService : ISuperadminTenantService
 
         try
         {
-            var apiResponse = await _httpClient.GetFromJsonAsync<PaginatedResponse<UserListDto>>(url, JsonOptions, ct);
+            var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.PaginatedResponseUserListDto, ct);
             return apiResponse?.Data ?? new List<UserListDto>();
         }
         catch (Exception ex)

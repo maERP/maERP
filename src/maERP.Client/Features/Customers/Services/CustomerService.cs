@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Customer;
@@ -14,11 +14,6 @@ namespace maERP.Client.Features.Customers.Services;
 /// </summary>
 public class CustomerService : ICustomerService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<CustomerService> _logger;
@@ -54,8 +49,8 @@ public class CustomerService : ICustomerService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<CustomerListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseCustomerListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -84,7 +79,7 @@ public class CustomerService : ICustomerService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Customers.ById(id)}";
-        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<CustomerDetailDto>>(url, JsonOptions, ct);
+        var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.ApiResponseCustomerDetailDto, ct);
         return apiResponse?.Data;
     }
 
@@ -92,7 +87,7 @@ public class CustomerService : ICustomerService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Customers.Base}";
-        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PostAsJsonAsync(url, input, AppJsonSerializerContext.Default.CustomerInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
@@ -100,7 +95,7 @@ public class CustomerService : ICustomerService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Customers.ById(id)}";
-        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.CustomerInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 

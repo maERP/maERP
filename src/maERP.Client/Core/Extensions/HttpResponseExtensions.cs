@@ -1,6 +1,7 @@
-using System.Net.Http.Json;
 using System.Text.Json;
 using maERP.Client.Core.Exceptions;
+using maERP.Client.Core.Json;
+using maERP.Client.Core.Models;
 
 namespace maERP.Client.Core.Extensions;
 
@@ -9,11 +10,6 @@ namespace maERP.Client.Core.Extensions;
 /// </summary>
 public static class HttpResponseExtensions
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     /// <summary>
     /// Ensures the response is successful or throws an ApiException with error messages from the server.
     /// This replaces EnsureSuccessStatusCode() to provide detailed error information.
@@ -54,7 +50,7 @@ public static class HttpResponseExtensions
             }
 
             // Try to parse as standard API error response
-            var errorResponse = JsonSerializer.Deserialize<ApiErrorResponse>(content, JsonOptions);
+            var errorResponse = JsonSerializer.Deserialize(content, AppJsonSerializerContext.Default.ApiErrorResponse);
 
             if (errorResponse?.Messages is { Count: > 0 })
             {
@@ -95,22 +91,5 @@ public static class HttpResponseExtensions
         return messages.Count > 0
             ? messages
             : new List<string> { $"Request failed with status code {(int)response.StatusCode} ({response.StatusCode})" };
-    }
-
-    /// <summary>
-    /// Internal class to deserialize API error responses.
-    /// Supports both the standard ApiResponse format and RFC 7807 ProblemDetails.
-    /// </summary>
-    private class ApiErrorResponse
-    {
-        // Standard API response format
-        public int StatusCode { get; set; }
-        public List<string> Messages { get; set; } = new();
-        public bool Succeeded { get; set; }
-
-        // RFC 7807 ProblemDetails format
-        public string? Title { get; set; }
-        public string? Detail { get; set; }
-        public Dictionary<string, string[]>? Errors { get; set; }
     }
 }

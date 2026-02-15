@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Warehouse;
@@ -14,11 +14,6 @@ namespace maERP.Client.Features.Warehouses.Services;
 /// </summary>
 public class WarehouseService : IWarehouseService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<WarehouseService> _logger;
@@ -54,8 +49,8 @@ public class WarehouseService : IWarehouseService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<WarehouseListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseWarehouseListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -84,7 +79,7 @@ public class WarehouseService : IWarehouseService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Warehouses.ById(id)}";
-        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<WarehouseDetailDto>>(url, JsonOptions, ct);
+        var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.ApiResponseWarehouseDetailDto, ct);
         return apiResponse?.Data;
     }
 
@@ -92,7 +87,7 @@ public class WarehouseService : IWarehouseService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Warehouses.Base}";
-        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PostAsJsonAsync(url, input, AppJsonSerializerContext.Default.WarehouseInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
@@ -100,7 +95,7 @@ public class WarehouseService : IWarehouseService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Warehouses.ById(id)}";
-        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.WarehouseInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 }

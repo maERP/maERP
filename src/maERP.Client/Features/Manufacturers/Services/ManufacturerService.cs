@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Manufacturer;
@@ -14,11 +14,6 @@ namespace maERP.Client.Features.Manufacturers.Services;
 /// </summary>
 public class ManufacturerService : IManufacturerService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<ManufacturerService> _logger;
@@ -54,8 +49,8 @@ public class ManufacturerService : IManufacturerService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<ManufacturerListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseManufacturerListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -91,8 +86,8 @@ public class ManufacturerService : IManufacturerService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<ManufacturerDetailDto>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.ManufacturerDetailDto, ct);
 
             return response;
         }
@@ -117,7 +112,7 @@ public class ManufacturerService : IManufacturerService
 
         _logger.LogInformation("Creating manufacturer at URL: {Url}", url);
 
-        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PostAsJsonAsync(url, input, AppJsonSerializerContext.Default.ManufacturerInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
@@ -131,7 +126,7 @@ public class ManufacturerService : IManufacturerService
 
         _logger.LogInformation("Updating manufacturer {Id} at URL: {Url}", id, url);
 
-        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.ManufacturerInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 }

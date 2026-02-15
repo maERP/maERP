@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Product;
@@ -14,11 +14,6 @@ namespace maERP.Client.Features.Products.Services;
 /// </summary>
 public class ProductService : IProductService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<ProductService> _logger;
@@ -54,8 +49,8 @@ public class ProductService : IProductService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<ProductListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseProductListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -84,7 +79,7 @@ public class ProductService : IProductService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Products.ById(id)}";
-        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<ProductDetailDto>>(url, JsonOptions, ct);
+        var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.ApiResponseProductDetailDto, ct);
         return apiResponse?.Data;
     }
 
@@ -95,7 +90,7 @@ public class ProductService : IProductService
 
         _logger.LogInformation("Creating product at URL: {Url}", url);
 
-        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PostAsJsonAsync(url, input, AppJsonSerializerContext.Default.ProductInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
@@ -106,7 +101,7 @@ public class ProductService : IProductService
 
         _logger.LogInformation("Updating product {Id} at URL: {Url}", id, url);
 
-        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.ProductInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 }

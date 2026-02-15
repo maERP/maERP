@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Invoice;
@@ -13,11 +13,6 @@ namespace maERP.Client.Features.Invoices.Services;
 /// </summary>
 public class InvoiceService : IInvoiceService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<InvoiceService> _logger;
@@ -53,8 +48,8 @@ public class InvoiceService : IInvoiceService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<InvoiceListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseInvoiceListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -83,7 +78,7 @@ public class InvoiceService : IInvoiceService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Invoices.ById(id)}";
-        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<InvoiceDetailDto>>(url, JsonOptions, ct);
+        var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.ApiResponseInvoiceDetailDto, ct);
         return apiResponse?.Data;
     }
 }

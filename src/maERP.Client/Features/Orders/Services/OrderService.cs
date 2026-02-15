@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Order;
@@ -14,11 +14,6 @@ namespace maERP.Client.Features.Orders.Services;
 /// </summary>
 public class OrderService : IOrderService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<OrderService> _logger;
@@ -54,8 +49,8 @@ public class OrderService : IOrderService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<OrderListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseOrderListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -84,7 +79,7 @@ public class OrderService : IOrderService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Orders.ById(id)}";
-        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<OrderDetailDto>>(url, JsonOptions, ct);
+        var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.ApiResponseOrderDetailDto, ct);
         return apiResponse?.Data;
     }
 
@@ -92,7 +87,7 @@ public class OrderService : IOrderService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Orders.Base}";
-        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PostAsJsonAsync(url, input, AppJsonSerializerContext.Default.OrderInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
@@ -100,7 +95,7 @@ public class OrderService : IOrderService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Orders.ById(id)}";
-        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.OrderInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 

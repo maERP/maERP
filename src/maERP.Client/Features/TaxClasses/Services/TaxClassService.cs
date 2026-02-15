@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.TaxClass;
@@ -14,11 +14,6 @@ namespace maERP.Client.Features.TaxClasses.Services;
 /// </summary>
 public class TaxClassService : ITaxClassService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<TaxClassService> _logger;
@@ -54,8 +49,8 @@ public class TaxClassService : ITaxClassService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<TaxClassListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseTaxClassListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -84,7 +79,7 @@ public class TaxClassService : ITaxClassService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.TaxClasses.ById(id)}";
-        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<TaxClassDetailDto>>(url, JsonOptions, ct);
+        var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.ApiResponseTaxClassDetailDto, ct);
         return apiResponse?.Data;
     }
 
@@ -92,7 +87,7 @@ public class TaxClassService : ITaxClassService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.TaxClasses.Base}";
-        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PostAsJsonAsync(url, input, AppJsonSerializerContext.Default.TaxClassInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
@@ -100,7 +95,7 @@ public class TaxClassService : ITaxClassService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.TaxClasses.ById(id)}";
-        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.TaxClassInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 

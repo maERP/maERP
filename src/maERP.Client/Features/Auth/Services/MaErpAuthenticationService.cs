@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using maERP.Client.Core.Exceptions;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Domain.Dtos.Auth;
 
@@ -34,7 +35,7 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
         var httpClient = _httpClientFactory.CreateClient();
         httpClient.BaseAddress = new Uri(request.Server);
 
-        var response = await httpClient.PostAsJsonAsync("/api/v1/auth/login", request, cancellationToken);
+        var response = await httpClient.PostAsJsonAsync("/api/v1/auth/login", request, AppJsonSerializerContext.Default.LoginRequestDto, cancellationToken);
 
         // Use ApiException for HTTP errors to propagate server error messages
         await response.EnsureSuccessOrThrowApiExceptionAsync(cancellationToken);
@@ -42,13 +43,8 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
         var rawJson = await response.Content.ReadAsStringAsync(cancellationToken);
         _logger.LogDebug("Login response JSON: {Json}", rawJson);
 
-        var jsonOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
         // Parse the wrapper response first
-        var apiResponse = JsonSerializer.Deserialize<ApiResponse<LoginResponseDto>>(rawJson, jsonOptions);
+        var apiResponse = JsonSerializer.Deserialize(rawJson, AppJsonSerializerContext.Default.ApiResponseLoginResponseDto);
         var loginResponse = apiResponse?.Data;
 
         _logger.LogInformation("Parsed response - ApiSucceeded: {ApiSucceeded}, DataSucceeded: {DataSucceeded}, Token: {HasToken}, UserId: {UserId}",
@@ -107,12 +103,7 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
         var rawJson = await response.Content.ReadAsStringAsync(cancellationToken);
         _logger.LogDebug("Refresh token response JSON: {Json}", rawJson);
 
-        var jsonOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
-        var apiResponse = JsonSerializer.Deserialize<ApiResponse<LoginResponseDto>>(rawJson, jsonOptions);
+        var apiResponse = JsonSerializer.Deserialize(rawJson, AppJsonSerializerContext.Default.ApiResponseLoginResponseDto);
         var refreshResponse = apiResponse?.Data;
 
         if (apiResponse?.Succeeded == true && refreshResponse?.Succeeded == true && !string.IsNullOrEmpty(refreshResponse.Token))

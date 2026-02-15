@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Country;
@@ -14,11 +14,6 @@ namespace maERP.Client.Features.Countries.Services;
 /// </summary>
 public class CountryService : ICountryService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<CountryService> _logger;
@@ -64,8 +59,8 @@ public class CountryService : ICountryService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<CountryListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseCountryListDto, ct);
 
             if (response?.Succeeded != true || response.Data == null)
             {

@@ -1,8 +1,8 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Web;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.Tenant;
@@ -16,11 +16,6 @@ namespace maERP.Client.Features.Tenants.Services;
 /// </summary>
 public class TenantService : ITenantService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<TenantService> _logger;
@@ -56,8 +51,8 @@ public class TenantService : ITenantService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<TenantListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseTenantListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -86,7 +81,7 @@ public class TenantService : ITenantService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.Tenants.ById(id)}";
-        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<TenantDetailDto>>(url, JsonOptions, ct);
+        var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.ApiResponseTenantDetailDto, ct);
         return apiResponse?.Data;
     }
 
@@ -97,10 +92,10 @@ public class TenantService : ITenantService
 
         _logger.LogInformation("Creating tenant at URL: {Url}", url);
 
-        var response = await _httpClient.PostAsJsonAsync(url, input, JsonOptions, ct);
+        var response = await _httpClient.PostAsJsonAsync(url, input, AppJsonSerializerContext.Default.TenantInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
-        var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<Guid>>(JsonOptions, ct);
+        var apiResponse = await response.Content.ReadFromJsonAsync(AppJsonSerializerContext.Default.ApiResponseGuid, ct);
         return apiResponse?.Data ?? Guid.Empty;
     }
 
@@ -111,7 +106,7 @@ public class TenantService : ITenantService
 
         _logger.LogInformation("Updating tenant {Id} at URL: {Url}", id, url);
 
-        var response = await _httpClient.PutAsJsonAsync(url, input, JsonOptions, ct);
+        var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.TenantInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
@@ -126,7 +121,7 @@ public class TenantService : ITenantService
         var response = await _httpClient.GetAsync(url, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
 
-        var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<UserListDto>>(JsonOptions, ct);
+        var apiResponse = await response.Content.ReadFromJsonAsync(AppJsonSerializerContext.Default.ApiResponseUserListDto, ct);
         return apiResponse?.Data;
     }
 
@@ -137,8 +132,8 @@ public class TenantService : ITenantService
 
         _logger.LogInformation("Adding user to tenant {TenantId} at URL: {Url}", tenantId, url);
 
-        var payload = new { Email = email };
-        var response = await _httpClient.PostAsJsonAsync(url, payload, JsonOptions, ct);
+        var payload = new AddUserToTenantPayload(email);
+        var response = await _httpClient.PostAsJsonAsync(url, payload, AppJsonSerializerContext.Default.AddUserToTenantPayload, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 

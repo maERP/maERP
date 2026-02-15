@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using maERP.Client.Core.Constants;
 using maERP.Client.Core.Extensions;
+using maERP.Client.Core.Json;
 using maERP.Client.Core.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Domain.Dtos.SalesChannel;
@@ -14,11 +14,6 @@ namespace maERP.Client.Features.SalesChannels.Services;
 /// </summary>
 public class SalesChannelService : ISalesChannelService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private readonly HttpClient _httpClient;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ILogger<SalesChannelService> _logger;
@@ -54,8 +49,8 @@ public class SalesChannelService : ISalesChannelService
 
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<PaginatedResponse<SalesChannelListDto>>(
-                url, JsonOptions, ct);
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseSalesChannelListDto, ct);
 
             if (response?.Succeeded != true)
             {
@@ -84,7 +79,7 @@ public class SalesChannelService : ISalesChannelService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.SalesChannels.ById(id)}";
-        var apiResponse = await _httpClient.GetFromJsonAsync<ApiResponse<SalesChannelDetailDto>>(url, JsonOptions, ct);
+        var apiResponse = await _httpClient.GetFromJsonAsync(url, AppJsonSerializerContext.Default.ApiResponseSalesChannelDetailDto, ct);
         return apiResponse?.Data;
     }
 
@@ -92,7 +87,7 @@ public class SalesChannelService : ISalesChannelService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.SalesChannels.Base}";
-        var response = await _httpClient.PostAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PostAsJsonAsync(url, input, AppJsonSerializerContext.Default.SalesChannelInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 
@@ -100,7 +95,7 @@ public class SalesChannelService : ISalesChannelService
     {
         var baseUrl = await GetBaseUrlAsync();
         var url = $"{baseUrl}{ApiEndpoints.SalesChannels.ById(id)}";
-        var response = await _httpClient.PutAsJsonAsync(url, input, ct);
+        var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.SalesChannelInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
 }
