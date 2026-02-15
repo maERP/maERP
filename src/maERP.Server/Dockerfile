@@ -9,6 +9,8 @@ ENV DatabaseConfig__ConnectionString=Data Source=maerp.db
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
+COPY ["Directory.Packages.props", "/src/"]
+COPY ["Directory.Build.props", "/src/"]
 COPY ["src/maERP.Server/maERP.Server.csproj", "maERP.Server/"]
 COPY ["src/maERP.Application/maERP.Application.csproj", "maERP.Application/"]
 COPY ["src/maERP.Domain/maERP.Domain.csproj", "maERP.Domain/"]
@@ -19,6 +21,7 @@ COPY ["src/maERP.Persistence/maERP.Persistence.csproj", "maERP.Persistence/"]
 COPY ["src/maERP.Persistence.MySQL/maERP.Persistence.MySQL.csproj", "maERP.Persistence.MySQL/"]
 COPY ["src/maERP.Persistence.MSSQL/maERP.Persistence.MSSQL.csproj", "maERP.Persistence.MSSQL/"]
 COPY ["src/maERP.Persistence.PostgreSQL/maERP.Persistence.PostgreSQL.csproj", "maERP.Persistence.PostgreSQL/"]
+COPY ["src/maERP.Persistence.SQLite/maERP.Persistence.SQLite.csproj", "maERP.Persistence.SQLite/"]
 COPY ["src/maERP.SalesChannels/maERP.SalesChannels.csproj", "maERP.SalesChannels/"]
 RUN dotnet restore "maERP.Server/maERP.Server.csproj"
 COPY src/ .

@@ -2801,6 +2801,12 @@
   <data name="TenantDetailPage.DeleteConfirmation.Content" xml:space="preserve">
     <value>Alle Daten dieses Mandanten werden unwiderruflich gelöscht. Möchten Sie fortfahren?</value>
   </data>
+  <data name="TenantDetailPage.DeleteConfirmation.PrimaryButtonText" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="TenantDetailPage.DeleteConfirmation.CloseButtonText" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
 
   <!-- TenantEditPage -->
   <data name="TenantEditPage.TitleNew" xml:space="preserve">

@@ -51,7 +51,7 @@ public sealed partial class CustomerDetailPage : Page
             CloseButtonText = resourceLoader.GetString("Common.Cancel"),
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = this.XamlRoot,
-            Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style
+            Style = Application.Current.Resources["MaterialContentDialogStyle"] as Style
         };
 
         var result = await dialog.ShowAsync();

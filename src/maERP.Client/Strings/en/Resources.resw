@@ -2802,6 +2802,12 @@
   <data name="TenantDetailPage.DeleteConfirmation.Content" xml:space="preserve">
     <value>All data of this tenant will be permanently deleted. Do you want to continue?</value>
   </data>
+  <data name="TenantDetailPage.DeleteConfirmation.PrimaryButtonText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="TenantDetailPage.DeleteConfirmation.CloseButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
 
   <!-- TenantEditPage -->
   <data name="TenantEditPage.TitleNew" xml:space="preserve">
