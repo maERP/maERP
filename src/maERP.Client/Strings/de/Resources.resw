@@ -2795,17 +2795,17 @@
   <data name="TenantDetailPage.Button.DeleteTenant.Text.Text" xml:space="preserve">
     <value>Mandant löschen</value>
   </data>
-  <data name="TenantDetailPage.DeleteConfirmation.Title" xml:space="preserve">
+  <data name="TenantDetailPage.DeleteDialog.Title.Text" xml:space="preserve">
     <value>Mandant löschen?</value>
   </data>
-  <data name="TenantDetailPage.DeleteConfirmation.Content" xml:space="preserve">
+  <data name="TenantDetailPage.DeleteDialog.Message.Text" xml:space="preserve">
     <value>Alle Daten dieses Mandanten werden unwiderruflich gelöscht. Möchten Sie fortfahren?</value>
   </data>
-  <data name="TenantDetailPage.DeleteConfirmation.PrimaryButtonText" xml:space="preserve">
-    <value>Löschen</value>
-  </data>
-  <data name="TenantDetailPage.DeleteConfirmation.CloseButtonText" xml:space="preserve">
+  <data name="TenantDetailPage.DeleteDialog.CancelButton.Content" xml:space="preserve">
     <value>Abbrechen</value>
+  </data>
+  <data name="TenantDetailPage.DeleteDialog.ConfirmButton.Content" xml:space="preserve">
+    <value>Löschen</value>
   </data>
 
   <!-- TenantEditPage -->
@@ -2831,6 +2831,9 @@
   </data>
   <data name="TenantEditPage.Section.Address.Text" xml:space="preserve">
     <value>Adresse</value>
+  </data>
+  <data name="TenantEditPage.Section.Description.Text" xml:space="preserve">
+    <value>Beschreibung</value>
   </data>
   <data name="TenantEditPage.Section.PaymentInformation.Text" xml:space="preserve">
     <value>Zahlungsinformationen</value>

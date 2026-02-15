@@ -1,11 +1,12 @@
 using maERP.Client.Features.Tenants.Models;
 using Microsoft.UI.Xaml.Controls;
-using Windows.ApplicationModel.Resources;
 
 namespace maERP.Client.Features.Tenants.Views;
 
 public sealed partial class TenantDetailPage : Page
 {
+    private TaskCompletionSource<bool>? _deleteConfirmationTcs;
+
     public TenantDetailPage()
     {
         this.InitializeComponent();
@@ -56,22 +57,22 @@ public sealed partial class TenantDetailPage : Page
         }
     }
 
-    private async Task<bool> ShowDeleteConfirmationAsync()
+    private Task<bool> ShowDeleteConfirmationAsync()
     {
-        var resourceLoader = ResourceLoader.GetForViewIndependentUse();
+        _deleteConfirmationTcs = new TaskCompletionSource<bool>();
+        DeleteConfirmationOverlay.Visibility = Visibility.Visible;
+        return _deleteConfirmationTcs.Task;
+    }
 
-        var dialog = new ContentDialog
-        {
-            Title = resourceLoader.GetString("TenantDetailPage.DeleteConfirmation.Title"),
-            Content = resourceLoader.GetString("TenantDetailPage.DeleteConfirmation.Content"),
-            PrimaryButtonText = resourceLoader.GetString("Common.Delete"),
-            CloseButtonText = resourceLoader.GetString("Common.Cancel"),
-            DefaultButton = ContentDialogButton.Close,
-            XamlRoot = this.XamlRoot,
-            Style = Application.Current.Resources["MaterialContentDialogStyle"] as Style
-        };
+    private void DeleteConfirmationCancel_Click(object sender, RoutedEventArgs e)
+    {
+        DeleteConfirmationOverlay.Visibility = Visibility.Collapsed;
+        _deleteConfirmationTcs?.TrySetResult(false);
+    }
 
-        var result = await dialog.ShowAsync();
-        return result == ContentDialogResult.Primary;
+    private void DeleteConfirmationConfirm_Click(object sender, RoutedEventArgs e)
+    {
+        DeleteConfirmationOverlay.Visibility = Visibility.Collapsed;
+        _deleteConfirmationTcs?.TrySetResult(true);
     }
 }

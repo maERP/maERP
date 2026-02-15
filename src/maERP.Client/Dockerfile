@@ -10,8 +10,8 @@ COPY ["Directory.Build.props", "./"]
 COPY ["Directory.Packages.props", "./"]
 COPY ["global.json", "./"]
 
-# Install required workloads
-RUN dotnet workload install wasm-tools
+# Install required workloads (wasm-tools for publish, workload restore for all project TFMs)
+RUN dotnet workload install wasm-tools && dotnet workload restore "maERP.Client/maERP.Client.csproj"
 
 # Restore dependencies
 RUN dotnet restore "maERP.Client/maERP.Client.csproj"

@@ -614,7 +614,6 @@
                                Style="{StaticResource TitleMedium}"
                                Foreground="{ThemeResource OnSurfaceBrush}" />
                   </StackPanel>
-
                   <Border Background="{ThemeResource SurfaceBrush}"
                           CornerRadius="12"
                           Padding="16"
@@ -626,25 +625,7 @@
                     <TextBlock Text="{Binding Data.Description}"
                                Style="{StaticResource BodyMedium}"
                                Foreground="{ThemeResource OnSurfaceBrush}"
-                               TextWrapping="Wrap"
-                               Visibility="{Binding Data.Description, Converter={StaticResource StringToVisibilityConverter}}" />
-                  </Border>
-
-                  <!-- No Description Placeholder (shown when Description is empty) -->
-                  <Border Background="{ThemeResource SurfaceVariantBrush}"
-                          CornerRadius="12"
-                          Padding="24"
-                          Visibility="{Binding Data.Description, Converter={StaticResource StringToInverseVisibilityConverter}}">
-                    <StackPanel HorizontalAlignment="Center"
-                                Spacing="8">
-                      <FontIcon Glyph="&#xE70B;"
-                                FontSize="32"
-                                Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                      <TextBlock x:Uid="TenantDetailPage.NoDescription"
-                                 Style="{StaticResource BodyMedium}"
-                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                 HorizontalAlignment="Center" />
-                    </StackPanel>
+                               TextWrapping="Wrap" />
                   </Border>
                 </StackPanel>
 
@@ -756,5 +737,78 @@
         </DataTemplate>
       </mvux:FeedView.ErrorTemplate>
     </mvux:FeedView>
+
+    <!-- Delete Confirmation Overlay -->
+    <Grid x:Name="DeleteConfirmationOverlay"
+          Grid.RowSpan="3"
+          Visibility="Collapsed">
+      <!-- Scrim -->
+      <Border Background="#66000000"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch" />
+
+      <!-- Dialog Card -->
+      <Border Background="{ThemeResource SurfaceBrush}"
+              CornerRadius="28"
+              MaxWidth="400"
+              Margin="24"
+              Padding="24"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Translation="0,0,32">
+        <Border.Shadow>
+          <ThemeShadow />
+        </Border.Shadow>
+        <StackPanel Spacing="16">
+          <!-- Icon -->
+          <Border Width="48"
+                  Height="48"
+                  CornerRadius="24"
+                  Background="{ThemeResource ErrorContainerBrush}"
+                  HorizontalAlignment="Center">
+            <FontIcon Glyph="&#xE74D;"
+                      FontSize="24"
+                      Foreground="{ThemeResource OnErrorContainerBrush}"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center" />
+          </Border>
+
+          <!-- Title -->
+          <TextBlock x:Uid="TenantDetailPage.DeleteDialog.Title"
+                     Style="{StaticResource HeadlineSmall}"
+                     Foreground="{ThemeResource OnSurfaceBrush}"
+                     HorizontalAlignment="Center"
+                     TextAlignment="Center" />
+
+          <!-- Content -->
+          <TextBlock x:Uid="TenantDetailPage.DeleteDialog.Message"
+                     Style="{StaticResource BodyMedium}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                     HorizontalAlignment="Center"
+                     TextAlignment="Center"
+                     TextWrapping="Wrap" />
+
+          <!-- Buttons -->
+          <Grid Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="12" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button x:Uid="TenantDetailPage.DeleteDialog.CancelButton"
+                    Grid.Column="0"
+                    Style="{StaticResource OutlinedButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Click="DeleteConfirmationCancel_Click" />
+            <Button x:Uid="TenantDetailPage.DeleteDialog.ConfirmButton"
+                    Grid.Column="2"
+                    Style="{StaticResource FilledButtonStyle}"
+                    Background="{ThemeResource ErrorBrush}"
+                    HorizontalAlignment="Stretch"
+                    Click="DeleteConfirmationConfirm_Click" />
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Grid>
   </Grid>
 </Page>

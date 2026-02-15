@@ -233,7 +233,7 @@ public sealed partial class CustomerEditPage : Page
             PrimaryButtonText = model.CommonSave,
             CloseButtonText = model.CommonCancel,
             DefaultButton = ContentDialogButton.Primary,
-            Style = Application.Current.Resources["MaterialContentDialogStyle"] as Style
+            Style = Application.Current.Resources["ContentDialogStyle"] as Style
         };
     }
 }

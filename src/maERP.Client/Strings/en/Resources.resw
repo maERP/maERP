@@ -2796,17 +2796,17 @@
     <value>Delete Tenant</value>
   </data>
   <!-- Tenant Delete Confirmation Dialog -->
-  <data name="TenantDetailPage.DeleteConfirmation.Title" xml:space="preserve">
+  <data name="TenantDetailPage.DeleteDialog.Title.Text" xml:space="preserve">
     <value>Delete tenant?</value>
   </data>
-  <data name="TenantDetailPage.DeleteConfirmation.Content" xml:space="preserve">
+  <data name="TenantDetailPage.DeleteDialog.Message.Text" xml:space="preserve">
     <value>All data of this tenant will be permanently deleted. Do you want to continue?</value>
   </data>
-  <data name="TenantDetailPage.DeleteConfirmation.PrimaryButtonText" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="TenantDetailPage.DeleteConfirmation.CloseButtonText" xml:space="preserve">
+  <data name="TenantDetailPage.DeleteDialog.CancelButton.Content" xml:space="preserve">
     <value>Cancel</value>
+  </data>
+  <data name="TenantDetailPage.DeleteDialog.ConfirmButton.Content" xml:space="preserve">
+    <value>Delete</value>
   </data>
 
   <!-- TenantEditPage -->
@@ -2832,6 +2832,9 @@
   </data>
   <data name="TenantEditPage.Section.Address.Text" xml:space="preserve">
     <value>Address</value>
+  </data>
+  <data name="TenantEditPage.Section.Description.Text" xml:space="preserve">
+    <value>Description</value>
   </data>
   <data name="TenantEditPage.Section.PaymentInformation.Text" xml:space="preserve">
     <value>Payment Information</value>

@@ -202,15 +202,6 @@
                            Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                            IsEnabled="{Binding IsNotLoading}" />
 
-                  <!-- Description -->
-                  <TextBox x:Uid="TenantEditPage.Field.Description"
-                           Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           AcceptsReturn="True"
-                           TextWrapping="Wrap"
-                           MinHeight="80"
-                           MaxHeight="200"
-                           IsEnabled="{Binding IsNotLoading}" />
-
                   <!-- Required Fields Note -->
                   <TextBlock x:Uid="TenantEditPage.RequiredFieldsNote"
                              Style="{StaticResource LabelSmall}"
@@ -391,61 +382,93 @@
               </StackPanel>
             </Border>
 
-            <!-- Users Card (only visible in Edit Mode) -->
-            <Border x:Name="UsersCard"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Grid.Row="2"
-                    Margin="0"
-                    Background="{ThemeResource SurfaceBrush}"
-                    CornerRadius="12"
-                    Translation="0,0,8"
-                    Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibilityConverter}}">
-              <Border.Shadow>
-                <ThemeShadow />
-              </Border.Shadow>
-              <StackPanel Spacing="0">
-                <!-- Card Header -->
-                <Grid Padding="16,16,16,8">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                  </Grid.ColumnDefinitions>
-                  <StackPanel Grid.Column="0"
-                              Orientation="Horizontal">
-                    <FontIcon Glyph="&#xE716;"
-                              FontSize="20"
-                              Foreground="{ThemeResource SecondaryBrush}"
-                              Margin="0,0,12,0"
-                              VerticalAlignment="Center" />
-                    <TextBlock x:Uid="TenantEditPage.Section.Users"
-                               Style="{StaticResource TitleMedium}"
-                               Foreground="{ThemeResource OnSurfaceBrush}" />
-                  </StackPanel>
-                  <Button Grid.Column="1"
-                          x:Uid="TenantEditPage.Button.AddUser"
-                          Style="{StaticResource FilledTonalButtonStyle}"
-                          Click="AddUserButton_Click">
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="8">
-                      <FontIcon Glyph="&#xE710;"
-                                FontSize="14" />
-                      <TextBlock x:Uid="TenantEditPage.Button.AddUser.Text" />
-                    </StackPanel>
-                  </Button>
-                </Grid>
-
-                <!-- Users Info -->
-                <StackPanel Padding="16,0,16,16"
-                            Spacing="12">
-                  <TextBlock x:Uid="TenantEditPage.Users.Info"
-                             Style="{StaticResource BodyMedium}"
-                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                             TextWrapping="Wrap" />
-                </StackPanel>
-              </StackPanel>
-            </Border>
           </Grid>
+
+          <!-- Description Card -->
+          <Border Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Translation="0,0,8"
+                  Visibility="{Binding IsNotLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel Spacing="0">
+              <!-- Card Header -->
+              <Grid Padding="16,16,16,8">
+                <StackPanel Orientation="Horizontal">
+                  <FontIcon Glyph="&#xE70B;"
+                            FontSize="20"
+                            Foreground="{ThemeResource SecondaryBrush}"
+                            Margin="0,0,12,0" />
+                  <TextBlock x:Uid="TenantEditPage.Section.Description"
+                             Style="{StaticResource TitleMedium}"
+                             Foreground="{ThemeResource OnSurfaceBrush}" />
+                </StackPanel>
+              </Grid>
+
+              <!-- Description Field -->
+              <StackPanel Padding="16,0,16,16">
+                <TextBox x:Uid="TenantEditPage.Field.Description"
+                         Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         MinHeight="80"
+                         MaxHeight="200"
+                         IsEnabled="{Binding IsNotLoading}" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+          <!-- Users Card (only visible in Edit Mode) -->
+          <Border x:Name="UsersCard"
+                  Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Translation="0,0,8"
+                  Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel Spacing="0">
+              <!-- Card Header -->
+              <Grid Padding="16,16,16,8">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal">
+                  <FontIcon Glyph="&#xE716;"
+                            FontSize="20"
+                            Foreground="{ThemeResource SecondaryBrush}"
+                            Margin="0,0,12,0"
+                            VerticalAlignment="Center" />
+                  <TextBlock x:Uid="TenantEditPage.Section.Users"
+                             Style="{StaticResource TitleMedium}"
+                             Foreground="{ThemeResource OnSurfaceBrush}" />
+                </StackPanel>
+                <Button Grid.Column="1"
+                        x:Uid="TenantEditPage.Button.AddUser"
+                        Style="{StaticResource FilledTonalButtonStyle}"
+                        Click="AddUserButton_Click">
+                  <StackPanel Orientation="Horizontal"
+                              Spacing="8">
+                    <FontIcon Glyph="&#xE710;"
+                              FontSize="14" />
+                    <TextBlock x:Uid="TenantEditPage.Button.AddUser.Text" />
+                  </StackPanel>
+                </Button>
+              </Grid>
+
+              <!-- Users Info -->
+              <StackPanel Padding="16,0,16,16"
+                          Spacing="12">
+                <TextBlock x:Uid="TenantEditPage.Users.Info"
+                           Style="{StaticResource BodyMedium}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           TextWrapping="Wrap" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
 
         </StackPanel>
       </Grid>
