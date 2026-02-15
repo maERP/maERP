@@ -75,7 +75,6 @@ public class TenantUpdateCommandTests : TenantIsolatedTestBase
         {
             Name = "Updated Tenant Name",
             Description = "Updated tenant description",
-            IsActive = true,
             CompanyName = "Updated Corp",
             ContactEmail = "updated@tenant.com",
             Phone = "+49 123 456789",
@@ -335,7 +334,6 @@ public class TenantUpdateCommandTests : TenantIsolatedTestBase
         {
             Name = "Updated Tenant 2 Name",
             Description = "Updated tenant 2 description",
-            IsActive = true,
             CompanyName = "Tenant 2 Corp",
             ContactEmail = "tenant2@updated.com"
         };

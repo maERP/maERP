@@ -65,7 +65,6 @@ public class TenantCreateHandler : IRequestHandler<TenantCreateCommand, Result<G
             {
                 Name = request.Name,
                 Description = request.Description,
-                IsActive = request.IsActive,
                 CompanyName = request.CompanyName,
                 ContactEmail = request.ContactEmail,
                 Phone = request.Phone,

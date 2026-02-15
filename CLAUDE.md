@@ -46,6 +46,9 @@ The codebase implements:
 - In Services: use `await response.EnsureSuccessOrThrowApiExceptionAsync(ct)`
 - In Models: Catch `ApiException` and display `ex.CombinedMessage` as ErrorMessage to show server validation errors
 
+### maERP.Client ResourceLoader
+- IMPORTANT: `ResourceLoader.GetString()` uses **dots** as separators, not slashes: `resourceLoader.GetString("Page.Section.Key")` — slashes return `null`
+
 ### maERP.Client Card Styling
 Cards must use `ThemeShadow` and `Translation` for a consistent 3D shadow effect:
 ```xml

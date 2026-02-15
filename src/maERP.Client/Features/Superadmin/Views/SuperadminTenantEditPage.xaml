@@ -210,11 +210,6 @@
                            MaxHeight="200"
                            IsEnabled="{Binding IsNotLoading}" />
 
-                  <!-- Is Active Toggle -->
-                  <ToggleSwitch x:Uid="SuperadminTenantEditPage.Field.IsActive"
-                                IsOn="{Binding IsActive, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}" />
-
                   <!-- Required Fields Note -->
                   <TextBlock x:Uid="SuperadminTenantEditPage.RequiredFieldsNote"
                              Style="{StaticResource LabelSmall}"

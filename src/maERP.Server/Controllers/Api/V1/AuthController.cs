@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.RateLimiting;
 using Asp.Versioning;
 using maERP.Application.Contracts.Identity;
@@ -52,6 +53,21 @@ public class AuthController(IAuthService authenticationService, ILogger<AuthCont
             logger.LogDebug("✅ Registration succeeded - UserId: {UserId}", result.Data?.UserId);
         }
 
+        return StatusCode((int)result.StatusCode, result);
+    }
+
+    [HttpPost("refresh-token")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<LoginResponseDto>> RefreshToken()
+    {
+        var userId = User.FindFirst("uid")?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
+        var result = await authenticationService.RefreshToken(userId);
         return StatusCode((int)result.StatusCode, result);
     }
 

@@ -7,14 +7,6 @@
       xmlns:utu="using:Uno.Toolkit.UI"
       Background="{ThemeResource BackgroundBrush}">
 
-  <Page.Resources>
-    <!-- Status Badge Colors -->
-    <SolidColorBrush x:Key="StatusActiveBrush" Color="#16A34A" />
-    <SolidColorBrush x:Key="StatusActiveBackgroundBrush" Color="#DCFCE7" />
-    <SolidColorBrush x:Key="StatusInactiveBrush" Color="#6B7280" />
-    <SolidColorBrush x:Key="StatusInactiveBackgroundBrush" Color="#F3F4F6" />
-  </Page.Resources>
-
   <Grid utu:SafeArea.Insets="VisibleBounds">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -183,20 +175,10 @@
                                Text="{Binding Data.CompanyName}"
                                Visibility="{Binding Data.CompanyName, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}" />
 
-                    <!-- Status and User Count Badges -->
+                    <!-- User Count Badge -->
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Spacing="12">
-                      <!-- Status Badge -->
-                      <Border CornerRadius="16"
-                              Padding="16,6"
-                              Background="{Binding Data.IsActive, Converter={StaticResource BoolToStatusBackgroundConverter}}">
-                        <TextBlock Text="{Binding Data.IsActive, Converter={StaticResource BoolToStatusTextConverter}}"
-                                   Style="{StaticResource LabelMedium}"
-                                   Foreground="{Binding Data.IsActive, Converter={StaticResource BoolToStatusForegroundConverter}}" />
-                      </Border>
-
-                      <!-- User Count Badge -->
                       <Border CornerRadius="16"
                               Padding="16,6"
                               Background="{ThemeResource SecondaryContainerBrush}">
@@ -718,7 +700,6 @@
                               Style="{StaticResource OutlinedButtonStyle}"
                               HorizontalAlignment="Stretch"
                               Foreground="{ThemeResource ErrorBrush}"
-                              IsEnabled="{Binding Data.IsActive, Converter={StaticResource InverseBooleanConverter}}"
                               Click="DeleteTenantButton_Click">
                         <StackPanel Orientation="Horizontal"
                                     Spacing="8">
@@ -729,30 +710,6 @@
                                      Foreground="{ThemeResource ErrorBrush}" />
                         </StackPanel>
                       </Button>
-
-                      <!-- Delete Hint (shown when tenant is active) -->
-                      <Border Background="{ThemeResource SurfaceVariantBrush}"
-                              CornerRadius="8"
-                              Padding="12"
-                              Visibility="{Binding Data.IsActive, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <Grid ColumnSpacing="8">
-                          <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                          </Grid.ColumnDefinitions>
-                          <FontIcon Grid.Column="0"
-                                    Glyph="&#xE946;"
-                                    FontSize="16"
-                                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                    VerticalAlignment="Top"
-                                    Margin="0,2,0,0" />
-                          <TextBlock Grid.Column="1"
-                                     x:Uid="TenantDetailPage.DeleteHint"
-                                     Style="{StaticResource BodySmall}"
-                                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                     TextWrapping="Wrap" />
-                        </Grid>
-                      </Border>
                     </StackPanel>
                   </Border>
                 </StackPanel>

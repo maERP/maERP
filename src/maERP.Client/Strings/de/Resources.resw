@@ -2701,14 +2701,6 @@
     <value>{0} Mandanten</value>
   </data>
 
-  <!-- Tenant Status -->
-  <data name="TenantStatus.Active" xml:space="preserve">
-    <value>Aktiv</value>
-  </data>
-  <data name="TenantStatus.Inactive" xml:space="preserve">
-    <value>Inaktiv</value>
-  </data>
-
   <!-- TenantListPage - Create button -->
   <data name="TenantListPage.AppBarButton.Create.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Mandant erstellen</value>
@@ -2803,8 +2795,11 @@
   <data name="TenantDetailPage.Button.DeleteTenant.Text.Text" xml:space="preserve">
     <value>Mandant löschen</value>
   </data>
-  <data name="TenantDetailPage.DeleteHint.Text" xml:space="preserve">
-    <value>Um einen Mandanten zu löschen, muss dieser zuerst deaktiviert werden. Bearbeiten Sie den Mandanten und setzen Sie den Status auf "Inaktiv".</value>
+  <data name="TenantDetailPage.DeleteConfirmation.Title" xml:space="preserve">
+    <value>Mandant löschen?</value>
+  </data>
+  <data name="TenantDetailPage.DeleteConfirmation.Content" xml:space="preserve">
+    <value>Alle Daten dieses Mandanten werden unwiderruflich gelöscht. Möchten Sie fortfahren?</value>
   </data>
 
   <!-- TenantEditPage -->
@@ -2847,15 +2842,6 @@
   </data>
   <data name="TenantEditPage.Field.Description.PlaceholderText" xml:space="preserve">
     <value>Beschreibung eingeben</value>
-  </data>
-  <data name="TenantEditPage.Field.IsActive.Header" xml:space="preserve">
-    <value>Aktiv</value>
-  </data>
-  <data name="TenantEditPage.Field.IsActive.OnContent" xml:space="preserve">
-    <value>Aktiv</value>
-  </data>
-  <data name="TenantEditPage.Field.IsActive.OffContent" xml:space="preserve">
-    <value>Inaktiv</value>
   </data>
   <data name="TenantEditPage.RequiredFieldsNote.Text" xml:space="preserve">
     <value>* Pflichtfeld</value>
@@ -3064,15 +3050,6 @@
   </data>
   <data name="SuperadminTenantEditPage.Field.Description.PlaceholderText" xml:space="preserve">
     <value>Beschreibung eingeben</value>
-  </data>
-  <data name="SuperadminTenantEditPage.Field.IsActive.Header" xml:space="preserve">
-    <value>Aktiv</value>
-  </data>
-  <data name="SuperadminTenantEditPage.Field.IsActive.OnContent" xml:space="preserve">
-    <value>Ja</value>
-  </data>
-  <data name="SuperadminTenantEditPage.Field.IsActive.OffContent" xml:space="preserve">
-    <value>Nein</value>
   </data>
   <data name="SuperadminTenantEditPage.RequiredFieldsNote.Text" xml:space="preserve">
     <value>* Pflichtfelder</value>

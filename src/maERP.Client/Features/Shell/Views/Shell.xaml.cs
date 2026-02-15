@@ -1145,16 +1145,15 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             var input = new TenantInputDto
             {
                 Name = tenantName,
-                Description = FirstTenantDescription.Text?.Trim(),
-                IsActive = true
+                Description = FirstTenantDescription.Text?.Trim()
             };
 
             var newTenantId = await tenantService.CreateTenantAsync(input);
             Console.WriteLine($"[Shell] First tenant created with ID: {newTenantId}");
 
-            // Refresh tenant list
-            await tenantContext.RefreshTenantsAsync();
-            Console.WriteLine("[Shell] Tenant list refreshed");
+            // Refresh JWT token to include the new tenant in claims, then refresh tenant list
+            await tenantContext.RefreshTokenAndTenantsAsync();
+            Console.WriteLine("[Shell] JWT token and tenant list refreshed");
 
             // Set the new tenant as current
             if (newTenantId != Guid.Empty)

@@ -83,6 +83,59 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
         return loginResponse;
     }
 
+    public async Task<LoginResponseDto?> RefreshTokenAsync(CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Refreshing JWT token");
+
+        var serverUrl = await _tokenStorage.GetServerUrlAsync();
+        var token = await _tokenStorage.GetTokenAsync();
+
+        if (string.IsNullOrEmpty(serverUrl) || string.IsNullOrEmpty(token))
+        {
+            _logger.LogWarning("Token refresh failed: No server URL or token configured");
+            return null;
+        }
+
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri(serverUrl);
+        httpClient.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+        var response = await httpClient.PostAsync("/api/v1/auth/refresh-token", null, cancellationToken);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(cancellationToken);
+
+        var rawJson = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogDebug("Refresh token response JSON: {Json}", rawJson);
+
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        var apiResponse = JsonSerializer.Deserialize<ApiResponse<LoginResponseDto>>(rawJson, jsonOptions);
+        var refreshResponse = apiResponse?.Data;
+
+        if (apiResponse?.Succeeded == true && refreshResponse?.Succeeded == true && !string.IsNullOrEmpty(refreshResponse.Token))
+        {
+            await _tokenStorage.SetTokenAsync(refreshResponse.Token);
+
+            if (refreshResponse.AvailableTenants != null)
+            {
+                if (refreshResponse.CurrentTenantId.HasValue)
+                {
+                    await _tokenStorage.SetCurrentTenantIdAsync(refreshResponse.CurrentTenantId.Value);
+                }
+
+                await _tenantContext.SetAvailableTenantsAsync(refreshResponse.AvailableTenants);
+            }
+
+            _logger.LogInformation("Token refreshed successfully with {Count} tenants",
+                refreshResponse.AvailableTenants?.Count ?? 0);
+        }
+
+        return refreshResponse;
+    }
+
     public async Task<bool> ValidateTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Validating authentication token");

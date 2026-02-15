@@ -90,13 +90,12 @@ public class UserTenantRepository : IUserTenantRepository
         var userTenants = await _context.UserTenant
             .IgnoreQueryFilters()
             .Include(ut => ut.Tenant)
-            .Where(ut => ut.UserId == userId && ut.Tenant!.IsActive)
+            .Where(ut => ut.UserId == userId)
             .Select(ut => new TenantListDto
             {
                 Id = ut.Tenant!.Id,
                 Name = ut.Tenant.Name,
                 Description = ut.Tenant.Description,
-                IsActive = ut.Tenant.IsActive,
                 CompanyName = ut.Tenant.CompanyName,
                 ContactEmail = ut.Tenant.ContactEmail,
                 Phone = ut.Tenant.Phone,

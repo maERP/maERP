@@ -133,6 +133,33 @@ public class TenantContextService : ITenantContextService
         return _availableTenants.Count > 0;
     }
 
+    public async Task RefreshTokenAndTenantsAsync(CancellationToken ct = default)
+    {
+        _logger.LogInformation("Refreshing JWT token and tenant list");
+
+        try
+        {
+            var authService = _serviceProvider.GetRequiredService<IMaErpAuthenticationService>();
+            var refreshResponse = await authService.RefreshTokenAsync(ct);
+
+            if (refreshResponse?.Succeeded == true)
+            {
+                _logger.LogInformation("JWT token refreshed, tenant list updated with {Count} tenants",
+                    refreshResponse.AvailableTenants?.Count ?? 0);
+            }
+            else
+            {
+                _logger.LogWarning("JWT token refresh failed, falling back to tenant list refresh only");
+                await RefreshTenantsAsync(ct);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to refresh JWT token, falling back to tenant list refresh only");
+            await RefreshTenantsAsync(ct);
+        }
+    }
+
     private async Task SelectFirstAvailableTenantAsync()
     {
         if (_availableTenants.Count > 0)

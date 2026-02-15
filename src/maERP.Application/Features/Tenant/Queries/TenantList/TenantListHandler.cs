@@ -30,13 +30,12 @@ public class TenantListHandler : IRequestHandler<TenantListQuery, PaginatedResul
         var query = _userTenantRepository.Entities
             .IgnoreQueryFilters()
             .Include(ut => ut.Tenant)
-            .Where(ut => ut.UserId == request.UserId && ut.Tenant!.IsActive)
+            .Where(ut => ut.UserId == request.UserId)
             .Select(ut => new TenantListDto
             {
                 Id = ut.Tenant!.Id,
                 Name = ut.Tenant.Name,
                 Description = ut.Tenant.Description,
-                IsActive = ut.Tenant.IsActive,
                 CompanyName = ut.Tenant.CompanyName,
                 ContactEmail = ut.Tenant.ContactEmail,
                 Phone = ut.Tenant.Phone,

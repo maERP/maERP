@@ -54,6 +54,12 @@ public interface ITenantContextService
     Task<bool> RefreshTenantsAndCheckAvailabilityAsync(CancellationToken ct = default);
 
     /// <summary>
+    /// Refreshes the JWT token (to get updated tenant claims) and then refreshes the tenant list.
+    /// Call this after creating or modifying tenants to ensure the JWT contains current tenant data.
+    /// </summary>
+    Task RefreshTokenAndTenantsAsync(CancellationToken ct = default);
+
+    /// <summary>
     /// Event fired when the current tenant changes.
     /// </summary>
     event EventHandler<TenantListDto?>? CurrentTenantChanged;

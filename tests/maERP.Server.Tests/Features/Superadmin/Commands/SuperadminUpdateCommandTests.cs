@@ -29,7 +29,6 @@ public class SuperadminUpdateCommandTests : TenantIsolatedTestBase
             Id = tenantId,
             Name = "Updated Tenant",
             Description = "Updated description",
-            IsActive = true,
             ContactEmail = "updated@tenant.com"
         };
     }
@@ -208,19 +207,6 @@ public class SuperadminUpdateCommandTests : TenantIsolatedTestBase
 
         // Invalid GUID format returns NotFound due to routing constraints
         TestAssertions.AssertEqual(HttpStatusCode.NotFound, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task UpdateTenant_WithInactiveStatus_ShouldBeValid()
-    {
-        await SeedTestDataAsync();
-        SetSuperadminAuthentication();
-        var command = CreateValidUpdateCommand();
-        command.IsActive = false;
-
-        var response = await PutAsJsonAsync($"/api/v1/superadmin/tenants/{TenantConstants.TestTenant1Id}", command);
-
-        TestAssertions.AssertEqual(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]

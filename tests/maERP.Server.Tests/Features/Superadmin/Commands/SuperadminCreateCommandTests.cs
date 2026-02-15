@@ -28,7 +28,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         {
             Name = $"Test Tenant {uniqueSuffix}",
             Description = "A test tenant for unit testing",
-            IsActive = true,
             ContactEmail = "test@tenant.com"
         };
     }
@@ -191,22 +190,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task CreateTenant_WithInactiveStatus_ShouldBeValid()
-    {
-        await SeedTestDataAsync();
-        SetSuperadminAuthentication();
-        var command = CreateValidSuperadminCommand();
-        command.IsActive = false;
-
-        var response = await PostAsJsonAsync("/api/v1/superadmin/tenants", command);
-
-        TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
-        var result = await ReadResponseAsync<Result<Guid>>(response);
-        TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertTrue(result.Succeeded);
-    }
-
-    [Fact]
     public async Task CreateTenant_WithEmptyDescription_ShouldBeValid()
     {
         await SeedTestDataAsync();
@@ -231,7 +214,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         {
             Name = "Test Tenant",
             Description = "A test tenant for unit testing",
-            IsActive = true,
             ContactEmail = "valid@email.com" // Valid email is required
         };
 
@@ -332,7 +314,6 @@ public class SuperadminCreateCommandTests : TenantIsolatedTestBase
         var command = new SuperadminCreateCommand
         {
             Name = "Test Minimal",
-            IsActive = true,
             ContactEmail = "test@minimal.com" // Valid email is required due to data annotations
         };
 

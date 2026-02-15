@@ -58,7 +58,6 @@ public class SuperadminDetailHandler : IRequestHandler<SuperadminDetailQuery, Re
             Id = tenant.Id,
             Name = tenant.Name,
             Description = tenant.Description,
-            IsActive = tenant.IsActive,
             CompanyName = tenant.CompanyName,
             ContactEmail = tenant.ContactEmail,
             Phone = tenant.Phone,

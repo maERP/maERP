@@ -56,7 +56,6 @@ public class SuperadminListHandler : IRequestHandler<SuperadminListQuery, Pagina
                 Id = t.Id,
                 Name = t.Name,
                 Description = t.Description,
-                IsActive = t.IsActive,
                 CompanyName = t.CompanyName,
                 ContactEmail = t.ContactEmail,
                 Phone = t.Phone,

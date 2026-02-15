@@ -26,8 +26,7 @@ public class TenantDeleteValidator : AbstractValidator<TenantDeleteCommand>
 
         RuleFor(t => t)
             .MustAsync(TenantExists).WithMessage("Tenant not found")
-            .MustAsync(UserHasPermission).WithMessage("You do not have permission to delete this tenant")
-            .MustAsync(TenantIsInactive).WithMessage("Tenant must be deactivated before deletion");
+            .MustAsync(UserHasPermission).WithMessage("You do not have permission to delete this tenant");
     }
 
     private async Task<bool> TenantExists(TenantDeleteCommand command, CancellationToken cancellationToken)
@@ -38,11 +37,5 @@ public class TenantDeleteValidator : AbstractValidator<TenantDeleteCommand>
     private async Task<bool> UserHasPermission(TenantDeleteCommand command, CancellationToken cancellationToken)
     {
         return await _tenantPermissionService.CanManageTenantAsync(command.UserId, command.TenantId, cancellationToken);
-    }
-
-    private async Task<bool> TenantIsInactive(TenantDeleteCommand command, CancellationToken cancellationToken)
-    {
-        var tenant = await _tenantRepository.GetByIdAsync(command.TenantId, true);
-        return tenant != null && !tenant.IsActive;
     }
 }

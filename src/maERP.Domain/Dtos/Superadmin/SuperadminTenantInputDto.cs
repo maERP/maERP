@@ -14,8 +14,6 @@ public class SuperadminTenantInputDto : ITenantInputModel
     [MaxLength(500)]
     public string Description { get; set; } = string.Empty;
 
-    public bool IsActive { get; set; } = true;
-
     [MaxLength(200)]
     public string? CompanyName { get; set; }
 

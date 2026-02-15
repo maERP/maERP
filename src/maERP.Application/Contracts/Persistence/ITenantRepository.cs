@@ -4,6 +4,5 @@ namespace maERP.Application.Contracts.Persistence;
 
 public interface ITenantRepository : IGenericRepository<Tenant>
 {
-    Task<IEnumerable<Tenant>> GetActivTenantsAsync();
     Task DeleteTenantWithCascadeAsync(Guid tenantId, CancellationToken cancellationToken = default);
 }

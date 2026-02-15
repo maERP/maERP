@@ -211,6 +211,39 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         return jwtSecurityToken;
     }
 
+    public async Task<Result<LoginResponseDto>> RefreshToken(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+        {
+            return Result<LoginResponseDto>.Fail(ResultStatusCode.Unauthorized, "Benutzer nicht gefunden.");
+        }
+
+        // Load current tenant assignments from database
+        var availableTenants = await _userTenantService.GetUserTenantsAsync(user.Id);
+
+        // Get the default tenant ID from UserTenant relationship
+        var defaultTenantId = await _userTenantRepository.Entities
+            .Where(ut => ut.UserId == user.Id && ut.IsDefault)
+            .Select(ut => (Guid?)ut.TenantId)
+            .FirstOrDefaultAsync();
+
+        var jwtSecurityToken = await GenerateToken(user, availableTenants, defaultTenantId);
+
+        var response = new LoginResponseDto()
+        {
+            UserId = user.Id,
+            Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+            Succeeded = true,
+            Message = "Token erfolgreich aktualisiert.",
+            AvailableTenants = availableTenants,
+            CurrentTenantId = defaultTenantId
+        };
+
+        return Result<LoginResponseDto>.Success(response);
+    }
+
     public async Task<Result<ForgotPasswordResponse>> ForgotPassword(ForgotPasswordRequest request)
     {
         _logger.LogDebug("🔑 ForgotPassword called for email: {Email}", request.Email);

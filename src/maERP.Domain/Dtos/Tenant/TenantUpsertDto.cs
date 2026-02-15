@@ -56,9 +56,6 @@ public class TenantUpsertDto
     [JsonPropertyName("adminEmail")]
     public string? AdminEmail { get; set; }
 
-    [JsonPropertyName("isActive")]
-    public bool IsActive { get; set; } = true;
-
     [JsonPropertyName("validUpto")]
     public DateTime? ValidUntil { get; set; }
 }

@@ -211,11 +211,6 @@
                            MaxHeight="200"
                            IsEnabled="{Binding IsNotLoading}" />
 
-                  <!-- Is Active Toggle -->
-                  <ToggleSwitch x:Uid="TenantEditPage.Field.IsActive"
-                                IsOn="{Binding IsActive, Mode=TwoWay}"
-                                IsEnabled="{Binding IsNotLoading}" />
-
                   <!-- Required Fields Note -->
                   <TextBlock x:Uid="TenantEditPage.RequiredFieldsNote"
                              Style="{StaticResource LabelSmall}"
@@ -421,7 +416,8 @@
                     <FontIcon Glyph="&#xE716;"
                               FontSize="20"
                               Foreground="{ThemeResource SecondaryBrush}"
-                              Margin="0,0,12,0" />
+                              Margin="0,0,12,0"
+                              VerticalAlignment="Center" />
                     <TextBlock x:Uid="TenantEditPage.Section.Users"
                                Style="{StaticResource TitleMedium}"
                                Foreground="{ThemeResource OnSurfaceBrush}" />

@@ -15,8 +15,6 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
                 Id = TenantConstants.DefaultTenantId,
                 Name = "Default Tenant",
                 Description = "Default tenant for initial setup",
-                // TenantCode removed
-                IsActive = true,
                 ContactEmail = "admin@example.com"
             }
         );

@@ -13,9 +13,6 @@ public abstract class SuperadminTenantDtoBase
     [JsonPropertyName("description")]
     public string? Description { get; set; }
 
-    [JsonPropertyName("isActive")]
-    public bool IsActive { get; set; }
-
     [JsonPropertyName("companyName")]
     public string? CompanyName { get; set; }
 

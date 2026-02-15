@@ -74,7 +74,6 @@
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="150" />
                   </Grid.ColumnDefinitions>
 
@@ -120,30 +119,9 @@
                     </StackPanel>
                   </Button>
 
-                  <!-- Status Header -->
-                  <Button x:Name="HeaderStatus"
-                          Grid.Column="2"
-                          Style="{StaticResource TextButtonStyle}"
-                          HorizontalAlignment="Stretch"
-                          HorizontalContentAlignment="Left"
-                          Padding="16,12"
-                          Tag="IsActive"
-                          Click="SortHeader_Click">
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                      <TextBlock x:Uid="SuperadminTenantListPage.Header.Status"
-                                 Style="{StaticResource LabelLarge}"
-                                 Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                      <FontIcon x:Name="SortIconIsActive"
-                                Glyph="&#xE70D;"
-                                FontSize="12"
-                                Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                Visibility="Collapsed" />
-                    </StackPanel>
-                  </Button>
-
                   <!-- DateCreated Header -->
                   <Button x:Name="HeaderDateCreated"
-                          Grid.Column="3"
+                          Grid.Column="2"
                           Style="{StaticResource TextButtonStyle}"
                           HorizontalAlignment="Stretch"
                           HorizontalContentAlignment="Left"
@@ -188,7 +166,6 @@
                           <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="100" />
                             <ColumnDefinition Width="150" />
                           </Grid.ColumnDefinitions>
 
@@ -210,21 +187,8 @@
                                      Padding="16,14"
                                      TextTrimming="CharacterEllipsis" />
 
-                          <!-- Status -->
-                          <Border Grid.Column="2"
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Left"
-                                  Margin="16,0"
-                                  Padding="8,4"
-                                  CornerRadius="4"
-                                  Background="{Binding IsActive, Converter={StaticResource BoolToStatusBackgroundConverter}}">
-                            <TextBlock Text="{Binding IsActive, Converter={StaticResource BoolToStatusTextConverter}}"
-                                       Style="{StaticResource LabelSmall}"
-                                       Foreground="{Binding IsActive, Converter={StaticResource BoolToStatusForegroundConverter}}" />
-                          </Border>
-
                           <!-- DateCreated -->
-                          <TextBlock Grid.Column="3"
+                          <TextBlock Grid.Column="2"
                                      Text="{Binding DateCreated, Converter={StaticResource DateOnlyConverter}}"
                                      Style="{StaticResource BodyMedium}"
                                      Foreground="{ThemeResource OnSurfaceVariantBrush}"

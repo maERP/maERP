@@ -47,7 +47,6 @@ public class SuperadminCreateHandler : IRequestHandler<SuperadminCreateCommand, 
             {
                 Name = request.Name,
                 Description = request.Description,
-                IsActive = request.IsActive,
                 CompanyName = request.CompanyName,
                 ContactEmail = request.ContactEmail,
                 Phone = request.Phone,

@@ -82,15 +82,6 @@ public class TenantRepository : ITenantRepository
         return !await query.AnyAsync(t => t.Name == entity.Name);
     }
 
-    public async Task<IEnumerable<Tenant>> GetActivTenantsAsync()
-    {
-        return await _context.Tenant
-            .Where(t => t.IsActive)
-            .Include(t => t.UserTenants)
-            .OrderBy(t => t.Name)
-            .ToListAsync();
-    }
-
     public void Attach(Tenant entity)
     {
         _context.Set<Tenant>().Attach(entity);

@@ -6,7 +6,6 @@ using maERP.Client.Features.Tenants.Services;
 using maERP.Domain.Dtos.Tenant;
 using maERP.Domain.Dtos.User;
 using Microsoft.Extensions.Logging;
-using Uno.Extensions.Authentication;
 
 namespace maERP.Client.Features.Tenants.Models;
 
@@ -20,13 +19,11 @@ public class TenantEditModel : AsyncInitializableModel
     private readonly INavigator _navigator;
     private readonly IStringLocalizer _localizer;
     private readonly ITenantContextService _tenantContext;
-    private readonly IAuthenticationService _authentication;
     private readonly Guid? _tenantId;
 
     // Basic Information
     private string _name = string.Empty;
     private string _description = string.Empty;
-    private bool _isActive = true;
 
     // Company Information
     private string _companyName = string.Empty;
@@ -62,7 +59,6 @@ public class TenantEditModel : AsyncInitializableModel
         INavigator navigator,
         IStringLocalizer localizer,
         ITenantContextService tenantContext,
-        IAuthenticationService authentication,
         ILogger<TenantEditModel> logger,
         TenantEditData? data = null)
         : base(logger)
@@ -71,7 +67,6 @@ public class TenantEditModel : AsyncInitializableModel
         _navigator = navigator;
         _localizer = localizer;
         _tenantContext = tenantContext;
-        _authentication = authentication;
         _tenantId = data?.tenantId;
 
         // Start async initialization with proper error handling
@@ -105,12 +100,6 @@ public class TenantEditModel : AsyncInitializableModel
     {
         get => _description;
         set => SetProperty(ref _description, value);
-    }
-
-    public bool IsActive
-    {
-        get => _isActive;
-        set => SetProperty(ref _isActive, value);
     }
 
     #endregion
@@ -358,7 +347,6 @@ public class TenantEditModel : AsyncInitializableModel
             // Basic Information
             Name = tenant.Name;
             Description = tenant.Description ?? string.Empty;
-            IsActive = tenant.IsActive;
 
             // Company Information
             CompanyName = tenant.CompanyName ?? string.Empty;
@@ -392,7 +380,6 @@ public class TenantEditModel : AsyncInitializableModel
             {
                 Name = Name,
                 Description = Description,
-                IsActive = IsActive,
                 CompanyName = string.IsNullOrWhiteSpace(CompanyName) ? null : CompanyName,
                 ContactEmail = string.IsNullOrWhiteSpace(ContactEmail) ? null : ContactEmail,
                 Phone = string.IsNullOrWhiteSpace(Phone) ? null : Phone,
@@ -411,24 +398,14 @@ public class TenantEditModel : AsyncInitializableModel
                 // Edit mode: Update existing tenant
                 input.Id = _tenantId.Value;
                 await _tenantService.UpdateTenantAsync(_tenantId.Value, input, ct);
-
-                // Refresh tenant list after update (handles deactivation)
-                var hasTenantsRemaining = await _tenantContext.RefreshTenantsAndCheckAvailabilityAsync(ct);
-
-                if (!hasTenantsRemaining)
-                {
-                    // No tenants remaining (user deactivated their only tenant) - log out
-                    await _authentication.LogoutAsync(ct);
-                    return;
-                }
             }
             else
             {
                 // Create mode: Create new tenant
                 await _tenantService.CreateTenantAsync(input, ct);
 
-                // Refresh tenant list after creating a new tenant
-                await _tenantContext.RefreshTenantsAsync(ct);
+                // Refresh JWT token to include new tenant in claims, then refresh tenant list
+                await _tenantContext.RefreshTokenAndTenantsAsync(ct);
             }
 
             await _navigator.NavigateBackAsync(this);

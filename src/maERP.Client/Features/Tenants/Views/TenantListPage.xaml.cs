@@ -33,8 +33,6 @@ public sealed partial class TenantListPage : Page
             _sortIcons["Name"] = iconName;
         if (FindName("SortIconCompanyName") is FontIcon iconCompanyName)
             _sortIcons["CompanyName"] = iconCompanyName;
-        if (FindName("SortIconIsActive") is FontIcon iconIsActive)
-            _sortIcons["IsActive"] = iconIsActive;
         if (FindName("SortIconDateCreated") is FontIcon iconDateCreated)
             _sortIcons["DateCreated"] = iconDateCreated;
     }

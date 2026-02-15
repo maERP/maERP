@@ -25,7 +25,6 @@ public class SuperadminTenantEditModel : AsyncInitializableModel
     // Basic Information
     private string _name = string.Empty;
     private string _description = string.Empty;
-    private bool _isActive = true;
 
     // Company Information
     private string _companyName = string.Empty;
@@ -92,12 +91,6 @@ public class SuperadminTenantEditModel : AsyncInitializableModel
     {
         get => _description;
         set => SetProperty(ref _description, value);
-    }
-
-    public bool IsActive
-    {
-        get => _isActive;
-        set => SetProperty(ref _isActive, value);
     }
 
     #endregion
@@ -311,7 +304,6 @@ public class SuperadminTenantEditModel : AsyncInitializableModel
             // Basic Information
             Name = tenant.Name;
             Description = tenant.Description ?? string.Empty;
-            IsActive = tenant.IsActive;
 
             // Company Information
             CompanyName = tenant.CompanyName ?? string.Empty;
@@ -351,7 +343,6 @@ public class SuperadminTenantEditModel : AsyncInitializableModel
                 Id = _tenantId,
                 Name = Name,
                 Description = Description,
-                IsActive = IsActive,
                 CompanyName = string.IsNullOrWhiteSpace(CompanyName) ? null : CompanyName,
                 ContactEmail = string.IsNullOrWhiteSpace(ContactEmail) ? null : ContactEmail,
                 Phone = string.IsNullOrWhiteSpace(Phone) ? null : Phone,

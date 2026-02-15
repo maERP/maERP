@@ -10,4 +10,5 @@ public interface IAuthService
     Task<Result<RegistrationResponse>> Register(RegistrationRequest request);
     Task<Result<ForgotPasswordResponse>> ForgotPassword(ForgotPasswordRequest request);
     Task<Result<ResetPasswordResponse>> ResetPassword(ResetPasswordRequest request);
+    Task<Result<LoginResponseDto>> RefreshToken(string userId);
 }

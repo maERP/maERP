@@ -14,7 +14,6 @@ public class TenantDtoSerializationTests
             "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             "name": "Main Tenant",
             "description": "Demomandant",
-            "isActive": true,
             "companyName": "ACME Corporation",
             "contactEmail": "admin@example.com",
             "phone": "+49 123 456789",
@@ -39,7 +38,6 @@ public class TenantDtoSerializationTests
         Assert.Equal(Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6"), dto!.Id);
         Assert.Equal("Main Tenant", dto.Name);
         Assert.Equal("Demomandant", dto.Description);
-        Assert.True(dto.IsActive);
         Assert.Equal("ACME Corporation", dto.CompanyName);
         Assert.Equal("admin@example.com", dto.ContactEmail);
         Assert.Equal("+49 123 456789", dto.Phone);
@@ -67,7 +65,6 @@ public class TenantDtoSerializationTests
             "id": "6f9619ff-8b86-d011-b42d-00cf4fc964ff",
             "name": "Secondary Tenant",
             "description": "VIP Tenant",
-            "isActive": false,
             "companyName": "Secondary Ltd.",
             "contactEmail": "owner@secondary.com",
             "phone": "+44 20 1234 5678",
@@ -94,7 +91,6 @@ public class TenantDtoSerializationTests
         Assert.Equal(Guid.Parse("6f9619ff-8b86-d011-b42d-00cf4fc964ff"), dto!.Id);
         Assert.Equal("Secondary Tenant", dto.Name);
         Assert.Equal("VIP Tenant", dto.Description);
-        Assert.False(dto.IsActive);
         Assert.Equal("Secondary Ltd.", dto.CompanyName);
         Assert.Equal("owner@secondary.com", dto.ContactEmail);
         Assert.Equal("+44 20 1234 5678", dto.Phone);

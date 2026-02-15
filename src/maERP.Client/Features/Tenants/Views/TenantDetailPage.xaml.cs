@@ -1,5 +1,6 @@
 using maERP.Client.Features.Tenants.Models;
 using Microsoft.UI.Xaml.Controls;
+using Windows.ApplicationModel.Resources;
 
 namespace maERP.Client.Features.Tenants.Views;
 
@@ -48,21 +49,29 @@ public sealed partial class TenantDetailPage : Page
             return;
         }
 
-        var dialog = new ContentDialog
-        {
-            Title = "Delete Tenant",
-            Content = "Are you sure you want to delete this tenant? This action cannot be undone.",
-            PrimaryButtonText = "Delete",
-            CloseButtonText = "Cancel",
-            DefaultButton = ContentDialogButton.Close,
-            XamlRoot = this.XamlRoot
-        };
-
-        var result = await dialog.ShowAsync();
-
-        if (result == ContentDialogResult.Primary)
+        var confirmed = await ShowDeleteConfirmationAsync();
+        if (confirmed)
         {
             await model.DeleteTenant();
         }
+    }
+
+    private async Task<bool> ShowDeleteConfirmationAsync()
+    {
+        var resourceLoader = ResourceLoader.GetForViewIndependentUse();
+
+        var dialog = new ContentDialog
+        {
+            Title = resourceLoader.GetString("TenantDetailPage.DeleteConfirmation.Title"),
+            Content = resourceLoader.GetString("TenantDetailPage.DeleteConfirmation.Content"),
+            PrimaryButtonText = resourceLoader.GetString("Common.Delete"),
+            CloseButtonText = resourceLoader.GetString("Common.Cancel"),
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = this.XamlRoot,
+            Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style
+        };
+
+        var result = await dialog.ShowAsync();
+        return result == ContentDialogResult.Primary;
     }
 }

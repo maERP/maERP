@@ -30,7 +30,7 @@ public class TenantMiddleware
 
         // Skip tenant validation for auth endpoints (login, register, forgot-password, reset-password), superadmin endpoints and swagger
         var pathLower = path?.ToLower();
-        var isAuthEndpoint = pathLower != null && (pathLower.EndsWith("/auth/login") || pathLower.EndsWith("/auth/register") || pathLower.EndsWith("/auth/forgot-password") || pathLower.EndsWith("/auth/reset-password"));
+        var isAuthEndpoint = pathLower != null && (pathLower.EndsWith("/auth/login") || pathLower.EndsWith("/auth/register") || pathLower.EndsWith("/auth/forgot-password") || pathLower.EndsWith("/auth/reset-password") || pathLower.EndsWith("/auth/refresh-token"));
         var isSuperadminEndpoint = pathLower != null && pathLower.Contains("/superadmin");
         var isSwaggerEndpoint = pathLower != null && (pathLower.StartsWith("/swagger") || pathLower.StartsWith("/_framework") || pathLower.StartsWith("/_content"));
         var isHealthEndpoint = pathLower != null && pathLower == "/health";
@@ -72,7 +72,7 @@ public class TenantMiddleware
                 }
                 else
                 {
-                    if (!availableTenantsIds.Contains(headerTenantId))
+                    if (availableTenantsIds.Count > 0 && !availableTenantsIds.Contains(headerTenantId))
                     {
                         context.Response.StatusCode = 403;
                         await context.Response.WriteAsync($"Access denied: User not assigned to tenant {headerTenantId}");
@@ -80,6 +80,13 @@ public class TenantMiddleware
                     }
 
                     tenantContext.SetCurrentTenantId(headerTenantId);
+
+                    // When JWT has no tenant claims but a valid X-Tenant-Id is provided,
+                    // set the assigned tenant IDs so downstream code has consistent context
+                    if (availableTenantsIds.Count == 0)
+                    {
+                        tenantContext.SetAssignedTenantIds(new[] { headerTenantId });
+                    }
                 }
             }
             else

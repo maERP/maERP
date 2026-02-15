@@ -91,7 +91,6 @@ public class TenantDetailHandler : IRequestHandler<TenantDetailQuery, Result<Ten
                 Id = tenant.Id,
                 Name = tenant.Name,
                 Description = tenant.Description,
-                IsActive = tenant.IsActive,
                 CompanyName = tenant.CompanyName,
                 ContactEmail = tenant.ContactEmail,
                 Phone = tenant.Phone,
