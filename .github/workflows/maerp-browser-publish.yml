@@ -1,4 +1,4 @@
-name: maERP.Client Publish
+name: maERP.Client Browser Publish
 
 on:
   push:

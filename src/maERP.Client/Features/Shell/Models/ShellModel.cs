@@ -12,6 +12,7 @@ public partial class ShellModel : INotifyPropertyChanged
     private readonly INavigator _navigator;
     private readonly IAuthenticationService _authentication;
     private readonly ITenantContextService _tenantContext;
+    private readonly ISessionManager _sessionManager;
     private bool _isAuthenticated = false; // Default to false
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -28,11 +29,13 @@ public partial class ShellModel : INotifyPropertyChanged
     public ShellModel(
         IAuthenticationService authentication,
         INavigator navigator,
-        ITenantContextService tenantContext)
+        ITenantContextService tenantContext,
+        ISessionManager sessionManager)
     {
         _navigator = navigator;
         _authentication = authentication;
         _tenantContext = tenantContext;
+        _sessionManager = sessionManager;
         _authentication.LoggedOut += LoggedOut;
         _tenantContext.CurrentTenantChanged += OnCurrentTenantChanged;
 
@@ -128,10 +131,16 @@ public partial class ShellModel : INotifyPropertyChanged
         System.Diagnostics.Debug.WriteLine($"[ShellModel] RefreshAsync returned: {authenticated}");
         IsAuthenticated = authenticated;
         System.Diagnostics.Debug.WriteLine($"[ShellModel] IsAuthenticated set to: {IsAuthenticated}");
+
+        if (authenticated)
+        {
+            await _sessionManager.StartAsync();
+        }
     }
 
     private async void LoggedOut(object? sender, EventArgs e)
     {
+        await _sessionManager.StopAsync();
         IsAuthenticated = false;
         await _tenantContext.ClearAsync();
         // LoginOverlay is shown automatically via SetUnauthenticatedVisibility
@@ -185,6 +194,11 @@ public partial class ShellModel : INotifyPropertyChanged
     public void UpdateAuthenticationState(bool isAuthenticated)
     {
         IsAuthenticated = isAuthenticated;
+
+        if (isAuthenticated)
+        {
+            _ = _sessionManager.StartAsync();
+        }
     }
 
     public void UpdateNoTenantsState(bool hasNoTenants)

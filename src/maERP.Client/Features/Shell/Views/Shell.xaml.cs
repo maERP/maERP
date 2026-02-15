@@ -29,6 +29,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     // Flag to prevent recursive selection changes
     private bool _isUpdatingSidebarSelection;
 
+    // Cached reference to avoid service lookup on every pointer move
+    private ISessionManager? _sessionManager;
+
     public Shell()
     {
         this.InitializeComponent();
@@ -46,9 +49,20 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         // Subscribe to static no-tenants state changed event
         ShellModel.NoTenantsStateChanged += OnNoTenantsStateChanged;
 
+        // Track user activity for inactivity timeout
+        this.PointerMoved += OnUserActivity;
+        this.KeyDown += OnUserActivity;
+
         // Note: NavView.SelectionChanged is now wired in XAML
         TabBarNav.SelectionChanged += OnTabBarSelectionChanged;
         this.Loaded += OnShellLoaded;
+    }
+
+    private void OnUserActivity(object sender, RoutedEventArgs e)
+    {
+        // Lazy-resolve SessionManager on first activity event
+        _sessionManager ??= (Application.Current as App)?.Host?.Services?.GetService<ISessionManager>();
+        _sessionManager?.RecordUserActivity();
     }
 
     /// <summary>

@@ -11,4 +11,5 @@ public interface ITokenStorageService
     Task SetCurrentTenantIdAsync(Guid? tenantId);
     Task<IReadOnlyList<string>> GetRolesAsync();
     Task<bool> IsInRoleAsync(string role);
+    Task<DateTimeOffset?> GetTokenExpiryAsync();
 }

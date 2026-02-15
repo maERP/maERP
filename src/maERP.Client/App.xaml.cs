@@ -197,6 +197,38 @@ public partial class App : Application
                 }
                 // When not authenticated, Shell constructor already shows LoginOverlay
             });
+
+        // Hook into Window.Activated for app lifecycle (suspend/resume)
+        if (MainWindow != null)
+        {
+            MainWindow.Activated += OnWindowActivated;
+        }
+    }
+
+    private async void OnWindowActivated(object sender, WindowActivatedEventArgs args)
+    {
+        try
+        {
+            var sessionManager = Host?.Services?.GetService<ISessionManager>();
+            if (sessionManager == null || !sessionManager.IsActive)
+            {
+                return;
+            }
+
+            if (args.WindowActivationState == Windows.UI.Core.CoreWindowActivationState.Deactivated)
+            {
+                sessionManager.OnAppSuspended();
+            }
+            else
+            {
+                // CodeActivated or PointerActivated
+                await sessionManager.OnAppResumedAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[App] OnWindowActivated error: {ex.Message}");
+        }
     }
 
     /// <summary>

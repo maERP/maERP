@@ -188,35 +188,77 @@ public class TokenStorageService : ITokenStorageService
         return roles.Contains(role, StringComparer.OrdinalIgnoreCase);
     }
 
+    public async Task<DateTimeOffset?> GetTokenExpiryAsync()
+    {
+        try
+        {
+            var token = await GetTokenAsync();
+            if (string.IsNullOrEmpty(token))
+            {
+                return null;
+            }
+
+            using var document = DecodeJwtPayload(token);
+            if (document == null)
+            {
+                return null;
+            }
+
+            if (document.RootElement.TryGetProperty("exp", out var expElement)
+                && expElement.TryGetInt64(out var expUnix))
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(expUnix);
+            }
+
+            _logger.LogDebug("No 'exp' claim found in JWT token");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error reading token expiry");
+            return null;
+        }
+    }
+
+    private JsonDocument? DecodeJwtPayload(string token)
+    {
+        // JWT format: header.payload.signature
+        var parts = token.Split('.');
+        if (parts.Length != 3)
+        {
+            _logger.LogWarning("Invalid JWT token format");
+            return null;
+        }
+
+        // Decode the payload (second part)
+        var payload = parts[1];
+
+        // Add padding if needed for Base64 decoding
+        payload = payload.Replace('-', '+').Replace('_', '/');
+        switch (payload.Length % 4)
+        {
+            case 2: payload += "=="; break;
+            case 3: payload += "="; break;
+        }
+
+        var payloadBytes = Convert.FromBase64String(payload);
+        var payloadJson = Encoding.UTF8.GetString(payloadBytes);
+
+        return JsonDocument.Parse(payloadJson);
+    }
+
     private IReadOnlyList<string> ParseRolesFromJwt(string token)
     {
         var roles = new List<string>();
 
         try
         {
-            // JWT format: header.payload.signature
-            var parts = token.Split('.');
-            if (parts.Length != 3)
+            using var document = DecodeJwtPayload(token);
+            if (document == null)
             {
-                _logger.LogWarning("Invalid JWT token format");
                 return roles;
             }
 
-            // Decode the payload (second part)
-            var payload = parts[1];
-
-            // Add padding if needed for Base64 decoding
-            payload = payload.Replace('-', '+').Replace('_', '/');
-            switch (payload.Length % 4)
-            {
-                case 2: payload += "=="; break;
-                case 3: payload += "="; break;
-            }
-
-            var payloadBytes = Convert.FromBase64String(payload);
-            var payloadJson = Encoding.UTF8.GetString(payloadBytes);
-
-            using var document = JsonDocument.Parse(payloadJson);
             var root = document.RootElement;
 
             // Try standard role claim

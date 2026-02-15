@@ -1,4 +1,4 @@
-name: Release maERP to Windows Store
+name: Release maERP.Client to Windows Store
 
 on:
   workflow_dispatch:

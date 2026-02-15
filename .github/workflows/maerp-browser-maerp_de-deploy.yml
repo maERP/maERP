@@ -1,4 +1,4 @@
-name: maERP.Client SFTP Deploy
+name: maERP.Client Browser SFTP Deploy
 
 on:
   workflow_dispatch:

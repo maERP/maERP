@@ -18,6 +18,10 @@ public static class AuthModule
         services.AddSingleton<ITenantContextService, TenantContextService>();
         services.AddSingleton<IMaErpAuthenticationService, MaErpAuthenticationService>();
 
+        // Session management
+        services.AddSingleton<SessionSettings>();
+        services.AddSingleton<ISessionManager, SessionManager>();
+
         return services;
     }
 
