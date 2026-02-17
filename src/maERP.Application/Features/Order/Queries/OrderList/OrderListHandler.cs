@@ -28,10 +28,15 @@ public class OrderListHandler : IRequestHandler<OrderListQuery, PaginatedResult<
 
         _logger.LogInformation("Handle OrderListQuery: {0}", request);
 
+        var baseQuery = _orderRepository.Entities
+            .Specify(orderFilterSpec);
+
+        if (request.SalesChannelId.HasValue)
+            baseQuery = baseQuery.Where(o => o.SalesChannelId == request.SalesChannelId.Value);
+
         if (request.OrderBy.Any() != true)
         {
-            return await _orderRepository.Entities
-               .Specify(orderFilterSpec)
+            return await baseQuery
                .Select(o => new OrderListDto
                {
                    Id = o.Id,
@@ -49,8 +54,7 @@ public class OrderListHandler : IRequestHandler<OrderListQuery, PaginatedResult<
 
         var ordering = string.Join(",", request.OrderBy);
 
-        return await _orderRepository.Entities
-            .Specify(orderFilterSpec)
+        return await baseQuery
             .OrderBy(ordering)
             .Select(o => new OrderListDto
             {

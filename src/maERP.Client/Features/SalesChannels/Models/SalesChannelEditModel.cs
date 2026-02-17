@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using maERP.Client.Core.Abstractions;
 using maERP.Client.Core.Exceptions;
 using maERP.Client.Features.SalesChannels.Services;
+using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Warehouses.Services;
 using maERP.Domain.Dtos.SalesChannel;
 using maERP.Domain.Dtos.Warehouse;
@@ -407,6 +408,9 @@ public class SalesChannelEditModel : AsyncInitializableModel
             {
                 await _salesChannelService.CreateSalesChannelAsync(input, ct);
             }
+
+            // Notify Shell to refresh dynamic sidebar items
+            ShellModel.NotifySalesChannelsChanged();
 
             await _navigator.NavigateBackAsync(this);
         }

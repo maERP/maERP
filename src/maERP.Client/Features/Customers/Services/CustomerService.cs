@@ -75,6 +75,34 @@ public class CustomerService : ICustomerService
         }
     }
 
+    public async Task<PaginatedResponse<CustomerListWithAddressDto>> SearchCustomersWithAddressAsync(
+        QueryParameters parameters,
+        CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.Customers.Search}?{parameters.ToQueryString()}";
+
+        try
+        {
+            var response = await _httpClient.GetFromJsonAsync(
+                url, AppJsonSerializerContext.Default.PaginatedResponseCustomerListWithAddressDto, ct);
+
+            if (response?.Succeeded != true)
+            {
+                _logger.LogWarning("Customer search returned unsuccessful response: {Messages}",
+                    string.Join(", ", response?.Messages ?? new List<string>()));
+                return new PaginatedResponse<CustomerListWithAddressDto>();
+            }
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error searching customers from {Url}", url);
+            throw;
+        }
+    }
+
     public async Task<CustomerDetailDto?> GetCustomerAsync(Guid id, CancellationToken ct = default)
     {
         var baseUrl = await GetBaseUrlAsync();

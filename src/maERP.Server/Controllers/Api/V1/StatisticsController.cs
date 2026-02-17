@@ -26,9 +26,9 @@ public class StatisticsController(IMediator mediator) : ControllerBase
 {
     // GET: api/v1/<StatisticsController>/SalesToday
     [HttpGet("SalesToday")]
-    public async Task<ActionResult<Result<SalesTodayDto>>> SalesToday()
+    public async Task<ActionResult<Result<SalesTodayDto>>> SalesToday([FromQuery] Guid? salesChannelId = null)
     {
-        var result = await mediator.Send(new SalesTodayQuery());
+        var result = await mediator.Send(new SalesTodayQuery(salesChannelId));
 
         if (!result.Succeeded)
             return StatusCode((int)result.StatusCode, result);
@@ -38,9 +38,9 @@ public class StatisticsController(IMediator mediator) : ControllerBase
 
     // GET: api/v1/<StatisticsController>/OrdersToday
     [HttpGet("OrdersToday")]
-    public async Task<ActionResult<Result<OrdersTodayDto>>> OrdersToday()
+    public async Task<ActionResult<Result<OrdersTodayDto>>> OrdersToday([FromQuery] Guid? salesChannelId = null)
     {
-        var result = await mediator.Send(new OrdersTodayQuery());
+        var result = await mediator.Send(new OrdersTodayQuery(salesChannelId));
 
         if (!result.Succeeded)
             return StatusCode((int)result.StatusCode, result);
@@ -74,9 +74,9 @@ public class StatisticsController(IMediator mediator) : ControllerBase
 
     // GET: api/v1/<StatisticsController>/OrdersLatest
     [HttpGet("OrdersLatest")]
-    public async Task<ActionResult<Result<OrdersLatestDto>>> OrdersLatest([FromQuery] int count = 5)
+    public async Task<ActionResult<Result<OrdersLatestDto>>> OrdersLatest([FromQuery] int count = 5, [FromQuery] Guid? salesChannelId = null)
     {
-        var result = await mediator.Send(new OrdersLatestQuery(count));
+        var result = await mediator.Send(new OrdersLatestQuery(count, salesChannelId));
 
         if (!result.Succeeded)
             return StatusCode((int)result.StatusCode, result);

@@ -4,4 +4,4 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Statistic.Queries.SalesToday;
 
-public record SalesTodayQuery : IRequest<Result<SalesTodayDto>>;
+public record SalesTodayQuery(Guid? SalesChannelId = null) : IRequest<Result<SalesTodayDto>>;

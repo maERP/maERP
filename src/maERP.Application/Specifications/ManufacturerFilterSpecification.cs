@@ -12,9 +12,10 @@ namespace maERP.Application.Specifications
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = m => (m.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
-                               m.City.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
-                               m.Country.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+                var lowerSearchString = searchString.ToLower();
+                Criteria = m => (m.Name.ToLower().Contains(lowerSearchString) ||
+                               m.City.ToLower().Contains(lowerSearchString) ||
+                               m.Country.ToLower().Contains(lowerSearchString));
             }
             else
             {

@@ -1,0 +1,229 @@
+<Page x:Class="maERP.Client.Features.SalesChannelDashboards.Views.Shopware5DashboardPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:models="using:maERP.Client.Features.SalesChannelDashboards.Models"
+      xmlns:mvux="using:Uno.Extensions.Reactive.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <Page.Resources>
+    <SolidColorBrush x:Key="PositiveChangeBrush" Color="#16A34A" />
+    <SolidColorBrush x:Key="NegativeChangeBrush" Color="#DC2626" />
+  </Page.Resources>
+
+  <Grid utu:SafeArea.Insets="VisibleBounds"
+        Padding="24">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- Page Header -->
+    <TextBlock Grid.Row="0"
+               Text="{Binding Title}"
+               Style="{StaticResource HeadlineMedium}"
+               Foreground="{ThemeResource OnBackgroundBrush}"
+               Margin="0,0,0,16" />
+
+    <!-- Pivot Tabs -->
+    <Pivot Grid.Row="1">
+
+      <!-- Tab 1: Dashboard -->
+      <PivotItem x:Uid="Shopware5Dashboard.Tab.Dashboard">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel Spacing="16" Padding="0,16,0,0">
+            <!-- KPI Cards -->
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+
+              <!-- Revenue KPI -->
+              <mvux:FeedView Grid.Column="0"
+                             Margin="0,0,8,0"
+                             Source="{Binding RevenueData}">
+                <mvux:FeedView.ValueTemplate>
+                  <DataTemplate>
+                    <Border Background="{ThemeResource SurfaceBrush}"
+                            CornerRadius="12"
+                            Padding="20"
+                            Translation="0,0,8">
+                      <Border.Shadow>
+                        <ThemeShadow />
+                      </Border.Shadow>
+                      <Grid>
+                        <Grid.RowDefinitions>
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Row="0" Grid.Column="1"
+                                Background="{ThemeResource TertiaryContainerBrush}"
+                                CornerRadius="20" Width="40" Height="40">
+                          <FontIcon Glyph="&#xE7BF;" FontSize="18"
+                                    Foreground="{ThemeResource OnTertiaryContainerBrush}"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   x:Uid="DashboardPage.KPI.Revenue"
+                                   Style="{StaticResource LabelLarge}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Text="{Binding Data.RevenueTodayFormatted}"
+                                   Style="{StaticResource HeadlineLarge}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}"
+                                   Margin="0,8,0,0" />
+                        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                    Orientation="Horizontal" Margin="0,8,0,0">
+                          <FontIcon Glyph="&#xE74A;" FontSize="12"
+                                    Foreground="{StaticResource PositiveChangeBrush}" Margin="0,0,4,0" />
+                          <TextBlock Text="{Binding Data.RevenueChangeFormatted}"
+                                     Style="{StaticResource LabelMedium}"
+                                     Foreground="{StaticResource PositiveChangeBrush}" />
+                          <TextBlock x:Uid="DashboardPage.KPI.VsLastWeek"
+                                     Style="{StaticResource LabelMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" Margin="4,0,0,0" />
+                        </StackPanel>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Style="{StaticResource BodySmall}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}" Margin="0,4,0,0">
+                          <Run x:Uid="DashboardPage.KPI.ThisWeek" />
+                          <Run Text="{Binding Data.RevenueThisWeekFormatted}" />
+                        </TextBlock>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </mvux:FeedView.ValueTemplate>
+                <mvux:FeedView.ProgressTemplate>
+                  <DataTemplate>
+                    <Border Background="{ThemeResource SurfaceBrush}" CornerRadius="12"
+                            Padding="20" MinHeight="140" Translation="0,0,8">
+                      <Border.Shadow><ThemeShadow /></Border.Shadow>
+                      <ProgressRing IsActive="True" Width="32" Height="32"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                  </DataTemplate>
+                </mvux:FeedView.ProgressTemplate>
+              </mvux:FeedView>
+
+              <!-- Orders KPI -->
+              <mvux:FeedView Grid.Column="1"
+                             Margin="8,0,0,0"
+                             Source="{Binding OrdersData}">
+                <mvux:FeedView.ValueTemplate>
+                  <DataTemplate>
+                    <Border Background="{ThemeResource SurfaceBrush}"
+                            CornerRadius="12"
+                            Padding="20"
+                            Translation="0,0,8">
+                      <Border.Shadow>
+                        <ThemeShadow />
+                      </Border.Shadow>
+                      <Grid>
+                        <Grid.RowDefinitions>
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Row="0" Grid.Column="1"
+                                Background="{ThemeResource PrimaryContainerBrush}"
+                                CornerRadius="20" Width="40" Height="40">
+                          <FontIcon Glyph="&#xE7BF;" FontSize="18"
+                                    Foreground="{ThemeResource OnPrimaryContainerBrush}"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   x:Uid="DashboardPage.KPI.Orders"
+                                   Style="{StaticResource LabelLarge}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Text="{Binding Data.OrdersToday}"
+                                   Style="{StaticResource HeadlineLarge}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}"
+                                   Margin="0,8,0,0" />
+                        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                    Orientation="Horizontal" Margin="0,8,0,0">
+                          <FontIcon Glyph="&#xE74A;" FontSize="12"
+                                    Foreground="{StaticResource PositiveChangeBrush}" Margin="0,0,4,0" />
+                          <TextBlock Text="{Binding Data.OrdersChangeFormatted}"
+                                     Style="{StaticResource LabelMedium}"
+                                     Foreground="{StaticResource PositiveChangeBrush}" />
+                          <TextBlock x:Uid="DashboardPage.KPI.VsLastWeek"
+                                     Style="{StaticResource LabelMedium}"
+                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" Margin="4,0,0,0" />
+                        </StackPanel>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Style="{StaticResource BodySmall}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}" Margin="0,4,0,0">
+                          <Run Text="{Binding Data.OrdersPending}" />
+                          <Run x:Uid="DashboardPage.KPI.Pending" />
+                        </TextBlock>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </mvux:FeedView.ValueTemplate>
+                <mvux:FeedView.ProgressTemplate>
+                  <DataTemplate>
+                    <Border Background="{ThemeResource SurfaceBrush}" CornerRadius="12"
+                            Padding="20" MinHeight="140" Translation="0,0,8">
+                      <Border.Shadow><ThemeShadow /></Border.Shadow>
+                      <ProgressRing IsActive="True" Width="32" Height="32"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                  </DataTemplate>
+                </mvux:FeedView.ProgressTemplate>
+              </mvux:FeedView>
+            </Grid>
+          </StackPanel>
+        </ScrollViewer>
+      </PivotItem>
+
+      <!-- Tab 2: Sync Status (Placeholder) -->
+      <PivotItem x:Uid="Shopware5Dashboard.Tab.SyncStatus">
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="16">
+          <FontIcon Glyph="&#xE895;"
+                    FontSize="48"
+                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                    HorizontalAlignment="Center" />
+          <TextBlock x:Uid="Shopware5Dashboard.Placeholder.SyncStatus"
+                     Style="{StaticResource BodyLarge}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                     HorizontalAlignment="Center" />
+        </StackPanel>
+      </PivotItem>
+
+      <!-- Tab 3: Settings (Placeholder) -->
+      <PivotItem x:Uid="Shopware5Dashboard.Tab.Settings">
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="16">
+          <FontIcon Glyph="&#xE713;"
+                    FontSize="48"
+                    Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                    HorizontalAlignment="Center" />
+          <TextBlock x:Uid="Shopware5Dashboard.Placeholder.Settings"
+                     Style="{StaticResource BodyLarge}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                     HorizontalAlignment="Center" />
+        </StackPanel>
+      </PivotItem>
+    </Pivot>
+  </Grid>
+</Page>

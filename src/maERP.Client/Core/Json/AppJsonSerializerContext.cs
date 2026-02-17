@@ -28,6 +28,7 @@ namespace maERP.Client.Core.Json;
 [JsonSerializable(typeof(PaginatedResponse<ProductListDto>))]
 [JsonSerializable(typeof(PaginatedResponse<WarehouseListDto>))]
 [JsonSerializable(typeof(PaginatedResponse<CustomerListDto>))]
+[JsonSerializable(typeof(PaginatedResponse<CustomerListWithAddressDto>))]
 [JsonSerializable(typeof(PaginatedResponse<TaxClassListDto>))]
 [JsonSerializable(typeof(PaginatedResponse<InvoiceListDto>))]
 [JsonSerializable(typeof(PaginatedResponse<OrderListDto>))]

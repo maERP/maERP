@@ -4,4 +4,4 @@ using maERP.Application.Mediator;
 
 namespace maERP.Application.Features.Statistic.Queries.OrdersLatest;
 
-public record OrdersLatestQuery(int Count = 5) : IRequest<Result<OrdersLatestDto>>;
+public record OrdersLatestQuery(int Count = 5, Guid? SalesChannelId = null) : IRequest<Result<OrdersLatestDto>>;

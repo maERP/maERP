@@ -568,26 +568,9 @@
                     <TextBlock Text="{Binding Data.Note}"
                                Style="{StaticResource BodyMedium}"
                                Foreground="{ThemeResource OnSurfaceBrush}"
-                               TextWrapping="Wrap"
-                               Visibility="{Binding Data.Note, Converter={StaticResource StringToVisibilityConverter}}" />
+                               TextWrapping="Wrap" />
                   </Border>
 
-                  <!-- No Notes Placeholder (shown when Note is empty) -->
-                  <Border Background="{ThemeResource SurfaceVariantBrush}"
-                          CornerRadius="12"
-                          Padding="24"
-                          Visibility="{Binding Data.Note, Converter={StaticResource StringToInverseVisibilityConverter}}">
-                    <StackPanel HorizontalAlignment="Center"
-                                Spacing="8">
-                      <FontIcon Glyph="&#xE70B;"
-                                FontSize="32"
-                                Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                      <TextBlock x:Uid="CustomerDetailPage.NoNotes"
-                                 Style="{StaticResource BodyMedium}"
-                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                 HorizontalAlignment="Center" />
-                    </StackPanel>
-                  </Border>
                 </StackPanel>
               </StackPanel>
             </Grid>

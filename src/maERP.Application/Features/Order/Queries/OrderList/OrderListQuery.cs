@@ -10,12 +10,14 @@ public class OrderListQuery : IRequest<PaginatedResult<OrderListDto>>
     public int PageSize { get; set; }
     public string SearchString { get; set; }
     public string[] OrderBy { get; set; }
+    public Guid? SalesChannelId { get; set; }
 
-    public OrderListQuery(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "")
+    public OrderListQuery(int pageNumber = 1, int pageSize = 10, string searchString = "", string orderBy = "", Guid? salesChannelId = null)
     {
         PageNumber = pageNumber;
         PageSize = pageSize;
         SearchString = searchString;
+        SalesChannelId = salesChannelId;
 
         if (!string.IsNullOrWhiteSpace(orderBy))
         {

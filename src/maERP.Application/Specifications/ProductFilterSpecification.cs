@@ -15,7 +15,8 @@ namespace maERP.Application.Specifications
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = p => (p.Sku.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+                var lowerSearchString = searchString.ToLower();
+                Criteria = p => (p.Sku.ToLower().Contains(lowerSearchString) || p.Name.ToLower().Contains(lowerSearchString));
             }
             else
             {

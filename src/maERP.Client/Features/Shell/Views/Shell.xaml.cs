@@ -1,4 +1,5 @@
 using maERP.Client.Core.Exceptions;
+using Windows.ApplicationModel.Resources;
 using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Tenants.Services;
@@ -10,7 +11,10 @@ using maERP.Client.Features.Manufacturers.Models;
 using maERP.Client.Features.Orders.Models;
 using maERP.Client.Features.Products.Models;
 using maERP.Client.Features.SalesChannels.Models;
+using maERP.Client.Features.SalesChannels.Services;
+using maERP.Client.Features.SalesChannelDashboards.Models;
 using maERP.Client.Features.Superadmin.Models;
+using maERP.Domain.Enums;
 using maERP.Client.Features.TaxClasses.Models;
 using maERP.Client.Features.Tenants.Models;
 using maERP.Client.Features.Warehouses.Models;
@@ -32,6 +36,10 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     // Cached reference to avoid service lookup on every pointer move
     private ISessionManager? _sessionManager;
 
+    // Dynamic SalesChannel sidebar items
+    private readonly List<object> _dynamicSalesChannelItems = new();
+    private readonly SemaphoreSlim _salesChannelRefreshLock = new(1, 1);
+
     public Shell()
     {
         this.InitializeComponent();
@@ -48,6 +56,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
         // Subscribe to static no-tenants state changed event
         ShellModel.NoTenantsStateChanged += OnNoTenantsStateChanged;
+
+        // Subscribe to SalesChannel changes for dynamic sidebar
+        ShellModel.SalesChannelsChanged += OnSalesChannelsChanged;
 
         // Track user activity for inactivity timeout
         this.PointerMoved += OnUserActivity;
@@ -137,20 +148,24 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             SetAuthenticatedVisibility();
             await UpdateSuperadminMenuVisibilityAsync();
             UpdateTenantDisplay();
+            await RefreshSalesChannelSidebar();
         }
         else
         {
             // Complete Shell reset - handles all UI state including FirstTenantOverlay,
             // tenant display, navigation items, and sidebar selection
             SetUnauthenticatedVisibility();
+            SuperadminSeparator.Visibility = Visibility.Collapsed;
+            SuperadminLabel.Visibility = Visibility.Collapsed;
             MenuItemSuperadminTenants.Visibility = Visibility.Collapsed;
         }
     }
 
-    private void OnTenantStateChanged(object? sender, TenantListDto? tenant)
+    private async void OnTenantStateChanged(object? sender, TenantListDto? tenant)
     {
         Console.WriteLine($"[Shell] OnTenantStateChanged received: {tenant?.Name ?? "null"}");
         UpdateTenantDisplay();
+        await RefreshSalesChannelSidebar();
     }
 
     private async void OnNoTenantsStateChanged(object? sender, bool hasNoTenants)
@@ -392,6 +407,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         TabItemOrders.Visibility = Visibility.Collapsed;
         TabItemSettings.Visibility = Visibility.Collapsed;
         TabItemLogout.Visibility = Visibility.Collapsed;
+
+        // Clear dynamic SalesChannel items
+        ClearDynamicSalesChannelItems();
 
         // Clear sidebar selection
         UpdateSidebarSelection(null);
@@ -676,7 +694,37 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     }
                     break;
                 default:
-                    Console.WriteLine($"[Shell] Tag '{tag}' not handled yet");
+                    if (tag.StartsWith("SalesChannel_"))
+                    {
+                        // Tag format: SalesChannel_{guid}_{typeInt}_{name}
+                        var parts = tag.Split('_', 4);
+                        if (parts.Length >= 4 && Guid.TryParse(parts[1], out var scId) && int.TryParse(parts[2], out var typeInt))
+                        {
+                            var scType = (SalesChannelType)typeInt;
+                            var scName = parts[3];
+                            var data = new SalesChannelDashboardData(scId, scName, scType);
+
+                            Console.WriteLine($"[Shell] Navigating to SalesChannel dashboard: {scName} (Type: {scType})");
+
+                            switch (scType)
+                            {
+                                case SalesChannelType.PointOfSale:
+                                    await navigator.NavigateViewModelAsync<PosDashboardModel>(this, data: data);
+                                    break;
+                                case SalesChannelType.Shopware5:
+                                    await navigator.NavigateViewModelAsync<Shopware5DashboardModel>(this, data: data);
+                                    break;
+                                default:
+                                    // For other types, navigate to SalesChannel detail
+                                    await navigator.NavigateDataAsync(this, new SalesChannelDetailData(scId));
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[Shell] Tag '{tag}' not handled yet");
+                    }
                     break;
             }
 
@@ -853,11 +901,16 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             var isSuperadmin = await tokenStorage.IsInRoleAsync("Superadmin");
             Console.WriteLine($"[Shell] User is Superadmin: {isSuperadmin}");
 
-            MenuItemSuperadminTenants.Visibility = isSuperadmin ? Visibility.Visible : Visibility.Collapsed;
+            var superadminVisibility = isSuperadmin ? Visibility.Visible : Visibility.Collapsed;
+            SuperadminSeparator.Visibility = superadminVisibility;
+            SuperadminLabel.Visibility = superadminVisibility;
+            MenuItemSuperadminTenants.Visibility = superadminVisibility;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"[Shell] Error checking superadmin role: {ex.Message}");
+            SuperadminSeparator.Visibility = Visibility.Collapsed;
+            SuperadminLabel.Visibility = Visibility.Collapsed;
             MenuItemSuperadminTenants.Visibility = Visibility.Collapsed;
         }
     }
@@ -959,6 +1012,122 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             Console.WriteLine($"[Shell] Failed to initialize dark mode toggle: {ex.Message}");
         }
     }
+
+    #region Dynamic SalesChannel Sidebar
+
+    private async void OnSalesChannelsChanged(object? sender, EventArgs e)
+    {
+        Console.WriteLine("[Shell] OnSalesChannelsChanged received");
+        await RefreshSalesChannelSidebar();
+    }
+
+    private async Task RefreshSalesChannelSidebar()
+    {
+        // Prevent concurrent refreshes that cause duplicate sidebar items
+        if (!await _salesChannelRefreshLock.WaitAsync(0))
+        {
+            Console.WriteLine("[Shell] RefreshSalesChannelSidebar: Already refreshing, skipping");
+            return;
+        }
+
+        try
+        {
+            // Remove existing dynamic items
+            ClearDynamicSalesChannelItems();
+
+            var app = Application.Current as App;
+            var salesChannelService = app?.Host?.Services?.GetService<ISalesChannelService>();
+            if (salesChannelService == null)
+            {
+                Console.WriteLine("[Shell] RefreshSalesChannelSidebar: SalesChannelService not available");
+                return;
+            }
+
+            var parameters = new Core.Models.QueryParameters { PageSize = 100 };
+            var response = await salesChannelService.GetSalesChannelsAsync(parameters);
+
+            // Clear again after await in case another path added items while we were waiting
+            ClearDynamicSalesChannelItems();
+
+            if (response.Data.Count == 0)
+            {
+                Console.WriteLine("[Shell] RefreshSalesChannelSidebar: No SalesChannels found");
+                return;
+            }
+
+            // Add separator
+            var separator = new NavigationViewItemSeparator();
+            NavView.MenuItems.Add(separator);
+            _dynamicSalesChannelItems.Add(separator);
+
+            // Add header
+            var header = new NavigationViewItemHeader
+            {
+                Content = ResourceLoader.GetForViewIndependentUse().GetString("ShellSalesChannelsHeader")
+            };
+            NavView.MenuItems.Add(header);
+            _dynamicSalesChannelItems.Add(header);
+
+            // Ensure tag map is initialized
+            if (_sidebarTagMap == null) InitializeSidebarTagMap();
+
+            // Add an item per SalesChannel
+            foreach (var sc in response.Data)
+            {
+                var tag = $"SalesChannel_{sc.Id}_{(int)sc.SalesChannelType}_{sc.Name}";
+                var icon = sc.SalesChannelType switch
+                {
+                    SalesChannelType.PointOfSale => "\uE7BF",   // Shop
+                    SalesChannelType.Shopware5 => "\uE774",      // Globe
+                    SalesChannelType.Shopware6 => "\uE774",      // Globe
+                    SalesChannelType.WooCommerce => "\uE774",    // Globe
+                    SalesChannelType.eBay => "\uE774",           // Globe
+                    _ => "\uE774"
+                };
+
+                var navItem = new NavigationViewItem
+                {
+                    Content = sc.Name,
+                    Tag = tag,
+                    Icon = new FontIcon { Glyph = icon }
+                };
+
+                NavView.MenuItems.Add(navItem);
+                _dynamicSalesChannelItems.Add(navItem);
+                _sidebarTagMap![tag] = navItem;
+            }
+
+            Console.WriteLine($"[Shell] RefreshSalesChannelSidebar: Added {response.Data.Count} SalesChannel items");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] RefreshSalesChannelSidebar error: {ex.Message}");
+        }
+        finally
+        {
+            _salesChannelRefreshLock.Release();
+        }
+    }
+
+    private void ClearDynamicSalesChannelItems()
+    {
+        foreach (var item in _dynamicSalesChannelItems)
+        {
+            NavView.MenuItems.Remove(item);
+        }
+        _dynamicSalesChannelItems.Clear();
+
+        if (_sidebarTagMap != null)
+        {
+            var dynamicKeys = _sidebarTagMap.Keys.Where(k => k.StartsWith("SalesChannel_")).ToList();
+            foreach (var key in dynamicKeys)
+            {
+                _sidebarTagMap.Remove(key);
+            }
+        }
+    }
+
+    #endregion
 
     #region Login Overlay
 

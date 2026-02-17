@@ -2979,14 +2979,19 @@
     <value>Hinzufügen</value>
   </data>
 
+  <!-- Shell User Menu - Superadmin Label -->
+  <data name="Shell.UserMenu.SuperadminLabel.Text" xml:space="preserve">
+    <value>Superadmin</value>
+  </data>
+
   <!-- Shell User Menu - Superadmin Tenants -->
   <data name="Shell.UserMenu.SuperadminTenants.Text" xml:space="preserve">
-    <value>Superadmin - Mandanten</value>
+    <value>Superadmin Mandanten</value>
   </data>
 
   <!-- Superadmin Tenant List Page -->
   <data name="SuperadminTenantListPage.NavigationBar.Content" xml:space="preserve">
-    <value>Superadmin - Mandanten</value>
+    <value>Alle Mandanten</value>
   </data>
   <data name="SuperadminTenantListPage.AppBarButton.Refresh.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Aktualisieren</value>
@@ -3393,5 +3398,128 @@
   </data>
   <data name="TenantEditPage.AppBarButton.DemoData.Label" xml:space="preserve">
     <value>Demo-Daten</value>
+  </data>
+
+  <!-- Shell - SalesChannel Sidebar -->
+  <data name="ShellSalesChannelsHeader" xml:space="preserve">
+    <value>Vertriebskanäle</value>
+  </data>
+
+  <!-- PosDashboard -->
+  <data name="PosDashboard.Tab.Dashboard.Header" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="PosDashboard.Tab.QuickSale.Header" xml:space="preserve">
+    <value>Schnellverkauf</value>
+  </data>
+  <data name="PosDashboard.Tab.RecentSales.Header" xml:space="preserve">
+    <value>Letzte Verkäufe</value>
+  </data>
+  <data name="PosDashboard.QuickSale.Customer.Text" xml:space="preserve">
+    <value>Kunde</value>
+  </data>
+  <data name="PosDashboard.QuickSale.CustomerSearch.PlaceholderText" xml:space="preserve">
+    <value>Kunde suchen...</value>
+  </data>
+  <data name="PosDashboard.QuickSale.CustomerNumber.Text" xml:space="preserve">
+    <value>Kd.-Nr.</value>
+  </data>
+  <data name="PosDashboard.QuickSale.Products.Text" xml:space="preserve">
+    <value>Produkte</value>
+  </data>
+  <data name="PosDashboard.QuickSale.ProductSearch.PlaceholderText" xml:space="preserve">
+    <value>Produkte suchen...</value>
+  </data>
+  <data name="PosDashboard.QuickSale.Cart.Text" xml:space="preserve">
+    <value>Warenkorb</value>
+  </data>
+  <data name="PosDashboard.QuickSale.Total.Text" xml:space="preserve">
+    <value>Gesamt</value>
+  </data>
+  <data name="PosDashboard.QuickSale.SellNow.Content" xml:space="preserve">
+    <value>Jetzt verkaufen</value>
+  </data>
+  <data name="PosDashboard.QuickSale.EmptyCart.Text" xml:space="preserve">
+    <value>Warenkorb ist leer</value>
+  </data>
+  <data name="PosDashboard.QuickSale.Add.Content" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="PosDashboard.QuickSale.SaleSuccess.Text" xml:space="preserve">
+    <value>Verkauf abgeschlossen!</value>
+  </data>
+  <data name="PosDashboard.QuickSale.NoAddress.Text" xml:space="preserve">
+    <value>Keine Adresse</value>
+  </data>
+  <data name="PosDashboard.RecentSales.OrderNumber.Text" xml:space="preserve">
+    <value>Bestellung</value>
+  </data>
+  <data name="PosDashboard.RecentSales.Customer.Text" xml:space="preserve">
+    <value>Kunde</value>
+  </data>
+  <data name="PosDashboard.RecentSales.Amount.Text" xml:space="preserve">
+    <value>Betrag</value>
+  </data>
+  <data name="PosDashboard.RecentSales.Date.Text" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="PosDashboard.Invoice.Draft.Text" xml:space="preserve">
+    <value>ENTWURF</value>
+  </data>
+  <data name="PosDashboard.Invoice.Preview.Text" xml:space="preserve">
+    <value>Rechnungsvorschau</value>
+  </data>
+  <data name="PosDashboard.Invoice.Date.Text" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="PosDashboard.Invoice.BillTo.Text" xml:space="preserve">
+    <value>Rechnungsempfänger</value>
+  </data>
+  <data name="PosDashboard.Invoice.WalkInCustomer.Text" xml:space="preserve">
+    <value>Laufkundschaft</value>
+  </data>
+  <data name="PosDashboard.Invoice.Header.Pos.Text" xml:space="preserve">
+    <value>Pos.</value>
+  </data>
+  <data name="PosDashboard.Invoice.Header.Product.Text" xml:space="preserve">
+    <value>Produkt</value>
+  </data>
+  <data name="PosDashboard.Invoice.Header.Qty.Text" xml:space="preserve">
+    <value>Menge</value>
+  </data>
+  <data name="PosDashboard.Invoice.Header.UnitPrice.Text" xml:space="preserve">
+    <value>Einzelpreis</value>
+  </data>
+  <data name="PosDashboard.Invoice.Header.Total.Text" xml:space="preserve">
+    <value>Gesamt</value>
+  </data>
+  <data name="PosDashboard.Invoice.Subtotal.Text" xml:space="preserve">
+    <value>Zwischensumme</value>
+  </data>
+  <data name="PosDashboard.Invoice.Tax.Text" xml:space="preserve">
+    <value>MwSt.</value>
+  </data>
+  <data name="PosDashboard.Invoice.Total.Text" xml:space="preserve">
+    <value>Gesamt</value>
+  </data>
+  <data name="PosDashboard.Invoice.NoItems.Text" xml:space="preserve">
+    <value>Noch keine Artikel</value>
+  </data>
+
+  <!-- Shopware5Dashboard -->
+  <data name="Shopware5Dashboard.Tab.Dashboard.Header" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Shopware5Dashboard.Tab.SyncStatus.Header" xml:space="preserve">
+    <value>Sync-Status</value>
+  </data>
+  <data name="Shopware5Dashboard.Tab.Settings.Header" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="Shopware5Dashboard.Placeholder.SyncStatus.Text" xml:space="preserve">
+    <value>In zukünftigem Update verfügbar</value>
+  </data>
+  <data name="Shopware5Dashboard.Placeholder.Settings.Text" xml:space="preserve">
+    <value>In zukünftigem Update verfügbar</value>
   </data>
 </root>

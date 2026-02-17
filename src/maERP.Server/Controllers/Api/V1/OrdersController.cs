@@ -23,14 +23,14 @@ public class OrdersController(IMediator mediator) : ControllerBase
 {
     // GET: api/v1/<OrdersController>
     [HttpGet]
-    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    public async Task<ActionResult<PaginatedResult<OrderListDto>>> GetAll(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "", [FromQuery] Guid? salesChannelId = null)
     {
         if (string.IsNullOrEmpty(orderBy))
         {
             orderBy = "DateOrdered Descending";
         }
 
-        var orders = await mediator.Send(new OrderListQuery(pageNumber, pageSize, searchString, orderBy));
+        var orders = await mediator.Send(new OrderListQuery(pageNumber, pageSize, searchString, orderBy, salesChannelId));
         return Ok(orders);
     }
 

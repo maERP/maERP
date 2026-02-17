@@ -33,23 +33,27 @@ public class SalesTodayHandler : IRequestHandler<SalesTodayQuery, Result<SalesTo
             var weekStart = todayStart.AddDays(-(int)todayStart.DayOfWeek);
             var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
 
+            var baseQuery = _orderRepository.Entities.AsQueryable();
+            if (request.SalesChannelId.HasValue)
+                baseQuery = baseQuery.Where(o => o.SalesChannelId == request.SalesChannelId.Value);
+
             // Revenue calculations
-            dto.RevenueToday = await _orderRepository.Entities
+            dto.RevenueToday = await baseQuery
                 .Where(o => o.DateOrdered >= todayStart)
                 .SumAsync(o => o.Total, cancellationToken);
 
-            dto.RevenueThisWeek = await _orderRepository.Entities
+            dto.RevenueThisWeek = await baseQuery
                 .Where(o => o.DateOrdered >= weekStart)
                 .SumAsync(o => o.Total, cancellationToken);
 
-            dto.RevenueThisMonth = await _orderRepository.Entities
+            dto.RevenueThisMonth = await baseQuery
                 .Where(o => o.DateOrdered >= monthStart)
                 .SumAsync(o => o.Total, cancellationToken);
 
             // Calculate revenue change compared to last week's same day
             var lastWeekSameDayStart = todayStart.AddDays(-7);
             var lastWeekSameDayEnd = lastWeekSameDayStart.AddDays(1);
-            var revenueLastWeekSameDay = await _orderRepository.Entities
+            var revenueLastWeekSameDay = await baseQuery
                 .Where(o => o.DateOrdered >= lastWeekSameDayStart && o.DateOrdered < lastWeekSameDayEnd)
                 .SumAsync(o => o.Total, cancellationToken);
 

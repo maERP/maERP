@@ -11,6 +11,7 @@ using maERP.Client.Features.Shell;
 using maERP.Client.Features.AiModels;
 using maERP.Client.Features.AiPrompts;
 using maERP.Client.Features.SalesChannels;
+using maERP.Client.Features.SalesChannelDashboards;
 using maERP.Client.Features.Superadmin;
 using maERP.Client.Features.TaxClasses;
 using maERP.Client.Features.Tenants;
@@ -272,6 +273,7 @@ public partial class App : Application
         AiModelsModule.RegisterServices(services);
         AiPromptsModule.RegisterServices(services);
         SalesChannelsModule.RegisterServices(services);
+        SalesChannelDashboardsModule.RegisterServices(services);
         SuperadminModule.RegisterServices(services);
         TaxClassesModule.RegisterServices(services);
         TenantsModule.RegisterServices(services);
@@ -295,6 +297,7 @@ public partial class App : Application
         AiModelsModule.RegisterViews(views);
         AiPromptsModule.RegisterViews(views);
         SalesChannelsModule.RegisterViews(views);
+        SalesChannelDashboardsModule.RegisterViews(views);
         SuperadminModule.RegisterViews(views);
         TaxClassesModule.RegisterViews(views);
         TenantsModule.RegisterViews(views);
@@ -312,6 +315,7 @@ public partial class App : Application
         nestedRoutes.AddRange(AiModelsModule.GetRoutes(views));
         nestedRoutes.AddRange(AiPromptsModule.GetRoutes(views));
         nestedRoutes.AddRange(SalesChannelsModule.GetRoutes(views));
+        nestedRoutes.AddRange(SalesChannelDashboardsModule.GetRoutes(views));
         nestedRoutes.AddRange(SuperadminModule.GetRoutes(views));
         nestedRoutes.AddRange(TaxClassesModule.GetRoutes(views));
         nestedRoutes.AddRange(TenantsModule.GetRoutes(views));

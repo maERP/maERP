@@ -16,6 +16,13 @@ public interface ICustomerService
         CancellationToken ct = default);
 
     /// <summary>
+    /// Searches customers with email and invoice address info.
+    /// </summary>
+    Task<PaginatedResponse<CustomerListWithAddressDto>> SearchCustomersWithAddressAsync(
+        QueryParameters parameters,
+        CancellationToken ct = default);
+
+    /// <summary>
     /// Gets a single customer by ID.
     /// </summary>
     Task<CustomerDetailDto?> GetCustomerAsync(Guid id, CancellationToken ct = default);

@@ -26,7 +26,11 @@ public class OrdersLatestHandler : IRequestHandler<OrdersLatestQuery, Result<Ord
         {
             _logger.LogInformation("Handle OrdersLatestQuery - fetching {Count} latest orders", request.Count);
 
-            var orders = await _orderRepository.Entities
+            var baseQuery = _orderRepository.Entities.AsQueryable();
+            if (request.SalesChannelId.HasValue)
+                baseQuery = baseQuery.Where(o => o.SalesChannelId == request.SalesChannelId.Value);
+
+            var orders = await baseQuery
                 .Include(o => o.Customer)
                 .OrderByDescending(o => o.DateOrdered)
                 .Take(request.Count)

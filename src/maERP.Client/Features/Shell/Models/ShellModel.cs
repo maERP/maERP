@@ -26,6 +26,11 @@ public partial class ShellModel : INotifyPropertyChanged
     // Static event for no-tenants state changes - allows Shell to hide navigation for users without tenants
     public static event EventHandler<bool>? NoTenantsStateChanged;
 
+    // Static event for SalesChannel changes - allows Shell to refresh dynamic sidebar items
+    public static event EventHandler? SalesChannelsChanged;
+
+    public static void NotifySalesChannelsChanged() => SalesChannelsChanged?.Invoke(null, EventArgs.Empty);
+
     public ShellModel(
         IAuthenticationService authentication,
         INavigator navigator,

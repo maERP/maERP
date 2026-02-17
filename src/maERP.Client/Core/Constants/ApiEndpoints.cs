@@ -42,6 +42,7 @@ public static class ApiEndpoints
     public static class Customers
     {
         public const string Base = $"{ApiBase}/customers";
+        public const string Search = $"{Base}/search";
         public static string ById(Guid id) => $"{Base}/{id}";
     }
 

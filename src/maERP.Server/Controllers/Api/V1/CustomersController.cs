@@ -4,6 +4,7 @@ using maERP.Application.Features.Customer.Commands.CustomerDelete;
 using maERP.Application.Features.Customer.Commands.CustomerUpdate;
 using maERP.Application.Features.Customer.Queries.CustomerDetail;
 using maERP.Application.Features.Customer.Queries.CustomerList;
+using maERP.Application.Features.Customer.Queries.CustomerListWithAddress;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
@@ -31,6 +32,21 @@ public class CustomersController(IMediator mediator) : ControllerBase
         }
 
         var response = await mediator.Send(new CustomerListQuery(pageNumber, pageSize, searchString, orderBy));
+        return response.ToActionResult();
+    }
+
+    // GET: api/v1/<CustomersController>/search
+    [HttpGet("search")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PaginatedResult<CustomerListWithAddressDto>>> Search(int pageNumber = 0, int pageSize = 10, string searchString = "", string orderBy = "")
+    {
+        if (string.IsNullOrEmpty(orderBy))
+        {
+            orderBy = "Lastname Ascending";
+        }
+
+        var response = await mediator.Send(new CustomerListWithAddressQuery(pageNumber, pageSize, searchString, orderBy));
         return response.ToActionResult();
     }
 

@@ -35,21 +35,25 @@ public class OrdersTodayHandler : IRequestHandler<OrdersTodayQuery, Result<Order
             var lastWeekStart = weekStart.AddDays(-7);
             var lastWeekEnd = weekStart;
 
+            var baseQuery = _orderRepository.Entities.AsQueryable();
+            if (request.SalesChannelId.HasValue)
+                baseQuery = baseQuery.Where(o => o.SalesChannelId == request.SalesChannelId.Value);
+
             // Order calculations
-            dto.OrdersToday = await _orderRepository.Entities
+            dto.OrdersToday = await baseQuery
                 .Where(o => o.DateOrdered >= todayStart)
                 .CountAsync(cancellationToken);
 
-            dto.OrdersPending = await _orderRepository.Entities
+            dto.OrdersPending = await baseQuery
                 .Where(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Processing)
                 .CountAsync(cancellationToken);
 
-            dto.OrdersThisWeek = await _orderRepository.Entities
+            dto.OrdersThisWeek = await baseQuery
                 .Where(o => o.DateOrdered >= weekStart)
                 .CountAsync(cancellationToken);
 
             // Orders change compared to last week
-            var ordersLastWeek = await _orderRepository.Entities
+            var ordersLastWeek = await baseQuery
                 .Where(o => o.DateOrdered >= lastWeekStart && o.DateOrdered < lastWeekEnd)
                 .CountAsync(cancellationToken);
 

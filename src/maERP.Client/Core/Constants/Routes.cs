@@ -54,6 +54,10 @@ public static class Routes
     public const string SalesChannelDetail = "SalesChannelDetail";
     public const string SalesChannelEdit = "SalesChannelEdit";
 
+    // SalesChannel Dashboards
+    public const string PosDashboard = "PosDashboard";
+    public const string Shopware5Dashboard = "Shopware5Dashboard";
+
     // Settings
     public const string Settings = "Settings";
     public const string UserProfile = "UserProfile";
