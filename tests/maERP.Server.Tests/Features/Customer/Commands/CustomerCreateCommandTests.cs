@@ -206,7 +206,7 @@ public class CustomerCreateCommandTests : TenantIsolatedTestBase
     }
 
     [Fact]
-    public async Task CreateCustomer_WithDuplicateData_ShouldReturnBadRequest()
+    public async Task CreateCustomer_WithDuplicateName_ShouldReturnCreated()
     {
         await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
         await SeedCustomerForUniquenessTestAsync();
@@ -215,15 +215,15 @@ public class CustomerCreateCommandTests : TenantIsolatedTestBase
         var customerData = CreateValidCustomerInputDto();
         customerData.Firstname = "Existing";
         customerData.Lastname = "Customer";
+        customerData.Email = "another.existing@company.com";
 
         var response = await PostAsJsonAsync("/api/v1/Customers", customerData);
 
-        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        TestAssertions.AssertEqual(HttpStatusCode.Created, response.StatusCode);
         var result = await ReadResponseAsync<Result<Guid>>(response);
         TestAssertions.AssertNotNull(result);
-        TestAssertions.AssertFalse(result.Succeeded);
-        TestAssertions.AssertNotEmpty(result.Messages);
-        TestAssertions.AssertTrue(result.Messages.Any(m => m.Contains("already exists")));
+        TestAssertions.AssertTrue(result.Succeeded);
+        TestAssertions.AssertTrue(result.Data != Guid.Empty);
     }
 
     [Fact]
@@ -473,7 +473,7 @@ public class CustomerCreateCommandTests : TenantIsolatedTestBase
         // Create second customer
         var customerData2 = CreateValidCustomerInputDto();
         customerData2.Email = "second@testcompany.com";
-        customerData2.Lastname = "Smith"; // Different lastname to avoid uniqueness conflict
+        customerData2.Lastname = "Smith";
         var response2 = await PostAsJsonAsync("/api/v1/Customers", customerData2);
         var result2 = await ReadResponseAsync<Result<Guid>>(response2);
         var customer2 = await DbContext.Customer.FindAsync(result2.Data);

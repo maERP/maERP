@@ -130,28 +130,4 @@ public class CustomerRepository : GenericRepository<Customer>, ICustomerReposito
         return await base.CreateAsync(entity);
     }
 
-    public override async Task<bool> IsUniqueAsync(Customer entity, Guid? id = null)
-    {
-        var currentTenantId = TenantContext.GetCurrentTenantId();
-
-        var query = Context.Customer.AsQueryable();
-
-        // Add tenant isolation
-        if (currentTenantId.HasValue)
-        {
-            query = query.Where(c => c.TenantId == currentTenantId.Value);
-        }
-
-        // Check for duplicate Firstname and Lastname combination
-        query = query.Where(c => c.Firstname == entity.Firstname && c.Lastname == entity.Lastname);
-
-        // Exclude entity with provided id (for updates)
-        if (id.HasValue)
-        {
-            query = query.Where(c => c.Id != id.Value);
-        }
-
-        var exists = await query.AnyAsync();
-        return !exists;
-    }
 }

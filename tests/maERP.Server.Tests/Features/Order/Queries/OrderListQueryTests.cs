@@ -396,7 +396,7 @@ public class OrderListQueryTests : TenantIsolatedTestBase
         TestAssertions.AssertNotNull(firstOrder);
         TestAssertions.AssertTrue(firstOrder!.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.InvoiceAddressFirstName));
-        TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.Status));
+        TestAssertions.AssertTrue(Enum.IsDefined(firstOrder.Status));
         TestAssertions.AssertTrue(firstOrder.Total > 0);
     }
 

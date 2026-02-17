@@ -306,7 +306,7 @@ public class OrderReadyForDeliveryListQueryTests : IDisposable
 
         // All returned orders should have ReadyForDelivery status
         var statuses = result.Data?.Select(o => o.Status).ToList();
-        TestAssertions.AssertTrue(statuses?.All(s => s == "ReadyForDelivery") ?? false);
+        TestAssertions.AssertTrue(statuses?.All(s => s == OrderStatus.ReadyForDelivery) ?? false);
     }
 
     [Fact]
@@ -328,7 +328,7 @@ public class OrderReadyForDeliveryListQueryTests : IDisposable
 
         // All returned orders should be completely paid
         var paymentStatuses = result.Data?.Select(o => o.PaymentStatus).ToList();
-        TestAssertions.AssertTrue(paymentStatuses?.All(s => s == "CompletelyPaid") ?? false);
+        TestAssertions.AssertTrue(paymentStatuses?.All(s => s == PaymentStatus.CompletelyPaid) ?? false);
     }
 
     [Fact]
@@ -422,8 +422,8 @@ public class OrderReadyForDeliveryListQueryTests : IDisposable
         TestAssertions.AssertNotNull(firstOrder);
         TestAssertions.AssertTrue(firstOrder!.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.InvoiceAddressFirstName));
-        TestAssertions.AssertEqual("ReadyForDelivery", firstOrder.Status);
-        TestAssertions.AssertEqual("CompletelyPaid", firstOrder.PaymentStatus);
+        TestAssertions.AssertEqual(OrderStatus.ReadyForDelivery, firstOrder.Status);
+        TestAssertions.AssertEqual(PaymentStatus.CompletelyPaid, firstOrder.PaymentStatus);
         TestAssertions.AssertTrue(firstOrder.Total > 0);
     }
 
@@ -442,7 +442,7 @@ public class OrderReadyForDeliveryListQueryTests : IDisposable
 
         var orderStatuses = result.Data?.Select(o => o.Status).Distinct().ToList();
         TestAssertions.AssertEqual(1, orderStatuses?.Count ?? 0);
-        TestAssertions.AssertEqual("ReadyForDelivery", orderStatuses?[0]);
+        TestAssertions.AssertEqual(OrderStatus.ReadyForDelivery, orderStatuses?[0]);
     }
 
     [Fact]
@@ -460,7 +460,7 @@ public class OrderReadyForDeliveryListQueryTests : IDisposable
 
         var paymentStatuses = result.Data?.Select(o => o.PaymentStatus).Distinct().ToList();
         TestAssertions.AssertEqual(1, paymentStatuses?.Count ?? 0);
-        TestAssertions.AssertEqual("CompletelyPaid", paymentStatuses?[0]);
+        TestAssertions.AssertEqual(PaymentStatus.CompletelyPaid, paymentStatuses?[0]);
     }
 
     [Fact]

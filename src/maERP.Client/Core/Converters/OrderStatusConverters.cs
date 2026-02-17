@@ -40,33 +40,19 @@ public class OrderStatusToTextConverter : IValueConverter
 
     private static string GetLocalizedString(string resourceKey)
     {
-        try
-        {
-            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
-            var result = resourceLoader.GetString(resourceKey);
-            return !string.IsNullOrEmpty(result) ? result : GetFallbackString(resourceKey);
-        }
-        catch
-        {
-            return GetFallbackString(resourceKey);
-        }
-    }
-
-    private static string GetFallbackString(string resourceKey)
-    {
         return resourceKey switch
         {
-            "OrderStatus.Unknown" => "Unknown",
-            "OrderStatus.Pending" => "Pending",
-            "OrderStatus.Processing" => "Processing",
-            "OrderStatus.ReadyForDelivery" => "Ready for Delivery",
-            "OrderStatus.PartiallyDelivered" => "Partially Delivered",
-            "OrderStatus.Completed" => "Completed",
-            "OrderStatus.Cancelled" => "Cancelled",
-            "OrderStatus.Returned" => "Returned",
-            "OrderStatus.Refunded" => "Refunded",
-            "OrderStatus.OnHold" => "On Hold",
-            "OrderStatus.Failed" => "Failed",
+            "OrderStatus.Unknown" => LocalizationHelper.GetLocalizedString(resourceKey, "Unknown"),
+            "OrderStatus.Pending" => LocalizationHelper.GetLocalizedString(resourceKey, "Pending"),
+            "OrderStatus.Processing" => LocalizationHelper.GetLocalizedString(resourceKey, "Processing"),
+            "OrderStatus.ReadyForDelivery" => LocalizationHelper.GetLocalizedString(resourceKey, "Ready for Delivery"),
+            "OrderStatus.PartiallyDelivered" => LocalizationHelper.GetLocalizedString(resourceKey, "Partially Delivered"),
+            "OrderStatus.Completed" => LocalizationHelper.GetLocalizedString(resourceKey, "Completed"),
+            "OrderStatus.Cancelled" => LocalizationHelper.GetLocalizedString(resourceKey, "Cancelled"),
+            "OrderStatus.Returned" => LocalizationHelper.GetLocalizedString(resourceKey, "Returned"),
+            "OrderStatus.Refunded" => LocalizationHelper.GetLocalizedString(resourceKey, "Refunded"),
+            "OrderStatus.OnHold" => LocalizationHelper.GetLocalizedString(resourceKey, "On Hold"),
+            "OrderStatus.Failed" => LocalizationHelper.GetLocalizedString(resourceKey, "Failed"),
             _ => resourceKey
         };
     }

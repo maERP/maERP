@@ -1,4 +1,6 @@
-﻿namespace maERP.Domain.Dtos.Order;
+﻿using maERP.Domain.Enums;
+
+namespace maERP.Domain.Dtos.Order;
 
 public class OrderListDto
 {
@@ -8,8 +10,8 @@ public class OrderListDto
     public string InvoiceAddressFirstName { get; set; } = string.Empty;
     public string InvoiceAddressLastName { get; set; } = string.Empty;
     public decimal Total { get; set; }
-    public string Status { get; set; } = string.Empty;
-    public string PaymentStatus { get; set; } = string.Empty;
+    public OrderStatus Status { get; set; }
+    public PaymentStatus PaymentStatus { get; set; }
     public DateTime DateOrdered { get; set; }
 
     public string FullName => $"{InvoiceAddressFirstName} {InvoiceAddressLastName}";

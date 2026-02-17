@@ -6,6 +6,7 @@ using maERP.Client.Features.AiModels.Services;
 using maERP.Client.Features.AiPrompts.Services;
 using maERP.Client.Features.Countries.Services;
 using maERP.Client.Features.Customers.Services;
+using maERP.Client.Features.Manufacturers.Services;
 using maERP.Client.Features.Orders.Services;
 using maERP.Client.Features.Products.Services;
 using maERP.Client.Features.SalesChannels.Services;
@@ -14,6 +15,7 @@ using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Dtos.CustomerAddress;
+using maERP.Domain.Dtos.Manufacturer;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Entities;
@@ -34,6 +36,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
     private readonly IProductService _productService;
     private readonly ICustomerService _customerService;
     private readonly IOrderService _orderService;
+    private readonly IManufacturerService _manufacturerService;
     private readonly IAiModelService _aiModelService;
     private readonly IAiPromptService _aiPromptService;
     private readonly ITaxClassService _taxClassService;
@@ -85,6 +88,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
         IProductService productService,
         ICustomerService customerService,
         IOrderService orderService,
+        IManufacturerService manufacturerService,
         IAiModelService aiModelService,
         IAiPromptService aiPromptService,
         ITaxClassService taxClassService,
@@ -100,6 +104,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
         _productService = productService;
         _customerService = customerService;
         _orderService = orderService;
+        _manufacturerService = manufacturerService;
         _aiModelService = aiModelService;
         _aiPromptService = aiPromptService;
         _taxClassService = taxClassService;
@@ -491,14 +496,17 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
             }
             var taxClassId = taxClassResponse.Data[0].Id;
 
-            // 2. Generate product names using name generator
+            // 2. Fetch existing manufacturers or create demo manufacturers
+            var manufacturerIds = await GetOrCreateDemoManufacturersAsync(token);
+
+            // 3. Generate product names using name generator
             var generator = _nameGeneratorFactory.CreateProductGenerator();
             var productNames = generator.GenerateMany(ProductsTotalCount);
 
             var random = new Random();
             var batchId = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-            // 3. Create products one by one with progress tracking
+            // 4. Create products one by one with progress tracking
             for (int i = 0; i < productNames.Count; i++)
             {
                 token.ThrowIfCancellationRequested();
@@ -506,6 +514,13 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                 var name = productNames[i];
                 var price = Math.Round((decimal)(random.NextDouble() * 490 + 9.99), 2);
                 var msrpMultiplier = 1.1 + random.NextDouble() * 0.2; // 10-30% markup
+
+                // Assign a random manufacturer (90% chance) or none (10% chance)
+                Guid? manufacturerId = null;
+                if (manufacturerIds.Count > 0 && random.NextDouble() > 0.1)
+                {
+                    manufacturerId = manufacturerIds[random.Next(manufacturerIds.Count)];
+                }
 
                 var input = new ProductInputDto
                 {
@@ -520,7 +535,8 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                     Width = Math.Round((decimal)(random.NextDouble() * 50 + 5), 1),
                     Height = Math.Round((decimal)(random.NextDouble() * 50 + 5), 1),
                     Depth = Math.Round((decimal)(random.NextDouble() * 50 + 5), 1),
-                    TaxClassId = taxClassId
+                    TaxClassId = taxClassId,
+                    ManufacturerId = manufacturerId
                 };
 
                 await _productService.CreateProductAsync(input, token);
@@ -617,6 +633,7 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
                 };
 
                 await _customerService.CreateCustomerAsync(input, token);
+
                 CustomersProgress = i + 1;
             }
         }
@@ -874,6 +891,49 @@ public class DemoDataGeneratorModel : AsyncInitializableModel
     #endregion
 
     #region Helper Methods
+
+    /// <summary>
+    /// Fetches existing manufacturers. If none exist, creates demo manufacturers first.
+    /// Returns a list of manufacturer IDs to assign to products.
+    /// </summary>
+    private async Task<List<Guid>> GetOrCreateDemoManufacturersAsync(CancellationToken token)
+    {
+        // Check for existing manufacturers
+        var manufacturersResponse = await _manufacturerService.GetManufacturersAsync(
+            new QueryParameters { PageNumber = 0, PageSize = 100 }, token);
+
+        if (manufacturersResponse.Data != null && manufacturersResponse.Data.Count > 0)
+        {
+            return manufacturersResponse.Data.Select(m => m.Id).ToList();
+        }
+
+        // No manufacturers exist - create demo manufacturers
+        var demoManufacturers = new[]
+        {
+            new ManufacturerInputDto { Name = "TechVision GmbH", Street = "Innovationsweg 12", City = "Berlin", State = "Berlin", Country = "DE", ZipCode = "10115", Phone = "+49 30 1234567", Email = "info@techvision.example.com", Website = "https://www.techvision.example.com" },
+            new ManufacturerInputDto { Name = "NordWerk AG", Street = "Hafenstraße 45", City = "Hamburg", State = "Hamburg", Country = "DE", ZipCode = "20095", Phone = "+49 40 9876543", Email = "kontakt@nordwerk.example.com", Website = "https://www.nordwerk.example.com" },
+            new ManufacturerInputDto { Name = "Alpine Electronics GmbH", Street = "Bergstraße 8", City = "München", State = "Bayern", Country = "DE", ZipCode = "80331", Phone = "+49 89 5551234", Email = "info@alpine-electronics.example.com", Website = "https://www.alpine-electronics.example.com" },
+            new ManufacturerInputDto { Name = "RheinTech Industries", Street = "Rheinufer 22", City = "Köln", State = "Nordrhein-Westfalen", Country = "DE", ZipCode = "50667", Phone = "+49 221 7773456", Email = "sales@rheintech.example.com", Website = "https://www.rheintech.example.com" },
+            new ManufacturerInputDto { Name = "Schwarzwald Präzision", Street = "Waldweg 3", City = "Freiburg", State = "Baden-Württemberg", Country = "DE", ZipCode = "79098", Phone = "+49 761 8884567", Email = "info@schwarzwald-praezision.example.com", Website = "https://www.schwarzwald-praezision.example.com" },
+            new ManufacturerInputDto { Name = "Hanseatik GmbH", Street = "Speicherstadt 17", City = "Bremen", State = "Bremen", Country = "DE", ZipCode = "28195", Phone = "+49 421 3332345", Email = "kontakt@hanseatik.example.com" },
+            new ManufacturerInputDto { Name = "Elbe Digital Solutions", Street = "Augustusplatz 5", City = "Leipzig", State = "Sachsen", Country = "DE", ZipCode = "04109", Phone = "+49 341 6667890", Email = "hello@elbe-digital.example.com", Website = "https://www.elbe-digital.example.com" },
+            new ManufacturerInputDto { Name = "Sauerland Mechanik", Street = "Industriepark 30", City = "Dortmund", State = "Nordrhein-Westfalen", Country = "DE", ZipCode = "44135", Phone = "+49 231 4445678", Email = "info@sauerland-mechanik.example.com" },
+            new ManufacturerInputDto { Name = "Ostsee Manufaktur", Street = "Strandpromenade 9", City = "Rostock", State = "Mecklenburg-Vorpommern", Country = "DE", ZipCode = "18055", Phone = "+49 381 2223456", Email = "info@ostsee-manufaktur.example.com" },
+            new ManufacturerInputDto { Name = "Franken Systeme GmbH", Street = "Kaiserstraße 14", City = "Nürnberg", State = "Bayern", Country = "DE", ZipCode = "90402", Phone = "+49 911 1112345", Email = "vertrieb@franken-systeme.example.com", Website = "https://www.franken-systeme.example.com" },
+        };
+
+        foreach (var manufacturer in demoManufacturers)
+        {
+            token.ThrowIfCancellationRequested();
+            await _manufacturerService.CreateManufacturerAsync(manufacturer, token);
+        }
+
+        // Re-fetch to get the IDs
+        var createdResponse = await _manufacturerService.GetManufacturersAsync(
+            new QueryParameters { PageNumber = 0, PageSize = 100 }, token);
+
+        return createdResponse.Data?.Select(m => m.Id).ToList() ?? new List<Guid>();
+    }
 
     /// <summary>
     /// Generate valid EAN-13 with correct check digit.

@@ -399,8 +399,8 @@ public class OrderNotPaidListQueryTests : IDisposable
         TestAssertions.AssertNotNull(firstOrder);
         TestAssertions.AssertTrue(firstOrder!.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.InvoiceAddressFirstName));
-        TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.Status));
-        TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.PaymentStatus));
+        TestAssertions.AssertTrue(Enum.IsDefined(firstOrder.Status));
+        TestAssertions.AssertTrue(Enum.IsDefined(firstOrder.PaymentStatus));
         TestAssertions.AssertTrue(firstOrder.Total > 0);
     }
 
@@ -418,9 +418,9 @@ public class OrderNotPaidListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result.Data);
 
         var paymentStatuses = result.Data?.Select(o => o.PaymentStatus).ToList();
-        TestAssertions.AssertContains("Invoiced", paymentStatuses ?? new List<string>());
-        TestAssertions.AssertContains("PartiallyPaid", paymentStatuses ?? new List<string>());
-        TestAssertions.AssertContains("FirstReminder", paymentStatuses ?? new List<string>());
+        TestAssertions.AssertContains(PaymentStatus.Invoiced, paymentStatuses ?? new List<PaymentStatus>());
+        TestAssertions.AssertContains(PaymentStatus.PartiallyPaid, paymentStatuses ?? new List<PaymentStatus>());
+        TestAssertions.AssertContains(PaymentStatus.FirstReminder, paymentStatuses ?? new List<PaymentStatus>());
     }
 
     [Fact]
@@ -437,12 +437,12 @@ public class OrderNotPaidListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result.Data);
 
         var orderStatuses = result.Data?.Select(o => o.Status).ToList();
-        TestAssertions.AssertContains("Processing", orderStatuses ?? new List<string>());
-        TestAssertions.AssertContains("ReadyForDelivery", orderStatuses ?? new List<string>());
-        TestAssertions.AssertContains("Pending", orderStatuses ?? new List<string>());
+        TestAssertions.AssertContains(OrderStatus.Processing, orderStatuses ?? new List<OrderStatus>());
+        TestAssertions.AssertContains(OrderStatus.ReadyForDelivery, orderStatuses ?? new List<OrderStatus>());
+        TestAssertions.AssertContains(OrderStatus.Pending, orderStatuses ?? new List<OrderStatus>());
 
         // Should not contain completed orders
-        TestAssertions.AssertDoesNotContain("Completed", orderStatuses ?? new List<string>());
+        TestAssertions.AssertDoesNotContain(OrderStatus.Completed, orderStatuses ?? new List<OrderStatus>());
     }
 
     [Fact]

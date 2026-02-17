@@ -38,8 +38,8 @@ public class OrderReadyForDeliveryListHandler : IRequestHandler<OrderReadyForDel
                    InvoiceAddressFirstName = o.InvoiceAddressFirstName,
                    InvoiceAddressLastName = o.InvoiceAddressLastName,
                    Total = o.Total,
-                   Status = o.Status.ToString(),
-                   PaymentStatus = o.PaymentStatus.ToString(),
+                   Status = o.Status,
+                   PaymentStatus = o.PaymentStatus,
                    DateOrdered = o.DateOrdered
                })
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
@@ -58,8 +58,8 @@ public class OrderReadyForDeliveryListHandler : IRequestHandler<OrderReadyForDel
                 InvoiceAddressFirstName = o.InvoiceAddressFirstName,
                 InvoiceAddressLastName = o.InvoiceAddressLastName,
                 Total = o.Total,
-                Status = o.Status.ToString(),
-                PaymentStatus = o.PaymentStatus.ToString(),
+                Status = o.Status,
+                PaymentStatus = o.PaymentStatus,
                 DateOrdered = o.DateOrdered
             })
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);

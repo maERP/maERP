@@ -245,12 +245,16 @@
                                      Padding="16,14" />
 
                           <!-- Status -->
-                          <TextBlock Grid.Column="3"
-                                     Text="{Binding Status}"
-                                     Style="{StaticResource BodyMedium}"
-                                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                     VerticalAlignment="Center"
-                                     Padding="16,14" />
+                          <Border Grid.Column="3"
+                                  VerticalAlignment="Center"
+                                  Margin="16,8"
+                                  Padding="8,4"
+                                  CornerRadius="4"
+                                  Background="{Binding Status, Converter={StaticResource OrderStatusToBackgroundConverter}}">
+                            <TextBlock Text="{Binding Status, Converter={StaticResource OrderStatusToTextConverter}}"
+                                       Style="{StaticResource LabelMedium}"
+                                       Foreground="{Binding Status, Converter={StaticResource OrderStatusToForegroundConverter}}" />
+                          </Border>
 
                           <!-- DateOrdered -->
                           <TextBlock Grid.Column="4"

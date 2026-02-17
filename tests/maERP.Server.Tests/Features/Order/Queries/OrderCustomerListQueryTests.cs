@@ -388,7 +388,7 @@ public class OrderCustomerListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result);
         TestAssertions.AssertNotNull(result.Data);
         TestAssertions.AssertEqual(2, result.Data?.Count ?? 0);
-        TestAssertions.AssertTrue(result.Data?.All(o => o.PaymentStatus == "CompletelyPaid") ?? false);
+        TestAssertions.AssertTrue(result.Data?.All(o => o.PaymentStatus == PaymentStatus.CompletelyPaid) ?? false);
     }
 
     [Fact]
@@ -481,7 +481,7 @@ public class OrderCustomerListQueryTests : IDisposable
         TestAssertions.AssertEqual(Customer1Id, firstOrder!.CustomerId);
         TestAssertions.AssertTrue(firstOrder.Id != Guid.Empty);
         TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.InvoiceAddressFirstName));
-        TestAssertions.AssertFalse(string.IsNullOrEmpty(firstOrder.Status));
+        TestAssertions.AssertTrue(Enum.IsDefined(firstOrder.Status));
         TestAssertions.AssertTrue(firstOrder.Total > 0);
     }
 
@@ -499,9 +499,9 @@ public class OrderCustomerListQueryTests : IDisposable
         TestAssertions.AssertNotNull(result.Data);
 
         var orderStatuses = result.Data?.Select(o => o.Status).ToList();
-        TestAssertions.AssertContains("Processing", orderStatuses ?? new List<string>());
-        TestAssertions.AssertContains("ReadyForDelivery", orderStatuses ?? new List<string>());
-        TestAssertions.AssertContains("Completed", orderStatuses ?? new List<string>());
+        TestAssertions.AssertContains(OrderStatus.Processing, orderStatuses ?? new List<OrderStatus>());
+        TestAssertions.AssertContains(OrderStatus.ReadyForDelivery, orderStatuses ?? new List<OrderStatus>());
+        TestAssertions.AssertContains(OrderStatus.Completed, orderStatuses ?? new List<OrderStatus>());
     }
 
     [Fact]

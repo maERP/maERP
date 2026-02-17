@@ -40,33 +40,19 @@ public class InvoiceStatusToTextConverter : IValueConverter
 
     private static string GetLocalizedString(string resourceKey)
     {
-        try
-        {
-            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
-            var result = resourceLoader.GetString(resourceKey);
-            return !string.IsNullOrEmpty(result) ? result : GetFallbackString(resourceKey);
-        }
-        catch
-        {
-            return GetFallbackString(resourceKey);
-        }
-    }
-
-    private static string GetFallbackString(string resourceKey)
-    {
         return resourceKey switch
         {
-            "InvoiceStatus.Unknown" => "Unknown",
-            "InvoiceStatus.Created" => "Created",
-            "InvoiceStatus.Sent" => "Sent",
-            "InvoiceStatus.Overdue" => "Overdue",
-            "InvoiceStatus.PartiallyPaid" => "Partially Paid",
-            "InvoiceStatus.Paid" => "Paid",
-            "InvoiceStatus.Cancelled" => "Cancelled",
-            "InvoiceStatus.Disputed" => "Disputed",
-            "InvoiceStatus.Refunded" => "Refunded",
-            "InvoiceStatus.WrittenOff" => "Written Off",
-            "InvoiceStatus.Archived" => "Archived",
+            "InvoiceStatus.Unknown" => LocalizationHelper.GetLocalizedString(resourceKey, "Unknown"),
+            "InvoiceStatus.Created" => LocalizationHelper.GetLocalizedString(resourceKey, "Created"),
+            "InvoiceStatus.Sent" => LocalizationHelper.GetLocalizedString(resourceKey, "Sent"),
+            "InvoiceStatus.Overdue" => LocalizationHelper.GetLocalizedString(resourceKey, "Overdue"),
+            "InvoiceStatus.PartiallyPaid" => LocalizationHelper.GetLocalizedString(resourceKey, "Partially Paid"),
+            "InvoiceStatus.Paid" => LocalizationHelper.GetLocalizedString(resourceKey, "Paid"),
+            "InvoiceStatus.Cancelled" => LocalizationHelper.GetLocalizedString(resourceKey, "Cancelled"),
+            "InvoiceStatus.Disputed" => LocalizationHelper.GetLocalizedString(resourceKey, "Disputed"),
+            "InvoiceStatus.Refunded" => LocalizationHelper.GetLocalizedString(resourceKey, "Refunded"),
+            "InvoiceStatus.WrittenOff" => LocalizationHelper.GetLocalizedString(resourceKey, "Written Off"),
+            "InvoiceStatus.Archived" => LocalizationHelper.GetLocalizedString(resourceKey, "Archived"),
             _ => resourceKey
         };
     }
@@ -208,36 +194,22 @@ public class PaymentStatusToTextConverter : IValueConverter
 
     private static string GetLocalizedString(string resourceKey)
     {
-        try
-        {
-            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
-            var result = resourceLoader.GetString(resourceKey);
-            return !string.IsNullOrEmpty(result) ? result : GetFallbackString(resourceKey);
-        }
-        catch
-        {
-            return GetFallbackString(resourceKey);
-        }
-    }
-
-    private static string GetFallbackString(string resourceKey)
-    {
         return resourceKey switch
         {
-            "PaymentStatus.Unknown" => "Unknown",
-            "PaymentStatus.Invoiced" => "Invoiced",
-            "PaymentStatus.PartiallyPaid" => "Partially Paid",
-            "PaymentStatus.CompletelyPaid" => "Completely Paid",
-            "PaymentStatus.FirstReminder" => "1st Reminder",
-            "PaymentStatus.SecondReminder" => "2nd Reminder",
-            "PaymentStatus.ThirdReminder" => "3rd Reminder",
-            "PaymentStatus.Encashment" => "Collection",
-            "PaymentStatus.Reserved" => "Reserved",
-            "PaymentStatus.Delayed" => "Delayed",
-            "PaymentStatus.ReCrediting" => "Re-crediting",
-            "PaymentStatus.ReviewNecessary" => "Review Required",
-            "PaymentStatus.NoCreditApproved" => "Credit Rejected",
-            "PaymentStatus.CreditPreliminarilyAccepted" => "Credit Pending",
+            "PaymentStatus.Unknown" => LocalizationHelper.GetLocalizedString(resourceKey, "Unknown"),
+            "PaymentStatus.Invoiced" => LocalizationHelper.GetLocalizedString(resourceKey, "Invoiced"),
+            "PaymentStatus.PartiallyPaid" => LocalizationHelper.GetLocalizedString(resourceKey, "Partially Paid"),
+            "PaymentStatus.CompletelyPaid" => LocalizationHelper.GetLocalizedString(resourceKey, "Completely Paid"),
+            "PaymentStatus.FirstReminder" => LocalizationHelper.GetLocalizedString(resourceKey, "1st Reminder"),
+            "PaymentStatus.SecondReminder" => LocalizationHelper.GetLocalizedString(resourceKey, "2nd Reminder"),
+            "PaymentStatus.ThirdReminder" => LocalizationHelper.GetLocalizedString(resourceKey, "3rd Reminder"),
+            "PaymentStatus.Encashment" => LocalizationHelper.GetLocalizedString(resourceKey, "Collection"),
+            "PaymentStatus.Reserved" => LocalizationHelper.GetLocalizedString(resourceKey, "Reserved"),
+            "PaymentStatus.Delayed" => LocalizationHelper.GetLocalizedString(resourceKey, "Delayed"),
+            "PaymentStatus.ReCrediting" => LocalizationHelper.GetLocalizedString(resourceKey, "Re-crediting"),
+            "PaymentStatus.ReviewNecessary" => LocalizationHelper.GetLocalizedString(resourceKey, "Review Required"),
+            "PaymentStatus.NoCreditApproved" => LocalizationHelper.GetLocalizedString(resourceKey, "Credit Rejected"),
+            "PaymentStatus.CreditPreliminarilyAccepted" => LocalizationHelper.GetLocalizedString(resourceKey, "Credit Pending"),
             _ => resourceKey
         };
     }

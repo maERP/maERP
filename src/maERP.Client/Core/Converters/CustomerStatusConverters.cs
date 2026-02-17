@@ -32,25 +32,11 @@ public class CustomerStatusToTextConverter : IValueConverter
 
     private static string GetLocalizedString(string resourceKey)
     {
-        try
-        {
-            var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
-            var result = resourceLoader.GetString(resourceKey);
-            return !string.IsNullOrEmpty(result) ? result : GetFallbackString(resourceKey);
-        }
-        catch
-        {
-            return GetFallbackString(resourceKey);
-        }
-    }
-
-    private static string GetFallbackString(string resourceKey)
-    {
         return resourceKey switch
         {
-            "CustomerStatus.Active" => "Active",
-            "CustomerStatus.Inactive" => "Inactive",
-            "CustomerStatus.NoDoi" => "No DOI",
+            "CustomerStatus.Active" => LocalizationHelper.GetLocalizedString(resourceKey, "Active"),
+            "CustomerStatus.Inactive" => LocalizationHelper.GetLocalizedString(resourceKey, "Inactive"),
+            "CustomerStatus.NoDoi" => LocalizationHelper.GetLocalizedString(resourceKey, "No DOI"),
             _ => resourceKey
         };
     }

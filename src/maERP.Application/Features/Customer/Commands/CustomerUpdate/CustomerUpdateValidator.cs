@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using maERP.Application.Contracts.Persistence;
 using maERP.Domain.Validators;
 
@@ -10,13 +10,13 @@ namespace maERP.Application.Features.Customer.Commands.CustomerUpdate;
 /// Erweitert CustomerBaseValidator (aus maERP.Domain) um Server-spezifische Validierungen:
 /// - ID-Validierung (nicht Guid.Empty)
 /// - Existenz-Prüfung (Customer muss vorhanden sein)
-/// - Eindeutigkeitsprüfung (keine Duplikate außer dem aktuellen Customer)
 /// - Address-Validierung (CountryId muss gültig sein)
 ///
 /// WICHTIG:
 /// - Basis-Regeln (Feldvalidierungen) sind in CustomerBaseValidator definiert
 /// - Client verwendet CustomerClientValidator (nur synchrone Regeln)
 /// - Server verwendet diesen Validator (mit DB-Zugriff)
+/// - Keine Eindeutigkeitsprüfung auf Firstname+Lastname, da Namensgleichheit möglich ist
 /// </summary>
 public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateCommand>
 {
@@ -35,11 +35,6 @@ public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateComma
             .MustAsync(CustomerExists).WithMessage("Customer not found")
             .When(c => c.Id != Guid.Empty);
 
-        // Add uniqueness validation for updates
-        RuleFor(q => q)
-            .MustAsync(IsUniqueAsync).WithMessage("Customer with the same values already exists.")
-            .When(c => c.Id != Guid.Empty);
-
         // Validate each address in the collection
         RuleForEach(c => c.CustomerAddresses)
             .SetValidator(new CustomerAddressBaseValidator());
@@ -48,16 +43,5 @@ public class CustomerUpdateValidator : CustomerBaseValidator<CustomerUpdateComma
     private async Task<bool> CustomerExists(CustomerUpdateCommand command, CancellationToken cancellationToken)
     {
         return await _customerRepository.ExistsGloballyAsync(command.Id);
-    }
-
-    private async Task<bool> IsUniqueAsync(CustomerUpdateCommand command, CancellationToken cancellationToken)
-    {
-        var customer = new Domain.Entities.Customer
-        {
-            Firstname = command.Firstname,
-            Lastname = command.Lastname
-        };
-
-        return await _customerRepository.IsUniqueAsync(customer, command.Id);
     }
 }
