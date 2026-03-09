@@ -28,7 +28,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
     <!-- Uno Platform -->
-    <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.204" />
+    <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.205" />
     <PackageVersion Include="Uno.Extensions.Navigation" Version="7.0.4" />
     <PackageVersion Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="6.4.242" />
     <PackageVersion Include="Uno.UI.App.Mcp" Version="1.0.11" />
