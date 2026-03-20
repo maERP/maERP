@@ -68,6 +68,9 @@ public partial record PosDashboardModel
     public IState<string> PosSuccessMessage => State<string>.Value(this, () => string.Empty);
     public IState<bool> IsProcessingSale => State<bool>.Value(this, () => false);
     public IState<string> CartTotalFormatted => State<string>.Value(this, () => 0m.ToString("C2"));
+    public IState<string> CartTaxTotalFormatted => State<string>.Value(this, () => 0m.ToString("C2"));
+    public IState<string> CartGrandTotalFormatted => State<string>.Value(this, () => 0m.ToString("C2"));
+    public IState<IImmutableList<PosTaxLineItem>> TaxBreakdown => State<IImmutableList<PosTaxLineItem>>.Value(this, () => (IImmutableList<PosTaxLineItem>)ImmutableList<PosTaxLineItem>.Empty);
     public string InvoiceDateFormatted => DateTime.Now.ToString("d");
 
     // Tab 2: Quick Sale - Search Results
@@ -111,7 +114,7 @@ public partial record PosDashboardModel
             {
                 return items.Replace(existing, existing with { Quantity = existing.Quantity + 1 });
             }
-            return items.Add(new PosCartItem(product.Id, product.Name, product.Sku, product.Price, 1));
+            return items.Add(new PosCartItem(product.Id, product.Name, product.Sku, product.Price, 1, product.TaxRate));
         });
         await RefreshCartTotal();
     }
@@ -163,6 +166,8 @@ public partial record PosDashboardModel
             }
 
             var subtotal = cartItems.Sum(i => i.LineTotal);
+            var totalTax = cartItems.Sum(i => i.LineTax);
+            var total = subtotal + totalTax;
 
             var orderInput = new OrderInputDto
             {
@@ -173,13 +178,15 @@ public partial record PosDashboardModel
                 PaymentMethod = "POS",
                 DateOrdered = DateTime.UtcNow,
                 Subtotal = subtotal,
-                Total = subtotal,
+                TotalTax = totalTax,
+                Total = total,
                 OrderItems = cartItems.Select(i => new OrderItem
                 {
                     ProductId = i.ProductId,
                     Name = i.ProductName,
                     Price = i.UnitPrice,
-                    Quantity = i.Quantity
+                    Quantity = i.Quantity,
+                    TaxRate = i.TaxRate
                 }).ToList(),
                 // Populate minimal address from customer name
                 InvoiceAddressFirstName = customer != null ? customer.DisplayName.Split(' ').FirstOrDefault() ?? "" : "POS",
@@ -213,8 +220,22 @@ public partial record PosDashboardModel
     private async ValueTask RefreshCartTotal()
     {
         var items = await CartItems;
-        var total = items?.Sum(i => i.LineTotal) ?? 0m;
-        await CartTotalFormatted.UpdateAsync(_ => total.ToString("C2"));
+        var subtotal = items?.Sum(i => i.LineTotal) ?? 0m;
+        var totalTax = items?.Sum(i => i.LineTax) ?? 0m;
+        var grandTotal = subtotal + totalTax;
+
+        var taxLines = items?
+            .Where(i => i.TaxRate > 0)
+            .GroupBy(i => i.TaxRate)
+            .OrderBy(g => g.Key)
+            .Select(g => new PosTaxLineItem(g.Key, g.Sum(i => i.LineTax)))
+            .ToImmutableList()
+            ?? ImmutableList<PosTaxLineItem>.Empty;
+
+        await CartTotalFormatted.UpdateAsync(_ => subtotal.ToString("C2"));
+        await CartTaxTotalFormatted.UpdateAsync(_ => totalTax.ToString("C2"));
+        await CartGrandTotalFormatted.UpdateAsync(_ => grandTotal.ToString("C2"));
+        await TaxBreakdown.UpdateAsync(_ => taxLines);
     }
 
     private async ValueTask<RevenueKpiData> LoadRevenueDataAsync(CancellationToken ct)
@@ -333,10 +354,20 @@ public partial record PosCustomerSelection(Guid Id, int CustomerId, string Displ
 /// <summary>
 /// Cart item for POS sale.
 /// </summary>
-public record PosCartItem(Guid ProductId, string ProductName, string Sku, decimal UnitPrice, int Quantity)
+public record PosCartItem(Guid ProductId, string ProductName, string Sku, decimal UnitPrice, int Quantity, double TaxRate)
 {
     public decimal LineTotal => UnitPrice * Quantity;
+    public decimal LineTax => LineTotal * (decimal)(TaxRate / 100.0);
     public string LineTotalFormatted => LineTotal.ToString("C2");
     public string UnitPriceFormatted => UnitPrice.ToString("C2");
     public string UnitPriceEditable => UnitPrice.ToString("F2");
+}
+
+/// <summary>
+/// Tax breakdown line for display (grouped by tax rate).
+/// </summary>
+public record PosTaxLineItem(double TaxRate, decimal TaxAmount)
+{
+    public string Label => $"MwSt {TaxRate:0.##}%";
+    public string AmountFormatted => TaxAmount.ToString("C2");
 }

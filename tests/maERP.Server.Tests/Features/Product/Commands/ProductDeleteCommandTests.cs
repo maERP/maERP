@@ -14,7 +14,9 @@ namespace maERP.Server.Tests.Features.Product.Commands;
 public class ProductDeleteCommandTests : TenantIsolatedTestBase
 {
     private static readonly Guid TaxClass1Id = Guid.NewGuid();
+    private static readonly Guid TaxClass2Id = Guid.NewGuid();
     private static readonly Guid Manufacturer1Id = Guid.NewGuid();
+    private static readonly Guid Manufacturer2Id = Guid.NewGuid();
     private static readonly Guid Product1Id = Guid.NewGuid();
     private static readonly Guid Product2Id = Guid.NewGuid();
     private static readonly Guid Product3Id = Guid.NewGuid();
@@ -38,6 +40,13 @@ public class ProductDeleteCommandTests : TenantIsolatedTestBase
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
+                var taxClass2 = new maERP.Domain.Entities.TaxClass
+                {
+                    Id = TaxClass2Id,
+                    TaxRate = 20.0,
+                    TenantId = TenantConstants.TestTenant2Id
+                };
+
                 var manufacturer = new maERP.Domain.Entities.Manufacturer
                 {
                     Id = Manufacturer1Id,
@@ -47,8 +56,19 @@ public class ProductDeleteCommandTests : TenantIsolatedTestBase
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
+                var manufacturer2 = new maERP.Domain.Entities.Manufacturer
+                {
+                    Id = Manufacturer2Id,
+                    Name = "Test Manufacturer T2",
+                    City = "Test City",
+                    Country = "Test Country",
+                    TenantId = TenantConstants.TestTenant2Id
+                };
+
                 DbContext.TaxClass.Add(taxClass);
+                DbContext.TaxClass.Add(taxClass2);
                 DbContext.Manufacturer.Add(manufacturer);
+                DbContext.Manufacturer.Add(manufacturer2);
 
                 var product1 = new maERP.Domain.Entities.Product
                 {
@@ -90,8 +110,8 @@ public class ProductDeleteCommandTests : TenantIsolatedTestBase
                     Description = "Product in tenant 2",
                     Price = 75.00m,
                     Msrp = 100.00m,
-                    TaxClassId = TaxClass1Id,
-                    ManufacturerId = Manufacturer1Id,
+                    TaxClassId = TaxClass2Id,
+                    ManufacturerId = Manufacturer2Id,
                     UseOptimized = false,
                     TenantId = TenantConstants.TestTenant2Id
                 };

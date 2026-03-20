@@ -3463,22 +3463,10 @@
   <data name="PosDashboard.RecentSales.Date.Text" xml:space="preserve">
     <value>Datum</value>
   </data>
-  <data name="PosDashboard.Invoice.Draft.Text" xml:space="preserve">
-    <value>ENTWURF</value>
-  </data>
-  <data name="PosDashboard.Invoice.Preview.Text" xml:space="preserve">
-    <value>Rechnungsvorschau</value>
-  </data>
-  <data name="PosDashboard.Invoice.Date.Text" xml:space="preserve">
-    <value>Datum</value>
-  </data>
   <data name="PosDashboard.Invoice.BillTo.Text" xml:space="preserve">
     <value>Rechnungsempfänger</value>
   </data>
-  <data name="PosDashboard.Invoice.WalkInCustomer.Text" xml:space="preserve">
-    <value>Laufkundschaft</value>
-  </data>
-  <data name="PosDashboard.Invoice.Header.Pos.Text" xml:space="preserve">
+<data name="PosDashboard.Invoice.Header.Pos.Text" xml:space="preserve">
     <value>Pos.</value>
   </data>
   <data name="PosDashboard.Invoice.Header.Product.Text" xml:space="preserve">

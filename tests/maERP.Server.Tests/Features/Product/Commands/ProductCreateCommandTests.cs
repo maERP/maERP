@@ -207,6 +207,23 @@ public class ProductCreateCommandTests : TenantIsolatedTestBase
     }
 
     [Fact]
+    public async Task CreateProduct_WithEmptyTaxClassId_ShouldReturnBadRequest()
+    {
+        await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var productDto = CreateValidProductDto();
+        productDto.TaxClassId = Guid.Empty;
+
+        var response = await PostAsJsonAsync("/api/v1/Products", productDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
+    }
+
+    [Fact]
     public async Task CreateProduct_WithInvalidTaxClassId_ShouldReturnBadRequest()
     {
         await SeedTestDataAsync();

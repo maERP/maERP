@@ -100,7 +100,7 @@ public class ProductDetailQueryTests : TenantIsolatedTestBase
                     Price = 79.99m,
                     Msrp = 99.99m,
                     ManufacturerId = Guid.Parse("00000001-0001-0001-0002-000000000002"),
-                    TaxClassId = Guid.Parse("00000001-0001-0001-0001-000000000001"),
+                    TaxClassId = Guid.Parse("00000003-0003-0003-0003-000000000003"),
                     TenantId = TenantConstants.TestTenant2Id
                 };
 

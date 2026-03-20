@@ -16,6 +16,7 @@ public class ProductListQueryTests : TenantIsolatedTestBase
     private static readonly Guid Product2Id = Guid.NewGuid();
     private static readonly Guid Product3Id = Guid.NewGuid();
     private static readonly Guid TaxClass1Id = Guid.NewGuid();
+    private static readonly Guid TaxClass2Id = Guid.NewGuid();
 
     private async Task SeedProductTestDataAsync()
     {
@@ -54,7 +55,15 @@ public class ProductListQueryTests : TenantIsolatedTestBase
                     TenantId = TenantConstants.TestTenant1Id
                 };
 
+                var taxClass2 = new maERP.Domain.Entities.TaxClass
+                {
+                    Id = TaxClass2Id,
+                    TaxRate = 20.0,
+                    TenantId = TenantConstants.TestTenant2Id
+                };
+
                 DbContext.TaxClass.Add(taxClass1);
+                DbContext.TaxClass.Add(taxClass2);
                 DbContext.Manufacturer.AddRange(manufacturer1, manufacturer2);
 
                 var product1Tenant1 = new maERP.Domain.Entities.Product
@@ -95,7 +104,7 @@ public class ProductListQueryTests : TenantIsolatedTestBase
                     Price = 79.99m,
                     Msrp = 99.99m,
                     ManufacturerId = Manufacturer2Id,
-                    TaxClassId = TaxClass1Id,
+                    TaxClassId = TaxClass2Id,
                     TenantId = TenantConstants.TestTenant2Id
                 };
 

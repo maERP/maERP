@@ -195,161 +195,92 @@
 
       <!-- Tab 2: Quick Sale -->
       <PivotItem x:Uid="PosDashboard.Tab.QuickSale">
-        <Grid Padding="0,16,0,0">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-          </Grid.ColumnDefinitions>
-
-          <!-- Left: Search + Editable Cart -->
-          <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,8,0">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,16,0,0">
+          <Border Background="{ThemeResource SurfaceBrush}" CornerRadius="12"
+                  Padding="24" Translation="0,0,8"
+                  MinWidth="600" MaxWidth="720" HorizontalAlignment="Center">
+            <Border.Shadow><ThemeShadow /></Border.Shadow>
             <StackPanel Spacing="16">
 
-              <!-- Customer Search Card -->
-              <Border Background="{ThemeResource SurfaceBrush}" CornerRadius="12"
-                      Padding="20" Translation="0,0,8">
-                <Border.Shadow><ThemeShadow /></Border.Shadow>
-                <StackPanel Spacing="12">
-                  <TextBlock x:Uid="PosDashboard.QuickSale.Customer"
-                             Style="{StaticResource TitleMedium}"
-                             Foreground="{ThemeResource OnSurfaceBrush}" />
+              <!-- Date -->
+              <TextBlock Text="{Binding InvoiceDateFormatted}"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}"
+                         HorizontalAlignment="Right" />
 
-                  <!-- Selected Customer Detail Display -->
-                  <Border x:Name="SelectedCustomerPanel"
-                          Background="{ThemeResource PrimaryContainerBrush}"
-                          CornerRadius="8" Padding="16,12"
-                          Visibility="Collapsed">
-                    <Grid>
-                      <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                      </Grid.ColumnDefinitions>
-                      <StackPanel Grid.Column="0" Spacing="4">
-                        <TextBlock x:Name="SelectedCustomerName"
-                                   Style="{StaticResource TitleSmall}"
-                                   Foreground="{ThemeResource OnPrimaryContainerBrush}" />
-                        <TextBlock x:Name="SelectedCustomerNumber"
-                                   Style="{StaticResource BodySmall}"
-                                   Foreground="{ThemeResource OnPrimaryContainerBrush}"
-                                   Opacity="0.8" />
-                        <TextBlock x:Name="SelectedCustomerEmail"
-                                   Style="{StaticResource BodySmall}"
-                                   Foreground="{ThemeResource OnPrimaryContainerBrush}"
-                                   Opacity="0.8" />
-                        <TextBlock x:Name="SelectedCustomerAddress"
-                                   Style="{StaticResource BodySmall}"
-                                   Foreground="{ThemeResource OnPrimaryContainerBrush}"
-                                   Opacity="0.8"
-                                   TextWrapping="Wrap" />
-                      </StackPanel>
-                      <Button Grid.Column="1"
-                              Click="ClearCustomer_Click"
-                              Style="{StaticResource TextButtonStyle}"
-                              VerticalAlignment="Top"
-                              Padding="4">
-                        <FontIcon Glyph="&#xE711;" FontSize="14"
-                                  Foreground="{ThemeResource OnPrimaryContainerBrush}" />
-                      </Button>
-                    </Grid>
-                  </Border>
+              <!-- Bill To -->
+              <StackPanel Spacing="4">
+                <TextBlock x:Uid="PosDashboard.Invoice.BillTo"
+                           Style="{StaticResource LabelLarge}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}" />
 
-                  <!-- Customer Search (hidden when customer selected) -->
-                  <StackPanel x:Name="CustomerSearchPanel" Spacing="12">
-                    <TextBox x:Name="CustomerSearchBox"
-                             x:Uid="PosDashboard.QuickSale.CustomerSearch"
-                             TextChanged="CustomerSearchBox_TextChanged" />
+                <!-- Selected Customer Display -->
+                <Border x:Name="SelectedCustomerPanel"
+                        Background="{ThemeResource PrimaryContainerBrush}"
+                        CornerRadius="8" Padding="12,8"
+                        Visibility="Collapsed">
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Spacing="2">
+                      <TextBlock x:Name="SelectedCustomerName"
+                                 Style="{StaticResource BodyMedium}"
+                                 Foreground="{ThemeResource OnPrimaryContainerBrush}" />
+                      <TextBlock x:Name="SelectedCustomerEmail"
+                                 Style="{StaticResource BodySmall}"
+                                 Foreground="{ThemeResource OnPrimaryContainerBrush}"
+                                 Opacity="0.8" />
+                      <TextBlock x:Name="SelectedCustomerAddress"
+                                 Style="{StaticResource BodySmall}"
+                                 Foreground="{ThemeResource OnPrimaryContainerBrush}"
+                                 Opacity="0.8"
+                                 TextWrapping="Wrap" />
+                    </StackPanel>
+                    <Button Grid.Column="1"
+                            Click="ClearCustomer_Click"
+                            Style="{StaticResource TextButtonStyle}"
+                            VerticalAlignment="Top"
+                            Padding="4">
+                      <FontIcon Glyph="&#xE711;" FontSize="14"
+                                Foreground="{ThemeResource OnPrimaryContainerBrush}" />
+                    </Button>
+                  </Grid>
+                </Border>
 
-                    <!-- Customer Search Results -->
-                    <mvux:FeedView Source="{Binding CustomerSearchResults}">
-                      <mvux:FeedView.ValueTemplate>
-                        <DataTemplate>
-                          <ItemsRepeater ItemsSource="{Binding Data}">
-                            <ItemsRepeater.ItemTemplate>
-                              <DataTemplate>
-                                <Button HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Padding="8,6"
-                                        Click="CustomerResult_Click">
-                                  <StackPanel>
-                                    <TextBlock Style="{StaticResource BodyMedium}"
-                                               Foreground="{ThemeResource OnSurfaceBrush}">
-                                      <Run Text="{Binding FullName}" />
-                                      <Run Text="(" /><Run Text="{Binding Email}" /><Run Text=")" />
-                                    </TextBlock>
-                                    <TextBlock Style="{StaticResource BodySmall}"
-                                               Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                               Visibility="{Binding InvoiceAddress, Converter={StaticResource StringToVisibilityConverter}}"
-                                               Text="{Binding InvoiceAddress}" />
-                                    <TextBlock x:Uid="PosDashboard.QuickSale.NoAddress"
-                                               Style="{StaticResource BodySmall}"
-                                               Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                               FontStyle="Italic"
-                                               Visibility="{Binding InvoiceAddress, Converter={StaticResource StringToInverseVisibilityConverter}}" />
-                                  </StackPanel>
-                                </Button>
-                              </DataTemplate>
-                            </ItemsRepeater.ItemTemplate>
-                          </ItemsRepeater>
-                        </DataTemplate>
-                      </mvux:FeedView.ValueTemplate>
-                    </mvux:FeedView>
-                  </StackPanel>
-                </StackPanel>
-              </Border>
+                <!-- Customer Search (visible when no customer selected) -->
+                <StackPanel x:Name="CustomerSearchPanel" Spacing="8">
+                  <TextBox x:Name="CustomerSearchBox"
+                           x:Uid="PosDashboard.QuickSale.CustomerSearch"
+                           TextChanged="CustomerSearchBox_TextChanged" />
 
-              <!-- Product Search Card -->
-              <Border Background="{ThemeResource SurfaceBrush}" CornerRadius="12"
-                      Padding="20" Translation="0,0,8">
-                <Border.Shadow><ThemeShadow /></Border.Shadow>
-                <StackPanel Spacing="12">
-                  <TextBlock x:Uid="PosDashboard.QuickSale.Products"
-                             Style="{StaticResource TitleMedium}"
-                             Foreground="{ThemeResource OnSurfaceBrush}" />
-
-                  <TextBox x:Name="ProductSearchBox"
-                           x:Uid="PosDashboard.QuickSale.ProductSearch"
-                           TextChanged="ProductSearchBox_TextChanged"
-                           KeyDown="ProductSearchBox_KeyDown" />
-
-                  <!-- Product Search Results -->
-                  <mvux:FeedView Source="{Binding ProductSearchResults}">
+                  <!-- Customer Search Results -->
+                  <mvux:FeedView Source="{Binding CustomerSearchResults}">
                     <mvux:FeedView.ValueTemplate>
                       <DataTemplate>
-                        <ItemsRepeater ItemsSource="{Binding Data}"
-                                       Loaded="ProductResultsRepeater_Loaded">
+                        <ItemsRepeater ItemsSource="{Binding Data}">
                           <ItemsRepeater.ItemTemplate>
                             <DataTemplate>
-                              <Border CornerRadius="8">
-                                <Grid Padding="8,6">
-                                  <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                  </Grid.ColumnDefinitions>
-                                  <StackPanel Grid.Column="0">
-                                    <TextBlock Text="{Binding Name}"
-                                               Style="{StaticResource BodyMedium}"
-                                               Foreground="{ThemeResource OnSurfaceBrush}"
-                                               TextTrimming="CharacterEllipsis" MaxLines="1" />
-                                    <TextBlock Text="{Binding Sku}"
-                                               Style="{StaticResource BodySmall}"
-                                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                                  </StackPanel>
-                                  <TextBlock Grid.Column="1"
-                                             Text="{Binding Price}"
-                                             Style="{StaticResource BodyMedium}"
-                                             Foreground="{ThemeResource OnSurfaceBrush}"
-                                             VerticalAlignment="Center"
-                                             Margin="8,0" />
-                                  <Button Grid.Column="2"
-                                          x:Uid="PosDashboard.QuickSale.Add"
-                                          Click="AddToCart_Click"
-                                          Style="{StaticResource FilledTonalButtonStyle}"
-                                          Padding="12,6" />
-                                </Grid>
-                              </Border>
+                              <Button HorizontalAlignment="Stretch"
+                                      HorizontalContentAlignment="Stretch"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      Padding="8,4"
+                                      Click="CustomerResult_Click">
+                                <StackPanel>
+                                  <TextBlock Style="{StaticResource BodySmall}"
+                                             Foreground="{ThemeResource OnSurfaceBrush}">
+                                    <Run Text="{Binding FullName}" />
+                                    <Run Text="(" /><Run Text="{Binding Email}" /><Run Text=")" />
+                                  </TextBlock>
+                                  <TextBlock Style="{StaticResource BodySmall}"
+                                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                             Visibility="{Binding InvoiceAddress, Converter={StaticResource StringToVisibilityConverter}}"
+                                             Text="{Binding InvoiceAddress}"
+                                             FontSize="11" />
+                                </StackPanel>
+                              </Button>
                             </DataTemplate>
                           </ItemsRepeater.ItemTemplate>
                         </ItemsRepeater>
@@ -357,339 +288,342 @@
                     </mvux:FeedView.ValueTemplate>
                   </mvux:FeedView>
                 </StackPanel>
-              </Border>
+              </StackPanel>
 
-            </StackPanel>
-          </ScrollViewer>
+              <!-- Separator -->
+              <Border Height="1" Background="{ThemeResource OutlineBrush}" />
 
-          <!-- Right: Invoice Preview -->
-          <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Margin="8,0,0,0">
-            <Border Background="{ThemeResource SurfaceBrush}" CornerRadius="12"
-                    Padding="24" Translation="0,0,8">
-              <Border.Shadow><ThemeShadow /></Border.Shadow>
-              <StackPanel Spacing="16">
+              <!-- Positions Table Header -->
+              <Grid Background="{ThemeResource SurfaceVariantBrush}"
+                    CornerRadius="6" Padding="12,8">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="32" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="100" />
+                  <ColumnDefinition Width="90" />
+                  <ColumnDefinition Width="72" />
+                  <ColumnDefinition Width="32" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           x:Uid="PosDashboard.Invoice.Header.Pos"
+                           Style="{StaticResource LabelSmall}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                <TextBlock Grid.Column="1"
+                           x:Uid="PosDashboard.Invoice.Header.Product"
+                           Style="{StaticResource LabelSmall}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                <TextBlock Grid.Column="2"
+                           x:Uid="PosDashboard.Invoice.Header.Qty"
+                           Style="{StaticResource LabelSmall}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           TextAlignment="Center" />
+                <TextBlock Grid.Column="3"
+                           x:Uid="PosDashboard.Invoice.Header.UnitPrice"
+                           Style="{StaticResource LabelSmall}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           TextAlignment="Right" />
+                <TextBlock Grid.Column="4"
+                           x:Uid="PosDashboard.Invoice.Header.Total"
+                           Style="{StaticResource LabelSmall}"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           TextAlignment="Right" />
+              </Grid>
 
-                <!-- Draft Banner -->
-                <Border Background="{ThemeResource TertiaryContainerBrush}"
-                        CornerRadius="8" Padding="12,8"
-                        HorizontalAlignment="Stretch">
-                  <StackPanel Orientation="Horizontal"
-                              HorizontalAlignment="Center" Spacing="8">
-                    <FontIcon Glyph="&#xE7C3;" FontSize="16"
-                              Foreground="{ThemeResource OnTertiaryContainerBrush}" />
-                    <TextBlock x:Uid="PosDashboard.Invoice.Draft"
-                               Style="{StaticResource LabelLarge}"
-                               Foreground="{ThemeResource OnTertiaryContainerBrush}" />
-                    <TextBlock Text=" / " Style="{StaticResource LabelLarge}"
-                               Foreground="{ThemeResource OnTertiaryContainerBrush}" />
-                    <TextBlock x:Uid="PosDashboard.Invoice.Preview"
-                               Style="{StaticResource LabelLarge}"
-                               Foreground="{ThemeResource OnTertiaryContainerBrush}" />
-                  </StackPanel>
-                </Border>
+              <!-- Positions Items -->
+              <mvux:FeedView Source="{Binding CartItems}">
+                <mvux:FeedView.ValueTemplate>
+                  <DataTemplate>
+                    <ItemsRepeater ItemsSource="{Binding Data}"
+                                   ElementPrepared="InvoiceItemsRepeater_ElementPrepared">
+                      <ItemsRepeater.ItemTemplate>
+                        <DataTemplate>
+                          <Grid Padding="12,4" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="32" />
+                              <ColumnDefinition Width="*" />
+                              <ColumnDefinition Width="100" />
+                              <ColumnDefinition Width="90" />
+                              <ColumnDefinition Width="72" />
+                              <ColumnDefinition Width="32" />
+                            </Grid.ColumnDefinitions>
 
-                <!-- Date -->
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                  </Grid.ColumnDefinitions>
-                  <TextBlock Grid.Column="0"
-                             x:Uid="PosDashboard.Invoice.Date"
-                             Style="{StaticResource LabelLarge}"
-                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                             Margin="0,0,8,0" />
-                  <TextBlock Grid.Column="1"
-                             Text="{Binding InvoiceDateFormatted}"
-                             Style="{StaticResource BodyMedium}"
-                             Foreground="{ThemeResource OnSurfaceBrush}" />
-                </Grid>
+                            <!-- Pos -->
+                            <TextBlock Grid.Column="0"
+                                       x:Name="PosNumber"
+                                       Style="{StaticResource BodySmall}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       VerticalAlignment="Center" />
 
-                <!-- Bill To -->
-                <StackPanel Spacing="4">
-                  <TextBlock x:Uid="PosDashboard.Invoice.BillTo"
-                             Style="{StaticResource LabelLarge}"
-                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                  <mvux:FeedView Source="{Binding SelectedCustomer}">
-                    <mvux:FeedView.ValueTemplate>
-                      <DataTemplate>
-                        <StackPanel Spacing="2">
-                          <TextBlock Text="{Binding Data.DisplayName}"
-                                     Style="{StaticResource BodyMedium}"
-                                     Foreground="{ThemeResource OnSurfaceBrush}" />
-                          <TextBlock Text="{Binding Data.Email}"
-                                     Style="{StaticResource BodySmall}"
-                                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                          <TextBlock Text="{Binding Data.InvoiceAddress}"
-                                     Style="{StaticResource BodySmall}"
-                                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                     Visibility="{Binding Data.InvoiceAddress, Converter={StaticResource StringToVisibilityConverter}}"
-                                     TextWrapping="Wrap" />
-                        </StackPanel>
-                      </DataTemplate>
-                    </mvux:FeedView.ValueTemplate>
-                    <mvux:FeedView.NoneTemplate>
-                      <DataTemplate>
-                        <TextBlock x:Uid="PosDashboard.Invoice.WalkInCustomer"
-                                   Style="{StaticResource BodyMedium}"
-                                   Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                   FontStyle="Italic" />
-                      </DataTemplate>
-                    </mvux:FeedView.NoneTemplate>
-                  </mvux:FeedView>
-                </StackPanel>
+                            <!-- Product -->
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding ProductName}"
+                                       Style="{StaticResource BodySmall}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextTrimming="CharacterEllipsis" MaxLines="1"
+                                       VerticalAlignment="Center" />
 
-                <!-- Separator -->
-                <Border Height="1" Background="{ThemeResource OutlineBrush}" />
-
-                <!-- Positions Table Header -->
-                <Grid Background="{ThemeResource SurfaceVariantBrush}"
-                      CornerRadius="6" Padding="12,8">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="32" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="90" />
-                    <ColumnDefinition Width="72" />
-                    <ColumnDefinition Width="32" />
-                  </Grid.ColumnDefinitions>
-                  <TextBlock Grid.Column="0"
-                             x:Uid="PosDashboard.Invoice.Header.Pos"
-                             Style="{StaticResource LabelSmall}"
-                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                  <TextBlock Grid.Column="1"
-                             x:Uid="PosDashboard.Invoice.Header.Product"
-                             Style="{StaticResource LabelSmall}"
-                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                  <TextBlock Grid.Column="2"
-                             x:Uid="PosDashboard.Invoice.Header.Qty"
-                             Style="{StaticResource LabelSmall}"
-                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                             TextAlignment="Center" />
-                  <TextBlock Grid.Column="3"
-                             x:Uid="PosDashboard.Invoice.Header.UnitPrice"
-                             Style="{StaticResource LabelSmall}"
-                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                             TextAlignment="Right" />
-                  <TextBlock Grid.Column="4"
-                             x:Uid="PosDashboard.Invoice.Header.Total"
-                             Style="{StaticResource LabelSmall}"
-                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                             TextAlignment="Right" />
-                </Grid>
-
-                <!-- Positions Items -->
-                <mvux:FeedView Source="{Binding CartItems}">
-                  <mvux:FeedView.ValueTemplate>
-                    <DataTemplate>
-                      <ItemsRepeater ItemsSource="{Binding Data}"
-                                     ElementPrepared="InvoiceItemsRepeater_ElementPrepared">
-                        <ItemsRepeater.ItemTemplate>
-                          <DataTemplate>
-                            <Grid Padding="12,4" VerticalAlignment="Center">
-                              <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="32" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="90" />
-                                <ColumnDefinition Width="72" />
-                                <ColumnDefinition Width="32" />
-                              </Grid.ColumnDefinitions>
-
-                              <!-- Pos -->
-                              <TextBlock Grid.Column="0"
-                                         x:Name="PosNumber"
-                                         Style="{StaticResource BodySmall}"
-                                         Foreground="{ThemeResource OnSurfaceBrush}"
-                                         VerticalAlignment="Center" />
-
-                              <!-- Product -->
-                              <TextBlock Grid.Column="1"
-                                         Text="{Binding ProductName}"
-                                         Style="{StaticResource BodySmall}"
-                                         Foreground="{ThemeResource OnSurfaceBrush}"
-                                         TextTrimming="CharacterEllipsis" MaxLines="1"
-                                         VerticalAlignment="Center" />
-
-                              <!-- Qty: [-] N [+] -->
-                              <StackPanel Grid.Column="2"
-                                          Orientation="Horizontal"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center">
-                                <Button Click="DecrementQuantity_Click"
-                                        Style="{StaticResource TextButtonStyle}"
-                                        MinWidth="28" MinHeight="28"
-                                        Padding="0"
-                                        HorizontalContentAlignment="Center"
-                                        VerticalContentAlignment="Center">
-                                  <FontIcon Glyph="&#xE738;" FontSize="10"
-                                            Foreground="{ThemeResource OnSurfaceBrush}" />
-                                </Button>
-                                <TextBlock Text="{Binding Quantity}"
-                                           Style="{StaticResource BodySmall}"
-                                           Foreground="{ThemeResource OnSurfaceBrush}"
-                                           VerticalAlignment="Center"
-                                           TextAlignment="Center"
-                                           MinWidth="20" />
-                                <Button Click="IncrementQuantity_Click"
-                                        Style="{StaticResource TextButtonStyle}"
-                                        MinWidth="28" MinHeight="28"
-                                        Padding="0"
-                                        HorizontalContentAlignment="Center"
-                                        VerticalContentAlignment="Center">
-                                  <FontIcon Glyph="&#xE710;" FontSize="10"
-                                            Foreground="{ThemeResource OnSurfaceBrush}" />
-                                </Button>
-                              </StackPanel>
-
-                              <!-- Unit Price (editable) -->
-                              <TextBox Grid.Column="3"
-                                       Text="{Binding UnitPriceEditable}"
-                                       InputScope="Number"
-                                       LostFocus="CartItemPrice_LostFocus"
-                                       Padding="6,2"
-                                       MinHeight="0"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Stretch"
-                                       TextAlignment="Right" />
-
-                              <!-- Line Total -->
-                              <TextBlock Grid.Column="4"
-                                         Text="{Binding LineTotalFormatted}"
-                                         Style="{StaticResource BodySmall}"
-                                         Foreground="{ThemeResource OnSurfaceBrush}"
-                                         TextAlignment="Right"
-                                         VerticalAlignment="Center" />
-
-                              <!-- Delete -->
-                              <Button Grid.Column="5"
-                                      Click="RemoveFromCart_Click"
+                            <!-- Qty: [-] N [+] -->
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                              <Button Click="DecrementQuantity_Click"
                                       Style="{StaticResource TextButtonStyle}"
                                       MinWidth="28" MinHeight="28"
                                       Padding="0"
                                       HorizontalContentAlignment="Center"
                                       VerticalContentAlignment="Center">
-                                <FontIcon Glyph="&#xE74D;" FontSize="12"
-                                          Foreground="{ThemeResource ErrorBrush}" />
+                                <FontIcon Glyph="&#xE738;" FontSize="10"
+                                          Foreground="{ThemeResource OnSurfaceBrush}" />
                               </Button>
+                              <TextBlock Text="{Binding Quantity}"
+                                         Style="{StaticResource BodySmall}"
+                                         Foreground="{ThemeResource OnSurfaceBrush}"
+                                         VerticalAlignment="Center"
+                                         TextAlignment="Center"
+                                         MinWidth="20" />
+                              <Button Click="IncrementQuantity_Click"
+                                      Style="{StaticResource TextButtonStyle}"
+                                      MinWidth="28" MinHeight="28"
+                                      Padding="0"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalContentAlignment="Center">
+                                <FontIcon Glyph="&#xE710;" FontSize="10"
+                                          Foreground="{ThemeResource OnSurfaceBrush}" />
+                              </Button>
+                            </StackPanel>
+
+                            <!-- Unit Price (editable) -->
+                            <TextBox Grid.Column="3"
+                                     Text="{Binding UnitPriceEditable}"
+                                     InputScope="Number"
+                                     LostFocus="CartItemPrice_LostFocus"
+                                     Padding="6,2"
+                                     MinHeight="0"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Stretch"
+                                     TextAlignment="Right" />
+
+                            <!-- Line Total -->
+                            <TextBlock Grid.Column="4"
+                                       Text="{Binding LineTotalFormatted}"
+                                       Style="{StaticResource BodySmall}"
+                                       Foreground="{ThemeResource OnSurfaceBrush}"
+                                       TextAlignment="Right"
+                                       VerticalAlignment="Center" />
+
+                            <!-- Delete -->
+                            <Button Grid.Column="5"
+                                    Click="RemoveFromCart_Click"
+                                    Style="{StaticResource TextButtonStyle}"
+                                    MinWidth="28" MinHeight="28"
+                                    Padding="0"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center">
+                              <FontIcon Glyph="&#xE74D;" FontSize="12"
+                                        Foreground="{ThemeResource ErrorBrush}" />
+                            </Button>
+                          </Grid>
+                        </DataTemplate>
+                      </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                  </DataTemplate>
+                </mvux:FeedView.ValueTemplate>
+                <mvux:FeedView.NoneTemplate>
+                  <DataTemplate>
+                    <TextBlock x:Uid="PosDashboard.Invoice.NoItems"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                               HorizontalAlignment="Center"
+                               Margin="0,16" />
+                  </DataTemplate>
+                </mvux:FeedView.NoneTemplate>
+              </mvux:FeedView>
+
+              <!-- Product Search (add items) -->
+              <StackPanel Spacing="8">
+                <TextBox x:Name="ProductSearchBox"
+                         x:Uid="PosDashboard.QuickSale.ProductSearch"
+                         TextChanged="ProductSearchBox_TextChanged"
+                         KeyDown="ProductSearchBox_KeyDown" />
+
+                <mvux:FeedView Source="{Binding ProductSearchResults}">
+                  <mvux:FeedView.ValueTemplate>
+                    <DataTemplate>
+                      <ItemsRepeater ItemsSource="{Binding Data}"
+                                     Loaded="ProductResultsRepeater_Loaded">
+                        <ItemsRepeater.ItemTemplate>
+                          <DataTemplate>
+                            <Border CornerRadius="8">
+                              <Grid Padding="8,4">
+                                <Grid.ColumnDefinitions>
+                                  <ColumnDefinition Width="*" />
+                                  <ColumnDefinition Width="Auto" />
+                                  <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                  <TextBlock Text="{Binding Name}"
+                                             Style="{StaticResource BodySmall}"
+                                             Foreground="{ThemeResource OnSurfaceBrush}"
+                                             TextTrimming="CharacterEllipsis" MaxLines="1" />
+                                  <TextBlock Text="{Binding Sku}"
+                                             Style="{StaticResource BodySmall}"
+                                             Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                             FontSize="11" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Price}"
+                                           Style="{StaticResource BodySmall}"
+                                           Foreground="{ThemeResource OnSurfaceBrush}"
+                                           VerticalAlignment="Center"
+                                           Margin="8,0" />
+                                <Button Grid.Column="2"
+                                        x:Uid="PosDashboard.QuickSale.Add"
+                                        Click="AddToCart_Click"
+                                        Style="{StaticResource FilledTonalButtonStyle}"
+                                        Padding="10,4" />
+                              </Grid>
+                            </Border>
+                          </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                      </ItemsRepeater>
+                    </DataTemplate>
+                  </mvux:FeedView.ValueTemplate>
+                </mvux:FeedView>
+              </StackPanel>
+
+              <!-- Separator -->
+              <Border Height="1" Background="{ThemeResource OutlineBrush}" />
+
+              <!-- Financials -->
+              <StackPanel Spacing="8">
+                <!-- Subtotal -->
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Grid.Column="0"
+                             x:Uid="PosDashboard.Invoice.Subtotal"
+                             Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                  <mvux:FeedView Grid.Column="1" Source="{Binding CartTotalFormatted}">
+                    <mvux:FeedView.ValueTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Data}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceBrush}" />
+                      </DataTemplate>
+                    </mvux:FeedView.ValueTemplate>
+                  </mvux:FeedView>
+                </Grid>
+                <!-- Tax Breakdown by Rate -->
+                <mvux:FeedView Source="{Binding TaxBreakdown}">
+                  <mvux:FeedView.ValueTemplate>
+                    <DataTemplate>
+                      <ItemsRepeater ItemsSource="{Binding Data}">
+                        <ItemsRepeater.ItemTemplate>
+                          <DataTemplate>
+                            <Grid Padding="0,2">
+                              <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Grid.Column="0"
+                                         Text="{Binding Label}"
+                                         Style="{StaticResource BodyMedium}"
+                                         Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                              <TextBlock Grid.Column="1"
+                                         Text="{Binding AmountFormatted}"
+                                         Style="{StaticResource BodyMedium}"
+                                         Foreground="{ThemeResource OnSurfaceVariantBrush}" />
                             </Grid>
                           </DataTemplate>
                         </ItemsRepeater.ItemTemplate>
                       </ItemsRepeater>
                     </DataTemplate>
                   </mvux:FeedView.ValueTemplate>
-                  <mvux:FeedView.NoneTemplate>
-                    <DataTemplate>
-                      <TextBlock x:Uid="PosDashboard.Invoice.NoItems"
-                                 Style="{StaticResource BodyMedium}"
-                                 Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                                 HorizontalAlignment="Center"
-                                 Margin="0,16" />
-                    </DataTemplate>
-                  </mvux:FeedView.NoneTemplate>
                 </mvux:FeedView>
+                <!-- Tax Total (always visible) -->
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Grid.Column="0"
+                             x:Uid="PosDashboard.Invoice.Tax"
+                             Style="{StaticResource BodyMedium}"
+                             Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                  <mvux:FeedView Grid.Column="1" Source="{Binding CartTaxTotalFormatted}">
+                    <mvux:FeedView.ValueTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Data}"
+                                   Style="{StaticResource BodyMedium}"
+                                   Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+                      </DataTemplate>
+                    </mvux:FeedView.ValueTemplate>
+                  </mvux:FeedView>
+                </Grid>
 
-                <!-- Separator -->
+                <!-- Total separator -->
                 <Border Height="1" Background="{ThemeResource OutlineBrush}" />
 
-                <!-- Financials -->
-                <StackPanel Spacing="8">
-                  <!-- Subtotal -->
-                  <Grid>
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="*" />
-                      <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               x:Uid="PosDashboard.Invoice.Subtotal"
-                               Style="{StaticResource BodyMedium}"
-                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                    <mvux:FeedView Grid.Column="1" Source="{Binding CartTotalFormatted}">
-                      <mvux:FeedView.ValueTemplate>
-                        <DataTemplate>
-                          <TextBlock Text="{Binding Data}"
-                                     Style="{StaticResource BodyMedium}"
-                                     Foreground="{ThemeResource OnSurfaceBrush}" />
-                        </DataTemplate>
-                      </mvux:FeedView.ValueTemplate>
-                    </mvux:FeedView>
-                  </Grid>
-                  <!-- Tax -->
-                  <Grid>
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="*" />
-                      <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               x:Uid="PosDashboard.Invoice.Tax"
-                               Style="{StaticResource BodyMedium}"
-                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                    <TextBlock Grid.Column="1"
-                               Text="--"
-                               Style="{StaticResource BodyMedium}"
-                               Foreground="{ThemeResource OnSurfaceVariantBrush}" />
-                  </Grid>
-
-                  <!-- Total separator -->
-                  <Border Height="1" Background="{ThemeResource OutlineBrush}" />
-
-                  <!-- Grand Total -->
-                  <Grid>
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="*" />
-                      <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               x:Uid="PosDashboard.Invoice.Total"
-                               Style="{StaticResource TitleMedium}"
-                               Foreground="{ThemeResource PrimaryBrush}" />
-                    <mvux:FeedView Grid.Column="1" Source="{Binding CartTotalFormatted}">
-                      <mvux:FeedView.ValueTemplate>
-                        <DataTemplate>
-                          <TextBlock Text="{Binding Data}"
-                                     Style="{StaticResource TitleMedium}"
-                                     Foreground="{ThemeResource PrimaryBrush}" />
-                        </DataTemplate>
-                      </mvux:FeedView.ValueTemplate>
-                    </mvux:FeedView>
-                  </Grid>
-                </StackPanel>
-
-                <!-- Error/Success Messages -->
-                <StackPanel Spacing="4">
-                  <mvux:FeedView Source="{Binding PosErrorMessage}">
+                <!-- Grand Total -->
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Grid.Column="0"
+                             x:Uid="PosDashboard.Invoice.Total"
+                             Style="{StaticResource TitleMedium}"
+                             Foreground="{ThemeResource PrimaryBrush}" />
+                  <mvux:FeedView Grid.Column="1" Source="{Binding CartGrandTotalFormatted}">
                     <mvux:FeedView.ValueTemplate>
                       <DataTemplate>
                         <TextBlock Text="{Binding Data}"
-                                   Visibility="{Binding Data, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}"
-                                   Style="{StaticResource BodySmall}"
-                                   Foreground="{ThemeResource ErrorBrush}"
-                                   TextWrapping="Wrap" />
+                                   Style="{StaticResource TitleMedium}"
+                                   Foreground="{ThemeResource PrimaryBrush}" />
                       </DataTemplate>
                     </mvux:FeedView.ValueTemplate>
                   </mvux:FeedView>
-                  <mvux:FeedView Source="{Binding PosSuccessMessage}">
-                    <mvux:FeedView.ValueTemplate>
-                      <DataTemplate>
-                        <TextBlock Text="{Binding Data}"
-                                   Visibility="{Binding Data, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}"
-                                   Style="{StaticResource BodySmall}"
-                                   Foreground="{StaticResource PositiveChangeBrush}"
-                                   TextWrapping="Wrap" />
-                      </DataTemplate>
-                    </mvux:FeedView.ValueTemplate>
-                  </mvux:FeedView>
-                </StackPanel>
-
-                <!-- Sell Now Button -->
-                <Button x:Uid="PosDashboard.QuickSale.SellNow"
-                        Command="{Binding ProcessSale}"
-                        HorizontalAlignment="Stretch"
-                        Style="{StaticResource FilledButtonStyle}" />
+                </Grid>
               </StackPanel>
-            </Border>
-          </ScrollViewer>
-        </Grid>
+
+              <!-- Error/Success Messages -->
+              <StackPanel Spacing="4">
+                <mvux:FeedView Source="{Binding PosErrorMessage}">
+                  <mvux:FeedView.ValueTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding Data}"
+                                 Visibility="{Binding Data, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}"
+                                 Style="{StaticResource BodySmall}"
+                                 Foreground="{ThemeResource ErrorBrush}"
+                                 TextWrapping="Wrap" />
+                    </DataTemplate>
+                  </mvux:FeedView.ValueTemplate>
+                </mvux:FeedView>
+                <mvux:FeedView Source="{Binding PosSuccessMessage}">
+                  <mvux:FeedView.ValueTemplate>
+                    <DataTemplate>
+                      <TextBlock Text="{Binding Data}"
+                                 Visibility="{Binding Data, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}"
+                                 Style="{StaticResource BodySmall}"
+                                 Foreground="{StaticResource PositiveChangeBrush}"
+                                 TextWrapping="Wrap" />
+                    </DataTemplate>
+                  </mvux:FeedView.ValueTemplate>
+                </mvux:FeedView>
+              </StackPanel>
+
+              <!-- Sell Now Button -->
+              <Button x:Uid="PosDashboard.QuickSale.SellNow"
+                      Command="{Binding ProcessSale}"
+                      HorizontalAlignment="Stretch"
+                      Style="{StaticResource FilledButtonStyle}" />
+            </StackPanel>
+          </Border>
+        </ScrollViewer>
       </PivotItem>
 
       <!-- Tab 3: Recent Sales -->

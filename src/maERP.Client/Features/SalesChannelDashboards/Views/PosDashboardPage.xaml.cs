@@ -2,7 +2,6 @@ using maERP.Client.Features.Dashboard.Models;
 using maERP.Client.Features.SalesChannelDashboards.Models;
 using maERP.Domain.Dtos.Customer;
 using maERP.Domain.Dtos.Product;
-using Windows.ApplicationModel.Resources;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
 
@@ -164,10 +163,7 @@ public sealed partial class PosDashboardPage : Page
 
     private void ShowSelectedCustomer(CustomerListWithAddressDto customer)
     {
-        var resourceLoader = ResourceLoader.GetForViewIndependentUse();
-
         SelectedCustomerName.Text = customer.FullName;
-        SelectedCustomerNumber.Text = $"{resourceLoader.GetString("PosDashboard.QuickSale.CustomerNumber.Text")} {customer.CustomerId}";
         SelectedCustomerEmail.Text = customer.Email;
 
         if (!string.IsNullOrWhiteSpace(customer.InvoiceAddress))
@@ -177,9 +173,7 @@ public sealed partial class PosDashboardPage : Page
         }
         else
         {
-            SelectedCustomerAddress.Text = resourceLoader.GetString("PosDashboard.QuickSale.NoAddress.Text");
-            SelectedCustomerAddress.FontStyle = Windows.UI.Text.FontStyle.Italic;
-            SelectedCustomerAddress.Visibility = Visibility.Visible;
+            SelectedCustomerAddress.Visibility = Visibility.Collapsed;
         }
 
         SelectedCustomerPanel.Visibility = Visibility.Visible;

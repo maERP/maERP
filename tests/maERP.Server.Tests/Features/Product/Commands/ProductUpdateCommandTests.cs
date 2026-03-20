@@ -17,6 +17,7 @@ public class ProductUpdateCommandTests : TenantIsolatedTestBase
 
     // Test Entity IDs
     private static readonly Guid TestTaxClassId = new("11111111-1111-1111-1111-111111111111");
+    private static readonly Guid TestTaxClass2Id = new("11111111-1111-1111-1111-222222222222");
     private static readonly Guid TestManufacturer1Id = new("22222222-2222-2222-2222-222222222222");
     private static readonly Guid TestManufacturer2Id = new("33333333-3333-3333-3333-333333333333");
     private static readonly Guid TestProduct1Id = new("44444444-4444-4444-4444-444444444444");
@@ -75,7 +76,15 @@ public class ProductUpdateCommandTests : TenantIsolatedTestBase
                     DbContext.Manufacturer.Add(manufacturer2);
                 }
 
+                var taxClass2 = new maERP.Domain.Entities.TaxClass
+                {
+                    Id = TestTaxClass2Id,
+                    TaxRate = 20.0,
+                    TenantId = TenantConstants.TestTenant2Id
+                };
+
                 DbContext.TaxClass.Add(taxClass);
+                DbContext.TaxClass.Add(taxClass2);
 
                 // Save manufacturers and tax class before adding products
                 await DbContext.SaveChangesAsync();
@@ -106,7 +115,7 @@ public class ProductUpdateCommandTests : TenantIsolatedTestBase
                     Description = "Another description",
                     Price = 100.00m,
                     Msrp = 150.00m,
-                    TaxClassId = TestTaxClassId,
+                    TaxClassId = TestTaxClass2Id,
                     ManufacturerId = TestManufacturer2Id,
                     UseOptimized = false,
                     TenantId = TenantConstants.TestTenant2Id
@@ -268,6 +277,23 @@ public class ProductUpdateCommandTests : TenantIsolatedTestBase
             TestAssertions.AssertFalse(result.Succeeded);
             TestAssertions.AssertNotEmpty(result.Messages);
         }
+    }
+
+    [Fact]
+    public async Task UpdateProduct_WithEmptyTaxClassId_ShouldReturnBadRequest()
+    {
+        var productId = await SeedTestDataAsync();
+        SetTenantHeader(TenantConstants.TestTenant1Id);
+        var updateDto = CreateUpdateProductDto(productId);
+        updateDto.TaxClassId = Guid.Empty;
+
+        var response = await PutAsJsonAsync($"/api/v1/Products/{productId}", updateDto);
+
+        TestAssertions.AssertEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var result = await ReadResponseAsync<Result<Guid>>(response);
+        TestAssertions.AssertNotNull(result);
+        TestAssertions.AssertFalse(result.Succeeded);
+        TestAssertions.AssertNotEmpty(result.Messages);
     }
 
     [Fact]

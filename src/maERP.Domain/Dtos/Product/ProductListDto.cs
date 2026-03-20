@@ -11,5 +11,6 @@ public class ProductListDto
     public string? Ean { get; set; }
     public decimal Price { get; set; }
     public decimal Msrp { get; set; }
+    public double TaxRate { get; set; }
     public ManufacturerListDto? Manufacturer { get; set; }
 }

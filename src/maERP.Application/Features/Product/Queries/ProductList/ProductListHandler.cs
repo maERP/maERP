@@ -34,6 +34,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
         {
             var products = await _productRepository.Entities
                .Include(p => p.Manufacturer)
+               .Include(p => p.TaxClass)
                .Specify(orderFilterSpec)
                .Select(p => MapToProductListDto(p))
                .AsNoTracking() // Ensure no EF caching
@@ -46,6 +47,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
 
         var orderedProducts = await _productRepository.Entities
             .Include(p => p.Manufacturer)
+            .Include(p => p.TaxClass)
             .Specify(orderFilterSpec)
             .OrderBy(ordering)
             .Select(p => MapToProductListDto(p))
@@ -66,6 +68,7 @@ public class ProductListHandler : IRequestHandler<ProductListQuery, PaginatedRes
             Ean = product.Ean,
             Price = product.Price,
             Msrp = product.Msrp,
+            TaxRate = product.TaxClass?.TaxRate ?? 0,
             Manufacturer = product.Manufacturer != null ? new ManufacturerListDto
             {
                 Id = product.Manufacturer.Id,
