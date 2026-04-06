@@ -84,7 +84,7 @@
     <PackageVersion Include="PDFsharp-MigraDoc" Version="6.2.4" />
     <PackageVersion Include="SendGrid" Version="9.29.3" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.3.1" />
-    <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.1" />
+    <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.2" />
     <PackageVersion Include="WooCommerceNET" Version="0.8.6" />
   </ItemGroup>
   <ItemGroup Condition="$(UsingUnoSdk) != 'true'">
