@@ -19,6 +19,7 @@
 		<ProjectReference Include="..\maERP.Domain\maERP.Domain.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+  	<PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" />
 	  <Folder Include="Features\Invoice\Commands\" />
 	  <Folder Include="Features\Invoice\Commands\InvoiceCreate\" />
 	  <Folder Include="Features\Invoice\Commands\InvoiceUpdate\" />
