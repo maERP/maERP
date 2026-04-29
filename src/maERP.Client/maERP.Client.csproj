@@ -1,7 +1,11 @@
 <Project Sdk="Uno.Sdk">
   <PropertyGroup>
     <!-- iOS temporarily disabled due to Xcode xcrun issues -->
-    <TargetFrameworks>net10.0-android;net10.0-browserwasm;net10.0-desktop;net10.0</TargetFrameworks>
+    <!-- WasmOnlyBuild=true (set by the WASM Dockerfile) trims the multi-target
+         list to browser-WASM so the container image doesn't pull Android/iOS
+         workloads it doesn't need. -->
+    <TargetFrameworks Condition="'$(WasmOnlyBuild)' == 'true'">net10.0-browserwasm</TargetFrameworks>
+    <TargetFrameworks Condition="'$(WasmOnlyBuild)' != 'true'">net10.0-android;net10.0-browserwasm;net10.0-desktop;net10.0</TargetFrameworks>
     <!-- <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-browserwasm;net10.0-desktop;net10.0</TargetFrameworks> -->
 
     <OutputType>Exe</OutputType>

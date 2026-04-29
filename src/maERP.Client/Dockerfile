@@ -24,25 +24,22 @@ COPY ["NuGet.config", "./"]
 # are unused inside this image.
 RUN dotnet workload install wasm-tools
 
-# Restore dependencies for the WASM target only. The .csproj is multi-target
-# (Android, iOS, MacCatalyst, Desktop, WASM) — without this override, restore
-# walks every TFM and demands the Android/iOS workloads which aren't installed
-# (and aren't needed for a browser build).
-RUN dotnet restore "maERP.Client/maERP.Client.csproj" \
-    -p:TargetFrameworks=net10.0-browserwasm \
-    -p:TargetFramework=net10.0-browserwasm
+# Restore dependencies for the WASM target only. WasmOnlyBuild=true is
+# scoped inside maERP.Client.csproj so it only narrows that project's
+# TargetFrameworks — referenced libraries (e.g. maERP.Domain) keep their
+# own targets untouched.
+RUN dotnet restore "maERP.Client/maERP.Client.csproj" -p:WasmOnlyBuild=true
 
 # Copy source files
 COPY src/maERP.Client/ maERP.Client/
 COPY src/maERP.Domain/ maERP.Domain/
 
-# Build and publish (same TFM override — keeps publish from re-evaluating
-# the other targets and demanding their workloads).
+# Build and publish for browser-WASM only.
 WORKDIR "/src/maERP.Client"
 RUN dotnet publish "maERP.Client.csproj" \
     -c Release \
     -f net10.0-browserwasm \
-    -p:TargetFrameworks=net10.0-browserwasm \
+    -p:WasmOnlyBuild=true \
     -o /app/publish
 
 # Runtime stage with nginx
