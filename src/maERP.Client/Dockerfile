@@ -1,6 +1,6 @@
 # Uno Platform WebAssembly Dockerfile
 # Build stage with .NET 10 SDK
-FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
 # Install python3 required by Emscripten for WASM native compilation
 RUN apt-get update && apt-get install -y --no-install-recommends python3 && rm -rf /var/lib/apt/lists/*

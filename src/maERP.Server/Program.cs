@@ -372,7 +372,35 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 // Display formatted startup message.
 // app.Urls is empty until Kestrel actually starts, so fall back to the configured
 // URLs / ports from environment variables (ASPNETCORE_URLS, HTTP_PORTS, HTTPS_PORTS).
+//
+// In a container the port the server *binds to* is not the port users connect
+// to — the host publishes it on a (possibly different) external port. When
+// MAERP_PUBLIC_PORT is set (e.g. by docker-compose), it overrides the port
+// shown in the banner so logs reflect the externally reachable address.
 static IEnumerable<string> ResolveStartupUrls(WebApplication application)
+{
+    var publicPort = Environment.GetEnvironmentVariable("MAERP_PUBLIC_PORT");
+    var sourceUrls = ResolveBoundUrls(application);
+
+    if (string.IsNullOrWhiteSpace(publicPort))
+        return sourceUrls;
+
+    // Rewrite each URL's port to the public one.
+    return sourceUrls.Select(url =>
+    {
+        try
+        {
+            var builder = new UriBuilder(url) { Port = int.Parse(publicPort) };
+            return builder.Uri.ToString().TrimEnd('/');
+        }
+        catch
+        {
+            return url;
+        }
+    });
+}
+
+static IEnumerable<string> ResolveBoundUrls(WebApplication application)
 {
     if (application.Urls.Count > 0)
         return application.Urls;

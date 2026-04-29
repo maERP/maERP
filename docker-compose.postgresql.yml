@@ -58,7 +58,7 @@ services:
     environment:
       - MAERP_RESTRICT_SERVER_URL=${MAERP_RESTRICT_SERVER_URL:-}
     ports:
-      - "8444:80"
+      - "${MAERP_WASM_PORT:-8444}:80"
     networks:
       - backend
     restart: unless-stopped
