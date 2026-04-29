@@ -17,6 +17,7 @@ public static class AuthModule
         services.AddSingleton<ITokenStorageService, TokenStorageService>();
         services.AddSingleton<ITenantContextService, TenantContextService>();
         services.AddSingleton<IMaErpAuthenticationService, MaErpAuthenticationService>();
+        services.AddSingleton<IServerInfoService, ServerInfoService>();
 
         // Session management
         services.AddSingleton<SessionSettings>();

@@ -79,6 +79,45 @@ public class MaErpAuthenticationService : IMaErpAuthenticationService
         return loginResponse;
     }
 
+    public async Task<LoginResponseDto?> RegisterAsync(string serverUrl, RegisterRequestDto request, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Attempting registration for user: {Email} to server: {Server}", request.Email, serverUrl);
+
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri(serverUrl);
+
+        var response = await httpClient.PostAsJsonAsync("/api/v1/auth/register", request, AppJsonSerializerContext.Default.RegisterRequestDto, cancellationToken);
+
+        // Surface server-side problem details (e.g. 403 when registration disabled, 400 on weak password)
+        await response.EnsureSuccessOrThrowApiExceptionAsync(cancellationToken);
+
+        var rawJson = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogDebug("Register response JSON: {Json}", rawJson);
+
+        var apiResponse = JsonSerializer.Deserialize(rawJson, AppJsonSerializerContext.Default.ApiResponseLoginResponseDto);
+        var registerResponse = apiResponse?.Data;
+
+        if (apiResponse?.Succeeded == true && registerResponse?.Succeeded == true && !string.IsNullOrEmpty(registerResponse.Token))
+        {
+            await _tokenStorage.SetTokenAsync(registerResponse.Token);
+            await _tokenStorage.SetServerUrlAsync(serverUrl);
+
+            if (registerResponse.AvailableTenants != null)
+            {
+                if (registerResponse.CurrentTenantId.HasValue)
+                {
+                    await _tokenStorage.SetCurrentTenantIdAsync(registerResponse.CurrentTenantId.Value);
+                }
+
+                await _tenantContext.SetAvailableTenantsAsync(registerResponse.AvailableTenants);
+            }
+
+            _logger.LogInformation("Registration + auto-login successful for user: {UserId}", registerResponse.UserId);
+        }
+
+        return registerResponse;
+    }
+
     public async Task<LoginResponseDto?> RefreshTokenAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Refreshing JWT token");

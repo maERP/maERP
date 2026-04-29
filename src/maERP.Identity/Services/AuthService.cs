@@ -5,6 +5,7 @@ using System.Text.Json;
 using maERP.Application.Contracts.Identity;
 using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
 using maERP.Application.Models.Identity;
 using maERP.Domain.Dtos.Auth;
 using maERP.Domain.Dtos.Tenant;
@@ -25,6 +26,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
     private readonly IUserTenantService _userTenantService;
     private readonly IUserTenantRepository _userTenantRepository;
     private readonly IEmailService _emailService;
+    private readonly IServerInfoService _serverInfoService;
     private readonly ILogger<AuthService> _logger;
 
     public AuthService(
@@ -34,6 +36,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         IUserTenantService userTenantService,
         IUserTenantRepository userTenantRepository,
         IEmailService emailService,
+        IServerInfoService serverInfoService,
         ILogger<AuthService> logger)
     {
         _userManager = userManager;
@@ -42,6 +45,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         _userTenantService = userTenantService;
         _userTenantRepository = userTenantRepository;
         _emailService = emailService;
+        _serverInfoService = serverInfoService;
         _logger = logger;
     }
 
@@ -85,12 +89,18 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
         return Result<LoginResponseDto>.Success(response);
     }
 
-    public async Task<Result<RegistrationResponse>> Register(RegistrationRequest request)
+    public async Task<Result<LoginResponseDto>> Register(RegistrationRequest request)
     {
         _logger.LogDebug("🟦 AuthService.Register called");
         _logger.LogDebug("📧 Email: {Email}", request.Email);
         _logger.LogDebug("👤 Firstname: {Firstname}, Lastname: {Lastname}", request.Firstname, request.Lastname);
         _logger.LogDebug("🔑 Password length: {PasswordLength}", request.Password?.Length ?? 0);
+
+        if (!_serverInfoService.IsRegistrationEnabled)
+        {
+            _logger.LogWarning("⛔ Registration attempt rejected — registration is disabled on this server.");
+            return Result<LoginResponseDto>.Fail(ResultStatusCode.Forbidden, "Die Registrierung ist auf diesem Server deaktiviert.");
+        }
 
         var user = new ApplicationUser
         {
@@ -114,9 +124,20 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
 
             await _userManager.AddToRoleAsync(user, "User");
 
-            _logger.LogDebug("✅ Role added successfully");
+            _logger.LogDebug("✅ Role added successfully — issuing JWT for auto-login");
 
-            return Result<RegistrationResponse>.Success(new RegistrationResponse { UserId = user.Id });
+            var availableTenants = await _userTenantService.GetUserTenantsAsync(user.Id);
+            var jwtSecurityToken = await GenerateToken(user, availableTenants, defaultTenantId: null);
+
+            return Result<LoginResponseDto>.Success(new LoginResponseDto
+            {
+                UserId = user.Id,
+                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+                Succeeded = true,
+                Message = "Registrierung erfolgreich.",
+                AvailableTenants = availableTenants,
+                CurrentTenantId = null
+            });
         }
 
         _logger.LogDebug("❌ User creation failed with {ErrorCount} errors", result.Errors.Count());
@@ -165,7 +186,7 @@ public class AuthService : maERP.Application.Contracts.Identity.IAuthService
 
         _logger.LogDebug("❌ Final error message: {ErrorMessage}", errorMessage);
 
-        return Result<RegistrationResponse>.Fail(ResultStatusCode.BadRequest, errorMessage);
+        return Result<LoginResponseDto>.Fail(ResultStatusCode.BadRequest, errorMessage);
     }
 
     private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user, List<TenantListDto> availableTenants, Guid? defaultTenantId)

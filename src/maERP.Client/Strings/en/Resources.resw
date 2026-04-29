@@ -95,6 +95,41 @@
   <data name="Shell.Login.LoginButton.Content" xml:space="preserve">
     <value>Login</value>
   </data>
+  <data name="Shell.Login.RegisterLink.Text" xml:space="preserve">
+    <value>Create an account</value>
+  </data>
+
+  <!-- Shell Registration Overlay -->
+  <data name="Shell.Register.Title.Text" xml:space="preserve">
+    <value>Create an account</value>
+  </data>
+  <data name="Shell.Register.Subtitle.Text" xml:space="preserve">
+    <value>Register to start using maERP.</value>
+  </data>
+  <data name="Shell.Register.FormTitle.Text" xml:space="preserve">
+    <value>Registration</value>
+  </data>
+  <data name="Shell.Register.Firstname.Header" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="Shell.Register.Lastname.Header" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="Shell.Register.Email.Header" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Shell.Register.Password.Header" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Shell.Register.PasswordConfirm.Header" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="Shell.Register.Cancel.Content" xml:space="preserve">
+    <value>Back to login</value>
+  </data>
+  <data name="Shell.Register.Submit.Content" xml:space="preserve">
+    <value>Register</value>
+  </data>
 
   <!-- Dashboard Page -->
   <data name="DashboardPage.Header.Welcome.Text" xml:space="preserve">

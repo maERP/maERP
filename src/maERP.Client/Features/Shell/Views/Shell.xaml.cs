@@ -3,6 +3,7 @@ using Windows.ApplicationModel.Resources;
 using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Tenants.Services;
+using maERP.Domain.Dtos.Auth;
 using maERP.Domain.Dtos.Tenant;
 using maERP.Client.Features.Dashboard.Models;
 using maERP.Client.Features.Customers.Models;
@@ -249,6 +250,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     private void SetAuthenticatedVisibility()
     {
         LoginOverlay.Visibility = Visibility.Collapsed;
+        RegistrationOverlay.Visibility = Visibility.Collapsed;
         FirstTenantOverlay.Visibility = Visibility.Collapsed;
 
         Sidebar.Visibility = Visibility.Visible;
@@ -277,6 +279,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     {
         InitializeLoginOverlay();
         LoginOverlay.Visibility = Visibility.Visible;
+        RegistrationOverlay.Visibility = Visibility.Collapsed;
         FirstTenantOverlay.Visibility = Visibility.Collapsed;
 
         FirstTenantName.Text = string.Empty;
@@ -308,6 +311,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
     private void SetNoTenantsVisibility()
     {
         LoginOverlay.Visibility = Visibility.Collapsed;
+        RegistrationOverlay.Visibility = Visibility.Collapsed;
         FirstTenantOverlay.Visibility = Visibility.Visible;
 
         FirstTenantName.Text = string.Empty;
@@ -747,6 +751,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         LoginProgress.IsActive = false;
         LoginButton.IsEnabled = true;
         LoginServerUrl.Visibility = Visibility.Visible;
+        RegisterLink.Visibility = Visibility.Collapsed;
 
         // Runtime config (WASM: /config.json from nginx env var) may pin the
         // server URL — hide the input and use the configured value.
@@ -754,6 +759,10 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         {
             LoginServerUrl.Text = maERP.Client.Core.Configuration.RuntimeConfig.RestrictServerUrl!;
             LoginServerUrl.Visibility = Visibility.Collapsed;
+
+            // Only when the server URL is pinned do we ping /api/v1/server-info
+            // up-front to decide whether the registration link should appear.
+            _ = RefreshRegistrationLinkAsync(LoginServerUrl.Text);
         }
 
         try
@@ -773,6 +782,26 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         catch (Exception ex)
         {
             Console.WriteLine($"[Shell] InitializeLoginOverlay error: {ex.Message}");
+        }
+    }
+
+    private async Task RefreshRegistrationLinkAsync(string serverUrl)
+    {
+        try
+        {
+            var app = Application.Current as App;
+            var serverInfoService = app?.Host?.Services?.GetService<IServerInfoService>();
+            if (serverInfoService == null) return;
+
+            var info = await serverInfoService.GetServerInfoAsync(serverUrl);
+            if (info?.RegistrationEnabled == true)
+            {
+                RegisterLink.Visibility = Visibility.Visible;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Shell] RefreshRegistrationLinkAsync error: {ex.Message}");
         }
     }
 
@@ -862,6 +891,150 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             LoginProgress.Visibility = Visibility.Collapsed;
             LoginProgress.IsActive = false;
             LoginButton.IsEnabled = true;
+        }
+    }
+
+    #endregion
+
+    #region Registration Overlay
+
+    private void RegisterLink_Click(Microsoft.UI.Xaml.Documents.Hyperlink sender, Microsoft.UI.Xaml.Documents.HyperlinkClickEventArgs args)
+    {
+        ResetRegistrationOverlay();
+        LoginOverlay.Visibility = Visibility.Collapsed;
+        RegistrationOverlay.Visibility = Visibility.Visible;
+    }
+
+    private void ResetRegistrationOverlay()
+    {
+        RegisterFirstname.Text = string.Empty;
+        RegisterLastname.Text = string.Empty;
+        RegisterEmail.Text = string.Empty;
+        RegisterPassword.Password = string.Empty;
+        RegisterPasswordConfirm.Password = string.Empty;
+        RegisterErrorBanner.Visibility = Visibility.Collapsed;
+        RegisterErrorText.Text = string.Empty;
+        RegisterProgress.Visibility = Visibility.Collapsed;
+        RegisterProgress.IsActive = false;
+        RegisterSubmitButton.IsEnabled = true;
+        RegisterCancelButton.IsEnabled = true;
+    }
+
+    private void RegisterCancel_Click(object sender, RoutedEventArgs e)
+    {
+        RegistrationOverlay.Visibility = Visibility.Collapsed;
+        LoginOverlay.Visibility = Visibility.Visible;
+    }
+
+    private async void RegisterSubmit_Click(object sender, RoutedEventArgs e)
+    {
+        var firstname = RegisterFirstname.Text?.Trim();
+        var lastname = RegisterLastname.Text?.Trim();
+        var email = RegisterEmail.Text?.Trim();
+        var password = RegisterPassword.Password;
+        var passwordConfirm = RegisterPasswordConfirm.Password;
+
+        if (string.IsNullOrWhiteSpace(firstname) || string.IsNullOrWhiteSpace(lastname) ||
+            string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            RegisterErrorText.Text = "Bitte füllen Sie alle Felder aus.";
+            RegisterErrorBanner.Visibility = Visibility.Visible;
+            return;
+        }
+
+        if (password != passwordConfirm)
+        {
+            RegisterErrorText.Text = "Die Passwörter stimmen nicht überein.";
+            RegisterErrorBanner.Visibility = Visibility.Visible;
+            return;
+        }
+
+        var serverUrl = maERP.Client.Core.Configuration.RuntimeConfig.IsServerUrlRestricted
+            ? maERP.Client.Core.Configuration.RuntimeConfig.RestrictServerUrl!
+            : LoginServerUrl.Text?.Trim();
+
+        if (string.IsNullOrWhiteSpace(serverUrl))
+        {
+            RegisterErrorText.Text = "Server-URL fehlt.";
+            RegisterErrorBanner.Visibility = Visibility.Visible;
+            return;
+        }
+
+        if (!serverUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
+            !serverUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            serverUrl = "https://" + serverUrl;
+        }
+        serverUrl = serverUrl.TrimEnd('/');
+
+        RegisterSubmitButton.IsEnabled = false;
+        RegisterCancelButton.IsEnabled = false;
+        RegisterProgress.Visibility = Visibility.Visible;
+        RegisterProgress.IsActive = true;
+        RegisterErrorBanner.Visibility = Visibility.Collapsed;
+
+        try
+        {
+            var app = Application.Current as App;
+            if (app?.Host?.Services == null)
+            {
+                throw new InvalidOperationException("Services not available");
+            }
+
+            var maErpAuth = app.Host.Services.GetRequiredService<IMaErpAuthenticationService>();
+            var tenantContext = app.Host.Services.GetRequiredService<ITenantContextService>();
+            var shellModel = app.Host.Services.GetRequiredService<ShellModel>();
+
+            var request = new RegisterRequestDto
+            {
+                Firstname = firstname,
+                Lastname = lastname,
+                Email = email,
+                Username = email,
+                Password = password
+            };
+
+            var response = await maErpAuth.RegisterAsync(serverUrl, request);
+
+            if (response?.Succeeded == true && !string.IsNullOrEmpty(response.Token))
+            {
+                shellModel.UpdateAuthenticationState(true);
+
+                if (tenantContext.AvailableTenants.Count == 0)
+                {
+                    shellModel.UpdateNoTenantsState(true);
+                }
+                else
+                {
+                    var navigator = Splash.Navigator() ?? app.Host.Services.GetService<INavigator>();
+                    if (navigator != null)
+                    {
+                        await navigator.NavigateViewModelAsync<DashboardModel>(this, qualifier: Qualifiers.ClearBackStack);
+                    }
+                }
+            }
+            else
+            {
+                RegisterErrorText.Text = response?.Message ?? "Registrierung fehlgeschlagen.";
+                RegisterErrorBanner.Visibility = Visibility.Visible;
+            }
+        }
+        catch (ApiException ex)
+        {
+            RegisterErrorText.Text = ex.CombinedMessage;
+            RegisterErrorBanner.Visibility = Visibility.Visible;
+        }
+        catch (Exception ex)
+        {
+            RegisterErrorText.Text = ex.Message;
+            RegisterErrorBanner.Visibility = Visibility.Visible;
+        }
+        finally
+        {
+            RegisterProgress.Visibility = Visibility.Collapsed;
+            RegisterProgress.IsActive = false;
+            RegisterSubmitButton.IsEnabled = true;
+            RegisterCancelButton.IsEnabled = true;
         }
     }
 

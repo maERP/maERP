@@ -32,7 +32,8 @@ public class AuthController(IAuthService authenticationService, ILogger<AuthCont
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<RegistrationResponse>> Register(RegistrationRequest request)
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<LoginResponseDto>> Register(RegistrationRequest request)
     {
         logger.LogDebug("🔷 Register endpoint called");
         logger.LogDebug("📧 Email: {Email}", request.Email);

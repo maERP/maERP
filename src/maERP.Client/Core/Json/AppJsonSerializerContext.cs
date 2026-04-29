@@ -10,6 +10,7 @@ using maERP.Domain.Dtos.Manufacturer;
 using maERP.Domain.Dtos.Order;
 using maERP.Domain.Dtos.Product;
 using maERP.Domain.Dtos.SalesChannel;
+using maERP.Domain.Dtos.ServerInfo;
 using maERP.Domain.Dtos.Statistic;
 using maERP.Domain.Dtos.Superadmin;
 using maERP.Domain.Dtos.TaxClass;
@@ -75,6 +76,8 @@ namespace maERP.Client.Core.Json;
 [JsonSerializable(typeof(ManufacturerInputDto))]
 [JsonSerializable(typeof(CustomerInputDto))]
 [JsonSerializable(typeof(LoginRequestDto))]
+[JsonSerializable(typeof(RegisterRequestDto))]
+[JsonSerializable(typeof(ServerInfoResponseDto))]
 [JsonSerializable(typeof(AddUserToTenantPayload))]
 [JsonSerializable(typeof(AssignUserToTenantPayload))]
 

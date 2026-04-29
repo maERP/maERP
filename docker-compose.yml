@@ -26,6 +26,10 @@ services:
       # Informational only — used by the startup banner so it shows the
       # host-side port instead of the container-internal 8443.
       - MAERP_PUBLIC_PORT=${MAERP_SERVER_PORT:-8443}
+      # Toggle public self-registration. Default false — server rejects
+      # POST /api/v1/auth/register and reports registrationEnabled=false on
+      # GET /api/v1/server-info.
+      - SERVER_REGISTRATION_ENABLED=${SERVER_REGISTRATION_ENABLED:-false}
       - DatabaseConfig__Provider=${DB_PROVIDER}
       - DatabaseConfig__ConnectionString=${DB_CONNECTION_STRING}
       - Logging__LogLevel__Default=Warning
