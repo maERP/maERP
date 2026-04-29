@@ -13,11 +13,19 @@ COPY ["src/maERP.Domain/maERP.Domain.csproj", "maERP.Domain/"]
 COPY ["Directory.Build.props", "./"]
 COPY ["Directory.Packages.props", "./"]
 COPY ["global.json", "./"]
+# NuGet.config carries the package sources required to resolve the
+# Uno.Sdk MSBuild SDK that's pulled in via global.json's msbuild-sdks.
+COPY ["NuGet.config", "./"]
 
-# Install required workloads (wasm-tools for publish, workload restore for all project TFMs)
-RUN dotnet workload install wasm-tools && dotnet workload restore "maERP.Client/maERP.Client.csproj"
+# Install only the wasm-tools workload — the container build targets
+# net10.0-browserwasm exclusively. We deliberately do NOT run
+# `dotnet workload restore` here: that would force-install Android, iOS,
+# MacCatalyst etc. workloads from the multi-target .csproj, all of which
+# are unused inside this image.
+RUN dotnet workload install wasm-tools
 
-# Restore dependencies
+# Restore dependencies (this also primes the NuGet cache with Uno.Sdk
+# so downstream MSBuild evaluations succeed).
 RUN dotnet restore "maERP.Client/maERP.Client.csproj"
 
 # Copy source files
