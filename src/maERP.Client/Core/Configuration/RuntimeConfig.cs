@@ -51,7 +51,7 @@ public static class RuntimeConfig
             {
                 RestrictServerUrl = string.IsNullOrWhiteSpace(dto.RestrictServerUrl)
                     ? null
-                    : dto.RestrictServerUrl.TrimEnd('/');
+                    : dto.RestrictServerUrl!.TrimEnd('/');
             }
         }
         catch
@@ -80,12 +80,16 @@ public static class RuntimeConfig
     }
 #endif
 
-    internal sealed class RuntimeConfigDto
-    {
-        [JsonPropertyName("restrictServerUrl")]
-        public string? RestrictServerUrl { get; set; }
-    }
-
-    [JsonSerializable(typeof(RuntimeConfigDto))]
-    internal partial class RuntimeConfigJsonContext : JsonSerializerContext;
 }
+
+// NOTE: top-level (not nested) so the System.Text.Json source generator
+// is happy — it requires every enclosing type to be partial as well, and
+// RuntimeConfig is intentionally a non-partial static class.
+internal sealed class RuntimeConfigDto
+{
+    [JsonPropertyName("restrictServerUrl")]
+    public string? RestrictServerUrl { get; set; }
+}
+
+[JsonSerializable(typeof(RuntimeConfigDto))]
+internal partial class RuntimeConfigJsonContext : JsonSerializerContext;
