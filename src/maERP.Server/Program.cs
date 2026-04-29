@@ -2,11 +2,13 @@
 
 using Microsoft.AspNetCore.Mvc;
 using maERP.Application;
+using maERP.Application.Models.Grafana;
 using maERP.Domain.Enums;
 using maERP.Server.Infrastructure.JsonConverters;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Services;
 using maERP.Identity;
+using maERP.Identity.Services;
 using maERP.Infrastructure;
 using maERP.Persistence;
 using maERP.Persistence.Configurations.Options;
@@ -25,6 +27,7 @@ using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using System.Threading.RateLimiting;
 using Serilog;
+using Serilog.Sinks.Grafana.Loki;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,20 +39,67 @@ builder.WebHost.ConfigureKestrel(options =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Logging.AddOpenTelemetry(logging =>
-{
-    logging.AddOtlpExporter(options =>
-    {
-        options.Endpoint = new Uri(builder.Configuration["Telemetry:Endpoint"] ?? "http://localhost:4317");
-        options.Protocol = OtlpExportProtocol.Grpc;
-    });
-});
-
 builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
 
-builder.Host.UseSerilog(
-    (context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
-);
+// Bootstrap: load Grafana settings from the database before wiring up logging/telemetry.
+// Falls back to safe defaults when persistence is not available (e.g. test environment).
+var grafanaSettings = new GrafanaSettings();
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    try
+    {
+        var bootstrapServices = new ServiceCollection();
+        bootstrapServices.AddLogging();
+        bootstrapServices.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
+        bootstrapServices.AddPersistenceServices();
+        bootstrapServices.AddScoped<ITenantContext, TenantContext>();
+        bootstrapServices.AddScoped<ISettingRepository, SettingRepository>();
+        bootstrapServices.AddScoped<ISettingsService, SettingsService>();
+        bootstrapServices.AddTransient<SettingsInitializer>();
+
+#pragma warning disable ASP0000 // Bootstrap-only provider used to read settings before host construction
+        using var bootstrapProvider = bootstrapServices.BuildServiceProvider();
+#pragma warning restore ASP0000
+        using var bootstrapScope = bootstrapProvider.CreateScope();
+
+        var bootstrapDb = bootstrapScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        if (bootstrapDb.Database.IsRelational() && bootstrapDb.Database.GetPendingMigrations().Any())
+        {
+            bootstrapDb.Database.Migrate();
+        }
+
+        var bootstrapInitializer = bootstrapScope.ServiceProvider.GetRequiredService<SettingsInitializer>();
+        await bootstrapInitializer.EnsureRequiredSettingsExistAsync();
+
+        var bootstrapSettings = bootstrapScope.ServiceProvider.GetRequiredService<ISettingsService>();
+        grafanaSettings = await bootstrapSettings.GetGrafanaSettingsAsync();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Bootstrap] Failed to load Grafana settings from database: {ex.Message}");
+    }
+}
+
+if (grafanaSettings.LogsEnabled && Uri.TryCreate(grafanaSettings.LokiEndpoint, UriKind.Absolute, out _))
+{
+    builder.Host.UseSerilog((context, services, configuration) => configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .WriteTo.GrafanaLoki(
+            grafanaSettings.LokiEndpoint,
+            labels: new[]
+            {
+                new LokiLabel { Key = "app", Value = "maERP.Server" },
+                new LokiLabel { Key = "environment", Value = builder.Environment.EnvironmentName }
+            }));
+}
+else
+{
+    builder.Host.UseSerilog(
+        (context, configuration) => configuration.ReadFrom.Configuration(context.Configuration)
+    );
+}
 
 builder.Services.AddCors(options =>
 {
@@ -64,7 +114,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSwaggerServices();
 builder.Services.AddApiVersioningServices(builder.Configuration);
-builder.Services.AddOpenTelemetryServices(builder.Configuration, "maERP.Server");
+builder.Services.AddGrafanaTelemetryServices(grafanaSettings, "maERP.Server");
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers().AddJsonOptions(opts =>

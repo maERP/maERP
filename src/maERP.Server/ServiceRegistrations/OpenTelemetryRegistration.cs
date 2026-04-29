@@ -1,4 +1,4 @@
-﻿using maERP.Application.Models.Telemetry;
+using maERP.Application.Models.Grafana;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -8,42 +8,42 @@ namespace maERP.Server.ServiceRegistrations;
 
 public static class OpenTelemetryRegistration
 {
-    public static IServiceCollection AddOpenTelemetryServices(this IServiceCollection services, TelemetrySettings telemetrySettings)
+    public static IServiceCollection AddGrafanaTelemetryServices(
+        this IServiceCollection services,
+        GrafanaSettings grafanaSettings,
+        string serviceName)
     {
+        if (!grafanaSettings.MetricsEnabled)
+        {
+            return services;
+        }
+
+        if (!Uri.TryCreate(grafanaSettings.Endpoint, UriKind.Absolute, out var metricsUri))
+        {
+            return services;
+        }
+
         services.AddOpenTelemetry()
             .ConfigureResource(resource => resource
-                .AddService(telemetrySettings.ServiceName)
+                .AddService(serviceName)
                 .AddEnvironmentVariableDetector())
             .WithTracing(tracing => tracing
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation()
                 .AddOtlpExporter(options =>
                 {
-                    options.Endpoint = new Uri(telemetrySettings.Endpoint);
-                    options.Protocol = OtlpExportProtocol.Grpc;
+                    options.Endpoint = metricsUri;
+                    options.Protocol = OtlpExportProtocol.HttpProtobuf;
                 }))
             .WithMetrics(metrics => metrics
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation()
                 .AddOtlpExporter(options =>
                 {
-                    options.Endpoint = new Uri(telemetrySettings.Endpoint);
-                    options.Protocol = OtlpExportProtocol.Grpc;
+                    options.Endpoint = metricsUri;
+                    options.Protocol = OtlpExportProtocol.HttpProtobuf;
                 }));
 
         return services;
-    }
-
-    public static IServiceCollection AddOpenTelemetryServices(this IServiceCollection services, IConfiguration configuration, string serviceName)
-    {
-        var telemetryEndpoint = configuration["Telemetry:Endpoint"] ?? "http://localhost:4317";
-
-        var telemetrySettings = new TelemetrySettings
-        {
-            Endpoint = telemetryEndpoint,
-            ServiceName = serviceName
-        };
-
-        return services.AddOpenTelemetryServices(telemetrySettings);
     }
 }

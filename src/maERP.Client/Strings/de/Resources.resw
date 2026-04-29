@@ -206,7 +206,7 @@
     <value>Kunden</value>
   </data>
   <data name="Shell.NavItem.Orders.Content" xml:space="preserve">
-    <value>Bestellungen</value>
+    <value>Verkäufe</value>
   </data>
   <data name="Shell.NavItem.Products.Content" xml:space="preserve">
     <value>Produkte</value>
@@ -239,6 +239,39 @@
     <value>Steuerklassen</value>
   </data>
   <data name="Shell.NavItem.SalesChannels.Content" xml:space="preserve">
+    <value>Vertriebskanäle</value>
+  </data>
+  <data name="Shell.NavItem.Dashboard.Text" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Shell.NavItem.Customers.Text" xml:space="preserve">
+    <value>Kunden</value>
+  </data>
+  <data name="Shell.NavItem.Orders.Text" xml:space="preserve">
+    <value>Verkäufe</value>
+  </data>
+  <data name="Shell.NavItem.Products.Text" xml:space="preserve">
+    <value>Produkte</value>
+  </data>
+  <data name="Shell.NavItem.Warehouses.Text" xml:space="preserve">
+    <value>Lager</value>
+  </data>
+  <data name="Shell.NavItem.Manufacturers.Text" xml:space="preserve">
+    <value>Hersteller</value>
+  </data>
+  <data name="Shell.NavItem.Invoices.Text" xml:space="preserve">
+    <value>Rechnungen</value>
+  </data>
+  <data name="Shell.NavItem.AiModels.Text" xml:space="preserve">
+    <value>KI-Modelle</value>
+  </data>
+  <data name="Shell.NavItem.AiPrompts.Text" xml:space="preserve">
+    <value>KI-Prompts</value>
+  </data>
+  <data name="Shell.NavItem.TaxClasses.Text" xml:space="preserve">
+    <value>Steuerklassen</value>
+  </data>
+  <data name="Shell.NavItem.SalesChannels.Text" xml:space="preserve">
     <value>Vertriebskanäle</value>
   </data>
 
@@ -3509,5 +3542,37 @@
   </data>
   <data name="Shopware5Dashboard.Placeholder.Settings.Text" xml:space="preserve">
     <value>In zukünftigem Update verfügbar</value>
+  </data>
+  <!-- Shell Navigation Groups -->
+  <data name="Shell.NavGroup.Stammdaten.Text" xml:space="preserve">
+    <value>STAMMDATEN</value>
+  </data>
+  <data name="Shell.NavGroup.Verkauf.Text" xml:space="preserve">
+    <value>VERKAUF</value>
+  </data>
+  <data name="Shell.NavGroup.Einstellungen.Text" xml:space="preserve">
+    <value>EINSTELLUNGEN</value>
+  </data>
+  <data name="Shell.NavGroup.Superadmin.Text" xml:space="preserve">
+    <value>SUPERADMIN</value>
+  </data>
+  <data name="Shell.NavItem.AllTenants.Text" xml:space="preserve">
+    <value>Alle Mandanten</value>
+  </data>
+  <data name="Shell.Search.Placeholder.Text" xml:space="preserve">
+    <value>Schnellsuche…</value>
+  </data>
+  <!-- Dashboard Breadcrumb and Filters -->
+  <data name="DashboardPage.Breadcrumb.Text" xml:space="preserve">
+    <value>Startseite</value>
+  </data>
+  <data name="DashboardPage.Button.New.Content" xml:space="preserve">
+    <value>+ Neu</value>
+  </data>
+  <data name="DashboardPage.Section.Kpi.Text" xml:space="preserve">
+    <value>Kennzahlen</value>
+  </data>
+  <data name="DashboardPage.Filter.Last24h.Text" xml:space="preserve">
+    <value>Letzte 24 Stunden</value>
   </data>
 </root>

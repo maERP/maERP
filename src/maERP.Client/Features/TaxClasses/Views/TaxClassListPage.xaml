@@ -270,7 +270,7 @@
                      Foreground="{ThemeResource OnSurfaceVariantBrush}"
                      VerticalAlignment="Center" />
           <ComboBox x:Name="PageSizeComboBox"
-                    MinWidth="80"
+                    Style="{StaticResource PageSizeComboBoxStyle}"
                     SelectionChanged="PageSizeComboBox_SelectionChanged"
                     SelectedIndex="1">
             <ComboBoxItem Content="10" Tag="10" />

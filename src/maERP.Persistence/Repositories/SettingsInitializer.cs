@@ -116,7 +116,13 @@ namespace maERP.Persistence.Repositories
                 new Setting { Key = "Email.FromAddress", Value = "noreply@maerp.local" },
                 new Setting { Key = "Email.FromName", Value = "maERP System" },
                 new Setting { Key = "Email.ReplyToAddress", Value = "" },
-                new Setting { Key = "Email.ReplyToName", Value = "" }
+                new Setting { Key = "Email.ReplyToName", Value = "" },
+
+                // Grafana / Loki Settings
+                new Setting { Key = "Grafana.Endpoint", Value = "https://grafana.martin-andrich.de" },
+                new Setting { Key = "Grafana.LokiEndpoint", Value = "https://grafana.martin-andrich.de/loki" },
+                new Setting { Key = "Grafana.MetricsEnabled", Value = "False" },
+                new Setting { Key = "Grafana.LogsEnabled", Value = "False" }
             };
         }
 

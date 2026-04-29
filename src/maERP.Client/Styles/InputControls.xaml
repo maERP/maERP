@@ -26,4 +26,15 @@
   <system:Double x:Key="ComboBoxMinHeight">40</system:Double>
   <system:Double x:Key="ComboBoxHeight">36</system:Double>
 
+  <!-- Compact ComboBox style for pagination "page size" pickers -->
+  <Style x:Key="PageSizeComboBoxStyle" TargetType="ComboBox">
+    <Setter Property="Height" Value="32" />
+    <Setter Property="MinHeight" Value="32" />
+    <Setter Property="MinWidth" Value="72" />
+    <Setter Property="Padding" Value="10,0" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+
 </ResourceDictionary>

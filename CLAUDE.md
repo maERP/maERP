@@ -1,252 +1,129 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code working in this repository. Subdirectories contain their own `CLAUDE.md` with focused conventions — they are loaded automatically when working in those folders. Read this file first, then defer to the nested files for layer-specific rules.
 
 ## Project Overview
 
-maERP is a C# client-server, cross-platform, open-source ERP system developed with .NET 9, Uno Platform and Entity Framework. It follows the Clean Architecture with a clear separation of concerns. It consists of the projects:
+maERP is an open-source, multi-tenant ERP system. C#, .NET 10, Clean Architecture, cross-platform UI via Uno Platform.
 
-1. **maERP.Domain** - Core domain entities and interfaces
-2. **maERP.Application** - Application logic, CQRS handlers
-3. **maERP.Infrastructure** - Cross-cutting concerns (email, logging, PDF generation)
-4. **maERP.Persistence** - Database access, repositories
-5. **maERP.Identity** - Authentication and authorization
-6. **maERP.SalesChannels** - Integrations with e-commerce platforms
-7. **maERP.Server** - Backend API server (headless, no frontend)
-8. **maERP.Client** - Client using Uno Platform for Desktop, WASM, iOS, Android
+### Solution layout
 
-## Architecture
+| Project | Purpose |
+|---|---|
+| `src/maERP.Domain` | Entities, DTOs, Enums, Wrappers, Validators. No infrastructure dependencies. |
+| `src/maERP.Application` | CQRS handlers (Features/), custom Mediator, contracts, services |
+| `src/maERP.Infrastructure` | Email, PDF, logging, cross-cutting services |
+| `src/maERP.Persistence` | EF Core DbContext, repositories, configurations, seeders |
+| `src/maERP.Persistence.{MSSQL,MySQL,PostgreSQL,SQLite}` | Provider-specific migration assemblies |
+| `src/maERP.Identity` | ASP.NET Identity, JWT auth, token services |
+| `src/maERP.SalesChannels` | Integrations: PointOfSale, Shopware 5/6, WooCommerce, eBay |
+| `src/maERP.Analytics` | Analytics scaffolding |
+| `src/maERP.Server` | ASP.NET Core Web API (no frontend) |
+| `src/maERP.Client` | Uno Platform app (Desktop, WASM, Android, iOS) |
+| `tests/maERP.Server.Tests` | xUnit, multi-tenant integration tests |
+| `tests/maERP.Persistence.Tests` | xUnit, persistence layer |
+| `tests/maERP.Client.Tests`, `tests/maERP.Client.UITests` | NUnit |
 
-The codebase implements:
-- CQRS pattern for separating commands and queries
-- Repository pattern for data access
-- JWT authentication
-- No Automapper, using manual mapping instead
-- No MediatR, using manual Mediator instead
-- maERP.Client does not have database access, using REST-API with Kiota instead
-- Texts are created in multiple languages in the resource-files
-- Styles are defined in maERP.Client/Styles/
+### Architecture in one screen
 
-### maERP.Client Uno Platform Project Settings
-- Framework .NET 10.0
-- Platforms Android, iOS, WebAssembly, Desktop
-- Presentation MVUX
-- Markup XAML
-- Theme Material with Theme Service, Import Uno DSP
-- Extensions: Dependency Injection, Configuration, Localization
-- HTTP: Kiota support
-- Navigation: Regions
-- Loggin: Serilog
-- Features: Uno.Toolkit
-- Renderer: Skia
-- Authentication: Web
+- **CQRS** — `Features/{Area}/Commands/{Name}` and `Features/{Area}/Queries/{Name}`. Each has a request, handler, and (where applicable) validator.
+- **Custom Mediator** — `maERP.Application.Mediator` namespace (not the MediatR NuGet package). Same `IRequest<TResponse>` / `IRequestHandler<TRequest, TResponse>` shape. Some doc comments still mention "MediatR" — they refer to the custom implementation.
+- **Manual mapping** — no AutoMapper; mapping done explicitly in handlers/extensions.
+- **Repositories** for data access; entities inherit `BaseEntity` (with `Guid? TenantId`) or `BaseEntityWithoutTenant`. All Ids are `System.Guid` (`BaseEntity.cs`).
+- **Tenancy** — global EF Core query filters enforce tenant isolation; `ITenantContext` is the runtime source of truth.
+- **REST + JWT** — versioned routes (`/api/v{version:apiVersion}/...`), Bearer auth, RFC 7807 problem details, `GlobalExceptionFilters`.
+- **Client** is API-only — no DB access, talks to Server via HTTP (Kiota + named `HttpClient`).
 
-### maERP.Client API Error Handling
-- Use `ApiException` and `HttpResponseExtensions.EnsureSuccessOrThrowApiExceptionAsync()` for HTTP error handling
-- In Services: use `await response.EnsureSuccessOrThrowApiExceptionAsync(ct)`
-- In Models: Catch `ApiException` and display `ex.CombinedMessage` as ErrorMessage to show server validation errors
-
-### maERP.Client ResourceLoader
-- IMPORTANT: `ResourceLoader.GetString()` uses **dots** as separators, not slashes: `resourceLoader.GetString("Page.Section.Key")` — slashes return `null`
-
-### maERP.Client Card Styling
-Cards must use `ThemeShadow` and `Translation` for a consistent 3D shadow effect:
-```xml
-<Border Background="{ThemeResource SurfaceBrush}"
-        CornerRadius="12"
-        Translation="0,0,8">
-  <Border.Shadow>
-    <ThemeShadow />
-  </Border.Shadow>
-  <!-- Card content -->
-</Border>
-```
-- Do not use `BorderBrush` and `BorderThickness` for card styling
-- Use `Translation="0,0,8"` for the elevation effect
-- Use `CornerRadius="12"` for rounded corners
-
-## Role Management
-- IMPORTANT: only Superadmin-Role can use SuperadminController to add, edit or delete users in any tenant
-- IMPORTANT: all users can see their own user profile, even when they have no UserTenant
-- IMPORTANT: all users only see data from their own tenants
-- IMPORTANT: With RoleManageUser-Role, a user can manage add or delete users in their own tenant via SuperadminController
-- IMPORTANT: With RoleManageTenant-Role, a user edit or delete tenants their own tenant via TenantsController
-- Login is possible without having a tenant. Every User can create Tenants. Every user can only see their own tenants.
-
-## Development Commands
-
-### Available MCP Server
-- jetbrains for general, debugging, error, files, formatting, text and version control operations
-- uno for getting uno platform documentations
-- ref for getting other documentations
-- postgres for database operations
-
-Use MCP Server if needed. Do not use jetbrains for shell commands.
-
-### Building the Project
+## Common Commands
 
 ```bash
-# Build the entire solution
+# Build
 dotnet build
-
-# Build maERP.Server project
 dotnet build src/maERP.Server/maERP.Server.csproj
-
-# Build maERP.Client project (multi-platform)
 dotnet build src/maERP.Client/maERP.Client.csproj
 
-```
-
-### Running the Application
-
-```bash
-# Run the server
+# Run
 dotnet run --project src/maERP.Server/maERP.Server.csproj
+dotnet run --project src/maERP.Client/maERP.Client.csproj                       # WASM in browser
+dotnet run --project src/maERP.Client/maERP.Client.csproj -f net10.0-desktop    # Desktop
 
-# Run the client (WebAssembly in browser)
-dotnet run --project src/maERP.Client/maERP.Client.csproj
-
-# Run the client (Desktop)
-dotnet run --project src/maERP.Client/maERP.Client.csproj -f net10.0-desktop
-```
-
-### Testing
-
-```bash
-# Run all tests
+# Tests
 dotnet test
-
-# Run specific test project
 dotnet test tests/maERP.Server.Tests/maERP.Server.Tests.csproj
-
-# Run specific test class
 dotnet test tests/maERP.Server.Tests/maERP.Server.Tests.csproj --filter "FullyQualifiedName~CustomerCrudTest"
 
-# Run specific test method
-dotnet test tests/maERP.Server.Tests/maERP.Server.Tests.csproj --filter "FullyQualifiedName~CustomerCrudTest.CustomerCreateTest"
-```
-
-#### Multi-Tenant Testing Infrastructure
-
-The project uses a specialized testing infrastructure for multi-tenant scenarios:
-
-**TenantIsolatedTestBase**: All multi-tenant tests should inherit from `TenantIsolatedTestBase` instead of implementing their own test setup. This base class provides:
-
-- **Automatic test isolation**: Each test gets its own database and tenant context
-- **Built-in tenant management**: Helper methods for setting tenant headers and simulating different scenarios
-- **Proper authentication simulation**: Support for authenticated/unauthenticated requests
-
-**Usage Example**:
-```csharp
-public class MyTenantAwareTests : TenantIsolatedTestBase
-{
-    [Fact]
-    public async Task MyTest_WithTenant1_ShouldReturnTenant1Data()
-    {
-        // Arrange
-        await TestDataSeeder.SeedTestDataAsync(DbContext, TenantContext);
-        SetTenantHeader(TenantConstants.TestTenant1Id);
-
-        // Act
-        var response = await Client.GetAsync("/api/v1/MyResource");
-
-        // Assert
-        TestAssertions.AssertHttpSuccess(response);
-        // ... additional assertions
-    }
-}
-```
-
-**Available Helper Methods**:
-- `SetTenantHeader(Guid tenantId)` - Set valid tenant header
-- `SetInvalidTenantHeader()` - Set non-existent but valid GUID tenant header
-- `SetInvalidTenantHeaderValue(string value)` - Set invalid header format
-- `RemoveTenantHeader()` - Remove tenant header entirely
-- `SimulateUnauthenticatedRequest()` - Make request unauthenticated
-- `SimulateAuthenticatedRequest()` - Make request authenticated
-- `PostAsJsonAsync<T>()`, `PutAsJsonAsync<T>()` - HTTP helper methods
-- `ReadResponseAsync<T>()`, `ReadResponseStringAsync()` - Response parsing helpers
-
-**Testing Scenarios**:
-- Tenant data isolation (each tenant sees only their data)
-- Cross-tenant access prevention
-- Missing/invalid tenant header handling
-- Authentication and authorization with tenants
-- Unauthenticated request handling
-
-### Database Migrations
-
-The project supports multiple database providers (MySQL, PostgreSQL, MSSQL) with separate migration assemblies:
-
-```bash
-# Create migrations for all providers
-./create-migrations.sh "MigrationName"
-
-# Create migrations for specific provider
-./create-migrations.sh "MigrationName" mysql
-./create-migrations.sh "MigrationName" mssql
-./create-migrations.sh "MigrationName" postgresql
-```
-
-### Code Style and Quality
-
-```bash
-# Run code format check
+# Format
+dotnet format
 dotnet format --verify-no-changes
 
-# Apply code formatting
-dotnet format
+# Migrations — see src/maERP.Persistence/CLAUDE.md
+./create-migrations.sh "MigrationName"               # all providers
+./create-migrations.sh "MigrationName" postgresql    # one provider
 ```
 
-## Important Notes
+## Project-wide Rules
 
-- All comments should be in English
-- The project uses dependency injection heavily throughout all layers
-- Database provider can be configured in appsettings.json or environment variables
-- Docker containerization is fully supported and recommended for deployment
-- Authentication is JWT-based
-- maERP.Server is built with .NET 9 ASP.NET Core
-- maERP.Server uses MediatR for CQRS pattern
-- The project is multi tenancy enabled
-- The project uses Entity Framework Core for database access
-- The project uses C# 10+ features when appropriate
-- The project uses FluentValidation for validation
-- The project uses Serilog for logging
-- The project uses GitHub Actions for CI/CD
-- maERP.UI is not executable. It is a shared library for maERP.Browser, maERP.Desktop, maERP.iOS and maERP.Android
-- Uno Platform is used for cross-platform UI development
-- Uno Platform is using MVUX Pattern and Fluent Theme
-- maERP.Client uses feature-based architecture - see "maERP.Client Project Structure" section above
-- ViewModels/Models are registered in App.xaml.cs using ViewMap and RouteMap
-- DTOs are defined in maERP.Domain an available as ListDto, DetailDto and InputDto
-- Repositories are defined in maERP.Persistence
-- Services are defined in maERP.Application
-- on layout changes, always consider the Uno Platform limitations and capabilities
-- when implementing new features, always consider the cross-platform nature of the project
-- when implementing new features, always consider the performance and scalability of the solution
-- when implementing new features, always consider the security implications of the solution
-- when adding new axaml files, proof if the DataTemplate neeed to be added to MainView.axaml
-- IMPORTANT: data isolation of tenants must always be ensured. In most cases with global EF Core query filters.
-- IMPORTANT: when implementing new layouts, always heavily think about the user experience and usability
-- IMPORTANT: on layout changes, always look if there is a similar layout and write consistent code
-- When implementing new features or functions, YOU MUST look if there is a similar feature or function and write consistent code
-- Tests are using own Factory-Instances instead of shared Fixtures
-- Don't use FluentAssertions
-- Use RFC 7807 for problem details
-- Important: When fixing tests, first check whether the logic of the test is correct. If it is correct, fix the code of the program.
-- TenantId is type Guid
-- StrictEnumConverter.cs is used for safe enum serialization
-- Use GlobalExceptionFilters
-- IMPORTANT: cascade deletes must be implemented in the handler or repository
-- Pagination is zero-based and defined in QueryableExtensions.cs
-- IMPORTANT: all Entities are using System.Guid for Id, defined in BaseEntity.cs
-- IMPORTANT: never create db migrations before asking
-- EnsureSuperadminAccessAsync() is only for running Tests
+### Code style
+- All code, comments, identifiers, and commit messages in **English**.
+- Comments only when the *why* is non-obvious. Don't restate what the code does.
+- C# 10+ features welcome; nullable reference types are enabled solution-wide (`Directory.Build.props`).
+- DI is used everywhere — register services in the appropriate layer's `*ServiceRegistration.cs`.
 
-# Multi-Tenant Testing Guidelines
-- IMPORTANT: All multi-tenant tests MUST inherit from TenantIsolatedTestBase for proper isolation
-- IMPORTANT: Use TestDataSeeder.SeedTestDataAsync() to populate test data across tenants
-- IMPORTANT: Always test tenant isolation scenarios - verify each tenant only sees their own data
-- IMPORTANT: Test both authenticated and unauthenticated scenarios using helper methods
-- IMPORTANT: Verify proper HTTP status codes for missing/invalid tenant headers (Unauthorized for invalid format, NotFound for valid but non-existent tenant)
-- IMPORTANT: When creating new multi-tenant features, add comprehensive tests covering all tenant scenarios
+### Consistency before novelty
+When adding a feature or layout, **find a similar one and mirror it**. Naming, folder layout, and patterns are repeated by design. Inconsistency is a regression.
+
+### Multi-tenancy (critical)
+- `TenantId` is `Guid?` on every tenant-scoped entity (`BaseEntity`).
+- Tenant isolation is enforced via EF Core global query filters — never bypass them in queries unless explicitly cross-tenant (e.g. Superadmin operations).
+- Cascade deletes must be implemented in handlers/repositories — do not rely on EF cascade defaults.
+- Test cross-tenant access prevention for every new tenant-scoped feature (see `tests/maERP.Server.Tests/CLAUDE.md`).
+
+### Roles
+- **Superadmin** — only role permitted to use `SuperadminController` to manage users across tenants.
+- **RoleManageUser** — within their own tenant, may add/delete users via `SuperadminController`.
+- **RoleManageTenant** — may edit/delete their own tenants via `TenantsController`.
+- Login is allowed without a tenant. Every user can create tenants and only sees their own.
+- All users may view their own profile even without a `UserTenant`.
+- `EnsureSuperadminAccessAsync()` is **test-only**.
+
+### Validation & errors
+- **FluentValidation** for request validation.
+- Use **RFC 7807** problem details for error responses; rely on `GlobalExceptionFilters`.
+- Pagination is **zero-based** — see `QueryableExtensions.cs`.
+- Enum serialization goes through `StrictEnumConverter` to fail fast on unknown values.
+
+### Database
+- Configure provider via `appsettings.json` or env vars; the provider-specific migration assembly is selected at runtime in `PersistenceServiceRegistration`.
+- **Never create migrations without asking the user first.**
+
+### Logging & observability
+- Serilog for application logs.
+- OpenTelemetry instrumentation is wired in the Server (`OpenTelemetry.Instrumentation.AspNetCore` / `Http`).
+
+### Tests
+- Tests use **per-test factories**, not shared fixtures.
+- **Don't use FluentAssertions** — use plain xUnit/NUnit assertions or the `TestAssertions` helper.
+- When a test fails, first check whether the test logic is correct. If it is, fix the production code.
+- Multi-tenant integration tests inherit `TenantIsolatedTestBase` — see `tests/maERP.Server.Tests/CLAUDE.md`.
+
+## Stack & Versions
+
+- **.NET SDK**: 10.0 (`global.json` pins `latestFeature` of 10.0.0; prerelease allowed)
+- **Uno SDK**: 6.5.x (`global.json`)
+- **EF Core**: 10.0.x (relational + InMemory for tests)
+- **FluentValidation**: 12.x
+- **Serilog**: 10.x
+- **Swashbuckle**: 10.x, **Asp.Versioning**: 8.x
+- **Test runners**: xUnit 2.9 (Server, Persistence), NUnit 4.5 (Client)
+- Central package management is on (`Directory.Packages.props`) — bump versions there, not in individual `.csproj` files.
+
+## MCP Servers Available
+- **jetbrains** — Rider/IDE operations (do not use for shell commands)
+- **uno** — Uno Platform documentation
+- **microsoft-docs** — Microsoft / .NET / EF Core docs
+- **postgres** — direct DB queries
+
+## Cross-cutting reminders
+- Docker Compose files exist for MSSQL/MySQL/PostgreSQL and mail testing — see `docker-compose.*.yml`.
+- CI/CD via GitHub Actions (`.github/workflows`).
+- Email-testing setup documented in `EMAIL-TESTING.md`.

@@ -241,6 +241,39 @@
   <data name="Shell.NavItem.SalesChannels.Content" xml:space="preserve">
     <value>Sales Channels</value>
   </data>
+  <data name="Shell.NavItem.Dashboard.Text" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="Shell.NavItem.Customers.Text" xml:space="preserve">
+    <value>Customers</value>
+  </data>
+  <data name="Shell.NavItem.Orders.Text" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="Shell.NavItem.Products.Text" xml:space="preserve">
+    <value>Products</value>
+  </data>
+  <data name="Shell.NavItem.Warehouses.Text" xml:space="preserve">
+    <value>Warehouses</value>
+  </data>
+  <data name="Shell.NavItem.Manufacturers.Text" xml:space="preserve">
+    <value>Manufacturers</value>
+  </data>
+  <data name="Shell.NavItem.Invoices.Text" xml:space="preserve">
+    <value>Invoices</value>
+  </data>
+  <data name="Shell.NavItem.AiModels.Text" xml:space="preserve">
+    <value>AI Models</value>
+  </data>
+  <data name="Shell.NavItem.AiPrompts.Text" xml:space="preserve">
+    <value>AI Prompts</value>
+  </data>
+  <data name="Shell.NavItem.TaxClasses.Text" xml:space="preserve">
+    <value>Tax Classes</value>
+  </data>
+  <data name="Shell.NavItem.SalesChannels.Text" xml:space="preserve">
+    <value>Sales Channels</value>
+  </data>
 
   <!-- Shell First Tenant Creation -->
   <data name="Shell.FirstTenant.Title.Text" xml:space="preserve">
@@ -3510,5 +3543,37 @@
   </data>
   <data name="Shopware5Dashboard.Placeholder.Settings.Text" xml:space="preserve">
     <value>Available in future update</value>
+  </data>
+  <!-- Shell Navigation Groups -->
+  <data name="Shell.NavGroup.Stammdaten.Text" xml:space="preserve">
+    <value>MASTER DATA</value>
+  </data>
+  <data name="Shell.NavGroup.Verkauf.Text" xml:space="preserve">
+    <value>SALES</value>
+  </data>
+  <data name="Shell.NavGroup.Einstellungen.Text" xml:space="preserve">
+    <value>SETTINGS</value>
+  </data>
+  <data name="Shell.NavGroup.Superadmin.Text" xml:space="preserve">
+    <value>SUPERADMIN</value>
+  </data>
+  <data name="Shell.NavItem.AllTenants.Text" xml:space="preserve">
+    <value>All Tenants</value>
+  </data>
+  <data name="Shell.Search.Placeholder.Text" xml:space="preserve">
+    <value>Quick search…</value>
+  </data>
+  <!-- Dashboard Breadcrumb and Filters -->
+  <data name="DashboardPage.Breadcrumb.Text" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="DashboardPage.Button.New.Content" xml:space="preserve">
+    <value>+ New</value>
+  </data>
+  <data name="DashboardPage.Section.Kpi.Text" xml:space="preserve">
+    <value>Key Metrics</value>
+  </data>
+  <data name="DashboardPage.Filter.Last24h.Text" xml:space="preserve">
+    <value>Last 24 hours</value>
   </data>
 </root>

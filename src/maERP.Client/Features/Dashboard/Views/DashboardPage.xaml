@@ -75,16 +75,54 @@
       </VisualStateManager.VisualStateGroups>
 
       <StackPanel Spacing="24">
-        <!-- Page Header -->
-        <StackPanel>
-          <TextBlock x:Uid="DashboardPage.Header.Welcome"
-                     Style="{StaticResource HeadlineMedium}"
-                     Foreground="{ThemeResource OnBackgroundBrush}" />
-          <TextBlock x:Uid="DashboardPage.Header.Subtitle"
-                     Style="{StaticResource BodyMedium}"
-                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
-                     Margin="0,4,0,0" />
-        </StackPanel>
+        <!-- Page Header (Breadcrumb + Title + Actions) -->
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+
+          <StackPanel Grid.Column="0" Spacing="2">
+            <TextBlock x:Uid="DashboardPage.Breadcrumb"
+                       Style="{StaticResource LabelSmall}"
+                       Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+            <TextBlock x:Uid="DashboardPage.Header.Welcome"
+                       Style="{StaticResource HeadlineMedium}"
+                       Foreground="{ThemeResource OnBackgroundBrush}" />
+            <TextBlock x:Uid="DashboardPage.Header.Subtitle"
+                       Style="{StaticResource BodyMedium}"
+                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                       Margin="0,4,0,0" />
+          </StackPanel>
+
+        </Grid>
+
+        <!-- KPI Section Header -->
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <TextBlock Grid.Column="0"
+                     x:Uid="DashboardPage.Section.Kpi"
+                     Style="{StaticResource TitleMedium}"
+                     Foreground="{ThemeResource OnSurfaceBrush}"
+                     VerticalAlignment="Center" />
+          <DropDownButton Grid.Column="1"
+                          Background="Transparent"
+                          BorderBrush="{ThemeResource OutlineVariantBrush}"
+                          BorderThickness="1"
+                          CornerRadius="8"
+                          Height="32"
+                          Padding="10,0">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <FontIcon Glyph="&#xE787;" FontSize="12" />
+              <TextBlock x:Uid="DashboardPage.Filter.Last24h"
+                         Style="{StaticResource LabelMedium}"
+                         VerticalAlignment="Center" />
+            </StackPanel>
+          </DropDownButton>
+        </Grid>
 
         <!-- KPI Cards Section using Grid with responsive columns - Each card loads independently -->
         <Grid x:Name="KpiGrid">
@@ -747,19 +785,23 @@
                   <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0"
-                            Orientation="Horizontal">
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
                   <FontIcon Glyph="&#xE7BF;"
                             FontSize="20"
                             Foreground="{ThemeResource PrimaryBrush}"
+                            VerticalAlignment="Center"
                             Margin="0,0,12,0" />
                   <TextBlock x:Uid="DashboardPage.Card.RecentOrders"
                              Style="{StaticResource TitleMedium}"
-                             Foreground="{ThemeResource OnSurfaceBrush}" />
+                             Foreground="{ThemeResource OnSurfaceBrush}"
+                             VerticalAlignment="Center" />
                 </StackPanel>
                 <Button Grid.Column="1"
                         x:Uid="DashboardPage.Button.ViewAll"
                         Click="ViewAllOrders_Click"
-                        Style="{StaticResource TextButtonStyle}" />
+                        Style="{StaticResource TextButtonStyle}"
+                        VerticalAlignment="Center" />
               </Grid>
 
               <!-- Orders List -->
@@ -868,19 +910,23 @@
                   <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0"
-                            Orientation="Horizontal">
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
                   <FontIcon Glyph="&#xE735;"
                             FontSize="20"
                             Foreground="{ThemeResource TertiaryBrush}"
+                            VerticalAlignment="Center"
                             Margin="0,0,12,0" />
                   <TextBlock x:Uid="DashboardPage.Card.TopProducts"
                              Style="{StaticResource TitleMedium}"
-                             Foreground="{ThemeResource OnSurfaceBrush}" />
+                             Foreground="{ThemeResource OnSurfaceBrush}"
+                             VerticalAlignment="Center" />
                 </StackPanel>
                 <Button Grid.Column="1"
                         x:Uid="DashboardPage.Button.ViewAll"
                         Click="ViewAllProducts_Click"
-                        Style="{StaticResource TextButtonStyle}" />
+                        Style="{StaticResource TextButtonStyle}"
+                        VerticalAlignment="Center" />
               </Grid>
 
               <!-- Products List -->

@@ -1,5 +1,6 @@
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Models.Email;
+using maERP.Application.Models.Grafana;
 using maERP.Application.Models.Identity;
 using maERP.Application.Models.Telemetry;
 using maERP.Domain.Entities;
@@ -121,6 +122,36 @@ public class SettingsService : ISettingsService
         }
 
         return Task.FromResult(telemetrySettings);
+    }
+
+    public Task<GrafanaSettings> GetGrafanaSettingsAsync()
+    {
+        var settings = _settingRepository.Entities.Where(s => s.Key.StartsWith("Grafana.")).ToList();
+
+        var grafanaSettings = new GrafanaSettings();
+
+        foreach (var setting in settings)
+        {
+            switch (setting.Key)
+            {
+                case "Grafana.Endpoint":
+                    grafanaSettings.Endpoint = setting.Value;
+                    break;
+                case "Grafana.LokiEndpoint":
+                    grafanaSettings.LokiEndpoint = setting.Value;
+                    break;
+                case "Grafana.MetricsEnabled":
+                    if (bool.TryParse(setting.Value, out var metricsEnabled))
+                        grafanaSettings.MetricsEnabled = metricsEnabled;
+                    break;
+                case "Grafana.LogsEnabled":
+                    if (bool.TryParse(setting.Value, out var logsEnabled))
+                        grafanaSettings.LogsEnabled = logsEnabled;
+                    break;
+            }
+        }
+
+        return Task.FromResult(grafanaSettings);
     }
 
     public Task<string> GetSettingValueAsync(string key)

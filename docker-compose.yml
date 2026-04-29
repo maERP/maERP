@@ -1,8 +1,10 @@
 name: maerp
 
 services:
-  maerp.server:
+  server:
+    profiles: ["server"]
     image: ${DOCKER_REGISTRY-}maerp/server
+    container_name: maerp-server
     build:
       context: .
       dockerfile: src/maERP.Server/Dockerfile
@@ -20,25 +22,27 @@ services:
       - grafana-agent
     networks:
       - backend
+    restart: unless-stopped
 
-  maerp.browser:
-    image: ${DOCKER_REGISTRY-}maerp/web
+  wasm:
+    profiles: ["wasm"]
+    image: ${DOCKER_REGISTRY-}maerp/wasm
+    container_name: maerp-wasm
     build:
       context: .
-      dockerfile: src/maERP.UI.Browser/Dockerfile
+      dockerfile: src/maERP.Client/Dockerfile
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - MAERP_SERVER_BASE_URL=http://localhost:8443
+      - MAERP_SERVER_BASE_URL=${MAERP_SERVER_BASE_URL:-http://localhost:8443}
     ports:
       - "8444:80"
-    depends_on:
-      - maerp.server
     networks:
       - backend
-
+    restart: unless-stopped
 
   grafana-agent:
+    profiles: ["server"]
     image: grafana/agent:latest
+    container_name: maerp-grafana-agent
     entrypoint:
       - /bin/grafana-agent
       - -server.http.address=0.0.0.0:12345
@@ -58,6 +62,7 @@ services:
       - grafana-agent-wal:/tmp/agent/wal
     networks:
       - backend
+    restart: unless-stopped
 
 volumes:
   maerp-data:

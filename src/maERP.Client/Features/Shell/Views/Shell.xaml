@@ -12,6 +12,38 @@
      d:DesignWidth="1280">
 
   <UserControl.Resources>
+    <!-- Sidebar nav item button style -->
+    <Style x:Key="SidebarNavItemStyle" TargetType="Button">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+      <Setter Property="Padding" Value="12,0,12,0" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="Margin" Value="8,1,8,1" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Foreground" Value="{ThemeResource OnSurfaceBrush}" />
+    </Style>
+
+    <!-- Sidebar section header -->
+    <Style x:Key="SidebarSectionHeaderStyle" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="{ThemeResource OnSurfaceVariantBrush}" />
+      <Setter Property="Margin" Value="20,18,12,6" />
+      <Setter Property="CharacterSpacing" Value="60" />
+    </Style>
+
+    <!-- Sidebar collapsible group header button -->
+    <Style x:Key="SidebarGroupHeaderStyle" TargetType="Button">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="Padding" Value="20,18,12,6" />
+      <Setter Property="MinHeight" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+    </Style>
   </UserControl.Resources>
 
   <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -23,10 +55,8 @@
         <VisualState x:Name="Narrow">
           <VisualState.Setters>
             <Setter Target="TabBarNav.Visibility" Value="Visible" />
-            <Setter Target="NavView.PaneDisplayMode" Value="LeftMinimal" />
-            <Setter Target="NavView.IsPaneOpen" Value="False" />
-            <Setter Target="NavView.IsPaneVisible" Value="False" />
-            <Setter Target="AppHeader.Visibility" Value="Collapsed" />
+            <Setter Target="Sidebar.Visibility" Value="Collapsed" />
+            <Setter Target="ContentHeader.Visibility" Value="Collapsed" />
           </VisualState.Setters>
         </VisualState>
 
@@ -37,10 +67,9 @@
           </VisualState.StateTriggers>
           <VisualState.Setters>
             <Setter Target="TabBarNav.Visibility" Value="Collapsed" />
-            <Setter Target="PaneToggleButton.Visibility" Value="Visible" />
-            <Setter Target="NavView.IsPaneVisible" Value="True" />
-            <Setter Target="NavView.PaneDisplayMode" Value="Left" />
-            <Setter Target="AppHeader.Visibility" Value="Visible" />
+            <Setter Target="Sidebar.Visibility" Value="Visible" />
+            <Setter Target="Sidebar.Width" Value="220" />
+            <Setter Target="ContentHeader.Visibility" Value="Visible" />
           </VisualState.Setters>
         </VisualState>
 
@@ -51,66 +80,66 @@
           </VisualState.StateTriggers>
           <VisualState.Setters>
             <Setter Target="TabBarNav.Visibility" Value="Collapsed" />
-            <Setter Target="PaneToggleButton.Visibility" Value="Visible" />
-            <Setter Target="NavView.IsPaneVisible" Value="True" />
-            <Setter Target="NavView.PaneDisplayMode" Value="Left" />
-            <Setter Target="NavView.IsPaneOpen" Value="True" />
-            <Setter Target="AppHeader.Visibility" Value="Visible" />
+            <Setter Target="Sidebar.Visibility" Value="Visible" />
+            <Setter Target="Sidebar.Width" Value="260" />
+            <Setter Target="ContentHeader.Visibility" Value="Visible" />
           </VisualState.Setters>
         </VisualState>
       </VisualStateGroup>
     </VisualStateManager.VisualStateGroups>
 
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="*" />
-    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
 
-    <!-- App Header with Logo and User Menu -->
-    <Grid x:Name="AppHeader"
-          Grid.Row="0"
-          Height="48"
+    <!-- ====================== SIDEBAR ====================== -->
+    <Grid x:Name="Sidebar"
+          Grid.Column="0"
+          Width="260"
           Background="{ThemeResource SurfaceVariantBrush}"
           BorderBrush="{ThemeResource OutlineVariantBrush}"
-          BorderThickness="0,0,0,1">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="Auto" />
-      </Grid.ColumnDefinitions>
+          BorderThickness="0,0,1,0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
 
-      <!-- Hamburger Menu Button -->
-      <Button x:Name="PaneToggleButton"
-              Grid.Column="0"
-              Width="48"
-              Height="48"
-              Background="Transparent"
-              BorderThickness="0"
-              Click="OnPaneToggleClick"
-              VerticalAlignment="Center">
-        <FontIcon Glyph="&#xE700;"
-                  FontSize="16" />
-      </Button>
+      <!-- Brand + Tenant Switcher -->
+      <Grid Grid.Row="0"
+            Height="48"
+            Padding="12,0,12,0"
+            BorderBrush="{ThemeResource OutlineVariantBrush}"
+            BorderThickness="0,0,0,1">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-      <!-- Logo and Tenant Switcher (centered) -->
-      <StackPanel Grid.Column="1"
-                  Orientation="Horizontal"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center">
-        <Image Source="ms-appx:///Assets/Icons/icon.svg"
+        <Image Grid.Column="0"
+               Source="ms-appx:///Assets/Icons/icon.svg"
                Width="28"
                Height="28"
                Stretch="Uniform"
                VerticalAlignment="Center" />
 
-        <!-- Multiple Tenants: Show Dropdown Button -->
+        <!-- Multiple Tenants: DropDown -->
         <DropDownButton x:Name="TenantSwitcher"
-                        Margin="12,0,0,0"
-                        Visibility="Collapsed"
+                        Grid.Column="1"
+                        Margin="10,0,0,0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
                         Background="Transparent"
-                        BorderThickness="0">
+                        BorderThickness="0"
+                        Padding="6,0"
+                        Visibility="Collapsed">
           <TextBlock x:Name="TenantSwitcherText"
-                     Style="{StaticResource TitleTextBlockStyle}"
+                     Style="{StaticResource BodyMedium}"
+                     FontWeight="SemiBold"
+                     Foreground="{ThemeResource OnSurfaceBrush}"
+                     TextTrimming="CharacterEllipsis"
                      VerticalAlignment="Center" />
           <DropDownButton.Flyout>
             <MenuFlyout x:Name="TenantMenuFlyout"
@@ -118,277 +147,478 @@
           </DropDownButton.Flyout>
         </DropDownButton>
 
-        <!-- Single Tenant or No Tenant: Show Text -->
+        <!-- Single or No Tenant: Text -->
         <TextBlock x:Name="TenantName"
-                   Style="{StaticResource TitleTextBlockStyle}"
+                   Grid.Column="1"
+                   Style="{StaticResource BodyMedium}"
+                   FontWeight="SemiBold"
+                   Foreground="{ThemeResource OnSurfaceBrush}"
                    VerticalAlignment="Center"
-                   Margin="12,0,0,0"
-                   Visibility="Visible" />
-      </StackPanel>
+                   Margin="10,0,0,0"
+                   TextTrimming="CharacterEllipsis" />
+      </Grid>
 
-      <!-- User Menu -->
-      <StackPanel x:Name="UserMenuPanel"
-                  Grid.Column="2"
-                  Orientation="Horizontal"
-                  VerticalAlignment="Center"
-                  Margin="0,0,8,0">
-        <DropDownButton x:Name="UserMenuButton"
-                        x:Uid="Shell.UserMenu"
-                        VerticalAlignment="Center">
-          <StackPanel Orientation="Horizontal">
-            <FontIcon Glyph="&#xE77B;"
-                      FontSize="16"
-                      Margin="0,0,8,0" />
-            <TextBlock x:Name="UserMenuText"
-                       x:Uid="Shell.UserMenu.Text"
+      <!-- Quick Search (optical only) -->
+      <Grid Grid.Row="1"
+            Padding="12,12,12,4">
+        <Border Background="{ThemeResource SurfaceBrush}"
+                BorderBrush="{ThemeResource OutlineVariantBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Height="32">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <FontIcon Grid.Column="0"
+                      Glyph="&#xE721;"
+                      FontSize="12"
+                      Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                      Margin="10,0,0,0"
+                      VerticalAlignment="Center" />
+
+            <TextBlock Grid.Column="1"
+                       x:Uid="Shell.Search.Placeholder"
+                       Style="{StaticResource BodySmall}"
+                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                       Margin="8,0,0,0"
                        VerticalAlignment="Center" />
-          </StackPanel>
-          <DropDownButton.Flyout>
-            <MenuFlyout Placement="BottomEdgeAlignedRight">
-              <MenuFlyoutItem x:Name="MenuItemSalesChannels"
-                              x:Uid="Shell.UserMenu.SalesChannels"
-                              Click="OnSalesChannelsClick">
-                <MenuFlyoutItem.Icon>
-                  <FontIcon Glyph="&#xE8A7;" />
-                </MenuFlyoutItem.Icon>
-              </MenuFlyoutItem>
-              <MenuFlyoutItem x:Name="MenuItemTaxClasses"
-                              x:Uid="Shell.UserMenu.TaxClasses"
-                              Click="OnTaxClassesClick">
-                <MenuFlyoutItem.Icon>
-                  <FontIcon Glyph="&#xE912;" />
-                </MenuFlyoutItem.Icon>
-              </MenuFlyoutItem>
-              <MenuFlyoutItem x:Name="MenuItemWarehouses"
-                              x:Uid="Shell.UserMenu.Warehouses"
-                              Click="OnWarehousesClick">
-                <MenuFlyoutItem.Icon>
-                  <FontIcon Glyph="&#xE913;" />
-                </MenuFlyoutItem.Icon>
-              </MenuFlyoutItem>
-              <MenuFlyoutSeparator />
-              <MenuFlyoutItem x:Name="MenuItemTenants"
-                              x:Uid="Shell.UserMenu.Tenants"
-                              Click="OnTenantsClick">
-                <MenuFlyoutItem.Icon>
-                  <FontIcon Glyph="&#xE902;" />
-                </MenuFlyoutItem.Icon>
-              </MenuFlyoutItem>
-              <MenuFlyoutSeparator x:Name="SuperadminSeparator" Visibility="Collapsed" />
-              <MenuFlyoutItem x:Name="SuperadminLabel"
-                              x:Uid="Shell.UserMenu.SuperadminLabel"
-                              IsEnabled="False"
-                              Visibility="Collapsed" />
-              <MenuFlyoutItem x:Name="MenuItemSuperadminTenants"
-                              x:Uid="Shell.UserMenu.SuperadminTenants"
-                              Click="OnSuperadminTenantsClick"
-                              Visibility="Collapsed">
-                <MenuFlyoutItem.Icon>
-                  <FontIcon Glyph="&#xE7EE;" />
-                </MenuFlyoutItem.Icon>
-              </MenuFlyoutItem>
-              <MenuFlyoutSeparator />
-              <MenuFlyoutItem x:Name="MenuItemAiModels"
-                              x:Uid="Shell.UserMenu.AiModels"
-                              Click="OnAiModelsClick">
-                <MenuFlyoutItem.Icon>
-                  <FontIcon Glyph="&#xE99A;" />
-                </MenuFlyoutItem.Icon>
-              </MenuFlyoutItem>
-              <MenuFlyoutItem x:Name="MenuItemAiPrompts"
-                              x:Uid="Shell.UserMenu.AiPrompts"
-                              Click="OnAiPromptsClick">
-                <MenuFlyoutItem.Icon>
-                  <FontIcon Glyph="&#xE8BD;" />
-                </MenuFlyoutItem.Icon>
-              </MenuFlyoutItem>
-              <MenuFlyoutSeparator />
-              <ToggleMenuFlyoutItem x:Name="MenuItemDarkMode"
-                                    x:Uid="Shell.UserMenu.DarkMode"
-                                    Click="OnDarkModeToggle">
-                <ToggleMenuFlyoutItem.Icon>
-                  <FontIcon Glyph="&#xE793;" />
-                </ToggleMenuFlyoutItem.Icon>
-              </ToggleMenuFlyoutItem>
-              <MenuFlyoutSeparator />
-              <MenuFlyoutItem x:Name="MenuItemLogout"
-                              x:Uid="Shell.UserMenu.Logout"
-                              Click="OnLogoutClick">
-                <MenuFlyoutItem.Icon>
-                  <FontIcon Glyph="&#xE7E8;" />
-                </MenuFlyoutItem.Icon>
-              </MenuFlyoutItem>
-            </MenuFlyout>
-          </DropDownButton.Flyout>
-        </DropDownButton>
-      </StackPanel>
-    </Grid>
 
-    <!-- Main Content Area with NavigationView -->
-    <Grid Grid.Row="1">
-      <NavigationView x:Name="NavView"
-                      PaneDisplayMode="Left"
-                      IsBackButtonVisible="Collapsed"
-                      IsSettingsVisible="False"
-                      IsPaneToggleButtonVisible="False"
-                      OpenPaneLength="280"
-                      CompactModeThresholdWidth="640"
-                      ExpandedModeThresholdWidth="1000"
-                      SelectionChanged="OnNavigationViewSelectionChanged"
-                      DataContext="{Binding}">
-
-        <!-- Navigation Menu Items -->
-        <NavigationView.MenuItems>
-          <!-- Authenticated Menu Items -->
-          <NavigationViewItem x:Name="NavItemDashboard"
-                              x:Uid="Shell.NavItem.Dashboard"
-                              Tag="Main">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE80F;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-
-          <NavigationViewItemSeparator x:Name="NavSeparator1" />
-
-          <NavigationViewItem x:Name="NavItemCustomers"
-                              x:Uid="Shell.NavItem.Customers"
-                              Tag="Customers">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE716;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-
-          <NavigationViewItem x:Name="NavItemOrders"
-                              x:Uid="Shell.NavItem.Orders"
-                              Tag="Orders">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE7BF;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-
-          <NavigationViewItem x:Name="NavItemInvoices"
-                              x:Uid="Shell.NavItem.Invoices"
-                              Tag="Invoices">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE9F9;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-
-          <NavigationViewItem x:Name="NavItemProducts"
-                              x:Uid="Shell.NavItem.Products"
-                              Tag="Products">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE7BF;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-
-          <NavigationViewItem x:Name="NavItemManufacturers"
-                              x:Uid="Shell.NavItem.Manufacturers"
-                              Tag="Manufacturers">
-            <NavigationViewItem.Icon>
-              <FontIcon Glyph="&#xE8FD;" />
-            </NavigationViewItem.Icon>
-          </NavigationViewItem>
-        </NavigationView.MenuItems>
-
-        <!-- Footer Menu Items removed - Settings and Logout moved to Header User Menu -->
-
-        <!-- Content Area with ExtendedSplashScreen and TabBar -->
-        <Grid>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-          </Grid.RowDefinitions>
-
-          <!-- Main Content Area -->
-          <Grid Grid.Row="0">
-            <utu:ExtendedSplashScreen x:Name="Splash"
-                                      HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch"
-                                      HorizontalContentAlignment="Stretch"
-                                      VerticalContentAlignment="Stretch">
-              <utu:ExtendedSplashScreen.LoadingContentTemplate>
-                <DataTemplate>
-                  <Grid>
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="2*" />
-                      <RowDefinition />
-                    </Grid.RowDefinitions>
-
-                    <ProgressRing IsActive="True"
-                                  Grid.Row="1"
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Center"
-                                  Height="100"
-                                  Width="100" />
-                  </Grid>
-                </DataTemplate>
-              </utu:ExtendedSplashScreen.LoadingContentTemplate>
-            </utu:ExtendedSplashScreen>
+            <Border Grid.Column="2"
+                    Background="{ThemeResource SurfaceVariantBrush}"
+                    BorderBrush="{ThemeResource OutlineVariantBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="5,1"
+                    Margin="0,0,6,0"
+                    VerticalAlignment="Center">
+              <TextBlock Text="⌘K"
+                         FontSize="10"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+            </Border>
           </Grid>
+        </Border>
+      </Grid>
 
-          <!-- TabBar for Mobile (Bottom Navigation) -->
-          <utu:TabBar x:Name="TabBarNav"
-                      Grid.Row="1"
-                      Visibility="Collapsed"
-                      VerticalAlignment="Bottom"
-                      Style="{StaticResource MaterialBottomTabBarStyle}">
-            <utu:TabBar.Items>
-              <!-- Authenticated Tabs -->
-              <utu:TabBarItem x:Name="TabItemDashboard"
-                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                              x:Uid="Shell.NavItem.Dashboard"
-                              Tag="Main">
-                <utu:TabBarItem.Icon>
-                  <FontIcon Glyph="&#xE80F;" />
-                </utu:TabBarItem.Icon>
-              </utu:TabBarItem>
+      <!-- Navigation Groups -->
+      <ScrollViewer Grid.Row="2"
+                    VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Disabled">
+        <StackPanel x:Name="NavItemsPanel"
+                    Padding="0,8,0,12">
 
-              <utu:TabBarItem x:Name="TabItemCustomers"
-                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                              x:Uid="Shell.NavItem.Customers"
-                              Tag="Customers">
-                <utu:TabBarItem.Icon>
-                  <FontIcon Glyph="&#xE716;" />
-                </utu:TabBarItem.Icon>
-              </utu:TabBarItem>
+          <!-- Dashboard (no group) -->
+          <Button x:Name="NavItemDashboard"
+                  Style="{StaticResource SidebarNavItemStyle}"
+                  Tag="Dashboard"
+                  Click="OnNavItemClick">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <FontIcon Glyph="&#xE80F;" FontSize="16" />
+              <TextBlock x:Uid="Shell.NavItem.Dashboard"
+                         Style="{StaticResource BodyMedium}"
+                         VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
 
-              <utu:TabBarItem x:Name="TabItemOrders"
-                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                              x:Uid="Shell.NavItem.Orders"
-                              Tag="Orders">
-                <utu:TabBarItem.Icon>
-                  <FontIcon Glyph="&#xE7BF;" />
-                </utu:TabBarItem.Icon>
-              </utu:TabBarItem>
+          <!-- VERKAUF -->
+          <Button x:Name="GroupVerkaufHeader"
+                  Style="{StaticResource SidebarGroupHeaderStyle}"
+                  Tag="GroupVerkaufContent"
+                  Click="OnGroupHeaderClick">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <TextBlock x:Uid="Shell.NavGroup.Verkauf"
+                         FontSize="11"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         CharacterSpacing="60"
+                         VerticalAlignment="Center" />
+              <FontIcon x:Name="GroupVerkaufChevron"
+                        Grid.Column="1"
+                        Glyph="&#xE70D;"
+                        FontSize="10"
+                        Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                        VerticalAlignment="Center" />
+            </Grid>
+          </Button>
+          <StackPanel x:Name="GroupVerkaufContent">
+            <Button x:Name="NavItemOrders"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="Orders"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE7BF;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.Orders"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
 
-              <utu:TabBarItem x:Name="TabItemSettings"
-                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                              x:Uid="Shell.NavItem.Settings"
-                              Tag="Settings">
-                <utu:TabBarItem.Icon>
-                  <FontIcon Glyph="&#xE713;" />
-                </utu:TabBarItem.Icon>
-              </utu:TabBarItem>
+            <Button x:Name="NavItemInvoices"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="Invoices"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE9F9;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.Invoices"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
 
-              <utu:TabBarItem x:Name="TabItemLogout"
-                              Style="{StaticResource MaterialBottomTabBarItemStyle}"
-                              x:Uid="Shell.NavItem.Logout"
-                              Tag="Logout">
-                <utu:TabBarItem.Icon>
-                  <FontIcon Glyph="&#xE7E8;" />
-                </utu:TabBarItem.Icon>
-              </utu:TabBarItem>
-            </utu:TabBar.Items>
-          </utu:TabBar>
-        </Grid>
-      </NavigationView>
+            <Button x:Name="NavItemSalesChannels"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="SalesChannels"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE8A7;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.SalesChannels"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+
+            <!-- Dynamic SalesChannel sub-items -->
+            <ItemsControl x:Name="SalesChannelSubItemsContainer" />
+          </StackPanel>
+
+          <!-- STAMMDATEN -->
+          <Button x:Name="GroupStammdatenHeader"
+                  Style="{StaticResource SidebarGroupHeaderStyle}"
+                  Tag="GroupStammdatenContent"
+                  Click="OnGroupHeaderClick">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <TextBlock x:Uid="Shell.NavGroup.Stammdaten"
+                         FontSize="11"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         CharacterSpacing="60"
+                         VerticalAlignment="Center" />
+              <FontIcon x:Name="GroupStammdatenChevron"
+                        Grid.Column="1"
+                        Glyph="&#xE70D;"
+                        FontSize="10"
+                        Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                        VerticalAlignment="Center" />
+            </Grid>
+          </Button>
+          <StackPanel x:Name="GroupStammdatenContent">
+            <Button x:Name="NavItemCustomers"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="Customers"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE716;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.Customers"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+
+            <Button x:Name="NavItemProducts"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="Products"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE7BF;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.Products"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+
+            <Button x:Name="NavItemManufacturers"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="Manufacturers"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE8FD;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.Manufacturers"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+          </StackPanel>
+
+          <!-- EINSTELLUNGEN -->
+          <Button x:Name="GroupEinstellungenHeader"
+                  Style="{StaticResource SidebarGroupHeaderStyle}"
+                  Tag="GroupEinstellungenContent"
+                  Click="OnGroupHeaderClick">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <TextBlock x:Uid="Shell.NavGroup.Einstellungen"
+                         FontSize="11"
+                         FontWeight="SemiBold"
+                         Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                         CharacterSpacing="60"
+                         VerticalAlignment="Center" />
+              <FontIcon x:Name="GroupEinstellungenChevron"
+                        Grid.Column="1"
+                        Glyph="&#xE76C;"
+                        FontSize="10"
+                        Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                        VerticalAlignment="Center" />
+            </Grid>
+          </Button>
+          <StackPanel x:Name="GroupEinstellungenContent" Visibility="Collapsed">
+            <Button x:Name="NavItemTaxClasses"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="TaxClasses"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE912;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.TaxClasses"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+
+            <Button x:Name="NavItemWarehouses"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="Warehouses"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE913;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.Warehouses"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+
+            <Button x:Name="NavItemAiModels"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="AiModels"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE99A;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.AiModels"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+
+            <Button x:Name="NavItemAiPrompts"
+                    Style="{StaticResource SidebarNavItemStyle}"
+                    Tag="AiPrompts"
+                    Click="OnNavItemClick">
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <FontIcon Glyph="&#xE8BD;" FontSize="16" />
+                <TextBlock x:Uid="Shell.NavItem.AiPrompts"
+                           Style="{StaticResource BodyMedium}"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+          </StackPanel>
+
+          <!-- SUPERADMIN -->
+          <StackPanel x:Name="GroupSuperadminPanel" Visibility="Collapsed">
+            <Button x:Name="GroupSuperadminHeader"
+                    Style="{StaticResource SidebarGroupHeaderStyle}"
+                    Tag="GroupSuperadminContent"
+                    Click="OnGroupHeaderClick">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Uid="Shell.NavGroup.Superadmin"
+                           FontSize="11"
+                           FontWeight="SemiBold"
+                           Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                           CharacterSpacing="60"
+                           VerticalAlignment="Center" />
+                <FontIcon x:Name="GroupSuperadminChevron"
+                          Grid.Column="1"
+                          Glyph="&#xE76C;"
+                          FontSize="10"
+                          Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                          VerticalAlignment="Center" />
+              </Grid>
+            </Button>
+            <StackPanel x:Name="GroupSuperadminContent" Visibility="Collapsed">
+              <Button x:Name="NavItemSuperadminTenants"
+                      Style="{StaticResource SidebarNavItemStyle}"
+                      Tag="SuperadminTenants"
+                      Click="OnNavItemClick">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                  <FontIcon Glyph="&#xE7EE;" FontSize="16" />
+                  <TextBlock x:Uid="Shell.NavItem.AllTenants"
+                             Style="{StaticResource BodyMedium}"
+                             VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+          </StackPanel>
+        </StackPanel>
+      </ScrollViewer>
+
     </Grid>
 
-    <!-- Login Overlay (shown when NOT authenticated) - spans both rows to cover AppHeader -->
+    <!-- ====================== CONTENT AREA ====================== -->
+    <Grid Grid.Column="1">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <!-- Minimal top bar (user menu on the right) -->
+      <Grid x:Name="ContentHeader"
+            Grid.Row="0"
+            Height="48"
+            Background="{ThemeResource BackgroundBrush}"
+            BorderBrush="{ThemeResource OutlineVariantBrush}"
+            BorderThickness="0,0,0,1">
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="0,0,12,0"
+                    Spacing="4">
+          <Button x:Name="UserMenuButton"
+                  Style="{StaticResource TextButtonStyle}"
+                  Padding="8,6"
+                  CornerRadius="8"
+                  Foreground="{ThemeResource OnSurfaceBrush}">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <FontIcon Glyph="&#xE77B;"
+                        FontSize="16"
+                        Foreground="{ThemeResource OnSurfaceBrush}" />
+              <TextBlock x:Name="UserMenuText"
+                         x:Uid="Shell.UserMenu.Text"
+                         Style="{StaticResource BodyMedium}"
+                         Foreground="{ThemeResource OnSurfaceBrush}"
+                         VerticalAlignment="Center" />
+            </StackPanel>
+            <Button.Flyout>
+              <MenuFlyout Placement="BottomEdgeAlignedRight">
+                <MenuFlyoutItem x:Name="MenuItemTenants"
+                                x:Uid="Shell.UserMenu.Tenants"
+                                Tag="Tenants"
+                                Click="OnNavItemClick">
+                  <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE902;" />
+                  </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem x:Name="MenuItemDarkModeCompat"
+                                x:Uid="Shell.UserMenu.DarkMode"
+                                Click="OnDarkModeToggle">
+                  <MenuFlyoutItem.Icon>
+                    <FontIcon x:Name="DarkModeIcon" Glyph="&#xE793;" />
+                  </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem x:Name="MenuItemLogout"
+                                x:Uid="Shell.UserMenu.Logout"
+                                Click="OnLogoutClick">
+                  <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE7E8;" />
+                  </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+              </MenuFlyout>
+            </Button.Flyout>
+          </Button>
+        </StackPanel>
+      </Grid>
+
+      <!-- Main Content Area -->
+      <Grid Grid.Row="1">
+        <utu:ExtendedSplashScreen x:Name="Splash"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  HorizontalContentAlignment="Stretch"
+                                  VerticalContentAlignment="Stretch">
+          <utu:ExtendedSplashScreen.LoadingContentTemplate>
+            <DataTemplate>
+              <Grid>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="2*" />
+                  <RowDefinition />
+                </Grid.RowDefinitions>
+                <ProgressRing IsActive="True"
+                              Grid.Row="1"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Center"
+                              Height="100"
+                              Width="100" />
+              </Grid>
+            </DataTemplate>
+          </utu:ExtendedSplashScreen.LoadingContentTemplate>
+        </utu:ExtendedSplashScreen>
+      </Grid>
+
+      <!-- TabBar for Mobile (Bottom Navigation) -->
+      <utu:TabBar x:Name="TabBarNav"
+                  Grid.Row="2"
+                  Visibility="Collapsed"
+                  VerticalAlignment="Bottom"
+                  Style="{StaticResource MaterialBottomTabBarStyle}">
+        <utu:TabBar.Items>
+          <utu:TabBarItem x:Name="TabItemDashboard"
+                          Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                          x:Uid="Shell.NavItem.Dashboard"
+                          Tag="Main">
+            <utu:TabBarItem.Icon>
+              <FontIcon Glyph="&#xE80F;" />
+            </utu:TabBarItem.Icon>
+          </utu:TabBarItem>
+
+          <utu:TabBarItem x:Name="TabItemCustomers"
+                          Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                          x:Uid="Shell.NavItem.Customers"
+                          Tag="Customers">
+            <utu:TabBarItem.Icon>
+              <FontIcon Glyph="&#xE716;" />
+            </utu:TabBarItem.Icon>
+          </utu:TabBarItem>
+
+          <utu:TabBarItem x:Name="TabItemOrders"
+                          Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                          x:Uid="Shell.NavItem.Orders"
+                          Tag="Orders">
+            <utu:TabBarItem.Icon>
+              <FontIcon Glyph="&#xE7BF;" />
+            </utu:TabBarItem.Icon>
+          </utu:TabBarItem>
+
+          <utu:TabBarItem x:Name="TabItemSettings"
+                          Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                          x:Uid="Shell.NavItem.Settings"
+                          Tag="Settings">
+            <utu:TabBarItem.Icon>
+              <FontIcon Glyph="&#xE713;" />
+            </utu:TabBarItem.Icon>
+          </utu:TabBarItem>
+
+          <utu:TabBarItem x:Name="TabItemLogout"
+                          Style="{StaticResource MaterialBottomTabBarItemStyle}"
+                          x:Uid="Shell.NavItem.Logout"
+                          Tag="Logout">
+            <utu:TabBarItem.Icon>
+              <FontIcon Glyph="&#xE7E8;" />
+            </utu:TabBarItem.Icon>
+          </utu:TabBarItem>
+        </utu:TabBar.Items>
+      </utu:TabBar>
+    </Grid>
+
+    <!-- Login Overlay (shown when NOT authenticated) - spans both columns -->
     <Grid x:Name="LoginOverlay"
-          Grid.Row="0"
-          Grid.RowSpan="2"
+          Grid.Column="0"
+          Grid.ColumnSpan="2"
           Visibility="Visible"
           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
       <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -454,7 +684,6 @@
               <ThemeShadow />
             </Border.Shadow>
             <StackPanel Spacing="0">
-              <!-- Card Header -->
               <Grid Padding="16,16,16,8">
                 <StackPanel Orientation="Horizontal">
                   <FontIcon Glyph="&#xE77B;"
@@ -467,7 +696,6 @@
                 </StackPanel>
               </Grid>
 
-              <!-- Form Fields -->
               <StackPanel Padding="16,0,16,16"
                           Spacing="16">
                 <TextBox x:Name="LoginServerUrl"
@@ -488,7 +716,6 @@
 
           <!-- Action Buttons -->
           <StackPanel Spacing="16">
-            <!-- Progress indicator (shown during login) -->
             <ProgressRing x:Name="LoginProgress"
                           IsActive="False"
                           Width="24"
@@ -506,10 +733,10 @@
       </ScrollViewer>
     </Grid>
 
-    <!-- First Tenant Creation Overlay (shown when user has no tenants) - spans both rows to cover AppHeader -->
+    <!-- First Tenant Creation Overlay - spans both columns -->
     <Grid x:Name="FirstTenantOverlay"
-          Grid.Row="0"
-          Grid.RowSpan="2"
+          Grid.Column="0"
+          Grid.ColumnSpan="2"
           Visibility="Collapsed"
           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
       <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -520,7 +747,6 @@
                     MaxWidth="500"
                     HorizontalAlignment="Center">
 
-          <!-- Welcome Header -->
           <StackPanel Spacing="8"
                       HorizontalAlignment="Center">
             <Image Source="ms-appx:///Assets/Icons/icon.svg"
@@ -541,7 +767,6 @@
                        TextWrapping="Wrap" />
           </StackPanel>
 
-          <!-- Error Message Banner -->
           <Border x:Name="FirstTenantErrorBanner"
                   Background="{ThemeResource ErrorContainerBrush}"
                   CornerRadius="8"
@@ -567,7 +792,6 @@
             </Grid>
           </Border>
 
-          <!-- Tenant Form Card -->
           <Border Background="{ThemeResource SurfaceBrush}"
                   CornerRadius="12"
                   Translation="0,0,8">
@@ -575,7 +799,6 @@
               <ThemeShadow />
             </Border.Shadow>
             <StackPanel Spacing="0">
-              <!-- Card Header -->
               <Grid Padding="16,16,16,8">
                 <StackPanel Orientation="Horizontal">
                   <FontIcon Glyph="&#xE902;"
@@ -588,15 +811,12 @@
                 </StackPanel>
               </Grid>
 
-              <!-- Form Fields -->
               <StackPanel Padding="16,0,16,16"
                           Spacing="16">
-                <!-- Name (Required) -->
                 <TextBox x:Name="FirstTenantName"
                          x:Uid="TenantEditPage.Field.Name"
                          TextChanged="FirstTenantName_TextChanged" />
 
-                <!-- Description -->
                 <TextBox x:Name="FirstTenantDescription"
                          x:Uid="TenantEditPage.Field.Description"
                          AcceptsReturn="True"
@@ -604,7 +824,6 @@
                          MinHeight="80"
                          MaxHeight="120" />
 
-                <!-- Required Fields Note -->
                 <TextBlock x:Uid="TenantEditPage.RequiredFieldsNote"
                            Style="{StaticResource LabelSmall}"
                            Foreground="{ThemeResource OnSurfaceVariantBrush}" />
@@ -612,9 +831,7 @@
             </StackPanel>
           </Border>
 
-          <!-- Action Buttons -->
           <StackPanel Spacing="16">
-            <!-- Progress indicator (shown during save) -->
             <ProgressRing x:Name="FirstTenantProgress"
                           IsActive="False"
                           Width="24"

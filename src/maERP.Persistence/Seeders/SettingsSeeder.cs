@@ -23,6 +23,8 @@ public static class SettingsSeeder
             // Telemetry Settings
             new Setting { Id = new Guid("66666666-6666-6666-6666-666666666622"), Key = "Telemetry.Endpoint", Value = "http://localhost:4317" },
             new Setting { Id = new Guid("66666666-6666-6666-6666-666666666623"), Key = "Telemetry.ServiceName", Value = "maERP.Server" }
+
+            // Grafana / Loki settings are inserted at runtime via SettingsInitializer.
         );
     }
 }
