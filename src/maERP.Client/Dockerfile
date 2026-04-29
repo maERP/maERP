@@ -24,17 +24,26 @@ COPY ["NuGet.config", "./"]
 # are unused inside this image.
 RUN dotnet workload install wasm-tools
 
-# Restore dependencies (this also primes the NuGet cache with Uno.Sdk
-# so downstream MSBuild evaluations succeed).
-RUN dotnet restore "maERP.Client/maERP.Client.csproj"
+# Restore dependencies for the WASM target only. The .csproj is multi-target
+# (Android, iOS, MacCatalyst, Desktop, WASM) — without this override, restore
+# walks every TFM and demands the Android/iOS workloads which aren't installed
+# (and aren't needed for a browser build).
+RUN dotnet restore "maERP.Client/maERP.Client.csproj" \
+    -p:TargetFrameworks=net10.0-browserwasm \
+    -p:TargetFramework=net10.0-browserwasm
 
 # Copy source files
 COPY src/maERP.Client/ maERP.Client/
 COPY src/maERP.Domain/ maERP.Domain/
 
-# Build and publish
+# Build and publish (same TFM override — keeps publish from re-evaluating
+# the other targets and demanding their workloads).
 WORKDIR "/src/maERP.Client"
-RUN dotnet publish "maERP.Client.csproj" -c Release -f net10.0-browserwasm -o /app/publish
+RUN dotnet publish "maERP.Client.csproj" \
+    -c Release \
+    -f net10.0-browserwasm \
+    -p:TargetFrameworks=net10.0-browserwasm \
+    -o /app/publish
 
 # Runtime stage with nginx
 FROM nginx:alpine AS final
