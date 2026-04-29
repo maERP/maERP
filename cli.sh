@@ -32,16 +32,32 @@ cd "$SCRIPT_DIR"
 
 # Pick docker compose v2 (`docker compose`) over the legacy `docker-compose`.
 if docker compose version >/dev/null 2>&1; then
-    COMPOSE=(docker compose)
+    COMPOSE_BIN=(docker compose)
 elif command -v docker-compose >/dev/null 2>&1; then
-    COMPOSE=(docker-compose)
+    COMPOSE_BIN=(docker-compose)
 else
     echo "error: neither 'docker compose' nor 'docker-compose' is available." >&2
     exit 1
 fi
 
+# COMPOSE = binary + the file flags we need. Assembled in load_env() once .env
+# is parsed so optional override files (e.g. postgres port expose) can be
+# layered in based on the user's settings.
+COMPOSE=("${COMPOSE_BIN[@]}")
+
 usage() {
     sed -n '3,27p' "$0" | sed 's/^# \{0,1\}//'
+}
+
+# Print an error message followed by the full usage block, then exit 1.
+# Used for any error caused by wrong/missing CLI arguments — distinct from
+# operational errors (container not running, backup failed, …) which don't
+# need the usage clutter.
+die_usage() {
+    echo "error: $1" >&2
+    echo "" >&2
+    usage >&2
+    exit 1
 }
 
 # --- Database / .env resolution ----------------------------------------------
@@ -122,6 +138,18 @@ load_env() {
 
     export DB_MODE DB_ENGINE DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD \
            DB_PROVIDER DB_CONNECTION_STRING
+
+    # Layer in compose override files based on optional .env settings.
+    COMPOSE=("${COMPOSE_BIN[@]}" -f docker-compose.yml)
+
+    # Expose the internal postgres port to the host when DB_INTERNAL_EXPOSE_PORT
+    # is set. Only meaningful for DB_MODE=internal — outside it the postgres
+    # service isn't started, and the override file is a no-op.
+    if [[ "$DB_MODE" == "internal" && -n "${DB_INTERNAL_EXPOSE_PORT:-}" ]]; then
+        COMPOSE+=(-f docker-compose.postgres-expose.yml)
+        export DB_INTERNAL_EXPOSE_PORT
+        export DB_INTERNAL_EXPOSE_BIND="${DB_INTERNAL_EXPOSE_BIND:-127.0.0.1}"
+    fi
 }
 
 require_external_db() {
@@ -162,9 +190,7 @@ profile_args() {
 require_target() {
     local cmd="$1" target="${2:-}"
     if [[ -z "$target" ]]; then
-        echo "error: '$cmd' requires a target (server|wasm)." >&2
-        usage >&2
-        exit 1
+        die_usage "'$cmd' requires a target (server|wasm)."
     fi
 }
 
@@ -242,8 +268,7 @@ cmd_deploy() {
             "${COMPOSE[@]}" "${profiles[@]}" up -d
             ;;
         *)
-            echo "error: unknown deploy target '$target' (expected: server|wasm)." >&2
-            exit 1
+            die_usage "unknown deploy target '$target' (expected: server|wasm)."
             ;;
     esac
 }
@@ -258,8 +283,7 @@ cmd_start() {
             "${COMPOSE[@]}" "${profiles[@]}" up -d
             ;;
         *)
-            echo "error: unknown start target '$target' (expected: server|wasm)." >&2
-            exit 1
+            die_usage "unknown start target '$target' (expected: server|wasm)."
             ;;
     esac
 }
@@ -274,8 +298,7 @@ cmd_stop() {
             "${COMPOSE[@]}" "${profiles[@]}" down
             ;;
         *)
-            echo "error: unknown stop target '$target' (expected: server|wasm)." >&2
-            exit 1
+            die_usage "unknown stop target '$target' (expected: server|wasm)."
             ;;
     esac
 }
@@ -302,8 +325,7 @@ cmd_logs() {
             "${COMPOSE[@]}" "${profiles[@]}" logs -f --tail=200 wasm
             ;;
         *)
-            echo "error: unknown logs target '$target' (expected: all|server|wasm)." >&2
-            exit 1
+            die_usage "unknown logs target '$target' (expected: all|server|wasm)."
             ;;
     esac
 }
@@ -314,13 +336,10 @@ cmd_db() {
         backup)  db_backup ;;
         restore) shift; db_restore "$@" ;;
         "")
-            echo "error: 'db' requires a subcommand (backup|restore)." >&2
-            usage >&2
-            exit 1
+            die_usage "'db' requires a subcommand (backup|restore)."
             ;;
         *)
-            echo "error: unknown db subcommand '$sub' (expected: backup|restore)." >&2
-            exit 1
+            die_usage "unknown db subcommand '$sub' (expected: backup|restore)."
             ;;
     esac
 }
@@ -370,17 +389,17 @@ db_restore() {
         case "$1" in
             --clean) clean=1 ;;
             -h|--help)
-                echo "usage: ./cli.sh db restore <filename> [--clean]" >&2
+                echo "usage: ./cli.sh db restore <filename> [--clean]"
+                echo "  <filename>  relative to ./backups/, or absolute path"
+                echo "  --clean     drop & recreate the schema/database before restore"
                 return 0
                 ;;
             -*)
-                echo "error: unknown flag '$1' for db restore." >&2
-                exit 1
+                die_usage "unknown flag '$1' for 'db restore' (expected: --clean)."
                 ;;
             *)
                 if [[ -n "$arg" ]]; then
-                    echo "error: unexpected extra argument '$1'." >&2
-                    exit 1
+                    die_usage "unexpected extra argument '$1' for 'db restore'."
                 fi
                 arg="$1"
                 ;;
@@ -389,9 +408,7 @@ db_restore() {
     done
 
     if [[ -z "$arg" ]]; then
-        echo "error: 'db restore' requires a filename." >&2
-        echo "usage: ./cli.sh db restore <filename> [--clean]   (relative to ./backups/, or absolute)" >&2
-        exit 1
+        die_usage "'db restore' requires a filename (relative to ./backups/, or absolute)."
     fi
 
     if [[ "$DB_ENGINE" == "mssql" ]]; then
@@ -458,14 +475,22 @@ SQL
 
 main() {
     if [[ $# -lt 1 ]]; then
-        usage >&2
-        exit 1
+        die_usage "no command given (expected: deploy|start|stop|logs|db)."
     fi
-
-    load_env
 
     local command="$1"
     shift
+
+    # `help` and friends bypass load_env so the help also works without a
+    # configured .env (e.g. on a fresh checkout).
+    case "$command" in
+        -h|--help|help)
+            usage
+            return 0
+            ;;
+    esac
+
+    load_env
 
     case "$command" in
         deploy) cmd_deploy "$@" ;;
@@ -473,13 +498,8 @@ main() {
         stop)   cmd_stop   "$@" ;;
         logs)   cmd_logs   "$@" ;;
         db)     cmd_db     "$@" ;;
-        -h|--help|help)
-            usage
-            ;;
         *)
-            echo "error: unknown command '$command'." >&2
-            usage >&2
-            exit 1
+            die_usage "unknown command '$command' (expected: deploy|start|stop|logs|db)."
             ;;
     esac
 }

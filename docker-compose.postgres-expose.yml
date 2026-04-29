@@ -1,0 +1,15 @@
+name: maerp
+
+# Compose override that publishes the internal postgres container's port to
+# the host. Activated automatically by ./cli.sh when DB_INTERNAL_EXPOSE_PORT
+# is set in .env. Only effective for DB_MODE=internal — has no impact on
+# external DB modes since the postgres-internal service isn't started there.
+#
+# Defaults:
+#   DB_INTERNAL_EXPOSE_BIND = 127.0.0.1   (loopback only — safest)
+#   DB_INTERNAL_EXPOSE_PORT = 5432
+
+services:
+  postgres:
+    ports:
+      - "${DB_INTERNAL_EXPOSE_BIND:-127.0.0.1}:${DB_INTERNAL_EXPOSE_PORT:-5432}:5432"

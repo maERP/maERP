@@ -49,6 +49,12 @@ WORKDIR /usr/share/nginx/html
 # Copy published WASM files
 COPY --from=build /app/publish/wwwroot .
 
+# Ensure every file is world-readable and every directory is traversable.
+# `dotnet publish` occasionally emits assets in the package_* directory
+# (notably AppManifest.js) with restrictive modes that block the nginx
+# worker user, leading to 403s when the browser requests them.
+RUN chmod -R a+rX /usr/share/nginx/html
+
 # Copy custom nginx config for SPA routing
 COPY src/maERP.Client/nginx.conf /etc/nginx/conf.d/default.conf
 
