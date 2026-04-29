@@ -11,18 +11,47 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - HTTP_PORTS=8443
-      - DatabaseConfig__Provider=Sqlite
-      - DatabaseConfig__ConnectionString=Data Source=/app/data/maerp.db
+      - DatabaseConfig__Provider=PostgreSQL
+      - DatabaseConfig__ConnectionString=Host=postgres;Port=5432;Database=maerp;Username=maerp;Password=maerp;
       - Logging__LogLevel__Default=Warning
     ports:
       - "8443:8443"
     volumes:
       - maerp-data:/app/data
     depends_on:
-      - grafana-agent
+      postgres:
+        condition: service_healthy
+      grafana-agent:
+        condition: service_started
     networks:
       - backend
     restart: unless-stopped
+
+  postgres:
+    profiles: ["server"]
+    image: postgres:16-alpine
+    container_name: maerp-postgres
+    environment:
+      POSTGRES_DB: maerp
+      POSTGRES_USER: maerp
+      POSTGRES_PASSWORD: maerp
+      PGDATA: /var/lib/postgresql/data/pgdata
+    # Postgres is reachable only inside the 'backend' network — not published to the host.
+    # Uncomment the next two lines if you need to connect from the host (e.g. psql, backup tools).
+    # ports:
+    #   - "5432:5432"
+    volumes:
+      - maerp-postgres-data:/var/lib/postgresql/data
+      - ./backups/postgresql:/backups
+    networks:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U maerp -d maerp"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 40s
 
   wasm:
     profiles: ["wasm"]
@@ -66,6 +95,7 @@ services:
 
 volumes:
   maerp-data:
+  maerp-postgres-data:
   grafana-agent-wal:
 
 networks:
