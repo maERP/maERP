@@ -5,17 +5,25 @@
 # Usage:
 #   ./cli.sh deploy server         git pull, build & (re)start the server stack
 #   ./cli.sh deploy wasm           git pull, build & (re)start the WASM stack
-#   ./cli.sh start  server         Start the server stack (server + postgres)
+#   ./cli.sh start  server         Start the server stack (server + postgres if internal)
 #   ./cli.sh start  wasm           Start the WASM stack
 #   ./cli.sh stop   server         Stop the server stack
 #   ./cli.sh stop   wasm           Stop the WASM stack
 #   ./cli.sh logs   all            Tail logs of every running service
-#   ./cli.sh logs   server         Tail server logs (server + postgres)
+#   ./cli.sh logs   server         Tail server logs (server + postgres if internal)
 #   ./cli.sh logs   wasm           Tail WASM logs
-#   ./cli.sh db     backup           Dump postgres into ./backups/ as gzip -9
-#   ./cli.sh db     restore <file>   Restore <file> from ./backups/ into postgres
+#   ./cli.sh db     backup           Dump database into ./backups/ as gzip -9
+#   ./cli.sh db     restore <file>   Restore <file> from ./backups/ into the database
 #   ./cli.sh db     restore <file> --clean
-#                                    Drop & recreate schema 'public' before restore
+#                                    Drop & recreate the schema/database before restore
+#
+# Database backend is selected via DB_MODE in .env:
+#   internal (default) → docker-compose runs an embedded postgres container.
+#                        No credentials needed — managed by this script.
+#   postgres           → external PostgreSQL.  Set DB_HOST/_PORT/_NAME/_USER/_PASSWORD.
+#   mariadb            → external MariaDB/MySQL.        "         "         "
+#   mssql              → external Microsoft SQL Server. "         "         "
+#                        (Note: db backup/restore is not implemented for mssql.)
 
 set -euo pipefail
 
@@ -33,20 +41,123 @@ else
 fi
 
 usage() {
-    sed -n '3,18p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '3,27p' "$0" | sed 's/^# \{0,1\}//'
 }
 
-# --- Postgres helpers ---------------------------------------------------------
-PG_SERVICE="postgres"
-PG_USER="maerp"
-PG_DB="maerp"
+# --- Database / .env resolution ----------------------------------------------
 BACKUP_DIR="${SCRIPT_DIR}/backups"
 
-postgres_running() {
-    local cid
-    cid="$("${COMPOSE[@]}" ps -q "$PG_SERVICE" 2>/dev/null || true)"
-    [[ -n "$cid" ]] && [[ "$(docker inspect -f '{{.State.Running}}' "$cid" 2>/dev/null)" == "true" ]]
+# Internal-mode defaults — fixed because the container is only reachable inside
+# the docker network and the user shouldn't have to configure them.
+PG_INTERNAL_HOST="postgres"
+PG_INTERNAL_PORT="5432"
+PG_INTERNAL_DB="maerp"
+PG_INTERNAL_USER="maerp"
+PG_INTERNAL_PASSWORD="maerp"
+
+# Client images used to run pg_dump / mariadb-dump etc. against external DBs.
+PG_CLIENT_IMAGE="postgres:16-alpine"
+MARIADB_CLIENT_IMAGE="mariadb:11.4"
+
+# Resolved during load_env(); used everywhere downstream.
+DB_ENGINE=""             # postgres | mariadb | mssql
+DB_PROVIDER=""           # PostgreSQL | MySQL | MSSQL  (DatabaseConfig__Provider)
+DB_CONNECTION_STRING=""  # passed to DatabaseConfig__ConnectionString
+
+load_env() {
+    if [[ -f "${SCRIPT_DIR}/.env" ]]; then
+        set -a
+        # shellcheck disable=SC1091
+        source "${SCRIPT_DIR}/.env"
+        set +a
+    fi
+
+    DB_MODE="${DB_MODE:-internal}"
+
+    case "$DB_MODE" in
+        internal)
+            DB_ENGINE="postgres"
+            DB_HOST="$PG_INTERNAL_HOST"
+            DB_PORT="$PG_INTERNAL_PORT"
+            DB_NAME="$PG_INTERNAL_DB"
+            DB_USER="$PG_INTERNAL_USER"
+            DB_PASSWORD="$PG_INTERNAL_PASSWORD"
+            ;;
+        postgres)
+            DB_ENGINE="postgres"
+            require_external_db
+            DB_PORT="${DB_PORT:-5432}"
+            ;;
+        mariadb)
+            DB_ENGINE="mariadb"
+            require_external_db
+            DB_PORT="${DB_PORT:-3306}"
+            ;;
+        mssql)
+            DB_ENGINE="mssql"
+            require_external_db
+            DB_PORT="${DB_PORT:-1433}"
+            ;;
+        *)
+            echo "error: invalid DB_MODE='${DB_MODE}' (expected: internal|postgres|mariadb|mssql)." >&2
+            exit 1
+            ;;
+    esac
+
+    # Build the engine-specific .NET connection string and provider key.
+    case "$DB_ENGINE" in
+        postgres)
+            DB_PROVIDER="PostgreSQL"
+            DB_CONNECTION_STRING="Host=${DB_HOST};Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};"
+            ;;
+        mariadb)
+            DB_PROVIDER="MySQL"
+            DB_CONNECTION_STRING="Server=${DB_HOST};Port=${DB_PORT};Database=${DB_NAME};Uid=${DB_USER};Pwd=${DB_PASSWORD};"
+            ;;
+        mssql)
+            DB_PROVIDER="MSSQL"
+            DB_CONNECTION_STRING="Server=${DB_HOST},${DB_PORT};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=True;"
+            ;;
+    esac
+
+    export DB_MODE DB_ENGINE DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD \
+           DB_PROVIDER DB_CONNECTION_STRING
 }
+
+require_external_db() {
+    local missing=()
+    [[ -z "${DB_HOST:-}" ]]     && missing+=(DB_HOST)
+    [[ -z "${DB_NAME:-}" ]]     && missing+=(DB_NAME)
+    [[ -z "${DB_USER:-}" ]]     && missing+=(DB_USER)
+    [[ -z "${DB_PASSWORD:-}" ]] && missing+=(DB_PASSWORD)
+    if (( ${#missing[@]} > 0 )); then
+        echo "error: DB_MODE=${DB_MODE} but missing in .env: ${missing[*]}" >&2
+        exit 1
+    fi
+}
+
+# Profiles to activate for a given target. Internal mode adds 'postgres-internal'
+# whenever 'server' is involved.
+profile_args() {
+    local target="$1"
+    local -a args=()
+    case "$target" in
+        server)
+            args+=(--profile server)
+            [[ "$DB_MODE" == "internal" ]] && args+=(--profile postgres-internal)
+            ;;
+        wasm)
+            args+=(--profile wasm)
+            ;;
+        all)
+            args+=(--profile server --profile wasm)
+            [[ "$DB_MODE" == "internal" ]] && args+=(--profile postgres-internal)
+            ;;
+    esac
+    printf '%s\n' "${args[@]}"
+}
+
+# --- Helpers -----------------------------------------------------------------
 
 require_target() {
     local cmd="$1" target="${2:-}"
@@ -70,15 +181,65 @@ git_pull() {
     git pull --ff-only
 }
 
+postgres_internal_running() {
+    local cid
+    cid="$("${COMPOSE[@]}" ps -q postgres 2>/dev/null || true)"
+    [[ -n "$cid" ]] && [[ "$(docker inspect -f '{{.State.Running}}' "$cid" 2>/dev/null)" == "true" ]]
+}
+
+# --- Engine-specific runners -------------------------------------------------
+# Each runner takes one argument (the binary name like pg_dump / mariadb-dump /
+# psql / mariadb) plus extra args, and pipes stdin/stdout transparently.
+
+# Postgres: internal → exec into the running compose container; external →
+# spin up an ephemeral postgres-client container.
+pg_run() {
+    local bin="$1"; shift
+    if [[ "$DB_MODE" == "internal" ]]; then
+        if ! postgres_internal_running; then
+            echo "error: internal postgres container is not running. Start it with: ./cli.sh start server" >&2
+            exit 1
+        fi
+        "${COMPOSE[@]}" exec -T \
+            -e PGPASSWORD="$DB_PASSWORD" \
+            postgres "$bin" \
+            -h "$DB_HOST" -p "$DB_PORT" \
+            -U "$DB_USER" -d "$DB_NAME" "$@"
+    else
+        docker run --rm -i \
+            --add-host=host.docker.internal:host-gateway \
+            -e PGPASSWORD="$DB_PASSWORD" \
+            "$PG_CLIENT_IMAGE" "$bin" \
+            -h "$DB_HOST" -p "$DB_PORT" \
+            -U "$DB_USER" -d "$DB_NAME" "$@"
+    fi
+}
+
+# MariaDB/MySQL: always use an ephemeral mariadb-client container — the
+# server isn't run inside this compose stack in any DB_MODE.
+mariadb_run() {
+    local bin="$1"; shift
+    docker run --rm -i \
+        --add-host=host.docker.internal:host-gateway \
+        -e MYSQL_PWD="$DB_PASSWORD" \
+        "$MARIADB_CLIENT_IMAGE" "$bin" \
+        -h "$DB_HOST" -P "$DB_PORT" \
+        -u "$DB_USER" "$@"
+}
+
+# --- Commands ----------------------------------------------------------------
+
 cmd_deploy() {
     local target="${1:-}"
     require_target deploy "$target"
     case "$target" in
         server|wasm)
             git_pull
-            "${COMPOSE[@]}" --profile "$target" build
-            echo ">>> Starting '${target}' stack"
-            "${COMPOSE[@]}" --profile "$target" up -d
+            local -a profiles
+            mapfile -t profiles < <(profile_args "$target")
+            "${COMPOSE[@]}" "${profiles[@]}" build
+            echo ">>> Starting '${target}' stack (db mode: ${DB_MODE})"
+            "${COMPOSE[@]}" "${profiles[@]}" up -d
             ;;
         *)
             echo "error: unknown deploy target '$target' (expected: server|wasm)." >&2
@@ -92,7 +253,9 @@ cmd_start() {
     require_target start "$target"
     case "$target" in
         server|wasm)
-            "${COMPOSE[@]}" --profile "$target" up -d
+            local -a profiles
+            mapfile -t profiles < <(profile_args "$target")
+            "${COMPOSE[@]}" "${profiles[@]}" up -d
             ;;
         *)
             echo "error: unknown start target '$target' (expected: server|wasm)." >&2
@@ -106,7 +269,9 @@ cmd_stop() {
     require_target stop "$target"
     case "$target" in
         server|wasm)
-            "${COMPOSE[@]}" --profile "$target" down
+            local -a profiles
+            mapfile -t profiles < <(profile_args "$target")
+            "${COMPOSE[@]}" "${profiles[@]}" down
             ;;
         *)
             echo "error: unknown stop target '$target' (expected: server|wasm)." >&2
@@ -120,13 +285,21 @@ cmd_logs() {
     require_target logs "$target"
     case "$target" in
         all)
-            "${COMPOSE[@]}" --profile server --profile wasm logs -f --tail=200
+            local -a profiles
+            mapfile -t profiles < <(profile_args all)
+            "${COMPOSE[@]}" "${profiles[@]}" logs -f --tail=200
             ;;
         server)
-            "${COMPOSE[@]}" --profile server logs -f --tail=200 server postgres
+            local -a profiles
+            mapfile -t profiles < <(profile_args server)
+            local -a services=(server)
+            [[ "$DB_MODE" == "internal" ]] && services+=(postgres)
+            "${COMPOSE[@]}" "${profiles[@]}" logs -f --tail=200 "${services[@]}"
             ;;
         wasm)
-            "${COMPOSE[@]}" --profile wasm logs -f --tail=200 wasm
+            local -a profiles
+            mapfile -t profiles < <(profile_args wasm)
+            "${COMPOSE[@]}" "${profiles[@]}" logs -f --tail=200 wasm
             ;;
         *)
             echo "error: unknown logs target '$target' (expected: all|server|wasm)." >&2
@@ -153,26 +326,41 @@ cmd_db() {
 }
 
 db_backup() {
-    if ! postgres_running; then
-        echo "error: postgres container is not running. Start it with: ./cli.sh start server" >&2
+    if [[ "$DB_ENGINE" == "mssql" ]]; then
+        echo "error: 'db backup' is not implemented for DB_MODE=mssql." >&2
+        echo "       Use SQL Server's native BACKUP DATABASE T-SQL or the SqlPackage tool instead." >&2
         exit 1
     fi
 
     mkdir -p "$BACKUP_DIR"
     local ts file
     ts="$(date +%Y%m%d-%H%M%S)"
-    file="${BACKUP_DIR}/${ts}_maerp.sql.gz"
+    file="${BACKUP_DIR}/${ts}_maerp_${DB_ENGINE}.sql.gz"
 
-    echo ">>> Dumping database '${PG_DB}' to ${file}"
-    # pg_dump → stdout → gzip -9 → file. -T disables TTY so the stream stays binary-clean.
-    if "${COMPOSE[@]}" exec -T "$PG_SERVICE" pg_dump -U "$PG_USER" -d "$PG_DB" \
-        | gzip -9 > "$file"; then
-        echo ">>> Backup written: ${file} ($(du -h "$file" | cut -f1))"
-    else
-        rm -f "$file"
-        echo "error: backup failed." >&2
-        exit 1
-    fi
+    echo ">>> Dumping ${DB_ENGINE} '${DB_NAME}' from ${DB_HOST}:${DB_PORT} (mode: ${DB_MODE}) → ${file}"
+    case "$DB_ENGINE" in
+        postgres)
+            if pg_run pg_dump | gzip -9 > "$file"; then
+                echo ">>> Backup written: ${file} ($(du -h "$file" | cut -f1))"
+            else
+                rm -f "$file"
+                echo "error: backup failed." >&2
+                exit 1
+            fi
+            ;;
+        mariadb)
+            # --single-transaction → consistent snapshot without locks (InnoDB)
+            # --routines / --events → include stored procedures & scheduled events
+            if mariadb_run mariadb-dump --single-transaction --routines --events "$DB_NAME" \
+                | gzip -9 > "$file"; then
+                echo ">>> Backup written: ${file} ($(du -h "$file" | cut -f1))"
+            else
+                rm -f "$file"
+                echo "error: backup failed." >&2
+                exit 1
+            fi
+            ;;
+    esac
 }
 
 db_restore() {
@@ -206,7 +394,12 @@ db_restore() {
         exit 1
     fi
 
-    # Resolve the file: accept absolute path, or basename inside ./backups/.
+    if [[ "$DB_ENGINE" == "mssql" ]]; then
+        echo "error: 'db restore' is not implemented for DB_MODE=mssql." >&2
+        echo "       Use SQL Server's native RESTORE DATABASE T-SQL or the SqlPackage tool instead." >&2
+        exit 1
+    fi
+
     local file
     if [[ "$arg" = /* ]]; then
         file="$arg"
@@ -219,34 +412,47 @@ db_restore() {
         exit 1
     fi
 
-    if ! postgres_running; then
-        echo "error: postgres container is not running. Start it with: ./cli.sh start server" >&2
-        exit 1
-    fi
-
     if [[ $clean -eq 1 ]]; then
-        echo ">>> --clean: dropping and recreating schema 'public' in database '${PG_DB}'"
-        # Terminate other connections to the target DB first, then drop/recreate the public schema.
-        # The server holds open connections — without termination, DROP SCHEMA blocks on locks.
-        "${COMPOSE[@]}" exec -T "$PG_SERVICE" psql -v ON_ERROR_STOP=1 -U "$PG_USER" -d "$PG_DB" <<SQL
+        echo ">>> --clean: dropping and recreating schema in '${DB_NAME}'"
+        case "$DB_ENGINE" in
+            postgres)
+                pg_run psql -v ON_ERROR_STOP=1 <<SQL
 SELECT pg_terminate_backend(pid)
   FROM pg_stat_activity
  WHERE datname = current_database()
    AND pid <> pg_backend_pid();
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
-GRANT ALL ON SCHEMA public TO ${PG_USER};
+GRANT ALL ON SCHEMA public TO ${DB_USER};
 GRANT ALL ON SCHEMA public TO public;
 SQL
+                ;;
+            mariadb)
+                # MySQL/MariaDB has no schemas separate from databases — drop
+                # and recreate the database itself. Requires the user to have
+                # CREATE/DROP privileges on the database.
+                mariadb_run mariadb -e "DROP DATABASE IF EXISTS \`${DB_NAME}\`; CREATE DATABASE \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+                ;;
+        esac
     fi
 
-    echo ">>> Restoring ${file} into database '${PG_DB}'"
-    # Decompress on the host, stream SQL into psql inside the container.
-    if [[ "$file" == *.gz ]]; then
-        gzip -dc "$file" | "${COMPOSE[@]}" exec -T "$PG_SERVICE" psql -v ON_ERROR_STOP=1 -U "$PG_USER" -d "$PG_DB"
-    else
-        "${COMPOSE[@]}" exec -T "$PG_SERVICE" psql -v ON_ERROR_STOP=1 -U "$PG_USER" -d "$PG_DB" < "$file"
-    fi
+    echo ">>> Restoring ${file} into ${DB_ENGINE} '${DB_NAME}' on ${DB_HOST}:${DB_PORT} (mode: ${DB_MODE})"
+    case "$DB_ENGINE" in
+        postgres)
+            if [[ "$file" == *.gz ]]; then
+                gzip -dc "$file" | pg_run psql -v ON_ERROR_STOP=1
+            else
+                pg_run psql -v ON_ERROR_STOP=1 < "$file"
+            fi
+            ;;
+        mariadb)
+            if [[ "$file" == *.gz ]]; then
+                gzip -dc "$file" | mariadb_run mariadb "$DB_NAME"
+            else
+                mariadb_run mariadb "$DB_NAME" < "$file"
+            fi
+            ;;
+    esac
     echo ">>> Restore complete."
 }
 
@@ -255,6 +461,8 @@ main() {
         usage >&2
         exit 1
     fi
+
+    load_env
 
     local command="$1"
     shift

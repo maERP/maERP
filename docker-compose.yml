@@ -1,5 +1,17 @@
 name: maerp
 
+# Database backend is selected via DB_MODE in .env (see .env.example).
+# The CLI script (./cli.sh) translates DB_MODE into:
+#   - DB_PROVIDER          → PostgreSQL | MySQL | MSSQL
+#   - DB_CONNECTION_STRING → engine-specific connection string
+# and activates the 'postgres-internal' profile only for DB_MODE=internal.
+#
+#   DB_MODE=internal  → activates 'server' + 'postgres-internal',
+#                       embedded postgres container, no credentials needed.
+#   DB_MODE=postgres  → activates only 'server', external postgres from .env.
+#   DB_MODE=mariadb   → activates only 'server', external mariadb/mysql.
+#   DB_MODE=mssql     → activates only 'server', external SQL Server.
+
 services:
   server:
     profiles: ["server"]
@@ -11,24 +23,29 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - HTTP_PORTS=8443
-      - DatabaseConfig__Provider=PostgreSQL
-      - DatabaseConfig__ConnectionString=Host=postgres;Port=5432;Database=maerp;Username=maerp;Password=maerp;
+      - DatabaseConfig__Provider=${DB_PROVIDER}
+      - DatabaseConfig__ConnectionString=${DB_CONNECTION_STRING}
       - Logging__LogLevel__Default=Warning
     ports:
-      - "8443:8443"
+      - "${MAERP_SERVER_PORT:-8443}:8443"
     volumes:
       - maerp-data:/app/data
+    # depends_on referring to a service in an inactive profile is silently
+    # ignored by docker compose — so this only kicks in for internal mode.
     depends_on:
       postgres:
         condition: service_healthy
+        required: false
     networks:
       - backend
     restart: unless-stopped
 
   postgres:
-    profiles: ["server"]
+    profiles: ["postgres-internal"]
     image: postgres:16-alpine
     container_name: maerp-postgres
+    # Credentials are fixed because the container is reachable only inside
+    # the docker network and is managed exclusively by ./cli.sh.
     environment:
       POSTGRES_DB: maerp
       POSTGRES_USER: maerp
@@ -59,7 +76,10 @@ services:
       context: .
       dockerfile: src/maERP.Client/Dockerfile
     environment:
-      - MAERP_SERVER_BASE_URL=${MAERP_SERVER_BASE_URL:-http://localhost:8443}
+      # When set, the WASM client locks the API to this URL and hides the
+      # server-URL field on the login screen. Leave empty to let users enter
+      # any server URL on login (default behaviour).
+      - MAERP_RESTRICT_SERVER_URL=${MAERP_RESTRICT_SERVER_URL:-}
     ports:
       - "8444:80"
     networks:

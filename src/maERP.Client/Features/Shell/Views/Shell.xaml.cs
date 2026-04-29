@@ -746,6 +746,15 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         LoginProgress.Visibility = Visibility.Collapsed;
         LoginProgress.IsActive = false;
         LoginButton.IsEnabled = true;
+        LoginServerUrl.Visibility = Visibility.Visible;
+
+        // Runtime config (WASM: /config.json from nginx env var) may pin the
+        // server URL — hide the input and use the configured value.
+        if (maERP.Client.Core.Configuration.RuntimeConfig.IsServerUrlRestricted)
+        {
+            LoginServerUrl.Text = maERP.Client.Core.Configuration.RuntimeConfig.RestrictServerUrl!;
+            LoginServerUrl.Visibility = Visibility.Collapsed;
+        }
 
         try
         {
@@ -753,7 +762,10 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             var hostEnvironment = app?.Host?.Services?.GetService<IHostEnvironment>();
             if (hostEnvironment?.IsDevelopment() == true)
             {
-                LoginServerUrl.Text = "https://localhost:8443";
+                if (!maERP.Client.Core.Configuration.RuntimeConfig.IsServerUrlRestricted)
+                {
+                    LoginServerUrl.Text = "https://localhost:8443";
+                }
                 LoginEmail.Text = "admin@localhost.com";
                 LoginPassword.Password = "P@ssword1";
             }

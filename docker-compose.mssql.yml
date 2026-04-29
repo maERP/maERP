@@ -1,41 +1,32 @@
 name: maerp-mssql
 
+# Alternate stack — MSSQL backend instead of postgres.
+# Bring up with:  docker compose -f docker-compose.mssql.yml up -d
+# Add WASM:       docker compose -f docker-compose.mssql.yml --profile wasm up -d
+#
+# This file is self-contained (no .env auto-loading via cli.sh). MAERP_SERVER_PORT
+# and MAERP_RESTRICT_SERVER_URL are read from the shell environment if set.
+
 services:
-  maerp.server:
+  server:
     image: ${DOCKER_REGISTRY-}maerp/server
     build:
       context: .
       dockerfile: src/maERP.Server/Dockerfile
     environment:
-      - DatabaseConfig__Provider=MSSQL
-      - DatabaseConfig__ConnectionString=Server=mssql;Database=maerp_01;User Id=maerp;Password=maerp123!;TrustServerCertificate=True;
       - ASPNETCORE_ENVIRONMENT=Production
       - HTTP_PORTS=8443
+      - DatabaseConfig__Provider=MSSQL
+      - DatabaseConfig__ConnectionString=Server=mssql;Database=maerp_01;User Id=maerp;Password=maerp123!;TrustServerCertificate=True;
       - Logging__LogLevel__Default=Warning
     ports:
-      - "8443:8443"
+      - "${MAERP_SERVER_PORT:-8443}:8443"
     depends_on:
       mssql:
         condition: service_healthy
-      grafana-agent:
-        condition: service_started
     networks:
       - backend
-
-  maerp.browser:
-    image: ${DOCKER_REGISTRY-}maerp/web
-    build:
-      context: .
-      dockerfile: src/maERP.UI.Browser/Dockerfile
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - MAERP_SERVER_BASE_URL=http://localhost:8443
-    ports:
-      - "8444:80"
-    depends_on:
-      - maerp.server
-    networks:
-      - backend
+    restart: unless-stopped
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -43,14 +34,13 @@ services:
       SA_PASSWORD: "SqlServer123!"
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Developer"
-    ports:
-      - "1433:1433"
     volumes:
       - maerp-mssql-data:/var/opt/mssql
       - ./scripts/mssql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - ./backups/mssql:/backups
     networks:
       - backend
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P SqlServer123! -Q 'SELECT 1' || exit 1"]
       timeout: 20s
@@ -58,24 +48,19 @@ services:
       interval: 30s
       start_period: 60s
 
-  grafana-agent:
-    image: grafana/agent:latest
-    entrypoint:
-      - /bin/grafana-agent
-      - -server.http.address=0.0.0.0:12345
-      - -config.file=/etc/agent-config/agent.yaml
-      - -metrics.wal-directory=/tmp/agent/wal
-      - -enable-features=integrations-next
-      - -config.expand-env
-      - -config.enable-read-api
+  wasm:
+    profiles: ["wasm"]
+    image: ${DOCKER_REGISTRY-}maerp/wasm
+    build:
+      context: .
+      dockerfile: src/maERP.Client/Dockerfile
     environment:
-      HOSTNAME: grafana-agent
-      REMOTE_WRITE_HOST: mimir:9009
-      MSSQL_HOST: mssql:1433
+      - MAERP_RESTRICT_SERVER_URL=${MAERP_RESTRICT_SERVER_URL:-}
     ports:
-      - "12345:12345"
+      - "8444:80"
     networks:
       - backend
+    restart: unless-stopped
 
 volumes:
   maerp-mssql-data:

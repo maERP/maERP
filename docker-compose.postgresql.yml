@@ -1,41 +1,33 @@
 name: maerp-postgresql
 
+# Alternate stack — PostgreSQL backend with the legacy 'maerp_01' database
+# name (kept for parity with the other engine-specific compose files).
+# For the canonical postgres setup, use docker-compose.yml together with
+# ./cli.sh which supports both internal and external postgres.
+#
+# Bring up with:  docker compose -f docker-compose.postgresql.yml up -d
+# Add WASM:       docker compose -f docker-compose.postgresql.yml --profile wasm up -d
+
 services:
-  maerp.server:
+  server:
     image: ${DOCKER_REGISTRY-}maerp/server
     build:
       context: .
       dockerfile: src/maERP.Server/Dockerfile
     environment:
-      - DatabaseConfig__Provider=PostgreSQL
-      - DatabaseConfig__ConnectionString=Host=postgresql;Port=5432;Database=maerp_01;Username=maerp;Password=maerp;
       - ASPNETCORE_ENVIRONMENT=Production
       - HTTP_PORTS=8443
+      - DatabaseConfig__Provider=PostgreSQL
+      - DatabaseConfig__ConnectionString=Host=postgresql;Port=5432;Database=maerp_01;Username=maerp;Password=maerp;
       - Logging__LogLevel__Default=Warning
     ports:
-      - "8443:8443"
+      - "${MAERP_SERVER_PORT:-8443}:8443"
     depends_on:
       postgresql:
         condition: service_healthy
-      grafana-agent:
-        condition: service_started
     networks:
       - backend
-
-  maerp.browser:
-    image: ${DOCKER_REGISTRY-}maerp/web
-    build:
-      context: .
-      dockerfile: src/maERP.UI.Browser/Dockerfile
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - MAERP_SERVER_BASE_URL=http://localhost:8443
-    ports:
-      - "8444:80"
-    depends_on:
-      - maerp.server
-    networks:
-      - backend
+    restart: unless-stopped
 
   postgresql:
     image: postgres:16-alpine
@@ -44,13 +36,12 @@ services:
       POSTGRES_USER: maerp
       POSTGRES_PASSWORD: maerp
       PGDATA: /var/lib/postgresql/data/pgdata
-    ports:
-      - "5432:5432"
     volumes:
       - maerp-postgresql-data:/var/lib/postgresql/data
       - ./backups/postgresql:/backups
     networks:
       - backend
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U maerp -d maerp_01"]
       timeout: 20s
@@ -58,24 +49,19 @@ services:
       interval: 10s
       start_period: 40s
 
-  grafana-agent:
-    image: grafana/agent:latest
-    entrypoint:
-      - /bin/grafana-agent
-      - -server.http.address=0.0.0.0:12345
-      - -config.file=/etc/agent-config/agent.yaml
-      - -metrics.wal-directory=/tmp/agent/wal
-      - -enable-features=integrations-next
-      - -config.expand-env
-      - -config.enable-read-api
+  wasm:
+    profiles: ["wasm"]
+    image: ${DOCKER_REGISTRY-}maerp/wasm
+    build:
+      context: .
+      dockerfile: src/maERP.Client/Dockerfile
     environment:
-      HOSTNAME: grafana-agent
-      REMOTE_WRITE_HOST: mimir:9009
-      POSTGRES_HOST: postgresql:5432
+      - MAERP_RESTRICT_SERVER_URL=${MAERP_RESTRICT_SERVER_URL:-}
     ports:
-      - "12345:12345"
+      - "8444:80"
     networks:
       - backend
+    restart: unless-stopped
 
 volumes:
   maerp-postgresql-data:

@@ -41,6 +41,10 @@ public partial class App : Application
 
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        // Load runtime config (WASM: from /config.json written by nginx entrypoint)
+        // before the Shell initializes its login overlay.
+        await maERP.Client.Core.Configuration.RuntimeConfig.LoadAsync();
+
         var builder = this.CreateBuilder(args)
             // Add navigation support for toolkit controls such as TabBar and NavigationView
             .UseToolkitNavigation()

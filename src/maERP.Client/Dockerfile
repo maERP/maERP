@@ -38,6 +38,11 @@ COPY --from=build /app/publish/wwwroot .
 # Copy custom nginx config for SPA routing
 COPY src/maERP.Client/nginx.conf /etc/nginx/conf.d/default.conf
 
+# Runtime config generator — writes /usr/share/nginx/html/config.json from
+# env vars before nginx starts. Picked up by /docker-entrypoint.d/.
+COPY src/maERP.Client/docker-entrypoint.d/10-write-config.sh /docker-entrypoint.d/10-write-config.sh
+RUN chmod +x /docker-entrypoint.d/10-write-config.sh
+
 EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=3s \

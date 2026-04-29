@@ -4,6 +4,12 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS base
 WORKDIR /app
 EXPOSE 8443
 
+# libgssapi-krb5-2 is needed by Npgsql so it doesn't log
+# "Cannot load library libgssapi_krb5.so.2" on every startup.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgssapi-krb5-2 \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV DatabaseConfig__Provider=Sqlite
 ENV DatabaseConfig__ConnectionString=Data Source=maerp.db
 

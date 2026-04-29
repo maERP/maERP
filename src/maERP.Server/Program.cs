@@ -369,8 +369,33 @@ app.MapHealthChecks("/health", new HealthCheckOptions
     }
 });
 
-// Display formatted startup message
-var urls = app.Urls.Any() ? app.Urls : ["http://localhost:8080"];
+// Display formatted startup message.
+// app.Urls is empty until Kestrel actually starts, so fall back to the configured
+// URLs / ports from environment variables (ASPNETCORE_URLS, HTTP_PORTS, HTTPS_PORTS).
+static IEnumerable<string> ResolveStartupUrls(WebApplication application)
+{
+    if (application.Urls.Count > 0)
+        return application.Urls;
+
+    var aspnetUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+    if (!string.IsNullOrWhiteSpace(aspnetUrls))
+        return aspnetUrls.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    var resolved = new List<string>();
+    var httpPorts = Environment.GetEnvironmentVariable("HTTP_PORTS");
+    if (!string.IsNullOrWhiteSpace(httpPorts))
+        resolved.AddRange(httpPorts.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(p => $"http://localhost:{p}"));
+
+    var httpsPorts = Environment.GetEnvironmentVariable("HTTPS_PORTS");
+    if (!string.IsNullOrWhiteSpace(httpsPorts))
+        resolved.AddRange(httpsPorts.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(p => $"https://localhost:{p}"));
+
+    return resolved.Count > 0 ? resolved : ["http://localhost:5000"];
+}
+
+var urls = ResolveStartupUrls(app);
 var environment = app.Environment.EnvironmentName;
 
 Console.WriteLine();
