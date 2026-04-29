@@ -3,17 +3,19 @@
 # maERP CLI — manage Server and WASM containers via docker compose profiles.
 #
 # Usage:
-#   ./cli.sh deploy server         Build the server image (and grafana-agent)
-#   ./cli.sh deploy wasm           Build the WASM image
-#   ./cli.sh start  server         Start the server stack (server + grafana-agent)
+#   ./cli.sh deploy server         git pull, build & (re)start the server stack
+#   ./cli.sh deploy wasm           git pull, build & (re)start the WASM stack
+#   ./cli.sh start  server         Start the server stack (server + postgres)
 #   ./cli.sh start  wasm           Start the WASM stack
 #   ./cli.sh stop   server         Stop the server stack
 #   ./cli.sh stop   wasm           Stop the WASM stack
 #   ./cli.sh logs   all            Tail logs of every running service
-#   ./cli.sh logs   server         Tail server logs (server + grafana-agent)
+#   ./cli.sh logs   server         Tail server logs (server + postgres)
 #   ./cli.sh logs   wasm           Tail WASM logs
-#   ./cli.sh db     backup         Dump postgres into ./backups/ as gzip -9
-#   ./cli.sh db     restore <file> Restore <file> from ./backups/ into postgres
+#   ./cli.sh db     backup           Dump postgres into ./backups/ as gzip -9
+#   ./cli.sh db     restore <file>   Restore <file> from ./backups/ into postgres
+#   ./cli.sh db     restore <file> --clean
+#                                    Drop & recreate schema 'public' before restore
 
 set -euo pipefail
 
@@ -31,7 +33,7 @@ else
 fi
 
 usage() {
-    sed -n '3,16p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '3,18p' "$0" | sed 's/^# \{0,1\}//'
 }
 
 # --- Postgres helpers ---------------------------------------------------------
@@ -75,6 +77,8 @@ cmd_deploy() {
         server|wasm)
             git_pull
             "${COMPOSE[@]}" --profile "$target" build
+            echo ">>> Starting '${target}' stack"
+            "${COMPOSE[@]}" --profile "$target" up -d
             ;;
         *)
             echo "error: unknown deploy target '$target' (expected: server|wasm)." >&2
@@ -119,7 +123,7 @@ cmd_logs() {
             "${COMPOSE[@]}" --profile server --profile wasm logs -f --tail=200
             ;;
         server)
-            "${COMPOSE[@]}" --profile server logs -f --tail=200 server grafana-agent
+            "${COMPOSE[@]}" --profile server logs -f --tail=200 server postgres
             ;;
         wasm)
             "${COMPOSE[@]}" --profile wasm logs -f --tail=200 wasm
@@ -135,7 +139,7 @@ cmd_db() {
     local sub="${1:-}"
     case "$sub" in
         backup)  db_backup ;;
-        restore) shift; db_restore "${1:-}" ;;
+        restore) shift; db_restore "$@" ;;
         "")
             echo "error: 'db' requires a subcommand (backup|restore)." >&2
             usage >&2
@@ -172,10 +176,33 @@ db_backup() {
 }
 
 db_restore() {
-    local arg="${1:-}"
+    # Parse args: accept <file> and --clean in any order.
+    local arg="" clean=0
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --clean) clean=1 ;;
+            -h|--help)
+                echo "usage: ./cli.sh db restore <filename> [--clean]" >&2
+                return 0
+                ;;
+            -*)
+                echo "error: unknown flag '$1' for db restore." >&2
+                exit 1
+                ;;
+            *)
+                if [[ -n "$arg" ]]; then
+                    echo "error: unexpected extra argument '$1'." >&2
+                    exit 1
+                fi
+                arg="$1"
+                ;;
+        esac
+        shift
+    done
+
     if [[ -z "$arg" ]]; then
         echo "error: 'db restore' requires a filename." >&2
-        echo "usage: ./cli.sh db restore <filename>   (relative to ./backups/, or absolute)" >&2
+        echo "usage: ./cli.sh db restore <filename> [--clean]   (relative to ./backups/, or absolute)" >&2
         exit 1
     fi
 
@@ -183,8 +210,6 @@ db_restore() {
     local file
     if [[ "$arg" = /* ]]; then
         file="$arg"
-    elif [[ -f "${BACKUP_DIR}/${arg}" ]]; then
-        file="${BACKUP_DIR}/${arg}"
     else
         file="${BACKUP_DIR}/${arg}"
     fi
@@ -199,10 +224,24 @@ db_restore() {
         exit 1
     fi
 
+    if [[ $clean -eq 1 ]]; then
+        echo ">>> --clean: dropping and recreating schema 'public' in database '${PG_DB}'"
+        # Terminate other connections to the target DB first, then drop/recreate the public schema.
+        # The server holds open connections — without termination, DROP SCHEMA blocks on locks.
+        "${COMPOSE[@]}" exec -T "$PG_SERVICE" psql -v ON_ERROR_STOP=1 -U "$PG_USER" -d "$PG_DB" <<SQL
+SELECT pg_terminate_backend(pid)
+  FROM pg_stat_activity
+ WHERE datname = current_database()
+   AND pid <> pg_backend_pid();
+DROP SCHEMA IF EXISTS public CASCADE;
+CREATE SCHEMA public;
+GRANT ALL ON SCHEMA public TO ${PG_USER};
+GRANT ALL ON SCHEMA public TO public;
+SQL
+    fi
+
     echo ">>> Restoring ${file} into database '${PG_DB}'"
-    # Decompress on the host, stream the SQL into psql inside the container.
-    # gzip -dc handles both .gz and (passes through) plain SQL only when extension is .gz;
-    # if a plain .sql is passed, we cat instead.
+    # Decompress on the host, stream SQL into psql inside the container.
     if [[ "$file" == *.gz ]]; then
         gzip -dc "$file" | "${COMPOSE[@]}" exec -T "$PG_SERVICE" psql -v ON_ERROR_STOP=1 -U "$PG_USER" -d "$PG_DB"
     else

@@ -21,8 +21,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      grafana-agent:
-        condition: service_started
     networks:
       - backend
     restart: unless-stopped
@@ -68,35 +66,9 @@ services:
       - backend
     restart: unless-stopped
 
-  grafana-agent:
-    profiles: ["server"]
-    image: grafana/agent:latest
-    container_name: maerp-grafana-agent
-    entrypoint:
-      - /bin/grafana-agent
-      - -server.http.address=0.0.0.0:12345
-      - -config.file=/etc/agent-config/agent.yaml
-      - -metrics.wal-directory=/tmp/agent/wal
-      - -enable-features=integrations-next
-      - -config.expand-env
-      - -config.enable-read-api
-    environment:
-      HOSTNAME: grafana-agent
-      REMOTE_WRITE_HOST: mimir:9009
-      POSTGRES_HOST: postgres:5432
-    ports:
-      - "12345:12345"
-    volumes:
-      - ./grafana-agent/agent.yaml:/etc/agent-config/agent.yaml:ro
-      - grafana-agent-wal:/tmp/agent/wal
-    networks:
-      - backend
-    restart: unless-stopped
-
 volumes:
   maerp-data:
   maerp-postgres-data:
-  grafana-agent-wal:
 
 networks:
   backend:
