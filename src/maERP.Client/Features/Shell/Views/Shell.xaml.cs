@@ -1,5 +1,6 @@
 using maERP.Client.Core.Exceptions;
 using Windows.ApplicationModel.Resources;
+using maERP.Client.Features.Account.Models;
 using maERP.Client.Features.Shell.Models;
 using maERP.Client.Features.Auth.Services;
 using maERP.Client.Features.Tenants.Services;
@@ -467,6 +468,9 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     break;
                 case "SuperadminTenants":
                     await navigator.NavigateViewModelAsync<SuperadminTenantListModel>(this);
+                    break;
+                case "UserProfile":
+                    await navigator.NavigateViewModelAsync<AccountModel>(this);
                     break;
                 case "Settings":
                     break;

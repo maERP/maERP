@@ -134,7 +134,14 @@ public static class ApiEndpoints
     {
         public const string Base = $"{ApiBase}/users";
         public static string ById(string id) => $"{Base}/{id}";
+    }
+
+    // Account (current user)
+    public static class Account
+    {
+        public const string Base = $"{ApiBase}/account";
         public const string Me = $"{Base}/me";
+        public const string ChangePassword = $"{Base}/change-password";
     }
 
     // Superadmin

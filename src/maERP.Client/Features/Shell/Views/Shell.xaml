@@ -505,6 +505,14 @@
             </StackPanel>
             <Button.Flyout>
               <MenuFlyout Placement="BottomEdgeAlignedRight">
+                <MenuFlyoutItem x:Name="MenuItemMyAccount"
+                                x:Uid="Shell.UserMenu.MyAccount"
+                                Tag="UserProfile"
+                                Click="OnNavItemClick">
+                  <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE77B;" />
+                  </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
                 <MenuFlyoutItem x:Name="MenuItemTenants"
                                 x:Uid="Shell.UserMenu.Tenants"
                                 Tag="Tenants"
@@ -620,8 +628,36 @@
           Grid.Column="0"
           Grid.ColumnSpan="2"
           Visibility="Visible"
-          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-      <ScrollViewer VerticalScrollBarVisibility="Auto"
+          Background="{ThemeResource SurfaceVariantBrush}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="48" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <!-- Brand bar (mirrors Sidebar brand row + ContentHeader) -->
+      <Grid Grid.Row="0"
+            Background="{ThemeResource BackgroundBrush}"
+            BorderBrush="{ThemeResource OutlineVariantBrush}"
+            BorderThickness="0,0,0,1"
+            Padding="12,0,12,0">
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center">
+          <Image Source="ms-appx:///Assets/Icons/icon.svg"
+                 Width="28"
+                 Height="28"
+                 Stretch="Uniform"
+                 VerticalAlignment="Center" />
+          <TextBlock Text="maERP"
+                     Style="{StaticResource BodyMedium}"
+                     FontWeight="SemiBold"
+                     Foreground="{ThemeResource OnSurfaceBrush}"
+                     VerticalAlignment="Center"
+                     Margin="10,0,0,0" />
+        </StackPanel>
+      </Grid>
+
+      <ScrollViewer Grid.Row="1"
+                    VerticalScrollBarVisibility="Auto"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
         <StackPanel Spacing="24"
@@ -632,13 +668,8 @@
           <!-- Welcome Header -->
           <StackPanel Spacing="8"
                       HorizontalAlignment="Center">
-            <Image Source="ms-appx:///Assets/Icons/icon.svg"
-                   Width="64"
-                   Height="64"
-                   Stretch="Uniform"
-                   HorizontalAlignment="Center" />
             <TextBlock x:Uid="Shell.Login.Title"
-                       Style="{StaticResource HeadlineMedium}"
+                       Style="{StaticResource HeadlineSmall}"
                        Foreground="{ThemeResource OnSurfaceBrush}"
                        HorizontalAlignment="Center"
                        TextAlignment="Center" />
@@ -746,8 +777,36 @@
           Grid.Column="0"
           Grid.ColumnSpan="2"
           Visibility="Collapsed"
-          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-      <ScrollViewer VerticalScrollBarVisibility="Auto"
+          Background="{ThemeResource SurfaceVariantBrush}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="48" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <!-- Brand bar (mirrors Sidebar brand row + ContentHeader) -->
+      <Grid Grid.Row="0"
+            Background="{ThemeResource BackgroundBrush}"
+            BorderBrush="{ThemeResource OutlineVariantBrush}"
+            BorderThickness="0,0,0,1"
+            Padding="12,0,12,0">
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center">
+          <Image Source="ms-appx:///Assets/Icons/icon.svg"
+                 Width="28"
+                 Height="28"
+                 Stretch="Uniform"
+                 VerticalAlignment="Center" />
+          <TextBlock Text="maERP"
+                     Style="{StaticResource BodyMedium}"
+                     FontWeight="SemiBold"
+                     Foreground="{ThemeResource OnSurfaceBrush}"
+                     VerticalAlignment="Center"
+                     Margin="10,0,0,0" />
+        </StackPanel>
+      </Grid>
+
+      <ScrollViewer Grid.Row="1"
+                    VerticalScrollBarVisibility="Auto"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
         <StackPanel Spacing="24"
@@ -757,13 +816,8 @@
 
           <StackPanel Spacing="8"
                       HorizontalAlignment="Center">
-            <Image Source="ms-appx:///Assets/Icons/icon.svg"
-                   Width="64"
-                   Height="64"
-                   Stretch="Uniform"
-                   HorizontalAlignment="Center" />
             <TextBlock x:Uid="Shell.Register.Title"
-                       Style="{StaticResource HeadlineMedium}"
+                       Style="{StaticResource HeadlineSmall}"
                        Foreground="{ThemeResource OnSurfaceBrush}"
                        HorizontalAlignment="Center"
                        TextAlignment="Center" />
@@ -876,8 +930,36 @@
           Grid.Column="0"
           Grid.ColumnSpan="2"
           Visibility="Collapsed"
-          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-      <ScrollViewer VerticalScrollBarVisibility="Auto"
+          Background="{ThemeResource SurfaceVariantBrush}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="48" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <!-- Brand bar (mirrors Sidebar brand row + ContentHeader) -->
+      <Grid Grid.Row="0"
+            Background="{ThemeResource BackgroundBrush}"
+            BorderBrush="{ThemeResource OutlineVariantBrush}"
+            BorderThickness="0,0,0,1"
+            Padding="12,0,12,0">
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center">
+          <Image Source="ms-appx:///Assets/Icons/icon.svg"
+                 Width="28"
+                 Height="28"
+                 Stretch="Uniform"
+                 VerticalAlignment="Center" />
+          <TextBlock Text="maERP"
+                     Style="{StaticResource BodyMedium}"
+                     FontWeight="SemiBold"
+                     Foreground="{ThemeResource OnSurfaceBrush}"
+                     VerticalAlignment="Center"
+                     Margin="10,0,0,0" />
+        </StackPanel>
+      </Grid>
+
+      <ScrollViewer Grid.Row="1"
+                    VerticalScrollBarVisibility="Auto"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
         <StackPanel Spacing="24"
@@ -887,13 +969,8 @@
 
           <StackPanel Spacing="8"
                       HorizontalAlignment="Center">
-            <Image Source="ms-appx:///Assets/Icons/icon.svg"
-                   Width="64"
-                   Height="64"
-                   Stretch="Uniform"
-                   HorizontalAlignment="Center" />
             <TextBlock x:Uid="Shell.FirstTenant.Title"
-                       Style="{StaticResource HeadlineMedium}"
+                       Style="{StaticResource HeadlineSmall}"
                        Foreground="{ThemeResource OnSurfaceBrush}"
                        HorizontalAlignment="Center"
                        TextAlignment="Center" />

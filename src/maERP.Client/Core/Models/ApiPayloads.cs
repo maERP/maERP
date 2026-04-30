@@ -9,3 +9,13 @@ internal record AddUserToTenantPayload(string Email);
 /// Payload for assigning a user to a tenant by tenant ID.
 /// </summary>
 internal record AssignUserToTenantPayload(Guid TenantId);
+
+/// <summary>
+/// Payload for updating the current user's profile.
+/// </summary>
+internal record UpdateCurrentUserPayload(string Email, string Firstname, string Lastname, string PhoneNumber);
+
+/// <summary>
+/// Payload for changing the current user's password.
+/// </summary>
+internal record ChangePasswordPayload(string CurrentPassword, string NewPassword, string NewPasswordConfirm);

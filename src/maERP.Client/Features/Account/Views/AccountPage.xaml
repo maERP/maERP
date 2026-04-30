@@ -1,0 +1,294 @@
+<Page x:Class="maERP.Client.Features.Account.Views.AccountPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:maERP.Client.Features.Account.Views"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource BackgroundBrush}">
+
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <Grid utu:SafeArea.Insets="VisibleBounds"
+          Padding="24">
+
+      <!-- Responsive layout for the form cards -->
+      <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup>
+          <VisualState x:Name="Narrow">
+            <VisualState.StateTriggers>
+              <AdaptiveTrigger MinWindowWidth="0" />
+            </VisualState.StateTriggers>
+            <VisualState.Setters>
+              <Setter Target="FormCardsGrid.MaxWidth" Value="600" />
+              <Setter Target="FormColumn1.Width" Value="*" />
+              <Setter Target="FormColumn2.Width" Value="0" />
+              <Setter Target="ProfileCard.(Grid.Column)" Value="0" />
+              <Setter Target="ProfileCard.(Grid.Row)" Value="0" />
+              <Setter Target="ProfileCard.Margin" Value="0,0,0,16" />
+              <Setter Target="PasswordCard.(Grid.Column)" Value="0" />
+              <Setter Target="PasswordCard.(Grid.Row)" Value="1" />
+              <Setter Target="PasswordCard.Margin" Value="0" />
+            </VisualState.Setters>
+          </VisualState>
+
+          <VisualState x:Name="Medium">
+            <VisualState.StateTriggers>
+              <AdaptiveTrigger MinWindowWidth="800" />
+            </VisualState.StateTriggers>
+            <VisualState.Setters>
+              <Setter Target="FormCardsGrid.MaxWidth" Value="1200" />
+              <Setter Target="FormColumn1.Width" Value="*" />
+              <Setter Target="FormColumn2.Width" Value="*" />
+              <Setter Target="ProfileCard.(Grid.Column)" Value="0" />
+              <Setter Target="ProfileCard.(Grid.Row)" Value="0" />
+              <Setter Target="ProfileCard.Margin" Value="0,0,8,0" />
+              <Setter Target="PasswordCard.(Grid.Column)" Value="1" />
+              <Setter Target="PasswordCard.(Grid.Row)" Value="0" />
+              <Setter Target="PasswordCard.Margin" Value="8,0,0,0" />
+            </VisualState.Setters>
+          </VisualState>
+
+          <VisualState x:Name="Wide">
+            <VisualState.StateTriggers>
+              <AdaptiveTrigger MinWindowWidth="1200" />
+            </VisualState.StateTriggers>
+            <VisualState.Setters>
+              <Setter Target="FormCardsGrid.MaxWidth" Value="10000" />
+              <Setter Target="FormColumn1.Width" Value="*" />
+              <Setter Target="FormColumn2.Width" Value="*" />
+              <Setter Target="ProfileCard.(Grid.Column)" Value="0" />
+              <Setter Target="ProfileCard.(Grid.Row)" Value="0" />
+              <Setter Target="ProfileCard.Margin" Value="0,0,8,0" />
+              <Setter Target="PasswordCard.(Grid.Column)" Value="1" />
+              <Setter Target="PasswordCard.(Grid.Row)" Value="0" />
+              <Setter Target="PasswordCard.Margin" Value="8,0,0,0" />
+            </VisualState.Setters>
+          </VisualState>
+        </VisualStateGroup>
+      </VisualStateManager.VisualStateGroups>
+
+      <StackPanel Spacing="24">
+
+        <!-- Page Header (Dashboard-style breadcrumb + title + subtitle) -->
+        <StackPanel Spacing="2">
+          <TextBlock x:Uid="AccountPage.Breadcrumb"
+                     Style="{StaticResource LabelSmall}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}" />
+          <TextBlock x:Uid="AccountPage.Title"
+                     Style="{StaticResource HeadlineMedium}"
+                     Foreground="{ThemeResource OnBackgroundBrush}" />
+          <TextBlock x:Uid="AccountPage.Subtitle"
+                     Style="{StaticResource BodyMedium}"
+                     Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                     Margin="0,4,0,0" />
+        </StackPanel>
+
+        <!-- Initialization-error banner (only when GET /me fails) -->
+        <Border Background="{ThemeResource ErrorContainerBrush}"
+                CornerRadius="8"
+                Padding="16"
+                Visibility="{Binding InitializationError, Converter={StaticResource StringToVisibilityConverter}, FallbackValue=Collapsed}">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <FontIcon Grid.Column="0"
+                      Glyph="&#xE783;"
+                      FontSize="20"
+                      Foreground="{ThemeResource OnErrorContainerBrush}"
+                      Margin="0,0,12,0"
+                      VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1"
+                       Text="{Binding InitializationError}"
+                       Style="{StaticResource BodyMedium}"
+                       Foreground="{ThemeResource OnErrorContainerBrush}"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center" />
+          </Grid>
+        </Border>
+
+        <!-- Loading overlay while fetching profile -->
+        <Border Background="{ThemeResource SurfaceBrush}"
+                CornerRadius="12"
+                Padding="24"
+                Visibility="{Binding IsInitializing, Converter={StaticResource BoolToVisibilityConverter}}">
+          <StackPanel HorizontalAlignment="Center"
+                      Spacing="16">
+            <ProgressRing IsActive="True"
+                          Width="48"
+                          Height="48" />
+            <TextBlock x:Uid="Common.Loading"
+                       Style="{StaticResource BodyMedium}"
+                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                       HorizontalAlignment="Center" />
+          </StackPanel>
+        </Border>
+
+        <!-- Form Cards -->
+        <Grid x:Name="FormCardsGrid"
+              Visibility="{Binding IsNotInitializing, Converter={StaticResource BoolToVisibilityConverter}}">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="FormColumn1" Width="*" />
+            <ColumnDefinition x:Name="FormColumn2" Width="*" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <!-- Profile card -->
+          <Border x:Name="ProfileCard"
+                  Grid.Column="0"
+                  Grid.Row="0"
+                  Margin="0,0,8,0"
+                  Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Translation="0,0,8">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel Spacing="0">
+              <!-- Card header -->
+              <Grid Padding="16,16,16,8">
+                <StackPanel Orientation="Horizontal">
+                  <FontIcon Glyph="&#xE77B;"
+                            FontSize="20"
+                            Foreground="{ThemeResource PrimaryBrush}"
+                            Margin="0,0,12,0" />
+                  <TextBlock x:Uid="AccountPage.Profile.Title"
+                             Style="{StaticResource TitleMedium}"
+                             Foreground="{ThemeResource OnSurfaceBrush}" />
+                </StackPanel>
+              </Grid>
+
+              <!-- Profile fields -->
+              <StackPanel Padding="16,0,16,16"
+                          Spacing="16">
+
+                <!-- Profile success banner -->
+                <Border Background="{ThemeResource TertiaryContainerBrush}"
+                        CornerRadius="8"
+                        Padding="12"
+                        Visibility="{Binding HasProfileSuccess, Converter={StaticResource BoolToVisibilityConverter}}">
+                  <TextBlock Text="{Binding ProfileSuccess}"
+                             Style="{StaticResource BodySmall}"
+                             Foreground="{ThemeResource OnTertiaryContainerBrush}"
+                             TextWrapping="Wrap" />
+                </Border>
+
+                <!-- Profile error banner -->
+                <Border Background="{ThemeResource ErrorContainerBrush}"
+                        CornerRadius="8"
+                        Padding="12"
+                        Visibility="{Binding HasProfileError, Converter={StaticResource BoolToVisibilityConverter}}">
+                  <TextBlock Text="{Binding ProfileError}"
+                             Style="{StaticResource BodySmall}"
+                             Foreground="{ThemeResource OnErrorContainerBrush}"
+                             TextWrapping="Wrap" />
+                </Border>
+
+                <TextBox x:Uid="AccountPage.Field.Firstname"
+                         Text="{Binding Firstname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsNotInitializing}" />
+
+                <TextBox x:Uid="AccountPage.Field.Lastname"
+                         Text="{Binding Lastname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsNotInitializing}" />
+
+                <TextBox x:Uid="AccountPage.Field.Email"
+                         Text="{Binding Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         InputScope="EmailSmtpAddress"
+                         IsEnabled="{Binding IsNotInitializing}" />
+
+                <TextBox x:Uid="AccountPage.Field.PhoneNumber"
+                         Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         InputScope="TelephoneNumber"
+                         IsEnabled="{Binding IsNotInitializing}" />
+
+                <Button x:Uid="AccountPage.Profile.SaveButton"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Click="SaveProfileButton_Click"
+                        IsEnabled="{Binding CanSaveProfile}"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,8,0,0" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+          <!-- Password card -->
+          <Border x:Name="PasswordCard"
+                  Grid.Column="1"
+                  Grid.Row="0"
+                  Margin="8,0,0,0"
+                  Background="{ThemeResource SurfaceBrush}"
+                  CornerRadius="12"
+                  Translation="0,0,8">
+            <Border.Shadow>
+              <ThemeShadow />
+            </Border.Shadow>
+            <StackPanel Spacing="0">
+              <!-- Card header -->
+              <Grid Padding="16,16,16,8">
+                <StackPanel Orientation="Horizontal">
+                  <FontIcon Glyph="&#xE192;"
+                            FontSize="20"
+                            Foreground="{ThemeResource PrimaryBrush}"
+                            Margin="0,0,12,0" />
+                  <TextBlock x:Uid="AccountPage.Password.Title"
+                             Style="{StaticResource TitleMedium}"
+                             Foreground="{ThemeResource OnSurfaceBrush}" />
+                </StackPanel>
+              </Grid>
+
+              <!-- Password fields -->
+              <StackPanel Padding="16,0,16,16"
+                          Spacing="16">
+
+                <!-- Password success banner -->
+                <Border Background="{ThemeResource TertiaryContainerBrush}"
+                        CornerRadius="8"
+                        Padding="12"
+                        Visibility="{Binding HasPasswordSuccess, Converter={StaticResource BoolToVisibilityConverter}}">
+                  <TextBlock Text="{Binding PasswordSuccess}"
+                             Style="{StaticResource BodySmall}"
+                             Foreground="{ThemeResource OnTertiaryContainerBrush}"
+                             TextWrapping="Wrap" />
+                </Border>
+
+                <!-- Password error banner -->
+                <Border Background="{ThemeResource ErrorContainerBrush}"
+                        CornerRadius="8"
+                        Padding="12"
+                        Visibility="{Binding HasPasswordError, Converter={StaticResource BoolToVisibilityConverter}}">
+                  <TextBlock Text="{Binding PasswordError}"
+                             Style="{StaticResource BodySmall}"
+                             Foreground="{ThemeResource OnErrorContainerBrush}"
+                             TextWrapping="Wrap" />
+                </Border>
+
+                <PasswordBox x:Uid="AccountPage.Field.CurrentPassword"
+                             Password="{Binding CurrentPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotInitializing}" />
+
+                <PasswordBox x:Uid="AccountPage.Field.NewPassword"
+                             Password="{Binding NewPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotInitializing}" />
+
+                <PasswordBox x:Uid="AccountPage.Field.NewPasswordConfirm"
+                             Password="{Binding NewPasswordConfirm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsEnabled="{Binding IsNotInitializing}" />
+
+                <Button x:Uid="AccountPage.Password.ChangeButton"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Click="ChangePasswordButton_Click"
+                        IsEnabled="{Binding CanChangePassword}"
+                        HorizontalAlignment="Stretch"
+                        Margin="0,8,0,0" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+        </Grid>
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
+</Page>

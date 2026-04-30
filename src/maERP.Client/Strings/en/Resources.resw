@@ -3611,4 +3611,68 @@
   <data name="DashboardPage.Filter.Last24h.Text" xml:space="preserve">
     <value>Last 24 hours</value>
   </data>
+
+  <!-- Shell User Menu - My Account -->
+  <data name="Shell.UserMenu.MyAccount.Text" xml:space="preserve">
+    <value>My Account</value>
+  </data>
+
+  <!-- Account Page -->
+  <data name="AccountPage.Breadcrumb.Text" xml:space="preserve">
+    <value>SETTINGS</value>
+  </data>
+  <data name="AccountPage.Title.Text" xml:space="preserve">
+    <value>My Account</value>
+  </data>
+  <data name="AccountPage.Subtitle.Text" xml:space="preserve">
+    <value>Manage your personal information and password.</value>
+  </data>
+  <data name="AccountPage.Profile.Title.Text" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="AccountPage.Field.Firstname.Header" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="AccountPage.Field.Lastname.Header" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="AccountPage.Field.Email.Header" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="AccountPage.Field.PhoneNumber.Header" xml:space="preserve">
+    <value>Phone number</value>
+  </data>
+  <data name="AccountPage.Profile.SaveButton.Content" xml:space="preserve">
+    <value>Save profile</value>
+  </data>
+  <data name="AccountPage.Password.Title.Text" xml:space="preserve">
+    <value>Change password</value>
+  </data>
+  <data name="AccountPage.Field.CurrentPassword.Header" xml:space="preserve">
+    <value>Current password</value>
+  </data>
+  <data name="AccountPage.Field.NewPassword.Header" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="AccountPage.Field.NewPasswordConfirm.Header" xml:space="preserve">
+    <value>Confirm new password</value>
+  </data>
+  <data name="AccountPage.Password.ChangeButton.Content" xml:space="preserve">
+    <value>Change password</value>
+  </data>
+  <data name="Account.Profile.Saved" xml:space="preserve">
+    <value>Profile saved successfully.</value>
+  </data>
+  <data name="Account.Profile.SaveFailed" xml:space="preserve">
+    <value>Failed to save profile: {0}</value>
+  </data>
+  <data name="Account.Password.Changed" xml:space="preserve">
+    <value>Password changed successfully.</value>
+  </data>
+  <data name="Account.Password.ChangeFailed" xml:space="preserve">
+    <value>Failed to change password: {0}</value>
+  </data>
+  <data name="Account.Password.MismatchError" xml:space="preserve">
+    <value>The password confirmation does not match the new password.</value>
+  </data>
 </root>

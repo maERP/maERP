@@ -93,10 +93,21 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             // Register TestTenantContext as scoped to ensure proper isolation between tests
             services.AddScoped<ITenantContext, TestTenantContext>();
 
-            // NOTE: We do NOT call AddIdentity here because:
-            // 1. It would override our Test authentication scheme
-            // 2. Tests don't need full Identity functionality
-            // 3. User entities are seeded directly in tests when needed
+            // Register Identity Core (UserManager + stores) without touching the auth scheme.
+            // AddIdentity (used in production via AddPersistenceServices) would replace the Test
+            // authentication scheme, so we use AddIdentityCore here to keep TestAuthenticationHandler
+            // intact while still letting handlers resolve UserManager<ApplicationUser>.
+            services.AddIdentityCore<ApplicationUser>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredLength = 6;
+                })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
         });
 
         builder.UseEnvironment("Testing");

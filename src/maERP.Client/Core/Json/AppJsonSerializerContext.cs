@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using maERP.Client.Core.Models;
+using maERP.Domain.Dtos.Account;
 using maERP.Domain.Dtos.AiModel;
 using maERP.Domain.Dtos.AiPrompt;
 using maERP.Domain.Dtos.Auth;
@@ -57,6 +58,8 @@ namespace maERP.Client.Core.Json;
 [JsonSerializable(typeof(ApiResponse<OrderDetailDto>))]
 [JsonSerializable(typeof(ApiResponse<SalesChannelDetailDto>))]
 [JsonSerializable(typeof(ApiResponse<LoginResponseDto>))]
+[JsonSerializable(typeof(ApiResponse<CurrentUserProfileDto>))]
+[JsonSerializable(typeof(ApiResponse<string>))]
 
 // Direct response types
 [JsonSerializable(typeof(AiModelDetailDto))]
@@ -80,6 +83,8 @@ namespace maERP.Client.Core.Json;
 [JsonSerializable(typeof(ServerInfoResponseDto))]
 [JsonSerializable(typeof(AddUserToTenantPayload))]
 [JsonSerializable(typeof(AssignUserToTenantPayload))]
+[JsonSerializable(typeof(UpdateCurrentUserPayload))]
+[JsonSerializable(typeof(ChangePasswordPayload))]
 
 // Error parsing
 [JsonSerializable(typeof(ApiErrorResponse))]
