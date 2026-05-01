@@ -30,6 +30,15 @@ namespace maERP.Persistence.MSSQL.Migrations
                 oldClrType: typeof(bool),
                 oldType: "bit");
 
+            // Idempotent — see DROP COLUMN IF EXISTS comment above. A previous
+            // partially-applied run of this migration may have created the
+            // table without recording the migration in __EFMigrationsHistory.
+            // The table is brand-new in this migration so dropping it here
+            // cannot lose user data.
+            migrationBuilder.Sql(@"
+                IF OBJECT_ID('tenant_email_settings', 'U') IS NOT NULL
+                    DROP TABLE [tenant_email_settings];");
+
             migrationBuilder.CreateTable(
                 name: "tenant_email_settings",
                 columns: table => new
