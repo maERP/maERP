@@ -4,7 +4,7 @@ public class DatabaseOptions
 {
     public const string Section = "DatabaseConfig";
 
-    public string Provider { get; set; } = "MySQL";
+    public string Provider { get; set; } = "SQLite";
     public string ConnectionString { get; set; } = string.Empty;
     public Dictionary<string, string> ConnectionStringExamples { get; set; } = new();
 

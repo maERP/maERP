@@ -45,15 +45,6 @@ docker-compose up -d
 docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
 ```
 
-### MariaDB
-```bash
-# MariaDB-Version starten
-docker-compose -f docker-compose.mysql.yml up -d
-
-# Mit Development-Einstellungen
-docker-compose -f docker-compose.mysql.yml -f docker-compose.mysql.override.yml up -d
-```
-
 ### PostgreSQL
 ```bash
 # PostgreSQL-Version starten
@@ -77,7 +68,6 @@ docker-compose -f docker-compose.mssql.yml -f docker-compose.mssql.override.yml 
 - **maERP Web UI**: `http://localhost:8444`
 - **Grafana Agent**: `http://localhost:12345`
 - **Datenbank-Ports** (wenn in docker-compose aktiviert):
-  - MariaDB: `localhost:3306`
   - PostgreSQL: `localhost:5432`
   - MSSQL: `localhost:1433`
 
@@ -104,16 +94,6 @@ docker run -d \
   -e DatabaseConfig__Provider=SQLite \
   -e DatabaseConfig__ConnectionString="Data Source=/data/maerp.db" \
   -v maerp-sqlite-data:/data \
-  maerp/server:latest
-```
-
-**MySQL / MariaDB (externe Datenbank)**
-```bash
-docker run -d \
-  --name maerp-server-mysql \
-  -p 8080:80 \
-  -e DatabaseConfig__Provider=MySQL \
-  -e DatabaseConfig__ConnectionString="Server=mysql-host;Port=3306;Database=maerp;Uid=maerp;Pwd=maerp;" \
   maerp/server:latest
 ```
 

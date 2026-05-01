@@ -22,12 +22,6 @@ public static class PersistenceServiceRegistration
 
             switch (dbOptions.Provider.ToUpperInvariant())
             {
-                case "MYSQL":
-                    options.UseMySql(connectionString,
-                        ServerVersion.AutoDetect(connectionString),
-                        b => b.MigrationsAssembly("maERP.Persistence.MySQL"));
-                    break;
-
                 case "MSSQL":
                     options.UseSqlServer(connectionString,
                         b => b.MigrationsAssembly("maERP.Persistence.MSSQL"));

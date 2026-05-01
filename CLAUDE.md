@@ -14,7 +14,7 @@ maERP is an open-source, multi-tenant ERP system. C#, .NET 10, Clean Architectur
 | `src/maERP.Application` | CQRS handlers (Features/), custom Mediator, contracts, services |
 | `src/maERP.Infrastructure` | Email, PDF, logging, cross-cutting services |
 | `src/maERP.Persistence` | EF Core DbContext, repositories, configurations, seeders |
-| `src/maERP.Persistence.{MSSQL,MySQL,PostgreSQL,SQLite}` | Provider-specific migration assemblies |
+| `src/maERP.Persistence.{MSSQL,PostgreSQL,SQLite}` | Provider-specific migration assemblies |
 | `src/maERP.Identity` | ASP.NET Identity, JWT auth, token services |
 | `src/maERP.SalesChannels` | Integrations: PointOfSale, Shopware 5/6, WooCommerce, eBay |
 | `src/maERP.Analytics` | Analytics scaffolding |
@@ -124,6 +124,6 @@ When adding a feature or layout, **find a similar one and mirror it**. Naming, f
 - **postgres** — direct DB queries
 
 ## Cross-cutting reminders
-- Docker Compose files exist for MSSQL/MySQL/PostgreSQL and mail testing — see `docker-compose.*.yml`.
+- Docker Compose files exist for MSSQL/PostgreSQL and mail testing — see `docker-compose.*.yml`.
 - CI/CD via GitHub Actions (`.github/workflows`).
 - Email-testing setup documented in `EMAIL-TESTING.md`.

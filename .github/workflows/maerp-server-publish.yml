@@ -14,7 +14,6 @@ on:
       - 'src/maERP.Persistence/**'
       - 'src/maERP.SalesChannels/**'
       - 'src/maERP.Persistence/**'
-      - 'src/maERP.Persistence.MySQL/**'
       - 'src/maERP.Persistence.MSSQL/**'
       - 'src/maERP.Persistence.PostgreSQL/**'
       - 'src/maERP.Application.Persistence.IntegrationTests/**'

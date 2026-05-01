@@ -209,16 +209,16 @@ public class MyTenantAwareTests : TenantIsolatedTestBase
 
 ### Database Migrations
 
-The project supports multiple database providers (MySQL, PostgreSQL, MSSQL) with separate migration assemblies:
+The project supports multiple database providers (PostgreSQL, MSSQL, SQLite) with separate migration assemblies:
 
 ```bash
 # Create migrations for all providers
 ./create-migrations.sh "MigrationName"
 
 # Create migrations for specific provider
-./create-migrations.sh "MigrationName" mysql
 ./create-migrations.sh "MigrationName" mssql
 ./create-migrations.sh "MigrationName" postgresql
+./create-migrations.sh "MigrationName" sqlite
 ```
 
 ### Code Style and Quality

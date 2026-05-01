@@ -3,7 +3,6 @@
 EF Core data access layer. Provider-neutral; the four concrete providers live in sibling projects:
 
 - `maERP.Persistence.MSSQL`
-- `maERP.Persistence.MySQL`
 - `maERP.Persistence.PostgreSQL`
 - `maERP.Persistence.SQLite`
 
@@ -48,9 +47,8 @@ Multi-provider — each provider project owns its own migration assembly so EF c
 
 # One provider
 ./create-migrations.sh "MigrationName" mssql
-./create-migrations.sh "MigrationName" mysql
 ./create-migrations.sh "MigrationName" postgresql
-./create-migrations.sh "MigrationName" sqlite   # if supported by the script
+./create-migrations.sh "MigrationName" sqlite
 ```
 
 **Never create migrations without asking the user first** — schema changes are deliberate and reviewed.
