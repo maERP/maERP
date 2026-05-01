@@ -2,11 +2,6 @@
 
 ## Database migration
 
-### MySQL
-```bash
-dotnet ef migrations add initDb --project src/maERP.Persistence.MySQL/maERP.Persistence.MySQL.csproj --startup-project src/maERP.Server/maERP.Server.csproj --context maERP.Persistence.DatabaseContext.ApplicationDbContext --configuration Debug --output-dir Migrations
-```
-
 ### MSSQL
 ```bash
 dotnet ef migrations add initDb --project src/maERP.Persistence.MSSQL/maERP.Persistence.MSSQL.csproj --startup-project src/maERP.Server/maERP.Server.csproj --context maERP.Persistence.DatabaseContext.ApplicationDbContext --configuration Debug --output-dir Migrations
