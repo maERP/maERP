@@ -1012,23 +1012,27 @@ namespace maERP.Persistence.MSSQL.Migrations
                 columns: new[] { "DateCreated", "DateModified" },
                 values: new object[] { new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3240), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3240) });
 
-            migrationBuilder.InsertData(
-                table: "setting",
-                columns: new[] { "Id", "DateCreated", "DateModified", "Key", "Value" },
-                values: new object[,]
-                {
-                    { new Guid("66666666-6666-6666-6666-666666666624"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3200), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3200), "Email.SmtpHost", "" },
-                    { new Guid("66666666-6666-6666-6666-666666666625"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3210), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3210), "Email.SmtpPort", "587" },
-                    { new Guid("66666666-6666-6666-6666-666666666626"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3210), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3210), "Email.SmtpUsername", "" },
-                    { new Guid("66666666-6666-6666-6666-666666666627"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3210), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3210), "Email.SmtpPassword", "" },
-                    { new Guid("66666666-6666-6666-6666-666666666628"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3210), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3210), "Email.SmtpEnableSsl", "true" },
-                    { new Guid("66666666-6666-6666-6666-666666666629"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3220), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3220), "Email.M365TenantId", "" },
-                    { new Guid("66666666-6666-6666-6666-666666666630"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3220), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3220), "Email.M365ClientId", "" },
-                    { new Guid("66666666-6666-6666-6666-666666666631"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3220), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3220), "Email.M365ClientSecret", "" },
-                    { new Guid("66666666-6666-6666-6666-666666666632"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3220), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3220), "Email.M365SenderAddress", "" },
-                    { new Guid("66666666-6666-6666-6666-666666666633"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3230), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3230), "Email.ReplyToAddress", "" },
-                    { new Guid("66666666-6666-6666-6666-666666666634"), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3240), new DateTime(2026, 5, 1, 12, 51, 19, 392, DateTimeKind.Utc).AddTicks(3240), "Email.ReplyToName", "" }
-                });
+            // Idempotent — see comments above. A previous partially-applied
+            // run may have inserted some of these seed rows already.
+            migrationBuilder.Sql(@"
+                MERGE INTO [setting] AS T
+                USING (VALUES
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666624'), 'Email.SmtpHost', ''),
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666625'), 'Email.SmtpPort', '587'),
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666626'), 'Email.SmtpUsername', ''),
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666627'), 'Email.SmtpPassword', ''),
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666628'), 'Email.SmtpEnableSsl', 'true'),
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666629'), 'Email.M365TenantId', ''),
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666630'), 'Email.M365ClientId', ''),
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666631'), 'Email.M365ClientSecret', ''),
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666632'), 'Email.M365SenderAddress', ''),
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666633'), 'Email.ReplyToAddress', ''),
+                    (CONVERT(uniqueidentifier, '66666666-6666-6666-6666-666666666634'), 'Email.ReplyToName', '')
+                ) AS S([Id], [Key], [Value])
+                ON T.[Id] = S.[Id]
+                WHEN NOT MATCHED THEN
+                    INSERT ([Id], [DateCreated], [DateModified], [Key], [Value])
+                    VALUES (S.[Id], '2026-05-01T12:51:19.3920000', '2026-05-01T12:51:19.3920000', S.[Key], S.[Value]);");
 
             migrationBuilder.UpdateData(
                 table: "tax_class",
