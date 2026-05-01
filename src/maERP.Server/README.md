@@ -13,7 +13,7 @@ maERP.Server provides the backend API for the maERP system, implementing Clean A
 - **Multi-tenant architecture** - Complete tenant isolation
 - **JWT Authentication** - Secure token-based authentication
 - **Clean Architecture** - Separation of concerns with CQRS
-- **Multi-database support** - MySQL, PostgreSQL, MSSQL, SQLite
+- **Multi-database support** - PostgreSQL, MSSQL, SQLite
 - **API Versioning** - Built-in versioning support
 - **OpenTelemetry** - Comprehensive observability
 - **Swagger/OpenAPI** - API documentation
@@ -23,7 +23,7 @@ maERP.Server provides the backend API for the maERP system, implementing Clean A
 ### Prerequisites
 
 - .NET 9 SDK
-- Supported database (MySQL, PostgreSQL, MSSQL, or SQLite)
+- Supported database (PostgreSQL, MSSQL, or SQLite)
 
 ### Running the Server
 
@@ -34,11 +34,6 @@ dotnet run --project src/maERP.Server/maERP.Server.csproj
 The API will be available at `https://localhost:5001` by default.
 
 ## Database Configuration
-
-### MySQL
-```
-DatabaseConfig__ConnectionStrings__MySQL="Server=dein-server;Port=3306;Database=maerp_01;Uid=user;Pwd=password;"
-```
 
 ### MSSQL
 ```
@@ -59,7 +54,7 @@ DatabaseConfig__ConnectionStrings__SQLite="Data Source=pfad/zu/deiner.db"
 
 You can also specify which database provider to use:
 ```
-DatabaseConfig__Provider="MySQL"
+DatabaseConfig__Provider="SQLite"
 ```
 
 ## API Documentation

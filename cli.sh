@@ -21,7 +21,6 @@
 #   internal (default) → docker-compose runs an embedded postgres container.
 #                        No credentials needed — managed by this script.
 #   postgres           → external PostgreSQL.  Set DB_HOST/_PORT/_NAME/_USER/_PASSWORD.
-#   mariadb            → external MariaDB/MySQL.        "         "         "
 #   mssql              → external Microsoft SQL Server. "         "         "
 #                        (Note: db backup/restore is not implemented for mssql.)
 
@@ -71,13 +70,12 @@ PG_INTERNAL_DB="maerp"
 PG_INTERNAL_USER="maerp"
 PG_INTERNAL_PASSWORD="maerp"
 
-# Client images used to run pg_dump / mariadb-dump etc. against external DBs.
+# Client image used to run pg_dump against external DBs.
 PG_CLIENT_IMAGE="postgres:16-alpine"
-MARIADB_CLIENT_IMAGE="mariadb:11.4"
 
 # Resolved during load_env(); used everywhere downstream.
-DB_ENGINE=""             # postgres | mariadb | mssql
-DB_PROVIDER=""           # PostgreSQL | MySQL | MSSQL  (DatabaseConfig__Provider)
+DB_ENGINE=""             # postgres | mssql
+DB_PROVIDER=""           # PostgreSQL | MSSQL  (DatabaseConfig__Provider)
 DB_CONNECTION_STRING=""  # passed to DatabaseConfig__ConnectionString
 
 load_env() {
@@ -104,18 +102,13 @@ load_env() {
             require_external_db
             DB_PORT="${DB_PORT:-5432}"
             ;;
-        mariadb)
-            DB_ENGINE="mariadb"
-            require_external_db
-            DB_PORT="${DB_PORT:-3306}"
-            ;;
         mssql)
             DB_ENGINE="mssql"
             require_external_db
             DB_PORT="${DB_PORT:-1433}"
             ;;
         *)
-            echo "error: invalid DB_MODE='${DB_MODE}' (expected: internal|postgres|mariadb|mssql)." >&2
+            echo "error: invalid DB_MODE='${DB_MODE}' (expected: internal|postgres|mssql)." >&2
             exit 1
             ;;
     esac
@@ -125,10 +118,6 @@ load_env() {
         postgres)
             DB_PROVIDER="PostgreSQL"
             DB_CONNECTION_STRING="Host=${DB_HOST};Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD};"
-            ;;
-        mariadb)
-            DB_PROVIDER="MySQL"
-            DB_CONNECTION_STRING="Server=${DB_HOST};Port=${DB_PORT};Database=${DB_NAME};Uid=${DB_USER};Pwd=${DB_PASSWORD};"
             ;;
         mssql)
             DB_PROVIDER="MSSQL"
@@ -214,8 +203,8 @@ postgres_internal_running() {
 }
 
 # --- Engine-specific runners -------------------------------------------------
-# Each runner takes one argument (the binary name like pg_dump / mariadb-dump /
-# psql / mariadb) plus extra args, and pipes stdin/stdout transparently.
+# Each runner takes one argument (the binary name like pg_dump / psql) plus
+# extra args, and pipes stdin/stdout transparently.
 
 # Postgres: internal → exec into the running compose container; external →
 # spin up an ephemeral postgres-client container.
@@ -239,18 +228,6 @@ pg_run() {
             -h "$DB_HOST" -p "$DB_PORT" \
             -U "$DB_USER" -d "$DB_NAME" "$@"
     fi
-}
-
-# MariaDB/MySQL: always use an ephemeral mariadb-client container — the
-# server isn't run inside this compose stack in any DB_MODE.
-mariadb_run() {
-    local bin="$1"; shift
-    docker run --rm -i \
-        --add-host=host.docker.internal:host-gateway \
-        -e MYSQL_PWD="$DB_PASSWORD" \
-        "$MARIADB_CLIENT_IMAGE" "$bin" \
-        -h "$DB_HOST" -P "$DB_PORT" \
-        -u "$DB_USER" "$@"
 }
 
 # --- Commands ----------------------------------------------------------------
@@ -367,18 +344,6 @@ db_backup() {
                 exit 1
             fi
             ;;
-        mariadb)
-            # --single-transaction → consistent snapshot without locks (InnoDB)
-            # --routines / --events → include stored procedures & scheduled events
-            if mariadb_run mariadb-dump --single-transaction --routines --events "$DB_NAME" \
-                | gzip -9 > "$file"; then
-                echo ">>> Backup written: ${file} ($(du -h "$file" | cut -f1))"
-            else
-                rm -f "$file"
-                echo "error: backup failed." >&2
-                exit 1
-            fi
-            ;;
     esac
 }
 
@@ -444,12 +409,6 @@ GRANT ALL ON SCHEMA public TO ${DB_USER};
 GRANT ALL ON SCHEMA public TO public;
 SQL
                 ;;
-            mariadb)
-                # MySQL/MariaDB has no schemas separate from databases — drop
-                # and recreate the database itself. Requires the user to have
-                # CREATE/DROP privileges on the database.
-                mariadb_run mariadb -e "DROP DATABASE IF EXISTS \`${DB_NAME}\`; CREATE DATABASE \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-                ;;
         esac
     fi
 
@@ -460,13 +419,6 @@ SQL
                 gzip -dc "$file" | pg_run psql -v ON_ERROR_STOP=1
             else
                 pg_run psql -v ON_ERROR_STOP=1 < "$file"
-            fi
-            ;;
-        mariadb)
-            if [[ "$file" == *.gz ]]; then
-                gzip -dc "$file" | mariadb_run mariadb "$DB_NAME"
-            else
-                mariadb_run mariadb "$DB_NAME" < "$file"
             fi
             ;;
     esac

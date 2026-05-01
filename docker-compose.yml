@@ -2,14 +2,13 @@ name: maerp
 
 # Database backend is selected via DB_MODE in .env (see .env.example).
 # The CLI script (./cli.sh) translates DB_MODE into:
-#   - DB_PROVIDER          → PostgreSQL | MySQL | MSSQL
+#   - DB_PROVIDER          → PostgreSQL | MSSQL
 #   - DB_CONNECTION_STRING → engine-specific connection string
 # and activates the 'postgres-internal' profile only for DB_MODE=internal.
 #
 #   DB_MODE=internal  → activates 'server' + 'postgres-internal',
 #                       embedded postgres container, no credentials needed.
 #   DB_MODE=postgres  → activates only 'server', external postgres from .env.
-#   DB_MODE=mariadb   → activates only 'server', external mariadb/mysql.
 #   DB_MODE=mssql     → activates only 'server', external SQL Server.
 
 services:
