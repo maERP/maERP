@@ -13,7 +13,8 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
 		<PackageReference Include="PDFsharp" />
 		<PackageReference Include="PDFsharp-MigraDoc" />
-		<PackageReference Include="SendGrid" />
+		<PackageReference Include="Microsoft.Graph" />
+		<PackageReference Include="Azure.Identity" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\maERP.Application\maERP.Application.csproj" />

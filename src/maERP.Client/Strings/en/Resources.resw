@@ -92,6 +92,9 @@
   <data name="Shell.Login.Password.PlaceholderText" xml:space="preserve">
     <value>Enter your password</value>
   </data>
+  <data name="Shell.Login.RememberMe.Content" xml:space="preserve">
+    <value>Stay signed in</value>
+  </data>
   <data name="Shell.Login.LoginButton.Content" xml:space="preserve">
     <value>Login</value>
   </data>

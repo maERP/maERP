@@ -1,9 +1,8 @@
-﻿using maERP.Application.Contracts.Infrastructure;
+using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Persistence;
 using maERP.Application.Contracts.Services;
 using maERP.Application.Models.Email;
 using maERP.Domain.Enums;
-using maERP.Infrastructure.EmailService.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -26,8 +25,7 @@ public class TenantAwareEmailService : IEmailService
         ISettingsService settingsService,
         ILogger<TenantAwareEmailService> logger,
         IConfiguration configuration,
-        SmtpEmailProvider smtpProvider,
-        SendGridEmailProvider sendGridProvider)
+        IEnumerable<IEmailProvider> providers)
     {
         _emailSettingsRepository = emailSettingsRepository;
         _tenantContext = tenantContext;
@@ -36,12 +34,7 @@ public class TenantAwareEmailService : IEmailService
         _logger = logger;
         _configuration = configuration;
 
-        // Register available providers
-        _providers = new Dictionary<EmailProviderType, IEmailProvider>
-        {
-            { EmailProviderType.Smtp, smtpProvider },
-            { EmailProviderType.SendGrid, sendGridProvider }
-        };
+        _providers = providers.ToDictionary(p => p.ProviderType);
     }
 
     public async Task<bool> SendEmailAsync(EmailMessage email, Guid? tenantId = null)
@@ -50,9 +43,9 @@ public class TenantAwareEmailService : IEmailService
         {
             var settings = await GetEmailSettingsAsync(tenantId);
 
-            if (settings == null)
+            if (settings == null || string.IsNullOrWhiteSpace(settings.FromAddress))
             {
-                _logger.LogError("No email settings found for tenant {TenantId}", tenantId);
+                _logger.LogError("No usable email settings found for tenant {TenantId}", tenantId);
                 return false;
             }
 
@@ -75,7 +68,6 @@ public class TenantAwareEmailService : IEmailService
     {
         try
         {
-            // Generate reset URL from configuration
             var resetUrl = _configuration["EmailSettings:PasswordResetUrl"] ?? "https://localhost:5001/reset-password";
 
             var htmlBody = await _templateService.GeneratePasswordResetEmailAsync(toName, resetToken, resetUrl);
@@ -124,36 +116,32 @@ public class TenantAwareEmailService : IEmailService
 
     private async Task<EmailSettings?> GetEmailSettingsAsync(Guid? tenantId)
     {
-        // Priority 1: Try to get tenant-specific settings from database
-        if (tenantId.HasValue)
+        // 1. Server-level defaults — Setting table first, otherwise appsettings.json.
+        var serverSettings = await LoadServerSettingsAsync();
+
+        // 2. Tenant override (if any) merged on top of the server defaults.
+        var resolvedTenantId = tenantId ?? _tenantContext.GetCurrentTenantId();
+        if (resolvedTenantId.HasValue)
         {
-            var tenantSettings = await _emailSettingsRepository.GetActiveTenantSettingsAsync(tenantId.Value);
+            var tenantSettings = await _emailSettingsRepository.GetActiveTenantSettingsAsync(resolvedTenantId.Value);
             if (tenantSettings != null)
             {
-                _logger.LogDebug("Using tenant-specific email settings for tenant {TenantId}", tenantId);
-                return MapToEmailSettings(tenantSettings);
+                _logger.LogDebug("Merging tenant email settings for tenant {TenantId} onto server defaults", resolvedTenantId);
+                return MergeWithTenant(serverSettings, tenantSettings);
             }
         }
 
-        // Priority 2: Try to get settings for current tenant from context
-        var currentTenantId = _tenantContext.GetCurrentTenantId();
-        if (currentTenantId.HasValue)
-        {
-            var contextTenantSettings = await _emailSettingsRepository.GetActiveTenantSettingsAsync(currentTenantId.Value);
-            if (contextTenantSettings != null)
-            {
-                _logger.LogDebug("Using context tenant email settings for tenant {TenantId}", currentTenantId);
-                return MapToEmailSettings(contextTenantSettings);
-            }
-        }
+        return serverSettings;
+    }
 
-        // Priority 3: Fallback to system-wide settings from database (Settings table)
+    private async Task<EmailSettings> LoadServerSettingsAsync()
+    {
         try
         {
             var systemSettings = await _settingsService.GetEmailSettingsAsync();
-            if (systemSettings != null && !string.IsNullOrEmpty(systemSettings.FromAddress))
+            if (systemSettings != null && !string.IsNullOrWhiteSpace(systemSettings.FromAddress))
             {
-                _logger.LogDebug("Using system-wide email settings from database");
+                _logger.LogDebug("Using system-wide email settings from Setting table");
                 return systemSettings;
             }
         }
@@ -162,30 +150,35 @@ public class TenantAwareEmailService : IEmailService
             _logger.LogWarning(ex, "Failed to load system-wide email settings from database");
         }
 
-        // Priority 4: Final fallback to configuration file (appsettings.json)
-        _logger.LogDebug("Using default email settings from appsettings.json");
+        _logger.LogDebug("Falling back to email settings from appsettings.json");
         return GetDefaultEmailSettingsFromConfiguration();
     }
 
-    private EmailSettings MapToEmailSettings(Domain.Entities.TenantEmailSettings tenantSettings)
+    private static EmailSettings MergeWithTenant(EmailSettings server, Domain.Entities.TenantEmailSettings tenant)
     {
         return new EmailSettings
         {
-            ProviderType = tenantSettings.ProviderType,
-            SmtpHost = tenantSettings.SmtpHost,
-            SmtpPort = tenantSettings.SmtpPort,
-            SmtpUsername = tenantSettings.SmtpUsername,
-            SmtpPassword = tenantSettings.SmtpPassword,
-            SmtpEnableSsl = tenantSettings.SmtpEnableSsl ?? true,
-            ApiKey = tenantSettings.ApiKey,
-            FromAddress = tenantSettings.FromAddress,
-            FromName = tenantSettings.FromName,
-            ReplyToAddress = tenantSettings.ReplyToAddress,
-            ReplyToName = tenantSettings.ReplyToName
+            ProviderType = tenant.ProviderType,
+            SmtpHost = Coalesce(tenant.SmtpHost, server.SmtpHost),
+            SmtpPort = tenant.SmtpPort ?? server.SmtpPort,
+            SmtpUsername = Coalesce(tenant.SmtpUsername, server.SmtpUsername),
+            SmtpPassword = Coalesce(tenant.SmtpPassword, server.SmtpPassword),
+            SmtpEnableSsl = tenant.SmtpEnableSsl ?? server.SmtpEnableSsl,
+            M365TenantId = Coalesce(tenant.M365TenantId, server.M365TenantId),
+            M365ClientId = Coalesce(tenant.M365ClientId, server.M365ClientId),
+            M365ClientSecret = Coalesce(tenant.M365ClientSecret, server.M365ClientSecret),
+            M365SenderAddress = Coalesce(tenant.M365SenderAddress, server.M365SenderAddress),
+            FromAddress = Coalesce(tenant.FromAddress, server.FromAddress) ?? string.Empty,
+            FromName = Coalesce(tenant.FromName, server.FromName) ?? string.Empty,
+            ReplyToAddress = Coalesce(tenant.ReplyToAddress, server.ReplyToAddress),
+            ReplyToName = Coalesce(tenant.ReplyToName, server.ReplyToName)
         };
     }
 
-    private EmailSettings? GetDefaultEmailSettingsFromConfiguration()
+    private static string? Coalesce(string? primary, string? fallback)
+        => string.IsNullOrWhiteSpace(primary) ? fallback : primary;
+
+    private EmailSettings GetDefaultEmailSettingsFromConfiguration()
     {
         var providerTypeString = _configuration["EmailSettings:ProviderType"];
         if (!Enum.TryParse<EmailProviderType>(providerTypeString, out var providerType))
@@ -200,8 +193,11 @@ public class TenantAwareEmailService : IEmailService
             SmtpPort = int.TryParse(_configuration["EmailSettings:SmtpPort"], out var port) ? port : 587,
             SmtpUsername = _configuration["EmailSettings:SmtpUsername"],
             SmtpPassword = _configuration["EmailSettings:SmtpPassword"],
-            SmtpEnableSsl = bool.TryParse(_configuration["EmailSettings:SmtpEnableSsl"], out var enableSsl) && enableSsl,
-            ApiKey = _configuration["EmailSettings:ApiKey"],
+            SmtpEnableSsl = !bool.TryParse(_configuration["EmailSettings:SmtpEnableSsl"], out var enableSsl) || enableSsl,
+            M365TenantId = _configuration["EmailSettings:M365TenantId"],
+            M365ClientId = _configuration["EmailSettings:M365ClientId"],
+            M365ClientSecret = _configuration["EmailSettings:M365ClientSecret"],
+            M365SenderAddress = _configuration["EmailSettings:M365SenderAddress"],
             FromAddress = _configuration["EmailSettings:FromAddress"] ?? "noreply@maerp.com",
             FromName = _configuration["EmailSettings:FromName"] ?? "maERP",
             ReplyToAddress = _configuration["EmailSettings:ReplyToAddress"],

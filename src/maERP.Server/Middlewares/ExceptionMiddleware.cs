@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using maERP.Application.Exceptions;
 using maERP.Server.Models;
-using Newtonsoft.Json;
 
 namespace maERP.Server.Middlewares;
 

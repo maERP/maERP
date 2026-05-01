@@ -838,6 +838,15 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         }
     }
 
+    private void LoginInput_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+    {
+        if (e.Key == Windows.System.VirtualKey.Enter)
+        {
+            e.Handled = true;
+            LoginButton_Click(LoginButton, new RoutedEventArgs());
+        }
+    }
+
     private async void LoginButton_Click(object sender, RoutedEventArgs e)
     {
         var serverUrl = LoginServerUrl.Text?.Trim();
@@ -880,6 +889,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
             var auth = app.Host.Services.GetRequiredService<IAuthenticationService>();
             var tenantContext = app.Host.Services.GetRequiredService<ITenantContextService>();
             var shellModel = app.Host.Services.GetRequiredService<ShellModel>();
+            var tokenStorage = app.Host.Services.GetRequiredService<ITokenStorageService>();
 
             var credentials = new Dictionary<string, string>
             {
@@ -892,6 +902,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
 
             if (success)
             {
+                await tokenStorage.SetRememberMeAsync(LoginRememberMe.IsChecked == true);
                 shellModel.UpdateAuthenticationState(true);
 
                 if (tenantContext.AvailableTenants.Count == 0)

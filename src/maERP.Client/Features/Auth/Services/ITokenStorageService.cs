@@ -12,4 +12,6 @@ public interface ITokenStorageService
     Task<IReadOnlyList<string>> GetRolesAsync();
     Task<bool> IsInRoleAsync(string role);
     Task<DateTimeOffset?> GetTokenExpiryAsync();
+    Task<bool> GetRememberMeAsync();
+    Task SetRememberMeAsync(bool rememberMe);
 }

@@ -9,6 +9,7 @@ public class TokenStorageService : ITokenStorageService
     private const string TokenKey = "auth_token";
     private const string ServerUrlKey = "server_url";
     private const string TenantIdKey = "current_tenant_id";
+    private const string RememberMeKey = "remember_me";
     private const string RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
 
     private readonly ILogger<TokenStorageService> _logger;
@@ -218,6 +219,42 @@ public class TokenStorageService : ITokenStorageService
             _logger.LogError(ex, "Error reading token expiry");
             return null;
         }
+    }
+
+    public async Task<bool> GetRememberMeAsync()
+    {
+        try
+        {
+            var localSettings = ApplicationData.Current.LocalSettings;
+            if (localSettings.Values.TryGetValue(RememberMeKey, out var value) && value is bool b)
+            {
+                return b;
+            }
+            return false;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error reading remember-me flag");
+            return false;
+        }
+        finally
+        {
+            await Task.CompletedTask;
+        }
+    }
+
+    public async Task SetRememberMeAsync(bool rememberMe)
+    {
+        try
+        {
+            var localSettings = ApplicationData.Current.LocalSettings;
+            localSettings.Values[RememberMeKey] = rememberMe;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error storing remember-me flag");
+        }
+        await Task.CompletedTask;
     }
 
     private JsonDocument? DecodeJwtPayload(string token)

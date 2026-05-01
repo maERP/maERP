@@ -13,6 +13,7 @@ public partial class ShellModel : INotifyPropertyChanged
     private readonly IAuthenticationService _authentication;
     private readonly ITenantContextService _tenantContext;
     private readonly ISessionManager _sessionManager;
+    private readonly ITokenStorageService _tokenStorage;
     private bool _isAuthenticated = false; // Default to false
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -35,12 +36,14 @@ public partial class ShellModel : INotifyPropertyChanged
         IAuthenticationService authentication,
         INavigator navigator,
         ITenantContextService tenantContext,
-        ISessionManager sessionManager)
+        ISessionManager sessionManager,
+        ITokenStorageService tokenStorage)
     {
         _navigator = navigator;
         _authentication = authentication;
         _tenantContext = tenantContext;
         _sessionManager = sessionManager;
+        _tokenStorage = tokenStorage;
         _authentication.LoggedOut += LoggedOut;
         _tenantContext.CurrentTenantChanged += OnCurrentTenantChanged;
 
@@ -132,6 +135,12 @@ public partial class ShellModel : INotifyPropertyChanged
     public async Task InitializeAuthenticationState()
     {
         System.Diagnostics.Debug.WriteLine("[ShellModel] InitializeAuthenticationState called");
+
+        if (!await _tokenStorage.GetRememberMeAsync())
+        {
+            await _tokenStorage.ClearTokenAsync();
+        }
+
         var authenticated = await _authentication.RefreshAsync();
         System.Diagnostics.Debug.WriteLine($"[ShellModel] RefreshAsync returned: {authenticated}");
         IsAuthenticated = authenticated;

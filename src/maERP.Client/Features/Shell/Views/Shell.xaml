@@ -732,16 +732,23 @@
                 <TextBox x:Name="LoginServerUrl"
                          x:Uid="Shell.Login.ServerUrl"
                          AutomationProperties.Name="Server URL"
-                         LostFocus="LoginServerUrl_LostFocus" />
+                         LostFocus="LoginServerUrl_LostFocus"
+                         KeyDown="LoginInput_KeyDown" />
 
                 <TextBox x:Name="LoginEmail"
                          x:Uid="Shell.Login.Email"
                          InputScope="EmailSmtpAddress"
-                         AutomationProperties.Name="Email" />
+                         AutomationProperties.Name="Email"
+                         KeyDown="LoginInput_KeyDown" />
 
                 <PasswordBox x:Name="LoginPassword"
                              x:Uid="Shell.Login.Password"
-                             AutomationProperties.Name="Password" />
+                             AutomationProperties.Name="Password"
+                             KeyDown="LoginInput_KeyDown" />
+
+                <CheckBox x:Name="LoginRememberMe"
+                          x:Uid="Shell.Login.RememberMe"
+                          IsChecked="False" />
               </StackPanel>
             </StackPanel>
           </Border>

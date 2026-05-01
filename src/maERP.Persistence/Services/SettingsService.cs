@@ -81,8 +81,17 @@ public class SettingsService : ISettingsService
                     if (bool.TryParse(setting.Value, out var enableSsl))
                         emailSettings.SmtpEnableSsl = enableSsl;
                     break;
-                case "Email.ApiKey":
-                    emailSettings.ApiKey = setting.Value;
+                case "Email.M365TenantId":
+                    emailSettings.M365TenantId = setting.Value;
+                    break;
+                case "Email.M365ClientId":
+                    emailSettings.M365ClientId = setting.Value;
+                    break;
+                case "Email.M365ClientSecret":
+                    emailSettings.M365ClientSecret = setting.Value;
+                    break;
+                case "Email.M365SenderAddress":
+                    emailSettings.M365SenderAddress = setting.Value;
                     break;
                 case "Email.FromAddress":
                     emailSettings.FromAddress = setting.Value;

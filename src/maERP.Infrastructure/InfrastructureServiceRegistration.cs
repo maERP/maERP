@@ -1,4 +1,4 @@
-﻿using maERP.Application.Contracts.Infrastructure;
+using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Services;
 using maERP.Infrastructure.EmailService;
@@ -16,8 +16,9 @@ public static class InfrastructureServiceRegistration
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         // Email Service Registration
-        services.AddScoped<SmtpEmailProvider>();
-        services.AddScoped<SendGridEmailProvider>();
+        services.AddScoped<IEmailProvider, SmtpEmailProvider>();
+        services.AddScoped<IEmailProvider, Microsoft365EmailProvider>();
+        services.AddScoped<IGraphMailSender, GraphMailSender>();
         services.AddScoped<IEmailTemplateService, EmailTemplateService>();
         services.AddScoped<IEmailService, TenantAwareEmailService>();
 

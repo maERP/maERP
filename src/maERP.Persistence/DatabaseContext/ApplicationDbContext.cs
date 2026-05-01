@@ -50,6 +50,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<ShippingProviderRate>().ToTable("shipping_provider_rate");
         modelBuilder.Entity<TaxClass>().ToTable("tax_class");
         modelBuilder.Entity<Tenant>().ToTable("tenant");
+        modelBuilder.Entity<TenantEmailSettings>().ToTable("tenant_email_settings");
         modelBuilder.Entity<UserTenant>().ToTable("user_tenant");
         modelBuilder.Entity<Warehouse>().ToTable("warehouse");
 
@@ -73,6 +74,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
         modelBuilder.ApplyConfiguration(new ProductSalesChannelConfiguration());
         modelBuilder.ApplyConfiguration(new ShippingProviderRateConfiguration());
+        modelBuilder.ApplyConfiguration(new TenantEmailSettingsConfiguration());
 
         modelBuilder.SeedSettings();
 
@@ -111,6 +113,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Manufacturer> Manufacturer { get; set; } = null!;
     public DbSet<GoodsReceipt> GoodsReceipt { get; set; } = null!;
     public DbSet<Tenant> Tenant { get; set; } = null!;
+    public DbSet<TenantEmailSettings> TenantEmailSettings { get; set; } = null!;
     public DbSet<UserTenant> UserTenant { get; set; } = null!;
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

@@ -1,4 +1,5 @@
 ﻿using maERP.Application.Models.Email;
+using maERP.Domain.Enums;
 
 namespace maERP.Application.Contracts.Infrastructure;
 
@@ -22,6 +23,8 @@ public interface IEmailService
 
 public interface IEmailProvider
 {
+    EmailProviderType ProviderType { get; }
+
     /// <summary>
     /// Sends an email using the specific provider implementation
     /// </summary>

@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Mail;
 using maERP.Application.Contracts.Infrastructure;
 using maERP.Application.Models.Email;
+using maERP.Domain.Enums;
 using Microsoft.Extensions.Logging;
 
 namespace maERP.Infrastructure.EmailService.Providers;
@@ -14,6 +15,8 @@ public class SmtpEmailProvider : IEmailProvider
     {
         _logger = logger;
     }
+
+    public EmailProviderType ProviderType => EmailProviderType.Smtp;
 
     public async Task<bool> SendAsync(EmailMessage email, EmailSettings settings)
     {

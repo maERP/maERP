@@ -5,30 +5,19 @@ using maERP.Domain.Enums;
 namespace maERP.Domain.Entities;
 
 /// <summary>
-/// Stores email configuration settings for each tenant
+/// Stores email configuration settings for each tenant.
+/// Fields left null/empty fall back to the server-level configuration in <see cref="Setting"/>.
 /// </summary>
 public class TenantEmailSettings : BaseEntityWithoutTenant, IBaseEntityWithoutTenant
 {
-    /// <summary>
-    /// The tenant this email configuration belongs to
-    /// </summary>
     [Required]
     public Guid TenantId { get; set; }
 
-    /// <summary>
-    /// Navigation property to the tenant
-    /// </summary>
     public Tenant? Tenant { get; set; }
 
-    /// <summary>
-    /// Type of email provider (SMTP, SendGrid, etc.)
-    /// </summary>
     [Required]
     public EmailProviderType ProviderType { get; set; } = EmailProviderType.Smtp;
 
-    /// <summary>
-    /// Whether this email configuration is active
-    /// </summary>
     [Required]
     public bool IsActive { get; set; } = true;
 
@@ -46,19 +35,27 @@ public class TenantEmailSettings : BaseEntityWithoutTenant, IBaseEntityWithoutTe
 
     public bool? SmtpEnableSsl { get; set; } = true;
 
-    // API Key for third-party providers (SendGrid, Mailgun, etc.)
-    [MaxLength(500)]
-    public string? ApiKey { get; set; }
+    // Microsoft 365 (Graph API, client credentials / app-only)
+    [MaxLength(255)]
+    public string? M365TenantId { get; set; }
 
-    // From Address Settings
-    [Required]
+    [MaxLength(255)]
+    public string? M365ClientId { get; set; }
+
+    [MaxLength(500)]
+    public string? M365ClientSecret { get; set; }
+
     [MaxLength(255)]
     [EmailAddress]
-    public string FromAddress { get; set; } = string.Empty;
+    public string? M365SenderAddress { get; set; }
 
-    [Required]
+    // From Address Settings (optional — fall back to server defaults when null/empty)
     [MaxLength(255)]
-    public string FromName { get; set; } = string.Empty;
+    [EmailAddress]
+    public string? FromAddress { get; set; }
+
+    [MaxLength(255)]
+    public string? FromName { get; set; }
 
     // Reply-To Address (optional)
     [MaxLength(255)]
@@ -67,7 +64,4 @@ public class TenantEmailSettings : BaseEntityWithoutTenant, IBaseEntityWithoutTe
 
     [MaxLength(255)]
     public string? ReplyToName { get; set; }
-
-    // Additional Configuration (JSON)
-    public string? AdditionalConfiguration { get; set; }
 }
