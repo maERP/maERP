@@ -13,9 +13,13 @@ namespace maERP.Persistence.MSSQL.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "IsActive",
-                table: "tenant");
+            // Idempotent drop — older deployments may already lack the column
+            // (it was removed out-of-band on at least one production database
+            // before this migration was authored). The model has no IsActive
+            // on Tenant either way; either state is fine going forward.
+            migrationBuilder.Sql(@"
+                IF COL_LENGTH('tenant', 'IsActive') IS NOT NULL
+                    ALTER TABLE [tenant] DROP COLUMN [IsActive];");
 
             migrationBuilder.AlterColumn<bool>(
                 name: "RoleManageTenant",
