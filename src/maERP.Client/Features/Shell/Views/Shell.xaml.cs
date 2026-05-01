@@ -763,10 +763,6 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         {
             LoginServerUrl.Text = maERP.Client.Core.Configuration.RuntimeConfig.RestrictServerUrl!;
             LoginServerUrl.Visibility = Visibility.Collapsed;
-
-            // Only when the server URL is pinned do we ping /api/v1/server-info
-            // up-front to decide whether the registration link should appear.
-            _ = RefreshRegistrationLinkAsync(LoginServerUrl.Text);
         }
 
         try
@@ -787,25 +783,58 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         {
             Console.WriteLine($"[Shell] InitializeLoginOverlay error: {ex.Message}");
         }
+
+        // Fetch /api/v1/server-info for the current URL (pinned, dev default,
+        // or empty https:// placeholder) to decide whether the registration
+        // link should appear. In the free-form case the link is also refreshed
+        // on LostFocus and right before login.
+        _ = RefreshRegistrationLinkAsync(LoginServerUrl.Text);
+    }
+
+    private void LoginServerUrl_LostFocus(object sender, RoutedEventArgs e)
+    {
+        var serverUrl = LoginServerUrl.Text?.Trim();
+        if (string.IsNullOrWhiteSpace(serverUrl))
+        {
+            RegisterLink.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        if (!serverUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) &&
+            !serverUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            serverUrl = "https://" + serverUrl;
+        }
+
+        _ = RefreshRegistrationLinkAsync(serverUrl);
     }
 
     private async Task RefreshRegistrationLinkAsync(string serverUrl)
     {
         try
         {
+            // Skip half-typed URLs like "https://" — Uri.TryCreate would
+            // accept them but the request is guaranteed to fail.
+            if (!Uri.TryCreate(serverUrl, UriKind.Absolute, out var uri) ||
+                string.IsNullOrWhiteSpace(uri.Host))
+            {
+                RegisterLink.Visibility = Visibility.Collapsed;
+                return;
+            }
+
             var app = Application.Current as App;
             var serverInfoService = app?.Host?.Services?.GetService<IServerInfoService>();
             if (serverInfoService == null) return;
 
             var info = await serverInfoService.GetServerInfoAsync(serverUrl);
-            if (info?.RegistrationEnabled == true)
-            {
-                RegisterLink.Visibility = Visibility.Visible;
-            }
+            RegisterLink.Visibility = info?.RegistrationEnabled == true
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"[Shell] RefreshRegistrationLinkAsync error: {ex.Message}");
+            RegisterLink.Visibility = Visibility.Collapsed;
         }
     }
 
@@ -829,6 +858,11 @@ public sealed partial class Shell : UserControl, IContentControlProvider
         }
 
         serverUrl = serverUrl.TrimEnd('/');
+
+        // If the user typed the URL and clicked Login without leaving the
+        // field first, LostFocus may not have fired — refresh the registration
+        // link visibility now (fire-and-forget; do not block login).
+        _ = RefreshRegistrationLinkAsync(serverUrl);
 
         LoginButton.IsEnabled = false;
         LoginProgress.Visibility = Visibility.Visible;

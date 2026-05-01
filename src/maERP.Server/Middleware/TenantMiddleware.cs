@@ -34,10 +34,14 @@ public class TenantMiddleware
         var isSuperadminEndpoint = pathLower != null && pathLower.Contains("/superadmin");
         var isSwaggerEndpoint = pathLower != null && (pathLower.StartsWith("/swagger") || pathLower.StartsWith("/_framework") || pathLower.StartsWith("/_content"));
         var isHealthEndpoint = pathLower != null && pathLower == "/health";
+        // server-info is anonymous and tenant-agnostic — the WASM client
+        // pings it before login to decide whether to show the registration
+        // link. It must not require an X-Tenant-Id header.
+        var isServerInfoEndpoint = pathLower != null && pathLower.EndsWith("/server-info");
 
         logger.LogDebug($"🔍 TenantMiddleware - isAuthEndpoint: {isAuthEndpoint}, isSuperadminEndpoint: {isSuperadminEndpoint}, isSwaggerEndpoint: {isSwaggerEndpoint}");
 
-        if (isAuthEndpoint || isSuperadminEndpoint || isSwaggerEndpoint || isHealthEndpoint)
+        if (isAuthEndpoint || isSuperadminEndpoint || isSwaggerEndpoint || isHealthEndpoint || isServerInfoEndpoint)
         {
             logger.LogDebug($"✅  TenantMiddleware - Skipping tenant validation for: {path}");
             await _next(context);

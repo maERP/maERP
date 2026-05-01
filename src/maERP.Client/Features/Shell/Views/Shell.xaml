@@ -731,7 +731,8 @@
                           Spacing="16">
                 <TextBox x:Name="LoginServerUrl"
                          x:Uid="Shell.Login.ServerUrl"
-                         AutomationProperties.Name="Server URL" />
+                         AutomationProperties.Name="Server URL"
+                         LostFocus="LoginServerUrl_LostFocus" />
 
                 <TextBox x:Name="LoginEmail"
                          x:Uid="Shell.Login.Email"
