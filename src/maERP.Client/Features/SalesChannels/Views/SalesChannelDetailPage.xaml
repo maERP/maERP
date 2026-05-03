@@ -568,6 +568,113 @@
                                TextWrapping="Wrap" />
                   </Grid>
                 </Border>
+
+                <!-- Orchestration: manual sync, test connection, status, sync-run history, dead-letter retry. -->
+                <Border Background="{ThemeResource SurfaceBrush}"
+                        CornerRadius="12"
+                        Translation="0,0,8">
+                  <Border.Shadow>
+                    <ThemeShadow />
+                  </Border.Shadow>
+                  <StackPanel Spacing="12" Padding="16">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                      <FontIcon Glyph="&#xE895;"
+                                FontSize="20"
+                                Foreground="{ThemeResource PrimaryBrush}" />
+                      <TextBlock Text="Orchestration"
+                                 Style="{StaticResource TitleMedium}"
+                                 Foreground="{ThemeResource OnSurfaceBrush}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                      <Button Content="Test connection"
+                              Command="{Binding TestConnection}" />
+                      <Button Content="Sync products"
+                              Command="{Binding TriggerSyncProducts}" />
+                      <Button Content="Sync orders"
+                              Command="{Binding TriggerSyncOrders}" />
+                      <Button Content="Sync customers"
+                              Command="{Binding TriggerSyncCustomers}" />
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding StatusMessage}"
+                               Style="{StaticResource BodyMedium}"
+                               Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                               TextWrapping="Wrap" />
+
+                    <TextBlock Text="Recent sync runs"
+                               Style="{StaticResource LabelLarge}"
+                               Foreground="{ThemeResource OnSurfaceBrush}"
+                               Margin="0,8,0,0" />
+                    <ItemsRepeater ItemsSource="{Binding SyncRuns}">
+                      <ItemsRepeater.Layout>
+                        <StackLayout Orientation="Vertical" Spacing="4" />
+                      </ItemsRepeater.Layout>
+                      <ItemsRepeater.ItemTemplate>
+                        <DataTemplate>
+                          <Grid Padding="0,4"
+                                BorderBrush="{ThemeResource OutlineVariantBrush}"
+                                BorderThickness="0,0,0,1">
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="160" />
+                              <ColumnDefinition Width="120" />
+                              <ColumnDefinition Width="100" />
+                              <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding StartedAt}"
+                                       Style="{StaticResource BodySmall}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Operation}"
+                                       Style="{StaticResource BodySmall}" />
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding Status}"
+                                       Style="{StaticResource BodySmall}" />
+                            <TextBlock Grid.Column="3"
+                                       Text="{Binding ErrorSummary}"
+                                       Style="{StaticResource BodySmall}"
+                                       Foreground="{ThemeResource OnSurfaceVariantBrush}"
+                                       TextTrimming="CharacterEllipsis" />
+                          </Grid>
+                        </DataTemplate>
+                      </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+
+                    <TextBlock Text="Dead-letter (manual retry)"
+                               Style="{StaticResource LabelLarge}"
+                               Foreground="{ThemeResource ErrorBrush}"
+                               Margin="0,8,0,0" />
+                    <ItemsRepeater ItemsSource="{Binding DeadLetterRows}">
+                      <ItemsRepeater.Layout>
+                        <StackLayout Orientation="Vertical" Spacing="4" />
+                      </ItemsRepeater.Layout>
+                      <ItemsRepeater.ItemTemplate>
+                        <DataTemplate>
+                          <Grid Padding="0,4"
+                                BorderBrush="{ThemeResource OutlineVariantBrush}"
+                                BorderThickness="0,0,0,1">
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="160" />
+                              <ColumnDefinition Width="120" />
+                              <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding NextAttemptAt}"
+                                       Style="{StaticResource BodySmall}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Operation}"
+                                       Style="{StaticResource BodySmall}" />
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding LastError}"
+                                       Style="{StaticResource BodySmall}"
+                                       Foreground="{ThemeResource ErrorBrush}"
+                                       TextTrimming="CharacterEllipsis" />
+                          </Grid>
+                        </DataTemplate>
+                      </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                  </StackPanel>
+                </Border>
               </StackPanel>
             </Grid>
           </ScrollViewer>

@@ -1,6 +1,7 @@
 using maERP.Domain.Entities;
 using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
+using maERP.Persistence.Interceptors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -13,12 +14,15 @@ public static class PersistenceServiceRegistration
 {
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services)
     {
+        services.AddScoped<ChannelExportNotificationInterceptor>();
+
         services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
         {
             var dbOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
             var connectionString = dbOptions.GetConnectionString();
 
             options.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+            options.AddInterceptors(serviceProvider.GetRequiredService<ChannelExportNotificationInterceptor>());
 
             switch (dbOptions.Provider.ToUpperInvariant())
             {

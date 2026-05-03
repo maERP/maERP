@@ -4,6 +4,6 @@ public interface IProductSalesChannelInputModel
 {
     Guid SalesChannelId { get; }
     Guid ProductId { get; }
-    Guid RemoteProductId { get; }
+    string? RemoteProductId { get; }
     decimal Price { get; }
 }

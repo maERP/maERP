@@ -29,4 +29,19 @@ public interface ISalesChannelService
     /// Updates an existing sales channel.
     /// </summary>
     Task UpdateSalesChannelAsync(Guid id, SalesChannelInputDto input, CancellationToken ct = default);
+
+    /// <summary>Trigger a manual sync (operation = "products" | "orders" | "customers" | "all").</summary>
+    Task<SalesChannelSyncResultDto?> TriggerSyncAsync(Guid id, string operation, CancellationToken ct = default);
+
+    /// <summary>Test the channel's credentials/connectivity without doing any import.</summary>
+    Task<SalesChannelSyncResultDto?> TestConnectionAsync(Guid id, CancellationToken ct = default);
+
+    /// <summary>Recent sync-run audit log for the channel.</summary>
+    Task<List<ChannelSyncRunDto>> GetSyncRunsAsync(Guid id, int take = 50, int offset = 0, CancellationToken ct = default);
+
+    /// <summary>Outbox rows currently in DeadLetter for the channel.</summary>
+    Task<List<ChannelExportOutboxDto>> GetDeadLetterAsync(Guid id, CancellationToken ct = default);
+
+    /// <summary>Reset a DeadLetter outbox row back to Pending so the drainer retries it.</summary>
+    Task RetryDeadLetterAsync(Guid id, Guid outboxId, CancellationToken ct = default);
 }

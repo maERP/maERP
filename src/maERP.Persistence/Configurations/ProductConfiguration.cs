@@ -11,6 +11,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.HasIndex(e => e.Sku)
             .IsUnique();
 
+        builder.HasIndex(e => e.Gtin);
+
         builder.Property(e => e.Price)
             .HasPrecision(18, 2);
 

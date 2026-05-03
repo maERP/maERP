@@ -1,5 +1,6 @@
 #nullable disable
 
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using maERP.Application;
 using maERP.Application.Models.Grafana;
@@ -15,6 +16,7 @@ using maERP.Persistence.Configurations.Options;
 using maERP.Persistence.DatabaseContext;
 using maERP.Persistence.Repositories;
 using maERP.Persistence.Services;
+using maERP.Server.Services;
 using maERP.SalesChannels;
 using maERP.Server;
 using maERP.Server.ServiceRegistrations;
@@ -38,6 +40,22 @@ builder.WebHost.ConfigureKestrel(options =>
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+// DataProtection key persistence — required so SalesChannel credentials encrypted with
+// IDataProtector survive server restarts. Filesystem-backed for v1 (Single-Server Deployments
+// or shared-filesystem multi-server). For multi-server cloud deployments, swap to a
+// distributed key ring (DB / Azure / Redis) without touching consumers.
+var dpKeyDir = builder.Configuration["DataProtection:KeyDirectory"];
+if (string.IsNullOrEmpty(dpKeyDir))
+{
+    dpKeyDir = Path.Combine(builder.Environment.ContentRootPath, "App_Data", "dp-keys");
+}
+Directory.CreateDirectory(dpKeyDir);
+builder.Services.AddDataProtection()
+    .SetApplicationName("maERP")
+    .PersistKeysToFileSystem(new DirectoryInfo(dpKeyDir));
+
+builder.Services.AddSingleton<ICredentialEncryptor, DataProtectionCredentialEncryptor>();
 
 builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.Section));
 
@@ -176,6 +194,13 @@ if (!builder.Environment.IsEnvironment("Testing"))
     builder.Services.AddPersistenceServices();
     builder.Services.AddSalesChannelServices();
 }
+else
+{
+    // Tests need the connector + dispatcher graph wired so SalesChannelsController can resolve
+    // its dependencies — but the orchestrator hosted service must NOT run (would chase tenants
+    // across the test InMemory DB). Skip background services only.
+    builder.Services.AddSalesChannelServices(includeBackgroundServices: false);
+}
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplicationServices();
@@ -215,7 +240,18 @@ builder.Services.AddScoped<IGoodsReceiptRepository, GoodsReceiptRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<IUserTenantRepository, UserTenantRepository>();
 builder.Services.AddScoped<ITenantPermissionService, TenantPermissionService>();
+builder.Services.AddScoped<ICustomerDedupeService, CustomerDedupeService>();
+builder.Services.AddScoped<IOAuthAppSettingsService, OAuthAppSettingsService>();
+builder.Services.AddScoped<ITenantOAuthAppSettingsRepository, TenantOAuthAppSettingsRepository>();
+builder.Services.AddScoped<IOAuthStateRepository, OAuthStateRepository>();
+builder.Services.AddScoped<IOAuthTokenExchanger, HttpOAuthTokenExchanger>();
 builder.Services.AddScoped<ITenantEmailSettingsRepository, TenantEmailSettingsRepository>();
+
+// OAuth-state cleanup runs only outside the test host; the test factory owns its own lifecycle.
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddHostedService<OAuthStateCleanupService>();
+}
 
 // Register SettingsInitializer service
 builder.Services.AddTransient<SettingsInitializer>();

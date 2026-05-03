@@ -98,4 +98,50 @@ public class SalesChannelService : ISalesChannelService
         var response = await _httpClient.PutAsJsonAsync(url, input, AppJsonSerializerContext.Default.SalesChannelInputDto, ct);
         await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
     }
+
+    public async Task<SalesChannelSyncResultDto?> TriggerSyncAsync(Guid id, string operation, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.SalesChannels.Sync(id, operation)}";
+        var response = await _httpClient.PostAsync(url, content: null, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+        return await response.Content.ReadFromJsonAsync(
+            AppJsonSerializerContext.Default.SalesChannelSyncResultDto, ct);
+    }
+
+    public async Task<SalesChannelSyncResultDto?> TestConnectionAsync(Guid id, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.SalesChannels.TestConnection(id)}";
+        var response = await _httpClient.PostAsync(url, content: null, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+        return await response.Content.ReadFromJsonAsync(
+            AppJsonSerializerContext.Default.SalesChannelSyncResultDto, ct);
+    }
+
+    public async Task<List<ChannelSyncRunDto>> GetSyncRunsAsync(Guid id, int take = 50, int offset = 0, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.SalesChannels.SyncRuns(id)}?take={take}&offset={offset}";
+        var response = await _httpClient.GetFromJsonAsync(
+            url, AppJsonSerializerContext.Default.ListChannelSyncRunDto, ct);
+        return response ?? new List<ChannelSyncRunDto>();
+    }
+
+    public async Task<List<ChannelExportOutboxDto>> GetDeadLetterAsync(Guid id, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.SalesChannels.DeadLetter(id)}";
+        var response = await _httpClient.GetFromJsonAsync(
+            url, AppJsonSerializerContext.Default.ListChannelExportOutboxDto, ct);
+        return response ?? new List<ChannelExportOutboxDto>();
+    }
+
+    public async Task RetryDeadLetterAsync(Guid id, Guid outboxId, CancellationToken ct = default)
+    {
+        var baseUrl = await GetBaseUrlAsync();
+        var url = $"{baseUrl}{ApiEndpoints.SalesChannels.RetryDeadLetter(id, outboxId)}";
+        var response = await _httpClient.PostAsync(url, content: null, ct);
+        await response.EnsureSuccessOrThrowApiExceptionAsync(ct);
+    }
 }

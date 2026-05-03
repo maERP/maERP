@@ -28,25 +28,35 @@ public static class ApplicationServiceRegistration
 
     private static void RegisterHandlers(IServiceCollection services)
     {
-        var assembly = Assembly.GetExecutingAssembly();
+        RegisterHandlersFromAssembly(services, Assembly.GetExecutingAssembly());
+    }
 
-        // Find all handler types
-        var handlerTypes = assembly.GetTypes()
+    /// <summary>
+    /// Scans the given assembly for <see cref="IRequestHandler{TRequest,TResponse}"/> and
+    /// <see cref="INotificationHandler{TNotification}"/> implementations and registers them
+    /// in DI. Layers outside <c>maERP.Application</c> (e.g. <c>maERP.SalesChannels</c>) call
+    /// this from their own <c>*ServiceRegistration</c> so notification handlers defined there
+    /// are picked up by the mediator's <see cref="CustomMediator.Publish{TNotification}"/>.
+    /// </summary>
+    public static IServiceCollection RegisterHandlersFromAssembly(this IServiceCollection services, Assembly assembly)
+    {
+        var concreteTypes = assembly.GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract)
-            .Where(t => t.GetInterfaces().Any(i =>
-                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>)))
             .ToArray();
 
-        // Register each handler
-        foreach (var handlerType in handlerTypes)
+        foreach (var type in concreteTypes)
         {
-            var handlerInterfaces = handlerType.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>));
+            var handlerInterfaces = type.GetInterfaces()
+                .Where(i => i.IsGenericType &&
+                    (i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>) ||
+                     i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)));
 
             foreach (var handlerInterface in handlerInterfaces)
             {
-                services.AddScoped(handlerInterface, handlerType);
+                services.AddScoped(handlerInterface, type);
             }
         }
+
+        return services;
     }
 }

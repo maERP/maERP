@@ -122,7 +122,8 @@ public class SalesChannelEditModel : AsyncInitializableModel
         new(SalesChannelType.Shopware5, "SalesChannelType.Shopware5"),
         new(SalesChannelType.Shopware6, "SalesChannelType.Shopware6"),
         new(SalesChannelType.WooCommerce, "SalesChannelType.WooCommerce"),
-        new(SalesChannelType.eBay, "SalesChannelType.eBay")
+        new(SalesChannelType.eBay, "SalesChannelType.eBay"),
+        new(SalesChannelType.Amazon, "SalesChannelType.Amazon")
     };
 
     #region Basic Information
@@ -319,9 +320,11 @@ public class SalesChannelEditModel : AsyncInitializableModel
                 // PointOfSale: Only Name required
                 SalesChannelType.PointOfSale => true,
 
-                // eBay: Name, Username, Password required (no URL)
-                SalesChannelType.eBay => !string.IsNullOrWhiteSpace(Username) &&
-                                         !string.IsNullOrWhiteSpace(Password),
+                // eBay / Amazon: Name + Username + Password (LWA / OAuth credentials live there)
+                // — no URL prompt; further config via AdditionalConfigJson once OAuth is completed.
+                SalesChannelType.eBay or SalesChannelType.Amazon =>
+                    !string.IsNullOrWhiteSpace(Username) &&
+                    !string.IsNullOrWhiteSpace(Password),
 
                 // Shopware5, Shopware6, WooCommerce: Name, URL, Username, Password required
                 _ => !string.IsNullOrWhiteSpace(Url) &&

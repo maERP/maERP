@@ -9,6 +9,9 @@ public class Product : BaseEntity, IBaseEntity
     public string? NameOptimized { get; set; }
     public string? Ean { get; set; }
     public string? Asin { get; set; }
+    public string? Gtin { get; set; }
+    public string? Mpn { get; set; }
+    public string? Brand { get; set; }
     public string? Description { get; set; }
     public string? DescriptionOptimized { get; set; }
 

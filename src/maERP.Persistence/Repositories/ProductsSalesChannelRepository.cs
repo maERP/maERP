@@ -12,18 +12,16 @@ public class ProductSalesChannelRepository : GenericRepository<ProductSalesChann
     {
     }
 
-    public async Task<ProductSalesChannel?> GetByRemoteProductIdAsync(Guid productId, Guid salesChannelId = default)
+    public async Task<ProductSalesChannel?> GetByRemoteProductIdAsync(string remoteProductId, Guid salesChannelId = default)
     {
+        var query = Context.ProductSalesChannel
+            .Where(p => p.RemoteProductId == remoteProductId);
+
         if (salesChannelId != default)
         {
-            return await Context.ProductSalesChannel
-                .Where(p => p.RemoteProductId == productId)
-                // .Where(p => p.SalesChannelId == salesChannelId)
-                .FirstOrDefaultAsync();
+            query = query.Where(p => p.SalesChannelId == salesChannelId);
         }
 
-        return await Context.ProductSalesChannel
-                .Where(p => p.RemoteProductId == productId)
-                .FirstOrDefaultAsync();
+        return await query.FirstOrDefaultAsync();
     }
 }

@@ -86,6 +86,11 @@ public static class ApiEndpoints
     {
         public const string Base = $"{ApiBase}/saleschannels";
         public static string ById(Guid id) => $"{Base}/{id}";
+        public static string Sync(Guid id, string operation) => $"{Base}/{id}/sync/{operation}";
+        public static string TestConnection(Guid id) => $"{Base}/{id}/test-connection";
+        public static string SyncRuns(Guid id) => $"{Base}/{id}/sync-runs";
+        public static string DeadLetter(Guid id) => $"{Base}/{id}/outbox/dead-letter";
+        public static string RetryDeadLetter(Guid id, Guid outboxId) => $"{Base}/{id}/outbox/{outboxId}/retry";
     }
 
     // Manufacturers

@@ -47,5 +47,13 @@ public class SalesChannelConfiguration : IEntityTypeConfiguration<SalesChannel>
         builder.Property(q => q.Name)
             .IsRequired()
             .HasMaxLength(100);
+
+        builder.Property(q => q.MarketplaceId)
+            .HasMaxLength(64);
+
+        // Encrypted at rest — stored ciphertext is much longer than the plain credential.
+        builder.Property(q => q.Password).HasMaxLength(4096);
+        builder.Property(q => q.AccessToken).HasMaxLength(8192);
+        builder.Property(q => q.RefreshToken).HasMaxLength(8192);
     }
 }

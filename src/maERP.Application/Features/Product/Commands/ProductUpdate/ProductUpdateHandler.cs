@@ -1,5 +1,6 @@
 using maERP.Application.Contracts.Logging;
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Notifications;
 using maERP.Domain.Wrapper;
 using maERP.Application.Mediator;
 
@@ -11,17 +12,20 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
     private readonly IProductRepository _productRepository;
     private readonly ITaxClassRepository _taxClassRepository;
     private readonly IManufacturerRepository _manufacturerRepository;
+    private readonly IMediator _mediator;
 
     public ProductUpdateHandler(
         IAppLogger<ProductUpdateHandler> logger,
         IProductRepository productRepository,
         ITaxClassRepository taxClassRepository,
-        IManufacturerRepository manufacturerRepository)
+        IManufacturerRepository manufacturerRepository,
+        IMediator mediator)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         _taxClassRepository = taxClassRepository ?? throw new ArgumentNullException(nameof(taxClassRepository));
         _manufacturerRepository = manufacturerRepository ?? throw new ArgumentNullException(nameof(manufacturerRepository));
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     public async Task<Result<Guid>> Handle(ProductUpdateCommand request, CancellationToken cancellationToken)
@@ -80,8 +84,12 @@ public class ProductUpdateHandler : IRequestHandler<ProductUpdateCommand, Result
             // Update in database
             await _productRepository.UpdateAsync(productToUpdate);
 
+            await _mediator.Publish(
+                new ProductChangedNotification(productToUpdate.Id, productToUpdate.TenantId, ProductChangeKind.Updated),
+                cancellationToken);
+
             _logger.LogInformation("Successfully updated product with ID: {Id}", productToUpdate.Id);
-            
+
             return Result<Guid>.Success(productToUpdate.Id);
         }
         catch (Exception ex)

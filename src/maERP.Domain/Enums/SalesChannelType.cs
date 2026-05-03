@@ -6,5 +6,6 @@ public enum SalesChannelType
     Shopware5 = 10,
     Shopware6 = 11,
     WooCommerce = 20,
-    eBay = 30
+    eBay = 30,
+    Amazon = 40
 }

@@ -680,6 +680,7 @@ public sealed partial class Shell : UserControl, IContentControlProvider
                     SalesChannelType.Shopware6 => "\uE774",
                     SalesChannelType.WooCommerce => "\uE774",
                     SalesChannelType.eBay => "\uE774",
+                    SalesChannelType.Amazon => "\uE774",
                     _ => "\uE774"
                 };
 

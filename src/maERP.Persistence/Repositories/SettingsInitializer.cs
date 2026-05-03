@@ -122,7 +122,31 @@ namespace maERP.Persistence.Repositories
                 new Setting { Key = "Grafana.Endpoint", Value = "https://grafana.martin-andrich.de" },
                 new Setting { Key = "Grafana.LokiEndpoint", Value = "https://grafana.martin-andrich.de/loki" },
                 new Setting { Key = "Grafana.MetricsEnabled", Value = "False" },
-                new Setting { Key = "Grafana.LogsEnabled", Value = "False" }
+                new Setting { Key = "Grafana.LogsEnabled", Value = "False" },
+
+                // OAuth — generic
+                // Public base URL the third-party redirects back to. Must be HTTPS in production
+                // (eBay/Amazon enforce). e.g. "https://erp.acme.com".
+                new Setting { Key = "OAuth.PublicBaseUrl", Value = "" },
+
+                // OAuth — eBay (Developer-App fallback when no per-tenant override is set)
+                new Setting { Key = "OAuth.Ebay.ClientId", Value = "" },
+                new Setting { Key = "OAuth.Ebay.ClientSecret", Value = "", IsEncrypted = true },
+                new Setting { Key = "OAuth.Ebay.RuName", Value = "" },
+                new Setting { Key = "OAuth.Ebay.AuthorizationEndpoint", Value = "https://auth.ebay.com/oauth2/authorize" },
+                new Setting { Key = "OAuth.Ebay.TokenEndpoint", Value = "https://api.ebay.com/identity/v1/oauth2/token" },
+                new Setting { Key = "OAuth.Ebay.Scopes", Value = "https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/sell.inventory https://api.ebay.com/oauth/api_scope/sell.account https://api.ebay.com/oauth/api_scope/sell.fulfillment https://api.ebay.com/oauth/api_scope/sell.marketing https://api.ebay.com/oauth/api_scope/sell.finances" },
+                new Setting { Key = "OAuth.Ebay.UseSandbox", Value = "False" },
+
+                // OAuth — Amazon (LWA / SP-API)
+                new Setting { Key = "OAuth.Amazon.ClientId", Value = "" },
+                new Setting { Key = "OAuth.Amazon.ClientSecret", Value = "", IsEncrypted = true },
+                new Setting { Key = "OAuth.Amazon.AppId", Value = "" },
+                new Setting { Key = "OAuth.Amazon.RedirectUri", Value = "" },
+                new Setting { Key = "OAuth.Amazon.AuthorizationEndpoint", Value = "https://sellercentral.amazon.com/apps/authorize/consent" },
+                new Setting { Key = "OAuth.Amazon.TokenEndpoint", Value = "https://api.amazon.com/auth/o2/token" },
+                new Setting { Key = "OAuth.Amazon.Scopes", Value = "" },
+                new Setting { Key = "OAuth.Amazon.UseSandbox", Value = "False" }
             };
         }
 

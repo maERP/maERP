@@ -8,7 +8,7 @@ public class ProductSalesChannelUpdateDto : IProductSalesChannelInputModel
     public Guid ProductId { get; set; }
     public Guid SalesChannelId { get; set; }
 
-    public Guid RemoteProductId { get; set; }
+    public string? RemoteProductId { get; set; }
 
     public decimal Price { get; set; }
 

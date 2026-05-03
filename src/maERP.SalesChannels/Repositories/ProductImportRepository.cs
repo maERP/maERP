@@ -52,7 +52,7 @@ public class ProductImportRepository : IProductImportRepository
                     {
                         SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId) ?? throw new NotFoundException("SalesChannel {0} not found", salesChannelId),
                         SalesChannelId = salesChannelId,
-                        RemoteProductId = new Guid(importProduct.RemoteProductId.ToString("D").PadLeft(32, '0')),
+                        RemoteProductId = importProduct.RemoteProductId.ToString(),
                         Price = importProduct.Price
                     }
                 ],
@@ -86,7 +86,7 @@ public class ProductImportRepository : IProductImportRepository
                     {
                         SalesChannel = await _salesChannelRepository.GetByIdAsync(salesChannelId) ?? throw new NotFoundException("SalesChannel {0} not found", salesChannelId),
                         SalesChannelId = salesChannelId,
-                        RemoteProductId = new Guid(importProduct.RemoteProductId.ToString("D").PadLeft(32, '0')),
+                        RemoteProductId = importProduct.RemoteProductId.ToString(),
                         Price = importProduct.Price
                     }
                 ];

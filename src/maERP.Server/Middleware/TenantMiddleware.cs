@@ -38,10 +38,15 @@ public class TenantMiddleware
         // pings it before login to decide whether to show the registration
         // link. It must not require an X-Tenant-Id header.
         var isServerInfoEndpoint = pathLower != null && pathLower.EndsWith("/server-info");
+        // OAuth callback comes from a third-party redirect (eBay / Amazon) and carries no
+        // X-Tenant-Id header. Tenant resolution happens via the persisted OAuthState row inside
+        // OAuthCallbackHandler (it calls TenantContext.SetCurrentTenantId after state lookup).
+        // The /start and /disconnect routes still require the tenant header as usual.
+        var isOAuthCallback = pathLower != null && pathLower.Contains("/oauth/") && pathLower.EndsWith("/callback");
 
-        logger.LogDebug($"🔍 TenantMiddleware - isAuthEndpoint: {isAuthEndpoint}, isSuperadminEndpoint: {isSuperadminEndpoint}, isSwaggerEndpoint: {isSwaggerEndpoint}");
+        logger.LogDebug($"🔍 TenantMiddleware - isAuthEndpoint: {isAuthEndpoint}, isSuperadminEndpoint: {isSuperadminEndpoint}, isSwaggerEndpoint: {isSwaggerEndpoint}, isOAuthCallback: {isOAuthCallback}");
 
-        if (isAuthEndpoint || isSuperadminEndpoint || isSwaggerEndpoint || isHealthEndpoint || isServerInfoEndpoint)
+        if (isAuthEndpoint || isSuperadminEndpoint || isSwaggerEndpoint || isHealthEndpoint || isServerInfoEndpoint || isOAuthCallback)
         {
             logger.LogDebug($"✅  TenantMiddleware - Skipping tenant validation for: {path}");
             await _next(context);

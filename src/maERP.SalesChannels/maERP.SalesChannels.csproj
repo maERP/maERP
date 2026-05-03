@@ -9,6 +9,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="WooCommerceNET" />
+		<PackageReference Include="Microsoft.Extensions.Http.Polly" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\maERP.Persistence\maERP.Persistence.csproj" />

@@ -163,6 +163,8 @@ public class TenantAwareEmailServiceFallbackTest
         public Task<maERP.Application.Models.Grafana.GrafanaSettings> GetGrafanaSettingsAsync() => Task.FromResult(new maERP.Application.Models.Grafana.GrafanaSettings());
         public Task<string> GetSettingValueAsync(string key) => Task.FromResult(string.Empty);
         public Task SetSettingValueAsync(string key, string value) => Task.CompletedTask;
+        public Task<string> GetEncryptedSettingValueAsync(string key) => Task.FromResult(string.Empty);
+        public Task SetEncryptedSettingValueAsync(string key, string value) => Task.CompletedTask;
     }
 
     private sealed class StubTenantEmailSettingsRepository : ITenantEmailSettingsRepository

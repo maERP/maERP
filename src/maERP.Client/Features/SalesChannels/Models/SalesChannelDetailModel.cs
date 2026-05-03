@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+using maERP.Client.Core.Exceptions;
 using maERP.Client.Features.SalesChannels.Services;
 using maERP.Domain.Dtos.SalesChannel;
 
@@ -37,6 +39,68 @@ public partial record SalesChannelDetailModel
         return salesChannel ?? throw new InvalidOperationException($"Sales channel {_salesChannelId} not found");
     });
 
+    /// <summary>Recent sync-run audit history.</summary>
+    public IListFeed<ChannelSyncRunDto> SyncRuns => ListFeed.Async<ChannelSyncRunDto>(async ct =>
+    {
+        var runs = await _salesChannelService.GetSyncRunsAsync(_salesChannelId, take: 25, offset: 0, ct);
+        return runs.ToImmutableList();
+    });
+
+    /// <summary>Outbox rows currently in DeadLetter — surfaced for manual retry.</summary>
+    public IListFeed<ChannelExportOutboxDto> DeadLetterRows => ListFeed.Async<ChannelExportOutboxDto>(async ct =>
+    {
+        var rows = await _salesChannelService.GetDeadLetterAsync(_salesChannelId, ct);
+        return rows.ToImmutableList();
+    });
+
+    /// <summary>User-facing status line for the most recent orchestration action.</summary>
+    public IState<string> StatusMessage => State<string>.Value(this, () => string.Empty);
+
+    /// <summary>Set true while an orchestration action is in flight, so XAML can disable buttons.</summary>
+    public IState<bool> IsBusy => State<bool>.Value(this, () => false);
+
+    public Task TriggerSyncProducts() => RunAsync("Products import", ct => _salesChannelService.TriggerSyncAsync(_salesChannelId, "products", ct));
+    public Task TriggerSyncOrders() => RunAsync("Orders import", ct => _salesChannelService.TriggerSyncAsync(_salesChannelId, "orders", ct));
+    public Task TriggerSyncCustomers() => RunAsync("Customers import", ct => _salesChannelService.TriggerSyncAsync(_salesChannelId, "customers", ct));
+
+    public async Task TestConnection()
+    {
+        await IsBusy.SetAsync(true);
+        try
+        {
+            var result = await _salesChannelService.TestConnectionAsync(_salesChannelId);
+            var ok = result?.Success == true;
+            var message = ok ? "Connected." : (result?.Message ?? "Test failed.");
+            await StatusMessage.SetAsync($"Test connection: {(ok ? "OK" : "FAIL")} — {message}");
+        }
+        catch (ApiException ex)
+        {
+            await StatusMessage.SetAsync($"Test connection failed: {ex.CombinedMessage}");
+        }
+        finally
+        {
+            await IsBusy.SetAsync(false);
+        }
+    }
+
+    public async Task RetryDeadLetter(ChannelExportOutboxDto row)
+    {
+        await IsBusy.SetAsync(true);
+        try
+        {
+            await _salesChannelService.RetryDeadLetterAsync(_salesChannelId, row.Id);
+            await StatusMessage.SetAsync($"Re-queued {row.Operation} ({row.AggregateId:N}).");
+        }
+        catch (ApiException ex)
+        {
+            await StatusMessage.SetAsync($"Retry failed: {ex.CombinedMessage}");
+        }
+        finally
+        {
+            await IsBusy.SetAsync(false);
+        }
+    }
+
     /// <summary>
     /// Navigate to edit sales channel page.
     /// </summary>
@@ -51,5 +115,26 @@ public partial record SalesChannelDetailModel
     public async Task GoBack()
     {
         await _navigator.NavigateBackAsync(this);
+    }
+
+    private async Task RunAsync(string label, Func<CancellationToken, Task<SalesChannelSyncResultDto?>> action)
+    {
+        await IsBusy.SetAsync(true);
+        try
+        {
+            var result = await action(CancellationToken.None);
+            var summary = result is null
+                ? "no result"
+                : $"{result.Status} — processed {result.ItemsProcessed}, failed {result.ItemsFailed}";
+            await StatusMessage.SetAsync($"{label}: {summary}");
+        }
+        catch (ApiException ex)
+        {
+            await StatusMessage.SetAsync($"{label} failed: {ex.CombinedMessage}");
+        }
+        finally
+        {
+            await IsBusy.SetAsync(false);
+        }
     }
 }

@@ -1,8 +1,10 @@
 using maERP.Application.Contracts.Persistence;
+using maERP.Application.Contracts.Services;
 using maERP.Application.Models.Email;
 using maERP.Application.Models.Grafana;
 using maERP.Application.Models.Identity;
 using maERP.Application.Models.Telemetry;
+using maERP.Application.Services;
 using maERP.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,10 +13,14 @@ namespace maERP.Persistence.Services;
 public class SettingsService : ISettingsService
 {
     private readonly ISettingRepository _settingRepository;
+    private readonly ICredentialEncryptor _encryptor;
 
-    public SettingsService(ISettingRepository settingRepository)
+    public SettingsService(ISettingRepository settingRepository, ICredentialEncryptor? encryptor = null)
     {
         _settingRepository = settingRepository;
+        // Optional injection: keep CLI/test paths that don't wire DataProtection working with the
+        // identity-function NoOp (same fallback the DbContext uses for design-time scenarios).
+        _encryptor = encryptor ?? new NoOpCredentialEncryptor();
     }
 
     public Task<JwtSettings> GetJwtSettingsAsync()
@@ -180,6 +186,34 @@ public class SettingsService : ISettingsService
         else
         {
             setting = new Setting { Key = key, Value = value };
+            await _settingRepository.CreateAsync(setting);
+        }
+    }
+
+    public Task<string> GetEncryptedSettingValueAsync(string key)
+    {
+        var setting = _settingRepository.Entities.FirstOrDefault(s => s.Key == key);
+        if (setting is null) return Task.FromResult(string.Empty);
+
+        // Plaintext rows pass through unchanged; encrypted rows go through the encryptor whose
+        // Decrypt() also passes legacy plaintext through as a safety net.
+        var raw = setting.Value ?? string.Empty;
+        return Task.FromResult(setting.IsEncrypted ? _encryptor.Decrypt(raw) : raw);
+    }
+
+    public async Task SetEncryptedSettingValueAsync(string key, string value)
+    {
+        var ciphertext = string.IsNullOrEmpty(value) ? string.Empty : _encryptor.Encrypt(value);
+        var setting = _settingRepository.Entities.FirstOrDefault(s => s.Key == key);
+        if (setting is not null)
+        {
+            setting.Value = ciphertext;
+            setting.IsEncrypted = true;
+            await _settingRepository.UpdateAsync(setting);
+        }
+        else
+        {
+            setting = new Setting { Key = key, Value = ciphertext, IsEncrypted = true };
             await _settingRepository.CreateAsync(setting);
         }
     }

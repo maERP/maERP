@@ -1,8 +1,10 @@
+using maERP.Application.Services;
 using maERP.Domain.Entities;
 using maERP.Domain.Entities.Common;
 using maERP.Identity.Configurations;
 using maERP.Persistence.Configurations;
 using maERP.Persistence.Seeders;
+using maERP.Persistence.ValueConverters;
 using maERP.Application.Contracts.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
@@ -10,9 +12,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace maERP.Persistence.DatabaseContext;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ITenantContext tenantContext) : IdentityDbContext<ApplicationUser>(options)
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    private readonly ITenantContext _tenantContext = tenantContext;
+    private readonly ITenantContext _tenantContext;
+    private readonly ICredentialEncryptor _credentialEncryptor;
+
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
+        ITenantContext tenantContext,
+        ICredentialEncryptor? credentialEncryptor = null)
+        : base(options)
+    {
+        _tenantContext = tenantContext;
+        _credentialEncryptor = credentialEncryptor ?? new NoOpCredentialEncryptor();
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -53,6 +66,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<TenantEmailSettings>().ToTable("tenant_email_settings");
         modelBuilder.Entity<UserTenant>().ToTable("user_tenant");
         modelBuilder.Entity<Warehouse>().ToTable("warehouse");
+        modelBuilder.Entity<ChannelSyncRun>().ToTable("channel_sync_run");
+        modelBuilder.Entity<ChannelExportOutbox>().ToTable("channel_export_outbox");
+        modelBuilder.Entity<TenantOAuthAppSettings>().ToTable("tenant_oauth_app_settings");
+        modelBuilder.Entity<OAuthState>().ToTable("oauth_state");
 
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         // modelBuilder.ApplyConfigurationsFromAssembly(typeof(MaErpIdentityDbContext).Assembly);
@@ -65,6 +82,16 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new WarehouseConfiguration());
         modelBuilder.ApplyConfiguration(new ManufacturerConfiguration());
         modelBuilder.ApplyConfiguration(new SalesChannelConfiguration());
+
+        // Wire up at-rest encryption for SalesChannel credentials. Converter goes through
+        // the injected ICredentialEncryptor (NoOp at design-time / in tests, DataProtection
+        // in production).
+        var encryptedConverter = new EncryptedStringConverter(_credentialEncryptor);
+        modelBuilder.Entity<SalesChannel>().Property(e => e.Password).HasConversion(encryptedConverter);
+        modelBuilder.Entity<SalesChannel>().Property(e => e.AccessToken).HasConversion(encryptedConverter!);
+        modelBuilder.Entity<SalesChannel>().Property(e => e.RefreshToken).HasConversion(encryptedConverter!);
+        // OAuth Developer-App ClientSecret encrypted at rest with the same key ring.
+        modelBuilder.Entity<TenantOAuthAppSettings>().Property(e => e.ClientSecret).HasConversion(encryptedConverter!);
         modelBuilder.ApplyConfiguration(new TaxClassConfiguration());
         modelBuilder.ApplyConfiguration(new GoodsReceiptConfiguration());
         modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
@@ -75,6 +102,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.ApplyConfiguration(new ProductSalesChannelConfiguration());
         modelBuilder.ApplyConfiguration(new ShippingProviderRateConfiguration());
         modelBuilder.ApplyConfiguration(new TenantEmailSettingsConfiguration());
+        modelBuilder.ApplyConfiguration(new ChannelSyncRunConfiguration());
+        modelBuilder.ApplyConfiguration(new ChannelExportOutboxConfiguration());
+        modelBuilder.ApplyConfiguration(new TenantOAuthAppSettingsConfiguration());
+        modelBuilder.ApplyConfiguration(new OAuthStateConfiguration());
 
         modelBuilder.SeedSettings();
 
@@ -115,6 +146,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Tenant> Tenant { get; set; } = null!;
     public DbSet<TenantEmailSettings> TenantEmailSettings { get; set; } = null!;
     public DbSet<UserTenant> UserTenant { get; set; } = null!;
+    public DbSet<ChannelSyncRun> ChannelSyncRun { get; set; } = null!;
+    public DbSet<ChannelExportOutbox> ChannelExportOutbox { get; set; } = null!;
+    public DbSet<TenantOAuthAppSettings> TenantOAuthAppSettings { get; set; } = null!;
+    public DbSet<OAuthState> OAuthState { get; set; } = null!;
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -135,6 +170,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                         entry.Entity.TenantId = currentTenantId.Value;
                     }
                 }
+            }
+
+            // Normalize Customer.Email to a canonical lowercase form so the per-tenant unique index
+            // matches regardless of case/whitespace at the call site.
+            if (entry.Entity is Customer customer && !string.IsNullOrEmpty(customer.Email))
+            {
+                customer.Email = customer.Email.Trim().ToLowerInvariant();
             }
         }
 

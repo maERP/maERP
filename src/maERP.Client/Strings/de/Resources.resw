@@ -1795,6 +1795,9 @@
   <data name="SalesChannelType.eBay" xml:space="preserve">
     <value>eBay</value>
   </data>
+  <data name="SalesChannelType.Amazon" xml:space="preserve">
+    <value>Amazon</value>
+  </data>
 
   <!-- Sync Status -->
   <data name="SyncStatus.Enabled" xml:space="preserve">
